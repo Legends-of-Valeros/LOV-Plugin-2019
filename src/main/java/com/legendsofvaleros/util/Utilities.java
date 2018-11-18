@@ -31,9 +31,22 @@ import java.util.concurrent.Executor;
 
 public class Utilities extends ListenerModule {
     private static Utilities instance;
-
     public static Utilities getInstance() {
         return instance;
+    }
+
+    private static CommandManager cm;
+    public static CommandManager getCommandManager() {
+        return cm;
+    }
+
+    private static Set<UUID> op = new HashSet<>();
+
+    public static Executor syncExecutor() {
+        return instance.getScheduler()::sync;
+    }
+    public static Executor asyncExecutor() {
+        return instance.getScheduler()::async;
     }
 
     @Override
@@ -56,22 +69,6 @@ public class Utilities extends ListenerModule {
     public void onUnload() {
         super.onUnload();
     }
-
-    public static Executor syncExecutor() {
-        return BukkitExecutors.newSynchronous(LegendsOfValeros.getInstance());
-    }
-
-    public static Executor asyncExecutor() {
-        return MoreExecutors.directExecutor();
-    }
-
-    private static CommandManager cm;
-
-    public static CommandManager getCommandManager() {
-        return cm;
-    }
-
-    private static Set<UUID> op = new HashSet<>();
 
     public static boolean toggleOp(Player p) {
         if (isOp(p))
