@@ -35,7 +35,7 @@ public class SkillAmbush extends Skill {
 		/*NextAttack.on(pc.getPlayer().getUniqueId(), new NextAttackListener() {
 			@Override
 			public double run(Player p, LivingEntity attacked, double dmg) {
-				Characters.inst().getSkillEffectManager().getSkillEffect("Confuse").apply(attacked, p, level, getEarliest(TIME, level) * 1000);
+				Characters.getInstance().getSkillEffectManager().getSkillEffect("Confuse").apply(attacked, p, level, getEarliest(TIME, level) * 1000);
 				return dmg * (getEarliest(DAMAGE, level) / 100D);
 			}
 		});*/

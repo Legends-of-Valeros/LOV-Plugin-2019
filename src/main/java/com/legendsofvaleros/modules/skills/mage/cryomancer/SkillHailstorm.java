@@ -6,7 +6,6 @@ import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.characters.skilleffect.MetaEffectInstance;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.skills.Skills;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
@@ -82,7 +81,7 @@ public class SkillHailstorm extends Skill {
                     Random rand = new Random();
                     for (LivingEntity e : getNearbyEntities(loc, radius, radius, radius)) {
                         if (rand.nextFloat() > chance) continue;
-                        Characters.inst().getSkillEffectManager().getSkillEffect("Freeze").apply(e, ce.getLivingEntity(), getEarliest(TIME, level));
+                        Characters.getInstance().getSkillEffectManager().getSkillEffect("Freeze").apply(e, ce.getLivingEntity(), getEarliest(TIME, level));
                     }
                 }
 

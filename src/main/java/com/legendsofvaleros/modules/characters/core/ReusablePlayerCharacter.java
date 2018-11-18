@@ -57,7 +57,7 @@ public class ReusablePlayerCharacter implements PlayerCharacter {
 		this.player = new WeakReference<>(player);
 
 		this.playerRace = playerRace;
-		this.configRace = Characters.inst().getCharacterConfig().getRaceConfig(playerRace);
+		this.configRace = Characters.getInstance().getCharacterConfig().getRaceConfig(playerRace);
 		this.playerClass = playerClass;
 
 		this.locFromDb = startingLocation;

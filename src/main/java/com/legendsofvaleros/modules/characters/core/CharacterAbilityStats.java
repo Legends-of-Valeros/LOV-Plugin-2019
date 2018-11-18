@@ -56,11 +56,11 @@ public class CharacterAbilityStats implements AbilityStats {
 			throw new IllegalArgumentException("params cannot be null");
 		}
 		this.playerCharacter = playerCharacter;
-		this.ui = Characters.inst().getUiManager().getAbilityStatInterface(playerCharacter);
+		this.ui = Characters.getInstance().getUiManager().getAbilityStatInterface(playerCharacter);
 
 		this.listener = new AbilityStatListener();
 
-		this.configClass = Characters.inst().getCharacterConfig().getClassConfig(playerCharacter.getPlayerClass());
+		this.configClass = Characters.getInstance().getCharacterConfig().getClassConfig(playerCharacter.getPlayerClass());
 		if (combatEntity != null)
 			this.applicatorClass = configClass.getNewApplicator(combatEntity);
 

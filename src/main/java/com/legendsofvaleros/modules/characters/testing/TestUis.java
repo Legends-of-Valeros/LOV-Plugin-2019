@@ -52,9 +52,9 @@ public class TestUis implements CharactersUiManager, CombatEngineUiManager {
 
 		player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 1), true);
 		
-		player.teleport(Characters.inst().getCharacterConfig().getCreateLocation());
+		player.teleport(Characters.getInstance().getCharacterConfig().getCreateLocation());
 		
-		ShitUtil.doShit(player, Characters.inst().getCharacterConfig().getCreationStartText(), null);
+		ShitUtil.doShit(player, Characters.getInstance().getCharacterConfig().getCreationStartText(), null);
 
 		PlayerCreation.setCreating(player, number, listener);
 	}

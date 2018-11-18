@@ -33,13 +33,13 @@ public class BankManager {
         return banks.get(characterId);
     }
 
-    public static void onEnable(JavaPlugin plugin) {
+    public static void onEnable() {
         String dbPoolId = LegendsOfValeros.getInstance().getConfig().getString("dbpools-database");
 
         bankCurrencyTable = ORMTable.bind(dbPoolId, PlayerBank.Currency.class);
         bankContentTable = ORMTable.bind(dbPoolId, PlayerBank.Entry.class, ItemManager.gson);
 
-        Bukkit.getPluginManager().registerEvents(new PlayerCharacterListener(), plugin);
+        Bukkit.getPluginManager().registerEvents(new PlayerCharacterListener(), LegendsOfValeros.getInstance());
     }
 
     public static void onDisable() {

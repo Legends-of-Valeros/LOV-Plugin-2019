@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.characters.config;
 
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.race.EntityRace;
@@ -10,7 +11,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,9 +20,6 @@ import java.util.Map;
  * Default bukkit-config implementation of the Characters configuration.
  */
 public class BukkitConfig implements CharactersConfig {
-
-	private JavaPlugin plugin;
-
 	private String dbpoolsId;
 
 	private Map<AbilityStat, String> statDescriptions;
@@ -42,18 +39,14 @@ public class BukkitConfig implements CharactersConfig {
 	private Map<EntityClass, ClassConfig> classConfigs;
 	private Map<EntityRace, RaceConfig> raceConfigs;
 
-	public BukkitConfig(JavaPlugin plugin) {
-		this.plugin = plugin;
-
+	public BukkitConfig() {
 		load();
 	}
 
 	private void load() {
-		plugin.saveDefaultConfig();
+		FileConfiguration config = Characters.getInstance().getConfig();
 
-		FileConfiguration config = plugin.getConfig();
-
-		dbpoolsId = config.getString("dbpools-database");
+		dbpoolsId = LegendsOfValeros.getInstance().getConfig().getString("dbpools-database");
 
 		ConfigurationSection descSec = config.getConfigurationSection("ability-stat-description");
 		statDescriptions = new HashMap<>();
@@ -61,7 +54,7 @@ public class BukkitConfig implements CharactersConfig {
 			try {
 				statDescriptions.put(AbilityStat.valueOf(key), descSec.getString(key));
 			} catch (Exception ex) {
-				plugin.getLogger().severe("Could not load ability stat description. '" + key + "' is not a recognized stat");
+				Characters.getInstance().getLogger().severe("Could not load ability stat description. '" + key + "' is not a recognized stat");
 				MessageUtil.sendException(LegendsOfValeros.getInstance(), null, ex, true);
 			}
 		}

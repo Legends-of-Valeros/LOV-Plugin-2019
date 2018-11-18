@@ -51,7 +51,7 @@ public class SkillIceCrystal extends Skill {
     public boolean onSkillUse(World world, CombatEntity ce, int level) {
         world.playSound(ce.getLivingEntity().getLocation(), "spell.ice.icebolt.impact.strong", .5F, .25F);
 
-        double spellDamage = SkillUtil.getSpellDamage(ce, SpellType.ICE, Characters.inst().getCharacterConfig().getClassConfig(EntityClass.MAGE).getBaseMeleeDamage())
+        double spellDamage = SkillUtil.getSpellDamage(ce, SpellType.ICE, Characters.getInstance().getCharacterConfig().getClassConfig(EntityClass.MAGE).getBaseMeleeDamage())
                 * getEarliest(DAMAGE, level) / 100D;
 
         Location start = ce.getLivingEntity().getLocation().add(0, 1, 0);

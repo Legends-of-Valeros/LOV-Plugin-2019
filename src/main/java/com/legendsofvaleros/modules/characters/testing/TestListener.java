@@ -38,7 +38,7 @@ public class TestListener implements Listener {
 			return;
 		}
 
-		if(Characters.inst().isInCombat(event.getPlayer())) {
+		if(Characters.getInstance().isInCombat(event.getPlayer())) {
 			MessageUtil.sendError(event.getPlayer(), "You cannot do that while in combat!");
 		}
 	}
@@ -95,14 +95,14 @@ public class TestListener implements Listener {
 		if(!event.getCombatEntity().isPlayer()) return;
 		if(event.getRegenerating() != RegeneratingStat.HEALTH) return;
 		
-		if(Characters.inst().isInCombat((Player)event.getCombatEntity().getLivingEntity()))
+		if(Characters.getInstance().isInCombat((Player)event.getCombatEntity().getLivingEntity()))
 			event.setCancelled(true);
 	}
 
 	@EventHandler
 	public void onNPCLeftClick(NPCLeftClickEvent event) {
 		if(!event.getNPC().hasTrait(TraitLOV.class)) return;
-		if(!Characters.inst().isInCombat(event.getClicker())) return;
+		if(!Characters.getInstance().isInCombat(event.getClicker())) return;
 		
 		MessageUtil.sendError(event.getClicker(), "You cannot do that while in combat!");
 		
@@ -112,7 +112,7 @@ public class TestListener implements Listener {
 	@EventHandler
 	public void onNPCRightClick(NPCRightClickEvent event) {
 		if(!event.getNPC().hasTrait(TraitLOV.class)) return;
-		if(!Characters.inst().isInCombat(event.getClicker())) return;
+		if(!Characters.getInstance().isInCombat(event.getClicker())) return;
 		
 		MessageUtil.sendError(event.getClicker(), "You cannot do that while in combat!");
 		
@@ -186,7 +186,7 @@ public class TestListener implements Listener {
 				} else if (event.getClickedBlock().getType() == Material.DIRT) {
 					player.sendMessage("");
 					player.sendMessage(ChatColor.GREEN + "Your skill-effects:");
-					for (SkillEffect<? extends Object> effect : Characters.inst()
+					for (SkillEffect<? extends Object> effect : Characters.getInstance()
 							.getSkillEffectManager().getActiveEffects(player)) {
 						player.sendMessage(ChatColor.GREEN + " " + effect.getUserFriendlyName(player));
 						for (String detail : effect.getUserFriendlyDetails(player)) {
@@ -205,7 +205,7 @@ public class TestListener implements Listener {
 					player.sendMessage(ChatColor.GREEN + "Casting max-health buff "
 							+ RomanNumeral.convertToRoman(level) + " on you!");
 					boolean succeeded =
-							Characters.inst().getSkillEffectManager().getSkillEffect("MaxHealthBuff")
+							Characters.getInstance().getSkillEffectManager().getSkillEffect("MaxHealthBuff")
 							.apply(player, player, level);
 					if (succeeded) {
 						player.sendMessage(ChatColor.GREEN + "Succeeded.");
@@ -217,7 +217,7 @@ public class TestListener implements Listener {
 			          player.sendMessage(ChatColor.GREEN + "Casting percentage poison "
 			              + RomanNumeral.convertToRoman(level) + " on you!");
 			          succeeded =
-			              Characters.inst().getSkillEffectManager().getSkillEffect("PercentagePoison")
+			              Characters.getInstance().getSkillEffectManager().getSkillEffect("PercentagePoison")
 			                  .apply(player, player, level);
 			          if (succeeded) {
 			            player.sendMessage(ChatColor.GREEN + "Succeeded.");
@@ -225,7 +225,7 @@ public class TestListener implements Listener {
 			            player.sendMessage(ChatColor.RED + "Failed to override the previous effect");
 			          }
 
-					CombatEntity ce = CombatEngine.inst().getCombatEntity(player);
+					CombatEntity ce = CombatEngine.getInstance().getCombatEntity(player);
 					ce.getStatusEffects().addStatusEffect(StatusEffectType.BLINDNESS, 400);
 				}
 			}
@@ -235,7 +235,7 @@ public class TestListener implements Listener {
 	@EventHandler
 	public void onCombatEngineDamage(CombatEngineDamageEvent event) {
 		SkillEffect<? extends Object> effect =
-				Characters.inst().getSkillEffectManager().getSkillEffect("PercentagePoison");
+				Characters.getInstance().getSkillEffectManager().getSkillEffect("PercentagePoison");
 		if (event.getAttacker() != null && event.getAttacker().isPlayer()
 				&& !event.getAttacker().equals(event.getDamaged())
 				&& !effect.isAffected(event.getDamaged().getLivingEntity())) {

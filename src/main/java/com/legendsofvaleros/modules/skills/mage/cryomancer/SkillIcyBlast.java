@@ -6,7 +6,6 @@ import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.characters.skilleffect.MetaEffectInstance;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.skills.Skills;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
@@ -61,7 +60,7 @@ public class SkillIcyBlast extends Skill {
                     continue;
                 ((Player) ce.getLivingEntity()).playSound(ce.getLivingEntity().getLocation(), "spell.ice.freeze", 1F, 1F);
             }
-            Characters.inst().getSkillEffectManager().getSkillEffect("Freeze").apply(e, ce.getLivingEntity(), getEarliest(FREEZE_LEVEL, level));
+            Characters.getInstance().getSkillEffectManager().getSkillEffect("Freeze").apply(e, ce.getLivingEntity(), getEarliest(FREEZE_LEVEL, level));
         }
 
         Location start = ce.getLivingEntity().getLocation().clone();

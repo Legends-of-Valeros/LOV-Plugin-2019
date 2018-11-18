@@ -328,7 +328,7 @@ public abstract class SkillEffect<T> {
     }
 
     CharacterId characterId = persistingEffect.getAffected();
-    PlayerCharacter pc = Characters.inst().getCharacter(characterId);
+    PlayerCharacter pc = Characters.getInstance().getCharacter(characterId);
     if (pc == null || !pc.isCurrent()) {
       throw new IllegalStateException("that player-character is not logged in");
     }

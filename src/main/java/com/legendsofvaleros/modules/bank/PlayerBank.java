@@ -35,7 +35,7 @@ public class PlayerBank extends ORM {
             currencies.put(currencyId, new Currency(characterId, currencyId));
         currencies.get(currencyId).amount = amount;
 
-        Bank.updateInv(Characters.inst().getCharacter(characterId));
+        Bank.updateInv(Characters.getInstance().getCharacter(characterId));
     }
 
     public void addCurrency(String currencyId, long amount) {

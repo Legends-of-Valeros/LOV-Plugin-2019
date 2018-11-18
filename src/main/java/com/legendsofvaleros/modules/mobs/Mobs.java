@@ -46,11 +46,11 @@ public class Mobs extends ListenerModule {
         instance = this;
 
 
-        LegendsOfValeros.getInstance().getLogger().info("AI will update all entities over the course of " + LegendsOfValeros.getInstance().getConfig().getInt("ai-update-smear", 20) + " ticks.");
-        ai = new BehaviorEngine(LegendsOfValeros.getInstance().getConfig().getInt("ai-update-smear", 10));
+        getLogger().info("AI will update all entities over the course of " + LegendsOfValeros.getInstance().getConfig().getInt("ai-update-smear", 20) + " ticks.");
+        ai = new BehaviorEngine(getConfig().getInt("ai-update-smear", 10));
 
-        SpawnManager.onEnable(LegendsOfValeros.getInstance());
-        MobManager.onEnable(LegendsOfValeros.getInstance());
+        SpawnManager.onEnable();
+        MobManager.onEnable();
 
         NPCs.registerTrait("title", TraitTitle.class);
 
@@ -71,7 +71,7 @@ public class Mobs extends ListenerModule {
 
             LevelArchetypes.getInstance().registerLevelProvider(entity -> Mob.Instance.get(entity).level, type);
         }
-        new MobSpawner(LegendsOfValeros.getInstance());
+        new MobSpawner();
     }
 
     @Override

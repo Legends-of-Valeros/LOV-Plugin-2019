@@ -23,6 +23,7 @@ public class PvP extends Module {
     @Override
     public void onLoad() {
         super.onLoad();
+
         instance = this;
         toggles = new PvPToggles();
 

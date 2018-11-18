@@ -70,9 +70,9 @@ public class Utilities extends ListenerModule {
 
         new TitleUtil();
 
-        Model.onEnable(LegendsOfValeros.getInstance());
+        Model.onEnable();
         MessageUtil.onEnable();
-        Advancements.onEnable(LegendsOfValeros.getInstance());
+        Advancements.onEnable();
     }
 
     @Override

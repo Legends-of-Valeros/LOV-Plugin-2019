@@ -5,6 +5,7 @@ import com.codingforcookies.doris.orm.annotation.Column;
 import com.codingforcookies.doris.orm.annotation.Table;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
@@ -51,12 +52,12 @@ public class PartyManager {
         return parties.get(uuid);
     }
 
-    public static void onEnable(JavaPlugin plugin) {
-        partyTable = ORMTable.bind(plugin.getConfig().getString("dbpools-database"), Pair.class);
+    public static void onEnable() {
+        partyTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), Pair.class);
 
-        Bukkit.getPluginManager().registerEvents(new PlayerListener(), plugin);
+        Bukkit.getPluginManager().registerEvents(new PlayerListener(), LegendsOfValeros.getInstance());
 
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(LegendsOfValeros.getInstance(), () -> {
             for (IParty party : parties.values())
                 party.updateUI();
         }, 0L, 20L * 5L);

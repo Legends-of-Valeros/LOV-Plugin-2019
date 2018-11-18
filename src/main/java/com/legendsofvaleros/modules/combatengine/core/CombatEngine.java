@@ -44,27 +44,13 @@ public class CombatEngine extends ListenerModule implements CombatEngineAPI {
     @Override
     public void onLoad() {
         if (!LegendsOfValeros.getInstance().getServer().getPluginManager().isPluginEnabled("LibsDisguises")) {
-            LegendsOfValeros.getInstance().getLogger().warning("LibsDisguises is not enabled on this server. Disguises will not work without it!");
+            getLogger().warning("LibsDisguises is not enabled on this server. Disguises will not work without it!");
         }
 
-        config = new BukkitConfig(LegendsOfValeros.getInstance());
-        singleton = new CombatEngine();
-        singleton.init();
-    }
+        singleton = this;
 
-    @Override
-    public void onUnload() {
-        EntityThreatLevels.onDisable();
-        singleton = null;
-    }
+        config = new BukkitConfig();
 
-    public static CombatEngineConfig getEngineConfig() {
-        return config;
-    }
-
-    // used instead of a constructor because it allows static access to this object while it is
-    // initiating. For instance, it allows the damage engine to statically get the mcHealthHandler.
-    private void init() {
         this.mcHealthHandler = new MinecraftHealthHandler();
         this.speedEngine = new SpeedEngine(config);
         this.damageEngine = new DamageEngine(config, mcHealthHandler);
@@ -77,6 +63,15 @@ public class CombatEngine extends ListenerModule implements CombatEngineAPI {
         this.unsafe = new Unsafe();
 
         new AttackForEffectsListener();
+    }
+
+    @Override
+    public void onUnload() {
+        EntityThreatLevels.onDisable();
+    }
+
+    public static CombatEngineConfig getEngineConfig() {
+        return config;
     }
 
     public static CombatEntity getEntity(LivingEntity getFor) {

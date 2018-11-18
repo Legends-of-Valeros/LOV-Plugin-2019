@@ -40,12 +40,13 @@ public class LevelArchetypes extends ListenerModule implements LevelArchetypesAP
     @Override
     public void onLoad() {
         super.onLoad();
-        singleton = new LevelArchetypes();
+
+        singleton = this;
 
         archetypes = new HashMap<>();
         providers = new HashMap<>();
 
-        FileConfiguration config = LegendsOfValeros.getInstance().getConfig();
+        FileConfiguration config = getConfig();
         ConfigurationSection archSec = config.getConfigurationSection("archetypes");
         if (archSec != null) {
 
@@ -54,7 +55,7 @@ public class LevelArchetypes extends ListenerModule implements LevelArchetypesAP
                     archetypes.put(key, new LevelArchetype(key, archSec.getConfigurationSection(key)));
 
                 } catch (Exception e) {
-                    LegendsOfValeros.getInstance().getLogger().severe("There was an issue while loading the archetype '" + key + "'");
+                    getLogger().severe("There was an issue while loading the archetype '" + key + "'");
                     MessageUtil.sendException(LegendsOfValeros.getInstance(), null, e, true);
                 }
             }
@@ -91,11 +92,13 @@ public class LevelArchetypes extends ListenerModule implements LevelArchetypesAP
 
     @Override
     public void onUnload() {
-        singleton = null;
+
     }
 
     @Override
     public Archetype getArchetype(String archetypeId) {
+        if(archetypes == null) throw new RuntimeException("Archetypes is null. This shouldn't happen!");
+        if(!archetypes.containsKey(archetypeId)) return null;
         return archetypes.get(archetypeId);
     }
 

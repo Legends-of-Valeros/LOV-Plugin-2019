@@ -35,7 +35,7 @@ public class Discord {
     public static String TAG;
 
     public static void onEnable() {
-        ConfigurationSection config = LegendsOfValeros.getInstance().getConfig().getConfigurationSection("discord");
+        ConfigurationSection config = Utilities.getInstance().getConfig().getConfigurationSection("discord");
 
         TAG = config.getString("tag");
         if(TAG == null)
@@ -65,6 +65,7 @@ public class Discord {
     public static class ConnectedEvent extends Event {
         private static final HandlerList handlers = new HandlerList();
         @Override public HandlerList getHandlers() { return handlers; }
+        public static HandlerList getHandlerList() { return handlers; }
 
         final Server server;
         public Server getServer() { return server; }

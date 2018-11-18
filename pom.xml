@@ -50,6 +50,26 @@
                     <skipTests>true</skipTests>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <!-- Run shade goal on package phase -->
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
         <resources>
             <resource>
@@ -98,9 +118,29 @@
 
     <dependencies>
         <dependency>
+            <groupId>de.btobastian.javacord</groupId>
+            <artifactId>javacord</artifactId>
+            <version>2.0.17</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.comphenix.executors</groupId>
+            <artifactId>BukkitExecutors</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
             <version>${spigot.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.citizensnpcs</groupId>
@@ -126,7 +166,9 @@
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
             <version>4.4.0</version>
+            <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>io.brutus.minecraft</groupId>
             <artifactId>dbpools</artifactId>
@@ -140,13 +182,6 @@
             <version>2.0.2</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/HolographicDisplays.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>de.btobastian.javacord</groupId>
-            <artifactId>javacord</artifactId>
-            <version>2.0.17</version>
-            <classifier>shaded</classifier>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.codingforcookies</groupId>
@@ -175,16 +210,6 @@
             <version>0.0.1-SNAPSHOT</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/ambience-0.0.1.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.8.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.comphenix.executors</groupId>
-            <artifactId>BukkitExecutors</artifactId>
-            <version>1.0.0</version>
         </dependency>
     </dependencies>
 </project>

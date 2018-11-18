@@ -158,7 +158,7 @@ public class CooldownData {
 							if (!fromDb.isEmpty()) {
 								// syncs to the main thread before
 								Bukkit.getScheduler().runTask(LegendsOfValeros.getInstance(), () -> {
-									PlayerCharacter pc = Characters.inst().getCharacter(characterId);
+									PlayerCharacter pc = Characters.getInstance().getCharacter(characterId);
 									Player player = Bukkit.getPlayer(characterId.getPlayerId());
 									if (pc == null || player == null || !player.isOnline()) {
 										return;
@@ -218,7 +218,7 @@ public class CooldownData {
 
 		@EventHandler
 		public void onPlayerQuit(PlayerQuitEvent event) {
-			PlayerCharacters characters = Characters.inst().getCharacters(event.getPlayer());
+			PlayerCharacters characters = Characters.getInstance().getCharacters(event.getPlayer());
 			if (characters != null) {
 				for (PlayerCharacter pc : characters.getCharacterSet()) {
 					loadedCharacters.remove(pc.getUniqueCharacterId());

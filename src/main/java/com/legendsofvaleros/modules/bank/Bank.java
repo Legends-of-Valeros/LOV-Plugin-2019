@@ -44,8 +44,8 @@ public class Bank extends ListenerModule {
     public void onLoad() {
         this.instance = this;
 
-        BankManager.onEnable(LegendsOfValeros.getInstance());
-        Money.onEnable(LegendsOfValeros.getInstance());
+        BankManager.onEnable();
+        Money.onEnable();
         Utilities.getCommandManager().loadCommandClass(BankCommands.class);
         ObjectiveFactory.registerType("repair", RepairObjective.class);
         ActionFactory.registerType("currency_give", ActionAddCurrency.class);

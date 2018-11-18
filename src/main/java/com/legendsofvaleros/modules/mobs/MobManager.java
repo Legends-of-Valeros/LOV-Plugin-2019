@@ -37,7 +37,7 @@ public class MobManager {
         entities.invalidateAll();
     }
 
-    public static void onEnable(JavaPlugin plugin) {
+    public static void onEnable() {
         gson = new GsonBuilder()
                 .registerTypeAdapter(Equipment.EquipmentSlot.class, (JsonDeserializer<Equipment.EquipmentSlot>) (json, typeOfT, context) -> {
                     String name = json.getAsString().toUpperCase();
@@ -82,7 +82,7 @@ public class MobManager {
             }
         });
 
-        entitiesTable = ORMTable.bind(plugin.getConfig().getString("dbpools-database"), Mob.class, gson);
+        entitiesTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), Mob.class, gson);
     }
 
     public static Mob getEntity(String id) {

@@ -31,12 +31,12 @@ public class HearthstonesManager {
 
     private static long cooldownDuration;
 
-    public static void onEnable(JavaPlugin plugin) {
-        cooldownDuration = plugin.getConfig().getLong("cooldown-seconds") * 1000;
+    public static void onEnable() {
+        cooldownDuration = Hearthstones.getInstance().getConfig().getLong("cooldown-seconds") * 1000;
 
-        homeTable = ORMTable.bind(plugin.getConfig().getString("dbpools-database"), HomePoint.class);
+        homeTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), HomePoint.class);
 
-        plugin.getServer().getPluginManager().registerEvents(new PlayerListener(), plugin);
+        Bukkit.getServer().getPluginManager().registerEvents(new PlayerListener(), LegendsOfValeros.getInstance());
     }
 
     public static HomePoint getHome(PlayerCharacter pc) {

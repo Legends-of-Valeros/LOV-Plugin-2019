@@ -103,10 +103,10 @@ public class MessageUtil {
 				// Make this channel configurable
 				Channel channel = Discord.SERVER.getChannelById("358612310731915264");
 
-				if (channel != null) {
+				if (false && channel != null) {
 					Bukkit.getScheduler().runTaskAsynchronously(LegendsOfValeros.getInstance(), () -> {
 						try {
-							channel.sendMessage("`[" + Discord.TAG + "]` " + trace).get();
+							channel.sendMessage("`[" + Discord.TAG + "]` ```" + trace + "```").get();
 						} catch (InterruptedException | ExecutionException _e) {
 							_e.printStackTrace();
 						}

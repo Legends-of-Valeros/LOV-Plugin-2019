@@ -22,7 +22,7 @@ public class CharacterCommands {
 		PlayerCharacter pc = Characters.getPlayerCharacter((Player)sender);
 		if(level < 0) {
 			MessageUtil.sendError(sender, "Level must be greater than -1.");
-		}else if(level > Characters.inst().getCharacterConfig().getMaxLevel()) {
+		}else if(level > Characters.getInstance().getCharacterConfig().getMaxLevel()) {
 			MessageUtil.sendError(sender, "That is over the max level.");
 		}else{
 			pc.getExperience().setLevel(level);
@@ -42,7 +42,7 @@ public class CharacterCommands {
 		if(!Characters.isPlayerCharacterLoaded((Player)sender)) return CommandManager.CommandFinished.CUSTOM.replace("You have not selected a character.");
 		
 		PlayerCharacter pc = Characters.getPlayerCharacter((Player)sender);
-		if(pc.getExperience().getLevel() + 1 > Characters.inst().getCharacterConfig().getMaxLevel()) {
+		if(pc.getExperience().getLevel() + 1 > Characters.getInstance().getCharacterConfig().getMaxLevel()) {
 			MessageUtil.sendError(sender, "You are max level.");
 		}else{
 			pc.getExperience().setLevel(pc.getExperience().getLevel() + 1);

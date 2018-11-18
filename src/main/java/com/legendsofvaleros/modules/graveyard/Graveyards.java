@@ -32,7 +32,7 @@ public class Graveyards extends ListenerModule {
 
         Utilities.getCommandManager().loadCommandClass(GraveyardCommands.class);
 
-        GraveyardManager.onEnable(LegendsOfValeros.getInstance());
+        GraveyardManager.onEnable();
 
     }
 

@@ -6,6 +6,7 @@ import com.codingforcookies.robert.core.GUI.Flag;
 import com.codingforcookies.robert.window.ExpandingGUI;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.util.item.Model;
 import com.legendsofvaleros.util.item.Model;
 import com.legendsofvaleros.util.item.Model;
@@ -35,8 +36,8 @@ public class PlayerSettings extends HashMap<String, String> {
 		
 		private static Map<UUID, PlayerSettings> settings = new HashMap<>();
 		
-		public Manager(JavaPlugin plugin) {
-			manager = new TableManager(plugin.getConfig().getString("dbpools-database"), SETTINGS_TABLE);
+		public Manager() {
+			manager = new TableManager(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), SETTINGS_TABLE);
 
 			manager.primary(PLAYER_ID, "VARCHAR(36)")
 					.primary(SETTING_ID, "VARCHAR(16)")

@@ -48,7 +48,7 @@ public class MetaEffectInstance<T> implements SkillEffectInstance {
 
 			if (affected.getType() == EntityType.PLAYER && !NPCs.isNPC(affected)) {
 				PlayerCharacter pc = Characters.getPlayerCharacter((Player) affected);
-				ui = Characters.inst().getUiManager().getCharacterEffectInterface(pc);
+				ui = Characters.getInstance().getUiManager().getCharacterEffectInterface(pc);
 			}
 		}
 

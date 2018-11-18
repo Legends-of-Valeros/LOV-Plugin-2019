@@ -135,7 +135,7 @@ public class QuestManager {
         return fields;
     }
 
-    public static void onEnable(JavaPlugin plugin) {
+    public static void onEnable() {
         gson = new GsonBuilder()
                 .registerTypeAdapter(QuestPrereqLoader.class, (JsonDeserializer<QuestPrereqLoader>) (json, typeOfT, context) -> {
                     QuestPrereqLoader loader = new QuestPrereqLoader();
@@ -202,14 +202,14 @@ public class QuestManager {
                 .registerTypeAdapter(Duration.class, (JsonDeserializer<Duration>) (json, typeOfT, context) -> Duration.parse(json.getAsString()))
                 .create();
 
-        managerPlayers = new TableManager(plugin.getConfig().getString("dbpools-database"), PLAYER_QUESTS_TABLE);
+        managerPlayers = new TableManager(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), PLAYER_QUESTS_TABLE);
 
         managerPlayers.primary(CHARACTER_FIELD, "VARCHAR(38)")
                 .primary(QUEST_ID, "VARCHAR(64)")
                 .column(QUEST_DATE, "DATETIME")
                 .column(QUEST_PROGRESS, "TEXT").create();
 
-        managerQuests = new TableManager(plugin.getConfig().getString("dbpools-database"), QUEST_TABLE);
+        managerQuests = new TableManager(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), QUEST_TABLE);
 
         managerQuests.primary(QUEST_ID, "VARCHAR(64)")
                 .column(QUEST_GROUP, "VARCHAR(64)")
@@ -227,7 +227,7 @@ public class QuestManager {
                 .column(QUEST_ACTIONS, "TEXT")
                 .column(QUEST_OBJECTIVES, "TEXT").create();
 
-        Bukkit.getPluginManager().registerEvents(new PlayerListener(), plugin);
+        Bukkit.getPluginManager().registerEvents(new PlayerListener(), LegendsOfValeros.getInstance());
 
         quests = new FutureCache<>(CacheBuilder.newBuilder()
                 .concurrencyLevel(4)

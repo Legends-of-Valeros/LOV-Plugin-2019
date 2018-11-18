@@ -84,12 +84,12 @@ public class Dueling extends ListenerModule implements Listener {
                 return;
             }
 
-            if (Characters.inst().isInCombat(p)) {
+            if (Characters.getInstance().isInCombat(p)) {
                 MessageUtil.sendError(p, "You cannot start a duel while currently in combat.");
                 return;
             }
 
-            if (Characters.inst().isInCombat(event.getClicked())) {
+            if (Characters.getInstance().isInCombat(event.getClicked())) {
                 MessageUtil.sendError(p, "You cannot start a duel with a player that is currently in combat.");
                 return;
             }

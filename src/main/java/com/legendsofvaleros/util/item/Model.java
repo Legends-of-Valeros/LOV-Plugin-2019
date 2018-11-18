@@ -26,8 +26,8 @@ public class Model {
 	public static ItemStack EMPTY_SLOT = null;
 
 	private static ORMTable<Model> modelTable;
-	public static void onEnable(JavaPlugin plugin) {
-		modelTable = ORMTable.bind(plugin.getConfig().getString("dbpools-database"), Model.class);
+	public static void onEnable() {
+		modelTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), Model.class);
 
 		EMPTY_SLOT = stack("empty-slot").create();
 	}

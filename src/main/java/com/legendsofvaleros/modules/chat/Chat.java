@@ -48,11 +48,13 @@ public class Chat extends ListenerModule {
     public static Map<Character, String> chanToDiscord = new HashMap<>();
     public static Map<String, Character> discordToChan = new HashMap<>();
 
-    @Override public void onLoad() {
+    @Override
+    public void onLoad() {
         instance = this;
 
-        ConfigurationSection config = LegendsOfValeros.getInstance().getConfig().getConfigurationSection("chat");
+        ConfigurationSection config = getConfig().getConfigurationSection("discord");
 
+        getLogger().info("" + getConfig().getKeys(false));
         ConfigurationSection channels = config.getConfigurationSection("channels");
         for (String key : channels.getKeys(false)) {
             if (key.length() != 1) continue;

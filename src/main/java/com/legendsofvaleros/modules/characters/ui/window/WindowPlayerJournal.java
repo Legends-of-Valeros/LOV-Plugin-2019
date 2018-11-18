@@ -4,11 +4,7 @@ import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -21,7 +17,7 @@ public class WindowPlayerJournal extends GUI {
 		
 		type(6);
 
-		PlayerCharacter pc = Characters.inst().getCharacters(p).getCurrentCharacter();
+		PlayerCharacter pc = Characters.getInstance().getCharacters(p).getCurrentCharacter();
 		
 		slot(1, 1, new ItemBuilder(Material.LEATHER_HELMET)
 				.create(), null);

@@ -1,5 +1,6 @@
 package com.legendsofvaleros.modules;
 
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.scheduler.InternalScheduler;
 
 import java.util.ArrayList;
@@ -53,7 +54,14 @@ public class ModuleManager {
         modulesToUnload.clear();
     }
 
-    public static void registerModule(Module module) {
-        modulesToLoad.add(module);
+    public static void registerModule(Class<? extends Module> clazz) throws Exception {
+        // TODO: Add a check to verify that the module should actually be loaded. Perhaps use this method
+        // to register possible modules, then a separate loadModules method to determine load order and "enabled"?
+        try {
+            modulesToLoad.add(clazz.newInstance());
+        } catch(Exception e) {
+            LegendsOfValeros.getInstance().getLogger().severe("Failed to load module. Aborting! Offender: " + clazz.getSimpleName());
+            throw e;
+        }
     }
 }

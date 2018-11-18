@@ -108,7 +108,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
 
     @Override
     public boolean onCharacterSelected(Player player, CharacterId characterId) {
-        PlayerCharacters characters = Characters.inst().getCharacters(player);
+        PlayerCharacters characters = Characters.getInstance().getCharacters(player);
         if (characters == null) {
             LegendsOfValeros.getInstance().getLogger()
                     .severe("A player tried to select a character but no character data was found for them");
@@ -149,7 +149,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
 
     @Override
     public boolean onCharacterRemoved(Player player, CharacterId characterId) {
-        PlayerCharacters characters = Characters.inst().getCharacters(player);
+        PlayerCharacters characters = Characters.getInstance().getCharacters(player);
         if (characters != null) {
 
             if (combatTracker.isInCombat(player)) {
@@ -176,7 +176,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
 
     @Override
     public boolean onNewCharacterSelected(Player player, int number) {
-        PlayerCharacters characters = Characters.inst().getCharacters(player);
+        PlayerCharacters characters = Characters.getInstance().getCharacters(player);
         if (characters != null) {
 
             if (combatTracker.isInCombat(player)) {
@@ -216,7 +216,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
             if (load.getPlayer() == null || !load.getPlayer().isOnline()) return;
 
             TaskPhase<CharacterId> tp =
-                    new TaskPhase<>(Characters.inst().getUiManager()
+                    new TaskPhase<>(Characters.getInstance().getUiManager()
                             .getProgressView(load.getPlayer()));
 
             PlayerCharacterStartLoadingEvent event =
@@ -277,7 +277,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
     }
 
     private void onDoneLoading(CharacterId uniqueCharacterId) {
-        PlayerCharacter doneLoading = Characters.inst().getCharacter(uniqueCharacterId);
+        PlayerCharacter doneLoading = Characters.getInstance().getCharacter(uniqueCharacterId);
 
         // does not call finish loading event if player is no longer online
         if (doneLoading == null || doneLoading.getPlayer() == null
@@ -314,7 +314,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
         // Cannot let the user be a character while making a new one.
         logoutCharacter(player, false);
 
-        Characters.inst().getUiManager().startCharacterCreation(player, number, creationListener);
+        Characters.getInstance().getUiManager().startCharacterCreation(player, number, creationListener);
     }
 
     /**
@@ -347,7 +347,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
                         }
 
                         if (characters.size() > 0) {
-                            Characters.inst().getUiManager().forceCharacterSelection(characters, outer);
+                            Characters.getInstance().getUiManager().forceCharacterSelection(characters, outer);
                         } else {
                             // automatically makes new character because the player has none
                             createNewCharacter(player, 0);

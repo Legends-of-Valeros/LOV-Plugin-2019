@@ -8,10 +8,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class FastTravel extends Module {
+    private static FastTravel instance;
+    public static FastTravel getInstance() { return instance; }
 
     public void onLoad() {
         super.onLoad();
-        DiscoveredFastTravels.init(LegendsOfValeros.getInstance());
+
+        instance = this;
+
+        DiscoveredFastTravels.onEnable();
 
         NPCs.registerTrait("fasttravel", TraitFastTravel.class);
     }

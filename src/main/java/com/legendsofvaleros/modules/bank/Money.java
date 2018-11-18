@@ -47,7 +47,7 @@ public class Money {
         return Bank.getBank(pc).subCurrency(ID, c);
     }
 
-    public static void onEnable(JavaPlugin plugin) {
+    public static void onEnable() {
         Bank.registerCurrency(ID, new Currency() {
             @Override
             public String getName() {

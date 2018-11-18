@@ -57,11 +57,11 @@ public class PlayerBookListener implements Listener {
 
         StringBuilder tooltip = new StringBuilder();
 
-        ClassConfig cc = Characters.inst().getCharacterConfig().getClassConfig(pc.getPlayerClass());
+        ClassConfig cc = Characters.getInstance().getCharacterConfig().getClassConfig(pc.getPlayerClass());
         boolean hasMods = false;
         for (AbilityStat as : AbilityStat.values()) {
             tooltip.append(ChatColor.GRAY);
-            tooltip.append(String.join("\n", StringUtil.splitForStackLore(Characters.inst().getCharacterConfig().getStatDescription(as))));
+            tooltip.append(String.join("\n", StringUtil.splitForStackLore(Characters.getInstance().getCharacterConfig().getStatDescription(as))));
             tooltip.append("\n\n");
             for (StatModifierModel mod : cc.getModifiers(as)) {
                 if (!hasMods) {

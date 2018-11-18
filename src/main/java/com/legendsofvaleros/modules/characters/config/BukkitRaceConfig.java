@@ -1,7 +1,9 @@
 package com.legendsofvaleros.modules.characters.config;
 
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.entityclass.StatModifierModel;
+import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import com.legendsofvaleros.modules.characters.race.EntityRace;
@@ -28,7 +30,7 @@ public class BukkitRaceConfig extends Configuration implements RaceConfig {
 
 	public BukkitRaceConfig(EntityRace playerRace) throws IllegalArgumentException,
 	IllegalStateException {
-		super(new YamlConfigAccessor(LegendsOfValeros.getInstance(), playerRace.name().toLowerCase()
+		super(new YamlConfigAccessor(Characters.getInstance(), playerRace.name().toLowerCase()
 				.replace("_", "-")
 				+ ".yml", SUBDIRECTORY));
 		this.playerRace = playerRace;

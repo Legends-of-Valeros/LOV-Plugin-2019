@@ -5,17 +5,7 @@ import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.characters.skilleffect.MetaEffectInstance;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.characters.skilleffect.MetaEffectInstance;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.skills.event.NextAttack;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.characters.skilleffect.MetaEffectInstance;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import org.bukkit.World;
 
 public class SkillSkullCrack extends Skill {
@@ -42,7 +32,7 @@ public class SkillSkullCrack extends Skill {
 
 	@Override
 	public boolean onSkillUse(World world, CombatEntity ce, int level) {
-		NextAttack.on(ce.getUniqueId(), 100, (e) -> Characters.inst().getSkillEffectManager().getSkillEffect("Confuse").apply(e.getAttacker().getLivingEntity(), ce.getLivingEntity(), getEarliest(CONFUSE_LEVEL, level)));
+		NextAttack.on(ce.getUniqueId(), 100, (e) -> Characters.getInstance().getSkillEffectManager().getSkillEffect("Confuse").apply(e.getAttacker().getLivingEntity(), ce.getLivingEntity(), getEarliest(CONFUSE_LEVEL, level)));
 		return true;
 	}
 }

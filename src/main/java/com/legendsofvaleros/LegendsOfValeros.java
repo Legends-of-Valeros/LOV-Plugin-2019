@@ -27,6 +27,7 @@ import com.legendsofvaleros.modules.skills.Skills;
 import com.legendsofvaleros.modules.zones.Zones;
 import com.legendsofvaleros.util.ProgressBar;
 import com.legendsofvaleros.util.Utilities;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -54,10 +55,13 @@ public class LegendsOfValeros extends JavaPlugin {
         shutdown = false;
         startTime = System.currentTimeMillis();
 
-
-
-        registerModules();
-        ModuleManager.loadModules();
+        try {
+            registerModules();
+            ModuleManager.loadModules();
+        } catch(Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 
     @Override
@@ -67,35 +71,35 @@ public class LegendsOfValeros extends JavaPlugin {
         ModuleManager.unloadModules();
     }
 
-    private void registerModules() {
+    private void registerModules() throws Exception {
         //TODO add config file and add check if module should be enabled or not
         //TODO add commands to disable single modules (&change the config?)
         //TODO add method to determine dependencies between each module (if a module depends on a disabled module, it wont be enabled either)
-        ModuleManager.registerModule(new Utilities());
-        ModuleManager.registerModule(new PlayerMenu());
-        ModuleManager.registerModule(new NPCs());
-        ModuleManager.registerModule(new CombatEngine());
-        ModuleManager.registerModule(new KeepOutOfOcean());
-        ModuleManager.registerModule(new LevelArchetypes());
-        ModuleManager.registerModule(new Characters());
-        ModuleManager.registerModule(new Quests());
-        ModuleManager.registerModule(new Hearthstones());
-        ModuleManager.registerModule(new Factions());
-        ModuleManager.registerModule(new Regions());
-        ModuleManager.registerModule(new Chat());
-        ModuleManager.registerModule(new Hotswitch());
-        ModuleManager.registerModule(new Parties());
-        ModuleManager.registerModule(new Gear());
-        ModuleManager.registerModule(new LootManager());
-        ModuleManager.registerModule(new Bank());
-        ModuleManager.registerModule(new PvP());
-        ModuleManager.registerModule(new Mobs());
-        ModuleManager.registerModule(new Zones());
-        ModuleManager.registerModule(new Skills());
-        ModuleManager.registerModule(new Mounts());
-        ModuleManager.registerModule(new FastTravel());
-        ModuleManager.registerModule(new Graveyards());
-        ModuleManager.registerModule(new Dueling());
+        ModuleManager.registerModule(Utilities.class);
+        ModuleManager.registerModule(PlayerMenu.class);
+        ModuleManager.registerModule(NPCs.class);
+        ModuleManager.registerModule(CombatEngine.class);
+        ModuleManager.registerModule(KeepOutOfOcean.class);
+        ModuleManager.registerModule(LevelArchetypes.class);
+        ModuleManager.registerModule(Characters.class);
+        ModuleManager.registerModule(Quests.class);
+        ModuleManager.registerModule(Hearthstones.class);
+        ModuleManager.registerModule(Factions.class);
+        ModuleManager.registerModule(Regions.class);
+        ModuleManager.registerModule(Chat.class);
+        ModuleManager.registerModule(Hotswitch.class);
+        ModuleManager.registerModule(Parties.class);
+        ModuleManager.registerModule(Gear.class);
+        ModuleManager.registerModule(LootManager.class);
+        ModuleManager.registerModule(Bank.class);
+        ModuleManager.registerModule(PvP.class);
+        ModuleManager.registerModule(Mobs.class);
+        ModuleManager.registerModule(Zones.class);
+        ModuleManager.registerModule(Skills.class);
+        ModuleManager.registerModule(Mounts.class);
+        ModuleManager.registerModule(FastTravel.class);
+        ModuleManager.registerModule(Graveyards.class);
+        ModuleManager.registerModule(Dueling.class);
     }
 
     /**
@@ -109,7 +113,7 @@ public class LegendsOfValeros extends JavaPlugin {
         if (tps < 9) tpsc = ChatColor.GOLD;
         if (tps < 5.5) tpsc = ChatColor.RED;
         if (tps < 2.7) tpsc = ChatColor.DARK_RED;
-        return ProgressBar.getBar((float) ((tps + 0.5) / 20F), 20, tpsc, ChatColor.GRAY, ChatColor.DARK_GREEN);
+        return ProgressBar.getBar((float) ((tps + 0.5) / 20F), 40, tpsc, ChatColor.GRAY, ChatColor.DARK_GREEN);
     }
 
     /**

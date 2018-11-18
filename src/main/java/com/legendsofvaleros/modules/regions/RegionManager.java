@@ -324,13 +324,22 @@ public class RegionManager implements Listener {
         if (regions.containsKey(region.id))
             return;
 
+        if(region.world == null) {
+            MessageUtil.sendException(null, null, new Exception("Region has a null world. Offender: " + region.id), true);
+            return;
+        }
+
         regions.put(region.id, region);
         RegionBounds bounds = region.getBounds();
 
         for (int x = bounds.getStartX(); x <= bounds.getEndX(); x++)
             for (int y = bounds.getStartY(); y <= bounds.getEndY(); y++)
                 for (int z = bounds.getStartZ(); z <= bounds.getEndZ(); z++) {
-                    Chunk chunk = region.world.getChunkAt(new Location(region.world, x, y, z));
+                    Chunk chunk = region
+                            .world
+                            .getChunkAt(
+                                    new Location(region
+                                            .world, x, y, z));
                     String chunkId = chunk.getX() + "," + chunk.getZ();
                     if (!regionChunks.containsEntry(chunkId, region.id))
                         regionChunks.put(chunkId, region.id);

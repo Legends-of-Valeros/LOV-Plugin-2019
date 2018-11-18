@@ -122,7 +122,7 @@ public class PersistingEffects {
 
 								// syncs to the main thread before putting data in the cache
 								Bukkit.getScheduler().runTask(LegendsOfValeros.getInstance(), () -> {
-									PlayerCharacter pc = Characters.inst().getCharacter(characterId);
+									PlayerCharacter pc = Characters.getInstance().getCharacter(characterId);
 									Player player = Bukkit.getPlayer(characterId.getPlayerId());
 									// makes sure the player is still online and valid
 									if (pc == null || player == null || !player.isOnline()) {
@@ -227,7 +227,7 @@ public class PersistingEffects {
 		@EventHandler(priority = EventPriority.HIGHEST)
 		public void onPlayerCharacterLogoutEvent(PlayerCharacterLogoutEvent event) {
 			if (event.isServerLogout()) {
-				PlayerCharacters characters = Characters.inst().getCharacters(event.getPlayer());
+				PlayerCharacters characters = Characters.getInstance().getCharacters(event.getPlayer());
 				if (characters != null) {
 
 					Set<PersistingEffect> saveThese = new HashSet<>();

@@ -288,7 +288,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
 					if(isActive.get())
 						activeTraits.add(trait);
 				} catch (Exception e) {
-					MessageUtil.sendException(NPCs.inst(), player, e, true);
+					MessageUtil.sendException(NPCs.getInstance(), player, e, true);
 				}
 
 				if(futuresLeft.decrementAndGet() == 0)

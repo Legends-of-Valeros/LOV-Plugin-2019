@@ -19,19 +19,25 @@ import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class Gear extends ListenerModule {
+    private static Gear instance;
+    public static Gear getInstance() { return instance; }
+
     public static GearItem ERROR_ITEM;
 
     @Override
     public void onLoad() {
+        instance = this;
+
         Bukkit.getPluginManager().registerEvents(new InventoryListener(), LegendsOfValeros.getInstance());
         Utilities.getCommandManager().loadCommandClass(ItemCommands.class);
-        ItemManager.onEnable(LegendsOfValeros.getInstance());
+        ItemManager.onEnable();
 
         GearRegistry.registerComponent("lore", LoreComponent.class);
         GearRegistry.registerComponent("bind", SoulbindComponent.class);

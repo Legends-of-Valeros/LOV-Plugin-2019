@@ -5,17 +5,7 @@ import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.characters.skilleffect.MetaEffectInstance;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.characters.skilleffect.MetaEffectInstance;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.skills.event.NextAttack;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.characters.skilleffect.MetaEffectInstance;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import org.bukkit.World;
 
 public class SkillBleed extends Skill {
@@ -43,7 +33,7 @@ public class SkillBleed extends Skill {
 	@Override
 	public boolean onSkillUse(World world, CombatEntity ce, int level) {
 		NextAttack.on(ce.getUniqueId(), 100, (e) -> {
-			Characters.inst().getSkillEffectManager().getSkillEffect("Bleed").apply(e.getAttacker().getLivingEntity(), ce.getLivingEntity(), getEarliest(BLEED, level), getEarliest(BLEED_TIME, level) * 1000);
+			Characters.getInstance().getSkillEffectManager().getSkillEffect("Bleed").apply(e.getAttacker().getLivingEntity(), ce.getLivingEntity(), getEarliest(BLEED, level), getEarliest(BLEED_TIME, level) * 1000);
 			e.setRawDamage(e.getRawDamage() * getEarliest(DAMAGE, level) / 100D);
 		});
 		return true;

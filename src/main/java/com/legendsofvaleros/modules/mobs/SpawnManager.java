@@ -52,12 +52,12 @@ public class SpawnManager {
             })
             .build();
 
-    public static void onEnable(JavaPlugin plugin) {
-        Bukkit.getPluginManager().registerEvents(new SpawnsListener(), plugin);
+    public static void onEnable() {
+        Bukkit.getPluginManager().registerEvents(new SpawnsListener(), LegendsOfValeros.getInstance());
 
-        spawnsTable = ORMTable.bind(plugin.getConfig().getString("dbpools-database"), SpawnArea.class);
+        spawnsTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), SpawnArea.class);
 
-        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
+        Bukkit.getScheduler().runTaskTimerAsynchronously(LegendsOfValeros.getInstance(), () -> {
             if (misses.get() > 0) {
                 LegendsOfValeros.getInstance().getLogger().info(misses + " chunk misses.");
             }

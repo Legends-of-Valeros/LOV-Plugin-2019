@@ -46,7 +46,7 @@ public class PlayerCharacterCollection implements PlayerCharacters {
 	PlayerCharacterCollection(Player player, List<ReusablePlayerCharacter> charactersFromDb) {
 		this.playerId = player.getUniqueId();
 		this.player = new WeakReference<>(player);
-		this.config = Characters.inst().getCharacterConfig();
+		this.config = Characters.getInstance().getCharacterConfig();
 		
 		for(PermissionAttachmentInfo entry : player.getEffectivePermissions()) {
 			if(entry.getPermission().startsWith("character.slots.")) {

@@ -17,7 +17,7 @@ public class MiscHandler implements Listener {
     private final PvPToggle TOGGLE;
 
     public MiscHandler() {
-        ConfigurationSection configuration = LegendsOfValeros.getInstance().getConfig().getConfigurationSection("pvp.global");
+        ConfigurationSection configuration = PvP.getInstance().getConfig().getConfigurationSection("pvp.global");
         TOGGLE = new PvPToggle((byte) configuration.getInt("priority"),
                 configuration.getBoolean("enabled"),
                 configuration.getInt("honor"));

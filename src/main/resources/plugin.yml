@@ -2,7 +2,7 @@ main: com.legendsofvaleros.LegendsOfValeros
 name: "${project.name}"
 version: "${project.version}"
 author: "Crystall, Stumblinbear, Brutus"
-depend: [Citizens, Robert, Doris, ArmorEquipEvent]
+depend: [Citizens, Robert, DBPools, Doris, ArmorEquipEvent]
 
 permissions:
     characters.slots.x:
@@ -12,3 +12,5 @@ permissions:
 commands:
     suicide:
         description: Commit seppuku.
+    pvpdebug:
+        description: PvP debug stuff

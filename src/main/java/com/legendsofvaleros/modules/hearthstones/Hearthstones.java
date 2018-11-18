@@ -24,7 +24,7 @@ public class Hearthstones extends ListenerModule {
     public void onLoad() {
         instance = this;
 
-        HearthstonesManager.onEnable(LegendsOfValeros.getInstance());
+        HearthstonesManager.onEnable();
         teleporter = new HomeTeleporter(LegendsOfValeros.getInstance(), LegendsOfValeros.getInstance().getConfig().getLong("warmup-seconds"));
 
         NPCs.registerTrait("innkeeper", TraitInnkeeper.class);

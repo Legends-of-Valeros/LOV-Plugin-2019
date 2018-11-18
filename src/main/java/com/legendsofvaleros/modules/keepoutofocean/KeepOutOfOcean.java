@@ -42,7 +42,7 @@ public class KeepOutOfOcean extends ListenerModule {
     public void onLoad() {
         violating = new HashMap<>();
 
-        FileConfiguration config = LegendsOfValeros.getInstance().getConfig();
+        FileConfiguration config = getConfig();
         checkTicks = config.getLong("check-interval");
         warningTicks = config.getLong("warning-ticks");
         warningMessage = config.getString("warning-message").replace("&", "§");

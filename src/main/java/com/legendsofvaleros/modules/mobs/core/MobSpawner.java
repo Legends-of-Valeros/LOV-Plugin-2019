@@ -26,10 +26,10 @@ public class MobSpawner {
     private int unloaded = 0;
     private int distance = 0;
 
-    public MobSpawner(JavaPlugin plugin) {
-        this.allUpdateInterval = plugin.getConfig().getInt("spawn-area-update-smear", 20 * 10);
+    public MobSpawner() {
+        this.allUpdateInterval = Mobs.getInstance().getConfig().getInt("spawn-area-update-smear", 20 * 10);
 
-        plugin.getLogger().info("Smearing spawn updates across " + allUpdateInterval + " ticks.");
+        Mobs.getInstance().getLogger().info("Smearing spawn updates across " + allUpdateInterval + " ticks.");
 
         new BukkitRunnable() {
             private long time = 0;
@@ -38,7 +38,7 @@ public class MobSpawner {
             public void run() {
                 updateSpawn(time++);
             }
-        }.runTaskTimer(plugin, 1, 1);
+        }.runTaskTimer(LegendsOfValeros.getInstance(), 1, 1);
     }
 
     private void updateSpawn(long time) {

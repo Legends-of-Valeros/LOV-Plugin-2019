@@ -8,22 +8,6 @@ import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.characters.skilleffect.MetaEffectInstance;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
-import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder.ModifierType;
-import com.legendsofvaleros.modules.combatengine.stat.Stat;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.characters.skilleffect.MetaEffectInstance;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
-import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
-import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
@@ -59,7 +43,7 @@ public class SkillPolymorph extends Skill {
 		world.playSound(target.getLocation(), "misc.resurrect", 1F, 1F);
 		world.playSound(target.getLocation(), Sound.ENTITY_SHEEP_AMBIENT, .5F, 1F);
 		
-		Characters.inst().getSkillEffectManager().getSkillEffect("Polymorph").apply(target, ce.getLivingEntity(), getEarliest(MORPH_LEVEL, level));
+		Characters.getInstance().getSkillEffectManager().getSkillEffect("Polymorph").apply(target, ce.getLivingEntity(), getEarliest(MORPH_LEVEL, level));
 		CombatEngine.getEntity(target).getStats().newStatModifierBuilder(Stat.HEALTH_REGEN)
 							.setDuration(getEarliest(MORPH_LEVEL, level) * 20)
 							.setValue(2)

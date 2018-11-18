@@ -2,8 +2,13 @@ package com.legendsofvaleros.modules.characters.config;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.logging.Level;
 
+import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.Module;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -22,42 +27,38 @@ public class YamlConfigAccessor {
 
   private final String subdirectory;
   private final String fileName;
-  private final JavaPlugin plugin;
+  private final Module module;
   private File configFile;
   private FileConfiguration fileConfiguration;
 
   /**
    * Class constructor.
-   * 
-   * @param plugin The plugin this file is for.
+   *
+   * @param module The module this file is for.
    * @param fileName The simple name of the file.
    * @param subdirectory The path to the sub-directory within the plugin's default data folder to
    *        store the file in, if any. Can be <code>null</code> or an empty string to create the
    *        file directly within the plugin's data folder. Ex:
    *        <code>"/buildings/lobbies/spawn"</code>.
-   * 
+   *
    * @throws IllegalArgumentException if the plugin is <code>null</code> or not yet initialized.
    * @throws IllegalStateException if unable to get the data folder from the plugin.
    */
-  public YamlConfigAccessor(JavaPlugin plugin, String fileName, String subdirectory)
-      throws IllegalArgumentException, IllegalStateException {
+  public YamlConfigAccessor(Module module, String fileName, String subdirectory)
+          throws IllegalArgumentException, IllegalStateException {
 
-    if (plugin == null)
-      throw new IllegalArgumentException("plugin cannot be null");
-
-    if (!plugin.isEnabled())
-      throw new IllegalArgumentException("plugin must be enabled");
+    if (module == null)
+      throw new IllegalArgumentException("module cannot be null");
 
     if (fileName == null || fileName.equals(""))
       throw new IllegalArgumentException("fileName cannot be null or" + " empty");
 
-    this.plugin = plugin;
+    this.module = module;
     this.fileName = fileName;
 
-    File dataFolder = plugin.getDataFolder();
+    File dataFolder = module.getDataFolder();
     if (dataFolder == null)
       throw new IllegalStateException();
-
 
     if (subdirectory != null && !subdirectory.equals("")) {
       subdirectory.replace("/", "");
@@ -72,6 +73,8 @@ public class YamlConfigAccessor {
       this.subdirectory = null;
 
     this.configFile = new File(dataFolder, fileName);
+
+    saveDefaultConfig();
   }
 
   /**
@@ -93,7 +96,7 @@ public class YamlConfigAccessor {
    * <p>
    * If there is a default yml configuration file embedded in this plugin, it will be provided as a
    * default for this Configuration.
-   * 
+   *
    * @return The configuration.
    */
   public FileConfiguration getConfig() {
@@ -111,9 +114,11 @@ public class YamlConfigAccessor {
       return;
     } else {
       try {
+        if(configFile.exists())
+          configFile.delete();
         getConfig().save(configFile);
       } catch (IOException ex) {
-        plugin.getLogger().log(Level.SEVERE, "Could not save config to " + configFile, ex);
+        LegendsOfValeros.getInstance().getLogger().log(Level.SEVERE, "Could not save config to " + configFile, ex);
       }
     }
   }
@@ -125,20 +130,24 @@ public class YamlConfigAccessor {
    */
   public void saveDefaultConfig() {
     if (!configFile.exists()) {
-      this.plugin.saveResource(getFileName(), false);
+      try {
+        Files.copy(
+                getClass().getResourceAsStream("/" + getFileName()),
+                Paths.get(configFile.toURI()),
+                StandardCopyOption.REPLACE_EXISTING);
+      } catch (Exception e) { }
     }
   }
 
   /**
    * Gets the name of the file this is accessing.
-   * 
+   *
    * @return The simple file name, useful for logging and other purposes.
    */
   public final String getFileName() {
     if (subdirectory == null)
-      return fileName;
+      return module.getName() + "/" + fileName;
 
-    return subdirectory + fileName;
+    return module.getName() + "/" + subdirectory + fileName;
   }
-
 }

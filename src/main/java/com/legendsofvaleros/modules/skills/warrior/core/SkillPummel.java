@@ -4,15 +4,7 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.skills.event.NextAttack;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import org.bukkit.World;
 
 public class SkillPummel extends Skill {
@@ -35,7 +27,7 @@ public class SkillPummel extends Skill {
 
 	@Override
 	public boolean onSkillUse(World world, CombatEntity ce, int level) {
-		NextAttack.on(ce.getUniqueId(), 100, (e) -> Characters.inst().getSkillEffectManager().getSkillEffect("Silence").apply(e.getDamaged().getLivingEntity(), ce.getLivingEntity(), level, (long)(getEarliest(SILENCE, level) * 1000L)));
+		NextAttack.on(ce.getUniqueId(), 100, (e) -> Characters.getInstance().getSkillEffectManager().getSkillEffect("Silence").apply(e.getDamaged().getLivingEntity(), ce.getLivingEntity(), level, (long)(getEarliest(SILENCE, level) * 1000L)));
 		return true;
 	}
 }

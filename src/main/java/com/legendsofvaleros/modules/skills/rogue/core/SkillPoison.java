@@ -46,7 +46,7 @@ public class SkillPoison extends Skill {
 		/*NextAttack.on(pc.getPlayer().getUniqueId(), new NextAttackListener() {
 			@Override
 			public double run(Player p, LivingEntity attacked, double dmg) {
-				Characters.inst().getSkillEffectManager().getSkillEffect("PercentagePoison").apply(attacked, p, 1, 1000 * getEarliest(POISON_TIME, level));
+				Characters.getInstance().getSkillEffectManager().getSkillEffect("PercentagePoison").apply(attacked, p, 1, 1000 * getEarliest(POISON_TIME, level));
 				return dmg;
 			}
 		});*/

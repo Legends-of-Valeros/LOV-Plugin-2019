@@ -7,16 +7,8 @@ import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
 import com.legendsofvaleros.util.item.Model;
-import com.legendsofvaleros.modules.characters.api.CharacterId;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.ui.CharacterSelectionListener;
-import com.legendsofvaleros.util.item.Model;
-import com.legendsofvaleros.modules.characters.api.CharacterId;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
-import com.legendsofvaleros.util.item.Model;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -62,7 +54,7 @@ public class WindowCharacterInformation extends GUI {
 
                 gui.close(p, Flag.NO_PARENTS);
 
-                new WindowCharacterSelect(0, Characters.inst().getCharacters(p), listener, forced).open(p);
+                new WindowCharacterSelect(0, Characters.getInstance().getCharacters(p), listener, forced).open(p);
             }
 
             public void onDecline(GUI gui, Player p) {

@@ -7,6 +7,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
@@ -43,10 +44,10 @@ public class DiscoveredFastTravels implements Listener {
 	protected static Multimap<CharacterId, String> fastTravels = HashMultimap.create();
 	public static Collection<String> getDiscovered(PlayerCharacter pc) { return fastTravels.get(pc.getUniqueCharacterId()); }
 	
-	public static void init(JavaPlugin plugin) {
-		manager = ORMTable.bind(plugin.getConfig().getString("dbpools-database"), Pair.class);
+	public static void onEnable() {
+		manager = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), Pair.class);
 
-		Bukkit.getPluginManager().registerEvents(new PlayerCharacterListener(), plugin);
+		Bukkit.getPluginManager().registerEvents(new PlayerCharacterListener(), LegendsOfValeros.getInstance());
 	}
 
 	public static void add(PlayerCharacter pc, String travel_id) {

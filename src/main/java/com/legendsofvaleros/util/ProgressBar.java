@@ -11,11 +11,11 @@ public class ProgressBar {
         String ret = wrap + "[" + content1;
         int i = 0;
         for (; i < percentage * length; i++) {
-            ret += "|";
+            ret += "■";
         }
         ret += content2;
         for (; i < length; i++) {
-            ret += "|";
+            ret += "■";
         }
         ret += wrap + "]";
         return ret;

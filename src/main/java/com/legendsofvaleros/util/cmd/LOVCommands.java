@@ -7,7 +7,7 @@ import com.legendsofvaleros.util.*;
 import com.legendsofvaleros.util.cmd.CommandManager.Cmd;
 import com.legendsofvaleros.util.cmd.CommandManager.CommandFinished;
 import com.legendsofvaleros.util.cmd.CommandManager.CommandOnly;
-import net.md_5.bungee.api.ChatColor;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -57,29 +57,29 @@ public class LOVCommands {
 
     @Cmd(cmd = "tps", help = "Shows the current load of all modules")
     public static CommandFinished cmdTps(CommandSender sender, Object[] args) {
-        Player p = (Player) sender;
         double tps = (Math.round(Lag.getTPS() * 10) + 0D) / 10D;
         long memory = Runtime.getRuntime().totalMemory();
         long memory_used = memory - Runtime.getRuntime().freeMemory();
         float memp = (memory_used + 0F) / (memory + 0F);
-        org.bukkit.ChatColor memc = org.bukkit.ChatColor.GREEN;
-        if (memp > 0.8) memc = org.bukkit.ChatColor.YELLOW;
-        if (memp > 0.87) memc = org.bukkit.ChatColor.GOLD;
-        if (memp > 0.80) memc = org.bukkit.ChatColor.RED;
-        if (memp > 0.93) memc = org.bukkit.ChatColor.DARK_RED;
+        ChatColor memc = ChatColor.GREEN;
+        if (memp > 0.8) memc = ChatColor.YELLOW;
+        if (memp > 0.87) memc = ChatColor.GOLD;
+        if (memp > 0.80) memc = ChatColor.RED;
+        if (memp > 0.93) memc = ChatColor.DARK_RED;
         String tpsbar = LegendsOfValeros.getInstance().createTPSBar(tps);
-        String membar = ProgressBar.getBar(memp, 20, memc, org.bukkit.ChatColor.GRAY, org.bukkit.ChatColor.DARK_GREEN);
+        String membar = ProgressBar.getBar(memp, 20, memc, ChatColor.GRAY, ChatColor.DARK_GREEN);
         String line = "------------------------------------------------";
-        p.sendMessage(org.bukkit.ChatColor.GRAY + line);
-        p.sendMessage(org.bukkit.ChatColor.DARK_GREEN + "Uptime: " + org.bukkit.ChatColor.GRAY + LegendsOfValeros.getInstance().getUptime());
-        p.sendMessage(org.bukkit.ChatColor.DARK_GREEN + "Main Server TPS: " + org.bukkit.ChatColor.GRAY + tps + "/20.0 " + tpsbar);
-        p.sendMessage(org.bukkit.ChatColor.DARK_GREEN + "Memory: " + org.bukkit.ChatColor.GRAY + Lag.readableByteSize(memory_used) + "/" + Lag.readableByteSize(memory) + " " + membar);
-        p.sendMessage(org.bukkit.ChatColor.GRAY + line);
-        p.sendMessage(org.bukkit.ChatColor.DARK_GREEN + "Module TPS:");
+        sender.sendMessage(ChatColor.GRAY + line);
+        sender.sendMessage(ChatColor.DARK_GREEN + "Uptime: " + ChatColor.GRAY + LegendsOfValeros.getInstance().getUptime());
+        sender.sendMessage(ChatColor.DARK_GREEN + "Main Server TPS: " + ChatColor.GRAY + tps + "/20.0 " + tpsbar);
+        sender.sendMessage(ChatColor.DARK_GREEN + "Memory: " + ChatColor.GRAY + Lag.readableByteSize(memory_used) + "/" + Lag.readableByteSize(memory) + " " + membar);
+        sender.sendMessage(ChatColor.GRAY + line);
+        sender.sendMessage(ChatColor.DARK_GREEN + "Module TPS:");
         for (InternalScheduler scheduler : ModuleManager.schedulers.values()) {
-            p.sendMessage(org.bukkit.ChatColor.DARK_GRAY + scheduler.getName() + ": " + org.bukkit.ChatColor.GRAY + scheduler.getTPS() + "/20.0 " + LegendsOfValeros.getInstance().createTPSBar(scheduler.getTPS()));
+            sender.sendMessage(ChatColor.DARK_GRAY + scheduler.getName() + ": " + ChatColor.GRAY + scheduler.getTPS() + "/20.0");
+            sender.sendMessage("  " + LegendsOfValeros.getInstance().createTPSBar(scheduler.getTPS()));
         }
-        p.sendMessage(org.bukkit.ChatColor.GRAY + line);
+        sender.sendMessage(ChatColor.GRAY + line);
         return CommandFinished.DONE;
     }
 }

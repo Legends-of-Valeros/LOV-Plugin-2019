@@ -57,10 +57,10 @@ public class Quests extends ListenerModule {
     public void onLoad() {
         instance = this;
 
-        introQuestId = LegendsOfValeros.getInstance().getConfig().getString("intro-quest", "intro");
+        introQuestId = getConfig().getString("intro-quest", "intro");
 
-        QuestManager.onEnable(LegendsOfValeros.getInstance());
-        ActiveTracker.onEnable(LegendsOfValeros.getInstance());
+        QuestManager.onEnable();
+        ActiveTracker.onEnable();
         NPCs.registerTrait("questgiver", TraitQuestGiver.class);
 
         LegendsOfValeros.getInstance().getServer().getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
@@ -179,7 +179,7 @@ public class Quests extends ListenerModule {
     public void onNewObjectives(ObjectivesStartedEvent event) {
         // FIXME: Why doesn't this work, anymore?
         // if(NEW_OBJECTIVES != null)
-        //	NEW_OBJECTIVES.show(Quests.inst(), event.getPlayer());
+        //	NEW_OBJECTIVES.show(Quests.getInstance(), event.getPlayer());
     }
 
     @EventHandler

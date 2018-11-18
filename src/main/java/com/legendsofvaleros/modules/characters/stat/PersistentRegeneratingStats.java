@@ -179,7 +179,7 @@ public class PersistentRegeneratingStats {
             // on server logout, saves all locally stored data for the player's characters
             if (event.isServerLogout()) {
 
-                PlayerCharacters characters = Characters.inst().getCharacters(event.getPlayer());
+                PlayerCharacters characters = Characters.getInstance().getCharacters(event.getPlayer());
                 for (PlayerCharacter pc : characters.getCharacterSet()) {
 
                     final RegeneratingStatData data = dataMap.remove(pc.getUniqueCharacterId());

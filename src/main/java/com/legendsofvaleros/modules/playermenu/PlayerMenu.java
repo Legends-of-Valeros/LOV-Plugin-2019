@@ -20,9 +20,9 @@ public class PlayerMenu extends ListenerModule {
     @Override
     public void onLoad() {
         super.onLoad();
-        JavaPlugin plugin = LegendsOfValeros.getInstance();
-        plugin.getServer().getPluginManager().registerEvents(new PlayerSettings.Manager(plugin), plugin);
-        plugin.getServer().getPluginManager().registerEvents(new InventoryManager(), plugin);
+
+        Bukkit.getServer().getPluginManager().registerEvents(new PlayerSettings.Manager(), LegendsOfValeros.getInstance());
+        Bukkit.getServer().getPluginManager().registerEvents(new InventoryManager(), LegendsOfValeros.getInstance());
 
     }
 

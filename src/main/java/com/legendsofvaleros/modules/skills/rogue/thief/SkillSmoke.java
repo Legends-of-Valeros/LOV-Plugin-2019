@@ -4,14 +4,6 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import org.bukkit.World;
 
 public class SkillSmoke extends Skill {
@@ -34,7 +26,7 @@ public class SkillSmoke extends Skill {
 
 	@Override
 	public boolean onSkillUse(World world, CombatEntity ce, int level) {
-		Characters.inst().getSkillEffectManager().getSkillEffect("Invisible").apply(ce.getLivingEntity(), ce.getLivingEntity(), getEarliest(TIME, level) * 1000);
+		Characters.getInstance().getSkillEffectManager().getSkillEffect("Invisible").apply(ce.getLivingEntity(), ce.getLivingEntity(), getEarliest(TIME, level) * 1000);
 		return true;
 	}
 }

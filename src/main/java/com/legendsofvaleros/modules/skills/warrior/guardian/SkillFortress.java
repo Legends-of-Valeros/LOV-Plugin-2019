@@ -5,16 +5,6 @@ import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.characters.skilleffect.MetaEffectInstance;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.characters.skilleffect.MetaEffectInstance;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.characters.skilleffect.MetaEffectInstance;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import org.bukkit.World;
 
 public class SkillFortress extends Skill {
@@ -42,7 +32,7 @@ public class SkillFortress extends Skill {
 
 	@Override
 	public boolean onSkillUse(World world, CombatEntity ce, int level) {
-		Characters.inst().getSkillEffectManager().getSkillEffect("Invincible").apply(ce.getLivingEntity(), ce.getLivingEntity(), getEarliest(INVINCIBLE_LEVEL, level));
+		Characters.getInstance().getSkillEffectManager().getSkillEffect("Invincible").apply(ce.getLivingEntity(), ce.getLivingEntity(), getEarliest(INVINCIBLE_LEVEL, level));
 		return true;
 	}
 }

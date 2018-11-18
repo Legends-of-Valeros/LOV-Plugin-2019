@@ -5,16 +5,6 @@ import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.characters.skilleffect.MetaEffectInstance;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.characters.skilleffect.MetaEffectInstance;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.characters.skilleffect.MetaEffectInstance;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import org.bukkit.Sound;
 import org.bukkit.World;
 
@@ -45,7 +35,7 @@ public class SkillTransformSelf extends Skill {
 	public boolean onSkillUse(World world, CombatEntity ce, int level) {
 		world.playSound(ce.getLivingEntity().getLocation(), "misc.resurrect", 1F, 1F);
 		world.playSound(ce.getLivingEntity().getLocation(), Sound.ENTITY_SHEEP_AMBIENT, .5F, 1F);
-		Characters.inst().getSkillEffectManager().getSkillEffect("Polymorph").apply(ce.getLivingEntity(), ce.getLivingEntity(), getEarliest(MORPH_LEVEL, level));
+		Characters.getInstance().getSkillEffectManager().getSkillEffect("Polymorph").apply(ce.getLivingEntity(), ce.getLivingEntity(), getEarliest(MORPH_LEVEL, level));
 		return true;
 	}
 }

@@ -8,7 +8,7 @@ import com.legendsofvaleros.modules.playermenu.options.PlayerOptions;
 public class Test {
     public Test() {
         new TestListener();
-        Characters.inst().setUiManager(new TestUis());
+        Characters.getInstance().setUiManager(new TestUis());
         CombatEngine.getInstance().setUserInterfaceManager(new TestUis());
 
         InventoryManager.addFixedItem(41, new InventoryManager.InventoryItem(null,

@@ -23,8 +23,8 @@ public class GraveyardManager {
 
     private static Multimap<String, Graveyard> graveyards = HashMultimap.create();
 
-    public static void onEnable(JavaPlugin plugin) {
-        manager = new TableManager(plugin.getConfig().getString("dbpools-database"), GRAVEYARD_TABLE);
+    public static void onEnable() {
+        manager = new TableManager(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), GRAVEYARD_TABLE);
 
         manager.primary(GRAVEYARD_ZONE, "VARCHAR(64)")
                 .primary(GRAVEYARD_WORLD, "VARCHAR(64)")

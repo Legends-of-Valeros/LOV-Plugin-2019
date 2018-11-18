@@ -57,8 +57,6 @@ public class Characters extends ListenerModule implements CharactersAPI {
         // Saves core player-character data. This should go last, to preserve the core of Characters
         // long enough for other disabling modules to use them
         PlayerCharacterData.onDisable();
-
-        singleton = null;
     }
 
     /**
@@ -66,7 +64,7 @@ public class Characters extends ListenerModule implements CharactersAPI {
      * @return The Characters instance.
      * @throws IllegalStateException If Characters is not enabled.
      */
-    public static Characters inst() throws IllegalStateException {
+    public static Characters getInstance() throws IllegalStateException {
         return singleton;
     }
 
@@ -82,7 +80,7 @@ public class Characters extends ListenerModule implements CharactersAPI {
         Utilities.getCommandManager().loadCommandClass(CharacterCommands.class);
 
         // configuration
-        config = new BukkitConfig(LegendsOfValeros.getInstance());
+        config = new BukkitConfig();
 
         // default ui manager
         uiManager = new NoUiManager();
@@ -136,7 +134,7 @@ public class Characters extends ListenerModule implements CharactersAPI {
     }
 
     public static void openCharacterSelection(Player p) {
-        inst().uiManager.openCharacterSelection(inst().getCharacters(p), inst().loader);
+        getInstance().uiManager.openCharacterSelection(getInstance().getCharacters(p), getInstance().loader);
     }
 
     public static boolean isPlayerCharacterLoaded(UUID uuid) {

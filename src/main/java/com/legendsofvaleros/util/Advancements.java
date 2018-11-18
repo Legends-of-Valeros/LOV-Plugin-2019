@@ -1,5 +1,6 @@
 package com.legendsofvaleros.util;
 
+import com.legendsofvaleros.LegendsOfValeros;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -10,8 +11,8 @@ import io.chazza.advancementapi.Trigger;
 public class Advancements {
 	public static AdvancementAPI PARENT;
 	
-	public static void onEnable(JavaPlugin plugin) {
-		PARENT = AdvancementAPI.builder(new NamespacedKey(plugin, "lov/parent"))
+	public static void onEnable() {
+		PARENT = AdvancementAPI.builder(new NamespacedKey(LegendsOfValeros.getInstance(), "lov/parent"))
 	                .title("Welcome to Valeros")
 	                .description("Begin your adventure.")
 	                .icon("minecraft:golden_apple")

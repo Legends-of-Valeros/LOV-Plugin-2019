@@ -56,9 +56,9 @@ public class Zones extends ListenerModule {
         manager = new ZoneManager();
         toggles = PvP.getInstance().getToggles();
 
-        ConfigurationSection section = LegendsOfValeros.getInstance().getConfig().getConfigurationSection("pvp");
-        pvpAllow = section.getBoolean("allow", true);
-        pvpPriority = (byte) section.getInt("pvp-priority", 0);
+        ConfigurationSection section = getConfig().getConfigurationSection("pvp");
+        pvpAllow = section != null ? section.getBoolean("allow", true) : true;
+        pvpPriority = section != null ? (byte) section.getInt("pvp-priority", 0) : 0;
 
         Utilities.getCommandManager().loadCommandClass(ZoneCommands.class);
 

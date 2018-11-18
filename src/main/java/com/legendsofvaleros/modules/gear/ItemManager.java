@@ -34,7 +34,7 @@ public class ItemManager {
             .weakValues()
             .build();
 
-    public static void onEnable(JavaPlugin plugin) {
+    public static void onEnable() {
         gson = new GsonBuilder()
                 .registerTypeAdapter(RangedValue.class, RangedValue.JSON)
                 .registerTypeAdapter(ComponentMap.class, (JsonDeserializer<ComponentMap>) (json, typeOfT, context) -> {
@@ -81,7 +81,7 @@ public class ItemManager {
             }
         });
 
-        gearTable = ORMTable.bind(plugin.getConfig().getString("dbpools-database"), GearItem.class);
+        gearTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), GearItem.class);
     }
 
     public static ListenableFuture<GearItem> getItem(String id) {

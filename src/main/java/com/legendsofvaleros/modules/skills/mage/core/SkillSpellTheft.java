@@ -7,20 +7,6 @@ import com.legendsofvaleros.modules.characters.skilleffect.SkillEffect;
 import com.legendsofvaleros.modules.characters.skilleffect.SkillEffectInstance;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.characters.skilleffect.SkillEffect;
-import com.legendsofvaleros.modules.characters.skilleffect.SkillEffectInstance;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.characters.skilleffect.SkillEffect;
-import com.legendsofvaleros.modules.characters.skilleffect.SkillEffectInstance;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
@@ -50,7 +36,7 @@ public class SkillSpellTheft extends Skill {
 		CombatEntity targetCE = CombatEngine.getEntity(target);
 		if(!targetCE.isActive()) return false;
 		
-		for(SkillEffect<?> effect : Characters.inst().getSkillEffectManager().getActiveEffects(target)) {
+		for(SkillEffect<?> effect : Characters.getInstance().getSkillEffectManager().getActiveEffects(target)) {
 			if(!effect.isGood()) continue;
 			if(effect.isAffected(ce.getLivingEntity())) continue;
 			

@@ -8,23 +8,9 @@ import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
-import com.legendsofvaleros.modules.characters.api.CharacterId;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
-import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
-import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.PlayerData;
 import com.legendsofvaleros.util.Utilities;
-import com.legendsofvaleros.modules.characters.api.CharacterId;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
-import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
-import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -68,7 +54,7 @@ public class PlayerParty implements IParty {
     public List<Player> getOnlineMembers() {
         List<Player> online = new ArrayList<>();
         for (CharacterId id : members) {
-            PlayerCharacter p = Characters.inst().getCharacter(id);
+            PlayerCharacter p = Characters.getInstance().getCharacter(id);
             if (p != null && p.isCurrent())
                 online.add(p.getPlayer());
         }
@@ -128,7 +114,7 @@ public class PlayerParty implements IParty {
 
     @Override
     public void onMemberExit(CharacterId identifier) {
-        Characters.inst().getCharacter(identifier).getPlayer().setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
+        Characters.getInstance().getCharacter(identifier).getPlayer().setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
         if (getOnlineMembers().size() == 0) {
             objective.unregister();
             objective = null;
@@ -143,7 +129,7 @@ public class PlayerParty implements IParty {
         final LinkedHashMap<String, ScoreHolder> scoreHolders = new LinkedHashMap<>();
 
         for (CharacterId uuid : this.members) {
-            PlayerCharacter pc = Characters.inst().getCharacter(uuid);
+            PlayerCharacter pc = Characters.getInstance().getCharacter(uuid);
             if (pc != null && pc.isCurrent()) pc.getPlayer().setScoreboard(board);
 
             ScoreHolder sh = new ScoreHolder(uuid);
@@ -219,7 +205,7 @@ class ScoreHolder {
     }
 
     public void update() {
-        PlayerCharacter pc = Characters.inst().getCharacter(uuid);
+        PlayerCharacter pc = Characters.getInstance().getCharacter(uuid);
 
         if (pc != null) {
             name = pc.getPlayer().getName();

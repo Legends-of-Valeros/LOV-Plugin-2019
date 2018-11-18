@@ -33,7 +33,7 @@ public class Parties extends ListenerModule {
         super.onLoad();
         plugin = this;
 
-        PartyManager.onEnable(LegendsOfValeros.getInstance());
+        PartyManager.onEnable();
 
         cmdManager = new CommandManager(LegendsOfValeros.getInstance(), "Parties", "lov.party", "party", "p");
         cmdManager.loadCommandClass(PartyCommands.class);

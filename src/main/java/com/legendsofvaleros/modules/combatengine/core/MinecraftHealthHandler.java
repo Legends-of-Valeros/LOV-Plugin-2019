@@ -210,7 +210,7 @@ public class MinecraftHealthHandler {
 					@Override
 					public void run() {
 						ignore.remove(event.getDamaged().getUniqueId());
-						CombatEngine.inst().killEntity(event.getDamaged().getLivingEntity());
+						CombatEngine.getInstance().killEntity(event.getDamaged().getLivingEntity());
 					}
 				}.runTaskLater(CombatEngine.getPlugin(), CombatEngine.getPlugin().getCharacterConfig().getInt("death-destroy-timer", 15));
 			}

@@ -383,7 +383,7 @@ public abstract class Skill {
     }
 
     public boolean hasSkillEffect(LivingEntity entity, String effect) {
-        SkillEffects effects = Characters.inst().getSkillEffectManager();
+        SkillEffects effects = Characters.getInstance().getSkillEffectManager();
         return effects.getActiveEffects(entity).contains(effects.getSkillEffect(effect));
     }
 
@@ -470,7 +470,7 @@ public abstract class Skill {
 
         @SuppressWarnings("unchecked")
         public EffectPart(String effect) {
-            this.meta = new MetaEffectInstance<>((SkillEffect<T>) Characters.inst().getSkillEffectManager().getSkillEffect(effect));
+            this.meta = new MetaEffectInstance<>((SkillEffect<T>) Characters.getInstance().getSkillEffectManager().getSkillEffect(effect));
             this.meta.level = 1;
         }
 

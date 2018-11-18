@@ -128,25 +128,25 @@ public class InventoryListener implements Listener {
 			}
 		}
 
-		GearItem.Instance inst = GearItem.Instance.fromStack(e.getCursor());
-		if(inst == null) return;
+		GearItem.Instance getInstance = GearItem.Instance.fromStack(e.getCursor());
+		if(getInstance == null) return;
 
 		int i = 0;
 
 		for(Map.Entry<Integer, ItemStack> entry : e.getNewItems().entrySet()) {
 			i += entry.getValue().getAmount();
 
-			GearItem.Instance ii = inst.copy();
+			GearItem.Instance ii = getInstance.copy();
 
 			ii.amount = entry.getValue().getAmount();
-			inst.amount -= ii.amount;
+			getInstance.amount -= ii.amount;
 
 			// Copy the stack into the new slots
 			e.getWhoClicked().getInventory().setItem(entry.getKey(), ii.toStack());
 		}
 
 		if(e.getCursor() != null)
-			e.setCursor(inst.toStack());
+			e.setCursor(getInstance.toStack());
 	}*/
 
 	@EventHandler

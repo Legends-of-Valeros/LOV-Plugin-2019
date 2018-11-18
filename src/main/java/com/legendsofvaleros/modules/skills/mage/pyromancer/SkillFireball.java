@@ -47,7 +47,7 @@ public class SkillFireball extends Skill {
     public boolean onSkillUse(World world, CombatEntity ce, int level) {
         world.playSound(ce.getLivingEntity().getLocation(), "spell.fire.fireball.throw", 1F, 1F);
 
-        double spellDamage = SkillUtil.getSpellDamage(ce, SpellType.FIRE, Characters.inst().getCharacterConfig().getClassConfig(EntityClass.MAGE).getBaseMeleeDamage())
+        double spellDamage = SkillUtil.getSpellDamage(ce, SpellType.FIRE, Characters.getInstance().getCharacterConfig().getClassConfig(EntityClass.MAGE).getBaseMeleeDamage())
                 * getEarliest(DAMAGE, level) / 100D;
 
         SmallFireball f = OnProjectile.shoot(ce, 2, 20, SmallFireball.class, (ce1, entities) -> {

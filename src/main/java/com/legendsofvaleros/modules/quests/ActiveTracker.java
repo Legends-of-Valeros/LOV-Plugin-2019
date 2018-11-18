@@ -2,6 +2,7 @@ package com.legendsofvaleros.modules.quests;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -36,10 +37,10 @@ public class ActiveTracker {
 
     private static final Map<CharacterId, String> active = new HashMap<>();
 
-    public static void onEnable(JavaPlugin plugin) {
-        allUpdateInterval = plugin.getConfig().getInt("compass-tracker-update-smear", 20 * 10);
+    public static void onEnable() {
+        allUpdateInterval = Quests.getInstance().getConfig().getInt("compass-tracker-update-smear", 20 * 10);
 
-        plugin.getLogger().info("Smearing compass tracker updates across " + allUpdateInterval + " ticks.");
+        Quests.getInstance().getLogger().info("Smearing compass tracker updates across " + allUpdateInterval + " ticks.");
 
         new BukkitRunnable() {
             private long time = 0;
@@ -48,7 +49,7 @@ public class ActiveTracker {
             public void run() {
                 onTick(time++);
             }
-        }.runTaskTimerAsynchronously(plugin, 1, 1);
+        }.runTaskTimerAsynchronously(LegendsOfValeros.getInstance(), 1, 1);
     }
 
     public static String getActive(PlayerCharacter pc) {

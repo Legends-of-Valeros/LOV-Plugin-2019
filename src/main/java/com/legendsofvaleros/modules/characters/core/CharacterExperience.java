@@ -34,7 +34,7 @@ public class CharacterExperience implements Experience {
 	private int numZeroMultipliers;
 
 	CharacterExperience(int levelFromDb, long xpFromDb) {
-		this.config = Characters.inst().getCharacterConfig();
+		this.config = Characters.getInstance().getCharacterConfig();
 
 		this.levelFromDb = levelFromDb;
 		this.xpFromDb = xpFromDb;
