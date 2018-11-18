@@ -217,7 +217,7 @@ public class Characters extends ListenerModule implements CharactersAPI {
      * Gets the main Characters config.
      * @return The Characters main config.
      */
-    public CharactersConfig getConfig() {
+    public CharactersConfig getCharacterConfig() {
         return config;
     }
 

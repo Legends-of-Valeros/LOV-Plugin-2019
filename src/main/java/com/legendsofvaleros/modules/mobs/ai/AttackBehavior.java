@@ -57,7 +57,7 @@ public class AttackBehavior {
 
                 CombatEngine.getInstance().causePhysicalDamage(target,
                         ce.getLivingEntity(), PhysicalType.MELEE,
-                        Characters.inst().getConfig().getClassConfig(trait.instance.mob.getEntityClass()).getBaseMeleeDamage(),
+                        Characters.inst().getCharacterConfig().getClassConfig(trait.instance.mob.getEntityClass()).getBaseMeleeDamage(),
                         ce.getLivingEntity().getLocation(), true, true);
 
                 if (ce.getThreat().getTarget() != null && ce.getThreat().getTarget().isPlayer()) {

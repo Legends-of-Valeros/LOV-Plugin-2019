@@ -11,27 +11,8 @@ import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
 import com.legendsofvaleros.modules.levelarchetypes.api.Archetype;
 import com.legendsofvaleros.modules.characters.api.AbilityStats;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.config.ClassConfig;
-import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
-import com.legendsofvaleros.modules.characters.entityclass.AbilityStatApplicator;
-import com.legendsofvaleros.modules.characters.entityclass.AbilityStatValue;
 import com.legendsofvaleros.modules.characters.ui.AbilityStatChangeListener;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.modifiers.ConstructionListener;
-import com.legendsofvaleros.modules.combatengine.modifiers.DecayingValueModifier;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifier;
-import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
-import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder.ModifierType;
-import com.legendsofvaleros.modules.levelarchetypes.api.Archetype;
-import com.legendsofvaleros.modules.characters.config.ClassConfig;
-import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
-import com.legendsofvaleros.modules.characters.entityclass.AbilityStatApplicator;
-import com.legendsofvaleros.modules.characters.entityclass.AbilityStatValue;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.modifiers.ConstructionListener;
-import com.legendsofvaleros.modules.combatengine.modifiers.DecayingValueModifier;
-import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
-import com.legendsofvaleros.modules.levelarchetypes.api.Archetype;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -79,7 +60,7 @@ public class CharacterAbilityStats implements AbilityStats {
 
 		this.listener = new AbilityStatListener();
 
-		this.configClass = Characters.inst().getConfig().getClassConfig(playerCharacter.getPlayerClass());
+		this.configClass = Characters.inst().getCharacterConfig().getClassConfig(playerCharacter.getPlayerClass());
 		if (combatEntity != null)
 			this.applicatorClass = configClass.getNewApplicator(combatEntity);
 

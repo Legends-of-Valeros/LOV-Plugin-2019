@@ -212,7 +212,7 @@ public class MinecraftHealthHandler {
 						ignore.remove(event.getDamaged().getUniqueId());
 						CombatEngine.inst().killEntity(event.getDamaged().getLivingEntity());
 					}
-				}.runTaskLater(CombatEngine.getPlugin(), CombatEngine.getPlugin().getConfig().getInt("death-destroy-timer", 15));
+				}.runTaskLater(CombatEngine.getPlugin(), CombatEngine.getPlugin().getCharacterConfig().getInt("death-destroy-timer", 15));
 			}
 		}*/
     }

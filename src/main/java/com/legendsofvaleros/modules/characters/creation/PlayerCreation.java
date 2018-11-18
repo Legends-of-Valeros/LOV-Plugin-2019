@@ -75,7 +75,7 @@ public class PlayerCreation implements Listener {
 		TraitLOV lov = event.getNPC().getTrait(TraitLOV.class);
 		if(lov == null) return;
 		if(lov.npcId == null) return;
-		if(!lov.npcId.equals(Characters.inst().getConfig().getCreationStartNPC())) return;
+		if(!lov.npcId.equals(Characters.inst().getCharacterConfig().getCreationStartNPC())) return;
 		if(Characters.isPlayerCharacterLoaded(event.getClicker())) return;
 		
 		event.setCancelled(true);
@@ -83,7 +83,7 @@ public class PlayerCreation implements Listener {
 		if(!locked.contains(event.getClicker().getUniqueId())) {
 			locked.add(event.getClicker().getUniqueId());
 			
-			ShitUtil.doShit(event.getClicker(), Characters.inst().getConfig().getCreationCreateText(), () -> Characters.inst().getUiManager().openCharacterCreation(event.getClicker()));
+			ShitUtil.doShit(event.getClicker(), Characters.inst().getCharacterConfig().getCreationCreateText(), () -> Characters.inst().getUiManager().openCharacterCreation(event.getClicker()));
 		}else
 			Characters.inst().getUiManager().openCharacterCreation(event.getClicker());
 	}
@@ -154,7 +154,7 @@ public class PlayerCreation implements Listener {
 			
 			FancyMessage fm;
 			for(EntityRace race : EntityRace.values()) {
-				RaceConfig config = Characters.inst().getConfig().getRaceConfig(race);
+				RaceConfig config = Characters.inst().getCharacterConfig().getRaceConfig(race);
 
 				fm = new FancyMessage(StringUtil.center(Book.WIDTH, race.getUserFriendlyName()) + "\n").color(ChatColor.BLACK).style(ChatColor.UNDERLINE);
 
@@ -225,7 +225,7 @@ public class PlayerCreation implements Listener {
 			for(EntityClass clazz : EntityClass.values()) {
 				if(clazz == EntityClass.PRIEST || clazz == EntityClass.ROGUE) continue;
 				
-				ClassConfig config = Characters.inst().getConfig().getClassConfig(clazz);
+				ClassConfig config = Characters.inst().getCharacterConfig().getClassConfig(clazz);
 				
 				fm = new FancyMessage(StringUtil.center(Book.WIDTH, clazz.getUserFriendlyName()) + "\n").color(ChatColor.BLACK).style(ChatColor.UNDERLINE);
 				

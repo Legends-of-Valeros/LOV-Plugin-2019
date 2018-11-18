@@ -5,16 +5,7 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLevelUpEven
 import com.legendsofvaleros.modules.characters.events.PlayerInformationBookEvent;
 import com.legendsofvaleros.util.cmd.CommandManager;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.events.PlayerCharacterLevelUpEvent;
-import com.legendsofvaleros.modules.characters.events.PlayerInformationBookEvent;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.cmd.CommandManager.Arg;
-import com.legendsofvaleros.util.cmd.CommandManager.Cmd;
-import com.legendsofvaleros.util.cmd.CommandManager.CommandFinished;
-import com.legendsofvaleros.util.cmd.CommandManager.CommandOnly;
-import com.legendsofvaleros.modules.characters.events.PlayerCharacterLevelUpEvent;
-import com.legendsofvaleros.modules.characters.events.PlayerInformationBookEvent;
-import com.legendsofvaleros.util.cmd.CommandManager;
 import mkremins.fanciful.FancyMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -31,7 +22,7 @@ public class CharacterCommands {
 		PlayerCharacter pc = Characters.getPlayerCharacter((Player)sender);
 		if(level < 0) {
 			MessageUtil.sendError(sender, "Level must be greater than -1.");
-		}else if(level > Characters.inst().getConfig().getMaxLevel()) {
+		}else if(level > Characters.inst().getCharacterConfig().getMaxLevel()) {
 			MessageUtil.sendError(sender, "That is over the max level.");
 		}else{
 			pc.getExperience().setLevel(level);
@@ -51,7 +42,7 @@ public class CharacterCommands {
 		if(!Characters.isPlayerCharacterLoaded((Player)sender)) return CommandManager.CommandFinished.CUSTOM.replace("You have not selected a character.");
 		
 		PlayerCharacter pc = Characters.getPlayerCharacter((Player)sender);
-		if(pc.getExperience().getLevel() + 1 > Characters.inst().getConfig().getMaxLevel()) {
+		if(pc.getExperience().getLevel() + 1 > Characters.inst().getCharacterConfig().getMaxLevel()) {
 			MessageUtil.sendError(sender, "You are max level.");
 		}else{
 			pc.getExperience().setLevel(pc.getExperience().getLevel() + 1);

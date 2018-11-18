@@ -60,7 +60,7 @@ public class SkillFlamingStreak extends Skill {
         }
 
         CombatEngine.getInstance().causeSpellDamage(target, ce.getLivingEntity(), SpellType.FIRE,
-                SkillUtil.getSpellDamage(ce, SpellType.FIRE, Characters.inst().getConfig().getClassConfig(EntityClass.MAGE).getBaseMeleeDamage())
+                SkillUtil.getSpellDamage(ce, SpellType.FIRE, Characters.inst().getCharacterConfig().getClassConfig(EntityClass.MAGE).getBaseMeleeDamage())
                         * getEarliest(DAMAGE, level) / 100D, null, false, true);
 
         return true;

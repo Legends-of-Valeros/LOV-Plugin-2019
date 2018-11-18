@@ -48,7 +48,7 @@ public class SkillFireSurge extends Skill {
         ParticleFollow.follow(target, 20, Particle.FLAME, 3, .5, 2, .5, .01);
 
         CombatEngine.getInstance().causeSpellDamage(target, ce.getLivingEntity(), SpellType.FIRE,
-                SkillUtil.getSpellDamage(ce, SpellType.FIRE, Characters.inst().getConfig().getClassConfig(EntityClass.MAGE).getBaseMeleeDamage())
+                SkillUtil.getSpellDamage(ce, SpellType.FIRE, Characters.inst().getCharacterConfig().getClassConfig(EntityClass.MAGE).getBaseMeleeDamage())
                         * getEarliest(DAMAGE, level) / 100D,
                 ce.getLivingEntity().getLocation(), false, true);
 

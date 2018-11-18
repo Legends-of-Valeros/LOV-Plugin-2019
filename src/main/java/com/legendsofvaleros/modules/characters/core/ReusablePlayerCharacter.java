@@ -10,19 +10,7 @@ import com.legendsofvaleros.modules.characters.api.AbilityStats;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.Cooldowns;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.config.RaceConfig;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.entityclass.StatModifierModel;
 import com.legendsofvaleros.modules.characters.race.EntityRace;
-import com.legendsofvaleros.modules.characters.skill.PlayerSkillSet;
-import com.legendsofvaleros.modules.characters.skill.SkillSet;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.characters.config.RaceConfig;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.entityclass.StatModifierModel;
-import com.legendsofvaleros.modules.characters.skill.PlayerSkillSet;
-import com.legendsofvaleros.modules.characters.skill.SkillSet;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -69,7 +57,7 @@ public class ReusablePlayerCharacter implements PlayerCharacter {
 		this.player = new WeakReference<>(player);
 
 		this.playerRace = playerRace;
-		this.configRace = Characters.inst().getConfig().getRaceConfig(playerRace);
+		this.configRace = Characters.inst().getCharacterConfig().getRaceConfig(playerRace);
 		this.playerClass = playerClass;
 
 		this.locFromDb = startingLocation;

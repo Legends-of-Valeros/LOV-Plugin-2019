@@ -7,22 +7,14 @@ import com.legendsofvaleros.modules.combatengine.ui.PlayerCombatInterface;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.creation.PlayerCreation;
-import com.legendsofvaleros.modules.characters.skilleffect.RemovalReason;
 import com.legendsofvaleros.modules.characters.skilleffect.SkillEffect;
 import com.legendsofvaleros.modules.characters.ui.*;
 import com.legendsofvaleros.modules.characters.ui.loading.BossBarView;
 import com.legendsofvaleros.modules.characters.ui.loading.ProgressView;
 import com.legendsofvaleros.modules.characters.ui.window.WindowCharacterSelect;
 import com.legendsofvaleros.modules.characters.util.ShitUtil;
-import com.legendsofvaleros.modules.combatengine.ui.CombatEngineUiManager;
-import com.legendsofvaleros.modules.combatengine.ui.PlayerCombatInterface;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.Utilities;
-import com.legendsofvaleros.modules.characters.creation.PlayerCreation;
-import com.legendsofvaleros.modules.characters.skilleffect.RemovalReason;
-import com.legendsofvaleros.modules.combatengine.ui.CombatEngineUiManager;
-import com.legendsofvaleros.modules.combatengine.ui.PlayerCombatInterface;
 import mkremins.fanciful.FancyMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;
@@ -60,9 +52,9 @@ public class TestUis implements CharactersUiManager, CombatEngineUiManager {
 
 		player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 1), true);
 		
-		player.teleport(Characters.inst().getConfig().getCreateLocation());
+		player.teleport(Characters.inst().getCharacterConfig().getCreateLocation());
 		
-		ShitUtil.doShit(player, Characters.inst().getConfig().getCreationStartText(), null);
+		ShitUtil.doShit(player, Characters.inst().getCharacterConfig().getCreationStartText(), null);
 
 		PlayerCreation.setCreating(player, number, listener);
 	}

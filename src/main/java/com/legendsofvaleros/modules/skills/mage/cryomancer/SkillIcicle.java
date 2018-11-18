@@ -52,7 +52,7 @@ public class SkillIcicle extends Skill {
     public boolean onSkillUse(World world, CombatEntity ce, int level) {
         world.playSound(ce.getLivingEntity().getLocation(), "spell.ice.icebolt.impact.soft", .5F, .5F);
 
-        double spellDamage = SkillUtil.getSpellDamage(ce, SpellType.ICE, Characters.inst().getConfig().getClassConfig(EntityClass.MAGE).getBaseMeleeDamage())
+        double spellDamage = SkillUtil.getSpellDamage(ce, SpellType.ICE, Characters.inst().getCharacterConfig().getClassConfig(EntityClass.MAGE).getBaseMeleeDamage())
                 * getEarliest(DAMAGE, level) / 100D;
 
         final Vector knockback = ce.getLivingEntity().getLocation().getDirection().multiply(getEarliest(KNOCKBACK_BLOCKS, level));

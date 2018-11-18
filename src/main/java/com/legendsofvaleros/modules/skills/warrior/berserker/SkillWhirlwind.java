@@ -42,7 +42,7 @@ public class SkillWhirlwind extends Skill {
 
         for (LivingEntity e : targets) {
             CombatEngine.getInstance().causePhysicalDamage(e, ce.getLivingEntity(), PhysicalType.OTHER,
-                    Characters.inst().getConfig().getClassConfig(EntityClass.WARRIOR).getBaseMeleeDamage()
+                    Characters.inst().getCharacterConfig().getClassConfig(EntityClass.WARRIOR).getBaseMeleeDamage()
                             * getEarliest(DAMAGE, level) / 100D, null, false, true);
         }
 
