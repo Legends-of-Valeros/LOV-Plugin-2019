@@ -31,18 +31,18 @@ public class PlayerBookListener implements Listener {
     private Map<Stat, IStatDisplay> display = new HashMap<>();
 
     public PlayerBookListener() {
-        display.put(Stat.HEALTH_REGEN, () -> new String[]{"+" + DF.format(CombatEngine.getConfig().getRegenPercentagePerPoint(RegeneratingStat.HEALTH) * 100) + "% rate"});
-        display.put(Stat.MANA_REGEN, () -> new String[]{"+" + DF.format(CombatEngine.getConfig().getRegenPercentagePerPoint(RegeneratingStat.MANA) * 100) + "% rate"});
-        display.put(Stat.ENERGY_REGEN, () -> new String[]{"+" + DF.format(CombatEngine.getConfig().getRegenPercentagePerPoint(RegeneratingStat.ENERGY) * 100) + "% rate"});
-        display.put(Stat.SPEED, () -> new String[]{"+" + DF.format((1 / CombatEngine.getConfig().getSpeedPointsPerPotionLevel())) + " speed level"});
-        display.put(Stat.PHYSICAL_ATTACK, () -> new String[]{"+" + DF.format(CombatEngine.getConfig().getPhysicalDamageIncrease() * 100) + "% damage"});
-        display.put(Stat.MAGIC_ATTACK, () -> new String[]{"+" + DF.format(CombatEngine.getConfig().getMagicDamageIncrease() * 100) + "% damage"});
+        display.put(Stat.HEALTH_REGEN, () -> new String[]{"+" + DF.format(CombatEngine.getEngineConfig().getRegenPercentagePerPoint(RegeneratingStat.HEALTH) * 100) + "% rate"});
+        display.put(Stat.MANA_REGEN, () -> new String[]{"+" + DF.format(CombatEngine.getEngineConfig().getRegenPercentagePerPoint(RegeneratingStat.MANA) * 100) + "% rate"});
+        display.put(Stat.ENERGY_REGEN, () -> new String[]{"+" + DF.format(CombatEngine.getEngineConfig().getRegenPercentagePerPoint(RegeneratingStat.ENERGY) * 100) + "% rate"});
+        display.put(Stat.SPEED, () -> new String[]{"+" + DF.format((1 / CombatEngine.getEngineConfig().getSpeedPointsPerPotionLevel())) + " speed level"});
+        display.put(Stat.PHYSICAL_ATTACK, () -> new String[]{"+" + DF.format(CombatEngine.getEngineConfig().getPhysicalDamageIncrease() * 100) + "% damage"});
+        display.put(Stat.MAGIC_ATTACK, () -> new String[]{"+" + DF.format(CombatEngine.getEngineConfig().getMagicDamageIncrease() * 100) + "% damage"});
         display.put(Stat.ARMOR, () -> new String[]{
-                "+" + DF.format(CombatEngine.getConfig().getArmorPhysicalDamageReduction() * 100) + "% physical reduction",
-                "+" + DF.format(CombatEngine.getConfig().getArmorSpellDamageReduction() * 100) + "% magical reduction"
+                "+" + DF.format(CombatEngine.getEngineConfig().getArmorPhysicalDamageReduction() * 100) + "% physical reduction",
+                "+" + DF.format(CombatEngine.getEngineConfig().getArmorSpellDamageReduction() * 100) + "% magical reduction"
         });
-        display.put(Stat.FIRE_RESISTANCE, () -> new String[]{"+" + DF.format(CombatEngine.getConfig().getResistanceSpellDamageReduction() * 100) + "% reduction"});
-        display.put(Stat.ICE_RESISTANCE, () -> new String[]{"+" + DF.format(CombatEngine.getConfig().getResistanceSpellDamageReduction() * 100) + "% reduction"});
+        display.put(Stat.FIRE_RESISTANCE, () -> new String[]{"+" + DF.format(CombatEngine.getEngineConfig().getResistanceSpellDamageReduction() * 100) + "% reduction"});
+        display.put(Stat.ICE_RESISTANCE, () -> new String[]{"+" + DF.format(CombatEngine.getEngineConfig().getResistanceSpellDamageReduction() * 100) + "% reduction"});
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -119,7 +119,7 @@ public class PlayerBookListener implements Listener {
                 if (s.getCategory() != cat) continue;
 
                 tooltip.append(ChatColor.GRAY);
-                tooltip.append(String.join("\n", StringUtil.splitForStackLore(CombatEngine.getConfig().getStatDescription(s))));
+                tooltip.append(String.join("\n", StringUtil.splitForStackLore(CombatEngine.getEngineConfig().getStatDescription(s))));
 
                 if ((disp = display.get(s)) != null) {
                     tooltip.append("\n\n");

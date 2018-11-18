@@ -58,7 +58,7 @@ public class CombatEngine extends ListenerModule implements CombatEngineAPI {
         singleton = null;
     }
 
-    public static CombatEngineConfig getConfig() {
+    public static CombatEngineConfig getEngineConfig() {
         return config;
     }
 
