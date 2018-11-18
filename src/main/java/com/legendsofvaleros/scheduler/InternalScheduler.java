@@ -16,32 +16,8 @@ public class InternalScheduler extends Thread {
     private long tick = 0;
     private int prev_task_amount = 0;
 
-    private Executor asyncExecutor;
-    public Executor async() { return asyncExecutor; }
-
-    private Executor syncExecutor;
-    public Executor sync() { return syncExecutor; }
-
     public InternalScheduler(String name) {
         this.name = name;
-
-        this.asyncExecutor = (command) -> {
-            executeInMyCircle(new InternalTask() {
-                @Override
-                public void run() {
-                    command.run();
-                }
-            });
-        };
-
-        this.syncExecutor = (command) -> {
-            executeInSpigotCircle(new InternalTask() {
-                @Override
-                public void run() {
-                    command.run();
-                }
-            });
-        };
     }
 
     @Override
@@ -88,6 +64,24 @@ public class InternalScheduler extends Thread {
                 }
             }
         }
+    }
+
+    public void async(Runnable command) {
+        executeInMyCircle(new InternalTask() {
+            @Override
+            public void run() {
+                command.run();
+            }
+        });
+    }
+
+    public void sync(Runnable command) {
+        executeInSpigotCircle(new InternalTask() {
+            @Override
+            public void run() {
+                command.run();
+            }
+        });
     }
 
     public void executeInMyCircle(InternalTask task) {

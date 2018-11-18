@@ -90,7 +90,7 @@ public class BankManager {
             };
 
             bankCurrencyTable.saveAll(bank.getCurrencies(), true)
-                    .addListener(finished, Bank.getInstance().getScheduler().async());
+                    .addListener(finished, Bank.getInstance().getScheduler()::async);
 
             bankContentTable.query()
                     .remove(characterId)
@@ -101,7 +101,7 @@ public class BankManager {
                         }
 
                         bankContentTable.saveAll(bank.content, true)
-                                .addListener(finished, Bank.getInstance().getScheduler().async());
+                                .addListener(finished, Bank.getInstance().getScheduler()::async);
                     })
                     .execute(true);
         }
