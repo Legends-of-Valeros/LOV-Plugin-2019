@@ -1,9 +1,19 @@
 package com.legendsofvaleros.modules;
 
-public interface Module {
+import com.legendsofvaleros.scheduler.InternalScheduler;
 
-    void onLoad();
+public abstract class Module {
 
-    void onUnload();
+    public void onLoad() {
+    }
 
+    public void onUnload() {
+    }
+
+    /**
+     * Gets the scheduler for the Module
+     */
+    public InternalScheduler getScheduler() {
+        return ModuleManager.schedulers.get(this.getClass().getSimpleName());
+    }
 }

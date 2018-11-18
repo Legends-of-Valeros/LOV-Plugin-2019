@@ -13,7 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class PvP implements Module {
+public class PvP extends Module {
 
     public static final float DAMAGE_MULTIPLIER = 0.6f;
     private static PvP instance;
@@ -22,6 +22,7 @@ public class PvP implements Module {
 
     @Override
     public void onLoad() {
+        super.onLoad();
         instance = this;
         toggles = new PvPToggles();
 
@@ -48,7 +49,9 @@ public class PvP implements Module {
         });
     }
 
-    @Override public void onUnload() {
+    @Override
+    public void onUnload() {
+        super.onUnload();
     }
 
     /**

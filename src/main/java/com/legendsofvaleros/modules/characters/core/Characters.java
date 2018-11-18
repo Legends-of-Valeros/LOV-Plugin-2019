@@ -38,11 +38,10 @@ public class Characters extends ListenerModule implements CharactersAPI {
     private static Characters singleton;
 
     @Override public void onLoad() {
-        // TODO testing
-        new Test();
-
         singleton = this;
         this.init();
+        // TODO testing
+        new Test();
     }
 
     @Override public void onUnload() {

@@ -52,8 +52,9 @@ public class Utilities extends ListenerModule {
         Advancements.onEnable(LegendsOfValeros.getInstance());
     }
 
-    @Override public void onUnload() {
-
+    @Override
+    public void onUnload() {
+        super.onUnload();
     }
 
     public static Executor syncExecutor() {

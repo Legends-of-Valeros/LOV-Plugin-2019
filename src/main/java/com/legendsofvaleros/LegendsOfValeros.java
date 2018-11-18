@@ -25,8 +25,12 @@ import com.legendsofvaleros.modules.quests.Quests;
 import com.legendsofvaleros.modules.regions.Regions;
 import com.legendsofvaleros.modules.skills.Skills;
 import com.legendsofvaleros.modules.zones.Zones;
+import com.legendsofvaleros.util.ProgressBar;
 import com.legendsofvaleros.util.Utilities;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Date;
 
 /**
  * Created by Crystall on 11/15/2018
@@ -35,6 +39,11 @@ public class LegendsOfValeros extends JavaPlugin {
 
     private static LegendsOfValeros instance;
 
+    //needed for threads, so they dont continue running after shutdown
+    public static boolean shutdown;
+    public static long startTime = 0;
+
+
     public static LegendsOfValeros getInstance() {
         return instance;
     }
@@ -42,17 +51,24 @@ public class LegendsOfValeros extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        shutdown = false;
+        startTime = System.currentTimeMillis();
+
         registerModules();
         ModuleManager.loadModules();
     }
 
     @Override
     public void onDisable() {
+        shutdown = true;
         instance = null;
         ModuleManager.unloadModules();
     }
 
     private void registerModules() {
+        //TODO add config file and add check if module should be enabled or not
+        //TODO add commands to disable single modules (&change the config?)
+        //TODO add method to determine dependencies between each module (if a module depends on a disabled module, it wont be enabled either)
         ModuleManager.registerModule(new Utilities());
         ModuleManager.registerModule(new PlayerMenu());
         ModuleManager.registerModule(new NPCs());
@@ -80,4 +96,35 @@ public class LegendsOfValeros extends JavaPlugin {
         ModuleManager.registerModule(new Dueling());
     }
 
+    /**
+     * Creates a progressbar for the given tps
+     * @param tps
+     * @return
+     */
+    public String createTPSBar(double tps) {
+        ChatColor tpsc = ChatColor.GREEN;
+        if (tps < 14.5) tpsc = ChatColor.YELLOW;
+        if (tps < 9) tpsc = ChatColor.GOLD;
+        if (tps < 5.5) tpsc = ChatColor.RED;
+        if (tps < 2.7) tpsc = ChatColor.DARK_RED;
+        return ProgressBar.getBar((float) ((tps + 0.5) / 20F), 20, tpsc, ChatColor.GRAY, ChatColor.DARK_GREEN);
+    }
+
+    /**
+     * Returns the current uptime of the server
+     * @return
+     */
+    public String getUptime() {
+        Date d = new Date(System.currentTimeMillis() - startTime);
+        String rest = "";
+        if (d.getHours() > 10) rest += "" + (d.getHours() - 1);
+        else rest += "0" + (d.getHours() - 1);
+        rest += ":";
+        if (d.getMinutes() > 9) rest += "" + (d.getMinutes());
+        else rest += "0" + (d.getMinutes());
+        rest += ":";
+        if (d.getSeconds() > 9) rest += "" + (d.getSeconds());
+        else rest += "0" + (d.getSeconds());
+        return (d.getDay() > 4 ? (d.getDay() - 4) + "" + ChatColor.GREEN + " Tage " + ChatColor.GRAY : "") + rest;
+    }
 }

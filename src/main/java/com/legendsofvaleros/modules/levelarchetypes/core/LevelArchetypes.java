@@ -39,6 +39,7 @@ public class LevelArchetypes extends ListenerModule implements LevelArchetypesAP
 
     @Override
     public void onLoad() {
+        super.onLoad();
         singleton = new LevelArchetypes();
 
         archetypes = new HashMap<>();
