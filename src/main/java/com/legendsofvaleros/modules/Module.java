@@ -21,15 +21,27 @@ public abstract class Module {
     public File getDataFolder() {
         if(dataFolder == null)
             dataFolder = new File(LegendsOfValeros.getInstance().getDataFolder(), this.getClass().getSimpleName());
+
+        dataFolder.mkdirs();
+
         return dataFolder;
+    }
+
+    public File getConfigFile() {
+        return new File(getDataFolder(), "config.yml");
     }
 
     public YamlConfiguration getConfig() {
         if(config == null) {
             config = new YamlConfiguration();
 
+            File configFile = getConfigFile();
+            if(!configFile.exists()) {
+                // TODO: Create default config file.
+            }
+
             try {
-                config.load(new File(getDataFolder(), "config.yml"));
+                config.load(getConfigFile());
             } catch (IOException | InvalidConfigurationException e) {
                 e.printStackTrace();
             }
