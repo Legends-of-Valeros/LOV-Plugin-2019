@@ -80,7 +80,7 @@ public class BasicCombat {
             }
 
             double baseDamage = config.getClassConfig(current.getPlayerClass()).getBaseMeleeDamage();
-            double multiplier = 1;
+            double swingMultiplier = 1;
 
             if (player.getInventory().getItemInMainHand().getType() != Material.AIR) {
                 ItemReader reader = new ItemReader(player.getInventory().getItemInMainHand());
@@ -100,14 +100,14 @@ public class BasicCombat {
 
                     if(remaining > 0) {
                         double x = ((double)remaining / wait); // Percentage between
-                        multiplier = Math.pow(x, x + 3); // Creates a power curve between 0 and 1.
+                        swingMultiplier = Math.pow(x, x + 3); // Creates a power curve between 0 and 1.
                     }
                 }
             }
 
             // causes damage through CombatEngine to replace the invalidated vanilla damage
             CombatEngine.getInstance().causePhysicalDamage((LivingEntity) event.getEntity(),
-                    (LivingEntity) event.getDamager(), PhysicalType.MELEE, baseDamage, multiplier,
+                    (LivingEntity) event.getDamager(), PhysicalType.MELEE, baseDamage, swingMultiplier,
                     event.getDamager().getLocation(), true, true);
 
             lastSwing.put(player.getUniqueId(), System.currentTimeMillis());

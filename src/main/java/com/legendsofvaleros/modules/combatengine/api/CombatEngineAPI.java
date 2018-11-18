@@ -84,7 +84,7 @@ public interface CombatEngineAPI {
                                 double baseDamage, Location damageOrigin, boolean canMiss, boolean canCrit);
 
 	boolean causePhysicalDamage(LivingEntity target, LivingEntity attacker, PhysicalType type,
-                                double baseDamage, double swingCooldown, Location damageOrigin, boolean canMiss, boolean canCrit);
+                                double baseDamage, double swingMultiplier, Location damageOrigin, boolean canMiss, boolean canCrit);
 
 	/**
 	 * Inflicts true damage on an entity, not affected by defensive stats or resistances.

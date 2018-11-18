@@ -19,7 +19,7 @@ public class CombatEngineDamageEvent extends Event implements Cancellable {
 	private Location origin;
 	private double rawDamage;
 	private double damageMultiplier;
-	private double swingCooldown = 1D;
+	private double swingMultiplier = 1D;
 	private final boolean isCrit;
 
 	private boolean cancelled;
@@ -39,7 +39,7 @@ public class CombatEngineDamageEvent extends Event implements Cancellable {
 	 * @throws IllegalArgumentException On a <code>null</code> damaged entity.
 	 */
 	protected CombatEngineDamageEvent(CombatEntity damaged, CombatEntity attacker,
-			Location damageOrigin, double rawDamage, double damageMultiplier, double swingCooldown, boolean isCrit)
+			Location damageOrigin, double rawDamage, double damageMultiplier, double swingMultiplier, boolean isCrit)
 					throws IllegalArgumentException {
 		if (damaged == null) {
 			throw new IllegalArgumentException("damaged entity cannot be null");
@@ -50,7 +50,7 @@ public class CombatEngineDamageEvent extends Event implements Cancellable {
 		this.origin = damageOrigin;
 		this.rawDamage = rawDamage;
 		this.damageMultiplier = damageMultiplier;
-		this.swingCooldown = swingCooldown;
+		this.swingMultiplier = swingMultiplier;
 		this.isCrit = isCrit;
 	}
 
@@ -112,12 +112,12 @@ public class CombatEngineDamageEvent extends Event implements Cancellable {
 		return damageMultiplier;
 	}
 
-	public double getSwingCooldown() {
-		return swingCooldown;
+	public double getSwingMultiplier() {
+		return swingMultiplier;
 	}
 
-	public void setSwingCooldown(double swingCooldown) {
-		this.swingCooldown = swingCooldown;
+	public void setSwingMultiplier(double swingMultiplier) {
+		this.swingMultiplier = swingMultiplier;
 	}
 
 	/**
@@ -126,7 +126,7 @@ public class CombatEngineDamageEvent extends Event implements Cancellable {
 	 * @return The final amount of damage that will the damaged entity will actually take.
 	 */
 	public double getFinalDamage() {
-		return rawDamage * swingCooldown * damageMultiplier;
+		return rawDamage * swingMultiplier * damageMultiplier;
 	}
 
 	/**

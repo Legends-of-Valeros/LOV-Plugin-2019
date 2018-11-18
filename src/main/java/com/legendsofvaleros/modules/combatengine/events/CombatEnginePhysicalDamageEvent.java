@@ -27,9 +27,9 @@ public class CombatEnginePhysicalDamageEvent extends CombatEngineDamageEvent {
    * @throws IllegalArgumentException On a <code>null</code> damaged entity.
    */
   public CombatEnginePhysicalDamageEvent(CombatEntity damaged, CombatEntity damager,
-      Location damageOrigin, double rawDamage, double damageMultiplier, double swingCooldown, boolean isCrit,
+      Location damageOrigin, double rawDamage, double damageMultiplier, double swingMultiplier, boolean isCrit,
       PhysicalType physicalType) throws IllegalArgumentException {
-    super(damaged, damager, damageOrigin, rawDamage, damageMultiplier, swingCooldown, isCrit);
+    super(damaged, damager, damageOrigin, rawDamage, damageMultiplier, swingMultiplier, isCrit);
     if (physicalType == null) {
       this.type = PhysicalType.OTHER;
     } else {

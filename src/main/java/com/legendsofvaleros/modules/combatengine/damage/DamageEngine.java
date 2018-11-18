@@ -85,7 +85,7 @@ public class DamageEngine {
 	}
 
 	public boolean causePhysicalDamage(LivingEntity target, LivingEntity attacker, PhysicalType type,
-			double baseDamage, double swingCooldown, Location damageOrigin, boolean canMiss, boolean canCrit) {
+			double baseDamage, double swingMultiplier, Location damageOrigin, boolean canMiss, boolean canCrit) {
 		if (target == null || baseDamage <= 0) {
 			return false;
 		}
@@ -114,7 +114,7 @@ public class DamageEngine {
 
 		CombatEnginePhysicalDamageEvent event =
 				new CombatEnginePhysicalDamageEvent(ceTarget, ceAttacker, damageOrigin, baseDamage,
-                        resistanceMultiplier, swingCooldown, crit, type);
+                        resistanceMultiplier, swingMultiplier, crit, type);
 		
 		return handleEvent(event);
 	}
@@ -266,7 +266,7 @@ public class DamageEngine {
 						.then(" = ")
 						.then(DF.format(event.getRawDamage())).tooltip("Raw Damage")
 						.then(" * ")
-						.then(DF.format(event.getSwingCooldown())).tooltip("Swing Cooldown")
+						.then(DF.format(event.getSwingMultiplier())).tooltip("Swing Multiplier")
 						.then(" * ")
 						.then(DF.format(event.getDamageMultiplier())).tooltip("Damage Multiplier");
 				if(pAOP)
