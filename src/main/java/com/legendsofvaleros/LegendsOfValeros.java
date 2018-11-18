@@ -54,6 +54,8 @@ public class LegendsOfValeros extends JavaPlugin {
         shutdown = false;
         startTime = System.currentTimeMillis();
 
+
+
         registerModules();
         ModuleManager.loadModules();
     }

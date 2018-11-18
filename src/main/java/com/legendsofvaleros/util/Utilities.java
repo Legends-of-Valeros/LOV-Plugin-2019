@@ -41,6 +41,9 @@ public class Utilities extends ListenerModule {
     }
 
     private static Set<UUID> op = new HashSet<>();
+    public static boolean isOp(Player p) {
+        return op.contains(p.getUniqueId());
+    }
 
     public static Executor syncExecutor() {
         return instance.getScheduler()::sync;
@@ -83,10 +86,6 @@ public class Utilities extends ListenerModule {
         else
             op.add(p.getUniqueId());
         Bukkit.getPluginManager().callEvent(new ToggleOpEvent(p, isOp(p)));
-        return op.contains(p.getUniqueId());
-    }
-
-    public static boolean isOp(Player p) {
         return op.contains(p.getUniqueId());
     }
 
