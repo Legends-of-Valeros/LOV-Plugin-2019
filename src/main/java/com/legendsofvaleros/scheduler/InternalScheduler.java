@@ -5,18 +5,43 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Executor;
 
 public class InternalScheduler extends Thread {
     private long[] last_ticks = new long[]{1, 1, 1, 1, 1};
     private double tps = 20;
     private long tick_duration = 0;
-    private ConcurrentLinkedQueue<InternalTask> list = new ConcurrentLinkedQueue<InternalTask>();
+    private ConcurrentLinkedQueue<InternalTask> list = new ConcurrentLinkedQueue<>();
     private String name;
     private long tick = 0;
     private int prev_task_amount = 0;
 
+    private Executor asyncExecutor;
+    public Executor async() { return asyncExecutor; }
+
+    private Executor syncExecutor;
+    public Executor sync() { return syncExecutor; }
+
     public InternalScheduler(String name) {
         this.name = name;
+
+        this.asyncExecutor = (command) -> {
+            executeInMyCircle(new InternalTask() {
+                @Override
+                public void run() {
+                    command.run();
+                }
+            });
+        };
+
+        this.syncExecutor = (command) -> {
+            executeInSpigotCircle(new InternalTask() {
+                @Override
+                public void run() {
+                    command.run();
+                }
+            });
+        };
     }
 
     @Override
