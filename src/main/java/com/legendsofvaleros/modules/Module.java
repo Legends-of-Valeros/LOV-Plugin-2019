@@ -3,7 +3,6 @@ package com.legendsofvaleros.modules;
 import com.legendsofvaleros.scheduler.InternalScheduler;
 
 public abstract class Module {
-
     public void onLoad() {
     }
 

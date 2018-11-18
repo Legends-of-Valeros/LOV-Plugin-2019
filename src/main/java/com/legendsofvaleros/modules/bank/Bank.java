@@ -18,6 +18,7 @@ import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.action.stf.ActionFactory;
 import com.legendsofvaleros.modules.quests.objective.stf.ObjectiveFactory;
 import com.legendsofvaleros.modules.ListenerModule;
+import com.legendsofvaleros.scheduler.InternalScheduler;
 import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -28,6 +29,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Bank extends ListenerModule {
+    private static Bank instance;
+    public static Bank getInstance() { return instance; }
 
     private static final Map<String, Currency> currencies = new HashMap<>();
 
@@ -39,6 +42,8 @@ public class Bank extends ListenerModule {
 
     @Override
     public void onLoad() {
+        this.instance = this;
+
         BankManager.onEnable(LegendsOfValeros.getInstance());
         Money.onEnable(LegendsOfValeros.getInstance());
         Utilities.getCommandManager().loadCommandClass(BankCommands.class);

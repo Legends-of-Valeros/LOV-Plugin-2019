@@ -4,6 +4,7 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.codingforcookies.doris.orm.ORMTable;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
+import com.legendsofvaleros.modules.Module;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
@@ -89,7 +90,7 @@ public class BankManager {
             };
 
             bankCurrencyTable.saveAll(bank.getCurrencies(), true)
-                    .addListener(finished, Utilities.asyncExecutor());
+                    .addListener(finished, Bank.getInstance().getScheduler().async());
 
             bankContentTable.query()
                     .remove(characterId)
@@ -100,7 +101,7 @@ public class BankManager {
                         }
 
                         bankContentTable.saveAll(bank.content, true)
-                                .addListener(finished, Utilities.asyncExecutor());
+                                .addListener(finished, Bank.getInstance().getScheduler().async());
                     })
                     .execute(true);
         }

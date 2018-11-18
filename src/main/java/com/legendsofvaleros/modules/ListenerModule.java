@@ -9,6 +9,7 @@ public abstract class ListenerModule extends Module implements Listener {
     @Override
     public void onLoad() {
         super.onLoad();
+
         Bukkit.getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
     }
 
