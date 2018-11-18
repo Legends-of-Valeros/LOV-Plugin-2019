@@ -1,0 +1,14 @@
+main: com.legendsofvaleros.LegendsOfValeros
+name: "${project.name}"
+version: "${project.version}"
+author: "Crystall, Stumblinbear, Brutus"
+depend: [Citizens, Robert, Doris, ArmorEquipEvent]
+
+permissions:
+    characters.slots.x:
+        description: Defines how many character slots a player has.
+        default: false
+
+commands:
+    suicide:
+        description: Commit seppuku.

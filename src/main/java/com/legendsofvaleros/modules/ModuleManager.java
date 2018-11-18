@@ -1,0 +1,43 @@
+package com.legendsofvaleros.modules;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+
+public class ModuleManager {
+    //TODO add own thread for each module
+    public static ConcurrentHashMap<String, Module> modules = new ConcurrentHashMap<>();
+    public static List<Module> modulesToLoad = new ArrayList<>();
+    public static List<Module> modulesToUnload = new ArrayList<>();
+
+    public static void loadModules() {
+        modulesToLoad.forEach(moduleToLoad ->
+        {
+            System.out.println("[" + moduleToLoad.getClass().getSimpleName() + "] Loading module...");
+
+            modules.put(moduleToLoad.getClass().getSimpleName(), moduleToLoad);
+            moduleToLoad.onLoad();
+
+            System.out.println("[" + moduleToLoad.getClass().getSimpleName() + "] Has been loaded");
+        });
+        modulesToLoad.clear();
+    }
+
+    public static void unloadModules() {
+        modules.values().forEach(module ->
+        {
+            System.out.println("[" + module.getClass().getSimpleName() + "] Unloading module ...");
+            modulesToUnload.add(module);
+        });
+        modulesToUnload.forEach(moduleToUnload ->
+        {
+            System.out.println("[" + moduleToUnload.getClass().getSimpleName() + "] has been unloaded");
+            moduleToUnload.onUnload();
+        });
+        modulesToUnload.clear();
+    }
+
+    public static void registerModule(Module module) {
+        modulesToLoad.add(module);
+    }
+}

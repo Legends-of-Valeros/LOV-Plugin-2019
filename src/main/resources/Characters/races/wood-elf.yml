@@ -1,0 +1,9 @@
+long-description:
+- "Tall, slender beings who devote their life to nature. They’re very resourceful, and can hunt any type of creature no matter how big or small."
+
+climate-description:
+- "Lush Forests"
+
+benefits:
+    stats:
+    - PHYSICAL_ATTACK,ADD,0.5

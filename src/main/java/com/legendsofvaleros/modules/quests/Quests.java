@@ -1,0 +1,197 @@
+package com.legendsofvaleros.modules.quests;
+
+import com.google.common.util.concurrent.ListenableFuture;
+import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.ListenerModule;
+import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
+import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.characters.events.PlayerCharacterCreateEvent;
+import com.legendsofvaleros.modules.playermenu.InventoryManager;
+import com.legendsofvaleros.modules.quests.action.*;
+import com.legendsofvaleros.modules.quests.action.stf.ActionFactory;
+import com.legendsofvaleros.modules.quests.event.ObjectivesStartedEvent;
+import com.legendsofvaleros.modules.quests.event.QuestCompletedEvent;
+import com.legendsofvaleros.modules.quests.event.QuestStartedEvent;
+import com.legendsofvaleros.modules.quests.objective.DummyObjective;
+import com.legendsofvaleros.modules.quests.objective.ReturnObjective;
+import com.legendsofvaleros.modules.quests.objective.TalkObjective;
+import com.legendsofvaleros.modules.quests.objective.stf.ObjectiveFactory;
+import com.legendsofvaleros.modules.quests.prerequisite.*;
+import com.legendsofvaleros.modules.quests.prerequisite.stf.PrerequisiteFactory;
+import com.legendsofvaleros.modules.quests.progress.ObjectiveProgressBoolean;
+import com.legendsofvaleros.modules.quests.progress.ObjectiveProgressInteger;
+import com.legendsofvaleros.modules.quests.progress.stf.ProgressFactory;
+import com.legendsofvaleros.modules.quests.quest.BasicQuest;
+import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
+import com.legendsofvaleros.modules.quests.quest.stf.QuestFactory;
+import com.legendsofvaleros.modules.quests.quest.stf.QuestStatus;
+import com.legendsofvaleros.modules.quests.trait.TraitQuestGiver;
+import com.legendsofvaleros.util.title.Title;
+import com.legendsofvaleros.util.title.TitleUtil;
+import com.legendsofvaleros.modules.npcs.NPCs;
+import com.legendsofvaleros.util.MessageUtil;
+import com.legendsofvaleros.util.Utilities;
+import io.chazza.advancementapi.AdvancementAPI;
+import io.chazza.advancementapi.FrameType;
+import io.chazza.advancementapi.Trigger;
+import net.citizensnpcs.api.event.NPCRightClickEvent;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+
+public class Quests extends ListenerModule {
+    public static AdvancementAPI NEW_OBJECTIVES;
+
+    private static Quests instance;
+
+    public static Quests getInstance() {
+        return instance;
+    }
+
+    private String introQuestId;
+
+    @Override
+    public void onLoad() {
+        instance = this;
+
+        introQuestId = LegendsOfValeros.getInstance().getConfig().getString("intro-quest", "intro");
+
+        QuestManager.onEnable(LegendsOfValeros.getInstance());
+        ActiveTracker.onEnable(LegendsOfValeros.getInstance());
+        NPCs.registerTrait("questgiver", TraitQuestGiver.class);
+
+        LegendsOfValeros.getInstance().getServer().getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
+        LegendsOfValeros.getInstance().getServer().getPluginManager().registerEvents(new TraitQuestGiver.Marker(), LegendsOfValeros.getInstance());
+
+        Utilities.getCommandManager().loadCommandClass(QuestCommands.class);
+
+        LegendsOfValeros.getInstance().getLogger().info("is registering quests");
+        {
+            QuestFactory.registerType("basic", BasicQuest.class);
+        }
+
+        LegendsOfValeros.getInstance().getLogger().info("is registering prerequisites");
+        PrerequisiteFactory.registerType("class", ClassPrerequisite.class);
+        PrerequisiteFactory.registerType("race", RacePrerequisite.class);
+        PrerequisiteFactory.registerType("level", LevelPrerequisite.class);
+        PrerequisiteFactory.registerType("quests", QuestsPrerequisite.class);
+        PrerequisiteFactory.registerType("time", TimePrerequisite.class);
+
+        LegendsOfValeros.getInstance().getLogger().info("is registering progress loaders");
+        ProgressFactory.registerType("int", ObjectiveProgressInteger.class);
+        ProgressFactory.registerType("bool", ObjectiveProgressBoolean.class);
+
+        LegendsOfValeros.getInstance().getLogger().info("is registering objectives");
+        ObjectiveFactory.registerType("dummy", DummyObjective.class);
+        ObjectiveFactory.registerType("talk", TalkObjective.class);
+        ObjectiveFactory.registerType("return", ReturnObjective.class);
+
+        LegendsOfValeros.getInstance().getLogger().info("is registering actions");
+        ActionFactory.registerType("conversation", ActionConversation.class);
+        ActionFactory.registerType("goto", ActionGoTo.class);
+
+        ActionFactory.registerType("command_run", ActionRunCommand.class);
+        ActionFactory.registerType("speech", ActionSpeech.class);
+        ActionFactory.registerType("wait", ActionWait.class);
+
+        ActionFactory.registerType("quest_new", ActionNewQuest.class);
+
+        ActionFactory.registerType("notify", ActionNotification.class);
+
+        ActionFactory.registerType("text", ActionText.class);
+
+        ActionFactory.registerType("xp", ActionExperience.class);
+        ActionFactory.registerType("teleport", ActionTeleport.class);
+        ActionFactory.registerType("show_credits", ActionShowCredits.class);
+
+        InventoryManager.addFixedItem(42, new InventoryManager.InventoryItem(null,
+                (p, event) -> p.performCommand("lov quests gui")));
+        InventoryManager.addFixedItem(43, new InventoryManager.InventoryItem(null,
+                (p, event) -> p.performCommand("lov quests gui")));
+
+        LegendsOfValeros.getInstance().getLogger().info("is registering advancements.");
+        NEW_OBJECTIVES = AdvancementAPI.builder(new NamespacedKey(LegendsOfValeros.getInstance(), "quests/new_objectives"))
+                .title("New Objectives")
+                .description("See quest book for details.")
+                .icon("minecraft:paper")
+                .trigger(Trigger.builder(Trigger.TriggerType.IMPOSSIBLE, "impossible"))
+                .hidden(true)
+                .toast(true)
+                .background("minecraft:textures/gui/advancements/backgrounds/stone.png")
+                .frame(FrameType.TASK)
+                .build();
+
+    }
+
+    @Override
+    public void onUnload() {
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (!Characters.isPlayerCharacterLoaded(p)) continue;
+            PlayerCharacter pc = Characters.getPlayerCharacter(p);
+
+            for (IQuest q : QuestManager.getQuestsForEntity(pc))
+                q.saveProgress(pc);
+        }
+
+        instance = null;
+    }
+
+    public static void attemptGiveQuest(PlayerCharacter pc, String questId) {
+        ListenableFuture<IQuest> future = QuestManager.getQuest(questId);
+        future.addListener(() -> {
+            try {
+                IQuest quest = future.get();
+
+                if (quest == null)
+                    return;
+
+                QuestStatus status = QuestManager.getStatus(pc, quest);
+
+                if (status.canAccept())
+                    QuestManager.removeQuestProgress(quest.getId(), pc);
+
+                QuestManager.addPlayerQuest(pc, quest);
+
+                quest.onTalk(pc, status);
+            } catch (Exception e) {
+                MessageUtil.sendException(LegendsOfValeros.getInstance(), pc.getPlayer(), e, true);
+            }
+        }, Utilities.asyncExecutor());
+    }
+
+    @EventHandler
+    public void onQuestStarted(QuestStartedEvent event) {
+        Title title = new Title("New Quest", event.getQuest().getName(), 10, 40, 10);
+        title.setTimingsToTicks();
+        title.setTitleColor(ChatColor.GOLD);
+        TitleUtil.queueTitle(title, event.getPlayer());
+    }
+
+    @EventHandler
+    public void onQuestComplete(QuestCompletedEvent event) {
+        event.getPlayer().playSound(event.getPlayer().getLocation(), "misc.questcomplete", 1F, 1F);
+    }
+
+    @EventHandler
+    public void onNewObjectives(ObjectivesStartedEvent event) {
+        // FIXME: Why doesn't this work, anymore?
+        // if(NEW_OBJECTIVES != null)
+        //	NEW_OBJECTIVES.show(Quests.inst(), event.getPlayer());
+    }
+
+    @EventHandler
+    public void onCharacterCreated(PlayerCharacterCreateEvent event) {
+        attemptGiveQuest(event.getPlayerCharacter(), introQuestId);
+    }
+
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onNPCRightClick(NPCRightClickEvent event) {
+        if (!Characters.isPlayerCharacterLoaded(event.getClicker())) return;
+
+        QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getClicker()));
+    }
+}

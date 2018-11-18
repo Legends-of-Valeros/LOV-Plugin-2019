@@ -1,0 +1,9 @@
+long-description:
+- "Offspring & decedent of the Nordanians; strong, Viking-like like people."
+
+climate-description:
+- "Temperate"
+
+benefits:
+    stats:
+    - PHYSICAL_ATTACK,ADD,0.5
