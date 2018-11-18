@@ -46,7 +46,11 @@ public class InternalTask {
         return repeat;
     }
 
-    public void run() { command.run(); }
+    public void run() {
+        if(command == null)
+            throw new RuntimeException("Attempted to run() an empty InternalTask.");
+        command.run();
+    }
 
     public void cancel() {
         setRepeating(false);
