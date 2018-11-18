@@ -4,13 +4,23 @@ package com.legendsofvaleros.scheduler;
  * Created by Crystall on 10/10/2018
  * Represents an executing thread for a module
  */
-public abstract class InternalTask implements Runnable {
+public class InternalTask {
     private InternalScheduler executor = null;
+    private Runnable command;
+
     private boolean executed = false;
     private boolean repeat = false;
     private int delay = 0;
     private long net = 0;
     private long ri = 1;
+
+    public InternalTask(Runnable command) {
+        this.command = command;
+    }
+
+    public void setTask(Runnable command) {
+        this.command = command;
+    }
 
     public void setExecutor(InternalScheduler executor) {
         this.executor = executor;
@@ -35,6 +45,8 @@ public abstract class InternalTask implements Runnable {
     public boolean getRepeating() {
         return repeat;
     }
+
+    public void run() { command.run(); }
 
     public void cancel() {
         setRepeating(false);
