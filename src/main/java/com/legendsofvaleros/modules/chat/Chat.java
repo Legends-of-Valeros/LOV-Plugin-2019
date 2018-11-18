@@ -48,14 +48,10 @@ public class Chat extends ListenerModule {
     public static Map<Character, String> chanToDiscord = new HashMap<>();
     public static Map<String, Character> discordToChan = new HashMap<>();
 
-    public static String tag;
-
     @Override public void onLoad() {
         instance = this;
 
         ConfigurationSection config = LegendsOfValeros.getInstance().getConfig().getConfigurationSection("chat");
-
-        tag = config.getString("tag");
 
         ConfigurationSection channels = config.getConfigurationSection("channels");
         for (String key : channels.getKeys(false)) {
@@ -428,7 +424,7 @@ public class Chat extends ListenerModule {
                     if (channel != null) {
                         Bukkit.getScheduler().runTaskAsynchronously(LegendsOfValeros.getInstance(), () -> {
                             try {
-                                channel.sendMessage((tag != null ? "`[" + tag + "]` " : "") + "**" + e.getPlayer().getName() + "**: " + e.getMessage()).get();
+                                channel.sendMessage("`[" + Discord.TAG + "]` **" + e.getPlayer().getName() + "**: " + e.getMessage()).get();
                             } catch (InterruptedException | ExecutionException _e) {
                                 _e.printStackTrace();
                             }

@@ -106,7 +106,7 @@ public class MessageUtil {
 				if (channel != null) {
 					Bukkit.getScheduler().runTaskAsynchronously(LegendsOfValeros.getInstance(), () -> {
 						try {
-							channel.sendMessage(trace).get();
+							channel.sendMessage("`[" + Discord.TAG + "]` " + trace).get();
 						} catch (InterruptedException | ExecutionException _e) {
 							_e.printStackTrace();
 						}

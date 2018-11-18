@@ -32,9 +32,14 @@ public class Discord {
     public static DiscordAPI API;
 
     public static Server SERVER;
+    public static String TAG;
 
     public static void onEnable() {
         ConfigurationSection config = LegendsOfValeros.getInstance().getConfig().getConfigurationSection("discord");
+
+        TAG = config.getString("tag");
+        if(TAG == null)
+            TAG = "unknown";
 
         API = Javacord.getApi(config.getString("token"), true);
         API.connect(new FutureCallback<DiscordAPI>() {
