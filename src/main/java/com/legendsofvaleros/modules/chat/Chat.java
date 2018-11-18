@@ -11,9 +11,16 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.playermenu.settings.PlayerSettings;
 import com.legendsofvaleros.modules.playermenu.settings.PlayerSettingsOpenEvent;
 import com.legendsofvaleros.modules.ListenerModule;
+import com.legendsofvaleros.util.Discord;
+import com.legendsofvaleros.util.PlayerData;
+import de.btobastian.javacord.DiscordAPI;
+import de.btobastian.javacord.entities.Channel;
+import de.btobastian.javacord.entities.Server;
+import de.btobastian.javacord.listener.message.MessageCreateListener;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -38,9 +45,24 @@ public class Chat extends ListenerModule {
         return instance;
     }
 
+    public static Map<Character, String> chanToDiscord = new HashMap<>();
+    public static Map<String, Character> discordToChan = new HashMap<>();
+
+    public static String tag;
+
     @Override public void onLoad() {
         instance = this;
-        Discord.onEnable();
+
+        ConfigurationSection config = LegendsOfValeros.getInstance().getConfig().getConfigurationSection("chat");
+
+        tag = config.getString("tag");
+
+        ConfigurationSection channels = config.getConfigurationSection("channels");
+        for (String key : channels.getKeys(false)) {
+            if (key.length() != 1) continue;
+            chanToDiscord.put(key.charAt(0), channels.getString(key));
+            discordToChan.put(channels.getString(key), key.charAt(0));
+        }
 
         //TODO add channel enum
         registerChannel('W', new IChannelHandler() {
@@ -155,6 +177,48 @@ public class Chat extends ListenerModule {
 
     public boolean isChannelOn(Player p, char id) {
         return !this.players.get(p.getUniqueId()).offChannels.contains(id);
+    }
+
+    @EventHandler
+    public void onDiscordConnected(Discord.ConnectedEvent e) {
+        final Server server = e.getServer();
+        final DiscordAPI api = e.getAPI();
+
+        api.registerListener((MessageCreateListener) (api1, message) -> {
+            if (message.getAuthor().isYourself() || message.getAuthor().isBot() || message.isPrivateMessage())
+                return;
+            if (message.getContent().trim().length() == 0) return;
+            if (message.getContent().startsWith("/")) return;
+            if (!discordToChan.containsKey(message.getChannelReceiver().getId())) return;
+
+            char channelId = discordToChan.get(message.getChannelReceiver().getId());
+            IChannelHandler ch = Chat.getInstance().channels.get(channelId);
+
+            PlayerData data = null;
+            try {
+                data = PlayerData.getByDiscordID(message.getAuthor().getId()).get();
+            } catch (InterruptedException | ExecutionException ee) {
+                ee.printStackTrace();
+            }
+
+            FancyMessage fm = new FancyMessage("");
+
+            fm.then(channelId + " ").color(ch.getTagColor()).style(ChatColor.BOLD).tooltip(ch.getName(null));
+
+            fm.then(data != null ? data.username :
+                    (message.getAuthor().hasNickname(server) ? message.getAuthor().getNickname(server) : message.getAuthor().getName()))
+                    .color(ChatColor.GRAY).style(ChatColor.ITALIC);
+
+            if (data == null)
+                fm.style(ChatColor.UNDERLINE).tooltip("Unverified Discord");
+            else
+                fm.tooltip("Verified Discord");
+
+            fm.then(": ").color(ChatColor.DARK_GRAY);
+            fm.then(message.getContent()).color(ch.getChatColor());
+
+            ch.onChat(null, fm);
+        });
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -351,6 +415,27 @@ public class Chat extends ListenerModule {
 
         ch.onChat(e.getPlayer(), fm);
 
-        Discord.onChat(e, data);
+        onChat(e, data);
+    }
+
+    public static void onChat(AsyncPlayerChatEvent e, PlayerChat data) {
+        if (chanToDiscord.containsKey(data.channel)) {
+            if (Discord.SERVER != null) {
+                String channelId = chanToDiscord.get(data.channel);
+                if (channelId != null) {
+                    Channel channel = Discord.SERVER.getChannelById(channelId);
+
+                    if (channel != null) {
+                        Bukkit.getScheduler().runTaskAsynchronously(LegendsOfValeros.getInstance(), () -> {
+                            try {
+                                channel.sendMessage((tag != null ? "`[" + tag + "]` " : "") + "**" + e.getPlayer().getName() + "**: " + e.getMessage()).get();
+                            } catch (InterruptedException | ExecutionException _e) {
+                                _e.printStackTrace();
+                            }
+                        });
+                    }
+                }
+            }
+        }
     }
 }

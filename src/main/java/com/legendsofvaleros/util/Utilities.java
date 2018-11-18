@@ -53,13 +53,20 @@ public class Utilities extends ListenerModule {
     public void onLoad() {
         super.onLoad();
         instance = this;
+
+        Discord.onEnable();
+
         cm = new CommandManager(LegendsOfValeros.getInstance(), "LOV", "lov", "lov");
         cm.loadCommandClass(LOVCommands.class);
+
         new CommandManager(LegendsOfValeros.getInstance(), "Debug", "debug", "debug").loadCommandClass(DebugFlags.class);
+
         LoggingOut.onEnable();
         ExceptionManager.onEnable(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"));
         PlayerData.onEnable();
+
         new TitleUtil();
+
         Model.onEnable(LegendsOfValeros.getInstance());
         MessageUtil.onEnable();
         Advancements.onEnable(LegendsOfValeros.getInstance());

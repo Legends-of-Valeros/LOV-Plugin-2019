@@ -1,6 +1,8 @@
 package com.legendsofvaleros.util;
 
 import com.codingforcookies.doris.sql.TableManager;
+import com.legendsofvaleros.LegendsOfValeros;
+import de.btobastian.javacord.entities.Channel;
 import mkremins.fanciful.FancyMessage;
 import mkremins.fanciful.MessagePart;
 import org.bukkit.Bukkit;
@@ -13,6 +15,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class MessageUtil {
 	/**
@@ -95,10 +98,25 @@ public class MessageUtil {
 		if(log) {
 			th.printStackTrace();
 			ExceptionManager.add(plugin, sender, trace);
+
+			if(Discord.SERVER != null) {
+				// Make this channel configurable
+				Channel channel = Discord.SERVER.getChannelById("358612310731915264");
+
+				if (channel != null) {
+					Bukkit.getScheduler().runTaskAsynchronously(LegendsOfValeros.getInstance(), () -> {
+						try {
+							channel.sendMessage(trace).get();
+						} catch (InterruptedException | ExecutionException _e) {
+							_e.printStackTrace();
+						}
+					});
+				}
+			}
 		}
 	}
 
-	private static String getStackTrace(final Throwable throwable) {
+	public static String getStackTrace(final Throwable throwable) {
 		final StringWriter sw = new StringWriter();
 		final PrintWriter pw = new PrintWriter(sw, true);
 		throwable.printStackTrace(pw);
