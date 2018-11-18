@@ -114,8 +114,7 @@ public class DamageEngine {
 
 		CombatEnginePhysicalDamageEvent event =
 				new CombatEnginePhysicalDamageEvent(ceTarget, ceAttacker, damageOrigin, baseDamage,
-						resistanceMultiplier, crit, type);
-		event.setSwingCooldown(swingCooldown);
+                        resistanceMultiplier, swingCooldown, crit, type);
 		
 		return handleEvent(event);
 	}
@@ -267,7 +266,7 @@ public class DamageEngine {
 						.then(" = ")
 						.then(DF.format(event.getRawDamage())).tooltip("Raw Damage")
 						.then(" * ")
-						.then(DF.format(event.swingCooldown)).tooltip("Swing Cooldown")
+						.then(DF.format(event.getSwingCooldown())).tooltip("Swing Cooldown")
 						.then(" * ")
 						.then(DF.format(event.getDamageMultiplier())).tooltip("Damage Multiplier");
 				if(pAOP)

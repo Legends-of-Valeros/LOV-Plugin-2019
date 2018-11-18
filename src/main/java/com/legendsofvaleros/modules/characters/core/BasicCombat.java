@@ -90,11 +90,18 @@ public class BasicCombat {
 
                     long millis = System.currentTimeMillis();
                     Long last = lastSwing.get(player.getUniqueId());
-                    if (last == null) last = 0L;
-                    long wait = (long) (1 / realSpeed * 1000);
+                    if(last == null) last = 0L;
+
+                    // The amount of time that must be awaited before full damage is dealt.
+                    long wait = (long)(1 / realSpeed * 1000);
+
+                    // The amount of time remaining to be at full power.
                     long remaining = last + wait - millis;
-                    if (remaining > 0)
-                        multiplier -= (double) remaining / wait;
+
+                    if(remaining > 0) {
+                        double x = ((double)remaining / wait); // Percentage between
+                        multiplier = Math.pow(x, x + 3); // Creates a power curve between 0 and 1.
+                    }
                 }
             }
 

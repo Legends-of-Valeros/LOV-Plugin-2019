@@ -19,7 +19,7 @@ public class CombatEngineDamageEvent extends Event implements Cancellable {
 	private Location origin;
 	private double rawDamage;
 	private double damageMultiplier;
-	public double swingCooldown = 1D;
+	private double swingCooldown = 1D;
 	private final boolean isCrit;
 
 	private boolean cancelled;
@@ -39,7 +39,7 @@ public class CombatEngineDamageEvent extends Event implements Cancellable {
 	 * @throws IllegalArgumentException On a <code>null</code> damaged entity.
 	 */
 	protected CombatEngineDamageEvent(CombatEntity damaged, CombatEntity attacker,
-			Location damageOrigin, double rawDamage, double damageMultiplier, boolean isCrit)
+			Location damageOrigin, double rawDamage, double damageMultiplier, double swingCooldown, boolean isCrit)
 					throws IllegalArgumentException {
 		if (damaged == null) {
 			throw new IllegalArgumentException("damaged entity cannot be null");
@@ -50,6 +50,7 @@ public class CombatEngineDamageEvent extends Event implements Cancellable {
 		this.origin = damageOrigin;
 		this.rawDamage = rawDamage;
 		this.damageMultiplier = damageMultiplier;
+		this.swingCooldown = swingCooldown;
 		this.isCrit = isCrit;
 	}
 

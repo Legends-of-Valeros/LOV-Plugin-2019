@@ -29,7 +29,7 @@ public class CombatEngineSpellDamageEvent extends CombatEngineDamageEvent {
   public CombatEngineSpellDamageEvent(CombatEntity damaged, CombatEntity damager,
       Location damageOrigin, double rawDamage, double damageMultiplier, boolean isCrit,
       SpellType spellType) throws IllegalArgumentException {
-    super(damaged, damager, damageOrigin, rawDamage, damageMultiplier, isCrit);
+    super(damaged, damager, damageOrigin, rawDamage, damageMultiplier, 1D, isCrit);
     if (spellType == null) {
       type = SpellType.OTHER;
     } else {
