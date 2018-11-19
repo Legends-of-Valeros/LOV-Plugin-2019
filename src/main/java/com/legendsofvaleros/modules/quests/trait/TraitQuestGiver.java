@@ -224,7 +224,7 @@ public class TraitQuestGiver extends LOVTrait {
                 fm.then(StringUtil.center(Book.WIDTH, "[" + quest.getKey().getName() + "]") + "\n\n");
 
             fm.color(quest.getValue() == QuestStatus.NEITHER ? ChatColor.DARK_PURPLE : ChatColor.DARK_RED)
-                    .command("/lov quests talk " + quest.getKey().getId());
+                    .command("/quests talk " + quest.getKey().getId());
         }
 
         book.addPage(fm);

@@ -46,7 +46,6 @@ public class Quests extends ListenerModule {
     public static AdvancementAPI NEW_OBJECTIVES;
 
     private static Quests instance;
-
     public static Quests getInstance() {
         return instance;
     }
@@ -63,10 +62,10 @@ public class Quests extends ListenerModule {
         ActiveTracker.onEnable();
         NPCs.registerTrait("questgiver", TraitQuestGiver.class);
 
+        LegendsOfValeros.getInstance().getCommandManager().registerCommand(new QuestCommands());
+
         Bukkit.getServer().getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
         Bukkit.getServer().getPluginManager().registerEvents(new TraitQuestGiver.Marker(), LegendsOfValeros.getInstance());
-
-        Utilities.getCommandManager().loadCommandClass(QuestCommands.class);
 
         getLogger().info("is registering quests");
         {
@@ -108,9 +107,9 @@ public class Quests extends ListenerModule {
         ActionFactory.registerType("show_credits", ActionShowCredits.class);
 
         InventoryManager.addFixedItem(42, new InventoryManager.InventoryItem(null,
-                (p, event) -> p.performCommand("lov quests gui")));
+                (p, event) -> p.performCommand("quests gui")));
         InventoryManager.addFixedItem(43, new InventoryManager.InventoryItem(null,
-                (p, event) -> p.performCommand("lov quests gui")));
+                (p, event) -> p.performCommand("quests gui")));
 
         getLogger().info("is registering advancements.");
         NEW_OBJECTIVES = AdvancementAPI.builder(new NamespacedKey(LegendsOfValeros.getInstance(), "quests/new_objectives"))

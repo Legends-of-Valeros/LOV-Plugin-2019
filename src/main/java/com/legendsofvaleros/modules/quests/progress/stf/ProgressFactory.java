@@ -23,7 +23,7 @@ public class ProgressFactory {
     }
 
     public static void registerType(String type, Class<? extends IObjectiveProgress> objClass) {
-        Quests.getInstance().getLogger().info("Registered progress type: " + type);
+        Quests.getInstance().getLogger().finest("Registered progress type: " + type);
         progressTypes.put(type, objClass);
     }
 

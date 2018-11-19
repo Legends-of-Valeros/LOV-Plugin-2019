@@ -49,8 +49,10 @@ public class Regions extends ListenerModule {
     @Override
     public void onLoad() {
         plugin = this;
-        Utilities.getCommandManager().loadCommandClass(RegionCommands.class);
+
         regionManager = new RegionManager();
+
+        LegendsOfValeros.getInstance().getCommandManager().registerCommand(new RegionCommands());
 
         ObjectiveFactory.registerType("region_enter", EnterRegionObjective.class);
         ObjectiveFactory.registerType("region_exit", ExitRegionObjective.class);

@@ -14,7 +14,7 @@ public class QuestFactory {
     }
 
     public static void registerType(String type, Class<? extends IQuest> objClass) {
-        Quests.getInstance().getLogger().info("Registered quest type: " + type);
+        Quests.getInstance().getLogger().finest("Registered quest type: " + type);
         questTypes.put(type, objClass);
     }
 

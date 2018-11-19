@@ -283,13 +283,13 @@ public abstract class AbstractQuest implements IQuest {
             if (i == pages.size() - 1) {
                 if (ok)
                     fm.then(StringUtil.center(Book.WIDTH, "[Ok]")).color(ChatColor.DARK_GREEN)
-                            .command("/lov quests close");
+                            .command("/quests close");
                 else {
                     fm.then(" [Accept]  ").color(ChatColor.DARK_GREEN)
-                            .command("/lov quests accept " + id)
+                            .command("/quests accept " + id)
                             .then(" ")
                             .then("  [Decline] ").color(ChatColor.DARK_RED)
-                            .command("/lov quests decline " + id);
+                            .command("/quests decline " + id);
                 }
             }
 

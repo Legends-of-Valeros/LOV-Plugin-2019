@@ -30,7 +30,7 @@ public class Graveyards extends ListenerModule {
             return true;
         });
 
-        Utilities.getCommandManager().loadCommandClass(GraveyardCommands.class);
+        LegendsOfValeros.getInstance().getCommandManager().registerCommand(new GraveyardCommands());
 
         GraveyardManager.onEnable();
 

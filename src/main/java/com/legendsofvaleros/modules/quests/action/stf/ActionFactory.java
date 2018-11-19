@@ -11,7 +11,7 @@ public class ActionFactory {
 	public static Set<String> getTypes() { return actionTypes.keySet(); }
 
 	public static void registerType(String type, Class<? extends AbstractAction> objClass) {
-		Quests.getInstance().getLogger().info("Registered action: " + type);
+		Quests.getInstance().getLogger().finest("Registered action: " + type);
 		actionTypes.put(type, objClass);
 	}
 	

@@ -1,5 +1,7 @@
 package com.legendsofvaleros.util;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.*;
 import com.legendsofvaleros.util.cmd.CommandManager;
 import com.legendsofvaleros.util.cmd.CommandManager.Cmd;
 import com.legendsofvaleros.util.cmd.CommandManager.CommandFinished;
@@ -11,7 +13,8 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class DebugFlags {
+@CommandAlias("debug")
+public class DebugFlags extends BaseCommand {
 	protected static HashMap<UUID, DebugFlags> debug = new HashMap<>();
 	public static boolean is(Player p) { return debug.containsKey(p.getUniqueId()); }
 	public static DebugFlags get(Player p) {
@@ -19,25 +22,30 @@ public class DebugFlags {
 			debug.put(p.getUniqueId(), new DebugFlags());
 		return debug.get(p.getUniqueId());
 	}
-	
+
+	// Verbose
 	public boolean verbose = false;
-	@CommandManager.Cmd(cmd = "verbose", help = "Enable damage output.", only = CommandManager.CommandOnly.PLAYER)
-	public static CommandManager.CommandFinished cmdVerbose(CommandSender sender, Object[] args) {
-		if(get((Player)sender).verbose = !get((Player)sender).verbose)
-			MessageUtil.sendUpdate(sender, "Verbose debug enabled.");
+
+	@Subcommand("verbose")
+	@Description("Toggle verbose logging.")
+	@CommandPermission("debug.verbose")
+	public void cmdVerbose(Player player) {
+		if(get(player).verbose = !get(player).verbose)
+			MessageUtil.sendUpdate(player, "Verbose debug enabled.");
 		else
-			MessageUtil.sendUpdate(sender, "Verbose debug disabled.");
-		return CommandManager.CommandFinished.DONE;
+			MessageUtil.sendUpdate(player, "Verbose debug disabled.");
 	}
 	
 	// Combat
 	public boolean damage = false;
-	@CommandManager.Cmd(cmd = "damage", help = "Enable damage output.", only = CommandManager.CommandOnly.PLAYER)
-	public static CommandManager.CommandFinished cmdDamage(CommandSender sender, Object[] args) {
-		if(get((Player)sender).damage = !get((Player)sender).damage)
-			MessageUtil.sendUpdate(sender, "Damage debug enabled.");
+
+	@Subcommand("damage")
+	@Description("Enable damage output.")
+	@CommandPermission("debug.damage")
+	public void cmdDamage(Player player) {
+		if(get(player).damage = !get(player).damage)
+			MessageUtil.sendUpdate(player, "Damage debug enabled.");
 		else
-			MessageUtil.sendUpdate(sender, "Damage debug disabled.");
-		return CommandManager.CommandFinished.DONE;
+			MessageUtil.sendUpdate(player, "Damage debug disabled.");
 	}
 }

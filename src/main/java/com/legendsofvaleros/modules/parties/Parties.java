@@ -21,12 +21,9 @@ import org.bukkit.event.inventory.InventoryType;
 
 public class Parties extends ListenerModule {
     private static Parties plugin;
-
-    public static Parties inst() {
+    public static Parties getInstance() {
         return plugin;
     }
-
-    private CommandManager cmdManager;
 
     @Override
     public void onLoad() {
@@ -35,8 +32,7 @@ public class Parties extends ListenerModule {
 
         PartyManager.onEnable();
 
-        cmdManager = new CommandManager(LegendsOfValeros.getInstance(), "Parties", "lov.party", "party", "p");
-        cmdManager.loadCommandClass(PartyCommands.class);
+        LegendsOfValeros.getInstance().getCommandManager().registerCommand(new PartyCommands());
 
         //TODO move into chatchannel enum
         Chat.getInstance().registerChannel('P', new IChannelHandler() {
@@ -121,9 +117,7 @@ public class Parties extends ListenerModule {
 
             if (clickedParty == null) {
                 partyUI.slot(2, new ItemBuilder(Material.APPLE).setName("Invite to party!").create(), (gui14, p14, event14) -> {
-                    CommandManager.CommandFinished cmd = PartyCommands.cmdPartyInvite(p14, new Object[]{clickedPc.getPlayer()});
-                    if (cmd.shouldPrint())
-                        MessageUtil.sendError(p14, cmd.getErrorString());
+                    PartyCommands.cmdPartyInvite(p14, clickedPc.getPlayer());
                     gui14.close(p14);
                 });
             } else {
@@ -134,9 +128,7 @@ public class Parties extends ListenerModule {
                             MessageUtil.sendError(p, "You are not the party leader.");
                         } else {
                             partyUI.slot(2, new ItemBuilder(Material.APPLE).setName("Kick Player").create(), (gui13, p13, event13) -> {
-                                CommandManager.CommandFinished cmd = PartyCommands.cmdPartyKick(p13, new Object[]{clickedPc.getPlayer()});
-                                if (cmd.shouldPrint())
-                                    MessageUtil.sendError(p13, cmd.getErrorString());
+                                PartyCommands.cmdPartyKick(p13, clickedPc.getPlayer());
                                 gui13.close(p13);
                             });
                         }
@@ -147,9 +139,7 @@ public class Parties extends ListenerModule {
                 } else {
                     if (clickedParty.invitations.contains(Characters.getPlayerCharacter(p).getUniqueCharacterId())) {
                         partyUI.slot(2, new ItemBuilder(Material.APPLE).setName("Join their party!").create(), (gui12, p12, event12) -> {
-                            CommandManager.CommandFinished cmd = PartyCommands.cmdPartyJoin(p12, new Object[]{clickedPc.getPlayer()});
-                            if (cmd.shouldPrint())
-                                MessageUtil.sendError(p12, cmd.getErrorString());
+                            PartyCommands.cmdPartyJoin(p12, clickedPc.getPlayer());
                             gui12.close(p12);
                         });
                     } else {

@@ -35,8 +35,10 @@ public class Gear extends ListenerModule {
     public void onLoad() {
         instance = this;
 
+        LegendsOfValeros.getInstance().getCommandManager().registerCommand(new ItemCommands());
+
         Bukkit.getPluginManager().registerEvents(new InventoryListener(), LegendsOfValeros.getInstance());
-        Utilities.getCommandManager().loadCommandClass(ItemCommands.class);
+
         ItemManager.onEnable();
 
         GearRegistry.registerComponent("lore", LoreComponent.class);

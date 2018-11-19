@@ -1,5 +1,8 @@
 package com.legendsofvaleros.modules.mobs;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.CommandHelp;
+import co.aikar.commands.annotation.*;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.mobs.core.SpawnArea;
 import com.legendsofvaleros.util.cmd.CommandManager;
@@ -17,57 +20,68 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class MobCommands {
-	@CommandManager.Cmd(cmd = "mobs clear", help = "Clear the mob cache.", permission = "cache.clear")
-	public static CommandManager.CommandFinished cmdClear(CommandSender sender, Object[] args) {
+@CommandAlias("mobs|mob")
+public class MobCommands extends BaseCommand {
+	@Subcommand("clear")
+	@Description("Clear the mob cache.")
+	@CommandPermission("mobs.clear")
+	public void cmdClear(CommandSender sender) {
 		MobManager.clear();
 		MessageUtil.sendUpdate(sender, "Mob cache cleared.");
-		return CommandManager.CommandFinished.DONE;
 	}
 	
-	@CommandManager.Cmd(cmd = "mobs spawn create", args = "<radius> <padding> <instance name> <level min-level max> [spawn count] [spawn seconds] [spawn %]", argTypes = { CommandManager.Arg.ArgInteger.class, CommandManager.Arg.ArgInteger.class, CommandManager.Arg.ArgString.class, CommandManager.Arg.ArgString.class, CommandManager.Arg.ArgShort.class, CommandManager.Arg.ArgShort.class, CommandManager.Arg.ArgByte.class }, help = "Create a instance spawn.", longhelp = "Create a instance spawn at your current location with radius.", permission = "spawn.create", only = CommandManager.CommandOnly.PLAYER)
-	public static CommandManager.CommandFinished cmdCreate(CommandSender sender, Object[] args) {
-		Mob mobData = MobManager.getEntity((String)args[2]);
-		if(mobData == null)
-			return CommandManager.CommandFinished.CUSTOM.replace("Unknown instance ID.");
+	@Subcommand("spawn")
+	@Description("Create a mob spawn point at your current location with radius.")
+	@CommandPermission("mobs.spawn.create")
+	@Syntax("<mob id> <radius> <padding> <level min-max> [spawn count] [spawn seconds] [spawn chance]")
+	public void cmdCreate(Player player, String id, int radius, int padding, String level, @Optional Short count, @Optional Short interval, @Optional Byte percent) {
+		Mob mobData = MobManager.getEntity(id);
+		if(mobData == null) {
+			MessageUtil.sendError(player, "Unknown mob with that ID.");
+			return;
+		}
 
 		int[] levels;
-		if(String.valueOf(args[3]).contains("-")) {
+		if(level.contains("-")) {
 			levels = new int[] {
-					Integer.parseInt(String.valueOf(args[3]).split("-")[0]),
-					Integer.parseInt(String.valueOf(args[3]).split("-")[1])
+					Integer.parseInt(level.split("-")[0]),
+					Integer.parseInt(level.split("-")[1])
 				};
 		}else{
-			levels = new int[] { Integer.parseInt(String.valueOf(args[3])), Integer.parseInt(String.valueOf(args[3])) };
+			levels = new int[] { Integer.parseInt(level), Integer.parseInt(level) };
 		}
 		
-		SpawnArea data = new SpawnArea(((Player)sender).getLocation().getWorld().getName(), ((Player)sender).getLocation().getBlockX(), ((Player)sender).getLocation().getBlockY(), ((Player)sender).getLocation().getBlockZ(), (Integer)args[0], (Integer)args[1], (String)args[2], levels);
+		SpawnArea data = new SpawnArea(player.getLocation().getWorld().getName(), player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ(), id, radius, padding, levels);
 
-		sender.sendMessage(ChatColor.YELLOW + "Created spawn area with radius " + data.getRadius() + " blocks.");
+		MessageUtil.sendUpdate(player, "Created spawn area with radius " + data.getRadius() + " blocks.");
+
+		MessageUtil.sendUpdate(player, "Set spawn point " + data.getLocation() + " level to [" + data.getLevelRange()[0] + "-" + data.getLevelRange()[1] + "].");
 		
-		sender.sendMessage(ChatColor.YELLOW + "Set spawn point " + data.getLocation() + " level to [" + data.getLevelRange()[0] + "-" + data.getLevelRange()[1] + "].");
-		
-		if(args.length >= 5) {
-			data.spawnCount = (Short)args[4];
-			sender.sendMessage(ChatColor.YELLOW + "  Will spawn up to " + data.spawnCount + " entities.");
+		if(count != null) {
+			data.spawnCount = count;
+			MessageUtil.sendUpdate(player, "  Will spawn up to " + data.spawnCount + " entities.");
 		}
 
-		if(args.length >= 6) {
-			data.spawnInterval = (Short)args[5];
-			sender.sendMessage(ChatColor.YELLOW + "  Will update about every " + data.spawnInterval + " seconds.");
-			sender.sendMessage(ChatColor.YELLOW + "  On Update:.");
-			sender.sendMessage(ChatColor.YELLOW + "    Spawn cleared when no players nearby.");
-			sender.sendMessage(ChatColor.YELLOW + "    If players nearby, spawn new mobs.");
+		if(interval != null) {
+			data.spawnInterval = interval;
+			MessageUtil.sendUpdate(player, "  Will update about every " + data.spawnInterval + " seconds.");
+			MessageUtil.sendUpdate(player, "  On Update:.");
+			MessageUtil.sendUpdate(player, "    Spawn cleared when no players nearby.");
+			MessageUtil.sendUpdate(player, "    If players nearby, spawn new mobs.");
 		}
 		
-		if(args.length >= 7) {
-			data.spawnChance = (Byte)args[6];
-			sender.sendMessage(ChatColor.YELLOW + "  There is a " + data.spawnChance + "% chance it'll spawn.");
+		if(percent != null) {
+			data.spawnChance = percent;
+			MessageUtil.sendUpdate(player, "  There is a " + data.spawnChance + "% chance it'll spawn.");
 		}
 
 		SpawnManager.addSpawn(null, data);
 		SpawnManager.updateSpawn(data);
-		
-		return CommandManager.CommandFinished.DONE;
+	}
+
+	@Default
+	@HelpCommand
+	public void cmdHelp(CommandSender sender, CommandHelp help) {
+		help.showHelp();
 	}
 }

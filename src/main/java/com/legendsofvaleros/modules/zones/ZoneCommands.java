@@ -1,5 +1,9 @@
 package com.legendsofvaleros.modules.zones;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.CommandHelp;
+import co.aikar.commands.annotation.*;
+import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.cmd.CommandManager;
 import com.legendsofvaleros.util.cmd.CommandManager;
 import org.bukkit.command.CommandSender;
@@ -7,19 +11,19 @@ import org.bukkit.command.CommandSender;
 import com.legendsofvaleros.util.cmd.CommandManager.Cmd;
 import com.legendsofvaleros.util.cmd.CommandManager.CommandFinished;
 
-public class ZoneCommands {
-	@CommandManager.Cmd(cmd = "zones reload", help = "Reload the zone cache.", permission = "zones.reload")
-	public static CommandManager.CommandFinished cmdReload(CommandSender sender, Object[] args) {
+@CommandAlias("zones|zone")
+public class ZoneCommands extends BaseCommand {
+	@Subcommand("reload")
+	@Description("Reload the zone cache.")
+	@CommandPermission("zones.reload")
+	public void cmdReload(CommandSender sender) {
 		Zones.manager().loadZones();
-		sender.sendMessage("Zones reloaded.");
-		return CommandManager.CommandFinished.DONE;
+		MessageUtil.sendUpdate(sender, "Zones reloaded.");
 	}
 
-	@CommandManager.Cmd(cmd = "zones", help = "List all zones.", permission = "zones.list")
-	public static CommandManager.CommandFinished cmdList(CommandSender sender, Object[] args) {
-		sender.sendMessage("Zones:");
-		for(Zone zone : Zones.manager().getZones())
-			sender.sendMessage(" -" + zone.material.name() + (zone.materialData > 0 ? ":" + zone.materialData : "") + " = " + zone.name);
-		return CommandManager.CommandFinished.DONE;
+	@Default
+	@HelpCommand
+	public void cmdHelp(CommandSender sender, CommandHelp help) {
+		help.showHelp();
 	}
 }

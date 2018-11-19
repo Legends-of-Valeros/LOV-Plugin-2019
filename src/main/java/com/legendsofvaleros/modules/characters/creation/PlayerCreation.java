@@ -1,5 +1,11 @@
 package com.legendsofvaleros.modules.characters.creation;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Default;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Optional;
+import co.aikar.commands.annotation.Subcommand;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.codingforcookies.robert.core.StringUtil;
 import com.codingforcookies.robert.item.Book;
@@ -35,6 +41,8 @@ public class PlayerCreation implements Listener {
 	private static List<UUID> locked = new ArrayList<>();
 	
 	public static void onEnable() {
+		LegendsOfValeros.getInstance().getCommandManager().registerCommand(new CreationCommand());
+
 		Bukkit.getPluginManager().registerEvents(new PlayerCreation(), LegendsOfValeros.getInstance());
 	}
 	
@@ -114,10 +122,10 @@ public class PlayerCreation implements Listener {
 							.then("000").color(ChatColor.DARK_GRAY).style(ChatColor.MAGIC)
 					.then("\nRace:      ").color(ChatColor.BLACK)
 						.then(info.race == null ? "[Select]" : "[" + info.race.getUserFriendlyName() + "]").color(ChatColor.DARK_PURPLE)
-							.command("/lov create race") 
+							.command("/creation race")
 					.then("\nSchooling: ").color(ChatColor.BLACK)
 						.then(info.clazz == null ? "[Select]" : "[" + info.clazz.getUserFriendlyName() + "]").color(ChatColor.DARK_PURPLE)
-							.command("/lov create class")
+							.command("/creation class")
 					
 					.then("\n\n\n\n" + StringUtil.center(Book.WIDTH, "Certified by")).color(ChatColor.DARK_GRAY).style(ChatColor.UNDERLINE)
 					.then("\n\nRoyal Court of ").color(ChatColor.RED).style(ChatColor.ITALIC)
@@ -125,128 +133,121 @@ public class PlayerCreation implements Listener {
 					.then("\n\n" + StringUtil.center(Book.WIDTH, "[Approve]")).color(ChatColor.DARK_GRAY);
 		
 		if(info.clazz != null && info.race != null)
-			fm.color(ChatColor.DARK_PURPLE).command("/lov create");
+			fm.color(ChatColor.DARK_PURPLE).command("/creation finalize");
 		
 		book.addPage(fm);
 
 		book.open(player, false);
 	}
-	
-	@CommandManager.Cmd(cmd = "create", only= CommandManager.CommandOnly.PLAYER, showInHelp=false)
-	public static CommandManager.CommandFinished cmdFinalize(CommandSender sender, Object[] args) {
-		CreationInfo info = creators.get(((Player)sender).getUniqueId());
-		if(info == null) return CommandManager.CommandFinished.CUSTOM.replace("Not in character creation");
-		
-		info.listener.onOptionsFinalized((Player)sender, info.number, info.race, info.clazz);
-		
-		return CommandManager.CommandFinished.DONE;
-	}
-	
-	@CommandManager.Cmd(cmd = "create race", args="[race]", only= CommandManager.CommandOnly.PLAYER, showInHelp=false)
-	public static CommandManager.CommandFinished cmdSelectRace(CommandSender sender, Object[] args) {
-		CreationInfo info = creators.get(((Player)sender).getUniqueId());
-		if(info == null) return CommandManager.CommandFinished.CUSTOM.replace("Not in character creation");
-		
-		if(args.length == 0) {
-			Book book = new Book("Select Race", "You");
 
-			StringBuilder tooltip = new StringBuilder();
-			
-			FancyMessage fm;
-			for(EntityRace race : EntityRace.values()) {
-				RaceConfig config = Characters.getInstance().getCharacterConfig().getRaceConfig(race);
+	@CommandAlias("creation")
+	public static class CreationCommand extends BaseCommand {
+		@Subcommand("finalize")
+		private void cmdFinalize(Player player) {
+			CreationInfo info = creators.get(player.getUniqueId());
+			if(info == null) return;
 
-				fm = new FancyMessage(StringUtil.center(Book.WIDTH, race.getUserFriendlyName()) + "\n").color(ChatColor.BLACK).style(ChatColor.UNDERLINE);
+			info.listener.onOptionsFinalized(player, info.number, info.race, info.clazz);
+		}
 
-				if(config.getModifiers().size() > 0) {
-					tooltip.append(ChatColor.GOLD);
-					tooltip.append(ChatColor.BOLD);
-					tooltip.append("Stats:");
-					
-					for(StatModifierModel mod : config.getModifiers()) {
-						tooltip.append("\n ");
-						tooltip.append(ChatColor.GRAY);
-						tooltip.append(mod.getStat().getUserFriendlyName());
-						switch(mod.getModifierType()) {
-							case FLAT_EDIT:
-							case FLAT_EDIT_IGNORES_MULTIPLIERS:
-								tooltip.append(" + ");
-								tooltip.append(DF.format(mod.getValue()));
-								break;
-							case MULTIPLIER:
-								tooltip.append(" * ");
-								tooltip.append(DF.format(mod.getValue() * 100));
-								tooltip.append("%");
-								break;
+		@Subcommand("race")
+		private void cmdSelectRace(Player player, @Optional String selection) {
+			CreationInfo info = creators.get(player.getUniqueId());
+			if(info == null) return;
+
+			if(selection == null) {
+				Book book = new Book("Select Race", "You");
+
+				StringBuilder tooltip = new StringBuilder();
+
+				FancyMessage fm;
+				for(EntityRace race : EntityRace.values()) {
+					RaceConfig config = Characters.getInstance().getCharacterConfig().getRaceConfig(race);
+
+					fm = new FancyMessage(StringUtil.center(Book.WIDTH, race.getUserFriendlyName()) + "\n").color(ChatColor.BLACK).style(ChatColor.UNDERLINE);
+
+					if(config.getModifiers().size() > 0) {
+						tooltip.append(ChatColor.GOLD);
+						tooltip.append(ChatColor.BOLD);
+						tooltip.append("Stats:");
+
+						for(StatModifierModel mod : config.getModifiers()) {
+							tooltip.append("\n ");
+							tooltip.append(ChatColor.GRAY);
+							tooltip.append(mod.getStat().getUserFriendlyName());
+							switch(mod.getModifierType()) {
+								case FLAT_EDIT:
+								case FLAT_EDIT_IGNORES_MULTIPLIERS:
+									tooltip.append(" + ");
+									tooltip.append(DF.format(mod.getValue()));
+									break;
+								case MULTIPLIER:
+									tooltip.append(" * ");
+									tooltip.append(DF.format(mod.getValue() * 100));
+									tooltip.append("%");
+									break;
+							}
 						}
 					}
+
+					fm.then("Benefits").color(ChatColor.DARK_PURPLE).style(ChatColor.BOLD)
+							.tooltip(tooltip.toString())
+							.then("  |  ").color(ChatColor.BLACK)
+							.then("Climate").color(ChatColor.DARK_PURPLE).style(ChatColor.BOLD)
+							.tooltip(config.getClimateDescription());
+
+					tooltip.setLength(0);
+
+					fm.then("\n");
+
+					for(String line : config.getDescription())
+						fm.then("\n" + line).color(ChatColor.BLACK);
+
+					fm.then("\n\n" + StringUtil.center(Book.WIDTH, "[Select this Race]")).color(ChatColor.DARK_PURPLE)
+							.command("/creation race " + race.name());
+
+					book.addPage(fm);
 				}
-				
-				fm.then("Benefits").color(ChatColor.DARK_PURPLE).style(ChatColor.BOLD)
-					.tooltip(tooltip.toString())
-				.then("  |  ").color(ChatColor.BLACK)
-				.then("Climate").color(ChatColor.DARK_PURPLE).style(ChatColor.BOLD)
-					.tooltip(config.getClimateDescription());
 
-				tooltip.setLength(0);
-				
-				fm.then("\n");
-				
-				for(String line : config.getDescription())
-					fm.then("\n" + line).color(ChatColor.BLACK);
-				
-				fm.then("\n\n" + StringUtil.center(Book.WIDTH, "[Select this Race]")).color(ChatColor.DARK_PURPLE)
-					.command("/lov create race " + race.name());
-				
-				book.addPage(fm);
+				book.open(player, false);
 			}
 
-			book.open((Player)sender, false);
-			
-			return CommandManager.CommandFinished.DONE;
+			info.race = EntityRace.valueOf(selection);
+
+			openCreation(player);
 		}
-		
-		info.race = EntityRace.valueOf((String)args[0]);
-		
-		openCreation((Player)sender);
-		
-		return CommandManager.CommandFinished.DONE;
-	}
-	
-	@CommandManager.Cmd(cmd = "create class", args="[race]", only= CommandManager.CommandOnly.PLAYER, showInHelp=false)
-	public static CommandManager.CommandFinished cmdSelectClass(CommandSender sender, Object[] args) {
-		CreationInfo info = creators.get(((Player)sender).getUniqueId());
-		if(info == null) return CommandManager.CommandFinished.CUSTOM.replace("Not in character creation");
-		
-		if(args.length == 0) {
-			Book book = new Book("Select Class", "You");
-			
-			FancyMessage fm;
-			for(EntityClass clazz : EntityClass.values()) {
-				if(clazz == EntityClass.PRIEST || clazz == EntityClass.ROGUE) continue;
-				
-				ClassConfig config = Characters.getInstance().getCharacterConfig().getClassConfig(clazz);
-				
-				fm = new FancyMessage(StringUtil.center(Book.WIDTH, clazz.getUserFriendlyName()) + "\n").color(ChatColor.BLACK).style(ChatColor.UNDERLINE);
-				
-				for(String line : config.getLongDescription())
-					fm.then("\n" + line).color(ChatColor.BLACK);
-				
-				fm.then("\n\n" + StringUtil.center(Book.WIDTH, "[Select this Class]")).color(ChatColor.DARK_PURPLE)
-					.command("/lov create class " + clazz.name());
-				
-				book.addPage(fm);
+
+		@Subcommand("class")
+		private void cmdSelectClass(Player player, @Optional String selection) {
+			CreationInfo info = creators.get(player.getUniqueId());
+			if(info == null) return;
+
+			if(selection == null) {
+				Book book = new Book("Select Class", "You");
+
+				FancyMessage fm;
+				for(EntityClass clazz : EntityClass.values()) {
+					if(clazz == EntityClass.PRIEST || clazz == EntityClass.ROGUE) continue;
+
+					ClassConfig config = Characters.getInstance().getCharacterConfig().getClassConfig(clazz);
+
+					fm = new FancyMessage(StringUtil.center(Book.WIDTH, clazz.getUserFriendlyName()) + "\n").color(ChatColor.BLACK).style(ChatColor.UNDERLINE);
+
+					for(String line : config.getLongDescription())
+						fm.then("\n" + line).color(ChatColor.BLACK);
+
+					fm.then("\n\n" + StringUtil.center(Book.WIDTH, "[Select this Class]")).color(ChatColor.DARK_PURPLE)
+							.command("/creation class " + clazz.name());
+
+					book.addPage(fm);
+				}
+
+				book.open(player, false);
 			}
 
-			book.open((Player)sender, false);
-			
-			return CommandManager.CommandFinished.DONE;
-		}
+			info.clazz = EntityClass.valueOf(selection);
 
-		info.clazz = EntityClass.valueOf((String)args[0]);
-		
-		openCreation((Player)sender);
-		
-		return CommandManager.CommandFinished.DONE;
+			openCreation(player);
+		}
 	}
 }

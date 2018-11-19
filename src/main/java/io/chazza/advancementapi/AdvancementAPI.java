@@ -172,7 +172,7 @@ public class AdvancementAPI {
     public AdvancementAPI add() {
         try {
             Bukkit.getUnsafe().loadAdvancement(id, getJSON());
-            Bukkit.getLogger().info("Successfully registered advancement.");
+            Bukkit.getLogger().finest("Successfully registered advancement.");
         } catch (IllegalArgumentException e) {
             Bukkit.getLogger().info("Error registering advancement. It seems to already exist!");
         }

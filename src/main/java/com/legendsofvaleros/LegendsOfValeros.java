@@ -75,8 +75,6 @@ public class LegendsOfValeros extends JavaPlugin {
         shutdown = true;
 
         ModuleManager.unloadModules();
-
-        instance = null;
     }
 
     private void registerModules() throws Exception {

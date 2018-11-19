@@ -1,8 +1,8 @@
 package com.legendsofvaleros.modules.characters.core;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.codingforcookies.doris.orm.ORMField;
 import com.codingforcookies.doris.orm.ORMRegistry;
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
@@ -34,38 +34,15 @@ import java.util.UUID;
  * and progression.
  */
 public class Characters extends ListenerModule implements CharactersAPI {
-
-    private static Characters singleton;
-
-    @Override public void onLoad() {
-        singleton = this;
-        this.init();
-        // TODO testing
-        new Test();
-    }
-
-    @Override public void onUnload() {
-        // saves regenerating stat levels
-        singleton.persistentRegenStats.onDisable();
-
-        // saves persistent effects on player-characters
-        PersistingEffects.onDisable();
-
-        // cleanup for player locks
-        PlayerLock.onDisable();
-
-        // Saves core player-character data. This should go last, to preserve the core of Characters
-        // long enough for other disabling modules to use them
-        PlayerCharacterData.onDisable();
-    }
+    private static Characters instance;
 
     /**
-     * Gets the singleton instance of Characters, which implements its main API.
+     * Gets the instance instance of Characters, which implements its main API.
      * @return The Characters instance.
      * @throws IllegalStateException If Characters is not enabled.
      */
     public static Characters getInstance() throws IllegalStateException {
-        return singleton;
+        return instance;
     }
 
     private CharactersConfig config;
@@ -76,8 +53,11 @@ public class Characters extends ListenerModule implements CharactersAPI {
     private PersistentRegeneratingStats persistentRegenStats;
     private SkillEffects skillEffects;
 
-    private void init() {
-        Utilities.getCommandManager().loadCommandClass(CharacterCommands.class);
+    @Override
+    public void onLoad() {
+        instance = this;
+
+        LegendsOfValeros.getInstance().getCommandManager().registerCommand(new CharacterCommands());
 
         // configuration
         config = new BukkitConfig();
@@ -131,6 +111,24 @@ public class Characters extends ListenerModule implements CharactersAPI {
                 return value.toString();
             }
         });
+
+        new Test();
+    }
+
+    @Override
+    public void onUnload() {
+        // saves regenerating stat levels
+        instance.persistentRegenStats.onDisable();
+
+        // saves persistent effects on player-characters
+        PersistingEffects.onDisable();
+
+        // cleanup for player locks
+        PlayerLock.onDisable();
+
+        // Saves core player-character data. This should go last, to preserve the core of Characters
+        // long enough for other disabling modules to use them
+        PlayerCharacterData.onDisable();
     }
 
     public static void openCharacterSelection(Player p) {
@@ -138,23 +136,23 @@ public class Characters extends ListenerModule implements CharactersAPI {
     }
 
     public static boolean isPlayerCharacterLoaded(UUID uuid) {
-        return singleton.isCharacterLoaded(Bukkit.getPlayer(uuid));
+        return instance.isCharacterLoaded(Bukkit.getPlayer(uuid));
     }
 
     public static PlayerCharacter getPlayerCharacter(UUID uuid) {
-        return singleton.getCurrentCharacter(Bukkit.getPlayer(uuid));
+        return instance.getCurrentCharacter(Bukkit.getPlayer(uuid));
     }
 
     public static PlayerCharacter getPlayerCharacter(CharacterId id) {
-        return singleton.getCharacter(id);
+        return instance.getCharacter(id);
     }
 
     public static boolean isPlayerCharacterLoaded(Player player) {
-        return singleton.isCharacterLoaded(player);
+        return instance.isCharacterLoaded(player);
     }
 
     public static PlayerCharacter getPlayerCharacter(Player player) {
-        return singleton.getCurrentCharacter(player);
+        return instance.getCurrentCharacter(player);
     }
 
     @Override

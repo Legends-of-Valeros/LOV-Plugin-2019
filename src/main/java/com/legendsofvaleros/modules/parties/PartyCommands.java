@@ -1,5 +1,8 @@
 package com.legendsofvaleros.modules.parties;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.CommandHelp;
+import co.aikar.commands.annotation.*;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -21,85 +24,106 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class PartyCommands {
-	@CommandManager.Cmd(cmd = "create", help = "Create a new party.", longhelp = "Create a party. You are set as the leader and the only member.", only = CommandManager.CommandOnly.PLAYER)
-	public static CommandManager.CommandFinished cmdPartyCreate(CommandSender sender, Object[] args) {
-		PlayerCharacter pc = getPlayerCharacter(sender);
-		if(getCurrentParty(pc) != null)
-			return CommandManager.CommandFinished.CUSTOM.replace("You are already in a party. If you'd like to leave, use /party leave");
+@CommandAlias("party|p")
+public class PartyCommands extends BaseCommand {
+	@Subcommand("create")
+	@Description("Create a new party.")
+	public static void cmdPartyCreate(Player player) {
+		PlayerCharacter pc = getPlayerCharacter(player);
+		if(getCurrentParty(pc) != null) {
+			MessageUtil.sendError(player, "You are already in a party. If you'd like to leave, use /party leave");
+			return;
+		}
 		
 		PartyManager.addMember(new PlayerParty(), pc.getUniqueCharacterId());
-		return CommandManager.CommandFinished.DONE;
 	}
-	
-	@CommandManager.Cmd(cmd = "join", args = "<player>", argTypes = { CommandManager.Arg.ArgPlayer.class }, help = "Join a party.", longhelp = "Join a party that you have been invited to.", only = CommandManager.CommandOnly.PLAYER)
-	public static CommandManager.CommandFinished cmdPartyJoin(CommandSender sender, Object[] args) {
-		PlayerCharacter pc = getPlayerCharacter(sender);
-		if(getCurrentParty(pc) != null)
-			return CommandManager.CommandFinished.CUSTOM.replace("You are already in a party. If you'd like to leave, use /party leave");
 
-		PlayerCharacter tpc = getPlayerCharacter((Player)args[0]);
+	@Subcommand("join")
+	@Description("Join an existing party that you have been invited to.")
+	@Syntax("<player>")
+	public static void cmdPartyJoin(Player player, Player join) {
+		PlayerCharacter pc = getPlayerCharacter(player);
+		if(getCurrentParty(pc) != null) {
+			MessageUtil.sendError(player, "You are already in a party. If you'd like to leave, use /party leave");
+			return;
+		}
+
+		PlayerCharacter tpc = getPlayerCharacter(join);
 		PlayerParty pp = getCurrentParty(tpc);
-		if(pp == null)
-			return CommandManager.CommandFinished.CUSTOM.replace("That player is not in a party.");
-		else if(!pp.invitations.contains(pc.getUniqueCharacterId()))
-			return CommandManager.CommandFinished.CUSTOM.replace("You have not been invited to that party.");
-		else
+		if(pp == null) {
+			MessageUtil.sendError(player, "That player is not in a party.");
+			return;
+		}else if(!pp.invitations.contains(pc.getUniqueCharacterId())) {
+			MessageUtil.sendError(player, "You have not been invited to that party.");
+			return;
+		}else
 			PartyManager.addMember(pp, pc.getUniqueCharacterId());
-		
-		return CommandManager.CommandFinished.DONE;
 	}
-	
-	@CommandManager.Cmd(cmd = "leave", help = "Leave your party.", longhelp = "Leave your party. If another player is still in the party, they'll be set as the leader.", only = CommandManager.CommandOnly.PLAYER)
-	public static CommandManager.CommandFinished cmdPartyLeave(CommandSender sender, Object[] args) {
-		PlayerCharacter pc = getPlayerCharacter(sender);
-		if(getCurrentParty(pc) == null)
-			return CommandManager.CommandFinished.CUSTOM.replace("You are not in a party. If you'd like to create one, use /party create");
+
+	@Subcommand("leave")
+	@Description("Leave your party.")
+	public void cmdPartyLeave(Player player) {
+		PlayerCharacter pc = getPlayerCharacter(player);
+		if(getCurrentParty(pc) == null) {
+			MessageUtil.sendError(player, "You are not in a party. If you'd like to create one, use /party create");
+			return;
+		}
 		
 		PartyManager.removeMember(getCurrentParty(pc), pc.getUniqueCharacterId());
-		return CommandManager.CommandFinished.DONE;
 	}
 	
-	@CommandManager.Cmd(cmd = "invite", args = "<player>", argTypes = { CommandManager.Arg.ArgPlayer.class }, help = "Invite a player.", longhelp = "Invite a player to your party!", only = CommandManager.CommandOnly.PLAYER)
-	public static CommandManager.CommandFinished cmdPartyInvite(CommandSender sender, Object[] args) {
-		PlayerCharacter pc = getPlayerCharacter(sender);
-		if(getCurrentParty(pc) == null)
-			return CommandManager.CommandFinished.CUSTOM.replace("You are not in a party. If you'd like to create one, use /party create");
+	@Subcommand("invite")
+	@Description("Invite a player to your party.")
+	@Syntax("<player>")
+	public static void cmdPartyInvite(Player player, Player invite) {
+		PlayerCharacter pc = getPlayerCharacter(player);
+		if(getCurrentParty(pc) == null) {
+			MessageUtil.sendError(player, "You are not in a party. If you'd like to create one, use /party create");
+			return;
+		}
 		
-		PlayerCharacter tpc = getPlayerCharacter((Player)args[0]);
+		PlayerCharacter tpc = getPlayerCharacter(invite);
 		PlayerParty pp = getCurrentParty(pc);
 		if(!pp.invitations.contains(tpc.getUniqueCharacterId())) {
 			pp.invitations.add(tpc.getUniqueCharacterId());
-			MessageUtil.sendUpdate(sender, "Invited " + tpc.getPlayer().getName() + " to the party.");
-			MessageUtil.sendInfo(tpc.getPlayer(), sender.getName() + " has invited you to their party.");
-		}else
-			return CommandManager.CommandFinished.CUSTOM.replace("You have already invited that player.");
-		return CommandManager.CommandFinished.DONE;
+			MessageUtil.sendUpdate(player, "Invited " + tpc.getPlayer().getName() + " to the party.");
+			MessageUtil.sendInfo(tpc.getPlayer(), player.getDisplayName() + " has invited you to their party.");
+		}else{
+			MessageUtil.sendError(player, "You have already invited that player.");
+			return;
+		}
 	}
 	
-	@CommandManager.Cmd(cmd = "kick", args = "<player>", argTypes = { CommandManager.Arg.ArgOfflinePlayer.class }, help = "Kick a player.", longhelp = "Kick a player from your party cuz they've been baaaad.", only = CommandManager.CommandOnly.PLAYER)
-	public static CommandManager.CommandFinished cmdPartyKick(CommandSender sender, Object[] args) {
-		PlayerCharacter pc = getPlayerCharacter(sender);
-		if(getCurrentParty(pc) == null)
-			return CommandManager.CommandFinished.CUSTOM.replace("You are not in a party. If you'd like to create one, use /party create");
+	@Subcommand("kick")
+	@Description("Kick a player from your party.")
+	@Syntax("<player>")
+	public static void cmdPartyKick(Player player, OfflinePlayer kick) {
+		PlayerCharacter pc = getPlayerCharacter(player);
+		if(getCurrentParty(pc) == null) {
+			MessageUtil.sendError(player, "You are not in a party. If you'd like to create one, use /party create");
+			return;
+		}
 		
 		PlayerParty pp = getCurrentParty(pc);
 		if(pp.getLeader().getPlayerId().equals(pc.getPlayer().getUniqueId())) {
 			CharacterId targetId = null;
     		for(CharacterId id : pp.getMembers())
-    			if(id.getPlayerId().equals(((OfflinePlayer)args[0]).getUniqueId())) {
+    			if(id.getPlayerId().equals(kick.getUniqueId())) {
     				targetId = id;
     				break;
     			}
     		
-    		if(targetId == null)
-    			return CommandManager.CommandFinished.CUSTOM.replace("That player is not in the party.");
+    		if(targetId == null) {
+    			MessageUtil.sendError(player, "That player is not in the party.");
+				return;
+			}
     		
-    		MessageUtil.sendUpdate(sender, sender.getName() + " has kicked " + Bukkit.getOfflinePlayer(targetId.getPlayerId()).getName() + " from the party.");
+    		MessageUtil.sendUpdate(player, player.getDisplayName() + " has kicked " + Bukkit.getOfflinePlayer(targetId.getPlayerId()).getName() + " from the party.");
     		PartyManager.removeMember(pp, targetId);
-		}else
-			return CommandManager.CommandFinished.CUSTOM.replace("You are not the party leader.");
-		return CommandManager.CommandFinished.DONE;
+		}else{
+			MessageUtil.sendError(player, "You are not the party leader.");
+			return;
+		}
 	}
 	
 	public static PlayerCharacter getPlayerCharacter(CommandSender sender) {
@@ -109,5 +133,11 @@ public class PartyCommands {
 	
 	public static PlayerParty getCurrentParty(PlayerCharacter pc) {
 		return (PlayerParty)PartyManager.getPartyByMember(pc.getUniqueCharacterId());
+	}
+
+	@Default
+	@HelpCommand
+	public void cmdHelp(CommandSender sender, CommandHelp help) {
+		help.showHelp();
 	}
 }

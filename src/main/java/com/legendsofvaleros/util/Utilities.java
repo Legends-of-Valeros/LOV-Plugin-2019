@@ -35,11 +35,6 @@ public class Utilities extends ListenerModule {
         return instance;
     }
 
-    private static CommandManager cm;
-    public static CommandManager getCommandManager() {
-        return cm;
-    }
-
     private static Set<UUID> op = new HashSet<>();
     public static boolean isOp(Player p) {
         return op.contains(p.getUniqueId());
@@ -59,12 +54,10 @@ public class Utilities extends ListenerModule {
         super.onLoad();
         instance = this;
 
+        LegendsOfValeros.getInstance().getCommandManager().registerCommand(new LOVCommands());
+        LegendsOfValeros.getInstance().getCommandManager().registerCommand(new DebugFlags());
+
         Discord.onEnable();
-
-        cm = new CommandManager(LegendsOfValeros.getInstance(), "LOV", "lov", "lov");
-        cm.loadCommandClass(LOVCommands.class);
-
-        new CommandManager(LegendsOfValeros.getInstance(), "Debug", "debug", "debug").loadCommandClass(DebugFlags.class);
 
         LoggingOut.onEnable();
         ExceptionManager.onEnable(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"));

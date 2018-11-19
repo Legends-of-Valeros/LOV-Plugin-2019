@@ -27,7 +27,7 @@ public class PrerequisiteFactory {
     }
 
     public static void registerType(String type, Class<? extends IQuestPrerequisite> objClass) {
-        Quests.getInstance().getLogger().info("Registered prerequisite: " + type);
+        Quests.getInstance().getLogger().finest("Registered prerequisite: " + type);
         progressTypes.put(type, objClass);
     }
 }

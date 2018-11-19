@@ -1,5 +1,8 @@
 package com.legendsofvaleros.modules.characters.core;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.CommandHelp;
+import co.aikar.commands.annotation.*;
 import com.codingforcookies.robert.item.Book;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLevelUpEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerInformationBookEvent;
@@ -11,15 +14,22 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class CharacterCommands {
+@CommandAlias("char|character|characters")
+public class CharacterCommands extends BaseCommand {
 	@SuppressWarnings("deprecation")
-	@CommandManager.Cmd(cmd = "setlevel", args = "<level>", argTypes = { CommandManager.Arg.ArgInteger.class }, help = "Set your level.", permission = "character.level.set", only = CommandManager.CommandOnly.PLAYER)
-	public static CommandManager.CommandFinished cmdSetLevel(CommandSender sender, Object[] args) {
-		if(!Characters.isPlayerCharacterLoaded((Player)sender)) return CommandManager.CommandFinished.CUSTOM.replace("You have not selected a character.");
-		
-		int level = (Integer)args[0];
-		
-		PlayerCharacter pc = Characters.getPlayerCharacter((Player)sender);
+	@Subcommand("level set")
+	@Description("Set a character's level.")
+	@CommandPermission("character.level.set")
+	@Syntax("[player] <level>")
+	public void cmdSetLevel(CommandSender sender, @Optional Player player, int level) {
+		if(player == null) {
+			if(!(sender instanceof Player)) return;
+			player = (Player)sender;
+		}
+
+		if(!Characters.isPlayerCharacterLoaded(player)) return;
+
+		PlayerCharacter pc = Characters.getPlayerCharacter(player);
 		if(level < 0) {
 			MessageUtil.sendError(sender, "Level must be greater than -1.");
 		}else if(level > Characters.getInstance().getCharacterConfig().getMaxLevel()) {
@@ -32,16 +42,22 @@ public class CharacterCommands {
 			
 			MessageUtil.sendUpdate(sender, "Level changed to " + level + "!");
 		}
-		
-		return CommandManager.CommandFinished.DONE;
 	}
 	
 	@SuppressWarnings("deprecation")
-	@CommandManager.Cmd(cmd = "levelup", help = "Level yourself up.", permission = "character.level.up", only = CommandManager.CommandOnly.PLAYER)
-	public static CommandManager.CommandFinished cmdLevelup(CommandSender sender, Object[] args) {
-		if(!Characters.isPlayerCharacterLoaded((Player)sender)) return CommandManager.CommandFinished.CUSTOM.replace("You have not selected a character.");
-		
-		PlayerCharacter pc = Characters.getPlayerCharacter((Player)sender);
+	@Subcommand("level up")
+	@Description("Up a character's level.")
+	@CommandPermission("character.level.up")
+	@Syntax("[player]")
+	public void cmdLevelup(CommandSender sender, Player player) {
+		if(player == null) {
+			if(!(sender instanceof Player)) return;
+			player = (Player)sender;
+		}
+
+		if(!Characters.isPlayerCharacterLoaded(player)) return;
+
+		PlayerCharacter pc = Characters.getPlayerCharacter(player);
 		if(pc.getExperience().getLevel() + 1 > Characters.getInstance().getCharacterConfig().getMaxLevel()) {
 			MessageUtil.sendError(sender, "You are max level.");
 		}else{
@@ -52,25 +68,28 @@ public class CharacterCommands {
 			
 			MessageUtil.sendUpdate(sender, "Leveled up!");
 		}
-		
-		return CommandManager.CommandFinished.DONE;
 	}
 	
-	@CommandManager.Cmd(cmd = "journal", only = CommandManager.CommandOnly.PLAYER)
-	public static CommandManager.CommandFinished cmdJournal(CommandSender sender, Object[] args) {
-		Player p = (Player)sender;
-		if(!Characters.isPlayerCharacterLoaded(p)) return CommandManager.CommandFinished.DONE;
+	@Default
+	@Subcommand("journal")
+	@Description("Open your character journal.")
+	// @CommandPermission("character.journal")
+	public void cmdJournal(Player player) {
+		if(!Characters.isPlayerCharacterLoaded(player)) return;
 
 		Book book = new Book("Player Information", "Acolyte");
 		
-		PlayerInformationBookEvent event = new PlayerInformationBookEvent(Characters.getPlayerCharacter(p));
+		PlayerInformationBookEvent event = new PlayerInformationBookEvent(Characters.getPlayerCharacter(player));
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		
 		for(FancyMessage page : event.getPages())
 			book.addPage(page);
 		
-		book.open(p, false);
+		book.open(player, false);
+	}
 
-		return CommandManager.CommandFinished.DONE;
+	@HelpCommand
+	public void cmdHelp(CommandSender sender, CommandHelp help) {
+		help.showHelp();
 	}
 }

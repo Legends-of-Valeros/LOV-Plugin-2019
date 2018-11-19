@@ -45,7 +45,6 @@ public class Mobs extends ListenerModule {
         super.onLoad();
         instance = this;
 
-
         getLogger().info("AI will update all entities over the course of " + LegendsOfValeros.getInstance().getConfig().getInt("ai-update-smear", 20) + " ticks.");
         ai = new BehaviorEngine(getConfig().getInt("ai-update-smear", 10));
 
@@ -54,12 +53,12 @@ public class Mobs extends ListenerModule {
 
         NPCs.registerTrait("title", TraitTitle.class);
 
+        LegendsOfValeros.getInstance().getCommandManager().registerCommand(new MobCommands());
+
         Bukkit.getServer().getPluginManager().registerEvents(new ExperienceListener(), LegendsOfValeros.getInstance());
         Bukkit.getServer().getPluginManager().registerEvents(new LootListener(), LegendsOfValeros.getInstance());
         Bukkit.getServer().getPluginManager().registerEvents(new MobListener(), LegendsOfValeros.getInstance());
         Bukkit.getServer().getPluginManager().registerEvents(new MobHealthbarManager(), LegendsOfValeros.getInstance());
-
-        Utilities.getCommandManager().loadCommandClass(MobCommands.class);
 
         ObjectiveFactory.registerType("kill", KillObjective.class);
 

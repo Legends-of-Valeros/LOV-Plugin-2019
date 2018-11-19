@@ -1,5 +1,8 @@
 package com.legendsofvaleros.modules.quests;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.CommandHelp;
+import co.aikar.commands.annotation.*;
 import com.codingforcookies.robert.core.StringUtil;
 import com.codingforcookies.robert.item.Book;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -17,47 +20,78 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import javax.rmi.CORBA.Util;
 import java.util.Collection;
 import java.util.concurrent.ExecutionException;
 
-public class QuestCommands {
-    @CommandManager.Cmd(cmd = "quests refresh", help = "Refresh quests currently in the cache.", permission = "quest.refresh")
-    public static CommandManager.CommandFinished cmdRefresh(CommandSender sender, Object[] args) {
+@CommandAlias("quests|quest")
+public class QuestCommands extends BaseCommand {
+    @Subcommand("refresh")
+    @Description("Refresh quests currently in the cache.")
+    @CommandPermission("quests.refresh")
+    public void cmdRefresh(CommandSender sender) {
         QuestManager.reloadQuests();
 
         MessageUtil.sendUpdate(sender, "Quests refreshed.");
-        return CommandManager.CommandFinished.DONE;
     }
 
-    @CommandManager.Cmd(cmd = "quests uncomplete", args = "<name>", help = "Remove a completed quest. Using * will target all quests.", permission = "quest.uncomplete", only = CommandManager.CommandOnly.PLAYER)
-    public static CommandManager.CommandFinished cmdUncomplete(CommandSender sender, Object[] args) {
-        PlayerCharacter pc = Characters.getPlayerCharacter((Player) sender);
+    @Subcommand("complete")
+    @Description("Complete a quest. Using * will target all quests.")
+    @CommandPermission("quests.complete")
+    @Syntax("<quest id>")
+    public void cmdComplete(Player player, String id) {
+        PlayerCharacter pc = Characters.getPlayerCharacter(player);
 
-        QuestManager.removeQuestProgress(String.valueOf(args[0]), pc);
-        MessageUtil.sendUpdate(sender, "Quest uncompleted.");
-        return CommandManager.CommandFinished.DONE;
-    }
-
-    @CommandManager.Cmd(cmd = "quests talk", args = "<name>", showInHelp = false, only = CommandManager.CommandOnly.PLAYER)
-    public static CommandManager.CommandFinished cmdQuestTalk(CommandSender sender, Object[] args) {
-        PlayerCharacter pc = Characters.getPlayerCharacter((Player) sender);
-
-        ((Player) sender).closeInventory();
-        Quests.attemptGiveQuest(pc, (String) args[0]);
-        return CommandManager.CommandFinished.DONE;
-    }
-
-    @CommandManager.Cmd(cmd = "quests accept", args = "<name>", showInHelp = false, only = CommandManager.CommandOnly.PLAYER)
-    public static CommandManager.CommandFinished cmdQuestAccept(CommandSender sender, Object[] args) {
-        PlayerCharacter pc = Characters.getPlayerCharacter((Player) sender);
-
-        ((Player) sender).closeInventory();
-        ListenableFuture<IQuest> future = QuestManager.getQuest(String.valueOf(args[0]));
+        ListenableFuture<IQuest> future = QuestManager.getQuest(id);
         future.addListener(() -> {
             try {
                 IQuest quest = future.get();
+                if(quest == null) {
+                    MessageUtil.sendUpdate(player, "Unknown quest.");
+                    return;
+                }
 
-                QuestStatus status = QuestManager.getStatus(pc, quest);
+                QuestManager.finishQuest(quest, pc);
+                MessageUtil.sendUpdate(player, "Quest completed.");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }, Utilities.syncExecutor());
+    }
+
+    @Subcommand("uncomplete")
+    @Description("Remove a completed quest. Using * will target all quests.")
+    @CommandPermission("quests.uncomplete")
+    @Syntax("<quest id>")
+    public void cmdUncomplete(Player player, String id) {
+        PlayerCharacter pc = Characters.getPlayerCharacter(player);
+
+        QuestManager.removeQuestProgress(id, pc);
+        MessageUtil.sendUpdate(player, "Quest uncompleted.");
+    }
+
+    @Subcommand("talk")
+    @Syntax("<quest id>")
+    private void cmdQuestTalk(Player player, String id) {
+        PlayerCharacter pc = Characters.getPlayerCharacter(player);
+
+        player.closeInventory();
+        Quests.attemptGiveQuest(pc, id);
+    }
+
+    @Subcommand("accept")
+    @Syntax("<quest id>")
+    private void cmdQuestAccept(Player player, String id) {
+        PlayerCharacter pc = Characters.getPlayerCharacter(player);
+
+        player.closeInventory();
+
+        ListenableFuture<IQuest> future = QuestManager.getQuest(id);
+        future.addListener(() -> {
+            try {
+                IQuest quest = future.get();
 
                 QuestManager.removeQuestProgress(quest.getId(), pc);
 
@@ -65,38 +99,39 @@ public class QuestCommands {
 
                 quest.onAccept(pc);
             } catch (Exception e) {
-                MessageUtil.sendException(Quests.getInstance(), sender, e, true);
+                MessageUtil.sendException(Quests.getInstance(), player, e, true);
             }
         }, Utilities.asyncExecutor());
-        return CommandManager.CommandFinished.DONE;
     }
 
-    @CommandManager.Cmd(cmd = "quests decline", args = "<name>", showInHelp = false, only = CommandManager.CommandOnly.PLAYER)
-    public static CommandManager.CommandFinished cmdQuestDecline(CommandSender sender, Object[] args) {
-        PlayerCharacter pc = Characters.getPlayerCharacter((Player) sender);
+    @Subcommand("defline")
+    @Syntax("<quest id>")
+    private void cmdQuestDecline(Player player, String id) {
+        PlayerCharacter pc = Characters.getPlayerCharacter(player);
 
-        ((Player) sender).closeInventory();
-        ListenableFuture<IQuest> future = QuestManager.getQuest(String.valueOf(args[0]));
+        player.closeInventory();
+
+        ListenableFuture<IQuest> future = QuestManager.getQuest(id);
         future.addListener(() -> {
             try {
                 future.get().onDecline(pc);
             } catch (Exception e) {
-                MessageUtil.sendException(Quests.getInstance(), sender, e, true);
+                MessageUtil.sendException(Quests.getInstance(), player, e, true);
             }
         }, Utilities.asyncExecutor());
-        return CommandManager.CommandFinished.DONE;
     }
 
-    @CommandManager.Cmd(cmd = "quests close", only = CommandManager.CommandOnly.PLAYER)
-    public static CommandManager.CommandFinished cmdQuestClose(CommandSender sender, Object[] args) {
-        ((Player) sender).closeInventory();
-        return CommandManager.CommandFinished.DONE;
+    @Subcommand("close")
+    private void cmdQuestClose(Player player) {
+        player.closeInventory();
     }
 
-    @CommandManager.Cmd(cmd = "quests active", args = "<name>", showInHelp = false, only = CommandManager.CommandOnly.PLAYER)
-    public static CommandManager.CommandFinished cmdQuestActive(CommandSender sender, Object[] args) {
-        PlayerCharacter pc = Characters.getPlayerCharacter((Player) sender);
-        ActiveTracker.setActive(pc, String.valueOf(args[0]));
+    @Subcommand("active")
+    @Syntax("<quest id>")
+    public void cmdQuestActive(Player player, String id) {
+        PlayerCharacter pc = Characters.getPlayerCharacter(player);
+
+        ActiveTracker.setActive(pc, id);
 
         ListenableFuture<IQuest> future = ActiveTracker.getActiveQuest(pc);
         future.addListener(() -> {
@@ -110,14 +145,15 @@ public class QuestCommands {
                 e.printStackTrace();
             }
         }, Utilities.asyncExecutor());
-
-        return CommandManager.CommandFinished.DONE;
     }
 
-    @CommandManager.Cmd(cmd = "quests gui", help = "Show quest stuff.", showInHelp = false, only = CommandManager.CommandOnly.PLAYER)
-    public static CommandManager.CommandFinished cmdListQuestGUI(CommandSender sender, Object[] args) {
-        if (!Characters.isPlayerCharacterLoaded((Player) sender)) return CommandManager.CommandFinished.DONE;
-        PlayerCharacter pc = Characters.getPlayerCharacter((Player) sender);
+    @Default
+    @Subcommand("gui")
+    @Description("Show the quest book.")
+    public void cmdListQuestGUI(Player player) {
+        if (!Characters.isPlayerCharacterLoaded(player)) return;
+
+        PlayerCharacter pc = Characters.getPlayerCharacter(player);
 
         String activeId = ActiveTracker.getActive(pc);
 
@@ -139,7 +175,7 @@ public class QuestCommands {
             fm = new FancyMessage("");
 
             fm.then(StringUtil.center(Book.WIDTH, quest.getId().equals(activeId) ? "[ " + quest.getName() + " ]" : quest.getName()) + "\n").color(ChatColor.BLACK).style(ChatColor.UNDERLINE)
-                    .command("/lov quests active " + quest.getId());
+                    .command("/quests active " + quest.getId());
 
             if (quest.getDescription().length() > 0)
                 fm.tooltip(StringUtil.splitForStackLore(ChatColor.translateAlternateColorCodes('&', quest.getDescription())));
@@ -163,7 +199,7 @@ public class QuestCommands {
                                     if (completed) fm.style(ChatColor.STRIKETHROUGH);
                                 }
                             } catch (Exception e) {
-                                MessageUtil.sendException(Quests.getInstance(), sender, e, true);
+                                MessageUtil.sendException(Quests.getInstance(), player, e, true);
                                 fm.then("*Plugin error\n").color(ChatColor.DARK_RED);
                             }
                         }
@@ -174,7 +210,11 @@ public class QuestCommands {
             book.addPage(fm);
         }
 
-        book.open((Player) sender, false);
-        return CommandManager.CommandFinished.DONE;
+        book.open(player, false);
+    }
+
+    @HelpCommand
+    public void cmdHelp(CommandSender sender, CommandHelp help) {
+        help.showHelp();
     }
 }

@@ -85,7 +85,6 @@ public class BankManager {
         else {
             AtomicInteger done = new AtomicInteger(2);
             Runnable finished = () -> {
-                Bank.getInstance().getLogger().info("wew");
                 if (done.decrementAndGet() == 0)
                     ret.set(null);
             };

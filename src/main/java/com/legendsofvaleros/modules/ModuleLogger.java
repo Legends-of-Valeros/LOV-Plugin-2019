@@ -1,6 +1,9 @@
 package com.legendsofvaleros.modules;
 
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.util.MessageUtil;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
 
 import java.util.logging.Level;
@@ -22,7 +25,34 @@ public class ModuleLogger extends Logger {
 
     @Override
     public void log(LogRecord logRecord) {
-        logRecord.setMessage(this.prefix + logRecord.getMessage());
+        ChatColor color = null;
+
+        if(Bukkit.getConsoleSender() != null) {
+            Level level = logRecord.getLevel();
+
+            if(level == Level.INFO) {
+                color = ChatColor.WHITE;
+            }else if(level == Level.FINEST) {
+                color = ChatColor.AQUA;
+            }else if(level == Level.FINER) {
+                color = ChatColor.BLUE;
+            }else if(level == Level.FINE) {
+                color = ChatColor.GREEN;
+            }else if(level == Level.WARNING) {
+                color = ChatColor.RED;
+            }else if(level == Level.SEVERE) {
+                color = ChatColor.DARK_RED;
+            }else{
+                color = ChatColor.WHITE;
+            }
+        }
+
+        logRecord.setMessage(this.prefix + (color != null ? color : "") + logRecord.getMessage());
+
+        if(Bukkit.getConsoleSender() != null) {
+            Bukkit.getConsoleSender().sendMessage(logRecord.getMessage());
+            return;
+        }
 
         super.log(logRecord);
     }

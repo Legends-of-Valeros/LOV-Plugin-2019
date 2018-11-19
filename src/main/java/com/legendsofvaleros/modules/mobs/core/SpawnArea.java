@@ -184,11 +184,11 @@ public class SpawnArea {
         return ground;
     }
 
-    public SpawnArea(String worldName, int x, int y, int z, int radius, int padding, String entityId, int[] levels) {
+    public SpawnArea(String worldName, int x, int y, int z, String entityId, int radius, int padding, int[] levels) {
         this.worldName = worldName;
+        this.entityId = entityId;
         this.radius = radius;
         this.padding = padding;
-        this.entityId = entityId;
         this.levels = levels;
 
         this.location = new Location(getWorld(), x, y, z);

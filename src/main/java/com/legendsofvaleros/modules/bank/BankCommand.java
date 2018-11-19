@@ -15,7 +15,7 @@ public class BankCommand extends BaseCommand {
 	@Description("Add \"currency\" to a player.")
 	@CommandPermission("bank.edit")
 	@Syntax("<player> <currency> <amount>")
-	public static void cmdEdit(CommandSender sender, Player player, String currency, int amount) {
+	public void cmdEdit(CommandSender sender, Player player, String currency, int amount) {
 		Bank.getBank(Characters.getPlayerCharacter(player)).addCurrency(currency, amount);
 	}
 
@@ -23,21 +23,21 @@ public class BankCommand extends BaseCommand {
 	@Description("Show bank info for player.")
 	@CommandPermission("bank.show")
 	@Syntax("<player>")
-	public static void cmdShow(CommandSender sender, Player player) {
+	public void cmdShow(CommandSender sender, Player player) {
 		PlayerBank pb = Bank.getBank(Characters.getPlayerCharacter(player));
-		player.sendMessage(player.getDisplayName());
+		player.sendMessage(player.getDisplayName() + "'s Bank");
 
 		for(PlayerBank.Currency c : pb.getCurrencies())
 			player.sendMessage(" " + c.getCurrencyId() + " = " + Bank.getInstance().getCurrency(c.getCurrencyId()).getDisplay(c.amount));
 	}
 
 	@Default
-	public static void cmdShowSelf(Player player) {
+	public void cmdShowSelf(Player player) {
 		cmdShow(player, player);
 	}
 
 	@HelpCommand
-	public static void cmdHelp(CommandSender sender, CommandHelp help) {
+	public void cmdHelp(CommandSender sender, CommandHelp help) {
 		help.showHelp();
 	}
 }

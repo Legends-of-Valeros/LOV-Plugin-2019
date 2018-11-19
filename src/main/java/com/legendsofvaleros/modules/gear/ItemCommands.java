@@ -1,5 +1,8 @@
 package com.legendsofvaleros.modules.gear;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.CommandHelp;
+import co.aikar.commands.annotation.*;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -12,37 +15,45 @@ import com.legendsofvaleros.util.Utilities;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class ItemCommands {
-    @CommandManager.Cmd(cmd = "gear clear", help = "Clear the item cache.", permission = "gear.clear")
-    public static CommandManager.CommandFinished cmdClear(CommandSender sender, Object[] args) {
+@CommandAlias("gear")
+public class ItemCommands extends BaseCommand {
+    @Subcommand("clear")
+    @Description("Clear the item cache.")
+    @CommandPermission("gear.clear")
+    public void cmdClear(CommandSender sender) {
         ItemManager.cache.invalidateAll();
         Model.cache.invalidateAll();
         MessageUtil.sendUpdate(sender, "Item and item model cache cleared.");
-        return CommandManager.CommandFinished.DONE;
     }
 
-    @CommandManager.Cmd(cmd = "gear spawn", args = "<item name> [amount]", argTypes = {CommandManager.Arg.ArgString.class, CommandManager.Arg.ArgInteger.class}, help = "Spawn in a custom item.", permission = "gear.spawn", only = CommandManager.CommandOnly.PLAYER)
-    public static CommandManager.CommandFinished cmdSpawn(CommandSender sender, Object[] args) {
-        ListenableFuture<GearItem> future = GearItem.fromID(String.valueOf(args[0]));
+    @Subcommand("spawn")
+    @Description("Spawn an item.")
+    @CommandPermission("gear.spawn")
+    @Syntax("<item id> [amount]")
+    public void cmdSpawn(Player player, String id, @Optional Integer amount) {
+        ListenableFuture<GearItem> future = GearItem.fromID(id);
 
         future.addListener(() -> {
             try {
                 GearItem gear = future.get();
 
                 if (gear == null)
-                    throw new Exception("That item name doesn't exist. Offender: " + String.valueOf(args[0]));
+                    throw new Exception("That item name doesn't exist. Offender: " + id);
 
                 GearItem.Instance instance = gear.newInstance();
 
-                if (args.length > 1)
-                    instance.amount = (Integer) args[1];
+                instance.amount = amount != null ? amount : 1;
 
-                ItemUtil.giveItem(Characters.getPlayerCharacter((Player) sender), instance);
+                ItemUtil.giveItem(Characters.getPlayerCharacter(player), instance);
             } catch (Exception e) {
-                MessageUtil.sendException(Gear.getInstance(), sender, e, false);
+                MessageUtil.sendException(Gear.getInstance(), player, e, false);
             }
         }, Utilities.asyncExecutor());
+    }
 
-        return CommandManager.CommandFinished.DONE;
+    @Default
+    @HelpCommand
+    public void cmdHelp(CommandSender sender, CommandHelp help) {
+        help.showHelp();
     }
 }

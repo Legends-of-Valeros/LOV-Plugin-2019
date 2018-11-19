@@ -1,5 +1,6 @@
 package com.legendsofvaleros.modules.npcs;
 
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.ListenerModule;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import com.legendsofvaleros.util.Utilities;
@@ -9,28 +10,28 @@ import org.bukkit.entity.LivingEntity;
 
 public class NPCs extends ListenerModule {
     private static NPCs instance;
-
     public static NPCs getInstance() {
         return instance;
+    }
+
+    private static NPCManager manager;
+    public static NPCManager manager() {
+        return manager;
     }
 
     @Override
     public void onLoad() {
         super.onLoad();
         instance = this;
-        Utilities.getCommandManager().loadCommandClass(NPCCommands.class);
+
+        LegendsOfValeros.getInstance().getCommandManager().registerCommand(new NPCCommands());
+
         manager = new NPCManager();
     }
 
     @Override
     public void onUnload() {
 
-    }
-
-    private static NPCManager manager;
-
-    public static NPCManager manager() {
-        return manager;
     }
 
     public static void registerTrait(String id, Class<? extends LOVTrait> trait) {

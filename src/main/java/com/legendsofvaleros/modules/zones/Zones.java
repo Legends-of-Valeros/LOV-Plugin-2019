@@ -60,7 +60,7 @@ public class Zones extends ListenerModule {
         pvpAllow = section != null ? section.getBoolean("allow", true) : true;
         pvpPriority = section != null ? (byte) section.getInt("pvp-priority", 0) : 0;
 
-        Utilities.getCommandManager().loadCommandClass(ZoneCommands.class);
+        LegendsOfValeros.getInstance().getCommandManager().registerCommand(new ZoneCommands());
 
         ObjectiveFactory.registerType("zone_enter", EnterZoneObjective.class);
         ObjectiveFactory.registerType("zone_exit", ExitZoneObjective.class);

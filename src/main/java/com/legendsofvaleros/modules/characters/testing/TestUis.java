@@ -24,10 +24,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class TestUis implements CharactersUiManager, CombatEngineUiManager {
-	public TestUis() {
-		Utilities.getCommandManager().loadCommandClass(PlayerCreation.class);
-	}
-	
 	@Override
 	public ProgressView getProgressView(Player player) {
 		return new BossBarView(player.getUniqueId(), "Loading, please wait..", BarColor.WHITE, BarStyle.SEGMENTED_10);
