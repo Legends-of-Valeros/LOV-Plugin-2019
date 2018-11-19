@@ -6,6 +6,7 @@ import com.codingforcookies.robert.item.ItemBuilder;
 import com.codingforcookies.robert.slot.Slot;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
+import com.legendsofvaleros.modules.bank.Bank;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.item.GearItem;
@@ -110,7 +111,7 @@ public class TraitTrader extends LOVTrait {
                 try {
                     gears[j] = future.get();
                 } catch (Exception e) {
-                    MessageUtil.sendException(LegendsOfValeros.getInstance(), null, e, false);
+                    MessageUtil.sendException(Bank.getInstance(), null, e, false);
                 }
             }, Utilities.asyncExecutor());
         }

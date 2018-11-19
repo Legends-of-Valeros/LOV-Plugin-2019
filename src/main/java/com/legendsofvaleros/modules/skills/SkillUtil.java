@@ -18,7 +18,7 @@ public class SkillUtil {
         if (held != null) {
             SpellAttackTrigger t = new SpellAttackTrigger(attacker);
             if (Boolean.FALSE.equals(held.doTest(t))) {
-                LegendsOfValeros.getInstance().getLogger().info("false");
+                Skills.getInstance().getLogger().info("false");
             } else {
                 if (held.doFire(t).didChange()) {
                     // XXX: Update stack

@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.quests.prerequisite.stf;
 
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.quests.Quests;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -26,7 +27,7 @@ public class PrerequisiteFactory {
     }
 
     public static void registerType(String type, Class<? extends IQuestPrerequisite> objClass) {
-        LegendsOfValeros.getInstance().getLogger().info("Registered prerequisite: " + type);
+        Quests.getInstance().getLogger().info("Registered prerequisite: " + type);
         progressTypes.put(type, objClass);
     }
 }

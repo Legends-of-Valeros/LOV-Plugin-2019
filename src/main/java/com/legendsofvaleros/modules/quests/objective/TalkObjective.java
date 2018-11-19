@@ -5,6 +5,7 @@ import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.npcs.NPCData;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
+import com.legendsofvaleros.modules.quests.Quests;
 import com.legendsofvaleros.modules.quests.objective.stf.AbstractObjective;
 import com.legendsofvaleros.modules.quests.progress.ObjectiveProgressBoolean;
 import com.legendsofvaleros.util.MessageUtil;
@@ -20,7 +21,7 @@ public class TalkObjective extends AbstractObjective<ObjectiveProgressBoolean> {
     @Override
     protected void onInit() {
         if (!NPCs.isNPC(id)) {
-            MessageUtil.sendException(LegendsOfValeros.getInstance(), null, new Exception("No NPC with that ID in quest. Offender: " + id + " in " + getQuest().getId()), false);
+            MessageUtil.sendException(Quests.getInstance(), null, new Exception("No NPC with that ID in quest. Offender: " + id + " in " + getQuest().getId()), false);
             return;
         }
 

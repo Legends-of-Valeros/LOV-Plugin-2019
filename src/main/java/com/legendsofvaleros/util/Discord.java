@@ -8,6 +8,7 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.chat.Chat;
 import com.legendsofvaleros.modules.chat.IChannelHandler;
 import com.legendsofvaleros.modules.chat.PlayerChat;
+import com.mysql.jdbc.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -45,7 +46,7 @@ public class Discord {
         API.connect(new FutureCallback<DiscordAPI>() {
             @Override
             public void onSuccess(DiscordAPI api) {
-                LegendsOfValeros.getInstance().getLogger().info("Link established with Discord bot: " + api.getYourself().getName());
+                Utilities.getInstance().getLogger().info("Link established with Discord bot: " + api.getYourself().getName());
 
                 LINKED = true;
                 SERVER = api.getServerById(config.getString("server"));
@@ -55,7 +56,7 @@ public class Discord {
 
             @Override
             public void onFailure(Throwable t) {
-                LegendsOfValeros.getInstance().getLogger().severe("Failed to establish link with discord bot.");
+                Utilities.getInstance().getLogger().severe("Failed to establish link with discord bot.");
 
                 t.printStackTrace();
             }

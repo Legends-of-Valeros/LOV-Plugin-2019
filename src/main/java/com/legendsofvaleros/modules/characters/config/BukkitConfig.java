@@ -55,7 +55,7 @@ public class BukkitConfig implements CharactersConfig {
 				statDescriptions.put(AbilityStat.valueOf(key), descSec.getString(key));
 			} catch (Exception ex) {
 				Characters.getInstance().getLogger().severe("Could not load ability stat description. '" + key + "' is not a recognized stat");
-				MessageUtil.sendException(LegendsOfValeros.getInstance(), null, ex, true);
+				MessageUtil.sendException(Characters.getInstance(), null, ex, true);
 			}
 		}
 
@@ -87,8 +87,8 @@ public class BukkitConfig implements CharactersConfig {
 			try {
 				classConfigs.put(playerClass, new BukkitClassConfig(playerClass));
 			} catch (Exception e) {
-				LegendsOfValeros.getInstance().getLogger().severe("Encountered an issue while loading the configuration for the class '" + playerClass.name() + "'");
-				MessageUtil.sendException(LegendsOfValeros.getInstance(), null, e, true);
+				Characters.getInstance().getLogger().severe("Encountered an issue while loading the configuration for the class '" + playerClass.name() + "'");
+				MessageUtil.sendException(Characters.getInstance(), null, e, true);
 			}
 		}
 
@@ -97,8 +97,8 @@ public class BukkitConfig implements CharactersConfig {
 			try {
 				raceConfigs.put(playerRace, new BukkitRaceConfig(playerRace));
 			} catch (Exception e) {
-				LegendsOfValeros.getInstance().getLogger().severe("Encountered an issue while loading the configuration for the race '" + playerRace.name() + "'");
-				MessageUtil.sendException(LegendsOfValeros.getInstance(), null, e, true);
+				Characters.getInstance().getLogger().severe("Encountered an issue while loading the configuration for the race '" + playerRace.name() + "'");
+				MessageUtil.sendException(Characters.getInstance(), null, e, true);
 			}
 		}
 	}

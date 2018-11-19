@@ -87,7 +87,7 @@ public class CommandManager implements TabCompleter, CommandExecutor {
 
             loadCommandClass(this.getClass());
         } catch (Exception e) {
-            MessageUtil.sendException(LegendsOfValeros.getInstance(), null, e, true);
+            MessageUtil.sendException(null, null, e, true);
         }
     }
 
@@ -104,7 +104,7 @@ public class CommandManager implements TabCompleter, CommandExecutor {
                 }
             }
         } catch (SecurityException e) {
-            MessageUtil.sendException(LegendsOfValeros.getInstance(), null, e, true);
+            MessageUtil.sendException(null, null, e, true);
         }
 
         return this;

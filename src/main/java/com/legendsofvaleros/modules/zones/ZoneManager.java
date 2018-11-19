@@ -83,7 +83,7 @@ public class ZoneManager implements Listener {
                 try {
                     updateZone(p);
                 } catch (Exception e) {
-                    MessageUtil.sendException(LegendsOfValeros.getInstance(), p, e, true);
+                    MessageUtil.sendException(Zones.getInstance(), p, e, true);
                 }
             }
         }, 20L, 20L);

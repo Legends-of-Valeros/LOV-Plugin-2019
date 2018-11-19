@@ -39,7 +39,7 @@ public class ItemCommands {
 
                 ItemUtil.giveItem(Characters.getPlayerCharacter((Player) sender), instance);
             } catch (Exception e) {
-                MessageUtil.sendException(LegendsOfValeros.getInstance(), sender, e, false);
+                MessageUtil.sendException(Gear.getInstance(), sender, e, false);
             }
         }, Utilities.asyncExecutor());
 

@@ -32,9 +32,9 @@ public class LootTable {
                     if (stack != null)
                         ret.set(stack);
                     else
-                        LegendsOfValeros.getInstance().getLogger().severe("Attempt to use loot table item with unknown item name. Offender: " + id);
+                        LootManager.getInstance().getLogger().severe("Attempt to use loot table item with unknown item name. Offender: " + id);
                 } catch (Exception e) {
-                    MessageUtil.sendException(LegendsOfValeros.getInstance(), null, e, false);
+                    MessageUtil.sendException(LootManager.getInstance(), null, e, false);
                 }
             }, Utilities.asyncExecutor());
 

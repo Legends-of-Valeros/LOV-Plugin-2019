@@ -21,7 +21,7 @@ public class EnterZoneObjective extends AbstractObjective<ObjectiveProgressBoole
         zone = Zones.manager().getZone(id);
 
         if (zone == null) {
-            MessageUtil.sendException(LegendsOfValeros.getInstance(), null, new Exception("No zone with that ID in quest. Offender: " + id + " in " + getQuest().getId()), false);
+            MessageUtil.sendException(Zones.getInstance(), null, new Exception("No zone with that ID in quest. Offender: " + id + " in " + getQuest().getId()), false);
         }
     }
 

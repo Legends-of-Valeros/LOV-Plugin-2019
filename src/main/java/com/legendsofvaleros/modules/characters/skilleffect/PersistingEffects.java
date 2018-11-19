@@ -211,11 +211,11 @@ public class PersistingEffects {
 						try {
 							effectManager.reapplyEffect(eff);
 						} catch (IllegalArgumentException ex) {
-							Logger lg = LegendsOfValeros.getInstance().getLogger();
+							Logger lg = Characters.getInstance().getLogger();
 							lg.severe("A skill/spell effect '"
 									+ (eff == null ? "null" : eff.getEffectId())
 									+ "' was found in the database, but does not exist on this server and could not be reapplied to the player.");
-							MessageUtil.sendException(LegendsOfValeros.getInstance(), player, ex, true);
+							MessageUtil.sendException(Characters.getInstance(), player, ex, true);
 						}
 					}
 

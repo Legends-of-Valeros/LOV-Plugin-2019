@@ -58,7 +58,7 @@ public class Model {
 		try {
 			return get(id).get(5, TimeUnit.SECONDS).toStack();
 		} catch (Exception e) {
-			MessageUtil.sendException(LegendsOfValeros.getInstance(), null, new Exception("Failed to load item model! Offender: " + id), false);
+			MessageUtil.sendException(Utilities.getInstance(), null, new Exception("Failed to load item model! Offender: " + id), false);
 		}
 		return NONE.toStack();
 	}

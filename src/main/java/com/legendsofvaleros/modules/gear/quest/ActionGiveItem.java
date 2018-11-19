@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.gear.quest;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.gear.Gear;
 import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
 import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
@@ -30,7 +31,7 @@ public class ActionGiveItem extends AbstractAction {
 
                 ItemUtil.giveItem(Characters.getPlayerCharacter(player), instance);
             } catch (Exception e) {
-                MessageUtil.sendException(LegendsOfValeros.getInstance(), player, e, false);
+                MessageUtil.sendException(Gear.getInstance(), player, e, false);
             }
 
             next.go();

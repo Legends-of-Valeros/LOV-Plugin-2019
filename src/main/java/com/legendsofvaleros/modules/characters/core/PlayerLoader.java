@@ -64,8 +64,8 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
 
     private Callback<CharacterId> loadingCallback = (value, error) -> {
         if (error != null) {
-            LegendsOfValeros.getInstance().getLogger().severe("error while loading a player's character data");
-            MessageUtil.sendException(LegendsOfValeros.getInstance(), null, error, true);
+            Characters.getInstance().getLogger().severe("error while loading a player's character data");
+            MessageUtil.sendException(Characters.getInstance(), null, error, true);
         } else if (value != null) {
             Bukkit.getScheduler().runTask(LegendsOfValeros.getInstance(), () -> onDoneLoading(value));
         }
@@ -110,7 +110,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
     public boolean onCharacterSelected(Player player, CharacterId characterId) {
         PlayerCharacters characters = Characters.getInstance().getCharacters(player);
         if (characters == null) {
-            LegendsOfValeros.getInstance().getLogger()
+            Characters.getInstance().getLogger()
                     .severe("A player tried to select a character but no character data was found for them");
             return false;
         }
@@ -119,7 +119,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
         PlayerCharacter newCharacter = characters.getForId(characterId);
 
         if (newCharacter == null) {
-            LegendsOfValeros.getInstance().getLogger()
+            Characters.getInstance().getLogger()
                     .severe("A player tried to select a character that does not exist for them.");
             MessageUtil.sendError(player, "Invalid selection");
             return false;
@@ -262,9 +262,9 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
                         try {
                             lis.callEvent(logoutEvent);
                         } catch (EventException e) {
-                            Logger lg = LegendsOfValeros.getInstance().getLogger();
+                            Logger lg = Characters.getInstance().getLogger();
                             lg.severe("Encountered an issue while manually informing listeners of a player-characters logout on-disable.");
-                            MessageUtil.sendException(LegendsOfValeros.getInstance(), player, e, true);
+                            MessageUtil.sendException(Characters.getInstance(), player, e, true);
                         }
                     }
                 }
@@ -354,8 +354,8 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
                         }
 
                     } catch (Exception e) {
-                        System.out.println("[Characters] Could not get base character data.");
-                        MessageUtil.sendException(LegendsOfValeros.getInstance(), player, e, true);
+                        Characters.getInstance().getLogger().warning("Could not get base character data.");
+                        MessageUtil.sendException(Characters.getInstance(), player, e, true);
                     }
                 }, SELECT_DELAY);
             }, Utilities.asyncExecutor());

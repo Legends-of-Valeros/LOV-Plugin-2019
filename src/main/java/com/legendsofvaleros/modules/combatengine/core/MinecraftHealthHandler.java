@@ -313,7 +313,7 @@ public class MinecraftHealthHandler {
                 if (le.hasPotionEffect(type)) {
                     le.removePotionEffect(type);
 
-                    Logger lg = LegendsOfValeros.getInstance().getLogger();
+                    Logger lg = CombatEngine.getInstance().getLogger();
                     lg.warning("A " + le.getType().name() + " had a " + type.getName() + " potion effect. "
                             + type.getName() + " is not compatible with CombatEngine and was removed! "
                             + "I recommend you stop this potion effect from being used in the first place, "

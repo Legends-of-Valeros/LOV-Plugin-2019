@@ -136,7 +136,7 @@ public class CooldownData {
 								.where(ID_FIELD, characterId.toString())
 							.build()
 						.callback((result) -> {
-							Logger lg = LegendsOfValeros.getInstance().getLogger();
+							Logger lg = Characters.getInstance().getLogger();
 							final List<CooldownDatum> fromDb = new ArrayList<>();
 							
 							while (result.next()) {

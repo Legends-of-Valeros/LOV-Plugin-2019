@@ -59,7 +59,7 @@ public class BehaviorEngine {
             try {
                 data.tree.onStep(data.ce, time);
             } catch (Exception e) {
-                MessageUtil.sendException(LegendsOfValeros.getInstance(), null, e, true);
+                MessageUtil.sendException(Mobs.getInstance(), null, e, true);
             }
         }
     }

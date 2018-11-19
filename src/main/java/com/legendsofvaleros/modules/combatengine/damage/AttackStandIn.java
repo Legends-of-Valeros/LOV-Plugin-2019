@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.combatengine.damage;
 
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
@@ -129,8 +130,8 @@ public class AttackStandIn {
       setLocation.invoke(nmsEntity, x, y, z, 0, 0);
 
     } catch (Exception e) {
-      System.out.println("[CombatEngine] Could not set a fake entity's location through reflection");
-      MessageUtil.sendException(LegendsOfValeros.getInstance(), entity instanceof Player ? (Player)entity : null, e, true);
+      CombatEngine.getInstance().getLogger().warning("Could not set a fake entity's location through reflection");
+      MessageUtil.sendException(CombatEngine.getInstance(), entity instanceof Player ? (Player)entity : null, e, true);
     }
   }
 

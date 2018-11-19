@@ -59,7 +59,7 @@ public class LootListener implements Listener {
                 try {
                     LootTable table = future.get();
                     if (table == null) {
-                        MessageUtil.sendException(LegendsOfValeros.getInstance(), event.getKiller().getLivingEntity(), new Exception("Mob has an unknown loot table. Offender: " + data.id + " on " + entity.mob.getId()), true);
+                        MessageUtil.sendException(LootManager.getInstance(), event.getKiller().getLivingEntity(), new Exception("Mob has an unknown loot table. Offender: " + data.id + " on " + entity.mob.getId()), true);
                         return;
                     }
 
@@ -81,7 +81,7 @@ public class LootListener implements Listener {
                             try {
                                 ItemUtil.dropItem(dieLoc, futurestack.get().newInstance(), pc);
                             } catch (InterruptedException | ExecutionException e) {
-                                MessageUtil.sendException(LegendsOfValeros.getInstance(), event.getKiller() != null && event.getKiller().getLivingEntity() instanceof Player ? (Player) event.getKiller().getLivingEntity() : null, e, false);
+                                MessageUtil.sendException(LootManager.getInstance(), event.getKiller() != null && event.getKiller().getLivingEntity() instanceof Player ? (Player) event.getKiller().getLivingEntity() : null, e, false);
                             }
                         }, Utilities.syncExecutor());
                     }

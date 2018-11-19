@@ -59,14 +59,14 @@ public class SpawnManager {
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(LegendsOfValeros.getInstance(), () -> {
             if (misses.get() > 0) {
-                LegendsOfValeros.getInstance().getLogger().info(misses + " chunk misses.");
+                Mobs.getInstance().getLogger().info(misses + " chunk misses.");
             }
 
             if (loaded.get() > 0) {
-                LegendsOfValeros.getInstance().getLogger().info("Loaded " + loaded + " spawns.");
+                Mobs.getInstance().getLogger().info("Loaded " + loaded + " spawns.");
             }
             if (unloaded.get() > 0) {
-                LegendsOfValeros.getInstance().getLogger().info("Unloaded " + unloaded + " spawns.");
+                Mobs.getInstance().getLogger().info("Unloaded " + unloaded + " spawns.");
             }
 
             misses.set(0);

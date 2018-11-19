@@ -28,7 +28,7 @@ public class ActionNewQuest extends AbstractAction {
                 else
                     Quests.attemptGiveQuest(pc, questId);
             } catch (Exception e) {
-                MessageUtil.sendException(LegendsOfValeros.getInstance(), player, e, false);
+                MessageUtil.sendException(Quests.getInstance(), player, e, false);
             }
 
             next.go();

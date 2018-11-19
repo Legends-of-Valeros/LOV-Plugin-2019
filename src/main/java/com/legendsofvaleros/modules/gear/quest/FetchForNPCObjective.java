@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.gear.quest;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
+import com.legendsofvaleros.modules.gear.Gear;
 import com.legendsofvaleros.modules.npcs.NPCData;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
@@ -35,12 +36,12 @@ public class FetchForNPCObjective extends AbstractObjective<ObjectiveProgressBoo
                 if (item == null)
                     throw new Exception("No item with that ID in quest. Offender: " + id + " in " + getQuest().getId());
             } catch (Exception e) {
-                MessageUtil.sendException(LegendsOfValeros.getInstance(), null, e, false);
+                MessageUtil.sendException(Gear.getInstance(), null, e, false);
             }
         }, Utilities.asyncExecutor());
 
         if (!NPCs.isNPC(npcId)) {
-            MessageUtil.sendException(LegendsOfValeros.getInstance(), null, new Exception("No NPC with that ID in quest. Offender: " + id + " in " + getQuest().getId()), false);
+            MessageUtil.sendException(Gear.getInstance(), null, new Exception("No NPC with that ID in quest. Offender: " + id + " in " + getQuest().getId()), false);
             return;
         }
 

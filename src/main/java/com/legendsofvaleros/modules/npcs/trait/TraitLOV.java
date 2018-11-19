@@ -73,14 +73,14 @@ public class TraitLOV extends Trait implements CommandConfigurable {
                 p = foundP;
             }
         } catch (CommandException e) {
-            MessageUtil.sendException(LegendsOfValeros.getInstance(), p, e, false);
+            MessageUtil.sendException(NPCs.getInstance(), p, e, false);
             return;
         }
 
         String npcId = ctx.getString(1).toLowerCase();
 
         if (!NPCs.isNPC(npcId)) {
-            MessageUtil.sendException(LegendsOfValeros.getInstance(), p, new Exception("No NPC with that ID exists in the cache. Offender: " + npcId), false);
+            MessageUtil.sendException(NPCs.getInstance(), p, new Exception("No NPC with that ID exists in the cache. Offender: " + npcId), false);
             return;
         }
 
@@ -114,7 +114,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
         if (npcData == null) {
             getNPC().data().setPersistent(NPC.NAMEPLATE_VISIBLE_METADATA, true);
             getNPC().getEntity().setCustomNameVisible(true);
-            MessageUtil.sendException(LegendsOfValeros.getInstance(), null, new Exception("No NPC with that ID exists in the cache. Offender: " + npcId + " on " + getNPC().getId()), false);
+            MessageUtil.sendException(NPCs.getInstance(), null, new Exception("No NPC with that ID exists in the cache. Offender: " + npcId + " on " + getNPC().getId()), false);
             return;
         }
 
@@ -134,7 +134,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
                 return;
             }
         } else {
-            MessageUtil.sendException(LegendsOfValeros.getInstance(), null, new Exception("NPC has a null name. Offender: " + npcId + " on " + getNPC().getId()), false);
+            MessageUtil.sendException(NPCs.getInstance(), null, new Exception("NPC has a null name. Offender: " + npcId + " on " + getNPC().getId()), false);
         }
 
         nameplates = Nameplates.get(getNPC());
@@ -164,7 +164,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
 
                 return;
             } catch (Exception e) {
-                MessageUtil.sendException(LegendsOfValeros.getInstance(), null, e, false);
+                MessageUtil.sendException(NPCs.getInstance(), null, e, false);
             }
         }
 
@@ -238,7 +238,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
             if (slot != null)
                 slots.add(slot);
         } catch (Exception e) {
-            MessageUtil.sendException(LegendsOfValeros.getInstance(), player, e, true);
+            MessageUtil.sendException(NPCs.getInstance(), player, e, true);
         }
     }
 

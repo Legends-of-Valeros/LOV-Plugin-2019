@@ -9,6 +9,7 @@ import java.util.logging.Level;
 
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.Module;
+import com.legendsofvaleros.modules.characters.core.Characters;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -118,7 +119,7 @@ public class YamlConfigAccessor {
           configFile.delete();
         getConfig().save(configFile);
       } catch (IOException ex) {
-        LegendsOfValeros.getInstance().getLogger().log(Level.SEVERE, "Could not save config to " + configFile, ex);
+        Characters.getInstance().getLogger().log(Level.SEVERE, "Could not save config to " + configFile, ex);
       }
     }
   }

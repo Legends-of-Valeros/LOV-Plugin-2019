@@ -84,8 +84,7 @@ public class PersistentRegeneratingStats {
                         try {
                             stat = RegeneratingStat.valueOf(statName);
                         } catch (IllegalArgumentException | NullPointerException ex) {
-                            Logger lg = LegendsOfValeros.getInstance().getLogger();
-                            lg.warning("Found a stat '" + statName
+                            Characters.getInstance().getLogger().warning("Found a stat '" + statName
                                     + "' but no stat with that name exists on this server.");
                             continue;
                         }

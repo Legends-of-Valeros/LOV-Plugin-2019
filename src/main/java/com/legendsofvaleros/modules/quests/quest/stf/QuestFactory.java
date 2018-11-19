@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.quests.quest.stf;
 
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.quests.Quests;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -13,7 +14,7 @@ public class QuestFactory {
     }
 
     public static void registerType(String type, Class<? extends IQuest> objClass) {
-        LegendsOfValeros.getInstance().getLogger().info("Registered quest type: " + type);
+        Quests.getInstance().getLogger().info("Registered quest type: " + type);
         questTypes.put(type, objClass);
     }
 

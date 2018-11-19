@@ -102,7 +102,7 @@ public class HearthstonesManager {
                     World world = Bukkit.getWorld(home.world);
 
                     if (world == null) {
-                        LegendsOfValeros.getInstance().getLogger().warning(
+                        Hearthstones.getInstance().getLogger().warning(
                                 "Player '" + pc.getUniqueCharacterId() + "' has a home in the world '" + home.world
                                         + "', but that world was not found on this server. "
                                         + "Their home was not successfully loaded as a result.");

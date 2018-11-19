@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.quests.progress.stf;
 
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.quests.Quests;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -22,7 +23,7 @@ public class ProgressFactory {
     }
 
     public static void registerType(String type, Class<? extends IObjectiveProgress> objClass) {
-        LegendsOfValeros.getInstance().getLogger().info("Registered progress type: " + type);
+        Quests.getInstance().getLogger().info("Registered progress type: " + type);
         progressTypes.put(type, objClass);
     }
 

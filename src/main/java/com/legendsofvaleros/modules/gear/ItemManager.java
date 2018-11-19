@@ -48,7 +48,7 @@ public class ItemManager {
                             components.put(entry.getKey(), gson.fromJson(entry.getValue(), comp));
                         } catch (Exception e) {
                             Exception ex = new Exception(e + ". Offender: " + entry.getKey() + " " + entry.getValue().toString());
-                            MessageUtil.sendException(LegendsOfValeros.getInstance(), null, ex, true);
+                            MessageUtil.sendException(Gear.getInstance(), null, ex, true);
                         }
                     }
                     return components;
@@ -60,7 +60,7 @@ public class ItemManager {
                         try {
                             persists.put(entry.getKey(), gson.fromJson(entry.getValue(), c));
                         } catch (Exception e) {
-                            LegendsOfValeros.getInstance().getLogger().warning("Error thrown when decoding persist data. Offender: " + entry.getKey() + " as " + c);
+                            Gear.getInstance().getLogger().warning("Error thrown when decoding persist data. Offender: " + entry.getKey() + " as " + c);
                             e.printStackTrace();
                         }
                     }

@@ -5,6 +5,7 @@ import com.codingforcookies.armorequip.ArmorEquipEvent;
 import com.codingforcookies.robert.item.NBTEditor;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
+import com.legendsofvaleros.modules.quests.Quests;
 import com.legendsofvaleros.modules.quests.objective.stf.AbstractObjective;
 import com.legendsofvaleros.modules.quests.progress.ObjectiveProgressBoolean;
 import com.legendsofvaleros.modules.gear.event.ItemEquipEvent;
@@ -31,7 +32,7 @@ public class EquipObjective extends AbstractObjective<ObjectiveProgressBoolean> 
 				if(item == null)
 					throw new Exception("No item with that ID in quest. Offender: " + id + " in " + getQuest().getId());
 			} catch (Exception e) {
-				MessageUtil.sendException(LegendsOfValeros.getInstance(), null, e, false);
+				MessageUtil.sendException(Quests.getInstance(), null, e, false);
 			}
 		}, Utilities.asyncExecutor());
 	}

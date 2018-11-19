@@ -108,12 +108,12 @@ public class CharacterExperience implements Experience {
                     try {
                         levelFromDb = levelRequest.get();
                     } catch (Exception e) {
-                        MessageUtil.sendException(LegendsOfValeros.getInstance(), playerCharacter.getPlayer(), e, false);
+                        MessageUtil.sendException(Characters.getInstance(), playerCharacter.getPlayer(), e, false);
                     }
                     try {
                         xpFromDb = xpRequest.get();
                     } catch (Exception e) {
-                        MessageUtil.sendException(LegendsOfValeros.getInstance(), playerCharacter.getPlayer(), e, false);
+                        MessageUtil.sendException(Characters.getInstance(), playerCharacter.getPlayer(), e, false);
                     }
 
                     refreshXpToLevel();

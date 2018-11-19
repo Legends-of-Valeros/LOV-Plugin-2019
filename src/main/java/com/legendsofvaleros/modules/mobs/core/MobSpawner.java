@@ -53,7 +53,7 @@ public class MobSpawner {
 
                     if (!spawnLocation.getChunk().isLoaded()) {
                         if (spawn.getEntities().size() > 0) {
-                            LegendsOfValeros.getInstance().getLogger().info("Clearing spawn due to unloaded chunk.");
+                            Mobs.getInstance().getLogger().info("Clearing spawn due to unloaded chunk.");
                             unloaded++;
 
                             spawn.clear();
@@ -114,17 +114,17 @@ public class MobSpawner {
 
         if (block == 0) {
             if (repopulated > 0) {
-                LegendsOfValeros.getInstance().getLogger().info("Repopulated " + repopulated + " spawns.");
+                Mobs.getInstance().getLogger().info("Repopulated " + repopulated + " spawns.");
                 repopulated = 0;
             }
 
             if (unloaded > 0) {
-                LegendsOfValeros.getInstance().getLogger().info("Cleared " + unloaded + " spawns due to unloaded chunks.");
+                Mobs.getInstance().getLogger().info("Cleared " + unloaded + " spawns due to unloaded chunks.");
                 unloaded = 0;
             }
 
             if (distance > 0) {
-                LegendsOfValeros.getInstance().getLogger().info("Cleared " + distance + " spawns due to player distance.");
+                Mobs.getInstance().getLogger().info("Cleared " + distance + " spawns due to player distance.");
                 distance = 0;
             }
         }

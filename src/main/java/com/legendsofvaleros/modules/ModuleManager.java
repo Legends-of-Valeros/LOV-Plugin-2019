@@ -19,13 +19,13 @@ public class ModuleManager {
     public static void loadModules() {
         modulesToLoad.forEach(moduleToLoad ->
         {
-            System.out.println("[" + moduleToLoad.getClass().getSimpleName() + "] Loading module...");
+            LegendsOfValeros.getInstance().getLogger().info("Loading " + moduleToLoad.getName() + "...");
 
-            modules.put(moduleToLoad.getClass().getSimpleName(), moduleToLoad);
-            schedulers.put(moduleToLoad.getClass().getSimpleName(), new InternalScheduler(moduleToLoad.getClass().getSimpleName()).startup());
+            modules.put(moduleToLoad.getName(), moduleToLoad);
+            schedulers.put(moduleToLoad.getName(), new InternalScheduler(moduleToLoad.getName()).startup());
             moduleToLoad.onLoad();
 
-            System.out.println("[" + moduleToLoad.getClass().getSimpleName() + "] Has been loaded");
+            LegendsOfValeros.getInstance().getLogger().info(moduleToLoad.getName() + " loaded.");
         });
         modulesToLoad.clear();
     }
@@ -33,12 +33,12 @@ public class ModuleManager {
     public static void unloadModules() {
         modules.values().forEach(module ->
         {
-            System.out.println("[" + module.getClass().getSimpleName() + "] Unloading module ...");
+            LegendsOfValeros.getInstance().getLogger().info("Unloading " + module.getName() + "...");
             modulesToUnload.add(module);
         });
         modulesToUnload.forEach(moduleToUnload ->
         {
-            System.out.println("[" + moduleToUnload.getClass().getSimpleName() + "] has been unloaded");
+            LegendsOfValeros.getInstance().getLogger().info(moduleToUnload.getName() + " has been unloaded.");
             moduleToUnload.onUnload();
 
             //stopping the modules thread

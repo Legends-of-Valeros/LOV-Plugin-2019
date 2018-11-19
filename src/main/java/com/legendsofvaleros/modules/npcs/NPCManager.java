@@ -69,7 +69,7 @@ public class NPCManager implements Listener {
                     try {
                         traits.add(gson.fromJson(elem.getValue(), traitTypes.get(elem.getKey())));
                     } catch (Exception e) {
-                        MessageUtil.sendException(LegendsOfValeros.getInstance(), null, new Exception("Failed to load trait. Offender: " + elem.getKey() + " (" + elem.getValue().toString() + ")"), true);
+                        MessageUtil.sendException(NPCs.getInstance(), null, new Exception("Failed to load trait. Offender: " + elem.getKey() + " (" + elem.getValue().toString() + ")"), true);
                         throw e;
                     }
                 }
@@ -115,7 +115,7 @@ public class NPCManager implements Listener {
                             npcs.put(result.getString(NPC_ID), data);
                         } catch (Exception e) {
                             MessageUtil.sendError(Bukkit.getConsoleSender(), "Error while loading NPC: " + result.getString(NPC_ID));
-                            MessageUtil.sendException(LegendsOfValeros.getInstance(), null, e, true);
+                            MessageUtil.sendException(NPCs.getInstance(), null, e, true);
                         }
                     }
                 })

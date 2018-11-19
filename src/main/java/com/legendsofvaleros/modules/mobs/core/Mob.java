@@ -245,9 +245,9 @@ public class Mob {
                         itemStack.setAmount(this.amount);
                         ret.set(itemStack);
                     } else
-                        LegendsOfValeros.getInstance().getLogger().severe("Attempt to use instance item with unknown item name. Offender: " + id);
+                        Mobs.getInstance().getLogger().severe("Attempt to use instance item with unknown item name. Offender: " + id);
                 } catch (Exception e) {
-                    MessageUtil.sendException(LegendsOfValeros.getInstance(), null, e, false);
+                    MessageUtil.sendException(Mobs.getInstance(), null, e, false);
                 }
             }, Utilities.asyncExecutor());
 
@@ -324,7 +324,7 @@ public class Mob {
                         npc.data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA, skin.data);
                         npc.data().setPersistent(NPC.PLAYER_SKIN_USE_LATEST, false);
                     } catch (Exception e) {
-                        MessageUtil.sendException(LegendsOfValeros.getInstance(), null, e, false);
+                        MessageUtil.sendException(Mobs.getInstance(), null, e, false);
                         e.printStackTrace();
                     }
                 }
@@ -340,7 +340,7 @@ public class Mob {
                         try {
                             equipment.set(slot, future.get());
                         } catch (Exception e) {
-                            MessageUtil.sendException(LegendsOfValeros.getInstance(), null, new Exception("Could not load equipment for instance. Offender: " + item.id + " on " + slot.name() + " in " + mob.id), false);
+                            MessageUtil.sendException(Mobs.getInstance(), null, new Exception("Could not load equipment for instance. Offender: " + item.id + " on " + slot.name() + " in " + mob.id), false);
                         }
                     }, Utilities.asyncExecutor());
                 }

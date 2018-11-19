@@ -2,6 +2,7 @@ package com.legendsofvaleros.modules.characters.entityclass;
 
 import com.legendsofvaleros.LegendsOfValeros;
 import com.google.common.collect.Multimap;
+import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.modifiers.EditableValueModifier;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
@@ -45,7 +46,7 @@ public class AbilityStatApplicator implements AbilityStatChangeListener {
         try {
           set.addModifier((EditableValueModifier) builder.build(), model.getValue());
         } catch (ClassCastException ex) {
-			MessageUtil.sendException(LegendsOfValeros.getInstance(), entity.getLivingEntity() instanceof Player ? (Player)entity.getLivingEntity() : null, ex, true);
+			MessageUtil.sendException(Characters.getInstance(), entity.getLivingEntity() instanceof Player ? (Player)entity.getLivingEntity() : null, ex, true);
           System.out
               .println("Class Stat modifiers rely on EditableValueModifiers! A modifier that could not be cast to that type had to be ignored and was not used!");
         }

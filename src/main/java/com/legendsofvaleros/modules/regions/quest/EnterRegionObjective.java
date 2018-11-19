@@ -23,7 +23,7 @@ public class EnterRegionObjective extends AbstractObjective<ObjectiveProgressBoo
         region = Regions.manager().getRegion(id);
 
         if (region == null)
-            MessageUtil.sendException(LegendsOfValeros.getInstance(), null, new Exception("No region with that ID in quest. Offender: " + id + " in " + getQuest().getId()), false);
+            MessageUtil.sendException(Regions.getInstance(), null, new Exception("No region with that ID in quest. Offender: " + id + " in " + getQuest().getId()), false);
     }
 
     @Override

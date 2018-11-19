@@ -155,10 +155,10 @@ public class PlayerCharacterData {
                         try {
                             datum.playerRace = EntityRace.valueOf(raceName);
                         } catch (IllegalArgumentException | NullPointerException ex) {
-                            LegendsOfValeros.getInstance().getLogger().severe(
+                            Characters.getInstance().getLogger().severe(
                                     "A race name '" + raceName + "' was found in the database, "
                                             + "but no race with that name exists on this server.");
-                            MessageUtil.sendException(LegendsOfValeros.getInstance(), null, ex, true);
+                            MessageUtil.sendException(Characters.getInstance(), null, ex, true);
                             continue;
                         }
 
@@ -166,10 +166,10 @@ public class PlayerCharacterData {
                         try {
                             datum.playerClass = EntityClass.valueOf(className);
                         } catch (IllegalArgumentException | NullPointerException ex) {
-                            LegendsOfValeros.getInstance().getLogger().severe(
+                            Characters.getInstance().getLogger().severe(
                                     "A race name '" + raceName + "' was found in the database, "
                                             + "but no race with that name exists on this server.");
-                            MessageUtil.sendException(LegendsOfValeros.getInstance(), null, ex, true);
+                            MessageUtil.sendException(Characters.getInstance(), null, ex, true);
                             continue;
                         }
 
@@ -208,8 +208,8 @@ public class PlayerCharacterData {
 
                                     characters.add(character);
                                 } catch (Exception e) {
-                                    LegendsOfValeros.getInstance().getLogger().severe("could not load character " + datum.charNum + " for player " + player.getName());
-                                    MessageUtil.sendException(LegendsOfValeros.getInstance(), player, e, true);
+                                    Characters.getInstance().getLogger().severe("could not load character " + datum.charNum + " for player " + player.getName());
+                                    MessageUtil.sendException(Characters.getInstance(), player, e, true);
                                 }
                             }
 

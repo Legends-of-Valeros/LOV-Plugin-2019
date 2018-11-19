@@ -56,7 +56,7 @@ public class LevelArchetypes extends ListenerModule implements LevelArchetypesAP
 
                 } catch (Exception e) {
                     getLogger().severe("There was an issue while loading the archetype '" + key + "'");
-                    MessageUtil.sendException(LegendsOfValeros.getInstance(), null, e, true);
+                    MessageUtil.sendException(LevelArchetypes.getInstance(), null, e, true);
                 }
             }
         }
@@ -84,7 +84,7 @@ public class LevelArchetypes extends ListenerModule implements LevelArchetypesAP
                 }
                 sb.append("]. This means that there is no way for plugins to tell what level these types of entities are.");
 
-                LegendsOfValeros.getInstance().getLogger().warning(sb.toString());
+                LevelArchetypes.getInstance().getLogger().warning(sb.toString());
 
             }
         }, 80L);
@@ -111,7 +111,7 @@ public class LevelArchetypes extends ListenerModule implements LevelArchetypesAP
         LevelProvider provider = providers.get(entity.getType());
 
         if (provider == null) {
-            LegendsOfValeros.getInstance().getLogger().warning(
+            LevelArchetypes.getInstance().getLogger().warning(
                     "A client requested the level of a " + entity.getType().name()
                             + " but there is no provider registered for that type of entity.");
             return MIN_LEVEL;
@@ -120,9 +120,9 @@ public class LevelArchetypes extends ListenerModule implements LevelArchetypesAP
         try {
             return provider.getLevel(entity);
         } catch (Exception e) {
-            LegendsOfValeros.getInstance().getLogger().severe(
+            LevelArchetypes.getInstance().getLogger().severe(
                     "Encountered an error while requesting a level for a " + entity.getType().name());
-            MessageUtil.sendException(LegendsOfValeros.getInstance(), entity instanceof Player ? (Player) entity : null, e, true);
+            MessageUtil.sendException(LevelArchetypes.getInstance(), entity instanceof Player ? (Player) entity : null, e, true);
             return MIN_LEVEL;
         }
     }

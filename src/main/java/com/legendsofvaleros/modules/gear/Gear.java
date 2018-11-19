@@ -62,7 +62,7 @@ public class Gear extends ListenerModule {
 
         try {
             ERROR_ITEM = GearItem.fromID("perfectly-generic-item").get(5, TimeUnit.SECONDS);
-            LegendsOfValeros.getInstance().getLogger().info(ERROR_ITEM.toString());
+            Utilities.getInstance().getLogger().info(ERROR_ITEM.toString());
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
         }

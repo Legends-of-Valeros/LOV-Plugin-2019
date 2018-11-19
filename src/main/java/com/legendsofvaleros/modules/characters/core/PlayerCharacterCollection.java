@@ -225,7 +225,7 @@ public class PlayerCharacterCollection implements PlayerCharacters {
 					CombatProfile profile = arch.getCombatProfile(current.getExperience().getLevel());
 					event.setCombatProfile(profile);
 				} catch (Exception e) {
-					LegendsOfValeros.getInstance().getLogger()
+					Characters.getInstance().getLogger()
 					.severe("Encountered an issue while initializing a player's combat entity.");
 				}
 			}

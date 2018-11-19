@@ -2,6 +2,7 @@ package com.legendsofvaleros.modules.bank.quest;
 
 import com.legendsofvaleros.LegendsOfValeros;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.legendsofvaleros.modules.bank.Bank;
 import com.legendsofvaleros.modules.bank.repair.RepairItemEvent;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.gear.item.GearItem;
@@ -23,7 +24,7 @@ public class RepairObjective extends AbstractObjective<ObjectiveProgressBoolean>
             try {
                 item = future.get();
             } catch (Exception e) {
-                MessageUtil.sendException(LegendsOfValeros.getInstance(), null, new Exception("No item with that ID in quest. Offender: " + id + " in " + getQuest().getId()), false);
+                MessageUtil.sendException(Bank.getInstance(), null, new Exception("No item with that ID in quest. Offender: " + id + " in " + getQuest().getId()), false);
             }
         }, Utilities.asyncExecutor());
     }

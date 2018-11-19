@@ -46,9 +46,11 @@ public class Utilities extends ListenerModule {
     }
 
     public static Executor syncExecutor() {
+        //return BukkitExecutors.newSynchronous(LegendsOfValeros.getInstance());
         return instance.getScheduler()::sync;
     }
     public static Executor asyncExecutor() {
+        //return MoreExecutors.directExecutor();
         return instance.getScheduler()::async;
     }
 

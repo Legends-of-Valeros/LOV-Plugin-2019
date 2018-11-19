@@ -5,6 +5,7 @@ import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.slot.ISlotAction;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.gear.Gear;
 import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
 import com.legendsofvaleros.util.item.Model;
 import com.legendsofvaleros.modules.gear.item.GearItem;
@@ -91,7 +92,7 @@ public class ActionChooseItem extends AbstractAction {
 
 				gui.open(player);
 			} catch(Exception e) {
-				MessageUtil.sendException(LegendsOfValeros.getInstance(), player, e, false);
+				MessageUtil.sendException(Gear.getInstance(), player, e, false);
 			}
 		};
 

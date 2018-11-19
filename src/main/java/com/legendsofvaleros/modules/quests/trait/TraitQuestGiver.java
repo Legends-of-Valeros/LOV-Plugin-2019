@@ -14,6 +14,7 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterFinishLoadi
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import com.legendsofvaleros.modules.quests.QuestManager;
+import com.legendsofvaleros.modules.quests.Quests;
 import com.legendsofvaleros.modules.quests.event.QuestCompletedEvent;
 import com.legendsofvaleros.modules.quests.event.QuestStartedEvent;
 import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
@@ -163,7 +164,7 @@ public class TraitQuestGiver extends LOVTrait {
                         playerQuests.put(quest, status);
                 }
             } catch (Exception e) {
-                MessageUtil.sendException(LegendsOfValeros.getInstance(), player, e, true);
+                MessageUtil.sendException(Quests.getInstance(), player, e, true);
                 return;
             }
 
@@ -197,7 +198,7 @@ public class TraitQuestGiver extends LOVTrait {
                     else
                         throw new Exception("Failed to load quest on NPC! Offender: " + questId + " on " + trait.npcId);
                 } catch (Exception e) {
-                    MessageUtil.sendException(LegendsOfValeros.getInstance(), null, e, true);
+                    MessageUtil.sendException(Quests.getInstance(), null, e, true);
                 }
 
                 if (left.decrementAndGet() == 0)

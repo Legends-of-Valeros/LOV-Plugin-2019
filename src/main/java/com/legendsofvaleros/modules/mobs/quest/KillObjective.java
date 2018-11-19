@@ -4,6 +4,7 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.mobs.MobManager;
+import com.legendsofvaleros.modules.mobs.Mobs;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.mobs.core.SpawnArea;
 import com.legendsofvaleros.modules.quests.objective.stf.AbstractObjective;
@@ -24,7 +25,7 @@ public class KillObjective extends AbstractObjective<ObjectiveProgressInteger> {
         mob = MobManager.getEntity(id);
 
         if (mob == null)
-            MessageUtil.sendException(LegendsOfValeros.getInstance(), null, new Exception("No instance with that ID in quest. Offender: " + id + " in " + getQuest().getId()), false);
+            MessageUtil.sendException(Mobs.getInstance(), null, new Exception("No instance with that ID in quest. Offender: " + id + " in " + getQuest().getId()), false);
     }
 
     @Override

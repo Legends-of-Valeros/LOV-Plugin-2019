@@ -63,33 +63,33 @@ public class Quests extends ListenerModule {
         ActiveTracker.onEnable();
         NPCs.registerTrait("questgiver", TraitQuestGiver.class);
 
-        LegendsOfValeros.getInstance().getServer().getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
-        LegendsOfValeros.getInstance().getServer().getPluginManager().registerEvents(new TraitQuestGiver.Marker(), LegendsOfValeros.getInstance());
+        Bukkit.getServer().getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
+        Bukkit.getServer().getPluginManager().registerEvents(new TraitQuestGiver.Marker(), LegendsOfValeros.getInstance());
 
         Utilities.getCommandManager().loadCommandClass(QuestCommands.class);
 
-        LegendsOfValeros.getInstance().getLogger().info("is registering quests");
+        getLogger().info("is registering quests");
         {
             QuestFactory.registerType("basic", BasicQuest.class);
         }
 
-        LegendsOfValeros.getInstance().getLogger().info("is registering prerequisites");
+        getLogger().info("is registering prerequisites");
         PrerequisiteFactory.registerType("class", ClassPrerequisite.class);
         PrerequisiteFactory.registerType("race", RacePrerequisite.class);
         PrerequisiteFactory.registerType("level", LevelPrerequisite.class);
         PrerequisiteFactory.registerType("quests", QuestsPrerequisite.class);
         PrerequisiteFactory.registerType("time", TimePrerequisite.class);
 
-        LegendsOfValeros.getInstance().getLogger().info("is registering progress loaders");
+        getLogger().info("is registering progress loaders");
         ProgressFactory.registerType("int", ObjectiveProgressInteger.class);
         ProgressFactory.registerType("bool", ObjectiveProgressBoolean.class);
 
-        LegendsOfValeros.getInstance().getLogger().info("is registering objectives");
+        getLogger().info("is registering objectives");
         ObjectiveFactory.registerType("dummy", DummyObjective.class);
         ObjectiveFactory.registerType("talk", TalkObjective.class);
         ObjectiveFactory.registerType("return", ReturnObjective.class);
 
-        LegendsOfValeros.getInstance().getLogger().info("is registering actions");
+        getLogger().info("is registering actions");
         ActionFactory.registerType("conversation", ActionConversation.class);
         ActionFactory.registerType("goto", ActionGoTo.class);
 
@@ -112,7 +112,7 @@ public class Quests extends ListenerModule {
         InventoryManager.addFixedItem(43, new InventoryManager.InventoryItem(null,
                 (p, event) -> p.performCommand("lov quests gui")));
 
-        LegendsOfValeros.getInstance().getLogger().info("is registering advancements.");
+        getLogger().info("is registering advancements.");
         NEW_OBJECTIVES = AdvancementAPI.builder(new NamespacedKey(LegendsOfValeros.getInstance(), "quests/new_objectives"))
                 .title("New Objectives")
                 .description("See quest book for details.")
@@ -157,7 +157,7 @@ public class Quests extends ListenerModule {
 
                 quest.onTalk(pc, status);
             } catch (Exception e) {
-                MessageUtil.sendException(LegendsOfValeros.getInstance(), pc.getPlayer(), e, true);
+                MessageUtil.sendException(Quests.getInstance(), pc.getPlayer(), e, true);
             }
         }, Utilities.asyncExecutor());
     }

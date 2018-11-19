@@ -48,7 +48,7 @@ public class GraveyardManager {
 
                         Zone z = Zones.manager().getZone(sd.zone);
                         if (z == null) {
-                            MessageUtil.sendException(LegendsOfValeros.getInstance(), null, new Exception("Graveyard in an unknown zone! Offender: " + sd.position[0] + ", " + sd.position[1] + ", " + sd.position[2] + " in " + sd.zone), true);
+                            MessageUtil.sendException(Graveyards.getInstance(), null, new Exception("Graveyard in an unknown zone! Offender: " + sd.position[0] + ", " + sd.position[1] + ", " + sd.position[2] + " in " + sd.zone), true);
                             return;
                         }
 

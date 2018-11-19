@@ -32,7 +32,7 @@ public class LevelArchetype implements Archetype {
         levelingStats = new HashMap<>();
         Map<Stat, LevelingValue> combatEngineStats = new HashMap<>();
 
-        Logger lg = LegendsOfValeros.getInstance().getLogger();
+        Logger lg = LevelArchetypes.getInstance().getLogger();
 
         // loads base stats
         ConfigurationSection baseSec = config.getConfigurationSection("base-stats");
@@ -155,7 +155,7 @@ public class LevelArchetype implements Archetype {
 
                 } catch (Exception e) {
                     lg.severe("Could not load the exception '" + exceptionId + "' in archetype '" + id + "'.");
-                    MessageUtil.sendException(LegendsOfValeros.getInstance(), null, e, true);
+                    MessageUtil.sendException(LevelArchetypes.getInstance(), null, e, true);
                 }
             }
         }

@@ -120,7 +120,7 @@ public class QuestManager {
 
                 field.set(obj, gson.getAdapter(field.getType()).fromJsonTree(entry.getValue()));
             } catch (Exception e) {
-                MessageUtil.sendException(LegendsOfValeros.getInstance(), null, new Exception("Failed to apply fields! Offender: " + (obj == null ? "null" : obj.getClass().getSimpleName()) + ":" + act), true);
+                MessageUtil.sendException(Quests.getInstance(), null, new Exception("Failed to apply fields! Offender: " + (obj == null ? "null" : obj.getClass().getSimpleName()) + ":" + act), true);
             }
         }
     }
@@ -246,14 +246,14 @@ public class QuestManager {
         quests.cleanUp();
 
         if (quests.size() > 0)
-            MessageUtil.sendException(LegendsOfValeros.getInstance(), null, new Exception(quests.size() + " quests did not get cleared from the cache."), false);
+            MessageUtil.sendException(Quests.getInstance(), null, new Exception(quests.size() + " quests did not get cleared from the cache."), false);
 
         for (Player p : Bukkit.getOnlinePlayers())
             loadQuestsForPlayer(Characters.getPlayerCharacter(p), null);
     }
 
     private synchronized static void onQuestUnCached(Entry<String, IQuest> entry) {
-        LegendsOfValeros.getInstance().getLogger().info("Quest '" + entry.getKey() + "' removed from the cache.");
+        Quests.getInstance().getLogger().info("Quest '" + entry.getKey() + "' removed from the cache.");
 
         questEvents.column(String.valueOf(entry.getKey())).clear();
     }
@@ -301,8 +301,8 @@ public class QuestManager {
                                     playerQuests.put(pc.getUniqueCharacterId(), quest);
                                     quest.loadProgress(pc, progressPack);
                                 } catch (Exception e) {
-                                    LegendsOfValeros.getInstance().getLogger().warning("Player attempt to load progress for quest, but something went wrong. Offender: " + pc.getPlayer().getName() + " in quest " + questId);
-                                    MessageUtil.sendException(LegendsOfValeros.getInstance(), pc.getPlayer(), e, true);
+                                    Quests.getInstance().getLogger().warning("Player attempt to load progress for quest, but something went wrong. Offender: " + pc.getPlayer().getName() + " in quest " + questId);
+                                    MessageUtil.sendException(Quests.getInstance(), pc.getPlayer(), e, true);
                                 }
 
                                 int i = questsToLoad.decrementAndGet();
@@ -489,8 +489,8 @@ public class QuestManager {
 
                         ret.set(quest);
                     } catch (Exception e) {
-                        LegendsOfValeros.getInstance().getLogger().severe("Failed to load quest. Offender: " + id);
-                        MessageUtil.sendException(LegendsOfValeros.getInstance(), null, e, true);
+                        Quests.getInstance().getLogger().severe("Failed to load quest. Offender: " + id);
+                        MessageUtil.sendException(Quests.getInstance(), null, e, true);
                         ret.set(null);
                     }
                 })

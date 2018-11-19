@@ -65,7 +65,7 @@ public class QuestCommands {
 
                 quest.onAccept(pc);
             } catch (Exception e) {
-                MessageUtil.sendException(LegendsOfValeros.getInstance(), sender, e, true);
+                MessageUtil.sendException(Quests.getInstance(), sender, e, true);
             }
         }, Utilities.asyncExecutor());
         return CommandManager.CommandFinished.DONE;
@@ -81,7 +81,7 @@ public class QuestCommands {
             try {
                 future.get().onDecline(pc);
             } catch (Exception e) {
-                MessageUtil.sendException(LegendsOfValeros.getInstance(), sender, e, true);
+                MessageUtil.sendException(Quests.getInstance(), sender, e, true);
             }
         }, Utilities.asyncExecutor());
         return CommandManager.CommandFinished.DONE;
@@ -163,7 +163,7 @@ public class QuestCommands {
                                     if (completed) fm.style(ChatColor.STRIKETHROUGH);
                                 }
                             } catch (Exception e) {
-                                MessageUtil.sendException(LegendsOfValeros.getInstance(), sender, e, true);
+                                MessageUtil.sendException(Quests.getInstance(), sender, e, true);
                                 fm.then("*Plugin error\n").color(ChatColor.DARK_RED);
                             }
                         }

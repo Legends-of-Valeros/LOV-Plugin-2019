@@ -2,6 +2,7 @@ package com.legendsofvaleros.util;
 
 import com.codingforcookies.doris.sql.TableManager;
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.Module;
 import de.btobastian.javacord.entities.Channel;
 import mkremins.fanciful.FancyMessage;
 import mkremins.fanciful.MessagePart;
@@ -84,7 +85,7 @@ public class MessageUtil {
 	}
 
 
-	public static void sendException(JavaPlugin plugin, CommandSender sender, Throwable th, boolean log) {
+	public static void sendException(Module module, CommandSender sender, Throwable th, boolean log) {
 		String trace = getStackTrace(th);
 		
 		FancyMessage fm = new FancyMessage("[X] " + (th.getMessage() != null ? th.getMessage() : "Something went wrong!")).color(ChatColor.DARK_RED)
@@ -97,7 +98,7 @@ public class MessageUtil {
 		
 		if(log) {
 			th.printStackTrace();
-			ExceptionManager.add(plugin, sender, trace);
+			ExceptionManager.add(module, sender, trace);
 
 			if(Discord.SERVER != null) {
 				// Make this channel configurable
@@ -153,10 +154,10 @@ public class MessageUtil {
 				.column(TRACE, "TEXT").create();
 		}
 
-		public static void add(JavaPlugin plugin, CommandSender sender, String trace) {
+		public static void add(Module module, CommandSender sender, String trace) {
 			manager.query()
 					.insert()
-						.values(PLUGIN_FIELD, plugin == null ? "Unknown" : plugin.getName(),
+						.values(PLUGIN_FIELD, module == null ? "Unknown" : module.getName(),
 								PLAYER, sender == null ? "Unknown" : sender.getName(),
 								TRACE, trace)
 					.build()

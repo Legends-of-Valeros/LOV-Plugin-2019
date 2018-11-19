@@ -2,6 +2,7 @@ package com.legendsofvaleros.modules.regions;
 
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.ListenerModule;
+import com.legendsofvaleros.modules.Module;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.hearthstones.HearthstoneCastEvent;
 import com.legendsofvaleros.modules.quests.QuestManager;
@@ -28,6 +29,7 @@ import java.util.HashMap;
 
 public class Regions extends ListenerModule {
     private static Regions plugin;
+    public static Module getInstance() { return plugin; }
 
     public static Regions inst() {
         return plugin;

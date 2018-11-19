@@ -30,7 +30,7 @@ public class MobManager {
     public static Cache<String, Mob> entities = CacheBuilder.newBuilder()
             .concurrencyLevel(4)
             .weakValues()
-            .removalListener((entry) -> LegendsOfValeros.getInstance().getLogger().info("Entity '" + entry.getKey() + "' removed from the cache."))
+            .removalListener((entry) -> Mobs.getInstance().getLogger().info("Entity '" + entry.getKey() + "' removed from the cache."))
             .build();
 
     public static void clear() {

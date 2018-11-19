@@ -35,7 +35,7 @@ public class GearInventoryLoader implements PlayerInventoryData.InventoryMethod 
                     if (gear != null)
                         contents[i] = gearData[i].toStack();
                 } catch (Exception e) {
-                    MessageUtil.sendException(LegendsOfValeros.getInstance(), null, e, false);
+                    MessageUtil.sendException(Gear.getInstance(), null, e, false);
                     contents[i] = Gear.ERROR_ITEM.newInstance().toStack();
                     contents[i].setAmount(gearData[i].amount);
                 }
