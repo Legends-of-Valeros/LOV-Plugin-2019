@@ -116,10 +116,12 @@ public class LegendsOfValeros extends JavaPlugin {
     }
 
     public void registerEvents(Listener listener, Module module) {
-        module.getLogger().info("Registered listener: " + listener + ".");
+        String listenerName = listener.toString().getClass().getSimpleName() + "@" + Integer.toHexString(listener.hashCode());
+
+        module.getLogger().info("Registered listener: " + listenerName + ".");
 
         if(loadedEventClasses.contains(listener))
-            module.getLogger().severe(listener + " has already been registered as an event listener! This may cause unintended side effects!");
+            module.getLogger().severe(listenerName + " has already been registered as an event listener! This may cause unintended side effects!");
         loadedEventClasses.add(listener);
 
         Bukkit.getServer().getPluginManager().registerEvents(listener, this);
