@@ -20,8 +20,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -190,10 +190,8 @@ public class EntityTracker implements UnsafePlayerInitializer {
 
         // initializes combat data for spawning entities
         @EventHandler
-        public void onEntitySpawn(EntitySpawnEvent event) {
-            if (event.getEntity() instanceof LivingEntity) {
-                getCombatEntity((LivingEntity) event.getEntity());
-            }
+        public void onEntitySpawn(CreatureSpawnEvent event) {
+            getCombatEntity((LivingEntity) event.getEntity());
         }
 
         // initializes combat data for entities when they are loaded back into memory

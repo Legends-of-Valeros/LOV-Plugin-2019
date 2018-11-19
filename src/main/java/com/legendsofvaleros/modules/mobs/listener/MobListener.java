@@ -36,7 +36,7 @@ public class MobListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onEntitySpawn(CreatureSpawnEvent event) {
         if (event.getEntity() instanceof Player)
             if (!NPCs.manager().registry.isNPC(event.getEntity()))
@@ -48,7 +48,7 @@ public class MobListener implements Listener {
             case SPAWNER:
                 break;
             default:
-                event.getEntity().remove();
+                event.setCancelled(true);
         }
     }
 
