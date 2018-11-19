@@ -54,7 +54,7 @@ public abstract class Module {
 
     public Logger getLogger() {
         if(logger == null) {
-            logger = Logger.getLogger(this.getName());
+            logger = new ModuleLogger(this);
             logger.setParent(LegendsOfValeros.getInstance().getLogger());
         }
 
