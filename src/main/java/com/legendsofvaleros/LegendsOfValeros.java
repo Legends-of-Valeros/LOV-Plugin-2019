@@ -67,8 +67,10 @@ public class LegendsOfValeros extends JavaPlugin {
     @Override
     public void onDisable() {
         shutdown = true;
-        instance = null;
+
         ModuleManager.unloadModules();
+
+        instance = null;
     }
 
     private void registerModules() throws Exception {

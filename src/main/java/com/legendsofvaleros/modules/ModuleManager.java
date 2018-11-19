@@ -17,16 +17,18 @@ public class ModuleManager {
     public static HashMap<String, InternalScheduler> schedulers = new HashMap<>();
 
     public static void loadModules() {
-        modulesToLoad.forEach(moduleToLoad ->
-        {
-            LegendsOfValeros.getInstance().getLogger().info("Loading " + moduleToLoad.getName() + "...");
+        for(int i = 0; i < modulesToLoad.size(); i++) {
+            Module moduleToLoad = modulesToLoad.get(i);
+
+            LegendsOfValeros.getInstance().getLogger().info((i + 1) + "/" + modulesToLoad.size() + " Loading " + moduleToLoad.getName() + "...");
 
             modules.put(moduleToLoad.getName(), moduleToLoad);
             schedulers.put(moduleToLoad.getName(), new InternalScheduler(moduleToLoad.getName()).startup());
             moduleToLoad.onLoad();
+        }
 
-            LegendsOfValeros.getInstance().getLogger().info(moduleToLoad.getName() + " loaded.");
-        });
+        LegendsOfValeros.getInstance().getLogger().info("Loaded " + modules.size() + " modules");
+
         modulesToLoad.clear();
     }
 
@@ -36,12 +38,14 @@ public class ModuleManager {
             LegendsOfValeros.getInstance().getLogger().info("Unloading " + module.getName() + "...");
             modulesToUnload.add(module);
         });
-        modulesToUnload.forEach(moduleToUnload ->
-        {
-            LegendsOfValeros.getInstance().getLogger().info(moduleToUnload.getName() + " has been unloaded.");
+
+        for(int i = 0; i < modulesToUnload.size(); i++) {
+            Module moduleToUnload = modulesToUnload.get(i);
+
+            LegendsOfValeros.getInstance().getLogger().info((i + 1) + "/" + modulesToUnload.size() + " Unloading " + moduleToUnload.getName() + "...");
             moduleToUnload.onUnload();
 
-            //stopping the modules thread
+            // stopping the modules thread
             try {
                 InternalScheduler scheduler = moduleToUnload.getScheduler();
                 if (scheduler.isAlive()) {
@@ -50,7 +54,8 @@ public class ModuleManager {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        });
+        }
+
         modulesToUnload.clear();
     }
 
