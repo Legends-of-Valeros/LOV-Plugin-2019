@@ -6,69 +6,67 @@ package com.legendsofvaleros.scheduler;
  */
 public class InternalTask {
     private InternalScheduler executor = null;
+    public InternalScheduler getExecutor() {
+        return executor;
+    }
+    public void setExecutor(InternalScheduler executor) {
+        this.executor = executor;
+    }
+
     private Runnable command;
+    public void setTask(Runnable command) {
+        this.command = command;
+    }
+
+    private boolean sync = false;
+    public boolean isSync() {
+        return sync;
+    }
+    public void setSync(boolean sync) {
+        this.sync = sync;
+    }
 
     private boolean executed = false;
+    public boolean wasExecuted() {
+        return executed;
+    }
+    public void setExecuted(boolean executed) {
+        this.executed = executed;
+    }
+
     private boolean repeat = false;
-    private int delay = 0;
+    public boolean getRepeating() {
+        return repeat;
+    }
+    public void setRepeating(boolean repeat) { this.repeat = repeat; }
+
     private long net = 0;
+    public long nextExecuteTick() { return net; }
+    public void setNextExecuteTick(long l) { net = l; }
+
     private long ri = 1;
+    public long getRepeatingInterval() { return ri; }
+    public void setRepeatingInterval(long i) { ri = i; }
 
     public InternalTask(Runnable command) {
         this.command = command;
     }
 
-    public void setTask(Runnable command) {
-        this.command = command;
-    }
-
-    public void setExecutor(InternalScheduler executor) {
-        this.executor = executor;
-    }
-
-    public InternalScheduler getExecutor() {
-        return executor;
-    }
-
-    public void setExecuted(boolean executed) {
-        this.executed = executed;
-    }
-
-    public boolean wasExecuted() {
-        return executed;
-    }
-
-    public void setRepeating(boolean repeat) {
-        this.repeat = repeat;
-    }
-
-    public boolean getRepeating() {
-        return repeat;
-    }
-
     public void run() {
         if(command == null)
             throw new RuntimeException("Attempted to run() an empty InternalTask.");
+
+        if(executor != null) {
+            if(sync)
+                executor.totalS++;
+            else
+                executor.totalA++;
+        }
+
         command.run();
     }
 
     public void cancel() {
         setRepeating(false);
-    }
-
-    public void setNextExecuteTick(long l) {
-        net = l;
-    }
-
-    public long nextExecuteTick() {
-        return net;
-    }
-
-    public long getRepeatingInterval() {
-        return ri;
-    }
-
-    public void setRepeatingInterval(long i) {
-        ri = i;
     }
 }

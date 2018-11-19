@@ -7,11 +7,16 @@ import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class InternalScheduler extends Thread {
-    private long[] last_ticks = new long[]{1, 1, 1, 1, 1};
+    private String name;
+    private ConcurrentLinkedQueue<InternalTask> list = new ConcurrentLinkedQueue<>();
+
+    int totalS = 0, totalA = 0;
+    public int getSyncTasksFired() { return totalS; }
+    public int getAsyncTasksFired() { return totalA; }
+
+    private long[] last_ticks = new long[] { 1, 1, 1, 1, 1 };
     private double tps = 20;
     private long tick_duration = 0;
-    private ConcurrentLinkedQueue<InternalTask> list = new ConcurrentLinkedQueue<>();
-    private String name;
     private long tick = 0;
     private int prev_task_amount = 0;
 
@@ -36,7 +41,9 @@ public class InternalScheduler extends Thread {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+
                     curr.setExecuted(true);
+
                     if (curr.getRepeating()) {
                         requeue.add(curr);
                         curr.setNextExecuteTick(tick + curr.getRepeatingInterval());
@@ -77,10 +84,15 @@ public class InternalScheduler extends Thread {
         executeInSpigotCircle(command);
     }
 
-    public void executeInMyCircle(Runnable task) { executeInMyCircle(new InternalTask(task)); }
+    public InternalTask executeInMyCircle(Runnable task) {
+        InternalTask it;
+        executeInMyCircle(it = new InternalTask(task));
+        return it;
+    }
     public void executeInMyCircle(InternalTask task) {
         task.setExecutor(this);
         task.setNextExecuteTick(tick + 1);
+        task.setSync(false);
         list.add(task);
     }
 
@@ -92,6 +104,7 @@ public class InternalScheduler extends Thread {
     public void executeInMyCircleLater(InternalTask task, long delay) {
         task.setExecutor(this);
         task.setNextExecuteTick(tick + (delay <= 0 ? 1 : delay));
+        task.setSync(false);
         list.add(task);
     }
 
@@ -105,12 +118,18 @@ public class InternalScheduler extends Thread {
         task.setNextExecuteTick(tick + (delay <= 0 ? 1 : delay));
         task.setRepeating(true);
         task.setRepeatingInterval(interval);
+        task.setSync(false);
         list.add(task);
     }
 
-    public void executeInSpigotCircle(Runnable task) { executeInSpigotCircle(new InternalTask(task)); }
+    public InternalTask executeInSpigotCircle(Runnable task) {
+        InternalTask it;
+        executeInSpigotCircle(it = new InternalTask(task));
+        return it;
+    }
     public void executeInSpigotCircle(final InternalTask task) {
         task.setExecutor(this);
+        task.setSync(true);
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -120,9 +139,14 @@ public class InternalScheduler extends Thread {
         }.runTask(LegendsOfValeros.getInstance());
     }
 
-    public void executeInSpigotCircleLater(Runnable task, long delay) { executeInSpigotCircleLater(new InternalTask(task), delay); }
+    public InternalTask executeInSpigotCircleLater(Runnable task, long delay) {
+        InternalTask it;
+        executeInSpigotCircleLater(it = new InternalTask(task), delay);
+        return it;
+    }
     public void executeInSpigotCircleLater(final InternalTask task, long delay) {
         task.setExecutor(this);
+        task.setSync(true);
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -132,9 +156,14 @@ public class InternalScheduler extends Thread {
         }.runTaskLater(LegendsOfValeros.getInstance(), delay);
     }
 
-    public void executeInSpigotCircleTimer(Runnable task, long delay, long interval) { executeInSpigotCircleTimer(new InternalTask(task), delay, interval); }
+    public InternalTask executeInSpigotCircleTimer(Runnable task, long delay, long interval) {
+        InternalTask it;
+        executeInSpigotCircleTimer(it = new InternalTask(task), delay, interval);
+        return it;
+    }
     public void executeInSpigotCircleTimer(final InternalTask task, long delay, long interval) {
         task.setExecutor(this);
+        task.setSync(true);
         new BukkitRunnable() {
             @Override
             public void run() {
