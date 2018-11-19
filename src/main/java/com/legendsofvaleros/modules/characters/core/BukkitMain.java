@@ -7,13 +7,4 @@ import com.legendsofvaleros.modules.ListenerModule;
  */
 public class BukkitMain extends ListenerModule {
 
-    @Override
-    public void onLoad() {
-
-    }
-
-    @Override public void onUnload() {
-
-    }
-
 }

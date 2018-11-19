@@ -4,24 +4,30 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.scheduler.InternalScheduler;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class ModuleManager {
+    public static Map<String, String> packages = new HashMap<>();
+
     public static Map<String, Module> modules = new LinkedHashMap<>();
+
     public static List<Module> modulesToLoad = new ArrayList<>();
     public static List<Module> modulesToUnload = new ArrayList<>();
 
     // scheduler/thread for each module
-    public static HashMap<String, InternalScheduler> schedulers = new HashMap<>();
+    public static Map<String, InternalScheduler> schedulers = new LinkedHashMap<>();
 
     public static void loadModules() {
         for(int i = 0; i < modulesToLoad.size(); i++) {
             Module moduleToLoad = modulesToLoad.get(i);
+            String pack = getModulePackage(moduleToLoad.getClass());
 
-            LegendsOfValeros.getInstance().getLogger().info("(" + (i + 1) + "/" + modulesToLoad.size() + ") Loading " + moduleToLoad.getName() + "...");
+            LegendsOfValeros.getInstance().getLogger().info("(" + (i + 1) + "/" + modulesToLoad.size() + ") Loading " + moduleToLoad.getName() + "... (" + pack + ")");
 
             modules.put(moduleToLoad.getName(), moduleToLoad);
+            packages.put(pack, moduleToLoad.getName());
+
             schedulers.put(moduleToLoad.getName(), new InternalScheduler(moduleToLoad.getName()).startup());
+
             moduleToLoad.onLoad();
         }
 
@@ -64,5 +70,24 @@ public class ModuleManager {
             LegendsOfValeros.getInstance().getLogger().severe("Failed to load module. Aborting! Offender: " + clazz.getSimpleName());
             throw e;
         }
+    }
+
+    public static String getModulePackage(Class<?> clazz) {
+        String pack = clazz.getName();
+        String[] ss = pack.split("com\\.legendsofvaleros\\.modules\\.", 2);
+        if(ss.length < 2) return null;
+        return "com.legendsofvaleros.modules." + ss[1].split("\\.", 2)[0];
+    }
+
+    public static String getModuleID(Class<?> clazz) {
+        String pack = getModulePackage(clazz);
+        if(pack != null && packages.containsKey(pack))
+            return packages.get(pack);
+        return null;
+    }
+
+    public static Module getModule(Class<?> clazz) {
+        String id = getModuleID(clazz);
+        return id != null ? modules.get(id) : null;
     }
 }

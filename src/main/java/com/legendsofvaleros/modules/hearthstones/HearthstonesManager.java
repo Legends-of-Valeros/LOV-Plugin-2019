@@ -14,7 +14,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,7 +35,7 @@ public class HearthstonesManager {
 
         homeTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), HomePoint.class);
 
-        Bukkit.getServer().getPluginManager().registerEvents(new PlayerListener(), LegendsOfValeros.getInstance());
+        Hearthstones.getInstance().registerEvents(new PlayerListener());
     }
 
     public static HomePoint getHome(PlayerCharacter pc) {

@@ -91,11 +91,6 @@ public class LevelArchetypes extends ListenerModule implements LevelArchetypesAP
     }
 
     @Override
-    public void onUnload() {
-
-    }
-
-    @Override
     public Archetype getArchetype(String archetypeId) {
         if(archetypes == null) throw new RuntimeException("Archetypes is null. This shouldn't happen!");
         if(!archetypes.containsKey(archetypeId)) return null;

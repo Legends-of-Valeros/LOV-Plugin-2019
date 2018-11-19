@@ -11,9 +11,9 @@ import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
+import com.legendsofvaleros.modules.factions.Faction.Reputation;
 import com.legendsofvaleros.modules.factions.event.FactionReputationChangeEvent;
 import com.legendsofvaleros.modules.factions.quest.ActionReputation;
-import com.legendsofvaleros.modules.factions.Faction.Reputation;
 import com.legendsofvaleros.modules.quests.action.stf.ActionFactory;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.Utilities;
@@ -41,6 +41,8 @@ public class Factions extends ListenerModule {
 
     @Override
     public void onLoad() {
+        super.onLoad();
+
         plugin = this;
 
         String dbPoolId = LegendsOfValeros.getInstance().getConfig().getString("dbpools-database");
@@ -70,9 +72,6 @@ public class Factions extends ListenerModule {
 				                .background("minecraft:textures/gui/advancements/backgrounds/stone.png")
 				                .frame(FrameType.TASK)
 				            .build();*/
-    }
-
-    @Override public void onUnload() {
     }
 
     @EventHandler

@@ -1,10 +1,9 @@
 package com.legendsofvaleros.modules.hearthstones;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
+import com.codingforcookies.robert.core.StringUtil;
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
+import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
@@ -13,13 +12,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BlockVector;
 
-import com.codingforcookies.robert.core.StringUtil;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.util.MessageUtil;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Handles teleporting players to their homes and making sure that teleportation is not exploited.
@@ -41,7 +39,7 @@ public class HomeTeleporter implements Listener {
 		movementTask = new MovementCheckTask();
 		movementTask.runTaskTimer(LegendsOfValeros.getInstance(), 40, 5);
 
-		Bukkit.getServer().getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
+		Hearthstones.getInstance().registerEvents(this);
 	}
 
 	/**

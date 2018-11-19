@@ -1,18 +1,5 @@
 package com.legendsofvaleros.modules.skills;
 
-import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.characters.api.Cooldowns;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.events.PlayerCharacterLevelUpEvent;
-import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
-import com.legendsofvaleros.modules.hotswitch.Hotswitch;
-import com.legendsofvaleros.modules.skills.event.BindSkillEvent;
-import com.legendsofvaleros.modules.skills.event.SkillPreUseEvent;
-import com.legendsofvaleros.modules.skills.event.SkillUsedEvent;
-import com.legendsofvaleros.modules.skills.gear.CastTrigger;
 import com.legendsofvaleros.modules.characters.api.Cooldowns;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -30,18 +17,6 @@ import com.legendsofvaleros.modules.skills.event.SkillUsedEvent;
 import com.legendsofvaleros.modules.skills.gear.CastTrigger;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.Utilities;
-import com.legendsofvaleros.modules.characters.api.Cooldowns;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.events.PlayerCharacterLevelUpEvent;
-import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
-import com.legendsofvaleros.modules.hotswitch.Hotswitch;
-import com.legendsofvaleros.modules.skills.event.BindSkillEvent;
-import com.legendsofvaleros.modules.skills.event.SkillPreUseEvent;
-import com.legendsofvaleros.modules.skills.event.SkillUsedEvent;
-import com.legendsofvaleros.modules.skills.gear.CastTrigger;
 import mkremins.fanciful.FancyMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -50,26 +25,23 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 import java.util.Map;
 
 public class SkillListener implements Listener {
     public SkillListener() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
-
         if(Bukkit.getServer().getPluginManager().isPluginEnabled("Quests")) {
             Skills.getInstance().getLogger().info("Quest plugin enabled. Registering event handler.");
 
-            Bukkit.getServer().getPluginManager().registerEvents(new QuestListener(), LegendsOfValeros.getInstance());
+            Skills.getInstance().registerEvents(new QuestListener());
         }else
             Skills.getInstance().getLogger().info("Quest plugin not enabled.");
 
         if(Bukkit.getServer().getPluginManager().isPluginEnabled("Gear")) {
             Skills.getInstance().getLogger().info("Gear plugin enabled. Registering event handler.");
 
-            Bukkit.getServer().getPluginManager().registerEvents(new GearListener(), LegendsOfValeros.getInstance());
+            Skills.getInstance().registerEvents(new GearListener());
         }else
             Skills.getInstance().getLogger().info("Gear plugin not enabled.");
     }

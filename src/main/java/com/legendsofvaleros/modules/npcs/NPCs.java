@@ -3,7 +3,6 @@ package com.legendsofvaleros.modules.npcs;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.ListenerModule;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
-import com.legendsofvaleros.util.Utilities;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.entity.LivingEntity;
@@ -22,16 +21,12 @@ public class NPCs extends ListenerModule {
     @Override
     public void onLoad() {
         super.onLoad();
+
         instance = this;
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new NPCCommands());
 
         manager = new NPCManager();
-    }
-
-    @Override
-    public void onUnload() {
-
     }
 
     public static void registerTrait(String id, Class<? extends LOVTrait> trait) {

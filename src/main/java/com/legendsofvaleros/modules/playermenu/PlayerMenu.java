@@ -1,7 +1,6 @@
 package com.legendsofvaleros.modules.playermenu;
 
 import com.codingforcookies.robert.window.ExpandingGUI;
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.ListenerModule;
 import com.legendsofvaleros.modules.playermenu.settings.PlayerSettings;
 import com.legendsofvaleros.util.item.Model;
@@ -13,7 +12,6 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class PlayerMenu extends ListenerModule {
 
@@ -21,13 +19,8 @@ public class PlayerMenu extends ListenerModule {
     public void onLoad() {
         super.onLoad();
 
-        Bukkit.getServer().getPluginManager().registerEvents(new PlayerSettings.Manager(), LegendsOfValeros.getInstance());
-        Bukkit.getServer().getPluginManager().registerEvents(new InventoryManager(), LegendsOfValeros.getInstance());
-
-    }
-
-    @Override
-    public void onUnload() {
+        registerEvents(new PlayerSettings.Manager());
+        registerEvents(new InventoryManager());
     }
 
     public static void buildMenu(Player source, Player target) {

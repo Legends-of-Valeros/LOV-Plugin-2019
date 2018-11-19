@@ -1,8 +1,8 @@
 package com.legendsofvaleros.modules.bank;
 
-import co.aikar.commands.BukkitCommandManager;
-import com.legendsofvaleros.LegendsOfValeros;
 import com.codingforcookies.robert.item.ItemBuilder;
+import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.ListenerModule;
 import com.legendsofvaleros.modules.bank.item.WorthComponent;
 import com.legendsofvaleros.modules.bank.quest.ActionAddCurrency;
 import com.legendsofvaleros.modules.bank.quest.RepairObjective;
@@ -18,8 +18,6 @@ import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.action.stf.ActionFactory;
 import com.legendsofvaleros.modules.quests.objective.stf.ObjectiveFactory;
-import com.legendsofvaleros.modules.ListenerModule;
-import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -43,6 +41,8 @@ public class Bank extends ListenerModule {
 
     @Override
     public void onLoad() {
+        super.onLoad();
+
         this.instance = this;
 
         BankManager.onEnable();
@@ -62,7 +62,10 @@ public class Bank extends ListenerModule {
         GearRegistry.registerComponent("worth", WorthComponent.class);
     }
 
-    @Override public void onUnload() {
+    @Override
+    public void onUnload() {
+        super.onUnload();
+
         BankManager.onDisable();
     }
 

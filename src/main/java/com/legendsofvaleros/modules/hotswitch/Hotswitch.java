@@ -36,14 +36,12 @@ public class Hotswitch extends ListenerModule {
 
     @Override
     public void onLoad() {
+        super.onLoad();
+
         instance = this;
 
         heldItems = new HashMap<>();
         currentHotbar = new HashMap<>();
-    }
-
-    @Override public void onUnload() {
-        instance = null;
     }
 
     @EventHandler

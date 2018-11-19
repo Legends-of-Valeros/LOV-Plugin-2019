@@ -48,6 +48,7 @@ public class Utilities extends ListenerModule {
     @Override
     public void onLoad() {
         super.onLoad();
+
         instance = this;
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new LOVCommands());
@@ -64,11 +65,6 @@ public class Utilities extends ListenerModule {
         Model.onEnable();
         MessageUtil.onEnable();
         Advancements.onEnable();
-    }
-
-    @Override
-    public void onUnload() {
-        super.onUnload();
     }
 
     public static boolean toggleOp(Player p) {

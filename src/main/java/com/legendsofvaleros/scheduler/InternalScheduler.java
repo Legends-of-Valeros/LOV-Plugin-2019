@@ -5,7 +5,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executor;
 
 public class InternalScheduler extends Thread {
     private long[] last_ticks = new long[]{1, 1, 1, 1, 1};
@@ -46,7 +45,9 @@ public class InternalScheduler extends Thread {
                     if (curr.nextExecuteTick() > tick) requeue.add(curr);
                 }
             }
+
             for (InternalTask r : requeue) list.add(r);
+
             tps = 1000D / ((System.currentTimeMillis() - last_ticks[0] + 0D) / 5D);
             tps = (Math.round(tps * 10) + 0D) / 10D;
             last_ticks[0] = last_ticks[1];
@@ -54,8 +55,10 @@ public class InternalScheduler extends Thread {
             last_ticks[2] = last_ticks[3];
             last_ticks[3] = last_ticks[4];
             last_ticks[4] = System.currentTimeMillis();
+
             long still_wait = (long) ((50 - (System.currentTimeMillis() - last_ticks[3])) * 2.5);
             tick_duration = System.currentTimeMillis() - last_ticks[3];
+
             if (still_wait > 0) {
                 try {
                     Thread.sleep(still_wait);
@@ -81,14 +84,22 @@ public class InternalScheduler extends Thread {
         list.add(task);
     }
 
-    public void executeInMyCircleLater(Runnable task, long delay) { executeInMyCircleLater(new InternalTask(task), delay); }
+    public InternalTask executeInMyCircleLater(Runnable task, long delay) {
+        InternalTask it;
+        executeInMyCircleLater(it = new InternalTask(task), delay);
+        return it;
+    }
     public void executeInMyCircleLater(InternalTask task, long delay) {
         task.setExecutor(this);
         task.setNextExecuteTick(tick + (delay <= 0 ? 1 : delay));
         list.add(task);
     }
 
-    public void executeInMyCircleTimer(Runnable task, long delay, long interval) { executeInMyCircleTimer(new InternalTask(task), delay, interval); }
+    public InternalTask executeInMyCircleTimer(Runnable task, long delay, long interval) {
+        InternalTask it;
+        executeInMyCircleTimer(it = new InternalTask(task), delay, interval);
+        return it;
+    }
     public void executeInMyCircleTimer(InternalTask task, long delay, long interval) {
         task.setExecutor(this);
         task.setNextExecuteTick(tick + (delay <= 0 ? 1 : delay));

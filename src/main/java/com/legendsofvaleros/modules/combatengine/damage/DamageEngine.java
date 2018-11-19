@@ -1,13 +1,12 @@
 package com.legendsofvaleros.modules.combatengine.damage;
 
-import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.combatengine.damage.physical.PhysicalType;
-import com.legendsofvaleros.modules.combatengine.damage.spell.SpellType;
-import com.legendsofvaleros.modules.combatengine.events.*;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.config.CombatEngineConfig;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.core.MinecraftHealthHandler;
+import com.legendsofvaleros.modules.combatengine.damage.physical.PhysicalType;
+import com.legendsofvaleros.modules.combatengine.damage.spell.SpellType;
+import com.legendsofvaleros.modules.combatengine.events.*;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import com.legendsofvaleros.util.DebugFlags;
@@ -23,7 +22,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.text.DecimalFormat;
 
@@ -45,8 +43,8 @@ public class DamageEngine {
 		this.attributer = new DamageAttributer(config);
 		this.multiplierHandler = new DamageMultiplier(config, config);
 
-		Bukkit.getServer().getPluginManager().registerEvents(new DeathListener(), LegendsOfValeros.getInstance());
-		Bukkit.getServer().getPluginManager().registerEvents(new Debugging(), LegendsOfValeros.getInstance());
+		CombatEngine.getInstance().registerEvents(new DeathListener());
+		CombatEngine.getInstance().registerEvents(new Debugging());
 	}
 
 	public boolean causeSpellDamage(LivingEntity target, LivingEntity attacker, SpellType type,
@@ -178,7 +176,8 @@ public class DamageEngine {
 	/**
 	 * Informs listeners of kill attribution.
 	 */
-	private class DeathListener implements Listener {
+	public class DeathListener implements Listener {
+		public DeathListener() { }
 
 		@EventHandler(priority = EventPriority.LOWEST)
 		public void onEntityDeath(EntityDeathEvent event) {
@@ -209,10 +208,11 @@ public class DamageEngine {
 		}
 	}
 
-	
-	public static class Debugging implements Listener {
-		private static final DecimalFormat DF = new DecimalFormat("#.00");
-		
+	public class Debugging implements Listener {
+		private final DecimalFormat DF = new DecimalFormat("#.00");
+
+		public Debugging() { }
+
 		@EventHandler(priority = EventPriority.LOWEST)
 		public void onAttack(CombatEngineAttackMissEvent event) {
 			if(!event.getAttacker().isPlayer()) return;
@@ -236,8 +236,7 @@ public class DamageEngine {
 		public void onPhysical(CombatEnginePhysicalDamageEvent event) {
 			output("PHYS", event);
 		}
-		
-		@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+
 		public void output(String prefix, CombatEngineDamageEvent event) {
 			if(event.getAttacker() == null || event.getDamaged() == null) return;
 			if(!event.getAttacker().isPlayer() && !event.getDamaged().isPlayer()) return;

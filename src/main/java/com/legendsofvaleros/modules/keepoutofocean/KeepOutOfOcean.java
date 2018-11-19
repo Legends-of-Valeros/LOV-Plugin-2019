@@ -40,6 +40,8 @@ public class KeepOutOfOcean extends ListenerModule {
 
     @Override
     public void onLoad() {
+        super.onLoad();
+
         violating = new HashMap<>();
 
         FileConfiguration config = getConfig();
@@ -54,6 +56,8 @@ public class KeepOutOfOcean extends ListenerModule {
 
     @Override
     public void onUnload() {
+        super.onUnload();
+
         violating.clear();
     }
 

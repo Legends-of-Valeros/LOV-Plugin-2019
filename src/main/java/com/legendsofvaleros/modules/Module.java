@@ -3,27 +3,35 @@ package com.legendsofvaleros.modules;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.config.YamlConfigAccessor;
 import com.legendsofvaleros.scheduler.InternalScheduler;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.Listener;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.logging.Logger;
 
 public abstract class Module {
+    public String getName() {
+        return this.getClass().getSimpleName();
+    }
+
     private Logger logger;
 
     private File dataFolder;
     private YamlConfigAccessor configAccessor;
 
+    private ModuleTimings timings;
+    public ModuleTimings getTimings() { return timings; }
+
     public void onLoad() {
+        timings = new ModuleTimings(this);
     }
 
     public void onUnload() {
+        timings.onUnload();
+    }
+
+    public void registerEvents(Listener listener) {
+        LegendsOfValeros.getInstance().registerEvents(listener, this);
     }
 
     public File getDataFolder() {
@@ -41,13 +49,6 @@ public abstract class Module {
         return configAccessor.getConfig();
     }
 
-    /**
-     * Gets the scheduler for the Module
-     */
-    public InternalScheduler getScheduler() {
-        return ModuleManager.schedulers.get(this.getName());
-    }
-
     public void reloadConfig() {
         configAccessor.reloadConfig();
     }
@@ -61,7 +62,10 @@ public abstract class Module {
         return logger;
     }
 
-    public String getName() {
-        return this.getClass().getSimpleName();
+    /**
+     * Gets the scheduler for the Module
+     */
+    public InternalScheduler getScheduler() {
+        return ModuleManager.schedulers.get(this.getName());
     }
 }

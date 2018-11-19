@@ -6,11 +6,11 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.ListenerModule;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
-import com.legendsofvaleros.modules.playermenu.options.PlayerOptionsOpenEvent;
-import com.legendsofvaleros.util.item.Model;
 import com.legendsofvaleros.modules.npcs.NPCs;
+import com.legendsofvaleros.modules.playermenu.options.PlayerOptionsOpenEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.Utilities;
+import com.legendsofvaleros.util.item.Model;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -38,19 +38,21 @@ public class Mounts extends ListenerModule {
     @Override
     public void onLoad() {
         super.onLoad();
+
         instance = this;
-        NPCs.registerTrait("stablemaster", TraitMount.class);
+
         manager = new MountManager();
+
+        NPCs.registerTrait("stablemaster", TraitMount.class);
 
     }
 
     @Override
     public void onUnload() {
+        super.onUnload();
+
         for (Entry<UUID, Mount> rider : riders.entrySet())
             rider.getValue().kickOff(rider.getKey(), Bukkit.getPlayer(rider.getKey()).getVehicle());
-
-        instance = null;
-
     }
 
     @EventHandler

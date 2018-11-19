@@ -10,8 +10,6 @@ import com.legendsofvaleros.modules.pvp.listener.DamageHandler;
 import com.legendsofvaleros.modules.pvp.listener.MiscHandler;
 import com.legendsofvaleros.modules.pvp.toggle.PvPToggles;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class PvP extends Module {
 
@@ -45,11 +43,6 @@ public class PvP extends Module {
                 return "Honor";
             }
         });
-    }
-
-    @Override
-    public void onUnload() {
-        super.onUnload();
     }
 
     /**

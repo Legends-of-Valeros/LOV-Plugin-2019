@@ -17,7 +17,6 @@ import com.legendsofvaleros.modules.mobs.trait.TraitTitle;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.objective.stf.ObjectiveFactory;
-import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -43,6 +42,7 @@ public class Mobs extends ListenerModule {
     @Override
     public void onLoad() {
         super.onLoad();
+
         instance = this;
 
         getLogger().info("AI will update all entities over the course of " + LegendsOfValeros.getInstance().getConfig().getInt("ai-update-smear", 20) + " ticks.");
@@ -55,10 +55,10 @@ public class Mobs extends ListenerModule {
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new MobCommands());
 
-        Bukkit.getServer().getPluginManager().registerEvents(new ExperienceListener(), LegendsOfValeros.getInstance());
-        Bukkit.getServer().getPluginManager().registerEvents(new LootListener(), LegendsOfValeros.getInstance());
-        Bukkit.getServer().getPluginManager().registerEvents(new MobListener(), LegendsOfValeros.getInstance());
-        Bukkit.getServer().getPluginManager().registerEvents(new MobHealthbarManager(), LegendsOfValeros.getInstance());
+        Mobs.getInstance().registerEvents(new ExperienceListener());
+        Mobs.getInstance().registerEvents(new LootListener());
+        Mobs.getInstance().registerEvents(new MobListener());
+        Mobs.getInstance().registerEvents(new MobHealthbarManager());
 
         ObjectiveFactory.registerType("kill", KillObjective.class);
 
@@ -75,7 +75,7 @@ public class Mobs extends ListenerModule {
 
     @Override
     public void onUnload() {
-        instance = null;
+        super.onUnload();
 
         for (World world : Bukkit.getWorlds())
             for (Entity e : world.getEntities())

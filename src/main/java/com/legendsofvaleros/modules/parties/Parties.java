@@ -70,12 +70,6 @@ public class Parties extends ListenerModule {
         });
     }
 
-    @Override
-    public void onUnload() {
-        plugin = null;
-
-    }
-
     @EventHandler
     public void onEntityDeath(CombatEngineDamageEvent event) {
         if (event.getAttacker() == null) return;

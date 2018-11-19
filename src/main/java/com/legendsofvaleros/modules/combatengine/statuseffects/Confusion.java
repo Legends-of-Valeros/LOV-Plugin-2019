@@ -1,16 +1,14 @@
 package com.legendsofvaleros.modules.combatengine.statuseffects;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
+import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifier;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder.ModifierType;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -29,9 +27,7 @@ public class Confusion {
 	private static Map<UUID, ValueModifier> MODS = new HashMap<>();
 
 	static {
-		LogoutListener listener = new LogoutListener();
-
-		Bukkit.getServer().getPluginManager().registerEvents(listener, LegendsOfValeros.getInstance());
+		CombatEngine.getInstance().registerEvents(new LogoutListener());
 	}
 
 	public static void apply(CombatEntity entity) {

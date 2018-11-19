@@ -1,11 +1,10 @@
 package com.legendsofvaleros.modules.hearthstones;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.ListenerModule;
-import com.legendsofvaleros.util.item.Model;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.playermenu.options.PlayerOptionsOpenEvent;
+import com.legendsofvaleros.util.item.Model;
 import org.bukkit.event.EventHandler;
 
 /**
@@ -22,6 +21,8 @@ public class Hearthstones extends ListenerModule {
 
     @Override
     public void onLoad() {
+        super.onLoad();
+
         instance = this;
 
         HearthstonesManager.onEnable();
@@ -29,11 +30,6 @@ public class Hearthstones extends ListenerModule {
 
         NPCs.registerTrait("innkeeper", TraitInnkeeper.class);
 
-    }
-
-    @Override
-    public void onUnload() {
-        instance = null;
     }
 
     @EventHandler

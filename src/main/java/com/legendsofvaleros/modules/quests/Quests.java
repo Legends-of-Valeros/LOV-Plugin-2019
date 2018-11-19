@@ -6,6 +6,7 @@ import com.legendsofvaleros.modules.ListenerModule;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterCreateEvent;
+import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.playermenu.InventoryManager;
 import com.legendsofvaleros.modules.quests.action.*;
 import com.legendsofvaleros.modules.quests.action.stf.ActionFactory;
@@ -26,11 +27,10 @@ import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
 import com.legendsofvaleros.modules.quests.quest.stf.QuestFactory;
 import com.legendsofvaleros.modules.quests.quest.stf.QuestStatus;
 import com.legendsofvaleros.modules.quests.trait.TraitQuestGiver;
-import com.legendsofvaleros.util.title.Title;
-import com.legendsofvaleros.util.title.TitleUtil;
-import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.Utilities;
+import com.legendsofvaleros.util.title.Title;
+import com.legendsofvaleros.util.title.TitleUtil;
 import io.chazza.advancementapi.AdvancementAPI;
 import io.chazza.advancementapi.FrameType;
 import io.chazza.advancementapi.Trigger;
@@ -54,6 +54,8 @@ public class Quests extends ListenerModule {
 
     @Override
     public void onLoad() {
+        super.onLoad();
+
         instance = this;
 
         introQuestId = getConfig().getString("intro-quest", "intro");
@@ -64,8 +66,7 @@ public class Quests extends ListenerModule {
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new QuestCommands());
 
-        Bukkit.getServer().getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
-        Bukkit.getServer().getPluginManager().registerEvents(new TraitQuestGiver.Marker(), LegendsOfValeros.getInstance());
+        registerEvents(new TraitQuestGiver.Marker());
 
         getLogger().info("is registering quests");
         {
@@ -127,6 +128,8 @@ public class Quests extends ListenerModule {
 
     @Override
     public void onUnload() {
+        super.onUnload();
+
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (!Characters.isPlayerCharacterLoaded(p)) continue;
             PlayerCharacter pc = Characters.getPlayerCharacter(p);
@@ -134,8 +137,6 @@ public class Quests extends ListenerModule {
             for (IQuest q : QuestManager.getQuestsForEntity(pc))
                 q.saveProgress(pc);
         }
-
-        instance = null;
     }
 
     public static void attemptGiveQuest(PlayerCharacter pc, String questId) {

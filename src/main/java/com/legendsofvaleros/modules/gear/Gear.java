@@ -1,7 +1,8 @@
 package com.legendsofvaleros.modules.gear;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.codingforcookies.armorequip.ArmorEquipEvent;
+import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.ListenerModule;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.core.PlayerInventoryData;
 import com.legendsofvaleros.modules.gear.component.*;
@@ -14,12 +15,10 @@ import com.legendsofvaleros.modules.gear.quest.*;
 import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.action.stf.ActionFactory;
 import com.legendsofvaleros.modules.quests.objective.stf.ObjectiveFactory;
-import com.legendsofvaleros.modules.ListenerModule;
 import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -33,6 +32,8 @@ public class Gear extends ListenerModule {
 
     @Override
     public void onLoad() {
+        super.onLoad();
+
         instance = this;
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new ItemCommands());
@@ -68,10 +69,6 @@ public class Gear extends ListenerModule {
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override public void onUnload() {
-
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

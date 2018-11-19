@@ -1,15 +1,14 @@
 package com.legendsofvaleros.modules.loot;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.ListenerModule;
-
 import com.codingforcookies.doris.sql.TableManager;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import com.google.gson.Gson;
+import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.ListenerModule;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LootManager extends ListenerModule {
     private static final String LOOT_TABLE = "loot";
@@ -30,6 +29,7 @@ public class LootManager extends ListenerModule {
     @Override
     public void onLoad() {
         super.onLoad();
+
         instance = this;
         gson = new Gson();
 
@@ -38,11 +38,6 @@ public class LootManager extends ListenerModule {
                 .column(LOOT_GROUP, "VARCHAR(64)")
                 .column(LOOT_NAME, "VARCHAR(64)")
                 .column(LOOT_CONTENT, "TEXT").create();
-    }
-
-    @Override
-    public void onUnload() {
-        instance = null;
     }
 
     public ListenableFuture<LootTable> getTable(String loot_id) {

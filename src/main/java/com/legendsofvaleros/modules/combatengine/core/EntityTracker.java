@@ -1,10 +1,10 @@
 package com.legendsofvaleros.modules.combatengine.core;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.combatengine.api.UnsafePlayerInitializer;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEntityCreateEvent;
@@ -26,7 +26,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.UUID;
 
@@ -44,13 +43,12 @@ public class EntityTracker implements UnsafePlayerInitializer {
     public EntityTracker(CombatProfile defaultProfile) {
         this.defaultProfile = defaultProfile;
 
-        TrackingListener listener = new TrackingListener();
+        TrackingListener listener;
+        CombatEngine.getInstance().registerEvents(listener = new TrackingListener());
 
         combatEntities =
                 CacheBuilder.newBuilder().concurrencyLevel(1).weakValues().removalListener(listener)
                         .build();
-
-        Bukkit.getServer().getPluginManager().registerEvents(listener, LegendsOfValeros.getInstance());
 
         // TODO this would need to be configured if passive/aggressive initialization option is added
         for (World world : Bukkit.getServer().getWorlds()) {
@@ -131,7 +129,8 @@ public class EntityTracker implements UnsafePlayerInitializer {
      * <p>
      * Also initiates the construction of combat objects for certain entities.
      */
-    private class TrackingListener implements Listener, RemovalListener<UUID, CombinedCombatEntity> {
+    public class TrackingListener implements Listener, RemovalListener<UUID, CombinedCombatEntity> {
+        public TrackingListener() { }
 
         // notifies combat object and server of the object's invalidation
         @Override

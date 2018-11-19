@@ -6,20 +6,19 @@ import com.codingforcookies.ambience.Sound;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.ListenerModule;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.chat.Chat;
+import com.legendsofvaleros.modules.chat.IChannelHandler;
+import com.legendsofvaleros.modules.pvp.PvP;
+import com.legendsofvaleros.modules.pvp.toggle.PvPToggles;
 import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.objective.stf.ObjectiveFactory;
 import com.legendsofvaleros.modules.zones.event.ZoneEnterEvent;
 import com.legendsofvaleros.modules.zones.event.ZoneLeaveEvent;
 import com.legendsofvaleros.modules.zones.quest.EnterZoneObjective;
 import com.legendsofvaleros.modules.zones.quest.ExitZoneObjective;
+import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.title.Title;
 import com.legendsofvaleros.util.title.TitleUtil;
-import com.legendsofvaleros.modules.chat.Chat;
-import com.legendsofvaleros.modules.chat.IChannelHandler;
-import com.legendsofvaleros.modules.pvp.PvP;
-import com.legendsofvaleros.modules.pvp.toggle.PvPToggles;
-import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
 import mkremins.fanciful.FancyMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -52,7 +51,9 @@ public class Zones extends ListenerModule {
     @Override
     public void onLoad() {
         super.onLoad();
+
         instance = this;
+
         manager = new ZoneManager();
         toggles = PvP.getInstance().getToggles();
 
@@ -110,10 +111,6 @@ public class Zones extends ListenerModule {
                 }
             }
         });
-    }
-
-    @Override
-    public void onUnload() {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

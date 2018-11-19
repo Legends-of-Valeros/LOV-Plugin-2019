@@ -2,7 +2,6 @@ package com.legendsofvaleros.modules.skills;
 
 import com.codingforcookies.robert.core.RomanNumeral;
 import com.codingforcookies.robert.item.ItemBuilder;
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.ListenerModule;
 import com.legendsofvaleros.modules.characters.api.Cooldowns;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
@@ -33,13 +32,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 import java.util.Map.Entry;
 
 public class Skills extends ListenerModule {
-    public static final SkillTree[] skillTrees = new SkillTree[]{
+    public static final SkillTree[] skillTrees = new SkillTree[] {
             new TreeWarrior(),
             new TreeRogue(),
             new TreeMage(),
@@ -57,7 +55,9 @@ public class Skills extends ListenerModule {
     @Override
     public void onLoad() {
         super.onLoad();
+
         instance = this;
+
         hotbarManager = new SkillBarManager();
 
         GearRegistry.registerComponent("charge", GearCharge.Component.class);
@@ -79,13 +79,7 @@ public class Skills extends ListenerModule {
             tree.initSkills();
         }
 
-        Bukkit.getServer().getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
-        new SkillListener();
-
-    }
-
-    @Override
-    public void onUnload() {
+        Skills.getInstance().registerEvents(new SkillListener());
     }
 
     @EventHandler

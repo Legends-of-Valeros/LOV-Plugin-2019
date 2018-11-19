@@ -14,7 +14,6 @@ import com.legendsofvaleros.modules.regions.quest.ActionRegionAccess;
 import com.legendsofvaleros.modules.regions.quest.ActionRegionDeny;
 import com.legendsofvaleros.modules.regions.quest.EnterRegionObjective;
 import com.legendsofvaleros.modules.regions.quest.ExitRegionObjective;
-import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -48,6 +47,8 @@ public class Regions extends ListenerModule {
 
     @Override
     public void onLoad() {
+        super.onLoad();
+
         plugin = this;
 
         regionManager = new RegionManager();
@@ -59,10 +60,6 @@ public class Regions extends ListenerModule {
 
         ActionFactory.registerType("region_access", ActionRegionAccess.class);
         ActionFactory.registerType("region_deny", ActionRegionDeny.class);
-    }
-
-    @Override
-    public void onUnload() {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

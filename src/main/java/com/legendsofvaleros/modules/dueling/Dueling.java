@@ -4,15 +4,15 @@ import com.codingforcookies.robert.item.ItemBuilder;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.common.collect.Table.Cell;
+import com.legendsofvaleros.modules.ListenerModule;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import com.legendsofvaleros.modules.playermenu.PlayerMenuOpenEvent;
+import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.title.Title;
 import com.legendsofvaleros.util.title.TitleUtil;
-import com.legendsofvaleros.modules.ListenerModule;
-import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -35,14 +35,17 @@ public class Dueling extends ListenerModule implements Listener {
 
     @Override
     public void onLoad() {
+        super.onLoad();
+
         plugin = this;
     }
 
     @Override
     public void onUnload() {
+        super.onUnload();
+
         for (Cell<Player, Player, Duel> c : duels.cellSet())
             c.getValue().cancel();
-        plugin = null;
     }
 
     public Duel getDuel(Player p1, Player p2) {

@@ -5,7 +5,6 @@ import com.legendsofvaleros.modules.ListenerModule;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import com.legendsofvaleros.modules.zones.Zones;
-import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,7 +22,9 @@ public class Graveyards extends ListenerModule {
 
     @Override
     public void onLoad() {
-        this.inst = inst;
+        super.onLoad();
+
+        this.inst = this;
 
         LegendsOfValeros.getInstance().getCommand("suicide").setExecutor((sender, arg1, arg2, arg3) -> {
             CombatEngine.getInstance().causeTrueDamage((Player) sender, null, CombatEngine.getEntity((Player) sender).getStats().getStat(Stat.MAX_HEALTH), ((Player) sender).getLocation());
@@ -33,11 +34,6 @@ public class Graveyards extends ListenerModule {
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new GraveyardCommands());
 
         GraveyardManager.onEnable();
-
-    }
-
-    @Override
-    public void onUnload() {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

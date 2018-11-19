@@ -1,22 +1,21 @@
 package com.legendsofvaleros.modules.chat;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ExecutionException;
-
+import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.ListenerModule;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.playermenu.settings.PlayerSettings;
 import com.legendsofvaleros.modules.playermenu.settings.PlayerSettingsOpenEvent;
-import com.legendsofvaleros.modules.ListenerModule;
 import com.legendsofvaleros.util.Discord;
+import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.PlayerData;
+import com.legendsofvaleros.util.Utilities;
 import de.btobastian.javacord.DiscordAPI;
 import de.btobastian.javacord.entities.Channel;
 import de.btobastian.javacord.entities.Server;
 import de.btobastian.javacord.listener.message.MessageCreateListener;
+import mkremins.fanciful.FancyMessage;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -31,11 +30,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
-import com.google.common.util.concurrent.ListenableFuture;
-import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
-
-import mkremins.fanciful.FancyMessage;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 public class Chat extends ListenerModule {
 
@@ -50,6 +48,8 @@ public class Chat extends ListenerModule {
 
     @Override
     public void onLoad() {
+        super.onLoad();
+
         instance = this;
 
         ConfigurationSection config = getConfig().getConfigurationSection("discord");
@@ -151,8 +151,9 @@ public class Chat extends ListenerModule {
         Bukkit.getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
     }
 
-    @Override public void onUnload() {
-
+    @Override
+    public void onUnload() {
+        super.onUnload();
     }
 
     private char channelDefault = 'L';

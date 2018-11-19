@@ -1,7 +1,6 @@
 package com.legendsofvaleros.modules.characters.util;
 
-import com.legendsofvaleros.LegendsOfValeros;
-import org.bukkit.Bukkit;
+import com.legendsofvaleros.util.Utilities;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,8 +14,8 @@ public abstract class CapturePlayerChat implements Listener {
 	
 	public CapturePlayerChat(Player p) {
 		captureFrom = p;
-		
-		Bukkit.getServer().getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
+
+		Utilities.getInstance().registerEvents(this);
 	}
 	
 	/**

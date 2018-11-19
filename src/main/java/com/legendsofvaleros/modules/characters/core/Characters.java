@@ -3,7 +3,9 @@ package com.legendsofvaleros.modules.characters.core;
 import com.codingforcookies.doris.orm.ORMField;
 import com.codingforcookies.doris.orm.ORMRegistry;
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.ListenerModule;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
+import com.legendsofvaleros.modules.characters.api.CharactersAPI;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
 import com.legendsofvaleros.modules.characters.config.BukkitConfig;
@@ -14,13 +16,10 @@ import com.legendsofvaleros.modules.characters.loading.PlayerLock;
 import com.legendsofvaleros.modules.characters.skilleffect.PersistingEffects;
 import com.legendsofvaleros.modules.characters.skilleffect.SkillEffects;
 import com.legendsofvaleros.modules.characters.stat.PersistentRegeneratingStats;
+import com.legendsofvaleros.modules.characters.testing.Test;
 import com.legendsofvaleros.modules.characters.ui.*;
 import com.legendsofvaleros.modules.characters.ui.loading.ProgressView;
 import com.legendsofvaleros.modules.levelarchetypes.core.LevelArchetypes;
-import com.legendsofvaleros.modules.ListenerModule;
-import com.legendsofvaleros.modules.characters.api.CharactersAPI;
-import com.legendsofvaleros.modules.characters.testing.Test;
-import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -55,6 +54,8 @@ public class Characters extends ListenerModule implements CharactersAPI {
 
     @Override
     public void onLoad() {
+        super.onLoad();
+
         instance = this;
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new CharacterCommands());
@@ -117,6 +118,8 @@ public class Characters extends ListenerModule implements CharactersAPI {
 
     @Override
     public void onUnload() {
+        super.onUnload();
+
         // saves regenerating stat levels
         instance.persistentRegenStats.onDisable();
 

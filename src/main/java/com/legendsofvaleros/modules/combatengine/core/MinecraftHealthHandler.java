@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.combatengine.core;
 
-import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.damage.AttackStandIn;
 import com.legendsofvaleros.modules.combatengine.events.CombatEntityCreateEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEntityInvalidatedEvent;
@@ -9,7 +9,6 @@ import com.legendsofvaleros.modules.combatengine.events.VanillaDamageCancelledEv
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import com.legendsofvaleros.modules.combatengine.stat.StatUtils;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.util.LoggingOut;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -27,7 +26,6 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
@@ -73,8 +71,8 @@ public class MinecraftHealthHandler {
 
         noKnockbackStandIn = new AttackStandIn(EntityType.SNOWBALL);
 
-        Bukkit.getServer().getPluginManager().registerEvents(new DeathAnimationFixListener(), LegendsOfValeros.getInstance());
-        Bukkit.getServer().getPluginManager().registerEvents(new DamageListener(), LegendsOfValeros.getInstance());
+        CombatEngine.getInstance().registerEvents(new DeathAnimationFixListener());
+        CombatEngine.getInstance().registerEvents(new DamageListener());
     }
 
     /**
@@ -220,7 +218,6 @@ public class MinecraftHealthHandler {
      * Listens to and modifies bukkit events to replace vanilla behavior with CombatEngine features.
      */
     private class DamageListener implements Listener {
-
         /**
          * Cancels all damage not done by a preapproved source.
          * <p>

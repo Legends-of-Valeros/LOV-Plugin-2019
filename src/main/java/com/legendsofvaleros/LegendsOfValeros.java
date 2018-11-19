@@ -1,7 +1,7 @@
 package com.legendsofvaleros;
 
-import co.aikar.commands.BukkitCommandManager;
 import co.aikar.commands.PaperCommandManager;
+import com.legendsofvaleros.modules.Module;
 import com.legendsofvaleros.modules.ModuleManager;
 import com.legendsofvaleros.modules.bank.Bank;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -31,6 +31,7 @@ import com.legendsofvaleros.util.ProgressBar;
 import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Date;
@@ -44,7 +45,6 @@ public class LegendsOfValeros extends JavaPlugin {
         return instance;
     }
 
-
     //needed for threads, so they dont continue running after shutdown
     public static boolean shutdown;
     public static long startTime = 0;
@@ -55,6 +55,7 @@ public class LegendsOfValeros extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+
         shutdown = false;
         startTime = System.currentTimeMillis();
 
@@ -106,6 +107,11 @@ public class LegendsOfValeros extends JavaPlugin {
         ModuleManager.registerModule(FastTravel.class);
         ModuleManager.registerModule(Graveyards.class);
         ModuleManager.registerModule(Dueling.class);
+    }
+
+    public void registerEvents(Listener listener, Module module) {
+        module.getLogger().info("Registered listener: " + listener.getClass().getSimpleName() + ".");
+        Bukkit.getServer().getPluginManager().registerEvents(listener, this);
     }
 
     /**
