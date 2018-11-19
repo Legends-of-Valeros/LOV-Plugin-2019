@@ -23,7 +23,9 @@ public class FastTravel extends Module {
 
     public void onUnload() {
         super.onUnload();
+
         for (Player p : Bukkit.getOnlinePlayers()) {
+            if(!Characters.isPlayerCharacterLoaded(p)) continue;
             DiscoveredFastTravels.onLogout(Characters.getPlayerCharacter(p).getUniqueCharacterId());
         }
     }

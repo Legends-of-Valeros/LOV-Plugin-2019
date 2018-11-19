@@ -3,13 +3,11 @@ package com.legendsofvaleros.modules;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.scheduler.InternalScheduler;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ModuleManager {
-    public static ConcurrentHashMap<String, Module> modules = new ConcurrentHashMap<>();
+    public static Map<String, Module> modules = new LinkedHashMap<>();
     public static List<Module> modulesToLoad = new ArrayList<>();
     public static List<Module> modulesToUnload = new ArrayList<>();
 
@@ -36,7 +34,8 @@ public class ModuleManager {
         modules.values().forEach(module ->
                 modulesToUnload.add(module));
 
-        for(int i = 0; i < modulesToUnload.size(); i++) {
+        // Unload modules in reverse
+        for(int i = modulesToUnload.size() - 1; i >= 0; i--) {
             Module moduleToUnload = modulesToUnload.get(i);
 
             LegendsOfValeros.getInstance().getLogger().info("(" + (i + 1) + "/" + modulesToUnload.size() + ") Unloading " + moduleToUnload.getName() + "...");

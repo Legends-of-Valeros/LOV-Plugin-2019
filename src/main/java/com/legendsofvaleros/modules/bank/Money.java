@@ -8,25 +8,9 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.event.InventoryFullEvent;
 import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.playermenu.InventoryManager;
-import com.legendsofvaleros.util.cmd.CommandArgument;
-import com.legendsofvaleros.modules.bank.pouch.CreatePouchGUI;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.gear.event.InventoryFullEvent;
-import com.legendsofvaleros.modules.gear.item.GearItem;
-import com.legendsofvaleros.modules.playermenu.InventoryManager;
-import com.legendsofvaleros.util.cmd.CommandArgument;
-import com.legendsofvaleros.modules.bank.pouch.CreatePouchGUI;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.gear.event.InventoryFullEvent;
-import com.legendsofvaleros.modules.gear.item.GearItem;
-import com.legendsofvaleros.modules.playermenu.InventoryManager;
-import com.legendsofvaleros.util.cmd.CommandArgument;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class Money {
     public static final String ID = "copper";
@@ -148,7 +132,7 @@ public class Money {
         }
     }
 
-    public static class Arg extends CommandArgument<Long> {
+    /*public static class Arg extends CommandArgument<Long> {
         @Override
         public String getDescription() {
             return "An amount of money. Ex: 5g2c";
@@ -183,5 +167,5 @@ public class Money {
 
             return null;
         }
-    }
+    }*/
 }

@@ -1,5 +1,6 @@
 package com.legendsofvaleros.modules.bank;
 
+import co.aikar.commands.BukkitCommandManager;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.modules.bank.item.WorthComponent;
@@ -18,7 +19,6 @@ import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.action.stf.ActionFactory;
 import com.legendsofvaleros.modules.quests.objective.stf.ObjectiveFactory;
 import com.legendsofvaleros.modules.ListenerModule;
-import com.legendsofvaleros.scheduler.InternalScheduler;
 import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -33,6 +33,7 @@ public class Bank extends ListenerModule {
     public static Bank getInstance() { return instance; }
 
     private static final Map<String, Currency> currencies = new HashMap<>();
+    public Currency getCurrency(String id) { return currencies.get(id); }
 
     public static void registerCurrency(String id, Currency currency) {
         if (currencies.containsKey(id))
@@ -46,13 +47,18 @@ public class Bank extends ListenerModule {
 
         BankManager.onEnable();
         Money.onEnable();
-        Utilities.getCommandManager().loadCommandClass(BankCommands.class);
+
+        LegendsOfValeros.getInstance().getCommandManager().registerCommand(new BankCommand());
+
         ObjectiveFactory.registerType("repair", RepairObjective.class);
         ActionFactory.registerType("currency_give", ActionAddCurrency.class);
+
         new TradeManager();
+
         NPCs.registerTrait("banker", TraitBanker.class);
         NPCs.registerTrait("trader", TraitTrader.class);
         NPCs.registerTrait("blacksmith", TraitBlacksmith.class);
+
         GearRegistry.registerComponent("worth", WorthComponent.class);
     }
 

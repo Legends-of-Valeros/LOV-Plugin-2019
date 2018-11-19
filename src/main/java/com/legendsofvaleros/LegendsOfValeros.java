@@ -1,5 +1,7 @@
 package com.legendsofvaleros;
 
+import co.aikar.commands.BukkitCommandManager;
+import co.aikar.commands.PaperCommandManager;
 import com.legendsofvaleros.modules.ModuleManager;
 import com.legendsofvaleros.modules.bank.Bank;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -37,23 +39,27 @@ import java.util.Date;
  * Created by Crystall on 11/15/2018
  */
 public class LegendsOfValeros extends JavaPlugin {
-
     private static LegendsOfValeros instance;
+    public static LegendsOfValeros getInstance() {
+        return instance;
+    }
+
 
     //needed for threads, so they dont continue running after shutdown
     public static boolean shutdown;
     public static long startTime = 0;
 
-
-    public static LegendsOfValeros getInstance() {
-        return instance;
-    }
+    private PaperCommandManager manager;
+    public PaperCommandManager getCommandManager() { return manager; }
 
     @Override
     public void onEnable() {
         instance = this;
         shutdown = false;
         startTime = System.currentTimeMillis();
+
+        manager = new PaperCommandManager(LegendsOfValeros.getInstance());
+        manager.enableUnstableAPI("help");
 
         try {
             registerModules();
