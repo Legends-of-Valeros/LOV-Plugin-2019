@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.combatengine.statuseffects;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
@@ -11,6 +10,7 @@ import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.Disguise;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 import me.libraryaddict.disguise.disguisetypes.MobDisguise;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 
@@ -39,7 +39,7 @@ public class Polymorph {
 
     static {
         new NoInteractionListener(MODS.keySet());
-        libsFound = LegendsOfValeros.getInstance().getServer().getPluginManager().isPluginEnabled("LibsDisguises");
+        libsFound = Bukkit.getServer().getPluginManager().isPluginEnabled("LibsDisguises");
     }
 
     public static void apply(CombatEntity entity) {

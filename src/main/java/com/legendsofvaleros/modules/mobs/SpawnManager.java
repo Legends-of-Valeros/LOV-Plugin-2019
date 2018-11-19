@@ -18,7 +18,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,7 +52,7 @@ public class SpawnManager {
             .build();
 
     public static void onEnable() {
-        Bukkit.getPluginManager().registerEvents(new SpawnsListener(), LegendsOfValeros.getInstance());
+        Mobs.getInstance().registerEvents(new SpawnsListener());
 
         spawnsTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), SpawnArea.class);
 

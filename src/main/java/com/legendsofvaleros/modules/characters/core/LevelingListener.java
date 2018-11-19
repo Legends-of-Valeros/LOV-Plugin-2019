@@ -1,20 +1,18 @@
 package com.legendsofvaleros.modules.characters.core;
 
-import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.config.CharactersConfig;
 import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLevelUpEvent;
 import com.legendsofvaleros.modules.characters.util.ProgressionUtils;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.api.EntityStats;
+import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.core.CombatProfile;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import com.legendsofvaleros.modules.levelarchetypes.api.Archetype;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -33,7 +31,7 @@ public class LevelingListener implements Listener {
 	public LevelingListener(CharactersConfig config) {
 		this.config = config;
 
-		Bukkit.getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
+		Characters.getInstance().registerEvents(this);
 	}
 
 	@EventHandler

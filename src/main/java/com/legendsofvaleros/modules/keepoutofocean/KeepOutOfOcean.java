@@ -9,6 +9,7 @@ import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import com.legendsofvaleros.modules.combatengine.stat.StatUtils;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.Utilities;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
@@ -91,7 +92,7 @@ public class KeepOutOfOcean extends ListenerModule {
         if (event.getPlayer().isOp()) {
             return;
         }
-        LegendsOfValeros.getInstance().getServer().getScheduler().runTaskLater(LegendsOfValeros.getInstance(), () -> {
+        Bukkit.getServer().getScheduler().runTaskLater(LegendsOfValeros.getInstance(), () -> {
             if (event.getPlayer().isOnline() && isInOcean(event.getPlayer())) {
                 double ceDamage = 2 * StatUtils.convertHealth(event.getPlayer(), heartsDamage, false);
                 CombatEngine.getInstance().causeTrueDamage(event.getPlayer(), null, ceDamage, null);
@@ -120,7 +121,7 @@ public class KeepOutOfOcean extends ListenerModule {
 
         @Override
         public void run() {
-            for (Player player : LegendsOfValeros.getInstance().getServer().getOnlinePlayers()) {
+            for (Player player : Bukkit.getServer().getOnlinePlayers()) {
                 if (!Utilities.isOp(player) && !violating.containsKey(player.getUniqueId()) && isInOcean(player)) {
                     violating.put(player.getUniqueId(), new OutOfBoundsPlayer(plugin, player));
                 }

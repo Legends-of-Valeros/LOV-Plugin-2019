@@ -1,6 +1,8 @@
 package com.legendsofvaleros.modules.characters.core;
 
-import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.characters.api.CharacterId;
+import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
+import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
 import com.legendsofvaleros.modules.characters.config.CharactersConfig;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterFinishLoadingEvent;
@@ -10,10 +12,6 @@ import com.legendsofvaleros.modules.combatengine.core.CombatProfile;
 import com.legendsofvaleros.modules.combatengine.events.CombatEntityCreateEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEntityPreCreateEvent;
 import com.legendsofvaleros.modules.levelarchetypes.api.Archetype;
-import com.legendsofvaleros.modules.characters.api.CharacterId;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -62,7 +60,7 @@ public class PlayerCharacterCollection implements PlayerCharacters {
 			characters.put(pc.getUniqueCharacterId(), pc);
 		}
 
-		Bukkit.getPluginManager().registerEvents(new PlayerListener(), LegendsOfValeros.getInstance());
+		Characters.getInstance().registerEvents(new PlayerListener());
 	}
 
 	@Override

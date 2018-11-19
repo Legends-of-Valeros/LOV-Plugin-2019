@@ -1,9 +1,10 @@
 package com.legendsofvaleros.modules.characters.core;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.codingforcookies.robert.core.StringUtil;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
+import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.events.*;
@@ -12,10 +13,9 @@ import com.legendsofvaleros.modules.characters.loading.PhaseLock;
 import com.legendsofvaleros.modules.characters.loading.PlayerLock;
 import com.legendsofvaleros.modules.characters.loading.TaskPhase;
 import com.legendsofvaleros.modules.characters.race.EntityRace;
-import com.legendsofvaleros.modules.combatengine.api.UnsafePlayerInitializer;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.ui.CharacterCreationListener;
 import com.legendsofvaleros.modules.characters.ui.CharacterSelectionListener;
+import com.legendsofvaleros.modules.combatengine.api.UnsafePlayerInitializer;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.Utilities;
@@ -326,7 +326,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
 
         private PlayerListener(PlayerLoader outer) {
             this.outer = outer;
-            Bukkit.getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
+            Characters.getInstance().registerEvents(this);
         }
 
         @EventHandler

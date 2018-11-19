@@ -15,7 +15,6 @@ import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -55,7 +54,7 @@ public class PartyManager {
     public static void onEnable() {
         partyTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), Pair.class);
 
-        Bukkit.getPluginManager().registerEvents(new PlayerListener(), LegendsOfValeros.getInstance());
+        Parties.getInstance().registerEvents(new PlayerListener());
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(LegendsOfValeros.getInstance(), () -> {
             for (IParty party : parties.values())

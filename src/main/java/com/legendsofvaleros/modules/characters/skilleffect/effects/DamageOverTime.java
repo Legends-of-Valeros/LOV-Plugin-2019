@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.characters.skilleffect.effects;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.core.LoginTime;
@@ -8,7 +7,6 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterCombatLogou
 import com.legendsofvaleros.modules.characters.skilleffect.InterruptionCause;
 import com.legendsofvaleros.modules.characters.skilleffect.MetaEffectInstance;
 import com.legendsofvaleros.modules.characters.skilleffect.SkillEffect;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -27,7 +25,7 @@ public abstract class DamageOverTime<T> extends SkillEffect<T> {
   public DamageOverTime(String id, int minLevel, int maxLevel,
       InterruptionCause... interruptionCauses) throws IllegalArgumentException {
     super(id, minLevel, maxLevel, false, interruptionCauses);
-    Bukkit.getPluginManager().registerEvents(new CombatLoggingListener(), LegendsOfValeros.getInstance());
+    Characters.getInstance().registerEvents(new CombatLoggingListener());
   }
 
   /**

@@ -1,10 +1,10 @@
 package com.legendsofvaleros.modules.characters.cooldown;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.codingforcookies.doris.query.InsertQuery;
 import com.codingforcookies.doris.query.RemoveQuery;
 import com.codingforcookies.doris.sql.QueryMethod;
 import com.codingforcookies.doris.sql.TableManager;
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.Cooldowns;
 import com.legendsofvaleros.modules.characters.api.Cooldowns.Cooldown;
@@ -60,7 +60,7 @@ public class CooldownData {
 
 		loadedCharacters = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
-		Bukkit.getPluginManager().registerEvents(new PlayerCharacterListener(), LegendsOfValeros.getInstance());
+		Characters.getInstance().registerEvents(new PlayerCharacterListener());
 	}
 
 	/**

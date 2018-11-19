@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.combatengine.core;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.ListenerModule;
 import com.legendsofvaleros.modules.combatengine.api.CombatEngineAPI;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
@@ -13,6 +12,7 @@ import com.legendsofvaleros.modules.combatengine.damage.physical.PhysicalType;
 import com.legendsofvaleros.modules.combatengine.damage.spell.SpellType;
 import com.legendsofvaleros.modules.combatengine.ui.CombatEngineUiManager;
 import com.legendsofvaleros.modules.combatengine.ui.PlayerCombatInterface;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -45,7 +45,7 @@ public class CombatEngine extends ListenerModule implements CombatEngineAPI {
     public void onLoad() {
         super.onLoad();
 
-        if (!LegendsOfValeros.getInstance().getServer().getPluginManager().isPluginEnabled("LibsDisguises")) {
+        if (!Bukkit.getServer().getPluginManager().isPluginEnabled("LibsDisguises")) {
             getLogger().warning("LibsDisguises is not enabled on this server. Disguises will not work without it!");
         }
 

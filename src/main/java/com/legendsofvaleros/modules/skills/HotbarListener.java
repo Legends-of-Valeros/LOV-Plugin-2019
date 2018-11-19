@@ -18,14 +18,13 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 import java.util.Map.Entry;
 
 public class HotbarListener implements Runnable, Listener {
     public HotbarListener() {
-        Bukkit.getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
+        Hotswitch.getInstance().registerEvents(this);
         Bukkit.getScheduler().runTaskTimerAsynchronously(LegendsOfValeros.getInstance(), this, 20L, 20L);
     }
 

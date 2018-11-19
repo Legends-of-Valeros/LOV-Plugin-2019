@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.combatengine.core;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.config.SpeedConfig;
 import com.legendsofvaleros.modules.combatengine.events.CombatEntityCreateEvent;
@@ -30,7 +29,7 @@ public class SpeedEngine {
 
     public SpeedEngine(SpeedConfig config) {
         this.config = config;
-        LegendsOfValeros.getInstance().getServer().getPluginManager().registerEvents(new SpeedListener(), LegendsOfValeros.getInstance());
+        CombatEngine.getInstance().registerEvents(new SpeedListener());
     }
 
     void onSpeedChange(CombatEntity entity, double newSpeed) {

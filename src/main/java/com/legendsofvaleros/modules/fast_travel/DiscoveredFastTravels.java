@@ -15,10 +15,8 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
 import com.legendsofvaleros.util.Utilities;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,7 +45,7 @@ public class DiscoveredFastTravels implements Listener {
 	public static void onEnable() {
 		manager = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), Pair.class);
 
-		Bukkit.getPluginManager().registerEvents(new PlayerCharacterListener(), LegendsOfValeros.getInstance());
+		FastTravel.getInstance().registerEvents(new PlayerCharacterListener());
 	}
 
 	public static void add(PlayerCharacter pc, String travel_id) {

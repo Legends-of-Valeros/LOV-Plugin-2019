@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.characters.skilleffect;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -8,7 +7,6 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEntityInvalidatedEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -76,7 +74,7 @@ public abstract class SkillEffect<T> {
 
     affected = new HashMap<>();
 
-    Bukkit.getPluginManager().registerEvents(new EffectListener(), LegendsOfValeros.getInstance());
+    Characters.getInstance().registerEvents(new EffectListener());
   }
 
   /**

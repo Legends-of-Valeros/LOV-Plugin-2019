@@ -128,7 +128,7 @@ public class RegionManager implements Listener {
                 .primary(REGION_ID, "VARCHAR(64)")
                 .column(ACCESS_LEVEL, "BOOLEAN").create();
 
-        Bukkit.getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
+        Regions.getInstance().registerEvents(this);
 
         loadRegions();
     }

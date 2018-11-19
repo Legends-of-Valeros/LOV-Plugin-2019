@@ -1,12 +1,12 @@
 package com.legendsofvaleros.modules.combatengine.core;
 
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.config.StatRegenerationConfig;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineRegenEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEntityCreateEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEntityInvalidatedEvent;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
@@ -50,7 +50,7 @@ public class StatRegenerator {
 			entities.add(i, new HashMap<>());
 		}
 
-		LegendsOfValeros.getInstance().getServer().getPluginManager().registerEvents(new EntityListener(), LegendsOfValeros.getInstance());
+		CombatEngine.getInstance().registerEvents(new EntityListener());
 		new RegenTask();
 	}
 

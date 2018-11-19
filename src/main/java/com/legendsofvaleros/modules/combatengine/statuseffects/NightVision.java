@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.combatengine.statuseffects;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
+import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifier;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
@@ -26,7 +26,7 @@ public class NightVision {
 
   static {
     LogoutListener listener = new LogoutListener();
-    LegendsOfValeros.getInstance().getServer().getPluginManager().registerEvents(listener, LegendsOfValeros.getInstance());
+    CombatEngine.getInstance().registerEvents(listener);
   }
 
   public static void apply(CombatEntity entity) {

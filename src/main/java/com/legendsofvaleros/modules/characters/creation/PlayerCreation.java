@@ -20,7 +20,6 @@ import com.legendsofvaleros.modules.characters.util.ShitUtil;
 import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
 import mkremins.fanciful.FancyMessage;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -39,7 +38,7 @@ public class PlayerCreation implements Listener {
 	public static void onEnable() {
 		LegendsOfValeros.getInstance().getCommandManager().registerCommand(new CreationCommand());
 
-		Bukkit.getPluginManager().registerEvents(new PlayerCreation(), LegendsOfValeros.getInstance());
+		Characters.getInstance().registerEvents(new PlayerCreation());
 	}
 	
 	/**

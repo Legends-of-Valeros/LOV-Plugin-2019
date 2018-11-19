@@ -9,7 +9,6 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
@@ -66,7 +65,7 @@ public class MountManager implements Listener {
         managerCharacters.primary(CHARACTER_ID, "VARCHAR(38)")
                 .primary(CHARACTER_MOUNT, "VARCHAR(64)").create();
 
-        Bukkit.getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
+        Mounts.getInstance().registerEvents(this);
 
         loadMounts();
     }

@@ -1,8 +1,9 @@
 package com.legendsofvaleros.modules.characters.loading;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -36,7 +37,7 @@ public class PlayerLock {
 
 	public static void onEnable() {
 		listener = new LockingListener();
-		Bukkit.getPluginManager().registerEvents(listener, LegendsOfValeros.getInstance());
+		Characters.getInstance().registerEvents(listener);
 
 		freezeTask = new FreezeTask();
 		freezeTask.runTaskTimer(LegendsOfValeros.getInstance(), FREEZE_INTERVAL, FREEZE_INTERVAL);

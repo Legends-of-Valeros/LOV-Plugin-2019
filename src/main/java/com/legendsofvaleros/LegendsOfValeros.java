@@ -35,6 +35,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Crystall on 11/15/2018
@@ -51,6 +53,8 @@ public class LegendsOfValeros extends JavaPlugin {
 
     private PaperCommandManager manager;
     public PaperCommandManager getCommandManager() { return manager; }
+
+    private Set<Listener> loadedEventClasses = new HashSet<>();
 
     @Override
     public void onEnable() {
@@ -76,6 +80,8 @@ public class LegendsOfValeros extends JavaPlugin {
         shutdown = true;
 
         ModuleManager.unloadModules();
+
+        loadedEventClasses.clear();
     }
 
     private void registerModules() throws Exception {
@@ -110,7 +116,12 @@ public class LegendsOfValeros extends JavaPlugin {
     }
 
     public void registerEvents(Listener listener, Module module) {
-        module.getLogger().info("Registered listener: " + listener.getClass().getSimpleName() + ".");
+        module.getLogger().info("Registered listener: " + listener + ".");
+
+        if(loadedEventClasses.contains(listener))
+            module.getLogger().severe(listener + " has already been registered as an event listener! This may cause unintended side effects!");
+        loadedEventClasses.add(listener);
+
         Bukkit.getServer().getPluginManager().registerEvents(listener, this);
     }
 

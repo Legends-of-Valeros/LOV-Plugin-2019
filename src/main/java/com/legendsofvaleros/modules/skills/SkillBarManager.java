@@ -10,7 +10,6 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -35,7 +34,7 @@ public class SkillBarManager implements Listener {
                 .primary(SLOT_ID, "INT(5)")
                 .column(SLOT_SKILL, "TEXT").create();
 
-        Bukkit.getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
+        Skills.getInstance().registerEvents(this);
     }
 
     @EventHandler

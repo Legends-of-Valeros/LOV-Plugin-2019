@@ -38,7 +38,7 @@ public class RespawnListener implements Listener {
         this.config = config;
         this.dying = new HashSet<>();
 
-        LegendsOfValeros.getInstance().getServer().getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
+        CombatEngine.getInstance().registerEvents(this);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

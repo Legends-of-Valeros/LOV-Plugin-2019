@@ -1,10 +1,10 @@
 package com.legendsofvaleros.modules.hotswitch;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.ListenerModule;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterInventoryFillEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -98,7 +98,7 @@ public class Hotswitch extends ListenerModule {
         }
 
         PlayerUseHotbarEvent event = new PlayerUseHotbarEvent(e.getPlayer(), currentHotbar.get(e.getPlayer().getUniqueId()), e.getNewSlot(), e.getPlayer().getInventory().getItemInMainHand());
-        LegendsOfValeros.getInstance().getServer().getPluginManager().callEvent(event);
+        Bukkit.getServer().getPluginManager().callEvent(event);
 
         if (e.getNewSlot() >= HELD_SLOT)
             heldItems.put(e.getPlayer().getUniqueId(), event.getItemStack());
@@ -114,7 +114,7 @@ public class Hotswitch extends ListenerModule {
         if (!Characters.isPlayerCharacterLoaded(p)) return;
 
         PlayerSwitchHotbarEvent event = new PlayerSwitchHotbarEvent(p, currentHotbar.get(p.getUniqueId()));
-        LegendsOfValeros.getInstance().getServer().getPluginManager().callEvent(event);
+        Bukkit.getServer().getPluginManager().callEvent(event);
 
         currentHotbar.put(p.getUniqueId(), event.getCurrentHotbar());
     }

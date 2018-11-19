@@ -1,8 +1,8 @@
 package com.legendsofvaleros.modules.bank.trade;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.item.ItemBuilder;
+import com.legendsofvaleros.modules.bank.Bank;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.gear.item.GearItem;
@@ -10,9 +10,9 @@ import com.legendsofvaleros.modules.gear.util.ItemUtil;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.modules.playermenu.InventoryManager;
 import com.legendsofvaleros.modules.playermenu.PlayerMenuOpenEvent;
-import com.legendsofvaleros.util.item.Model;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.Utilities;
+import com.legendsofvaleros.util.item.Model;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,7 +28,7 @@ public class TradeManager implements Listener {
     private HashMap<UUID, UUID> pendingRequests = new HashMap<>();
 
     public TradeManager() {
-        LegendsOfValeros.getInstance().getServer().getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
+        Bank.getInstance().registerEvents(this);
     }
 
     public void startTrade(Player p1, Player p2) {

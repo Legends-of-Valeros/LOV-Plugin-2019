@@ -1,10 +1,10 @@
 package com.legendsofvaleros.modules.combatengine.core;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineAttackMissEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEnginePhysicalDamageEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineSpellDamageEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineTrueDamageEvent;
+import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -12,11 +12,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import com.legendsofvaleros.util.Utilities;
-
 public class AttackForEffectsListener implements Listener {
     public AttackForEffectsListener() {
-        LegendsOfValeros.getInstance().getServer().getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
+        CombatEngine.getInstance().registerEvents(this);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

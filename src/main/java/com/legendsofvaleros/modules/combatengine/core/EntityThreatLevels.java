@@ -1,13 +1,13 @@
 package com.legendsofvaleros.modules.combatengine.core;
 
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
+import com.legendsofvaleros.modules.combatengine.api.EntityThreat;
 import com.legendsofvaleros.modules.combatengine.config.ThreatConfig;
 import com.legendsofvaleros.modules.combatengine.events.AIPriorityTargetChangeEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEntityInvalidatedEvent;
 import com.legendsofvaleros.modules.combatengine.events.DamageAddsThreatEvent;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.api.EntityThreat;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -63,7 +63,7 @@ public class EntityThreatLevels implements EntityThreat {
         this.parent = parent;
         targets = new HashMap<>();
 
-        LegendsOfValeros.getInstance().getServer().getPluginManager().registerEvents(listener = new EntityListener(), LegendsOfValeros.getInstance());
+        CombatEngine.getInstance().registerEvents(listener = new EntityListener());
         trackers.add(this);
     }
 

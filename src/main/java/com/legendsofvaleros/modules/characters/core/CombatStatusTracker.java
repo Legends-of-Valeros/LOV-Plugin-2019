@@ -1,10 +1,10 @@
 package com.legendsofvaleros.modules.characters.core;
 
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.config.CombatLoggingConfig;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterCombatLogoutEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -37,7 +37,7 @@ public class CombatStatusTracker {
     this.lastPvpDamage = new HashMap<>();
     this.lastPveDamage = new HashMap<>();
 
-    Bukkit.getPluginManager().registerEvents(new CombatStatusListener(), LegendsOfValeros.getInstance());
+    Characters.getInstance().registerEvents(new CombatStatusListener());
   }
 
   /**

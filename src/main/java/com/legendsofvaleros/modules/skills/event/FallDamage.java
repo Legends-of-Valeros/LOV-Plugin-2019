@@ -2,12 +2,11 @@ package com.legendsofvaleros.modules.skills.event;
 
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
-import org.bukkit.Bukkit;
+import com.legendsofvaleros.modules.skills.Skills;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -28,7 +27,7 @@ public class FallDamage implements Listener {
     }
 
     public FallDamage() {
-        Bukkit.getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
+        Skills.getInstance().registerEvents(this);
     }
 
     @EventHandler

@@ -40,7 +40,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Field;
 import java.time.Duration;
@@ -227,7 +226,7 @@ public class QuestManager {
                 .column(QUEST_ACTIONS, "TEXT")
                 .column(QUEST_OBJECTIVES, "TEXT").create();
 
-        Bukkit.getPluginManager().registerEvents(new PlayerListener(), LegendsOfValeros.getInstance());
+        Quests.getInstance().registerEvents(new PlayerListener());
 
         quests = new FutureCache<>(CacheBuilder.newBuilder()
                 .concurrencyLevel(4)

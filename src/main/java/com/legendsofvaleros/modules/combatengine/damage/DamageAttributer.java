@@ -1,9 +1,9 @@
 package com.legendsofvaleros.modules.combatengine.damage;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.legendsofvaleros.modules.combatengine.config.DamageAttributionConfig;
+import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
@@ -34,7 +34,7 @@ public class DamageAttributer {
             .concurrencyLevel(1).build();
 
     maxDistanceSquared = config.getMaxKillDistance() * config.getMaxKillDistance();
-    LegendsOfValeros.getInstance().getServer().getPluginManager().registerEvents(new CleanupListener(), LegendsOfValeros.getInstance());
+    CombatEngine.getInstance().registerEvents(new CleanupListener());
   }
 
   /**

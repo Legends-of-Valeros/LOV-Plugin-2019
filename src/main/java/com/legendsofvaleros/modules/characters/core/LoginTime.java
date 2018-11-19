@@ -1,11 +1,9 @@
 package com.legendsofvaleros.modules.characters.core;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterFinishLoadingEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -24,7 +22,7 @@ public class LoginTime {
 
   static void onEnable() {
     loginTimes = new HashMap<>();
-    Bukkit.getPluginManager().registerEvents(new LoginListener(), LegendsOfValeros.getInstance());
+    Characters.getInstance().registerEvents(new LoginListener());
   }
 
   /**

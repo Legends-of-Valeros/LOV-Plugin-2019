@@ -1,20 +1,20 @@
 package com.legendsofvaleros.modules.characters.stat;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.codingforcookies.doris.query.InsertQuery;
 import com.codingforcookies.doris.sql.TableManager;
+import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.characters.api.CharacterId;
+import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
+import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
 import com.legendsofvaleros.modules.characters.config.DatabaseConfig;
+import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
+import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.events.CombatEntityCreateEvent;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
-import com.legendsofvaleros.modules.characters.api.CharacterId;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -26,7 +26,6 @@ import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
 
 /**
  * Keeps track of regenerating stats' levels across logins.
@@ -52,7 +51,7 @@ public class PersistentRegeneratingStats {
 
         dataMap = new ConcurrentHashMap<>();
 
-        Bukkit.getPluginManager().registerEvents(new PlayerCharacterListener(), LegendsOfValeros.getInstance());
+        Characters.getInstance().registerEvents(new PlayerCharacterListener());
     }
 
     public void onDisable() {

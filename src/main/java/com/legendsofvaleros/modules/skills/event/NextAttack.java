@@ -3,11 +3,11 @@ package com.legendsofvaleros.modules.skills.event;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEnginePhysicalDamageEvent;
+import com.legendsofvaleros.modules.skills.Skills;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -22,7 +22,7 @@ public class NextAttack implements Listener {
     }
 
     public NextAttack() {
-        Bukkit.getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
+        Skills.getInstance().registerEvents(this);
     }
 
     @EventHandler

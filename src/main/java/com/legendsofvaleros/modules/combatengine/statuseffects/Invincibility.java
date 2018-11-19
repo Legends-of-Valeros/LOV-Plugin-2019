@@ -1,16 +1,15 @@
 package com.legendsofvaleros.modules.combatengine.statuseffects;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
+import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Gives an entity the confusion effect.
@@ -20,7 +19,7 @@ public class Invincibility {
 
 	static {
 		DamageListener listener = new DamageListener();
-		LegendsOfValeros.getInstance().getServer().getPluginManager().registerEvents(listener, LegendsOfValeros.getInstance());
+		CombatEngine.getInstance().registerEvents(listener);
 	}
 
 	public static void apply(CombatEntity entity) {

@@ -9,7 +9,6 @@ import com.legendsofvaleros.modules.pvp.duel.listener.DuelHandler;
 import com.legendsofvaleros.modules.pvp.listener.DamageHandler;
 import com.legendsofvaleros.modules.pvp.listener.MiscHandler;
 import com.legendsofvaleros.modules.pvp.toggle.PvPToggles;
-import org.bukkit.Bukkit;
 
 public class PvP extends Module {
 
@@ -26,9 +25,9 @@ public class PvP extends Module {
         toggles = new PvPToggles();
 
         // REGISTER EVENTS
-        Bukkit.getPluginManager().registerEvents(new DamageHandler(), LegendsOfValeros.getInstance());
-        Bukkit.getPluginManager().registerEvents(new MiscHandler(), LegendsOfValeros.getInstance());
-        Bukkit.getPluginManager().registerEvents(new DuelHandler(), LegendsOfValeros.getInstance());
+        registerEvents(new DamageHandler());
+        registerEvents(new MiscHandler());
+        registerEvents(new DuelHandler());
 
         LegendsOfValeros.getInstance().getCommand("pvpdebug").setExecutor(new CommandDebug());
 

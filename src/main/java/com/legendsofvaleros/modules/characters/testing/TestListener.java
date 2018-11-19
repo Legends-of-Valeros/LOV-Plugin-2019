@@ -1,20 +1,18 @@
 package com.legendsofvaleros.modules.characters.testing;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.*;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineRegenEvent;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
+import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
 import com.legendsofvaleros.modules.playermenu.InventoryManager;
 import com.legendsofvaleros.modules.playermenu.PlayerMenuOpenEvent;
 import com.legendsofvaleros.modules.playermenu.options.PlayerOptionsOpenEvent;
-import com.legendsofvaleros.util.item.Model;
-import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
 import com.legendsofvaleros.util.ActionBar;
 import com.legendsofvaleros.util.MessageUtil;
+import com.legendsofvaleros.util.item.Model;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -27,8 +25,8 @@ import org.bukkit.potion.PotionEffectType;
 
 public class TestListener implements Listener {
 	public TestListener() {
-		Bukkit.getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
-		Bukkit.getPluginManager().registerEvents(new PlayerBookListener(), LegendsOfValeros.getInstance());
+		Characters.getInstance().registerEvents(this);
+		Characters.getInstance().registerEvents(new PlayerBookListener());
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)

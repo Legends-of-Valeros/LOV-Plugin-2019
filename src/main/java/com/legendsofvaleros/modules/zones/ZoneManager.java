@@ -75,7 +75,7 @@ public class ZoneManager implements Listener {
 
         loadZones();
 
-        Bukkit.getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
+        Zones.getInstance().registerEvents(this);
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(LegendsOfValeros.getInstance(), () -> {
             for (Player p : Bukkit.getOnlinePlayers()) {

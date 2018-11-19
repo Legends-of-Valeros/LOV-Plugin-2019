@@ -1,11 +1,10 @@
 package com.legendsofvaleros.modules.characters.skilleffect;
 
-import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.skilleffect.effects.*;
 import com.legendsofvaleros.modules.combatengine.core.StatusEffectType;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineStatusEffectAddedEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineStatusEffectRemovedEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -47,7 +46,7 @@ public class SkillEffects {
 			wrappedCombatEngineEffects.put((ef = new PersistingStatusEffect(type)).getId(), ef);
 		}
 
-		Bukkit.getPluginManager().registerEvents(new StatusEffectListener(), LegendsOfValeros.getInstance());
+		Characters.getInstance().registerEvents(new StatusEffectListener());
 	}
 
 	/**

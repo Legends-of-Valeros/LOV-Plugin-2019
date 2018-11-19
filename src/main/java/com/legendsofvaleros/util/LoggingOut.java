@@ -1,7 +1,5 @@
 package com.legendsofvaleros.util;
 
-import com.legendsofvaleros.LegendsOfValeros;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -27,7 +25,7 @@ public class LoggingOut {
 	 */
 	public static void onEnable() {
 		loggingOut = new HashSet<>();
-		Bukkit.getPluginManager().registerEvents(new QuitListener(), LegendsOfValeros.getInstance());
+		Utilities.getInstance().registerEvents(new QuitListener());
 	}
 
 	/**

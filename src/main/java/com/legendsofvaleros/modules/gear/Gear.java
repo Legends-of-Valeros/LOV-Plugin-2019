@@ -16,7 +16,6 @@ import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.action.stf.ActionFactory;
 import com.legendsofvaleros.modules.quests.objective.stf.ObjectiveFactory;
 import com.legendsofvaleros.util.Utilities;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
@@ -38,7 +37,7 @@ public class Gear extends ListenerModule {
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new ItemCommands());
 
-        Bukkit.getPluginManager().registerEvents(new InventoryListener(), LegendsOfValeros.getInstance());
+        registerEvents(new InventoryListener());
 
         ItemManager.onEnable();
 

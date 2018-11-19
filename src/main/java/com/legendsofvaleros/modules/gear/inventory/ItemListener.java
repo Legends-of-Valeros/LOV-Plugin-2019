@@ -1,11 +1,11 @@
 package com.legendsofvaleros.modules.gear.inventory;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.codingforcookies.armorequip.ArmorEquipEvent;
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.window.WindowYesNo;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
@@ -15,7 +15,6 @@ import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEnginePhysicalDamageEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEntityCreateEvent;
 import com.legendsofvaleros.modules.combatengine.events.VanillaDamageCancelledEvent;
-import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.modules.gear.Gear;
 import com.legendsofvaleros.modules.gear.component.trigger.*;
 import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger.TriggerEvent;
@@ -24,6 +23,7 @@ import com.legendsofvaleros.modules.gear.event.ItemUnEquipEvent;
 import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.gear.item.GearType;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
+import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
@@ -55,7 +55,7 @@ public class ItemListener implements Listener {
             .build();
 
     public ItemListener(LegendsOfValeros plugin) {
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        Gear.getInstance().registerEvents(this);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

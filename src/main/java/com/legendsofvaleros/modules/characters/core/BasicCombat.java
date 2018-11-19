@@ -1,16 +1,14 @@
 package com.legendsofvaleros.modules.characters.core;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.codingforcookies.robert.item.ItemBuilder.Attributes;
 import com.codingforcookies.robert.item.ItemReader;
+import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.config.CharactersConfig;
+import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.damage.physical.PhysicalType;
 import com.legendsofvaleros.modules.combatengine.damage.spell.SpellType;
 import com.legendsofvaleros.modules.combatengine.events.VanillaDamageCancelledEvent;
 import com.legendsofvaleros.modules.combatengine.stat.StatUtils;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -40,8 +38,8 @@ public class BasicCombat {
 
     public BasicCombat(CharactersConfig config) {
         this.config = config;
-        Bukkit.getPluginManager().registerEvents(new CombatListener(), LegendsOfValeros.getInstance());
-        Bukkit.getPluginManager().registerEvents(new DamageListener(), LegendsOfValeros.getInstance());
+        Characters.getInstance().registerEvents(new CombatListener());
+        Characters.getInstance().registerEvents(new DamageListener());
     }
 
     /**

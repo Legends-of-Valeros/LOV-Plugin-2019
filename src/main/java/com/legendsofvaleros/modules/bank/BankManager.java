@@ -1,10 +1,9 @@
 package com.legendsofvaleros.modules.bank;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.codingforcookies.doris.orm.ORMTable;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
-import com.legendsofvaleros.modules.Module;
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
@@ -17,7 +16,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +37,7 @@ public class BankManager {
         bankCurrencyTable = ORMTable.bind(dbPoolId, PlayerBank.Currency.class);
         bankContentTable = ORMTable.bind(dbPoolId, PlayerBank.Entry.class, ItemManager.gson);
 
-        Bukkit.getPluginManager().registerEvents(new PlayerCharacterListener(), LegendsOfValeros.getInstance());
+        Bank.getInstance().registerEvents(new PlayerCharacterListener());
     }
 
     public static void onDisable() {

@@ -1,30 +1,17 @@
 package com.legendsofvaleros.modules.combatengine.statuseffects;
 
-import java.util.Set;
-import java.util.UUID;
-
-import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityChangeBlockEvent;
-import org.bukkit.event.entity.EntityEvent;
-import org.bukkit.event.entity.EntityInteractEvent;
-import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.entity.EntityTargetEvent;
-import org.bukkit.event.entity.HorseJumpEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.event.player.PlayerToggleFlightEvent;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.event.player.*;
 import org.spigotmc.event.entity.EntityMountEvent;
+
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Stops certain entities from interacting in a number of ways.
@@ -35,7 +22,7 @@ public class NoInteractionListener implements Listener {
 
     NoInteractionListener(Set<UUID> affected) {
         this.affected = affected;
-        LegendsOfValeros.getInstance().getServer().getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
+        CombatEngine.getInstance().registerEvents(this);
     }
 
     private void handlePlayerEvent(PlayerEvent event) {

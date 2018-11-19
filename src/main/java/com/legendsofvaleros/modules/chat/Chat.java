@@ -147,8 +147,6 @@ public class Chat extends ListenerModule {
                         fm.send(pl);
             }
         });
-
-        Bukkit.getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
     }
 
     @Override

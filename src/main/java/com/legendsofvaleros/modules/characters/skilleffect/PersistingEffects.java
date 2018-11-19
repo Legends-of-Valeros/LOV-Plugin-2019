@@ -1,11 +1,10 @@
 package com.legendsofvaleros.modules.characters.skilleffect;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.codingforcookies.doris.query.InsertQuery;
 import com.codingforcookies.doris.sql.TableManager;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import com.legendsofvaleros.modules.combatengine.events.CombatEntityCreateEvent;
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
@@ -15,6 +14,7 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
 import com.legendsofvaleros.modules.characters.skilleffect.PersistingEffect.PersistingEffectBuilder;
+import com.legendsofvaleros.modules.combatengine.events.CombatEntityCreateEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
@@ -66,7 +66,7 @@ public class PersistingEffects {
 		dataMap = HashMultimap.create();
 		effectManager = characterEffects;
 
-		Bukkit.getPluginManager().registerEvents(new PlayerCharacterListener(), LegendsOfValeros.getInstance());
+		Characters.getInstance().registerEvents(new PlayerCharacterListener());
 	}
 
 	public static void onDisable() {

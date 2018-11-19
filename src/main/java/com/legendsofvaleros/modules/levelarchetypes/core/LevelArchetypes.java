@@ -6,6 +6,7 @@ import com.legendsofvaleros.modules.levelarchetypes.api.Archetype;
 import com.legendsofvaleros.modules.levelarchetypes.api.LevelArchetypesAPI;
 import com.legendsofvaleros.modules.levelarchetypes.api.LevelProvider;
 import com.legendsofvaleros.util.MessageUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
@@ -62,7 +63,7 @@ public class LevelArchetypes extends ListenerModule implements LevelArchetypesAP
         }
 
         // gives clients time to register themselves as providers, then prints a warning if they do not
-        LegendsOfValeros.getInstance().getServer().getScheduler().runTaskLater(LegendsOfValeros.getInstance(), () -> {
+        Bukkit.getServer().getScheduler().runTaskLater(LegendsOfValeros.getInstance(), () -> {
             List<String> types = new LinkedList<>();
 
             for (EntityType type : EntityType.values()) {

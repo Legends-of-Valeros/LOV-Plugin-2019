@@ -5,7 +5,6 @@ import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.skills.EntitiesListener;
 import com.legendsofvaleros.modules.skills.Skills;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -13,7 +12,6 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -74,7 +72,7 @@ public class OnProjectile implements Listener {
     }
 
     public OnProjectile() {
-        Bukkit.getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
+        Skills.getInstance().registerEvents(this);
     }
 
     @EventHandler

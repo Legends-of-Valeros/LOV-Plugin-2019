@@ -55,7 +55,7 @@ public class NPCManager implements Listener {
 
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TraitLOV.class).withName(TraitLOV.TRAIT_NAME));
 
-        Bukkit.getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
+        NPCs.getInstance().registerEvents(this);
 
         gson = new GsonBuilder().registerTypeAdapter(LOVTrait[].class, new JsonDeserializer<LOVTrait[]>() {
             @Override
