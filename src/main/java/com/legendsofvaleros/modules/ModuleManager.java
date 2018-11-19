@@ -20,7 +20,7 @@ public class ModuleManager {
         for(int i = 0; i < modulesToLoad.size(); i++) {
             Module moduleToLoad = modulesToLoad.get(i);
 
-            LegendsOfValeros.getInstance().getLogger().info((i + 1) + "/" + modulesToLoad.size() + " Loading " + moduleToLoad.getName() + "...");
+            LegendsOfValeros.getInstance().getLogger().info("(" + (i + 1) + "/" + modulesToLoad.size() + ") Loading " + moduleToLoad.getName() + "...");
 
             modules.put(moduleToLoad.getName(), moduleToLoad);
             schedulers.put(moduleToLoad.getName(), new InternalScheduler(moduleToLoad.getName()).startup());
@@ -34,15 +34,12 @@ public class ModuleManager {
 
     public static void unloadModules() {
         modules.values().forEach(module ->
-        {
-            LegendsOfValeros.getInstance().getLogger().info("Unloading " + module.getName() + "...");
-            modulesToUnload.add(module);
-        });
+                modulesToUnload.add(module));
 
         for(int i = 0; i < modulesToUnload.size(); i++) {
             Module moduleToUnload = modulesToUnload.get(i);
 
-            LegendsOfValeros.getInstance().getLogger().info((i + 1) + "/" + modulesToUnload.size() + " Unloading " + moduleToUnload.getName() + "...");
+            LegendsOfValeros.getInstance().getLogger().info("(" + (i + 1) + "/" + modulesToUnload.size() + ") Unloading " + moduleToUnload.getName() + "...");
             moduleToUnload.onUnload();
 
             // stopping the modules thread
