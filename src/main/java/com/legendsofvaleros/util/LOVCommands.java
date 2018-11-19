@@ -37,7 +37,7 @@ public class LOVCommands extends BaseCommand {
     @Description("Shows the current load of all modules.")
     @CommandPermission("lov.tps")
     public void cmdTps(CommandSender sender) {
-        double tps = (Math.round(Lag.getTPS() * 10) + 0D) / 10D;
+        double mainTPS = (int)(Lag.getTPS() * 10D) / 10D;
         long memory = Runtime.getRuntime().totalMemory();
         long memory_used = memory - Runtime.getRuntime().freeMemory();
         float memp = (memory_used + 0F) / (memory + 0F);
@@ -54,8 +54,8 @@ public class LOVCommands extends BaseCommand {
         sender.sendMessage(ChatColor.GRAY + line);
         sender.sendMessage(ChatColor.DARK_GREEN + "Uptime: " + ChatColor.GRAY + LegendsOfValeros.getInstance().getUptime());
 
-        sender.sendMessage(ChatColor.DARK_GREEN + "Main Server TPS: " + ChatColor.GRAY + tps + "/20.0");
-        sender.sendMessage("  " + LegendsOfValeros.getInstance().createTPSBar(tps));
+        sender.sendMessage(ChatColor.DARK_GREEN + "Main Server TPS: " + ChatColor.GRAY + mainTPS + "/20.0");
+        sender.sendMessage("  " + LegendsOfValeros.getInstance().createTPSBar(mainTPS));
 
         sender.sendMessage(ChatColor.DARK_GREEN + "Memory: " + ChatColor.GRAY + Lag.readableByteSize(memory_used) + "/" + Lag.readableByteSize(memory));
         sender.sendMessage("  " + ProgressBar.getBar(memp, 40, memc, ChatColor.GRAY, ChatColor.DARK_GREEN));
@@ -63,8 +63,9 @@ public class LOVCommands extends BaseCommand {
         sender.sendMessage(ChatColor.GRAY + line);
 
         for (InternalScheduler scheduler : ModuleManager.schedulers.values()) {
-            sender.sendMessage(ChatColor.DARK_GRAY + scheduler.getName() + ": " + ChatColor.GRAY + scheduler.getTPS() + "/20.0 (A: " + scheduler.getAsyncTasksFired() + " | S: " + scheduler.getSyncTasksFired() + ")");
-            sender.sendMessage("  " + LegendsOfValeros.getInstance().createTPSBar(scheduler.getTPS()));
+            double tps = scheduler.getAverageTPS();
+            sender.sendMessage(ChatColor.DARK_GRAY + scheduler.getName() + ": " + ChatColor.GRAY + tps + "/20.0 (A: " + scheduler.getAsyncTasksFired() + " | S: " + scheduler.getSyncTasksFired() + ")");
+            sender.sendMessage("  " + LegendsOfValeros.getInstance().createTPSBar(tps));
         }
 
         sender.sendMessage(ChatColor.GRAY + line);
@@ -93,7 +94,7 @@ public class LOVCommands extends BaseCommand {
 
             double percUsed = 0;
             for(Class<? extends Event> ec : timings.getTracked())
-                percUsed += timings.getAverageTimingTPS(ec);
+                percUsed += timings.getAverageTPSUsage(ec);
 
             percUsed = (percUsed / 20D) * 100D;
             percUsed = (int)(percUsed * 100D) / 100D;
@@ -102,7 +103,7 @@ public class LOVCommands extends BaseCommand {
 
             if(moduleName != null) {
                 for (Class<? extends Event> ec : timings.getTracked()) {
-                    percUsed = timings.getAverageTimingTPS(ec);
+                    percUsed = timings.getAverageTPSUsage(ec);
                     percUsed = (percUsed / 20D) * 100D;
                     percUsed = (int)(percUsed * 100D) / 100D;
 

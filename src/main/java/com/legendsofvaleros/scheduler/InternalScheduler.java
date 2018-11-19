@@ -3,22 +3,33 @@ package com.legendsofvaleros.scheduler;
 import com.legendsofvaleros.LegendsOfValeros;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class InternalScheduler extends Thread {
+    private static final long TICK_TIME = 1000L / 20L;
+
+    // Keep five seconds of timings
+    private static final int TIMINGS_COUNT = 20 * 5;
+
     private String name;
-    private ConcurrentLinkedQueue<InternalTask> list = new ConcurrentLinkedQueue<>();
+    private Queue<InternalTask> list = new ConcurrentLinkedQueue<>();
 
     int totalS = 0, totalA = 0;
     public int getSyncTasksFired() { return totalS; }
     public int getAsyncTasksFired() { return totalA; }
 
-    private long[] last_ticks = new long[] { 1, 1, 1, 1, 1 };
+    private long tick = 0;
+    public List<Long> timings = new ArrayList<>();
+
+    /*private long[] last_ticks = new long[] { 1, 1, 1, 1, 1 };
     private double tps = 20;
     private long tick_duration = 0;
     private long tick = 0;
-    private int prev_task_amount = 0;
+    private int prev_task_amount = 0;*/
 
     public InternalScheduler(String name) {
         this.name = name;
@@ -27,18 +38,28 @@ public class InternalScheduler extends Thread {
     @Override
     public void run() {
         this.setName(name);
+
+        long lastTime;
+
         while (!LegendsOfValeros.shutdown) {
+            lastTime = System.currentTimeMillis();
+
             tick++;
+
             InternalTask curr;
-            LinkedList<InternalTask> requeue = new LinkedList<InternalTask>();
-            prev_task_amount = 0;
-            while (!list.isEmpty()) {
+            LinkedList<InternalTask> requeue = new LinkedList<>();
+
+            // prev_task_amount = 0;
+
+            while(!list.isEmpty()) {
                 curr = list.poll();
-                prev_task_amount++;
-                if (curr.nextExecuteTick() == tick) {
+
+                // prev_task_amount++;
+
+                if(curr.nextExecuteTick() == tick) {
                     try {
                         curr.run();
-                    } catch (Exception e) {
+                    } catch(Exception e) {
                         e.printStackTrace();
                     }
 
@@ -55,7 +76,15 @@ public class InternalScheduler extends Thread {
 
             for (InternalTask r : requeue) list.add(r);
 
-            tps = 1000D / ((System.currentTimeMillis() - last_ticks[0] + 0D) / 5D);
+            long timeTaken = System.currentTimeMillis() - lastTime;
+
+            timings.add(timeTaken);
+            while(timings.size() > TIMINGS_COUNT)
+                timings.remove(0);
+
+            long timeToSync = TICK_TIME - timeTaken;
+
+            /*tps = 1000D / ((System.currentTimeMillis() - last_ticks[0] + 0D) / 5D);
             tps = (Math.round(tps * 10) + 0D) / 10D;
             last_ticks[0] = last_ticks[1];
             last_ticks[1] = last_ticks[2];
@@ -64,14 +93,16 @@ public class InternalScheduler extends Thread {
             last_ticks[4] = System.currentTimeMillis();
 
             long still_wait = (long) ((50 - (System.currentTimeMillis() - last_ticks[3])) * 2.5);
-            tick_duration = System.currentTimeMillis() - last_ticks[3];
+            tick_duration = System.currentTimeMillis() - last_ticks[3];*/
 
-            if (still_wait > 0) {
+            if (timeToSync > 0) {
                 try {
-                    Thread.sleep(still_wait);
+                    Thread.sleep(timeToSync);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }else{
+                LegendsOfValeros.getInstance().getLogger().warning("Scheduler '" + name + "' fell behind by " + Math.abs(timeTaken) + "ms!");
             }
         }
     }
@@ -173,20 +204,45 @@ public class InternalScheduler extends Thread {
         }.runTaskTimer(LegendsOfValeros.getInstance(), delay, interval);
     }
 
-    public double getTPS() {
-        return tps;
+    public synchronized Long getAverageTiming() {
+        if(timings.size() == 0) return null;
+
+        long time = 0;
+        for(Long timing : timings)
+            time += timing;
+        return time / timings.size();
     }
 
-    public double getTickDuration() {
-        return tick_duration;
+    public synchronized double getLastTiming() {
+        if(timings.size() == 0) return 0;
+        return timings.get(timings.size() - 1);
     }
+
+    public double getAverageTPSUsage() {
+        Long timing = getAverageTiming();
+        if(timing == null) return 0;
+        double avg = timing / (1000D / 20D);
+        return (int)(avg * 10000) / 10000D;
+    }
+
+    public double getAverageTPS() {
+        return 20D - getAverageTPSUsage();
+    }
+
+    /*public double getTPS() {
+        return tps;
+    }*/
+
+    /*public double getTickDuration() {
+        return tick_duration;
+    }*/
 
     public InternalScheduler startup() {
         if (!this.isAlive()) start();
         return this;
     }
 
-    public int getPrevTaskAmount() {
+    /*public int getPrevTaskAmount() {
         return prev_task_amount;
-    }
+    }*/
 }

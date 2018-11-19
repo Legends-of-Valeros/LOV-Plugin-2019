@@ -51,11 +51,11 @@ public class ModuleTimings {
         return avg / times.size();
     }
 
-    public double getAverageTimingTPS(Class<? extends Event> ec) {
+    public double getAverageTPSUsage(Class<? extends Event> ec) {
         Long timing = getAverageTiming(ec);
         if(timing == null) return 0;
         double avg = timing / (1000D / 20D);
-        return (int)(avg * 10000) / 10000D; // Calculate approximate tick usage
+        return (int)(avg * 10000) / 10000D;
     }
 
     public void calledEvent(Event e, long tookTime) {
