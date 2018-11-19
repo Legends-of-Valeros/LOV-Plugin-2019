@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.skills;
 
 import com.codingforcookies.robert.item.ItemReader;
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterInventoryFillEvent;
@@ -23,9 +24,9 @@ import java.util.List;
 import java.util.Map.Entry;
 
 public class HotbarListener implements Runnable, Listener {
-    public HotbarListener(JavaPlugin plugin) {
-        Bukkit.getPluginManager().registerEvents(this, plugin);
-        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this, 20L, 20L);
+    public HotbarListener() {
+        Bukkit.getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
+        Bukkit.getScheduler().runTaskTimerAsynchronously(LegendsOfValeros.getInstance(), this, 20L, 20L);
     }
 
     @EventHandler

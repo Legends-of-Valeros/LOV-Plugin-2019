@@ -68,20 +68,19 @@ public class Skills extends ListenerModule {
         ObjectiveFactory.registerType("skill_use", SkillUseObjective.class);
 
 
-        JavaPlugin plugin = LegendsOfValeros.getInstance();
-        new HotbarListener(plugin);
+        new HotbarListener();
 
-        new FallDamage(plugin);
-        new NextAttack(plugin);
-        new OnProjectile(plugin);
+        new FallDamage();
+        new NextAttack();
+        new OnProjectile();
 
         for (SkillTree tree : skillTrees) {
             if (tree == null) continue;
             tree.initSkills();
         }
 
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
-        new SkillListener(plugin);
+        Bukkit.getServer().getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
+        new SkillListener();
 
     }
 

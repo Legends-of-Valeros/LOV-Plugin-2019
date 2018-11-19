@@ -73,8 +73,8 @@ public class OnProjectile implements Listener {
         return p;
     }
 
-    public OnProjectile(JavaPlugin plugin) {
-        Bukkit.getPluginManager().registerEvents(this, plugin);
+    public OnProjectile() {
+        Bukkit.getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
     }
 
     @EventHandler

@@ -27,15 +27,12 @@ public class PvP extends Module {
         instance = this;
         toggles = new PvPToggles();
 
-        JavaPlugin plugin = LegendsOfValeros.getInstance();
-
         // REGISTER EVENTS
-        PluginManager pm = Bukkit.getPluginManager();
-        pm.registerEvents(new DamageHandler(), plugin);
-        pm.registerEvents(new MiscHandler(), plugin);
-        pm.registerEvents(new DuelHandler(), plugin);
+        Bukkit.getPluginManager().registerEvents(new DamageHandler(), LegendsOfValeros.getInstance());
+        Bukkit.getPluginManager().registerEvents(new MiscHandler(), LegendsOfValeros.getInstance());
+        Bukkit.getPluginManager().registerEvents(new DuelHandler(), LegendsOfValeros.getInstance());
 
-        plugin.getCommand("pvpdebug").setExecutor(new CommandDebug());
+        LegendsOfValeros.getInstance().getCommand("pvpdebug").setExecutor(new CommandDebug());
 
         Bank.registerCurrency("honor", new Currency() {
             @Override

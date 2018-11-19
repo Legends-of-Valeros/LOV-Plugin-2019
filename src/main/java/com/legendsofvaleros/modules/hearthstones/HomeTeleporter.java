@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import com.legendsofvaleros.LegendsOfValeros;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
@@ -25,25 +26,22 @@ import com.legendsofvaleros.util.MessageUtil;
  */
 public class HomeTeleporter implements Listener {
 
-	private final JavaPlugin plugin;
-
 	private final Map<UUID, BukkitRunnable> pendingSpawns;
 	private final Map<Player, BlockVector> mustStay;
 	private MovementCheckTask movementTask;
 
 	private long warmup;
 
-	public HomeTeleporter(JavaPlugin plugin, long teleportWarmupSeconds) {
-		this.plugin = plugin;
+	public HomeTeleporter(long teleportWarmupSeconds) {
 		this.warmup = teleportWarmupSeconds;
 
 		pendingSpawns = new HashMap<>();
 		mustStay = new HashMap<>();
 
 		movementTask = new MovementCheckTask();
-		movementTask.runTaskTimer(plugin, 40, 5);
+		movementTask.runTaskTimer(LegendsOfValeros.getInstance(), 40, 5);
 
-		plugin.getServer().getPluginManager().registerEvents(this, plugin);
+		Bukkit.getServer().getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
 	}
 
 	/**
@@ -93,7 +91,7 @@ public class HomeTeleporter implements Listener {
 			}
 		};
 		pendingSpawns.put(pc.getPlayer().getUniqueId(), task);
-		task.runTaskLater(plugin, warmup * 20);
+		task.runTaskLater(LegendsOfValeros.getInstance(), warmup * 20);
 	}
 
 	@EventHandler(ignoreCancelled = true)

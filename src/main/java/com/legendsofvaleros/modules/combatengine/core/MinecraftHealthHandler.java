@@ -73,9 +73,8 @@ public class MinecraftHealthHandler {
 
         noKnockbackStandIn = new AttackStandIn(EntityType.SNOWBALL);
 
-        JavaPlugin plugin = LegendsOfValeros.getInstance();
-        plugin.getServer().getPluginManager().registerEvents(new DeathAnimationFixListener(), plugin);
-        plugin.getServer().getPluginManager().registerEvents(new DamageListener(), plugin);
+        Bukkit.getServer().getPluginManager().registerEvents(new DeathAnimationFixListener(), LegendsOfValeros.getInstance());
+        Bukkit.getServer().getPluginManager().registerEvents(new DamageListener(), LegendsOfValeros.getInstance());
     }
 
     /**

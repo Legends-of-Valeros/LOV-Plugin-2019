@@ -1,5 +1,6 @@
 package com.legendsofvaleros.modules.skills;
 
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.Cooldowns;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -42,6 +43,7 @@ import com.legendsofvaleros.modules.skills.event.SkillPreUseEvent;
 import com.legendsofvaleros.modules.skills.event.SkillUsedEvent;
 import com.legendsofvaleros.modules.skills.gear.CastTrigger;
 import mkremins.fanciful.FancyMessage;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -54,22 +56,22 @@ import java.util.List;
 import java.util.Map;
 
 public class SkillListener implements Listener {
-    public SkillListener(JavaPlugin plugin) {
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+    public SkillListener() {
+        Bukkit.getServer().getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
 
-        if(plugin.getServer().getPluginManager().isPluginEnabled("Quests")) {
-            plugin.getLogger().info("Quest plugin enabled. Registering event handler.");
+        if(Bukkit.getServer().getPluginManager().isPluginEnabled("Quests")) {
+            Skills.getInstance().getLogger().info("Quest plugin enabled. Registering event handler.");
 
-            plugin.getServer().getPluginManager().registerEvents(new QuestListener(), plugin);
+            Bukkit.getServer().getPluginManager().registerEvents(new QuestListener(), LegendsOfValeros.getInstance());
         }else
-            plugin.getLogger().info("Quest plugin not enabled.");
+            Skills.getInstance().getLogger().info("Quest plugin not enabled.");
 
-        if(plugin.getServer().getPluginManager().isPluginEnabled("Gear")) {
-            plugin.getLogger().info("Gear plugin enabled. Registering event handler.");
+        if(Bukkit.getServer().getPluginManager().isPluginEnabled("Gear")) {
+            Skills.getInstance().getLogger().info("Gear plugin enabled. Registering event handler.");
 
-            plugin.getServer().getPluginManager().registerEvents(new GearListener(), plugin);
+            Bukkit.getServer().getPluginManager().registerEvents(new GearListener(), LegendsOfValeros.getInstance());
         }else
-            plugin.getLogger().info("Gear plugin not enabled.");
+            Skills.getInstance().getLogger().info("Gear plugin not enabled.");
     }
 
     @EventHandler

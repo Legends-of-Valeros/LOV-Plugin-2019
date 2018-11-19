@@ -21,8 +21,8 @@ public class NextAttack implements Listener {
         Bukkit.getScheduler().runTaskLater(LegendsOfValeros.getInstance(), () -> nextAttack.remove(uuid, listener), maxLife);
     }
 
-    public NextAttack(JavaPlugin plugin) {
-        Bukkit.getPluginManager().registerEvents(this, plugin);
+    public NextAttack() {
+        Bukkit.getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
     }
 
     @EventHandler

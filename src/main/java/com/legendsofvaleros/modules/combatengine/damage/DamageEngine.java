@@ -45,9 +45,8 @@ public class DamageEngine {
 		this.attributer = new DamageAttributer(config);
 		this.multiplierHandler = new DamageMultiplier(config, config);
 
-		JavaPlugin plugin = LegendsOfValeros.getInstance();
-		plugin.getServer().getPluginManager().registerEvents(new DeathListener(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new Debugging(), plugin);
+		Bukkit.getServer().getPluginManager().registerEvents(new DeathListener(), LegendsOfValeros.getInstance());
+		Bukkit.getServer().getPluginManager().registerEvents(new Debugging(), LegendsOfValeros.getInstance());
 	}
 
 	public boolean causeSpellDamage(LivingEntity target, LivingEntity attacker, SpellType type,

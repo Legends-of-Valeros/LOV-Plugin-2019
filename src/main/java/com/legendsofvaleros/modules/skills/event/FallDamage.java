@@ -27,8 +27,8 @@ public class FallDamage implements Listener {
         }.runTaskLater(LegendsOfValeros.getInstance(), maxLife);
     }
 
-    public FallDamage(JavaPlugin plugin) {
-        Bukkit.getPluginManager().registerEvents(this, plugin);
+    public FallDamage() {
+        Bukkit.getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
     }
 
     @EventHandler

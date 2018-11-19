@@ -36,15 +36,12 @@ import java.util.UUID;
  * Uses various techniques to clean up entities that are no longer in use.
  */
 public class EntityTracker implements UnsafePlayerInitializer {
-
-    private JavaPlugin plugin;
     private CombatProfile defaultProfile;
     private Cache<UUID, CombinedCombatEntity> combatEntities;
 
     private boolean usePlayerInitializer;
 
     public EntityTracker(CombatProfile defaultProfile) {
-        this.plugin = LegendsOfValeros.getInstance();
         this.defaultProfile = defaultProfile;
 
         TrackingListener listener = new TrackingListener();
@@ -53,10 +50,10 @@ public class EntityTracker implements UnsafePlayerInitializer {
                 CacheBuilder.newBuilder().concurrencyLevel(1).weakValues().removalListener(listener)
                         .build();
 
-        plugin.getServer().getPluginManager().registerEvents(listener, plugin);
+        Bukkit.getServer().getPluginManager().registerEvents(listener, LegendsOfValeros.getInstance());
 
         // TODO this would need to be configured if passive/aggressive initialization option is added
-        for (World world : plugin.getServer().getWorlds()) {
+        for (World world : Bukkit.getServer().getWorlds()) {
             for (Entity entity : world.getEntities()) {
                 if (entity instanceof LivingEntity) {
                     getCombatEntity((LivingEntity) entity);
@@ -110,7 +107,7 @@ public class EntityTracker implements UnsafePlayerInitializer {
 
     private CombinedCombatEntity create(LivingEntity entity) {
         CombatEntityPreCreateEvent preEvent = new CombatEntityPreCreateEvent(entity, defaultProfile);
-        plugin.getServer().getPluginManager().callEvent(preEvent);
+        Bukkit.getServer().getPluginManager().callEvent(preEvent);
 
         CombatProfile profile = preEvent.getCombatProfile();
         if (profile == null) {
@@ -120,7 +117,7 @@ public class EntityTracker implements UnsafePlayerInitializer {
         CombinedCombatEntity ce = profile.createCombatEntity(entity);
         combatEntities.put(entity.getUniqueId(), ce);
 
-        plugin.getServer().getPluginManager().callEvent(new CombatEntityCreateEvent(ce));
+        Bukkit.getServer().getPluginManager().callEvent(new CombatEntityCreateEvent(ce));
 
         // adds a player interface if the created combat object is for a player
         if (ce.isPlayer()) {
@@ -153,7 +150,7 @@ public class EntityTracker implements UnsafePlayerInitializer {
         // invalidates player's combat data on logout
         @EventHandler(priority = EventPriority.MONITOR)
         public void onPlayerQuit(final PlayerQuitEvent event) {
-            plugin.getServer().getScheduler().runTaskLater(plugin, () -> combatEntities.invalidate(event.getPlayer().getUniqueId()), 1L);
+            Bukkit.getServer().getScheduler().runTaskLater(LegendsOfValeros.getInstance(), () -> combatEntities.invalidate(event.getPlayer().getUniqueId()), 1L);
         }
 
         // notifies the combat object of death
@@ -164,7 +161,7 @@ public class EntityTracker implements UnsafePlayerInitializer {
                 ce.onDeath();
 
                 if (!ce.isPlayer()) {
-                    plugin.getServer().getScheduler().runTaskLater(plugin, () -> combatEntities.invalidate(event.getEntity().getUniqueId()), 1L);
+                    Bukkit.getServer().getScheduler().runTaskLater(LegendsOfValeros.getInstance(), () -> combatEntities.invalidate(event.getEntity().getUniqueId()), 1L);
                 }
             }
         }

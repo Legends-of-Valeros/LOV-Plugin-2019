@@ -5,6 +5,7 @@ import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifier;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder.ModifierType;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,8 +31,8 @@ public class Blindness {
 
   static {
     LogoutListener listener = new LogoutListener();
-    JavaPlugin plugin = LegendsOfValeros.getInstance();
-    plugin.getServer().getPluginManager().registerEvents(listener, plugin);
+
+    Bukkit.getServer().getPluginManager().registerEvents(listener, LegendsOfValeros.getInstance());
   }
 
   public static void apply(CombatEntity entity) {
