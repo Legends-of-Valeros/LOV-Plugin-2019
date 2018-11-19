@@ -5,18 +5,7 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.mobs.core.SpawnArea;
-import com.legendsofvaleros.util.cmd.CommandManager;
-import com.legendsofvaleros.modules.mobs.core.Mob;
-import com.legendsofvaleros.modules.mobs.core.SpawnArea;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.cmd.CommandManager.Arg;
-import com.legendsofvaleros.util.cmd.CommandManager.Cmd;
-import com.legendsofvaleros.util.cmd.CommandManager.CommandFinished;
-import com.legendsofvaleros.util.cmd.CommandManager.CommandOnly;
-import com.legendsofvaleros.modules.mobs.core.Mob;
-import com.legendsofvaleros.modules.mobs.core.SpawnArea;
-import com.legendsofvaleros.util.cmd.CommandManager;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

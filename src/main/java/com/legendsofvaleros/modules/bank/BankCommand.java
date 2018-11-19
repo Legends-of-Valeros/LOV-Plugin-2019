@@ -4,8 +4,6 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.cmd.CommandManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

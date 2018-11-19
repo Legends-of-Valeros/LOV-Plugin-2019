@@ -1,15 +1,11 @@
 package com.legendsofvaleros.util;
 
-import com.comphenix.executors.BukkitExecutors;
-import com.google.common.util.concurrent.MoreExecutors;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.ListenerModule;
-import com.legendsofvaleros.util.cmd.CommandManager;
-import com.legendsofvaleros.util.cmd.LOVCommands;
+import com.legendsofvaleros.util.MessageUtil.ExceptionManager;
 import com.legendsofvaleros.util.event.ToggleOpEvent;
 import com.legendsofvaleros.util.item.Model;
 import com.legendsofvaleros.util.title.TitleUtil;
-import com.legendsofvaleros.util.MessageUtil.ExceptionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;

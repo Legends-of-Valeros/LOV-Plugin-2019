@@ -1,4 +1,4 @@
-package com.legendsofvaleros.util.cmd;
+package com.legendsofvaleros.util;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
@@ -6,10 +6,6 @@ import co.aikar.commands.annotation.*;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.ModuleManager;
 import com.legendsofvaleros.scheduler.InternalScheduler;
-import com.legendsofvaleros.util.*;
-import com.legendsofvaleros.util.cmd.CommandManager.Cmd;
-import com.legendsofvaleros.util.cmd.CommandManager.CommandFinished;
-import com.legendsofvaleros.util.cmd.CommandManager.CommandOnly;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

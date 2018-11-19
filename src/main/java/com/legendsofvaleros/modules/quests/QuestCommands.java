@@ -6,21 +6,17 @@ import co.aikar.commands.annotation.*;
 import com.codingforcookies.robert.core.StringUtil;
 import com.codingforcookies.robert.item.Book;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.quests.objective.stf.IObjective;
 import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
-import com.legendsofvaleros.modules.quests.quest.stf.QuestStatus;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.Utilities;
-import com.legendsofvaleros.util.cmd.CommandManager;
 import mkremins.fanciful.FancyMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import javax.rmi.CORBA.Util;
 import java.util.Collection;
 import java.util.concurrent.ExecutionException;
 

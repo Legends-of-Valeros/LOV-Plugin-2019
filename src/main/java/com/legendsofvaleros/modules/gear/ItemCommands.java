@@ -3,15 +3,13 @@ package com.legendsofvaleros.modules.gear;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
-import com.legendsofvaleros.LegendsOfValeros;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
-import com.legendsofvaleros.util.cmd.CommandManager;
-import com.legendsofvaleros.util.item.Model;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.Utilities;
+import com.legendsofvaleros.util.item.Model;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

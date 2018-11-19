@@ -11,7 +11,6 @@ import com.legendsofvaleros.modules.chat.IChannelHandler;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import com.legendsofvaleros.modules.playermenu.PlayerMenuOpenEvent;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.cmd.CommandManager;
 import mkremins.fanciful.FancyMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
