@@ -2,7 +2,6 @@ package com.legendsofvaleros.modules.quests.action.stf;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.quests.Quests;
@@ -56,7 +55,7 @@ public abstract class QuestActionPlay {
         questActions[progress.actionI].play(pc.getPlayer(), new IQuestAction.Next() {
             @Override
             public void run(Integer actionI) {
-                Bukkit.getScheduler().runTask(LegendsOfValeros.getInstance(), () -> {
+                Quests.getInstance().getScheduler().executeInSpigotCircle(() -> {
                     if (progress.actionI == null) {
                         Bukkit.getLogger().info("A weird thing happened");
                         return;

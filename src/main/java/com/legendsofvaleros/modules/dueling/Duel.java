@@ -1,18 +1,18 @@
 package com.legendsofvaleros.modules.dueling;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.EnumWrappers.WorldBorderAction;
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
+import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.title.Title;
 import com.legendsofvaleros.util.title.TitleUtil;
-import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -172,7 +172,7 @@ public class Duel extends BukkitRunnable {
 			e.printStackTrace();
 		}
 
-		Bukkit.getScheduler().runTaskLater(LegendsOfValeros.getInstance(), this::destroyBorder, 20L);
+		Dueling.getInstance().getScheduler().executeInSpigotCircleLater(this::destroyBorder, 20L);
 	}
 
 	private void destroyBorder() {

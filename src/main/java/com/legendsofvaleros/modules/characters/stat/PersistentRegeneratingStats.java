@@ -186,7 +186,7 @@ public class PersistentRegeneratingStats {
                         Runnable saveTask = () -> save(data);
 
                         if (LegendsOfValeros.getInstance().isEnabled()) {
-                            Bukkit.getScheduler().runTaskAsynchronously(LegendsOfValeros.getInstance(), saveTask);
+                            Characters.getInstance().getScheduler().executeInMyCircle(saveTask);
                         } else {
                             saveTask.run();
                         }

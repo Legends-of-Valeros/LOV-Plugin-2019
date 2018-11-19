@@ -4,7 +4,6 @@ import com.codingforcookies.doris.query.InsertQuery;
 import com.codingforcookies.doris.query.RemoveQuery;
 import com.codingforcookies.doris.sql.QueryMethod;
 import com.codingforcookies.doris.sql.TableManager;
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.Cooldowns;
 import com.legendsofvaleros.modules.characters.api.Cooldowns.Cooldown;
@@ -157,7 +156,7 @@ public class CooldownData {
 
 							if (!fromDb.isEmpty()) {
 								// syncs to the main thread before
-								Bukkit.getScheduler().runTask(LegendsOfValeros.getInstance(), () -> {
+								Characters.getInstance().getScheduler().executeInSpigotCircle(() -> {
 									PlayerCharacter pc = Characters.getInstance().getCharacter(characterId);
 									Player player = Bukkit.getPlayer(characterId.getPlayerId());
 									if (pc == null || player == null || !player.isOnline()) {
@@ -212,7 +211,7 @@ public class CooldownData {
 		public void onPlayerCharacterStartLoading(final PlayerCharacterStartLoadingEvent event) {
 			if (!loadedCharacters.add(event.getPlayerCharacter().getUniqueCharacterId())) {
 				final PhaseLock lock = event.getLock();
-				Bukkit.getScheduler().runTaskAsynchronously(LegendsOfValeros.getInstance(), () -> load(event.getPlayerCharacter().getUniqueCharacterId(), lock));
+				Characters.getInstance().getScheduler().executeInMyCircle(() -> load(event.getPlayerCharacter().getUniqueCharacterId(), lock));
 			}
 		}
 

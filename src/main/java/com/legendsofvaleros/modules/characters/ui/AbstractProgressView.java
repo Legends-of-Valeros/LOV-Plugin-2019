@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.characters.ui;
 
-import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.ui.loading.ProgressView;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
@@ -117,7 +117,7 @@ public abstract class AbstractProgressView implements ProgressView {
 
 		final float percentageCompleted = getPercentage(safeCompleted);
 
-		Bukkit.getScheduler().runTask(LegendsOfValeros.getInstance(), () -> safeStart(safeTotal, safeCompleted, percentageCompleted));
+		Characters.getInstance().getScheduler().executeInSpigotCircle(() -> safeStart(safeTotal, safeCompleted, percentageCompleted));
 	}
 
 	@Override
@@ -136,7 +136,7 @@ public abstract class AbstractProgressView implements ProgressView {
 
 		final float percentageCompleted = getPercentage(safeCompleted);
 
-		Bukkit.getScheduler().runTask(LegendsOfValeros.getInstance(), () -> safeUpdate(safeCompleted, percentageCompleted));
+		Characters.getInstance().getScheduler().executeInSpigotCircle(() -> safeUpdate(safeCompleted, percentageCompleted));
 	}
 
 	@Override
@@ -146,7 +146,7 @@ public abstract class AbstractProgressView implements ProgressView {
 		}
 		ended = true;
 
-		Bukkit.getScheduler().runTask(LegendsOfValeros.getInstance(), () -> safeEnd());
+		Characters.getInstance().getScheduler().executeInSpigotCircle(() -> safeEnd());
 	}
 
 	@Override

@@ -93,7 +93,7 @@ public class Bank extends ListenerModule {
         if (Bukkit.isPrimaryThread()) {
             pc.getPlayer().getInventory().setItem(17, item.create());
         } else {
-            Bukkit.getScheduler().runTask(LegendsOfValeros.getInstance(), () -> pc.getPlayer().getInventory().setItem(17, item.create()));
+            Bank.getInstance().getScheduler().executeInSpigotCircle(() -> pc.getPlayer().getInventory().setItem(17, item.create()));
         }
     }
 

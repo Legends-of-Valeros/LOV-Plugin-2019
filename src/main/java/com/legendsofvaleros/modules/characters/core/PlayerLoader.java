@@ -66,7 +66,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
             Characters.getInstance().getLogger().severe("error while loading a player's character data");
             MessageUtil.sendException(Characters.getInstance(), null, error, true);
         } else if (value != null) {
-            Bukkit.getScheduler().runTask(LegendsOfValeros.getInstance(), () -> onDoneLoading(value));
+            Characters.getInstance().getScheduler().executeInSpigotCircle(() -> onDoneLoading(value));
         }
     };
 
@@ -336,7 +336,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
                     PlayerCharacterData.onLogin(event.getPlayer().getUniqueId());
             fut.addListener(() -> {
                 // syncs to main thread before calling event and launching ui
-                Bukkit.getScheduler().runTaskLater(LegendsOfValeros.getInstance(), () -> {
+                Characters.getInstance().getScheduler().executeInSpigotCircleLater(() -> {
                     Player player = null;
                     try {
                         PlayerCharacters characters = fut.get();
@@ -371,7 +371,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
             logoutCharacter(event.getPlayer(), true);
 
             // delays invalidating character data so it can be used during logout
-            Bukkit.getScheduler().runTaskLater(LegendsOfValeros.getInstance(), () -> PlayerCharacterData.onLogout(event.getPlayer().getUniqueId()), 1L);
+            Characters.getInstance().getScheduler().executeInSpigotCircleLater(() -> PlayerCharacterData.onLogout(event.getPlayer().getUniqueId()), 1L);
         }
 
         @EventHandler
@@ -381,7 +381,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
 
             PhaseLock lock = event.getLock();
 
-            Bukkit.getScheduler().runTaskAsynchronously(LegendsOfValeros.getInstance(), () -> {
+            Characters.getInstance().getScheduler().executeInMyCircle(() -> {
                 if (inventory.getData() != null)
                     inventory.loadInventory(pc);
                 else

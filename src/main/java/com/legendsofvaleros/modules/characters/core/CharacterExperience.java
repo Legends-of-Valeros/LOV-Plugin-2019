@@ -2,7 +2,6 @@ package com.legendsofvaleros.modules.characters.core;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.Experience;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.config.ExperienceConfig;
@@ -103,7 +102,7 @@ public class CharacterExperience implements Experience {
 				jobDone = true;
 
 				// syncs to main thread, delivers refreshed values, and calls back
-				Bukkit.getScheduler().runTask(LegendsOfValeros.getInstance(), () -> {
+				Characters.getInstance().getScheduler().executeInSpigotCircle(() -> {
                     try {
                         levelFromDb = levelRequest.get();
                     } catch (Exception e) {

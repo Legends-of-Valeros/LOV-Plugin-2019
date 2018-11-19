@@ -1,7 +1,6 @@
 package com.legendsofvaleros.util;
 
 import com.codingforcookies.doris.sql.TableManager;
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.Module;
 import de.btobastian.javacord.entities.Channel;
 import mkremins.fanciful.FancyMessage;
@@ -10,7 +9,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -105,7 +103,7 @@ public class MessageUtil {
 				Channel channel = Discord.SERVER.getChannelById("358612310731915264");
 
 				if (false && channel != null) {
-					Bukkit.getScheduler().runTaskAsynchronously(LegendsOfValeros.getInstance(), () -> {
+					Utilities.getInstance().getScheduler().executeInMyCircle(() -> {
 						try {
 							channel.sendMessage("`[" + Discord.TAG + "]` ```" + trace + "```").get();
 						} catch (InterruptedException | ExecutionException _e) {

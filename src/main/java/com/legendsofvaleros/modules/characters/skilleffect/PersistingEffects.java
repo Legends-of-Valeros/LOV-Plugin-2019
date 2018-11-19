@@ -4,7 +4,6 @@ import com.codingforcookies.doris.query.InsertQuery;
 import com.codingforcookies.doris.sql.TableManager;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
@@ -121,7 +120,7 @@ public class PersistingEffects {
 												.execute(true);
 
 								// syncs to the main thread before putting data in the cache
-								Bukkit.getScheduler().runTask(LegendsOfValeros.getInstance(), () -> {
+								Characters.getInstance().getScheduler().executeInSpigotCircle(() -> {
 									PlayerCharacter pc = Characters.getInstance().getCharacter(characterId);
 									Player player = Bukkit.getPlayer(characterId.getPlayerId());
 									// makes sure the player is still online and valid
@@ -193,7 +192,7 @@ public class PersistingEffects {
 			if (loadedCharacters.add(event.getPlayerCharacter().getUniqueCharacterId())) {
 				final PhaseLock lock = event.getLock();
 
-				Bukkit.getScheduler().runTaskAsynchronously(LegendsOfValeros.getInstance(), () -> loadEffects(event.getPlayerCharacter().getUniqueCharacterId(), lock));
+				Characters.getInstance().getScheduler().executeInMyCircle(() -> loadEffects(event.getPlayerCharacter().getUniqueCharacterId(), lock));
 			}
 		}
 

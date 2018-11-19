@@ -11,7 +11,6 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.mobs.core.SpawnArea;
 import com.legendsofvaleros.util.event.ToggleOpEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -55,7 +54,7 @@ public class SpawnManager {
 
         spawnsTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), SpawnArea.class);
 
-        Bukkit.getScheduler().runTaskTimerAsynchronously(LegendsOfValeros.getInstance(), () -> {
+        Mobs.getInstance().getScheduler().executeInMyCircleTimer(() -> {
             if (misses.get() > 0) {
                 Mobs.getInstance().getLogger().info(misses + " chunk misses.");
             }

@@ -48,7 +48,7 @@ public class Graveyards extends ListenerModule {
             event.setRespawnLocation(loc);
         }
 
-        Bukkit.getScheduler().runTask(LegendsOfValeros.getInstance(), () -> event.getPlayer().playSound(event.getRespawnLocation(), "misc.resurrect", 1F, 1F));
+        Graveyards.getInstance().getScheduler().executeInSpigotCircle(() -> event.getPlayer().playSound(event.getRespawnLocation(), "misc.resurrect", 1F, 1F));
 
         // TODO: On death break items
 		/*ItemStack[] armors = p.getEquipment().getArmorContents();

@@ -1,7 +1,6 @@
 package com.legendsofvaleros.modules.chat;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.ListenerModule;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -414,7 +413,7 @@ public class Chat extends ListenerModule {
         onChat(e, data);
     }
 
-    public static void onChat(AsyncPlayerChatEvent e, PlayerChat data) {
+    public void onChat(AsyncPlayerChatEvent e, PlayerChat data) {
         if (chanToDiscord.containsKey(data.channel)) {
             if (Discord.SERVER != null) {
                 String channelId = chanToDiscord.get(data.channel);
@@ -422,7 +421,7 @@ public class Chat extends ListenerModule {
                     Channel channel = Discord.SERVER.getChannelById(channelId);
 
                     if (channel != null) {
-                        Bukkit.getScheduler().runTaskAsynchronously(LegendsOfValeros.getInstance(), () -> {
+                        getScheduler().executeInMyCircle(() -> {
                             try {
                                 channel.sendMessage("`[" + Discord.TAG + "]` **" + e.getPlayer().getName() + "**: " + e.getMessage()).get();
                             } catch (InterruptedException | ExecutionException _e) {

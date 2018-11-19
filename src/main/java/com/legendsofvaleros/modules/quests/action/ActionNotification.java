@@ -1,11 +1,11 @@
 package com.legendsofvaleros.modules.quests.action;
 
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.quests.Quests;
 import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
 import io.chazza.advancementapi.AdvancementAPI;
 import io.chazza.advancementapi.FrameType;
 import io.chazza.advancementapi.Trigger;
-import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 
@@ -35,6 +35,6 @@ public class ActionNotification extends AbstractAction {
         advancement.show(LegendsOfValeros.getInstance(), player);
 
 
-        Bukkit.getScheduler().runTaskLater(LegendsOfValeros.getInstance(), next::go, 20L);
+        Quests.getInstance().getScheduler().executeInSpigotCircleLater(next::go, 20L);
     }
 }

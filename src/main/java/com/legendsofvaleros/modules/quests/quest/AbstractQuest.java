@@ -3,7 +3,6 @@ package com.legendsofvaleros.modules.quests.quest;
 import com.codingforcookies.robert.core.StringUtil;
 import com.codingforcookies.robert.item.Book;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.QuestManager;
@@ -183,7 +182,7 @@ public abstract class AbstractQuest implements IQuest {
 
     public void startGroup(PlayerCharacter pc, int group) {
         // Run the task later. This is done to be sure objective events finish firing before starting the next objective group.
-        Bukkit.getScheduler().runTask(LegendsOfValeros.getInstance(), () -> {
+        Quests.getInstance().getScheduler().executeInSpigotCircle(() -> {
             int currentGroup = getCurrentGroupI(pc);
 
             // If the player is just now starting the quest

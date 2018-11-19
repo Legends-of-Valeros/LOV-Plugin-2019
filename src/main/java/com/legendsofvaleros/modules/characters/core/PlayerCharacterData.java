@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.characters.core;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.codingforcookies.doris.sql.TableManager;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
@@ -190,7 +189,7 @@ public class PlayerCharacterData {
 
                     // syncs to the main thread before using this data in calls to the Bukkit API that are
                     // necessary to validate and construct the PlayerCharacter objects
-                    Bukkit.getScheduler().runTask(LegendsOfValeros.getInstance(), () -> {
+                    Characters.getInstance().getScheduler().executeInSpigotCircle(() -> {
                         Player player = Bukkit.getPlayer(playerId);
                         if (!unfulfilledInvalidations.remove(playerId) && player != null && player.isOnline()) {
                             List<ReusablePlayerCharacter> characters = new LinkedList<>();

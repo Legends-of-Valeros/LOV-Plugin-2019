@@ -5,7 +5,6 @@ import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.window.WindowYesNo;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
@@ -72,7 +71,7 @@ public class ItemListener implements Listener {
         if (!instance.gear.getType().isTradable()) {
             ItemUtil.giveItem(Characters.getPlayerCharacter(event.getPlayer()), instance);
         } else {
-            Bukkit.getScheduler().runTask(LegendsOfValeros.getInstance(), () -> new WindowYesNo("Destroy Item") {
+            Gear.getInstance().getScheduler().executeInSpigotCircle(() -> new WindowYesNo("Destroy Item") {
                 @Override
                 public void onOpen(Player p, InventoryView view) {
                     view.setCursor(null);
@@ -283,13 +282,11 @@ public class ItemListener implements Listener {
     public void onItemUse(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             GearItem.Instance gear = GearItem.Instance.fromStack(event.getItem());
-            event.getPlayer().sendMessage("" + gear);
             if (gear == null) return;
 
             UseTrigger e = new UseTrigger(event);
 
             Boolean test = gear.doTest(e);
-            event.getPlayer().sendMessage("" + test);
             if (test == null) return;
             if (test) {
                 if (gear.doFire(e) == TriggerEvent.REFRESH_STACK) {

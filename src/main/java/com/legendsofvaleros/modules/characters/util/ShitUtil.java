@@ -1,14 +1,12 @@
 package com.legendsofvaleros.modules.characters.util;
 
-import java.util.List;
-
-import com.legendsofvaleros.LegendsOfValeros;
-import org.bukkit.Bukkit;
+import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.npcs.util.NPCEmulator;
+import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import com.legendsofvaleros.modules.npcs.util.NPCEmulator;
-import com.legendsofvaleros.util.MessageUtil;
+import java.util.List;
 
 public class ShitUtil {
 	public static void doShit(Player p, List<String> lines, Runnable complete) {
@@ -22,7 +20,7 @@ public class ShitUtil {
 			return;
 		}
 
-		Bukkit.getScheduler().runTaskLater(LegendsOfValeros.getInstance(), () -> {
+		Characters.getInstance().getScheduler().executeInSpigotCircleLater(() -> {
 			long ddelay = 0L;
 			String[] pair = lines.get(i).trim().split(":");
 			switch(pair[0]) {

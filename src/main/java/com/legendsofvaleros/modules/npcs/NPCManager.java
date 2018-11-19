@@ -92,7 +92,7 @@ public class NPCManager implements Listener {
         // Tasks are run after the server is successfully loaded.
         // This gives plugins time to register traits before the
         // NPCs are actually loaded.
-        Bukkit.getScheduler().runTaskLater(LegendsOfValeros.getInstance(), this::reload, 0);
+        NPCs.getInstance().getScheduler().executeInSpigotCircleLater(this::reload, 0);
     }
 
     public void reload() {

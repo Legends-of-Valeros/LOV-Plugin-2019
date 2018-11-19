@@ -52,7 +52,7 @@ public class EntityTracker implements UnsafePlayerInitializer {
 
         // TODO this would need to be configured if passive/aggressive initialization option is added
         // Run after all plugins are initialized
-        Bukkit.getScheduler().runTask(LegendsOfValeros.getInstance(), () -> {
+        CombatEngine.getInstance().getScheduler().executeInSpigotCircle(() -> {
             for(World world : Bukkit.getServer().getWorlds()) {
                 for(Entity entity : world.getEntities()) {
                     if(entity instanceof LivingEntity) {

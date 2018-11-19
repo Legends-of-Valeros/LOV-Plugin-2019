@@ -6,7 +6,6 @@ import com.codingforcookies.robert.window.ExpandingGUI;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.npcs.NPCData;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.npcs.Skins;
@@ -305,7 +304,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
             slots.get(0).action.doAction(gui, player, null);
         } else {
             // Resync with the main thread.
-            Bukkit.getScheduler().runTask(LegendsOfValeros.getInstance(), () -> gui.open(player));
+            NPCs.getInstance().getScheduler().executeInSpigotCircle(() -> gui.open(player));
         }
     }
 }

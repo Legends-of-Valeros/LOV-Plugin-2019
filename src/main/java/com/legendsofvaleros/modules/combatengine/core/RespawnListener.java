@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.combatengine.core;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.api.EntityStats;
 import com.legendsofvaleros.modules.combatengine.config.RespawnConfig;
@@ -88,7 +87,7 @@ public class RespawnListener implements Listener {
         Runnable respawnTask = () -> onDead(event.getEntity());
 
         if (!LoggingOut.isLoggingOut(player.getUniqueId())) {
-            Bukkit.getScheduler().runTaskLater(LegendsOfValeros.getInstance(), respawnTask, 5L * 20L);
+            CombatEngine.getInstance().getScheduler().executeInSpigotCircleLater(respawnTask, 5L * 20L);
 
         } else {
             // special case: player death on logout. Does everything immediately without delays in order
