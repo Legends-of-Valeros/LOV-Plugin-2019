@@ -29,11 +29,11 @@ public class ModuleTimings {
 
                 for(Long time : times) {
                     // Keep timings or 1 minute.
-                    if(System.currentTimeMillis() - time > 10L * 1000L)
+                    if(System.currentTimeMillis() - time > 60L * 1000L)
                         timings.remove(ec, time);
                 }
             }
-        }, 20L * 10L, 20L * 10L);
+        }, 20L * 60L, 20L * 10L);
     }
 
     public void onUnload() {
