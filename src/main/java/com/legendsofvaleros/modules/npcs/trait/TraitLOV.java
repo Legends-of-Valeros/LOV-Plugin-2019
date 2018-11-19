@@ -13,7 +13,6 @@ import com.legendsofvaleros.modules.npcs.Skins;
 import com.legendsofvaleros.modules.npcs.Skins.Skin;
 import com.legendsofvaleros.modules.npcs.nameplate.Nameplates;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
 import net.citizensnpcs.api.command.CommandConfigurable;
 import net.citizensnpcs.api.command.CommandContext;
 import net.citizensnpcs.api.command.exception.CommandException;
@@ -213,7 +212,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
             } else {
                 showSeparated(player, slots);
             }
-        }, Utilities.syncExecutor());
+        }, NPCs.getInstance().getScheduler()::sync);
 
 
         AtomicInteger futuresLeft = new AtomicInteger(traits.length);
@@ -228,7 +227,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
 
                 if (futuresLeft.decrementAndGet() == 0)
                     future.set(true);
-            }, Utilities.asyncExecutor());
+            }, NPCs.getInstance().getScheduler()::async);
         }
     }
 
@@ -253,7 +252,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
-        }, Utilities.syncExecutor());
+        }, NPCs.getInstance().getScheduler()::sync);
 
         List<Slot> slots = new ArrayList<>();
         AtomicInteger futuresLeft = new AtomicInteger(traits.length);
@@ -268,7 +267,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
 
                 if (futuresLeft.decrementAndGet() == 0)
                     future.set(slots);
-            }, Utilities.asyncExecutor());
+            }, NPCs.getInstance().getScheduler()::async);
         }
     }
 	

@@ -65,6 +65,7 @@ public class EntityThreatLevels implements EntityThreat {
 
         // Don't change this to the CombatEngine module's registerEvents. It'll spam the hell out of console.
         Bukkit.getServer().getPluginManager().registerEvents(listener = new EntityListener(), LegendsOfValeros.getInstance());
+        //CombatEngine.getInstance().registerEvents(listener = new EntityListener());
 
         trackers.add(this);
     }

@@ -3,14 +3,8 @@ package com.legendsofvaleros.modules.pvp.duel.listener;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
-import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.pvp.duel.Duel;
 import com.legendsofvaleros.modules.pvp.duel.DuelManager;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
-import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -19,8 +13,7 @@ public class DuelHandler implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDamage(CombatEngineDamageEvent event) {
-        if(event.isCancelled())
-            return;
+        if(event.isCancelled()) return;
 
         CombatEntity attacker = event.getAttacker();
         CombatEntity target = event.getDamaged();

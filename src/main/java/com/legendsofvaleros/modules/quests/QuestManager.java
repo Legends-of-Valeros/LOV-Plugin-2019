@@ -34,7 +34,6 @@ import com.legendsofvaleros.modules.quests.quest.stf.QuestObjectives;
 import com.legendsofvaleros.modules.quests.quest.stf.QuestStatus;
 import com.legendsofvaleros.util.FutureCache;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -310,7 +309,7 @@ public class QuestManager {
                                     if (lock != null)
                                         lock.release();
                                 }
-                            }, Utilities.asyncExecutor());
+                            }, Quests.getInstance().getScheduler()::async);
                         }
                     }
 

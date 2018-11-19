@@ -8,7 +8,6 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
 import com.legendsofvaleros.util.item.Model;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -46,7 +45,7 @@ public class ItemCommands extends BaseCommand {
             } catch (Exception e) {
                 MessageUtil.sendException(Gear.getInstance(), player, e, false);
             }
-        }, Utilities.asyncExecutor());
+        }, Gear.getInstance().getScheduler()::async);
     }
 
     @Default

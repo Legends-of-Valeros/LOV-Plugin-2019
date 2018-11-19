@@ -11,7 +11,6 @@ import com.legendsofvaleros.modules.bank.Money;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
-import com.legendsofvaleros.util.Utilities;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -79,6 +78,6 @@ public class TraitMount extends LOVTrait {
                     gui.open(p);
                 }
             }.runTask(LegendsOfValeros.getInstance());
-        }, Utilities.asyncExecutor());
+        }, Mounts.getInstance().getScheduler()::async);
     }
 }

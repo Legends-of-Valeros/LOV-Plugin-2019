@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.gear;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.codingforcookies.doris.orm.ORMField;
 import com.codingforcookies.doris.orm.ORMRegistry;
 import com.codingforcookies.doris.orm.ORMTable;
@@ -9,15 +8,14 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import com.google.gson.*;
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.gear.component.impl.ComponentMap;
 import com.legendsofvaleros.modules.gear.component.impl.GearComponent;
 import com.legendsofvaleros.modules.gear.component.impl.PersistMap;
 import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.field.RangedValue;
 import com.legendsofvaleros.util.item.Model;
-import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Type;
 import java.sql.ResultSet;
@@ -105,7 +103,7 @@ public class ItemManager {
                             cache.put(id, gear);
 
                             ret.set(gear);
-                        }, Utilities.asyncExecutor());
+                        }, Gear.getInstance().getScheduler()::async);
                     })
                     .onEmpty(() -> ret.set(Gear.ERROR_ITEM))
                     .execute(true);

@@ -54,10 +54,6 @@ public class ItemListener implements Listener {
             .expireAfterWrite(10, TimeUnit.SECONDS)
             .build();
 
-    public ItemListener(LegendsOfValeros plugin) {
-        Gear.getInstance().registerEvents(this);
-    }
-
     @EventHandler(priority = EventPriority.MONITOR)
     public void onEquipItemSound(ItemEquipEvent event) {
         if (!event.isCancelled())
@@ -287,11 +283,13 @@ public class ItemListener implements Listener {
     public void onItemUse(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             GearItem.Instance gear = GearItem.Instance.fromStack(event.getItem());
+            event.getPlayer().sendMessage("" + gear);
             if (gear == null) return;
 
             UseTrigger e = new UseTrigger(event);
 
             Boolean test = gear.doTest(e);
+            event.getPlayer().sendMessage("" + test);
             if (test == null) return;
             if (test) {
                 if (gear.doFire(e) == TriggerEvent.REFRESH_STACK) {

@@ -51,13 +51,16 @@ public class EntityTracker implements UnsafePlayerInitializer {
                         .build();
 
         // TODO this would need to be configured if passive/aggressive initialization option is added
-        for (World world : Bukkit.getServer().getWorlds()) {
-            for (Entity entity : world.getEntities()) {
-                if (entity instanceof LivingEntity) {
-                    getCombatEntity((LivingEntity) entity);
+        // Run after all plugins are initialized
+        Bukkit.getScheduler().runTask(LegendsOfValeros.getInstance(), () -> {
+            for(World world : Bukkit.getServer().getWorlds()) {
+                for(Entity entity : world.getEntities()) {
+                    if(entity instanceof LivingEntity) {
+                        getCombatEntity((LivingEntity) entity);
+                    }
                 }
             }
-        }
+        });
     }
 
     public CombinedCombatEntity getCombatEntity(LivingEntity entity) {
@@ -189,9 +192,10 @@ public class EntityTracker implements UnsafePlayerInitializer {
         }
 
         // initializes combat data for spawning entities
-        @EventHandler
+        @EventHandler(priority = EventPriority.MONITOR)
         public void onEntitySpawn(CreatureSpawnEvent event) {
-            getCombatEntity((LivingEntity) event.getEntity());
+            if(!event.isCancelled())
+                getCombatEntity(event.getEntity());
         }
 
         // initializes combat data for entities when they are loaded back into memory

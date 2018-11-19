@@ -2,10 +2,9 @@ package com.legendsofvaleros.modules.loot;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
-import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.gear.Gear;
 import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
 import org.bukkit.inventory.ItemStack;
 
 public class LootTable {
@@ -36,7 +35,7 @@ public class LootTable {
                 } catch (Exception e) {
                     MessageUtil.sendException(LootManager.getInstance(), null, e, false);
                 }
-            }, Utilities.asyncExecutor());
+            }, Gear.getInstance().getScheduler()::async);
 
             return ret;
         }

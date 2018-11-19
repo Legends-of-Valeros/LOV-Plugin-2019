@@ -23,7 +23,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.Executor;
 
 public class Utilities extends ListenerModule {
     private static Utilities instance;
@@ -36,14 +35,14 @@ public class Utilities extends ListenerModule {
         return op.contains(p.getUniqueId());
     }
 
-    public static Executor syncExecutor() {
+    /*public static Executor syncExecutor() {
         //return BukkitExecutors.newSynchronous(LegendsOfValeros.getInstance());
         return instance.getScheduler()::sync;
     }
     public static Executor asyncExecutor() {
         //return MoreExecutors.directExecutor();
         return instance.getScheduler()::async;
-    }
+    }*/
 
     @Override
     public void onLoad() {

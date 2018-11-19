@@ -1,7 +1,6 @@
 package com.legendsofvaleros.modules.mobs.listener;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
@@ -9,9 +8,9 @@ import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
 import com.legendsofvaleros.modules.loot.LootManager;
 import com.legendsofvaleros.modules.loot.LootTable;
+import com.legendsofvaleros.modules.mobs.Mobs;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -83,12 +82,12 @@ public class LootListener implements Listener {
                             } catch (InterruptedException | ExecutionException e) {
                                 MessageUtil.sendException(LootManager.getInstance(), event.getKiller() != null && event.getKiller().getLivingEntity() instanceof Player ? (Player) event.getKiller().getLivingEntity() : null, e, false);
                             }
-                        }, Utilities.syncExecutor());
+                        }, Mobs.getInstance().getScheduler()::sync);
                     }
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
-            }, Utilities.asyncExecutor());
+            }, Mobs.getInstance().getScheduler()::async);
         }
     }
 }

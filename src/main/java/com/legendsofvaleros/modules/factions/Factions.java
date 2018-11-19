@@ -16,7 +16,6 @@ import com.legendsofvaleros.modules.factions.event.FactionReputationChangeEvent;
 import com.legendsofvaleros.modules.factions.quest.ActionReputation;
 import com.legendsofvaleros.modules.quests.action.stf.ActionFactory;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 
@@ -169,7 +168,7 @@ public class Factions extends ListenerModule {
             }
 
             ret.set(false);
-        }, Utilities.asyncExecutor());
+        }, Factions.getInstance().getScheduler()::async);
 
         return ret;
     }

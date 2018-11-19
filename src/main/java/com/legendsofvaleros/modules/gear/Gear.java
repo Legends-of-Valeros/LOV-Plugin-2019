@@ -10,6 +10,7 @@ import com.legendsofvaleros.modules.gear.event.GearPickupEvent;
 import com.legendsofvaleros.modules.gear.event.ItemEquipEvent;
 import com.legendsofvaleros.modules.gear.event.ItemUnEquipEvent;
 import com.legendsofvaleros.modules.gear.inventory.InventoryListener;
+import com.legendsofvaleros.modules.gear.inventory.ItemListener;
 import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.gear.quest.*;
 import com.legendsofvaleros.modules.quests.QuestManager;
@@ -37,6 +38,7 @@ public class Gear extends ListenerModule {
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new ItemCommands());
 
+        registerEvents(new ItemListener());
         registerEvents(new InventoryListener());
 
         ItemManager.onEnable();

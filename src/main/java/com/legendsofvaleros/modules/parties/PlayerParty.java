@@ -10,7 +10,6 @@ import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.PlayerData;
-import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -198,7 +197,7 @@ class ScoreHolder {
                     name = data.username;
                 } catch (Exception e) {
                 }
-            }, Utilities.asyncExecutor());
+            }, Parties.getInstance().getScheduler()::async);
         }
 
         update();

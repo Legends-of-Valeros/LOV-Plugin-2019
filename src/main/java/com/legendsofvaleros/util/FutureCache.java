@@ -56,7 +56,7 @@ public class FutureCache<K, V> {
                     } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();
                     }
-                }, Utilities.asyncExecutor());
+                }, Utilities.getInstance().getScheduler()::async);
             }
 
             awaiting.put(k, ret);

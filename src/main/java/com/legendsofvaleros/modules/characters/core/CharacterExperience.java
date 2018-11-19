@@ -1,15 +1,14 @@
 package com.legendsofvaleros.modules.characters.core;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
+import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.characters.api.Experience;
+import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.config.ExperienceConfig;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterExperienceChangeEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLevelUpEvent;
-import com.legendsofvaleros.modules.characters.api.Experience;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
 
 /**
@@ -124,8 +123,8 @@ public class CharacterExperience implements Experience {
 			}
 		};
 
-		levelRequest.addListener(listener, Utilities.asyncExecutor());
-		xpRequest.addListener(listener, Utilities.asyncExecutor());
+		levelRequest.addListener(listener, Characters.getInstance().getScheduler()::async);
+		xpRequest.addListener(listener, Characters.getInstance().getScheduler()::async);
 
 		return ret;
 	}

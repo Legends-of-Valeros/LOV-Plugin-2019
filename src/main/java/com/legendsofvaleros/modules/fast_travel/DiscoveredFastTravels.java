@@ -14,7 +14,6 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
-import com.legendsofvaleros.util.Utilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -72,7 +71,8 @@ public class DiscoveredFastTravels implements Listener {
 		if(travels.size() == 0) return;
 
 		manager.saveAll(travels, true)
-				.addListener(() -> fastTravels.removeAll(characterId), Utilities.asyncExecutor());
+				.addListener(() -> fastTravels.removeAll(characterId),
+						FastTravel.getInstance().getScheduler()::async);
 	}
 	
 	public static void removeAll(PlayerCharacter pc) {
@@ -86,7 +86,7 @@ public class DiscoveredFastTravels implements Listener {
 		public void onCharacterLoading(PlayerCharacterStartLoadingEvent event) {
 			PhaseLock lock = event.getLock();
 			loadFoundTravels(event.getPlayerCharacter())
-				.addListener(lock::release, Utilities.asyncExecutor());
+				.addListener(lock::release, FastTravel.getInstance().getScheduler()::async);
 		}
 
 		@EventHandler

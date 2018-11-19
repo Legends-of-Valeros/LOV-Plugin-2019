@@ -1,13 +1,11 @@
 package com.legendsofvaleros.modules.gear.quest;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.gear.Gear;
-import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
 import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
+import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
 import mkremins.fanciful.FancyMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -32,6 +30,6 @@ public class ActionRemoveItem extends AbstractAction {
 			}
 			
 			next.go();
-		}, Utilities.asyncExecutor());
+		}, Gear.getInstance().getScheduler()::async);
 	}
 }

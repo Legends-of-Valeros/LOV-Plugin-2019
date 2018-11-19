@@ -9,7 +9,6 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.playermenu.options.PlayerOptionsOpenEvent;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
 import com.legendsofvaleros.util.item.Model;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -90,7 +89,7 @@ public class Mounts extends ListenerModule {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }, Utilities.asyncExecutor());
+            }, Mounts.getInstance().getScheduler()::async);
         });
     }
 

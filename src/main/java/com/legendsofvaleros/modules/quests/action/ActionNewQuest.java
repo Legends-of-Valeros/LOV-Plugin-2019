@@ -1,7 +1,6 @@
 package com.legendsofvaleros.modules.quests.action;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.quests.QuestManager;
@@ -9,7 +8,6 @@ import com.legendsofvaleros.modules.quests.Quests;
 import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
 import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
 import org.bukkit.entity.Player;
 
 public class ActionNewQuest extends AbstractAction {
@@ -32,6 +30,6 @@ public class ActionNewQuest extends AbstractAction {
             }
 
             next.go();
-        }, Utilities.asyncExecutor());
+        }, Quests.getInstance().getScheduler()::async);
     }
 }

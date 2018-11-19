@@ -10,7 +10,6 @@ import com.legendsofvaleros.modules.playermenu.settings.PlayerSettingsOpenEvent;
 import com.legendsofvaleros.util.Discord;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.PlayerData;
-import com.legendsofvaleros.util.Utilities;
 import de.btobastian.javacord.DiscordAPI;
 import de.btobastian.javacord.entities.Channel;
 import de.btobastian.javacord.entities.Server;
@@ -289,7 +288,7 @@ public class Chat extends ListenerModule {
                             } catch (InterruptedException | ExecutionException e1) {
                                 e1.printStackTrace();
                             }
-                        }, Utilities.syncExecutor());
+                        }, getScheduler()::sync);
 
                         return;
                     }
@@ -353,7 +352,7 @@ public class Chat extends ListenerModule {
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
-        }, Utilities.syncExecutor());
+        }, getScheduler()::sync);
 
         players.put(event.getPlayer().getUniqueId(), data);
     }

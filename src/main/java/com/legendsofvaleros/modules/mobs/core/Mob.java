@@ -4,7 +4,6 @@ import com.codingforcookies.doris.orm.annotation.Column;
 import com.codingforcookies.doris.orm.annotation.Table;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
@@ -19,7 +18,6 @@ import com.legendsofvaleros.modules.mobs.trait.MobTrait;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.npcs.Skins;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.Equipment;
 import org.bukkit.Location;
@@ -249,7 +247,7 @@ public class Mob {
                 } catch (Exception e) {
                     MessageUtil.sendException(Mobs.getInstance(), null, e, false);
                 }
-            }, Utilities.asyncExecutor());
+            }, Mobs.getInstance().getScheduler()::async);
 
             return ret;
         }
@@ -342,7 +340,7 @@ public class Mob {
                         } catch (Exception e) {
                             MessageUtil.sendException(Mobs.getInstance(), null, new Exception("Could not load equipment for instance. Offender: " + item.id + " on " + slot.name() + " in " + mob.id), false);
                         }
-                    }, Utilities.asyncExecutor());
+                    }, Mobs.getInstance().getScheduler()::async);
                 }
             }
 

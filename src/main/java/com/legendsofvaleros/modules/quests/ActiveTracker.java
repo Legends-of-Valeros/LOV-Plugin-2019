@@ -9,22 +9,8 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.quests.objective.stf.IObjective;
 import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
 import com.legendsofvaleros.modules.quests.quest.stf.QuestStatus;
-import com.legendsofvaleros.modules.characters.api.CharacterId;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.quests.objective.stf.IObjective;
-import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
-import com.legendsofvaleros.modules.quests.quest.stf.QuestStatus;
-import com.legendsofvaleros.util.Utilities;
-import com.legendsofvaleros.modules.characters.api.CharacterId;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.quests.objective.stf.IObjective;
-import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
-import com.legendsofvaleros.modules.quests.quest.stf.QuestStatus;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Collection;
@@ -100,8 +86,8 @@ public class ActiveTracker {
                     }
 
                     ret.set(null);
-                }, Utilities.asyncExecutor());
-            }, Utilities.asyncExecutor());
+                }, Quests.getInstance().getScheduler()::async);
+            }, Quests.getInstance().getScheduler()::async);
         }
 
         return ret;
@@ -138,7 +124,7 @@ public class ActiveTracker {
                         } catch (ExecutionException | InterruptedException e) {
                             e.printStackTrace();
                         }
-                    }, Utilities.asyncExecutor());
+                    }, Quests.getInstance().getScheduler()::async);
                 });
     }
 }

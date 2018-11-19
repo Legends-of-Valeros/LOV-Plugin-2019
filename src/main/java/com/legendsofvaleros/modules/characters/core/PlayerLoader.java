@@ -18,7 +18,6 @@ import com.legendsofvaleros.modules.characters.ui.CharacterSelectionListener;
 import com.legendsofvaleros.modules.combatengine.api.UnsafePlayerInitializer;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -358,7 +357,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
                         MessageUtil.sendException(Characters.getInstance(), player, e, true);
                     }
                 }, SELECT_DELAY);
-            }, Utilities.asyncExecutor());
+            }, Characters.getInstance().getScheduler()::async);
         }
 
         @EventHandler(priority = EventPriority.HIGH)

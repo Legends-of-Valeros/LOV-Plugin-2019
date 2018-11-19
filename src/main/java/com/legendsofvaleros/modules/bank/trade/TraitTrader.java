@@ -1,22 +1,20 @@
 package com.legendsofvaleros.modules.bank.trade;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.codingforcookies.robert.slot.Slot;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.modules.bank.Bank;
+import com.legendsofvaleros.modules.bank.Money;
+import com.legendsofvaleros.modules.bank.gui.ItemMorphGUI;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
-import com.legendsofvaleros.util.item.Model;
-import com.legendsofvaleros.modules.bank.Money;
-import com.legendsofvaleros.modules.bank.gui.ItemMorphGUI;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
+import com.legendsofvaleros.util.item.Model;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -113,7 +111,7 @@ public class TraitTrader extends LOVTrait {
                 } catch (Exception e) {
                     MessageUtil.sendException(Bank.getInstance(), null, e, false);
                 }
-            }, Utilities.asyncExecutor());
+            }, Bank.getInstance().getScheduler()::async);
         }
     }
 

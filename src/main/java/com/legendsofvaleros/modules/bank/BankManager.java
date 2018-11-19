@@ -11,7 +11,6 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
 import com.legendsofvaleros.modules.gear.ItemManager;
-import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -119,13 +118,14 @@ public class BankManager {
             PhaseLock lock = event.getLock();
 
             loadBank(event.getPlayerCharacter().getUniqueCharacterId())
-                    .addListener(lock::release, Utilities.asyncExecutor());
+                    .addListener(lock::release, Bank.getInstance().getScheduler()::async);
         }
 
         @EventHandler
         public void onCharacterLogout(PlayerCharacterLogoutEvent event) {
             onLogout(event.getPlayerCharacter().getUniqueCharacterId())
-                    .addListener(() -> banks.remove(event.getPlayerCharacter().getUniqueCharacterId()), Utilities.asyncExecutor());
+                    .addListener(() -> banks.remove(event.getPlayerCharacter().getUniqueCharacterId()),
+                            Bank.getInstance().getScheduler()::async);
         }
 
         @EventHandler

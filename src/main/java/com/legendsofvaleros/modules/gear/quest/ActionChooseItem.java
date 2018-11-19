@@ -1,17 +1,15 @@
 package com.legendsofvaleros.modules.gear.quest;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.slot.ISlotAction;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.Gear;
-import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
-import com.legendsofvaleros.util.item.Model;
 import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
+import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
+import com.legendsofvaleros.util.item.Model;
 import mkremins.fanciful.FancyMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -98,7 +96,7 @@ public class ActionChooseItem extends AbstractAction {
 
 		for(int i = 0; i < itemIds.length; i++) {
 			futures[i] = GearItem.fromID(itemIds[i]);
-			futures[i].addListener(run, Utilities.asyncExecutor());
+			futures[i].addListener(run, Gear.getInstance().getScheduler()::async);
 		}
 	}
 }

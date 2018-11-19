@@ -16,7 +16,7 @@ public class Test {
                     if (event.isRightClick()) {
                         PlayerOptions.open(p);
                     } else if (event.isLeftClick()) {
-                        p.performCommand("lov journal");
+                        p.performCommand("character journal");
                     }
                 }));
     }

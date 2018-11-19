@@ -7,7 +7,6 @@ import com.codingforcookies.robert.slot.Slot;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterFinishLoadingEvent;
@@ -20,7 +19,6 @@ import com.legendsofvaleros.modules.quests.event.QuestStartedEvent;
 import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
 import com.legendsofvaleros.modules.quests.quest.stf.QuestStatus;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
 import com.legendsofvaleros.util.item.Model;
 import mkremins.fanciful.FancyMessage;
 import net.citizensnpcs.api.npc.NPC;
@@ -115,7 +113,7 @@ public class TraitQuestGiver extends LOVTrait {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                }, Utilities.syncExecutor());
+                }, Quests.getInstance().getScheduler()::sync);
             }
         }
     }
@@ -183,7 +181,7 @@ public class TraitQuestGiver extends LOVTrait {
                     openGUI(player, playerQuests);
                 }));
             }
-        }, Utilities.asyncExecutor());
+        }, Quests.getInstance().getScheduler()::async);
 
         List<IQuest> quests = new ArrayList<>();
         AtomicInteger left = new AtomicInteger(questIDs.length);
@@ -203,7 +201,7 @@ public class TraitQuestGiver extends LOVTrait {
 
                 if (left.decrementAndGet() == 0)
                     future.set(quests);
-            }, Utilities.asyncExecutor());
+            }, Quests.getInstance().getScheduler()::async);
         }
     }
 

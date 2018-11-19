@@ -1,18 +1,16 @@
 package com.legendsofvaleros.modules.gear.quest;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.gear.Gear;
+import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.util.ItemUtil;
 import com.legendsofvaleros.modules.npcs.NPCData;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
 import com.legendsofvaleros.modules.quests.objective.stf.AbstractObjective;
 import com.legendsofvaleros.modules.quests.progress.ObjectiveProgressBoolean;
-import com.legendsofvaleros.modules.gear.item.GearItem;
-import com.legendsofvaleros.modules.gear.util.ItemUtil;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import org.bukkit.Location;
 import org.bukkit.event.Event;
@@ -38,7 +36,7 @@ public class FetchForNPCObjective extends AbstractObjective<ObjectiveProgressBoo
             } catch (Exception e) {
                 MessageUtil.sendException(Gear.getInstance(), null, e, false);
             }
-        }, Utilities.asyncExecutor());
+        }, Gear.getInstance().getScheduler()::async);
 
         if (!NPCs.isNPC(npcId)) {
             MessageUtil.sendException(Gear.getInstance(), null, new Exception("No NPC with that ID in quest. Offender: " + id + " in " + getQuest().getId()), false);

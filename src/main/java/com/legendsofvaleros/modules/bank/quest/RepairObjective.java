@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.bank.quest;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.bank.Bank;
 import com.legendsofvaleros.modules.bank.repair.RepairItemEvent;
@@ -9,7 +8,6 @@ import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.quests.objective.stf.AbstractObjective;
 import com.legendsofvaleros.modules.quests.progress.ObjectiveProgressBoolean;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
 import org.bukkit.event.Event;
 
 public class RepairObjective extends AbstractObjective<ObjectiveProgressBoolean> {
@@ -26,7 +24,7 @@ public class RepairObjective extends AbstractObjective<ObjectiveProgressBoolean>
             } catch (Exception e) {
                 MessageUtil.sendException(Bank.getInstance(), null, new Exception("No item with that ID in quest. Offender: " + id + " in " + getQuest().getId()), false);
             }
-        }, Utilities.asyncExecutor());
+        }, Bank.getInstance().getScheduler()::async);
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.QuestManager;
+import com.legendsofvaleros.modules.quests.Quests;
 import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
 import com.legendsofvaleros.modules.quests.action.stf.QuestActionPlay;
 import com.legendsofvaleros.modules.quests.action.stf.QuestActions;
@@ -21,7 +22,6 @@ import com.legendsofvaleros.modules.quests.progress.stf.ObjectiveProgressPack;
 import com.legendsofvaleros.modules.quests.progress.stf.QuestProgressPack;
 import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
 import com.legendsofvaleros.modules.quests.quest.stf.QuestObjectives;
-import com.legendsofvaleros.util.Utilities;
 import mkremins.fanciful.FancyMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -218,7 +218,8 @@ public abstract class AbstractQuest implements IQuest {
 
         ListenableFuture<Boolean> future = QuestActionPlay.start(pc, getProgress(pc), acts);
 
-        future.addListener(() -> continueToNextGroup(pc, currentGroup + 1), Utilities.asyncExecutor());
+        future.addListener(() -> continueToNextGroup(pc, currentGroup + 1),
+                Quests.getInstance().getScheduler()::async);
     }
 
     private void continueToNextGroup(PlayerCharacter pc, int nextGroup) {

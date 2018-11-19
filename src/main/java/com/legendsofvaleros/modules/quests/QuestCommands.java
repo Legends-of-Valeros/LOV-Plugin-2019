@@ -11,7 +11,6 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.quests.objective.stf.IObjective;
 import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
 import mkremins.fanciful.FancyMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -54,7 +53,7 @@ public class QuestCommands extends BaseCommand {
             } catch (ExecutionException e) {
                 e.printStackTrace();
             }
-        }, Utilities.syncExecutor());
+        }, Quests.getInstance().getScheduler()::async);
     }
 
     @Subcommand("uncomplete")
@@ -97,7 +96,7 @@ public class QuestCommands extends BaseCommand {
             } catch (Exception e) {
                 MessageUtil.sendException(Quests.getInstance(), player, e, true);
             }
-        }, Utilities.asyncExecutor());
+        }, Quests.getInstance().getScheduler()::async);
     }
 
     @Subcommand("defline")
@@ -114,7 +113,7 @@ public class QuestCommands extends BaseCommand {
             } catch (Exception e) {
                 MessageUtil.sendException(Quests.getInstance(), player, e, true);
             }
-        }, Utilities.asyncExecutor());
+        }, Quests.getInstance().getScheduler()::async);
     }
 
     @Subcommand("close")
@@ -140,7 +139,7 @@ public class QuestCommands extends BaseCommand {
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
-        }, Utilities.asyncExecutor());
+        }, Quests.getInstance().getScheduler()::async);
     }
 
     @Default

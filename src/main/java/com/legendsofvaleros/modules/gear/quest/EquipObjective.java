@@ -1,19 +1,18 @@
 package com.legendsofvaleros.modules.gear.quest;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.codingforcookies.armorequip.ArmorEquipEvent;
 import com.codingforcookies.robert.item.NBTEditor;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.quests.Quests;
-import com.legendsofvaleros.modules.quests.objective.stf.AbstractObjective;
-import com.legendsofvaleros.modules.quests.progress.ObjectiveProgressBoolean;
+import com.legendsofvaleros.modules.gear.Gear;
 import com.legendsofvaleros.modules.gear.event.ItemEquipEvent;
 import com.legendsofvaleros.modules.gear.event.ItemUnEquipEvent;
 import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.gear.item.GearType;
+import com.legendsofvaleros.modules.quests.Quests;
+import com.legendsofvaleros.modules.quests.objective.stf.AbstractObjective;
+import com.legendsofvaleros.modules.quests.progress.ObjectiveProgressBoolean;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 
@@ -34,7 +33,7 @@ public class EquipObjective extends AbstractObjective<ObjectiveProgressBoolean> 
 			} catch (Exception e) {
 				MessageUtil.sendException(Quests.getInstance(), null, e, false);
 			}
-		}, Utilities.asyncExecutor());
+		}, Gear.getInstance().getScheduler()::async);
 	}
 
 	@Override

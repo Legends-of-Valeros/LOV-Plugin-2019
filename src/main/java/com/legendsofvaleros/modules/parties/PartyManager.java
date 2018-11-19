@@ -11,7 +11,6 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
-import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -154,7 +153,7 @@ public class PartyManager {
                 }
 
                 lock.release();
-            }, Utilities.syncExecutor());
+            }, Parties.getInstance().getScheduler()::sync);
         }
 
         @EventHandler

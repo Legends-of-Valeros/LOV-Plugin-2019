@@ -10,7 +10,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.mobs.core.SpawnArea;
-import com.legendsofvaleros.util.Utilities;
 import com.legendsofvaleros.util.event.ToggleOpEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -89,7 +88,7 @@ public class SpawnManager {
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
-        }, Utilities.asyncExecutor());
+        }, Mobs.getInstance().getScheduler()::async);
     }
 
     public static void updateSpawn(final SpawnArea spawn) {

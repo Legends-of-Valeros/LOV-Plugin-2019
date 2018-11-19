@@ -1,15 +1,13 @@
 package com.legendsofvaleros.modules.gear.quest;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.gear.Gear;
-import com.legendsofvaleros.modules.quests.objective.stf.AbstractObjective;
-import com.legendsofvaleros.modules.quests.progress.ObjectiveProgressInteger;
 import com.legendsofvaleros.modules.gear.event.GearPickupEvent;
 import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.quests.objective.stf.AbstractObjective;
+import com.legendsofvaleros.modules.quests.progress.ObjectiveProgressInteger;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
@@ -32,7 +30,7 @@ public class FetchObjective extends AbstractObjective<ObjectiveProgressInteger> 
             } catch (Exception e) {
                 MessageUtil.sendException(Gear.getInstance(), null, e, false);
             }
-        }, Utilities.asyncExecutor());
+        }, Gear.getInstance().getScheduler()::async);
     }
 
     @Override

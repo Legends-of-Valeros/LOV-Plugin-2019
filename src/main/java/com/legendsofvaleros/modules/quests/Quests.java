@@ -28,7 +28,6 @@ import com.legendsofvaleros.modules.quests.quest.stf.QuestFactory;
 import com.legendsofvaleros.modules.quests.quest.stf.QuestStatus;
 import com.legendsofvaleros.modules.quests.trait.TraitQuestGiver;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
 import com.legendsofvaleros.util.title.Title;
 import com.legendsofvaleros.util.title.TitleUtil;
 import io.chazza.advancementapi.AdvancementAPI;
@@ -159,7 +158,7 @@ public class Quests extends ListenerModule {
             } catch (Exception e) {
                 MessageUtil.sendException(Quests.getInstance(), pc.getPlayer(), e, true);
             }
-        }, Utilities.asyncExecutor());
+        }, Quests.getInstance().getScheduler()::async);
     }
 
     @EventHandler
