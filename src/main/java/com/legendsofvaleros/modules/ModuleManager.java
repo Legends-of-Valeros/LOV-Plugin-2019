@@ -29,6 +29,8 @@ public class ModuleManager {
             schedulers.put(moduleToLoad.getName(), new InternalScheduler(moduleToLoad.getName()).startup());
 
             moduleToLoad.onLoad();
+
+            LegendsOfValeros.getInstance().getLogger().info("");
         }
 
         LegendsOfValeros.getInstance().getLogger().info("Loaded " + modules.size() + " modules");
