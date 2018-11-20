@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.quests.quest.stf;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.quests.Quests;
 
 import java.util.HashMap;

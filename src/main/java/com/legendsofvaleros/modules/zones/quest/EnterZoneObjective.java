@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.zones.quest;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.objective.stf.AbstractObjective;
 import com.legendsofvaleros.modules.quests.progress.ObjectiveProgressBoolean;

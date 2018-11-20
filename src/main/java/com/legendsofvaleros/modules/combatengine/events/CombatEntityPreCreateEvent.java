@@ -1,10 +1,9 @@
 package com.legendsofvaleros.modules.combatengine.events;
 
+import com.legendsofvaleros.modules.combatengine.core.CombatProfile;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
-import com.legendsofvaleros.modules.combatengine.core.CombatProfile;
 
 /**
  * Called when combat information is about to be created for an entity.

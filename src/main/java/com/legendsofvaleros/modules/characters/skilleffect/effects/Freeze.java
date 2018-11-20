@@ -1,15 +1,11 @@
 package com.legendsofvaleros.modules.characters.skilleffect.effects;
 
 import com.codingforcookies.robert.core.RomanNumeral;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.statuseffects.Stun;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.skilleffect.*;
 import com.legendsofvaleros.modules.characters.skilleffect.PersistingEffect.PersistingEffectBuilder;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
-import com.legendsofvaleros.modules.combatengine.statuseffects.Stun;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.statuseffects.Stun;
 import org.bukkit.entity.LivingEntity;
 

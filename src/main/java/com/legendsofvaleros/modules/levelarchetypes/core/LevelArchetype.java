@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.levelarchetypes.core;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.combatengine.core.CombatProfile;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import com.legendsofvaleros.modules.levelarchetypes.api.Archetype;

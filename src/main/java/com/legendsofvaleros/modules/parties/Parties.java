@@ -14,7 +14,7 @@ import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.playermenu.PlayerMenuOpenEvent;
 import com.legendsofvaleros.util.MessageUtil;
-import mkremins.fanciful.FancyMessage;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -63,7 +63,7 @@ public class Parties extends ListenerModule {
             }
 
             @Override
-            public void onChat(Player p, FancyMessage fm) {
+            public void onChat(Player p, BaseComponent[] bc) {
                 PlayerParty party = (PlayerParty) PartyManager.getPartyByMember(Characters.getPlayerCharacter(p).getUniqueCharacterId());
                 if (party == null) {
                     MessageUtil.sendError(p, "You are not in a party.");
@@ -72,7 +72,7 @@ public class Parties extends ListenerModule {
 
 
                 for (Player pl : party.getOnlineMembers())
-                    fm.send(pl);
+                    pl.spigot().sendMessage(bc);
             }
         });
     }

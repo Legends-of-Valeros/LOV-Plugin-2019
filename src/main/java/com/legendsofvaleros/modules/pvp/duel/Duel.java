@@ -3,14 +3,11 @@ package com.legendsofvaleros.modules.pvp.duel;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.pvp.duel.component.DuelComponent;
-import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
-import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
-import com.legendsofvaleros.modules.pvp.duel.component.DuelComponent;
-import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
-import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
-import com.legendsofvaleros.modules.pvp.duel.component.DuelComponent;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Duel {
 

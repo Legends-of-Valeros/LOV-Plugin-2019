@@ -1,13 +1,9 @@
 package com.legendsofvaleros.modules.npcs.util;
 
 import com.legendsofvaleros.modules.npcs.NPCs;
-import com.legendsofvaleros.modules.npcs.NPCs;
+import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-
-import com.legendsofvaleros.modules.npcs.NPCs;
-
-import net.citizensnpcs.api.npc.NPC;
 
 public class NPCEmulator {
 	public static void speak(String npcId, Player p, String message) {

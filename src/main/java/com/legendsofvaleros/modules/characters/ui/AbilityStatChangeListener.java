@@ -1,8 +1,6 @@
 package com.legendsofvaleros.modules.characters.ui;
 
 import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
-import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
-import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
 
 /**
  * Informed of changes in class stats.

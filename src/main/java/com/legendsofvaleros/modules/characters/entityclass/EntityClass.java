@@ -1,8 +1,6 @@
 package com.legendsofvaleros.modules.characters.entityclass;
 
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
-import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
-import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import org.bukkit.ChatColor;
 
 /**

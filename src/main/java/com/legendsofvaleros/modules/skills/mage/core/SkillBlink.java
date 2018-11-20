@@ -3,17 +3,10 @@ package com.legendsofvaleros.modules.skills.mage.core;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
-
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 
 public class SkillBlink extends Skill {
 	public static final String ID = "blink";

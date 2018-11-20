@@ -1,12 +1,10 @@
 package com.legendsofvaleros.modules.characters.creation;
 
-import java.util.Random;
-
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.race.EntityRace;
 import com.legendsofvaleros.modules.characters.ui.CharacterCreationListener;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
+
+import java.util.Random;
 
 public class CreationInfo {
 	final int age = new Random().nextInt(8) + 19;

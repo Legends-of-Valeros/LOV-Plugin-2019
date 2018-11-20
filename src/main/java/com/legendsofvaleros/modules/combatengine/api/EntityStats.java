@@ -3,12 +3,6 @@ package com.legendsofvaleros.modules.combatengine.api;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
-import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
-import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
-import com.legendsofvaleros.modules.combatengine.stat.Stat;
-import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
-import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
-import com.legendsofvaleros.modules.combatengine.stat.Stat;
 
 /**
  * Stat levels for an entity.

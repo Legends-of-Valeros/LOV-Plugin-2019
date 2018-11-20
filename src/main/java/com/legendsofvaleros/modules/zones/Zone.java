@@ -1,10 +1,9 @@
 package com.legendsofvaleros.modules.zones;
 
+import com.codingforcookies.ambience.Sound;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-
-import com.codingforcookies.ambience.Sound;
 
 public class Zone {
 	public String id;

@@ -1,9 +1,7 @@
 package com.legendsofvaleros.modules.characters.ui;
 
 import com.legendsofvaleros.modules.characters.skilleffect.RemovalReason;
-import com.legendsofvaleros.modules.characters.skilleffect.RemovalReason;
 import com.legendsofvaleros.modules.characters.skilleffect.SkillEffect;
-import com.legendsofvaleros.modules.characters.skilleffect.RemovalReason;
 
 /**
  * Informed of changes in effects from skills/spells on an individual player-charater.

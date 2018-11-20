@@ -1,9 +1,7 @@
 package com.legendsofvaleros.modules.combatengine.stat;
 
 import com.legendsofvaleros.modules.combatengine.modifiers.ModifiableDouble;
-import com.legendsofvaleros.modules.combatengine.modifiers.ModifiableDouble;
 import com.legendsofvaleros.modules.combatengine.ui.StatChangeListener;
-import com.legendsofvaleros.modules.combatengine.modifiers.ModifiableDouble;
 
 /**
  * A value of a stat as the result of multiple factors.

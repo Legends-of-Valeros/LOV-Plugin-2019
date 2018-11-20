@@ -2,10 +2,6 @@ package com.legendsofvaleros.modules.quests;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.core.Characters;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 

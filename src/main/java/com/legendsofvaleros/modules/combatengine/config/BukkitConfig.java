@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.combatengine.config;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.core.CombatProfile;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
@@ -8,7 +7,6 @@ import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,10 +1,8 @@
 package com.legendsofvaleros.modules.mobs.behavior.nodes;
 
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.mobs.behavior.BehaviorAction;
 import com.legendsofvaleros.modules.mobs.behavior.NodeStatus;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 
 public class NodeAction extends Node {
 	final BehaviorAction action;

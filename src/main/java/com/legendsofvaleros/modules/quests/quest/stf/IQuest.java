@@ -5,16 +5,6 @@ import com.legendsofvaleros.modules.quests.action.stf.QuestActions;
 import com.legendsofvaleros.modules.quests.objective.stf.IObjective;
 import com.legendsofvaleros.modules.quests.prerequisite.stf.IQuestPrerequisite;
 import com.legendsofvaleros.modules.quests.progress.stf.QuestProgressPack;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.quests.action.stf.QuestActions;
-import com.legendsofvaleros.modules.quests.objective.stf.IObjective;
-import com.legendsofvaleros.modules.quests.prerequisite.stf.IQuestPrerequisite;
-import com.legendsofvaleros.modules.quests.progress.stf.QuestProgressPack;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.quests.action.stf.QuestActions;
-import com.legendsofvaleros.modules.quests.objective.stf.IObjective;
-import com.legendsofvaleros.modules.quests.prerequisite.stf.IQuestPrerequisite;
-import com.legendsofvaleros.modules.quests.progress.stf.QuestProgressPack;
 
 import java.util.List;
 

@@ -1,10 +1,8 @@
 package com.legendsofvaleros.modules.quests.objective.stf;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.progress.stf.IObjectiveProgress;
 import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import org.bukkit.Location;
 import org.bukkit.event.Event;
 import org.bukkit.event.Listener;

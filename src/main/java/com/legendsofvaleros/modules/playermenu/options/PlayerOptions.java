@@ -2,9 +2,7 @@ package com.legendsofvaleros.modules.playermenu.options;
 
 import com.codingforcookies.robert.core.GUI.Flag;
 import com.codingforcookies.robert.window.ExpandingGUI;
-import com.legendsofvaleros.util.item.Model;
 import com.legendsofvaleros.modules.playermenu.settings.PlayerSettings;
-import com.legendsofvaleros.util.item.Model;
 import com.legendsofvaleros.util.item.Model;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

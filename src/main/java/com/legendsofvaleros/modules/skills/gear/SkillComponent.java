@@ -1,9 +1,5 @@
 package com.legendsofvaleros.modules.skills.gear;
 
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import org.bukkit.ChatColor;
-
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.gear.component.impl.GearComponent;
@@ -12,6 +8,7 @@ import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger;
 import com.legendsofvaleros.modules.gear.component.trigger.UseTrigger;
 import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.gear.item.NoPersist;
+import org.bukkit.ChatColor;
 
 public class SkillComponent extends GearComponent<NoPersist> {
     @Override public GearComponentOrder getOrder() {

@@ -1,8 +1,7 @@
 package com.legendsofvaleros.modules.combatengine.events;
 
-import org.bukkit.Location;
-
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
+import org.bukkit.Location;
 
 /**
  * An event called when an entity is damaged by true damage.

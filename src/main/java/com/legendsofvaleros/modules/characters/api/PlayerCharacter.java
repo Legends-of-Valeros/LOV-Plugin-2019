@@ -4,14 +4,6 @@ import com.legendsofvaleros.modules.characters.core.InventoryData;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.race.EntityRace;
 import com.legendsofvaleros.modules.characters.skill.SkillSet;
-import com.legendsofvaleros.modules.characters.core.InventoryData;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.race.EntityRace;
-import com.legendsofvaleros.modules.characters.skill.SkillSet;
-import com.legendsofvaleros.modules.characters.core.InventoryData;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.race.EntityRace;
-import com.legendsofvaleros.modules.characters.skill.SkillSet;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 

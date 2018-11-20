@@ -2,13 +2,7 @@ package com.legendsofvaleros.modules.pvp.duel.component;
 
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
-import com.legendsofvaleros.modules.pvp.duel.DuelTeam;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.pvp.duel.Duel;
-import com.legendsofvaleros.modules.pvp.duel.DuelTeam;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.pvp.duel.DuelTeam;
 
 import java.util.ArrayList;

@@ -1,8 +1,6 @@
 package com.legendsofvaleros.modules.combatengine.api;
 
 import com.legendsofvaleros.modules.combatengine.core.StatusEffectType;
-import com.legendsofvaleros.modules.combatengine.core.StatusEffectType;
-import com.legendsofvaleros.modules.combatengine.core.StatusEffectType;
 
 import java.util.Set;
 

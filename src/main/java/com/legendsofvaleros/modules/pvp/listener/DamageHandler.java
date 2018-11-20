@@ -1,11 +1,5 @@
 package com.legendsofvaleros.modules.pvp.listener;
 
-import com.legendsofvaleros.modules.bank.PlayerBank;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
-import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.bank.Bank;
 import com.legendsofvaleros.modules.bank.PlayerBank;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
@@ -15,12 +9,6 @@ import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.pvp.PvP;
 import com.legendsofvaleros.modules.pvp.toggle.PvPToggle;
-import com.legendsofvaleros.modules.bank.PlayerBank;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
-import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;

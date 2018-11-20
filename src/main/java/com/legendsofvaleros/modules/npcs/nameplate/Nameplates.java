@@ -1,19 +1,16 @@
 package com.legendsofvaleros.modules.npcs.nameplate;
 
+import com.gmail.filoghost.holographicdisplays.api.Hologram;
+import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
+import com.legendsofvaleros.LegendsOfValeros;
+import net.citizensnpcs.api.npc.NPC;
+import org.bukkit.entity.Entity;
+import org.bukkit.scheduler.BukkitRunnable;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
-import com.legendsofvaleros.LegendsOfValeros;
-import org.bukkit.entity.Entity;
-import org.bukkit.scheduler.BukkitRunnable;
-
-import com.gmail.filoghost.holographicdisplays.api.Hologram;
-import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
-import com.legendsofvaleros.modules.npcs.NPCs;
-
-import net.citizensnpcs.api.npc.NPC;
 
 public class Nameplates {
     public static final String BASE = "name";

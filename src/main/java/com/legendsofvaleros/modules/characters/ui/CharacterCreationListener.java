@@ -2,12 +2,7 @@ package com.legendsofvaleros.modules.characters.ui;
 
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.race.EntityRace;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.race.EntityRace;
 import org.bukkit.entity.Player;
-
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.race.EntityRace;
 
 /**
  * Informed when a player successfully creates a new character.

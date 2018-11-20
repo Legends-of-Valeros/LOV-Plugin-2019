@@ -1,12 +1,11 @@
 package com.legendsofvaleros.modules.characters.entityclass;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.google.common.collect.Multimap;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.characters.ui.AbilityStatChangeListener;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.modifiers.EditableValueModifier;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
-import com.legendsofvaleros.modules.characters.ui.AbilityStatChangeListener;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.entity.Player;
 

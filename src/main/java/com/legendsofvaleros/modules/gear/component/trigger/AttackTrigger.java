@@ -1,8 +1,6 @@
 package com.legendsofvaleros.modules.gear.component.trigger;
 
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 
 public abstract class AttackTrigger extends GearTrigger {
 	protected final CombatEntity attacker;

@@ -1,10 +1,6 @@
 package com.legendsofvaleros.modules.characters.events;
 
-import com.legendsofvaleros.modules.characters.loading.PhaseLock;
-import com.legendsofvaleros.modules.characters.loading.TaskPhase;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.loading.PhaseLock;
-import com.legendsofvaleros.modules.characters.loading.TaskPhase;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
 import com.legendsofvaleros.modules.characters.loading.TaskPhase;
 import org.bukkit.event.HandlerList;

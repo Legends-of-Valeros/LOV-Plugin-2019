@@ -1,12 +1,10 @@
 package com.legendsofvaleros.modules.characters.config;
 
-import java.util.Collection;
-import java.util.List;
-
-import com.legendsofvaleros.modules.characters.entityclass.StatModifierModel;
 import com.legendsofvaleros.modules.characters.entityclass.StatModifierModel;
 import com.legendsofvaleros.modules.characters.race.EntityRace;
-import com.legendsofvaleros.modules.characters.entityclass.StatModifierModel;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Configuration options for a player-character class.

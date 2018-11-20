@@ -1,12 +1,10 @@
 package com.legendsofvaleros.util;
 
 import com.legendsofvaleros.LegendsOfValeros;
-import org.bukkit.NamespacedKey;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import io.chazza.advancementapi.AdvancementAPI;
 import io.chazza.advancementapi.FrameType;
 import io.chazza.advancementapi.Trigger;
+import org.bukkit.NamespacedKey;
 
 public class Advancements {
 	public static AdvancementAPI PARENT;

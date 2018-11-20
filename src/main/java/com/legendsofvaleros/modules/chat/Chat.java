@@ -11,11 +11,13 @@ import com.legendsofvaleros.modules.playermenu.settings.PlayerSettingsOpenEvent;
 import com.legendsofvaleros.util.Discord;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.PlayerData;
+import com.legendsofvaleros.util.TextBuilder;
 import de.btobastian.javacord.DiscordAPI;
 import de.btobastian.javacord.entities.Channel;
 import de.btobastian.javacord.entities.Server;
 import de.btobastian.javacord.listener.message.MessageCreateListener;
-import mkremins.fanciful.FancyMessage;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.HoverEvent;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -87,10 +89,10 @@ public class Chat extends ListenerModule {
             }
 
             @Override
-            public void onChat(Player p, FancyMessage fm) {
+            public void onChat(Player p, BaseComponent[] bc) {
                 for (Player pl : Bukkit.getOnlinePlayers())
                     if (isChannelOn(pl, 'W'))
-                        fm.send(pl);
+                        pl.spigot().sendMessage(bc);
             }
         });
         registerChannel('T', new IChannelHandler() {
@@ -115,10 +117,10 @@ public class Chat extends ListenerModule {
             }
 
             @Override
-            public void onChat(Player p, FancyMessage fm) {
+            public void onChat(Player p, BaseComponent[] bc) {
                 for (Player pl : Bukkit.getOnlinePlayers())
                     if (isChannelOn(pl, 'T'))
-                        fm.send(pl);
+                        pl.spigot().sendMessage(bc);
             }
         });
         registerChannel('L', new IChannelHandler() {
@@ -143,10 +145,10 @@ public class Chat extends ListenerModule {
             }
 
             @Override
-            public void onChat(Player p, FancyMessage fm) {
+            public void onChat(Player p, BaseComponent[] bc) {
                 for (Player pl : Bukkit.getOnlinePlayers())
                     if (pl.getLocation().distance(p.getLocation()) < 25)
-                        fm.send(pl);
+                        pl.spigot().sendMessage(bc);
             }
         });
     }
@@ -200,23 +202,23 @@ public class Chat extends ListenerModule {
                 ee.printStackTrace();
             }
 
-            FancyMessage fm = new FancyMessage("");
+            TextBuilder tb = new TextBuilder("");
 
-            fm.then(channelId + " ").color(ch.getTagColor()).style(ChatColor.BOLD).tooltip(ch.getName(null));
+            tb.append(channelId + " ").color(ch.getTagColor()).bold(true).hover(ch.getName(null));
 
-            fm.then(data != null ? data.username :
+            tb.append(data != null ? data.username :
                     (message.getAuthor().hasNickname(server) ? message.getAuthor().getNickname(server) : message.getAuthor().getName()))
-                    .color(ChatColor.GRAY).style(ChatColor.ITALIC);
+                    .color(ChatColor.GRAY).italic(true);
 
             if (data == null)
-                fm.style(ChatColor.UNDERLINE).tooltip("Unverified Discord");
+                tb.underlined(true).hover("Unverified Discord");
             else
-                fm.tooltip("Verified Discord");
+                tb.hover("Verified Discord");
 
-            fm.then(": ").color(ChatColor.DARK_GRAY);
-            fm.then(message.getContent()).color(ch.getChatColor());
+            tb.append(": ").color(ChatColor.DARK_GRAY);
+            tb.append(message.getContent()).color(ch.getChatColor());
 
-            ch.onChat(null, fm);
+            ch.onChat(null, tb.create());
         });
     }
 
@@ -225,15 +227,16 @@ public class Chat extends ListenerModule {
         if (e.getCommand().startsWith("say")) {
             e.setCancelled(true);
 
-            FancyMessage fm = new FancyMessage("");
-            fm.then("Mysterious Voice").color(ChatColor.DARK_GRAY).style(ChatColor.BOLD);
-            fm.then(": ").color(ChatColor.DARK_GRAY);
-            fm.then(e.getCommand().split(" ", 2)[1]).color(ChatColor.GRAY);
+            TextBuilder tb = new TextBuilder("");
+            tb.append("Mysterious Voice").color(ChatColor.DARK_GRAY).bold(true);
+            tb.append(": ").color(ChatColor.DARK_GRAY);
+            tb.append(e.getCommand().split(" ", 2)[1]).color(ChatColor.GRAY);
+            BaseComponent[] bc = tb.create();
 
-            Bukkit.getLogger().info(ChatColor.stripColor(fm.toOldMessageFormat()));
+            Bukkit.getConsoleSender().spigot().sendMessage(bc);
 
             for (Player p : Bukkit.getOnlinePlayers())
-                fm.send(p);
+                p.spigot().sendMessage(bc);
         } else if (e.getCommand().startsWith("restart")) {
             e.setCancelled(true);
 
@@ -374,45 +377,46 @@ public class Chat extends ListenerModule {
         PlayerChat data = players.get(e.getPlayer().getUniqueId());
         IChannelHandler ch = channels.get(data.channel);
 
-        FancyMessage fm = new FancyMessage("");
+        TextBuilder tb = new TextBuilder("");
         {
-            fm.then(data.channel + " ").color(ch.getTagColor()).style(ChatColor.BOLD).tooltip(ch.getName(e.getPlayer()));
+            tb.append(data.channel + " ").color(ch.getTagColor()).bold(true).hover(ch.getName(e.getPlayer()));
 
             if (data.prefix != null) {
-                fm.then(ChatColor.translateAlternateColorCodes('&', data.prefix));
+                tb.append(ChatColor.translateAlternateColorCodes('&', data.prefix));
                 if (data.title != null)
-                    fm.tooltip(data.title);
+                    tb.hover(data.title);
             }
 
-            fm.then(e.getPlayer().getName());
+            tb.append(e.getPlayer().getName());
 
             if (!Characters.isPlayerCharacterLoaded(e.getPlayer())) {
-                fm.color(ChatColor.GRAY).style(ChatColor.ITALIC);
+                tb.color(ChatColor.GRAY).italic(true);
             } else {
                 PlayerCharacter pc = Characters.getPlayerCharacter(e.getPlayer());
                 if (pc != null) {
-                    fm.color(pc.getPlayerClass().getColor())
-                            .formattedTooltip(
-                                    new FancyMessage("Race: ").color(ChatColor.YELLOW)
-                                            .then(pc.getPlayerRace().getUserFriendlyName() + "\n")
-                                            .then("Class: ").color(ChatColor.YELLOW)
-                                            .then(pc.getPlayerClass().getUserFriendlyName() + "\n")
-                                            .then("Level: ").color(ChatColor.YELLOW)
-                                            .then(String.valueOf(pc.getExperience().getLevel()))
-                            );
+                    tb.color(pc.getPlayerClass().getColor())
+                            .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                    new TextBuilder("Race: ").color(ChatColor.YELLOW)
+                                            .append(pc.getPlayerRace().getUserFriendlyName() + "\n")
+                                            .append("Class: ").color(ChatColor.YELLOW)
+                                            .append(pc.getPlayerClass().getUserFriendlyName() + "\n")
+                                            .append("Level: ").color(ChatColor.YELLOW)
+                                            .append(String.valueOf(pc.getExperience().getLevel())).create()
+                            ));
                 }
             }
 
             if (data.suffix != null)
-                fm.then(ChatColor.translateAlternateColorCodes('&', data.suffix));
+                tb.append(ChatColor.translateAlternateColorCodes('&', data.suffix));
 
-            fm.then(": ").color(ChatColor.DARK_GRAY);
-            fm.then(e.getMessage()).color(ch.getChatColor());
+            tb.append(": ").color(ChatColor.DARK_GRAY);
+            tb.append(e.getMessage()).color(ch.getChatColor());
         }
 
-        Bukkit.getLogger().info(ChatColor.stripColor(fm.toOldMessageFormat()));
+        BaseComponent[] bc = tb.create();
+        Bukkit.getConsoleSender().spigot().sendMessage(bc);
 
-        ch.onChat(e.getPlayer(), fm);
+        ch.onChat(e.getPlayer(), bc);
 
         onChat(e, data);
     }

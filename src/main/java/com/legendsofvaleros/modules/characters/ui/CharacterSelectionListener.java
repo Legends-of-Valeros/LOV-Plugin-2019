@@ -1,10 +1,7 @@
 package com.legendsofvaleros.modules.characters.ui;
 
 import com.legendsofvaleros.modules.characters.api.CharacterId;
-import com.legendsofvaleros.modules.characters.api.CharacterId;
 import org.bukkit.entity.Player;
-
-import com.legendsofvaleros.modules.characters.api.CharacterId;
 
 /**
  * Informed of players selecting characters to play.

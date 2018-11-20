@@ -5,18 +5,8 @@ import com.legendsofvaleros.modules.gear.component.impl.GearComponent;
 import com.legendsofvaleros.modules.gear.component.impl.GearComponentOrder;
 import com.legendsofvaleros.modules.gear.component.trigger.AttackTrigger;
 import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger;
-import com.legendsofvaleros.util.field.RangedValue;
-import com.legendsofvaleros.modules.gear.component.impl.GearComponent;
-import com.legendsofvaleros.modules.gear.component.impl.GearComponentOrder;
-import com.legendsofvaleros.modules.gear.component.trigger.AttackTrigger;
-import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger;
 import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
-import com.legendsofvaleros.util.field.RangedValue;
-import com.legendsofvaleros.modules.gear.component.impl.GearComponent;
-import com.legendsofvaleros.modules.gear.component.impl.GearComponentOrder;
-import com.legendsofvaleros.modules.gear.component.trigger.AttackTrigger;
-import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger;
 import com.legendsofvaleros.util.field.RangedValue;
 import org.bukkit.ChatColor;
 

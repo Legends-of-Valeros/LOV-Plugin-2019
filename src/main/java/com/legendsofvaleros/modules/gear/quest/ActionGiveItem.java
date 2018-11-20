@@ -5,7 +5,7 @@ import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
 import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
 import com.legendsofvaleros.util.MessageUtil;
-import mkremins.fanciful.FancyMessage;
+import com.legendsofvaleros.util.TextBuilder;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -18,9 +18,9 @@ public class ActionGiveItem extends AbstractAction {
         GearItem.Instance instance = GearItem.fromID(itemId).newInstance();
         instance.amount = amount == null ? 1 : amount;
 
-        MessageUtil.sendUpdate(player, new FancyMessage("You received " + (instance.amount == 1 ? "a " : instance.amount + "x") + "[").color(ChatColor.AQUA)
-                .then(instance.gear.getName()).color(ChatColor.GREEN)
-                .then("]!").color(ChatColor.AQUA));
+        MessageUtil.sendUpdate(player, new TextBuilder("You received " + (instance.amount == 1 ? "a " : instance.amount + "x") + "[").color(ChatColor.AQUA)
+                .append(instance.gear.getName()).color(ChatColor.GREEN)
+                .append("]!").color(ChatColor.AQUA).create());
 
         ItemUtil.giveItem(Characters.getPlayerCharacter(player), instance);
     }

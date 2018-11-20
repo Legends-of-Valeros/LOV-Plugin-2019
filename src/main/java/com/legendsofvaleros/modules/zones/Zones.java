@@ -23,7 +23,7 @@ import com.legendsofvaleros.modules.zones.quest.ExitZoneObjective;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.title.Title;
 import com.legendsofvaleros.util.title.TitleUtil;
-import mkremins.fanciful.FancyMessage;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -103,7 +103,7 @@ public class Zones extends ListenerModule {
             }
 
             @Override
-            public void onChat(Player p, FancyMessage fm) {
+            public void onChat(Player p, BaseComponent[] bc) {
                 Zone zone = Zones.manager().getZone(p);
                 if (zone == null) {
                     MessageUtil.sendError(p, "Unable to send message. You are not in a zone!");
@@ -116,7 +116,7 @@ public class Zones extends ListenerModule {
                     if (zz.channel.equals(zone.channel)) {
                         pl = Bukkit.getPlayer(entry.getKey());
                         if (Chat.getInstance().isChannelOn(pl, 'Z'))
-                            fm.send(pl);
+                            pl.spigot().sendMessage(bc);
                     }
                 }
             }
@@ -133,8 +133,8 @@ public class Zones extends ListenerModule {
         QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
 
         Title title = new Title(event.getZone().name, event.getZone().subname);
-        title.setTitleColor(ChatColor.GOLD);
-        title.setSubtitleColor(ChatColor.WHITE);
+        title.setTitleColor(org.bukkit.ChatColor.GOLD);
+        title.setSubtitleColor(org.bukkit.ChatColor.WHITE);
         TitleUtil.queueTitle(title, event.getPlayer());
 
         PlayerAmbience a = Ambience.get(event.getPlayer());

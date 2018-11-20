@@ -1,8 +1,6 @@
 package com.legendsofvaleros.modules.pvp.duel;
 
-import com.legendsofvaleros.modules.pvp.toggle.PvPToggles;
 import com.legendsofvaleros.modules.pvp.PvP;
-import com.legendsofvaleros.modules.pvp.toggle.PvPToggles;
 import com.legendsofvaleros.modules.pvp.toggle.PvPToggles;
 
 import java.util.ArrayList;

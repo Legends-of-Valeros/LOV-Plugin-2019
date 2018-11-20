@@ -1,8 +1,6 @@
 package com.legendsofvaleros.modules.combatengine.core;
 
-import com.legendsofvaleros.modules.combatengine.statuseffects.*;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.statuseffects.*;
 import com.legendsofvaleros.modules.combatengine.statuseffects.*;
 
 /**

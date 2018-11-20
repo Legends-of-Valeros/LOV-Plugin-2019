@@ -1,8 +1,8 @@
 package com.legendsofvaleros.modules.combatengine.api;
 
-import java.util.UUID;
-
 import org.bukkit.entity.LivingEntity;
+
+import java.util.UUID;
 
 /**
  * A collection of all of the combat-relevant information for an entity.

@@ -1,11 +1,7 @@
 package com.legendsofvaleros.modules.characters.skilleffect.effects;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.codingforcookies.robert.core.RomanNumeral;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.api.EntityStats;
-import com.legendsofvaleros.modules.combatengine.damage.spell.SpellType;
-import com.legendsofvaleros.modules.combatengine.stat.Stat;
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterCombatLogoutEvent;
 import com.legendsofvaleros.modules.characters.skilleffect.InterruptionCause;
@@ -13,7 +9,11 @@ import com.legendsofvaleros.modules.characters.skilleffect.MetaEffectInstance;
 import com.legendsofvaleros.modules.characters.skilleffect.PersistingEffect;
 import com.legendsofvaleros.modules.characters.skilleffect.PersistingEffect.PersistingEffectBuilder;
 import com.legendsofvaleros.modules.characters.skilleffect.RemovalReason;
+import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
+import com.legendsofvaleros.modules.combatengine.api.EntityStats;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.damage.spell.SpellType;
+import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;

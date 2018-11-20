@@ -11,7 +11,8 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.quests.objective.stf.IObjective;
 import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
 import com.legendsofvaleros.util.MessageUtil;
-import mkremins.fanciful.FancyMessage;
+import com.legendsofvaleros.util.TextBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -157,52 +158,56 @@ public class QuestCommands extends BaseCommand {
         Book book = new Book("Quest Journal", "Acolyte");
 
         book.addPage(
-                new FancyMessage("\n\n\n" + StringUtil.center(Book.WIDTH, "Quest Journal")).color(ChatColor.BLACK)
-                        .then("\n\n\n" + StringUtil.center(Book.WIDTH, "Current Quests:") + "\n").color(ChatColor.DARK_AQUA)
-                        .then(StringUtil.center(Book.WIDTH, quests.size() + "") + "\n").color(ChatColor.BLACK)
-                        .then(StringUtil.center(Book.WIDTH, "Completed Quests:") + "\n").color(ChatColor.DARK_PURPLE)
-                        .then(StringUtil.center(Book.WIDTH, QuestManager.completedQuests.row(pc.getUniqueCharacterId()).size() + "")).color(ChatColor.BLACK)
+                new TextBuilder("\n\n\n" + StringUtil.center(Book.WIDTH, "Quest Journal")).color(ChatColor.BLACK)
+                        .append("\n\n\n" + StringUtil.center(Book.WIDTH, "Current Quests:") + "\n").color(ChatColor.DARK_AQUA)
+                        .append(StringUtil.center(Book.WIDTH, quests.size() + "") + "\n").color(ChatColor.BLACK)
+                        .append(StringUtil.center(Book.WIDTH, "Completed Quests:") + "\n").color(ChatColor.DARK_PURPLE)
+                        .append(StringUtil.center(Book.WIDTH, QuestManager.completedQuests.row(pc.getUniqueCharacterId()).size() + "")).color(ChatColor.BLACK)
+                        .create()
         );
 
-        FancyMessage fm;
+        TextBuilder tb;
 
         for (IQuest quest : quests) {
-            fm = new FancyMessage("");
+            tb = new TextBuilder("");
 
-            fm.then(StringUtil.center(Book.WIDTH, quest.getId().equals(activeId) ? "[ " + quest.getName() + " ]" : quest.getName()) + "\n").color(ChatColor.BLACK).style(ChatColor.UNDERLINE)
+            tb.append(StringUtil.center(Book.WIDTH, quest.getId().equals(activeId) ? "[ " + quest.getName() + " ]" : quest.getName()) + "\n").color(ChatColor.BLACK).underlined(true)
                     .command("/quests active " + quest.getId());
 
             if (quest.getDescription().length() > 0)
-                fm.tooltip(StringUtil.splitForStackLore(ChatColor.translateAlternateColorCodes('&', quest.getDescription())));
+                tb.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                        new TextBuilder(String.join("\n",
+                                StringUtil.splitForStackLore(ChatColor.translateAlternateColorCodes('&', quest.getDescription()))
+                            )).create()));
 
-            fm.then("\nObjectives:\n").color(ChatColor.DARK_GRAY);
+            tb.append("\nObjectives:\n").color(ChatColor.DARK_GRAY);
 
             int currentI = quest.getCurrentGroupI(pc);
             if (currentI == -1) {
-                fm.then("*No objectives, yet\n").color(ChatColor.DARK_RED);
+                tb.append("*No objectives, yet\n").color(ChatColor.DARK_RED);
             } else
                 for (int i = currentI; i >= 0; i--) {
                     IObjective<?>[] objs = quest.getObjectives().getGroup(i);
                     if (objs.length == 0)
-                        fm.then("*An error occurred\n").color(ChatColor.DARK_RED);
+                        tb.append("*An error occurred\n").color(ChatColor.DARK_RED);
                     else
                         for (IObjective<?> obj : objs) {
                             try {
                                 boolean completed = currentI != i || obj.isCompleted(pc);
                                 if (obj.isVisible()) {
-                                    fm.then("*" + (completed ? obj.getCompletedText(pc) : obj.getProgressText(pc)) + "\n").color(ChatColor.BLACK);
-                                    if (completed) fm.style(ChatColor.STRIKETHROUGH);
+                                    tb.append("*" + (completed ? obj.getCompletedText(pc) : obj.getProgressText(pc)) + "\n").color(ChatColor.BLACK);
+                                    if (completed) tb.strikethrough(true);
                                 }
                             } catch (Exception e) {
                                 MessageUtil.sendException(Quests.getInstance(), player, e, true);
-                                fm.then("*Plugin error\n").color(ChatColor.DARK_RED);
+                                tb.append("*Plugin error\n").color(ChatColor.DARK_RED);
                             }
                         }
                     if (i != 0 && currentI != 0)
-                        fm.then(StringUtil.center(Book.WIDTH, "------") + "\n").color(ChatColor.DARK_GRAY);
+                        tb.append(StringUtil.center(Book.WIDTH, "------") + "\n").color(ChatColor.DARK_GRAY);
                 }
 
-            book.addPage(fm);
+            book.addPage(tb.create());
         }
 
         book.open(player, false);

@@ -1,11 +1,9 @@
 package com.legendsofvaleros.modules.characters.config;
 
-import java.util.List;
-
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.race.EntityRace;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
+
+import java.util.List;
 
 /**
  * Main configuration for Characters.

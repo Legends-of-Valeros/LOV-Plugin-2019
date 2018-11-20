@@ -2,13 +2,8 @@ package com.legendsofvaleros.modules.factions.event;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterEvent;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.events.PlayerCharacterEvent;
-import org.bukkit.event.HandlerList;
-
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.events.PlayerCharacterEvent;
 import com.legendsofvaleros.modules.factions.Faction;
+import org.bukkit.event.HandlerList;
 
 public class FactionReputationChangeEvent extends PlayerCharacterEvent {
 	private static final HandlerList handlers = new HandlerList();

@@ -1,11 +1,11 @@
 package com.legendsofvaleros.modules.combatengine.damage;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.config.CriticalHitConfig;
 import com.legendsofvaleros.modules.combatengine.config.HitChanceConfig;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Calculates the hit and crit chances for attacks.

@@ -4,7 +4,6 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.skills.Skills;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;

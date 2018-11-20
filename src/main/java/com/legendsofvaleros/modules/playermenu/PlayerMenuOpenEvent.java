@@ -1,16 +1,15 @@
 package com.legendsofvaleros.modules.playermenu;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.codingforcookies.robert.slot.ISlotAction;
+import com.codingforcookies.robert.slot.Slot;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.inventory.ItemStack;
 
-import com.codingforcookies.robert.slot.ISlotAction;
-import com.codingforcookies.robert.slot.Slot;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlayerMenuOpenEvent extends PlayerEvent implements Cancellable {
 	private static final HandlerList handlers = new HandlerList();

@@ -1,16 +1,16 @@
 package com.legendsofvaleros.modules.characters.core;
 
-import com.legendsofvaleros.modules.characters.config.RaceConfig;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.entityclass.StatModifierModel;
-import com.legendsofvaleros.modules.characters.skill.PlayerSkillSet;
-import com.legendsofvaleros.modules.characters.skill.SkillSet;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.characters.api.AbilityStats;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.Cooldowns;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
+import com.legendsofvaleros.modules.characters.config.RaceConfig;
+import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
+import com.legendsofvaleros.modules.characters.entityclass.StatModifierModel;
 import com.legendsofvaleros.modules.characters.race.EntityRace;
+import com.legendsofvaleros.modules.characters.skill.PlayerSkillSet;
+import com.legendsofvaleros.modules.characters.skill.SkillSet;
+import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;

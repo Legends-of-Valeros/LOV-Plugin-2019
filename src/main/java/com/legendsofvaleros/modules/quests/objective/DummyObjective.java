@@ -3,13 +3,7 @@ package com.legendsofvaleros.modules.quests.objective;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.objective.stf.AbstractObjective;
 import com.legendsofvaleros.modules.quests.objective.stf.IObjective;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.quests.objective.stf.AbstractObjective;
-import com.legendsofvaleros.modules.quests.objective.stf.IObjective;
 import com.legendsofvaleros.modules.quests.progress.ObjectiveProgressBoolean;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.quests.objective.stf.AbstractObjective;
-import com.legendsofvaleros.modules.quests.objective.stf.IObjective;
 import org.bukkit.event.Event;
 
 public class DummyObjective extends AbstractObjective<ObjectiveProgressBoolean> {

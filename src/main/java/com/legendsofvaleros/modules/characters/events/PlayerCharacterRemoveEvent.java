@@ -1,8 +1,7 @@
 package com.legendsofvaleros.modules.characters.events;
 
-import org.bukkit.event.HandlerList;
-
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
+import org.bukkit.event.HandlerList;
 
 public class PlayerCharacterRemoveEvent extends PlayerCharacterEvent {
 	private static final HandlerList handlers = new HandlerList();

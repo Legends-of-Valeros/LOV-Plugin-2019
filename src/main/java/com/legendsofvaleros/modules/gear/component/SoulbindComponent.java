@@ -6,17 +6,7 @@ import com.legendsofvaleros.modules.gear.component.impl.GearComponentOrder;
 import com.legendsofvaleros.modules.gear.component.trigger.CombatEntityTrigger;
 import com.legendsofvaleros.modules.gear.component.trigger.EquipTrigger;
 import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger;
-import com.legendsofvaleros.modules.gear.component.impl.GearComponent;
-import com.legendsofvaleros.modules.gear.component.impl.GearComponentOrder;
-import com.legendsofvaleros.modules.gear.component.trigger.CombatEntityTrigger;
-import com.legendsofvaleros.modules.gear.component.trigger.EquipTrigger;
-import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger;
 import com.legendsofvaleros.modules.gear.item.GearItem;
-import com.legendsofvaleros.modules.gear.component.impl.GearComponent;
-import com.legendsofvaleros.modules.gear.component.impl.GearComponentOrder;
-import com.legendsofvaleros.modules.gear.component.trigger.CombatEntityTrigger;
-import com.legendsofvaleros.modules.gear.component.trigger.EquipTrigger;
-import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger;
 import org.bukkit.ChatColor;
 
 public class SoulbindComponent extends GearComponent<Boolean> {

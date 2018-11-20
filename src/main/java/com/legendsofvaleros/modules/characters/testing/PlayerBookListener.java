@@ -2,18 +2,18 @@ package com.legendsofvaleros.modules.characters.testing;
 
 import com.codingforcookies.robert.core.StringUtil;
 import com.codingforcookies.robert.item.Book;
-import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.entityclass.StatModifierModel;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
-import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.config.ClassConfig;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
+import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
+import com.legendsofvaleros.modules.characters.entityclass.StatModifierModel;
 import com.legendsofvaleros.modules.characters.events.PlayerInformationBookEvent;
+import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
-import mkremins.fanciful.FancyMessage;
+import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
+import com.legendsofvaleros.modules.combatengine.stat.Stat;
+import com.legendsofvaleros.util.TextBuilder;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -50,10 +50,10 @@ public class PlayerBookListener implements Listener {
         PlayerCharacter pc = event.getPlayerCharacter();
         CombatEntity ce = CombatEngine.getEntity(event.getPlayer());
 
-        FancyMessage fm =
-                new FancyMessage(StringUtil.center(Book.WIDTH, event.getPlayer().getName()) + "\n").color(ChatColor.GOLD).style(ChatColor.UNDERLINE)
-                        .then(StringUtil.center(Book.WIDTH, pc.getPlayerRace().getUserFriendlyName() + " " + pc.getPlayerClass().getUserFriendlyName()) + "\n").color(ChatColor.DARK_PURPLE)
-                        .then(StringUtil.center(Book.WIDTH, "Level " + pc.getExperience().getLevel()) + "\n\n").color(ChatColor.DARK_GRAY);
+        TextBuilder tb =
+                new TextBuilder(StringUtil.center(Book.WIDTH, event.getPlayer().getName()) + "\n").color(ChatColor.GOLD).underlined(true)
+                        .append(StringUtil.center(Book.WIDTH, pc.getPlayerRace().getUserFriendlyName() + " " + pc.getPlayerClass().getUserFriendlyName()) + "\n").color(ChatColor.DARK_PURPLE)
+                        .append(StringUtil.center(Book.WIDTH, "Level " + pc.getExperience().getLevel()) + "\n\n").color(ChatColor.DARK_GRAY);
 
         StringBuilder tooltip = new StringBuilder();
 
@@ -95,15 +95,16 @@ public class PlayerBookListener implements Listener {
             } else
                 hasMods = false;
 
-            fm.then(as.getUserFriendlyName() + ":").color(ChatColor.BLACK).style(ChatColor.BOLD)
-                    .tooltip(as.getUserFriendlyName(),
-                            tooltip.toString().trim())
-                    .then(StringUtil.right(Book.WIDTH, ChatColor.BOLD + as.getUserFriendlyName() + ":", as.formatForUserInterface(pc.getAbilityStats().getAbilityStat(as))) + "\n").color(ChatColor.DARK_GRAY);
+            tb.append(as.getUserFriendlyName() + ":").color(ChatColor.BLACK).bold(true)
+                    .hover(as.getUserFriendlyName())
+                    .append("\n"  + tooltip.toString().trim());
+
+            tb.append(StringUtil.right(Book.WIDTH, ChatColor.BOLD + as.getUserFriendlyName() + ":", as.formatForUserInterface(pc.getAbilityStats().getAbilityStat(as))) + "\n").color(ChatColor.DARK_GRAY);
 
             tooltip.setLength(0);
         }
 
-        event.getPages().add(fm);
+        event.getPages().add(tb.create());
 
         Set<Stat> filter = new HashSet<>();
         for (EntityClass clazz : EntityClass.values()) {
@@ -114,7 +115,7 @@ public class PlayerBookListener implements Listener {
 
         IStatDisplay disp;
         for (Stat.Category cat : Stat.Category.values()) {
-            fm = new FancyMessage(StringUtil.center(Book.WIDTH, cat.getUserFriendlyName() + " Stats") + "\n\n").color(ChatColor.BLACK).style(ChatColor.UNDERLINE);
+            tb = new TextBuilder(StringUtil.center(Book.WIDTH, cat.getUserFriendlyName() + " Stats") + "\n\n").color(ChatColor.BLACK).underlined(true);
             for (Stat s : Stat.values()) {
                 if (s.getCategory() != cat) continue;
 
@@ -135,14 +136,14 @@ public class PlayerBookListener implements Listener {
                 }
 
 
-                fm.then(s.getShortName() + ":").color(ChatColor.BLACK)
-                        .tooltip(s.getUserFriendlyName(),
-                                tooltip.toString().trim())
-                        .then(StringUtil.right(Book.WIDTH, s.getShortName(), s.formatForUserInterface(ce.getStats().getStat(s))) + "\n").color(ChatColor.DARK_GRAY);
+                tb.append(s.getShortName() + ":").color(ChatColor.BLACK)
+                        .hover(s.getUserFriendlyName())
+                        .append("\n"  + tooltip.toString().trim())
+                        .append(StringUtil.right(Book.WIDTH, s.getShortName(), s.formatForUserInterface(ce.getStats().getStat(s))) + "\n").color(ChatColor.DARK_GRAY);
 
                 tooltip.setLength(0);
             }
-            event.getPages().add(fm);
+            event.getPages().add(tb.create());
         }
 		
 		/*fm = new FancyMessage(StringUtil.center(Book.WIDTH, "Your Deity") + "\n\n").color(ChatColor.BLACK)

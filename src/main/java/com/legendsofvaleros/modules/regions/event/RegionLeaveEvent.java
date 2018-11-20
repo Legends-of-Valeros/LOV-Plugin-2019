@@ -1,10 +1,9 @@
 package com.legendsofvaleros.modules.regions.event;
 
+import com.legendsofvaleros.modules.regions.Region;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
-import com.legendsofvaleros.modules.regions.Region;
 
 public class RegionLeaveEvent extends Event {
 	private static final HandlerList handlers = new HandlerList();

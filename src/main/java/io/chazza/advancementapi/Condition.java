@@ -1,8 +1,7 @@
 package io.chazza.advancementapi;
 
-import org.bukkit.inventory.ItemStack;
-
 import com.google.gson.JsonObject;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Created by ysl3000

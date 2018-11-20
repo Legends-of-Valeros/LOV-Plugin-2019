@@ -1,9 +1,6 @@
 package com.legendsofvaleros.modules.combatengine.ui;
 
 import com.legendsofvaleros.modules.combatengine.core.StatusEffectType;
-import com.legendsofvaleros.modules.combatengine.core.StatusEffectType;
-import com.legendsofvaleros.modules.combatengine.core.StatusEffectType.RemovalReason;
-import com.legendsofvaleros.modules.combatengine.core.StatusEffectType;
 
 /**
  * A user interface for players to be informed of changes in combat stats.

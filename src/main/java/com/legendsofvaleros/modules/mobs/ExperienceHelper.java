@@ -2,10 +2,6 @@ package com.legendsofvaleros.modules.mobs;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.mobs.core.Mob;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.mobs.core.Mob;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.mobs.core.Mob;
 
 public class ExperienceHelper {
     public static int getExperience(PlayerCharacter pc, Mob.Instance entity) {

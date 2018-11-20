@@ -1,11 +1,9 @@
 package com.legendsofvaleros.modules.mobs.behavior.nodes;
 
-import java.util.Random;
-
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.mobs.behavior.NodeStatus;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
+
+import java.util.Random;
 
 public class NodeRandom extends Node {
 	static Random rand = new Random();

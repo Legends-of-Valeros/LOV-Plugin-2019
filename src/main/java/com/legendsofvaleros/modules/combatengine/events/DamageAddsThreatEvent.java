@@ -1,10 +1,9 @@
 package com.legendsofvaleros.modules.combatengine.events;
 
+import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 
 /**
  * An event called when an mob's threat level for another entity changes as the direct, automated

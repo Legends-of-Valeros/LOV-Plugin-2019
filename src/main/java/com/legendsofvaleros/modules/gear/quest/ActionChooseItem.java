@@ -8,8 +8,8 @@ import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
 import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
 import com.legendsofvaleros.util.MessageUtil;
+import com.legendsofvaleros.util.TextBuilder;
 import com.legendsofvaleros.util.item.Model;
-import mkremins.fanciful.FancyMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
@@ -64,9 +64,9 @@ public class ActionChooseItem extends AbstractAction {
 				ISlotAction action = (ui, p, event) -> {
 					ui.close(p);
 
-					MessageUtil.sendUpdate(player, new FancyMessage("You received " + (instance.amount == 1 ? "a " : instance.amount + "x") + "[").color(ChatColor.AQUA)
-							.then(instance.gear.getName()).color(ChatColor.GREEN)
-							.then("]!").color(ChatColor.AQUA));
+					MessageUtil.sendUpdate(player, new TextBuilder("You received " + (instance.amount == 1 ? "a " : instance.amount + "x") + "[").color(ChatColor.AQUA)
+							.append(instance.gear.getName()).color(ChatColor.GREEN)
+							.append("]!").color(ChatColor.AQUA).create());
 
 					ItemUtil.giveItem(Characters.getPlayerCharacter(player), instance);
 

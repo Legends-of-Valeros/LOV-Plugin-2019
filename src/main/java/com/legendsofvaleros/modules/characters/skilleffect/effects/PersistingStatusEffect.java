@@ -1,7 +1,5 @@
 package com.legendsofvaleros.modules.characters.skilleffect.effects;
 
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.core.StatusEffectType;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.skilleffect.MetaEffectInstance;
 import com.legendsofvaleros.modules.characters.skilleffect.PersistingEffect;
@@ -10,8 +8,6 @@ import com.legendsofvaleros.modules.characters.skilleffect.RemovalReason;
 import com.legendsofvaleros.modules.characters.skilleffect.SkillEffect;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
-import com.legendsofvaleros.modules.combatengine.core.StatusEffectType;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.StatusEffectType;
 import org.bukkit.entity.LivingEntity;
 

@@ -1,8 +1,6 @@
 package com.legendsofvaleros.modules.characters.core;
 
 import com.legendsofvaleros.modules.levelarchetypes.api.LevelProvider;
-import com.legendsofvaleros.modules.levelarchetypes.api.LevelProvider;
-import com.legendsofvaleros.modules.levelarchetypes.api.LevelProvider;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;

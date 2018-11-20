@@ -3,8 +3,7 @@ package com.legendsofvaleros.util;
 import com.codingforcookies.doris.sql.TableManager;
 import com.legendsofvaleros.module.Module;
 import de.btobastian.javacord.entities.Channel;
-import mkremins.fanciful.FancyMessage;
-import mkremins.fanciful.MessagePart;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -12,8 +11,9 @@ import org.bukkit.entity.Player;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 public class MessageUtil {
@@ -21,11 +21,11 @@ public class MessageUtil {
 	 * Had to manually expose a few variables, but this basically just prepends the required tag.
 	 */
 	@SuppressWarnings("unchecked")
-	public static FancyMessage prepend(FancyMessage message, FancyMessage prepend) {
-		Map<String, Object> serialized = message.serialize();
-		List<MessagePart> parts = (List<MessagePart>)prepend.serialize().get("messageParts");
-		((List<MessagePart>)serialized.get("messageParts")).add(0, parts.get(parts.size() - 1));
-		return FancyMessage.deserialize(serialized);
+	public static BaseComponent[] prepend(BaseComponent[] message, BaseComponent[] prepend) {
+		List<BaseComponent> bb = new ArrayList<>();
+		Collections.addAll(bb, prepend);
+		Collections.addAll(bb, message);
+		return bb.toArray(new BaseComponent[0]);
 	}
 
 	public static String resetColor(ChatColor c, String msg) {
@@ -36,8 +36,8 @@ public class MessageUtil {
 		sender.sendMessage(ChatColor.YELLOW + "[i] " + resetColor(ChatColor.YELLOW, message));
 	}
 
-	public static void sendInfo(CommandSender sender, FancyMessage message) {
-		prepend(message, new FancyMessage("[i] ").color(ChatColor.YELLOW)).send(sender);
+	public static void sendInfo(CommandSender sender, BaseComponent[] message) {
+		sender.spigot().sendMessage(prepend(message, new TextBuilder("[i] ").color(ChatColor.YELLOW).create()));
 	}
 
 
@@ -45,8 +45,8 @@ public class MessageUtil {
 		sender.sendMessage(ChatColor.AQUA + "[!] " + resetColor(ChatColor.AQUA, message));
 	}
 
-	public static void sendUpdate(CommandSender sender, FancyMessage message) {
-		prepend(message, new FancyMessage("[!] ").color(ChatColor.AQUA)).send(sender);
+	public static void sendUpdate(CommandSender sender, BaseComponent[] message) {
+		sender.spigot().sendMessage(prepend(message, new TextBuilder("[!] ").color(ChatColor.AQUA).create()));
 	}
 
 
@@ -54,16 +54,16 @@ public class MessageUtil {
 		sender.sendMessage(ChatColor.RED + "[*] " + resetColor(ChatColor.RED, message));
 	}
 
-	public static void sendError(CommandSender sender, FancyMessage message) {
-		prepend(message, new FancyMessage("[*] ").color(ChatColor.RED)).send(sender);
+	public static void sendError(CommandSender sender, BaseComponent[] message) {
+		sender.spigot().sendMessage(prepend(message, new TextBuilder("[*] ").color(ChatColor.RED).create()));
 	}
 
 	public static void sendDebug(CommandSender sender, String message) {
 		sender.sendMessage(ChatColor.GOLD + "[d] " + resetColor(ChatColor.GOLD, message));
 	}
 
-	public static void sendDebug(CommandSender sender, FancyMessage message) {
-		prepend(message, new FancyMessage("[d] ").color(ChatColor.GOLD)).send(sender);
+	public static void sendDebug(CommandSender sender, BaseComponent[] message) {
+		sender.spigot().sendMessage(prepend(message, new TextBuilder("[d] ").color(ChatColor.GOLD).create()));
 	}
 
 	public static void sendDebugVerbose(CommandSender sender, String message) {
@@ -74,7 +74,7 @@ public class MessageUtil {
 		sendDebug(sender, message);
 	}
 
-	public static void sendDebugVerbose(CommandSender sender, FancyMessage message) {
+	public static void sendDebugVerbose(CommandSender sender, BaseComponent[] message) {
 		if(sender == null) return;
 		if(!(sender instanceof Player)) return;
 		if(!DebugFlags.is((Player)sender)) return;
@@ -86,13 +86,14 @@ public class MessageUtil {
 	public static void sendException(Module module, CommandSender sender, Throwable th, boolean log) {
 		String trace = getStackTrace(th);
 		
-		FancyMessage fm = new FancyMessage("[X] " + (th.getMessage() != null ? th.getMessage() : "Something went wrong!")).color(ChatColor.DARK_RED)
-				.formattedTooltip(new FancyMessage(trace.replace("\t", "  ").replace("at ", "")).color(ChatColor.GRAY));
+		BaseComponent[] bc = new TextBuilder("[X] " + (th.getMessage() != null ? th.getMessage() : "Something went wrong!")).color(ChatColor.DARK_RED)
+				.hover(trace.replace("\t", "  ").replace("at ", ""))
+				.color(ChatColor.GRAY).create();
 		if(sender != null)
-			fm.send(sender);
+			sender.spigot().sendMessage(bc);
 		else
 			for(Player p : Bukkit.getOnlinePlayers())
-				fm.send(p);
+				p.spigot().sendMessage(bc);
 		
 		if(log) {
 			th.printStackTrace();

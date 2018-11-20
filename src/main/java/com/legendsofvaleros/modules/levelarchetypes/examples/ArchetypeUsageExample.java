@@ -1,12 +1,5 @@
 package com.legendsofvaleros.modules.levelarchetypes.examples;
 
-import com.legendsofvaleros.modules.levelarchetypes.core.LevelArchetypes;
-import com.legendsofvaleros.modules.levelarchetypes.core.LevelArchetypes;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatProfile;
 import com.legendsofvaleros.modules.combatengine.events.CombatEntityCreateEvent;
@@ -16,6 +9,10 @@ import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import com.legendsofvaleros.modules.levelarchetypes.api.Archetype;
 import com.legendsofvaleros.modules.levelarchetypes.api.LevelProvider;
 import com.legendsofvaleros.modules.levelarchetypes.core.LevelArchetypes;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 public class ArchetypeUsageExample implements Listener, LevelProvider {
 

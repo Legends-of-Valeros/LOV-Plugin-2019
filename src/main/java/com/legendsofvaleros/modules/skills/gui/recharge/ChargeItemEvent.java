@@ -1,10 +1,9 @@
 package com.legendsofvaleros.modules.skills.gui.recharge;
 
+import com.legendsofvaleros.modules.gear.item.GearItem;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
-
-import com.legendsofvaleros.modules.gear.item.GearItem;
 
 public class ChargeItemEvent extends PlayerEvent {
 	private static final HandlerList handlers = new HandlerList();

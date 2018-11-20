@@ -2,10 +2,6 @@ package com.legendsofvaleros.modules.characters.entityclass;
 
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
-import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder.ModifierType;
-import com.legendsofvaleros.modules.combatengine.stat.Stat;
-import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
-import com.legendsofvaleros.modules.combatengine.stat.Stat;
 
 /**
  * A model from which to create per-player stat modifiers whose value is governed by a separate

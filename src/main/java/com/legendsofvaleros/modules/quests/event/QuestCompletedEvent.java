@@ -3,14 +3,7 @@ package com.legendsofvaleros.modules.quests.event;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterEvent;
 import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.events.PlayerCharacterEvent;
-import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
 import org.bukkit.event.HandlerList;
-
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.events.PlayerCharacterEvent;
-import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
 
 public class QuestCompletedEvent extends PlayerCharacterEvent {
 	private static final HandlerList handlers = new HandlerList();

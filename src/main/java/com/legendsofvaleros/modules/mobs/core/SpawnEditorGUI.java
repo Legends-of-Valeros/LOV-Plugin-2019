@@ -1,9 +1,7 @@
 package com.legendsofvaleros.modules.mobs.core;
 
 import com.codingforcookies.robert.core.GUI;
-import com.legendsofvaleros.util.item.Model;
 import com.legendsofvaleros.modules.mobs.SpawnManager;
-import com.legendsofvaleros.util.item.Model;
 import com.legendsofvaleros.util.item.Model;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;

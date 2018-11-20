@@ -1,7 +1,6 @@
 package com.legendsofvaleros.util.title;
 
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.util.Utilities;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 

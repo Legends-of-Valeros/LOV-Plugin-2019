@@ -4,7 +4,6 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.skills.Skills;
 import com.legendsofvaleros.modules.skills.event.OnProjectile;
 import com.legendsofvaleros.modules.skills.event.ParticleFollow;
 import org.bukkit.Location;

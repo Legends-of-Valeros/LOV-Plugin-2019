@@ -1,12 +1,10 @@
 package com.legendsofvaleros.modules.characters.config;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.entityclass.StatModifierModel;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.characters.race.EntityRace;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
-import com.legendsofvaleros.modules.characters.race.EntityRace;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;

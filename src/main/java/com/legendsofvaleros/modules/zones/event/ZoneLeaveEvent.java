@@ -1,10 +1,9 @@
 package com.legendsofvaleros.modules.zones.event;
 
+import com.legendsofvaleros.modules.zones.Zone;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
-import com.legendsofvaleros.modules.zones.Zone;
 
 public class ZoneLeaveEvent extends Event {
 	private static final HandlerList handlers = new HandlerList();

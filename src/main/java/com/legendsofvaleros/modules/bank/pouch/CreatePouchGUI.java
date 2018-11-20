@@ -1,17 +1,16 @@
 package com.legendsofvaleros.modules.bank.pouch;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.modules.bank.Bank;
+import com.legendsofvaleros.modules.bank.Money;
+import com.legendsofvaleros.modules.bank.item.WorthComponent;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.item.GearItem;
-import com.legendsofvaleros.util.item.Model;
-import com.legendsofvaleros.modules.bank.Money;
-import com.legendsofvaleros.modules.bank.item.WorthComponent;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.Utilities;
+import com.legendsofvaleros.util.item.Model;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;

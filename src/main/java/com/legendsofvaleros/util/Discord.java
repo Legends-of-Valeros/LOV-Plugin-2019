@@ -1,32 +1,13 @@
 package com.legendsofvaleros.util;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-
-import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.chat.Chat;
-import com.legendsofvaleros.modules.chat.IChannelHandler;
-import com.legendsofvaleros.modules.chat.PlayerChat;
-import com.mysql.jdbc.Util;
+import com.google.common.util.concurrent.FutureCallback;
+import de.btobastian.javacord.DiscordAPI;
+import de.btobastian.javacord.Javacord;
+import de.btobastian.javacord.entities.Server;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-
-import com.google.common.util.concurrent.FutureCallback;
-import com.legendsofvaleros.util.PlayerData;
-
-import de.btobastian.javacord.DiscordAPI;
-import de.btobastian.javacord.Javacord;
-import de.btobastian.javacord.entities.Channel;
-import de.btobastian.javacord.entities.Server;
-import de.btobastian.javacord.listener.message.MessageCreateListener;
-import mkremins.fanciful.FancyMessage;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class Discord {
     public static boolean LINKED = false;

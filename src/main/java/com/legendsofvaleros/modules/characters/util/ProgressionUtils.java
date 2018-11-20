@@ -2,10 +2,6 @@ package com.legendsofvaleros.modules.characters.util;
 
 import com.legendsofvaleros.modules.combatengine.core.CombatProfile;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
-import com.legendsofvaleros.modules.combatengine.core.CombatProfile;
-import com.legendsofvaleros.modules.combatengine.stat.Stat;
-import com.legendsofvaleros.modules.combatengine.core.CombatProfile;
-import com.legendsofvaleros.modules.combatengine.stat.Stat;
 
 import java.util.HashMap;
 import java.util.Map;

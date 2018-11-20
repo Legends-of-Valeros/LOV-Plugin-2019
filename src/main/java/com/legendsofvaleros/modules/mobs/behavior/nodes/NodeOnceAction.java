@@ -1,14 +1,12 @@
 package com.legendsofvaleros.modules.mobs.behavior.nodes;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.mobs.behavior.BehaviorAction;
 import com.legendsofvaleros.modules.mobs.behavior.NodeStatus;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 public class NodeOnceAction extends Node {
 	final BehaviorAction action;

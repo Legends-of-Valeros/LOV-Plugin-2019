@@ -1,15 +1,11 @@
 package com.legendsofvaleros.modules.combatengine.damage;
 
-import com.legendsofvaleros.modules.combatengine.damage.physical.PhysicalType;
-import com.legendsofvaleros.modules.combatengine.damage.spell.SpellType;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.config.CriticalHitConfig;
 import com.legendsofvaleros.modules.combatengine.config.OffenseDefenseConfig;
 import com.legendsofvaleros.modules.combatengine.damage.physical.PhysicalType;
 import com.legendsofvaleros.modules.combatengine.damage.spell.SpellType;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
-import com.legendsofvaleros.modules.combatengine.damage.physical.PhysicalType;
-import com.legendsofvaleros.modules.combatengine.damage.spell.SpellType;
 
 import java.util.HashMap;
 import java.util.Map;

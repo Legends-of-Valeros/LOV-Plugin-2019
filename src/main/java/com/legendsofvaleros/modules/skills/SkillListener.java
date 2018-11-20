@@ -16,8 +16,8 @@ import com.legendsofvaleros.modules.skills.event.SkillPreUseEvent;
 import com.legendsofvaleros.modules.skills.event.SkillUsedEvent;
 import com.legendsofvaleros.modules.skills.gear.CastTrigger;
 import com.legendsofvaleros.util.MessageUtil;
+import com.legendsofvaleros.util.TextBuilder;
 import com.legendsofvaleros.util.Utilities;
-import mkremins.fanciful.FancyMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -78,8 +78,9 @@ public class SkillListener implements Listener {
         ItemStack stack = Skills.getStackForSkillCooldown(e.getPlayerCharacter(), s);
         List<String> lore = stack.getItemMeta().getLore();
         lore.add(0, stack.getItemMeta().getDisplayName());
-        MessageUtil.sendUpdate(e.getPlayer(), new FancyMessage("You've unlocked a new core skill: ").color(ChatColor.AQUA)
-                .then(stack.getItemMeta().getDisplayName()).color(ChatColor.LIGHT_PURPLE).tooltip(lore));
+        MessageUtil.sendUpdate(e.getPlayer(), new TextBuilder("You've unlocked a new core skill: ").color(ChatColor.AQUA)
+                .append(stack.getItemMeta().getDisplayName()).color(ChatColor.LIGHT_PURPLE)
+                .hover(String.join("\n", lore)).create());
     }
 
     @EventHandler

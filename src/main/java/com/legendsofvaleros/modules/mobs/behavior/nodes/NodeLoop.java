@@ -1,10 +1,8 @@
 package com.legendsofvaleros.modules.mobs.behavior.nodes;
 
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.mobs.behavior.NodeStatus;
 import com.legendsofvaleros.modules.mobs.behavior.test.ITest;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 
 public class NodeLoop extends Node {
 	final ITest test;

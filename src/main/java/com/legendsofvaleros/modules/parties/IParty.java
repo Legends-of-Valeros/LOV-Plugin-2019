@@ -1,8 +1,6 @@
 package com.legendsofvaleros.modules.parties;
 
 import com.legendsofvaleros.modules.characters.api.CharacterId;
-import com.legendsofvaleros.modules.characters.api.CharacterId;
-import com.legendsofvaleros.modules.characters.api.CharacterId;
 
 import java.util.List;
 import java.util.UUID;

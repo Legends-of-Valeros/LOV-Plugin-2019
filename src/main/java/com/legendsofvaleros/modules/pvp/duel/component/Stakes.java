@@ -1,11 +1,7 @@
 package com.legendsofvaleros.modules.pvp.duel.component;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.pvp.duel.DuelTeam;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.pvp.duel.Duel;
-import com.legendsofvaleros.modules.pvp.duel.DuelTeam;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.pvp.duel.DuelTeam;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.InventoryType;

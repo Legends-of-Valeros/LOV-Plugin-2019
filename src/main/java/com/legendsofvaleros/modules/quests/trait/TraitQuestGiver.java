@@ -19,8 +19,8 @@ import com.legendsofvaleros.modules.quests.event.QuestStartedEvent;
 import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
 import com.legendsofvaleros.modules.quests.quest.stf.QuestStatus;
 import com.legendsofvaleros.util.MessageUtil;
+import com.legendsofvaleros.util.TextBuilder;
 import com.legendsofvaleros.util.item.Model;
-import mkremins.fanciful.FancyMessage;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -208,24 +208,25 @@ public class TraitQuestGiver extends LOVTrait {
     private void openGUI(Player player, LinkedHashMap<IQuest, QuestStatus> playerQuests) {
         Book book = new Book("Possible Quests", "Acolyte");
 
-        FancyMessage fm = new FancyMessage(StringUtil.center(Book.WIDTH, npc.getName())).color(ChatColor.DARK_AQUA).style(ChatColor.UNDERLINE);
+        TextBuilder tb = new TextBuilder(StringUtil.center(Book.WIDTH, npc.getName())).color(ChatColor.DARK_AQUA).underlined(true);
 
         if (introText != null && introText.length() > 0)
-            fm.then("\n\n" + introText).color(ChatColor.BLACK);
+            tb.append("\n\n" + introText).color(ChatColor.BLACK);
 
-        fm.then("\n\n");
+        tb.append("\n\n");
 
         for (final Entry<IQuest, QuestStatus> quest : playerQuests.entrySet()) {
             if (StringUtil.getStringWidth(quest.getKey().getName()) > Book.WIDTH)
-                fm.then("[" + quest.getKey().getName() + "]" + "\n\n");
+                tb.append("[" + quest.getKey().getName() + "]" + "\n\n");
             else
-                fm.then(StringUtil.center(Book.WIDTH, "[" + quest.getKey().getName() + "]") + "\n\n");
+                tb.append(StringUtil.center(Book.WIDTH, "[" + quest.getKey().getName() + "]") + "\n\n");
 
-            fm.color(quest.getValue() == QuestStatus.NEITHER ? ChatColor.DARK_PURPLE : ChatColor.DARK_RED)
+            // TODO: Switch to using "temporary" commands, as anyone who knows the secret command can accept any quest.
+            tb.color(quest.getValue() == QuestStatus.NEITHER ? ChatColor.DARK_PURPLE : ChatColor.DARK_RED)
                     .command("/quests talk " + quest.getKey().getId());
         }
 
-        book.addPage(fm);
+        book.addPage(tb.create());
 
         book.open(player, false);
     }

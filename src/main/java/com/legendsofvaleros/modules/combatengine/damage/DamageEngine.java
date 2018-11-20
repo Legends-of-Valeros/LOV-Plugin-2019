@@ -11,8 +11,8 @@ import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import com.legendsofvaleros.util.DebugFlags;
 import com.legendsofvaleros.util.MessageUtil;
+import com.legendsofvaleros.util.TextBuilder;
 import com.legendsofvaleros.util.Utilities;
-import mkremins.fanciful.FancyMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -259,23 +259,25 @@ public class DamageEngine {
 				if(pDOP)
 					MessageUtil.sendInfo(pD, prefix + "Damage prevented by a plugin.");
 			}else{
-				FancyMessage fm = new FancyMessage(prefix)
-						.then(DF.format(event.getFinalDamage())).color(ChatColor.AQUA).tooltip("Final Damage")
-						.then(" = ")
-						.then(DF.format(event.getRawDamage())).tooltip("Raw Damage")
-						.then(" * ")
-						.then(DF.format(event.getSwingMultiplier())).tooltip("Swing Multiplier")
-						.then(" * ")
-						.then(DF.format(event.getDamageMultiplier())).tooltip("Damage Multiplier");
+				TextBuilder tb = new TextBuilder(prefix)
+						.append(DF.format(event.getFinalDamage())).color(ChatColor.AQUA).hover("Final Damage")
+						.append(" = ")
+						.append(DF.format(event.getRawDamage())).hover("Raw Damage")
+						.append(" * ")
+						.append(DF.format(event.getSwingMultiplier())).hover("Swing Multiplier")
+						.append(" * ")
+						.append(DF.format(event.getDamageMultiplier())).hover("Damage Multiplier");
 				if(pAOP)
-					MessageUtil.sendInfo(pA, MessageUtil.prepend(fm, new FancyMessage(event.getAttacker().getLivingEntity().getName())
-							.then("(")
-							.then(String.valueOf(event.getAttacker().getStats().getRegeneratingStat(RegeneratingStat.HEALTH))).color(ChatColor.GRAY)
-							.then("/")
-							.then(String.valueOf(event.getAttacker().getStats().getStat(Stat.MAX_HEALTH))).color(ChatColor.GRAY)
-							.then(" > ")));
+					tb.prepend(new TextBuilder(event.getAttacker().getLivingEntity().getName())
+							.append("(")
+							.append(String.valueOf(event.getAttacker().getStats().getRegeneratingStat(RegeneratingStat.HEALTH))).color(ChatColor.GRAY)
+							.append("/")
+							.append(String.valueOf(event.getAttacker().getStats().getStat(Stat.MAX_HEALTH))).color(ChatColor.GRAY)
+							.append(" > "));
 				if(pDOP)
-					MessageUtil.sendInfo(pD, MessageUtil.prepend(fm, new FancyMessage("<")));
+					tb.prepend(new TextBuilder("<").create());
+
+				MessageUtil.sendInfo(pA, tb.create());
 			}
 		}
 	}

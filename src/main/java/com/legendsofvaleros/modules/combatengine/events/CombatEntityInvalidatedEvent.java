@@ -1,11 +1,10 @@
 package com.legendsofvaleros.modules.combatengine.events;
 
-import java.util.UUID;
-
+import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
+import java.util.UUID;
 
 /**
  * Called when a combat entity object is no longer valid.

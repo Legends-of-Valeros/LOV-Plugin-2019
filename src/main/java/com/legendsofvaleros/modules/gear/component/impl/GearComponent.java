@@ -2,9 +2,7 @@ package com.legendsofvaleros.modules.gear.component.impl;
 
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger;
-import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger;
 import com.legendsofvaleros.modules.gear.item.GearItem;
-import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger;
 
 public abstract class GearComponent<T> {
 	public final double doGetValue(GearItem.Instance item, Object persist) {

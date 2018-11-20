@@ -1,8 +1,6 @@
 package com.legendsofvaleros.modules.characters.config;
 
 import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
-import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
-import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
 
 public interface AbilityStatInformationConfig {
 

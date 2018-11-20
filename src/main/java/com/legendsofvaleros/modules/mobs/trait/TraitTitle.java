@@ -1,14 +1,9 @@
 package com.legendsofvaleros.modules.mobs.trait;
 
-import com.legendsofvaleros.modules.npcs.nameplate.Nameplates;
-import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
-import com.legendsofvaleros.modules.npcs.nameplate.Nameplates;
-import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
-import org.bukkit.ChatColor;
-
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.legendsofvaleros.modules.npcs.nameplate.Nameplates;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
+import org.bukkit.ChatColor;
 
 public class TraitTitle extends LOVTrait {
 	public String text;

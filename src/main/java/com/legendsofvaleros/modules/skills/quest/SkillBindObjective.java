@@ -2,13 +2,9 @@ package com.legendsofvaleros.modules.skills.quest;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.quests.objective.stf.AbstractObjective;
 import com.legendsofvaleros.modules.quests.progress.ObjectiveProgressBoolean;
 import com.legendsofvaleros.modules.skills.event.BindSkillEvent;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.skill.Skill;
 import org.bukkit.event.Event;
 
 public class SkillBindObjective extends AbstractObjective<ObjectiveProgressBoolean> {

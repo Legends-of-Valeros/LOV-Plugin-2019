@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.pvp.listener;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterFinishLoadingEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.playermenu.PlayerMenuOpenEvent;

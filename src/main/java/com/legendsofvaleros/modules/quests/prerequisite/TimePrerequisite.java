@@ -1,13 +1,9 @@
 package com.legendsofvaleros.modules.quests.prerequisite;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.quests.prerequisite.stf.IQuestPrerequisite;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.prerequisite.stf.IQuestPrerequisite;
 import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.quests.prerequisite.stf.IQuestPrerequisite;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

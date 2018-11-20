@@ -1,19 +1,16 @@
 package com.legendsofvaleros.modules.quests.action;
 
 import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
-import com.legendsofvaleros.util.TemporaryCommand;
-import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TemporaryCommand;
-import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
-import com.legendsofvaleros.util.TemporaryCommand;
-import mkremins.fanciful.FancyMessage;
+import com.legendsofvaleros.util.TextBuilder;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 
+// XXX: This whole action is garbage.
 public class ActionConversation extends AbstractAction {
 	String option_1, option_2, option_3, option_4, option_5;
 	int action_1, action_2, action_3, action_4, action_5;
@@ -49,10 +46,9 @@ public class ActionConversation extends AbstractAction {
 		
 		tmps.add(tmp);
 		
-		new FancyMessage(" [").color(ChatColor.YELLOW)
-				.then(text).command("/lov tmp " + tmp).color(ChatColor.WHITE)
-				.then("]").color(ChatColor.YELLOW)
-				.send(player);
+		player.spigot().sendMessage(new TextBuilder(" [").color(ChatColor.YELLOW)
+				.append(text).command("/lov tmp " + tmp).color(ChatColor.WHITE)
+				.append("]").color(ChatColor.YELLOW).create());
 
 	}
 	

@@ -3,6 +3,7 @@ package com.legendsofvaleros.module;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.legendsofvaleros.scheduler.InternalTask;
+import com.legendsofvaleros.util.Utilities;
 import org.bukkit.event.Event;
 
 import java.util.*;
@@ -20,7 +21,10 @@ public class ModuleTimings {
 
     public ModuleTimings(Module module) {
         // Clean up the timings list every 10 seconds.
-        this.cleanupTask = module.getScheduler().executeInMyCircleTimer(() -> {
+        // Run this under the Utilities module so we don't pollute
+        // execution counters with it.
+        this.cleanupTask = (module == Utilities.getInstance() ? module : Utilities.getInstance())
+                                .getScheduler().executeInMyCircleTimer(() -> {
             try {
                 for(Class<? extends Event> ec : getTracked()) {
                     Set<Long> times = new HashSet<>(timings.row(ec).keySet());

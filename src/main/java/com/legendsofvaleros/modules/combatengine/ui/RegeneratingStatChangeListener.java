@@ -1,8 +1,6 @@
 package com.legendsofvaleros.modules.combatengine.ui;
 
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
-import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
-import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 
 /**
  * Informed of changes in a regenerating stat.

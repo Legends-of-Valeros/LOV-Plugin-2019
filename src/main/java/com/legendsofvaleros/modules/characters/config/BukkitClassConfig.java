@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.characters.config;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -9,7 +8,6 @@ import com.legendsofvaleros.modules.characters.entityclass.AbilityStatApplicator
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.entityclass.StatModifierModel;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import com.legendsofvaleros.modules.levelarchetypes.api.Archetype;

@@ -8,23 +8,7 @@ import com.legendsofvaleros.modules.gear.component.impl.GearComponentOrder;
 import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger;
 import com.legendsofvaleros.modules.gear.component.trigger.PickupTrigger;
 import com.legendsofvaleros.modules.gear.item.GearItem;
-import com.legendsofvaleros.util.field.RangedValue;
-import com.legendsofvaleros.modules.bank.Money;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.gear.component.impl.GearComponent;
-import com.legendsofvaleros.modules.gear.component.impl.GearComponentOrder;
-import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger;
-import com.legendsofvaleros.modules.gear.component.trigger.PickupTrigger;
-import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.field.RangedValue;
-import com.legendsofvaleros.modules.bank.Money;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.gear.component.impl.GearComponent;
-import com.legendsofvaleros.modules.gear.component.impl.GearComponentOrder;
-import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger;
-import com.legendsofvaleros.modules.gear.component.trigger.PickupTrigger;
-import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.util.field.RangedValue;
 
 public class WorthComponent extends GearComponent<Long> {

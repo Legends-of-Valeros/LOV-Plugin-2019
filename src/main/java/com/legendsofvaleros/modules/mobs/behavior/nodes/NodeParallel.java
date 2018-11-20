@@ -3,9 +3,7 @@ package com.legendsofvaleros.modules.mobs.behavior.nodes;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.mobs.behavior.NodeStatus;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 
 import java.util.HashMap;
 import java.util.Map;

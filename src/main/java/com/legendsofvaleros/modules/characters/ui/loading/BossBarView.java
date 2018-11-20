@@ -1,12 +1,11 @@
 package com.legendsofvaleros.modules.characters.ui.loading;
 
-import java.util.UUID;
-
+import com.legendsofvaleros.modules.characters.ui.AbstractProgressView;
 import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 
-import com.legendsofvaleros.modules.characters.ui.AbstractProgressView;
+import java.util.UUID;
 
 /**
  * A loading screen view for a single player that turns their screen black while loading and shows a

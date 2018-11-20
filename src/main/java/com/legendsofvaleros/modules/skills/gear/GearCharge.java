@@ -3,14 +3,12 @@ package com.legendsofvaleros.modules.skills.gear;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import com.legendsofvaleros.util.field.RangedValue;
 import com.legendsofvaleros.modules.gear.component.impl.GearComponent;
 import com.legendsofvaleros.modules.gear.component.impl.GearComponentOrder;
 import com.legendsofvaleros.modules.gear.component.trigger.CombineTrigger;
 import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger;
 import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.gear.item.GearType;
-import com.legendsofvaleros.util.field.RangedValue;
 import com.legendsofvaleros.util.field.RangedValue;
 import org.bukkit.ChatColor;
 

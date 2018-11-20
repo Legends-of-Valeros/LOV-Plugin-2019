@@ -1,15 +1,9 @@
 package com.legendsofvaleros.modules.mobs.behavior;
 
-import com.legendsofvaleros.modules.mobs.behavior.nodes.Node;
-import com.legendsofvaleros.modules.mobs.behavior.nodes.NodeRandom;
-import com.legendsofvaleros.modules.mobs.behavior.test.Condition;
 import com.legendsofvaleros.modules.mobs.ai.AttackBehavior;
 import com.legendsofvaleros.modules.mobs.ai.HomeBehavior;
 import com.legendsofvaleros.modules.mobs.ai.NavigationBehavior;
 import com.legendsofvaleros.modules.mobs.ai.ThreatBehavior;
-import com.legendsofvaleros.modules.mobs.behavior.nodes.Node;
-import com.legendsofvaleros.modules.mobs.behavior.nodes.NodeRandom;
-import com.legendsofvaleros.modules.mobs.behavior.test.Condition;
 import com.legendsofvaleros.modules.mobs.behavior.nodes.Node;
 import com.legendsofvaleros.modules.mobs.behavior.nodes.NodeRandom;
 import com.legendsofvaleros.modules.mobs.behavior.test.Condition;

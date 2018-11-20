@@ -1,8 +1,6 @@
 package com.legendsofvaleros.modules.combatengine.ui;
 
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
-import com.legendsofvaleros.modules.combatengine.stat.Stat;
-import com.legendsofvaleros.modules.combatengine.stat.Stat;
 
 /**
  * Informed of changes in stats.

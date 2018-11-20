@@ -4,16 +4,7 @@ import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.characters.skilleffect.MetaEffectInstance;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.characters.skilleffect.MetaEffectInstance;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import org.bukkit.World;
-
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.characters.skilleffect.MetaEffectInstance;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 
 public class SkillVenom extends Skill {
 	public static final String ID = "venom";

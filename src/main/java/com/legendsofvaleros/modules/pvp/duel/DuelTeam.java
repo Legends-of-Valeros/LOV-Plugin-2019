@@ -1,9 +1,7 @@
 package com.legendsofvaleros.modules.pvp.duel;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import net.md_5.bungee.api.ChatColor;
+import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
 import java.util.Arrays;

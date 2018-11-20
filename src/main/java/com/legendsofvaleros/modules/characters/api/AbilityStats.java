@@ -2,10 +2,6 @@ package com.legendsofvaleros.modules.characters.api;
 
 import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
-import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
-import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
-import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
-import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
 
 /**
  * A collection of the player's stats that have player-class-specific effects on combat and other

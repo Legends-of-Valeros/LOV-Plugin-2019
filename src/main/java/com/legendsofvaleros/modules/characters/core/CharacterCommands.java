@@ -8,7 +8,7 @@ import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLevelUpEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerInformationBookEvent;
 import com.legendsofvaleros.util.MessageUtil;
-import mkremins.fanciful.FancyMessage;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -81,7 +81,7 @@ public class CharacterCommands extends BaseCommand {
 		PlayerInformationBookEvent event = new PlayerInformationBookEvent(Characters.getPlayerCharacter(player));
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		
-		for(FancyMessage page : event.getPages())
+		for(BaseComponent[] page : event.getPages())
 			book.addPage(page);
 		
 		book.open(player, false);

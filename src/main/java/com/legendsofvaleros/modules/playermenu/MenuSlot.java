@@ -1,8 +1,7 @@
 package com.legendsofvaleros.modules.playermenu;
 
-import org.bukkit.inventory.ItemStack;
-
 import com.codingforcookies.robert.slot.ISlotAction;
+import org.bukkit.inventory.ItemStack;
 
 public class MenuSlot {
 	ItemStack stack;

@@ -3,14 +3,7 @@ package com.legendsofvaleros.modules.characters.ui;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
 import com.legendsofvaleros.modules.characters.ui.loading.ProgressViewProvider;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
-import com.legendsofvaleros.modules.characters.ui.loading.ProgressViewProvider;
 import org.bukkit.entity.Player;
-
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
-import com.legendsofvaleros.modules.characters.ui.loading.ProgressViewProvider;
 
 /**
  * Manages various user-interface tasks for Characters.

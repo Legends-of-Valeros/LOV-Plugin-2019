@@ -4,13 +4,7 @@ import com.codingforcookies.robert.item.ItemBuilder;
 import com.codingforcookies.robert.item.ItemBuilder.Attributes;
 import com.legendsofvaleros.modules.gear.component.impl.GearComponent;
 import com.legendsofvaleros.modules.gear.component.impl.GearComponentOrder;
-import com.legendsofvaleros.util.field.RangedValue;
-import com.legendsofvaleros.modules.gear.component.impl.GearComponent;
-import com.legendsofvaleros.modules.gear.component.impl.GearComponentOrder;
 import com.legendsofvaleros.modules.gear.item.GearItem;
-import com.legendsofvaleros.util.field.RangedValue;
-import com.legendsofvaleros.modules.gear.component.impl.GearComponent;
-import com.legendsofvaleros.modules.gear.component.impl.GearComponentOrder;
 import com.legendsofvaleros.util.field.RangedValue;
 import org.bukkit.ChatColor;
 

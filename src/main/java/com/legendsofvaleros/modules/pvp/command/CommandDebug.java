@@ -1,10 +1,8 @@
 package com.legendsofvaleros.modules.pvp.command;
 
-import com.legendsofvaleros.modules.pvp.toggle.PvPToggle;
 import com.legendsofvaleros.modules.pvp.PvP;
 import com.legendsofvaleros.modules.pvp.toggle.PvPToggle;
-import com.legendsofvaleros.modules.pvp.toggle.PvPToggle;
-import net.md_5.bungee.api.ChatColor;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

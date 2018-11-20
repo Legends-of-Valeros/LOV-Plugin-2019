@@ -1,21 +1,20 @@
 package com.legendsofvaleros.modules.characters.testing;
 
-import com.legendsofvaleros.modules.characters.creation.PlayerCreation;
-import com.legendsofvaleros.modules.characters.skilleffect.RemovalReason;
-import com.legendsofvaleros.modules.combatengine.ui.CombatEngineUiManager;
-import com.legendsofvaleros.modules.combatengine.ui.PlayerCombatInterface;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.characters.creation.PlayerCreation;
+import com.legendsofvaleros.modules.characters.skilleffect.RemovalReason;
 import com.legendsofvaleros.modules.characters.skilleffect.SkillEffect;
 import com.legendsofvaleros.modules.characters.ui.*;
 import com.legendsofvaleros.modules.characters.ui.loading.BossBarView;
 import com.legendsofvaleros.modules.characters.ui.loading.ProgressView;
 import com.legendsofvaleros.modules.characters.ui.window.WindowCharacterSelect;
 import com.legendsofvaleros.modules.characters.util.ShitUtil;
+import com.legendsofvaleros.modules.combatengine.ui.CombatEngineUiManager;
+import com.legendsofvaleros.modules.combatengine.ui.PlayerCombatInterface;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
-import mkremins.fanciful.FancyMessage;
+import com.legendsofvaleros.util.TextBuilder;
 import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -72,9 +71,10 @@ public class TestUis implements CharactersUiManager, CombatEngineUiManager {
 			public void onSkillEffectUpdate(SkillEffect<?> effect, long expiry,
                                             int effectLevel) {
 				MessageUtil.sendUpdate(pc.getPlayer(),
-										new FancyMessage("You are now affected by ").color(ChatColor.GRAY)
-											.then(effect.getUserFriendlyName(pc.getPlayer())).color(ChatColor.DARK_PURPLE)
-											.tooltip(effect.getUserFriendlyDetails(pc.getPlayer())));
+										new TextBuilder("You are now affected by ").color(ChatColor.GRAY)
+											.append(effect.getUserFriendlyName(pc.getPlayer())).color(ChatColor.DARK_PURPLE)
+											.hover(effect.getUserFriendlyDetails(pc.getPlayer()))
+											.create());
 			}
 
 			@Override

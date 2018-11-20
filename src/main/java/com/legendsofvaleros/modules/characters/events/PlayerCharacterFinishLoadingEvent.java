@@ -1,8 +1,7 @@
 package com.legendsofvaleros.modules.characters.events;
 
-import org.bukkit.event.HandlerList;
-
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
+import org.bukkit.event.HandlerList;
 
 /**
  * An event called when a player's character data has finished loading and they are allowed to start

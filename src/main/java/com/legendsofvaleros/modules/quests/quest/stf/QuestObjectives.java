@@ -1,8 +1,6 @@
 package com.legendsofvaleros.modules.quests.quest.stf;
 
 import com.legendsofvaleros.modules.quests.objective.stf.IObjective;
-import com.legendsofvaleros.modules.quests.objective.stf.IObjective;
-import com.legendsofvaleros.modules.quests.objective.stf.IObjective;
 
 public class QuestObjectives {
 	public IObjective<?>[][] groups;

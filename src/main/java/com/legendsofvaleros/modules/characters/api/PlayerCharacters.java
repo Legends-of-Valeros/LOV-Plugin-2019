@@ -1,9 +1,9 @@
 package com.legendsofvaleros.modules.characters.api;
 
+import org.bukkit.entity.Player;
+
 import java.util.Set;
 import java.util.UUID;
-
-import org.bukkit.entity.Player;
 
 /**
  * Multi-character data for a player.

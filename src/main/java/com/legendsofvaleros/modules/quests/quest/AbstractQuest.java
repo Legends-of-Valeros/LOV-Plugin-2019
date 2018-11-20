@@ -21,7 +21,7 @@ import com.legendsofvaleros.modules.quests.progress.stf.ObjectiveProgressPack;
 import com.legendsofvaleros.modules.quests.progress.stf.QuestProgressPack;
 import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
 import com.legendsofvaleros.modules.quests.quest.stf.QuestObjectives;
-import mkremins.fanciful.FancyMessage;
+import com.legendsofvaleros.util.TextBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -269,33 +269,33 @@ public abstract class AbstractQuest implements IQuest {
 
         Book book = new Book(title, "Acolyte");
 
-        FancyMessage fm = new FancyMessage(StringUtil.center(Book.WIDTH, name)).color(ChatColor.DARK_AQUA).style(ChatColor.UNDERLINE)
-                .then("\n\n").color(ChatColor.BLACK);
+        TextBuilder tb = new TextBuilder(StringUtil.center(Book.WIDTH, name)).color(ChatColor.DARK_AQUA).underlined(true)
+                .append("\n\n").color(ChatColor.BLACK);
 
         for (int i = 0; i < pages.size(); i++) {
             String[] splitPages = pages.get(i).split("\\n\\n");
             for (int j = 0; j < splitPages.length; j++) {
-                fm.then(ChatColor.translateAlternateColorCodes('&', splitPages[j]) + "\n\n").color(ChatColor.BLACK);
+                tb.append(ChatColor.translateAlternateColorCodes('&', splitPages[j]) + "\n\n").color(ChatColor.BLACK);
                 if (j != splitPages.length - 1)
-                    book.addPage(fm);
+                    book.addPage(tb.create());
             }
 
             if (i == pages.size() - 1) {
                 if (ok)
-                    fm.then(StringUtil.center(Book.WIDTH, "[Ok]")).color(ChatColor.DARK_GREEN)
+                    tb.append(StringUtil.center(Book.WIDTH, "[Ok]")).color(ChatColor.DARK_GREEN)
                             .command("/quests close");
                 else {
-                    fm.then(" [Accept]  ").color(ChatColor.DARK_GREEN)
+                    tb.append(" [Accept]  ").color(ChatColor.DARK_GREEN)
                             .command("/quests accept " + id)
-                            .then(" ")
-                            .then("  [Decline] ").color(ChatColor.DARK_RED)
+                            .append(" ")
+                            .append("  [Decline] ").color(ChatColor.DARK_RED)
                             .command("/quests decline " + id);
                 }
             }
 
-            book.addPage(fm);
+            book.addPage(tb.create());
 
-            fm = new FancyMessage("\n");
+            tb = new TextBuilder("\n");
         }
 
         book.open(player, false);

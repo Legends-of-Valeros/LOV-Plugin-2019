@@ -1,8 +1,6 @@
 package com.legendsofvaleros.modules.characters.entityclass;
 
-import com.legendsofvaleros.modules.combatengine.modifiers.ModifiableDouble;
 import com.legendsofvaleros.modules.characters.ui.AbilityStatChangeListener;
-import com.legendsofvaleros.modules.combatengine.modifiers.ModifiableDouble;
 import com.legendsofvaleros.modules.combatengine.modifiers.ModifiableDouble;
 
 /**

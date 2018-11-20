@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.combatengine.damage;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;

@@ -1,10 +1,10 @@
 package com.legendsofvaleros.modules.combatengine.statuseffects;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifier;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder.ModifierType;

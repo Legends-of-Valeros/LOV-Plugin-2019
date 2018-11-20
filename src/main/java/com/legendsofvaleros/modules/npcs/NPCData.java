@@ -1,10 +1,7 @@
 package com.legendsofvaleros.modules.npcs;
 
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
-import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import org.bukkit.Location;
-
-import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 
 public class NPCData {
 	public String npcId;

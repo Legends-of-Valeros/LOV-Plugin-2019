@@ -2,11 +2,7 @@ package com.legendsofvaleros.modules.pvp.duel.component;
 
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import com.legendsofvaleros.modules.pvp.duel.Duel;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import org.bukkit.entity.LivingEntity;
 
 /**

@@ -1,8 +1,6 @@
 package com.legendsofvaleros.modules.gear.component.trigger;
 
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class UseTrigger extends CombatEntityTrigger {
