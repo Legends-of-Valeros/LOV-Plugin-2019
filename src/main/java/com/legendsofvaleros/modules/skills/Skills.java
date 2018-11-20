@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.skills;
 import com.codingforcookies.robert.core.RomanNumeral;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.Modules;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.bank.Bank;
 import com.legendsofvaleros.modules.characters.api.Cooldowns;
@@ -77,12 +78,19 @@ public class Skills extends ListenerModule {
 
         hotbarManager = new SkillBarManager();
 
-        GearRegistry.registerComponent("charge", GearCharge.Component.class);
-        GearRegistry.registerComponent("skill", SkillComponent.class);
-        GearRegistry.registerComponent("skills_reset", SkillResetComponent.class);
-        NPCs.registerTrait("recharger", TraitRecharger.class);
-        ObjectiveFactory.registerType("skill_bind", SkillBindObjective.class);
-        ObjectiveFactory.registerType("skill_use", SkillUseObjective.class);
+        if(Modules.isEnabled(Gear.class)) {
+            GearRegistry.registerComponent("charge", GearCharge.Component.class);
+            GearRegistry.registerComponent("skill", SkillComponent.class);
+            GearRegistry.registerComponent("skills_reset", SkillResetComponent.class);
+        }
+
+        if(Modules.isEnabled(NPCs.class))
+            NPCs.registerTrait("recharger", TraitRecharger.class);
+
+        if(Modules.isEnabled(Quests.class)) {
+            ObjectiveFactory.registerType("skill_bind", SkillBindObjective.class);
+            ObjectiveFactory.registerType("skill_use", SkillUseObjective.class);
+        }
 
 
         new HotbarListener();

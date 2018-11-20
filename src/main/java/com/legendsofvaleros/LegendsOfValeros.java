@@ -2,7 +2,7 @@ package com.legendsofvaleros;
 
 import co.aikar.commands.PaperCommandManager;
 import com.legendsofvaleros.module.Module;
-import com.legendsofvaleros.module.ModuleManager;
+import com.legendsofvaleros.module.Modules;
 import com.legendsofvaleros.modules.bank.Bank;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.chat.Chat;
@@ -69,7 +69,7 @@ public class LegendsOfValeros extends JavaPlugin {
 
         try {
             registerModules();
-            ModuleManager.loadModules();
+            Modules.loadModules();
         } catch(Exception e) {
             e.printStackTrace();
             System.exit(1);
@@ -80,7 +80,7 @@ public class LegendsOfValeros extends JavaPlugin {
     public void onDisable() {
         shutdown = true;
 
-        ModuleManager.unloadModules();
+        Modules.unloadModules();
 
         loadedEventClasses.clear();
     }
@@ -89,32 +89,32 @@ public class LegendsOfValeros extends JavaPlugin {
         //TODO add config file and add check if module should be enabled or not
         //TODO add commands to disable single modules (&change the config?)
         //TODO add method to determine dependencies between each module (if a module depends on a disabled module, it wont be enabled either)
-        ModuleManager.registerModule(Utilities.class);
-        ModuleManager.registerModule(Nanny.class);
-        ModuleManager.registerModule(PlayerMenu.class);
-        ModuleManager.registerModule(NPCs.class);
-        ModuleManager.registerModule(CombatEngine.class);
-        ModuleManager.registerModule(KeepOutOfOcean.class);
-        ModuleManager.registerModule(LevelArchetypes.class);
-        ModuleManager.registerModule(Characters.class);
-        ModuleManager.registerModule(Quests.class);
-        ModuleManager.registerModule(Hearthstones.class);
-        ModuleManager.registerModule(Factions.class);
-        ModuleManager.registerModule(Regions.class);
-        ModuleManager.registerModule(Chat.class);
-        ModuleManager.registerModule(Hotswitch.class);
-        ModuleManager.registerModule(Parties.class);
-        ModuleManager.registerModule(Gear.class);
-        ModuleManager.registerModule(LootManager.class);
-        ModuleManager.registerModule(Bank.class);
-        ModuleManager.registerModule(PvP.class);
-        ModuleManager.registerModule(Mobs.class);
-        ModuleManager.registerModule(Zones.class);
-        ModuleManager.registerModule(Skills.class);
-        ModuleManager.registerModule(Mounts.class);
-        ModuleManager.registerModule(FastTravel.class);
-        ModuleManager.registerModule(Graveyards.class);
-        ModuleManager.registerModule(Dueling.class);
+        Modules.registerModule(Utilities.class);
+        Modules.registerModule(Nanny.class);
+        Modules.registerModule(PlayerMenu.class);
+        Modules.registerModule(NPCs.class);
+        Modules.registerModule(CombatEngine.class);
+        Modules.registerModule(KeepOutOfOcean.class);
+        Modules.registerModule(LevelArchetypes.class);
+        Modules.registerModule(Characters.class);
+        Modules.registerModule(Quests.class);
+        Modules.registerModule(Hearthstones.class);
+        Modules.registerModule(Factions.class);
+        Modules.registerModule(Regions.class);
+        Modules.registerModule(Chat.class);
+        Modules.registerModule(Hotswitch.class);
+        Modules.registerModule(Parties.class);
+        Modules.registerModule(Gear.class);
+        Modules.registerModule(LootManager.class);
+        Modules.registerModule(Bank.class);
+        Modules.registerModule(PvP.class);
+        Modules.registerModule(Mobs.class);
+        Modules.registerModule(Zones.class);
+        Modules.registerModule(Skills.class);
+        Modules.registerModule(Mounts.class);
+        Modules.registerModule(FastTravel.class);
+        Modules.registerModule(Graveyards.class);
+        Modules.registerModule(Dueling.class);
     }
 
     public void registerEvents(Listener listener, Module module) {

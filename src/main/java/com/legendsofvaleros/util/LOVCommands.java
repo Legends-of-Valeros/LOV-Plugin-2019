@@ -5,8 +5,8 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.Module;
-import com.legendsofvaleros.module.ModuleManager;
 import com.legendsofvaleros.module.ModuleTimings;
+import com.legendsofvaleros.module.Modules;
 import com.legendsofvaleros.scheduler.InternalScheduler;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -62,7 +62,7 @@ public class LOVCommands extends BaseCommand {
 
         sender.sendMessage(ChatColor.GRAY + line);
 
-        for (InternalScheduler scheduler : ModuleManager.schedulers.values()) {
+        for (InternalScheduler scheduler : Modules.schedulers.values()) {
             double tps = scheduler.getAverageTPS();
             sender.sendMessage(ChatColor.DARK_GRAY + scheduler.getName() + ": " + ChatColor.GRAY + tps + "/20.0 (A: " + scheduler.getAsyncTasksFired() + " | S: " + scheduler.getSyncTasksFired() + " | +" + scheduler.getTotalBehind() + "ms)");
             sender.sendMessage("  " + LegendsOfValeros.getInstance().createTPSBar(tps));
@@ -81,7 +81,7 @@ public class LOVCommands extends BaseCommand {
         sender.sendMessage(ChatColor.GRAY + line);
 
         boolean shown = false;
-        for (Module module : ModuleManager.modules.values()) {
+        for (Module module : Modules.modules.values()) {
             if(moduleName != null) {
                 if(!module.getName().toLowerCase().contains(moduleName.toLowerCase()))
                     continue;

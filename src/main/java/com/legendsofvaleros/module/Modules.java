@@ -5,7 +5,7 @@ import com.legendsofvaleros.scheduler.InternalScheduler;
 
 import java.util.*;
 
-public class ModuleManager {
+public class Modules {
     public static Map<String, String> packages = new HashMap<>();
 
     public static Map<String, Module> modules = new LinkedHashMap<>();
@@ -72,6 +72,10 @@ public class ModuleManager {
             LegendsOfValeros.getInstance().getLogger().severe("Failed to load module. Aborting! Offender: " + clazz.getSimpleName());
             throw e;
         }
+    }
+
+    public static boolean isEnabled(Class<? extends Module> clazz) {
+        return true;
     }
 
     public static String getModulePackage(Class<?> clazz) {

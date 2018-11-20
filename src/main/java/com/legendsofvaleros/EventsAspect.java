@@ -1,7 +1,7 @@
 package com.legendsofvaleros;
 
 import com.legendsofvaleros.module.Module;
-import com.legendsofvaleros.module.ModuleManager;
+import com.legendsofvaleros.module.Modules;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -14,7 +14,7 @@ public class EventsAspect {
         long startTime = System.currentTimeMillis();
 
         Event event = (Event)joinPoint.getArgs()[0];
-        Module module = ModuleManager.getModule(joinPoint.getThis().getClass());
+        Module module = Modules.getModule(joinPoint.getThis().getClass());
 
         Object returnObject;
 
