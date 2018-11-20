@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.gear.item;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.codingforcookies.doris.orm.annotation.Column;
 import com.codingforcookies.doris.orm.annotation.ForeignKey;
 import com.codingforcookies.doris.orm.annotation.Table;
@@ -8,16 +7,15 @@ import com.codingforcookies.robert.item.ItemBuilder;
 import com.codingforcookies.robert.item.NBTEditor;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.util.concurrent.ListenableFuture;
+import com.legendsofvaleros.modules.gear.Gear;
+import com.legendsofvaleros.modules.gear.ItemManager;
 import com.legendsofvaleros.modules.gear.component.impl.ComponentMap;
 import com.legendsofvaleros.modules.gear.component.impl.GearComponent;
 import com.legendsofvaleros.modules.gear.component.impl.GearComponentOrder;
 import com.legendsofvaleros.modules.gear.component.impl.PersistMap;
 import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger;
-import com.legendsofvaleros.util.item.Model;
-import com.legendsofvaleros.modules.gear.Gear;
-import com.legendsofvaleros.modules.gear.ItemManager;
 import com.legendsofvaleros.util.MessageUtil;
+import com.legendsofvaleros.util.item.Model;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -124,7 +122,7 @@ public class GearItem {
     }
 
     public boolean isSimilar(ItemStack stack) {
-        return isSimilar(GearItem.Instance.fromStack(stack));
+        return isSimilar(stack);
     }
 
     public boolean isSimilar(GearItem.Instance gear) {
@@ -136,7 +134,7 @@ public class GearItem {
         return "Gear(version=" + version + ", id=" + id + ", group=" + group + ", name=" + name + ", type=" + type + ", model=" + modelId + ", rarity=" + rarity + ", components=" + components + ")";
     }
 
-    public static ListenableFuture<GearItem> fromID(String id) {
+    public static GearItem fromID(String id) {
         return ItemManager.getItem(id);
     }
 
@@ -231,9 +229,8 @@ public class GearItem {
         }
 
         public static GearItem.Instance fromID(String id) {
-            ListenableFuture<GearItem> future = GearItem.fromID(id);
             try {
-                GearItem.Instance instance = new GearItem.Instance(future.get(), UUID.randomUUID());
+                GearItem.Instance instance = new GearItem.Instance(GearItem.fromID(id), UUID.randomUUID());
                 if (instance.gear == null) return null;
                 instance.amount = 1;
                 instance.persists = new PersistMap();
@@ -246,7 +243,8 @@ public class GearItem {
         }
 
         public static GearItem.Instance fromStack(ItemStack stack) {
-            if (stack == null || stack.getType() == Material.AIR) return null;
+            if (stack == null || stack.getType() == Material.AIR)
+                return null;
 
             NBTEditor nbt = new NBTEditor(stack);
 
@@ -261,22 +259,16 @@ public class GearItem {
                 }
             }
 
-            ListenableFuture<GearItem> future = GearItem.fromID(nbt.getString("lov.name"));
-            try {
-                GearItem gear = future.get(5L, TimeUnit.SECONDS);
-                if (gear == null)
-                    return null;
+            GearItem gear = GearItem.fromID(nbt.getString("lov.name"));
+            if (gear == null)
+                return null;
 
-                GearItem.Instance data = new GearItem.Instance(gear, nbt.getString("lov.cache") == null ? UUID.randomUUID() : UUID.fromString(nbt.getString("lov.cache")));
-                data.version = nbt.getInteger("lov.version");
-                data.amount = stack.getAmount();
-                data.persists = ItemManager.gson.fromJson(nbt.getString("lov.persist"), PersistMap.class);
-                return data;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            GearItem.Instance data = new GearItem.Instance(gear, nbt.getString("lov.cache") == null ? UUID.randomUUID() : UUID.fromString(nbt.getString("lov.cache")));
+            data.version = nbt.getInteger("lov.version");
+            data.amount = stack.getAmount();
+            data.persists = ItemManager.gson.fromJson(nbt.getString("lov.persist"), PersistMap.class);
 
-            return null;
+            return data;
         }
 
         public GearItem.Data getData() {
@@ -370,16 +362,14 @@ public class GearItem {
         public PersistMap persist = new PersistMap();
 
         public GearItem.Instance toInstance() {
-            try {
-                GearItem.Instance instance = new GearItem.Instance(GearItem.fromID(id).get(5L, TimeUnit.SECONDS), UUID.randomUUID());
-                instance.version = version;
-                instance.amount = amount;
-                instance.persists = persist;
-                return instance;
-            } catch (Exception e) {
-                MessageUtil.sendException(Gear.getInstance(), null, e, true);
-            }
-            return null;
+            GearItem gear = GearItem.fromID(id);
+            if (gear == null) return null;
+
+            GearItem.Instance instance = new GearItem.Instance(gear, UUID.randomUUID());
+            instance.version = version;
+            instance.amount = amount;
+            instance.persists = persist;
+            return instance;
         }
 
         public ItemStack toStack() {

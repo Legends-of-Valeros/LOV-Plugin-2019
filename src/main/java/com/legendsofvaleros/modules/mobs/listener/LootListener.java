@@ -4,7 +4,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
-import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
 import com.legendsofvaleros.modules.loot.LootManager;
 import com.legendsofvaleros.modules.loot.LootTable;
@@ -75,14 +74,7 @@ public class LootListener implements Listener {
                         LootTable.Item item = table.nextItem();
                         if (item == null) continue;
 
-                        ListenableFuture<GearItem> futurestack = item.getItem();
-                        futurestack.addListener(() -> {
-                            try {
-                                ItemUtil.dropItem(dieLoc, futurestack.get().newInstance(), pc);
-                            } catch (InterruptedException | ExecutionException e) {
-                                MessageUtil.sendException(LootManager.getInstance(), event.getKiller() != null && event.getKiller().getLivingEntity() instanceof Player ? (Player) event.getKiller().getLivingEntity() : null, e, false);
-                            }
-                        }, Mobs.getInstance().getScheduler()::sync);
+                        ItemUtil.dropItem(dieLoc, item.getItem().newInstance(), pc);
                     }
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();

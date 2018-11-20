@@ -3,10 +3,6 @@ package com.legendsofvaleros.modules.gear;
 import com.codingforcookies.doris.orm.ORMField;
 import com.codingforcookies.doris.orm.ORMRegistry;
 import com.codingforcookies.doris.orm.ORMTable;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
 import com.google.gson.*;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.gear.component.impl.ComponentMap;
@@ -14,12 +10,15 @@ import com.legendsofvaleros.modules.gear.component.impl.GearComponent;
 import com.legendsofvaleros.modules.gear.component.impl.PersistMap;
 import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.util.MessageUtil;
+import com.legendsofvaleros.util.Utilities;
 import com.legendsofvaleros.util.field.RangedValue;
 import com.legendsofvaleros.util.item.Model;
 
 import java.lang.reflect.Type;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 public class ItemManager {
@@ -27,10 +26,7 @@ public class ItemManager {
 
     private static ORMTable<GearItem> gearTable;
 
-    public static Cache<String, GearItem> cache = CacheBuilder.newBuilder()
-            .concurrencyLevel(4)
-            .weakValues()
-            .build();
+    private static Map<String, GearItem> gear = new HashMap<>();
 
     public static void onEnable() {
         gson = new GsonBuilder()
@@ -80,35 +76,29 @@ public class ItemManager {
         });
 
         gearTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), GearItem.class);
+
+        // Bite the bullet and load all gear into memory to prevent code complexity. This was getting
+        // out of hand.
+        Gear.getInstance().getScheduler().executeInSpigotCircle(() -> {
+            reload();
+
+            Gear.ERROR_ITEM = GearItem.fromID("perfectly-generic-item");
+            Utilities.getInstance().getLogger().info(Gear.ERROR_ITEM.toString());
+        });
     }
 
-    public static ListenableFuture<GearItem> getItem(String id) {
-        SettableFuture<GearItem> ret = SettableFuture.create();
+    public static void reload() {
+        gear.clear();
 
-        GearItem cached = cache.getIfPresent(id);
-        if (cached != null) {
-            ret.set(cached);
-        } else {
-            gearTable.query()
-                    .get(id)
-                    .forEach((gear) -> {
-                        ListenableFuture<Model> future = Model.get(gear.getModelId());
-                        future.addListener(() -> {
-                            try {
-                                gear.model = future.get();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+        gearTable.query().all().forEach((item) -> {
+            item.model = Model.get(item.getModelId());
 
-                            cache.put(id, gear);
+            gear.put(item.getID(), item);
+        }).execute(false);
+    }
 
-                            ret.set(gear);
-                        }, Gear.getInstance().getScheduler()::async);
-                    })
-                    .onEmpty(() -> ret.set(Gear.ERROR_ITEM))
-                    .execute(true);
-        }
-
-        return ret;
+    public static GearItem getItem(String id) {
+        if(!gear.containsKey(id)) return Gear.ERROR_ITEM;
+        return gear.get(id);
     }
 }

@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.mobs.quest;
 
-import com.legendsofvaleros.LegendsOfValeros;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.mobs.MobManager;
@@ -14,6 +14,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
+import java.util.concurrent.ExecutionException;
+
 public class KillObjective extends AbstractObjective<ObjectiveProgressInteger> {
     private String id;
     private int amount;
@@ -22,10 +24,17 @@ public class KillObjective extends AbstractObjective<ObjectiveProgressInteger> {
 
     @Override
     protected void onInit() {
-        mob = MobManager.getEntity(id);
+        ListenableFuture<Mob> future = MobManager.loadEntity(id);
+        future.addListener(() -> {
+            try {
+                Mob mob = future.get();
 
-        if (mob == null)
-            MessageUtil.sendException(Mobs.getInstance(), null, new Exception("No instance with that ID in quest. Offender: " + id + " in " + getQuest().getId()), false);
+                if (mob == null)
+                    MessageUtil.sendException(Mobs.getInstance(), null, new Exception("No instance with that ID in quest. Offender: " + id + " in " + getQuest().getId()), false);
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }, Mobs.getInstance().getScheduler()::async);
     }
 
     @Override

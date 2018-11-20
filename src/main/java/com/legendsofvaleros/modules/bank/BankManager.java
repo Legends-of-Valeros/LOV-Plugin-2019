@@ -123,9 +123,12 @@ public class BankManager {
 
         @EventHandler
         public void onCharacterLogout(PlayerCharacterLogoutEvent event) {
+            PhaseLock lock = event.getLock();
             onLogout(event.getPlayerCharacter().getUniqueCharacterId())
-                    .addListener(() -> banks.remove(event.getPlayerCharacter().getUniqueCharacterId()),
-                            Bank.getInstance().getScheduler()::async);
+                    .addListener(() -> {
+                        banks.remove(event.getPlayerCharacter().getUniqueCharacterId());
+                        lock.release();
+                    }, Bank.getInstance().getScheduler()::async);
         }
 
         @EventHandler

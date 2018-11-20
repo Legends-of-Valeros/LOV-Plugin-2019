@@ -3,7 +3,6 @@ package com.legendsofvaleros.modules.mobs.core;
 import com.codingforcookies.doris.orm.annotation.Column;
 import com.codingforcookies.doris.orm.annotation.Table;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
@@ -232,24 +231,14 @@ public class Mob {
         private int amount = 1;
         private double chance = 1;
 
-        public ListenableFuture<ItemStack> getStack() {
-            SettableFuture<ItemStack> ret = SettableFuture.create();
-
-            ListenableFuture<GearItem> future = GearItem.fromID(id);
-            future.addListener(() -> {
-                try {
-                    ItemStack itemStack = future.get().newInstance().toStack();
-                    if (itemStack != null) {
-                        itemStack.setAmount(this.amount);
-                        ret.set(itemStack);
-                    } else
-                        Mobs.getInstance().getLogger().severe("Attempt to use instance item with unknown item name. Offender: " + id);
-                } catch (Exception e) {
-                    MessageUtil.sendException(Mobs.getInstance(), null, e, false);
-                }
-            }, Mobs.getInstance().getScheduler()::async);
-
-            return ret;
+        public ItemStack getStack() {
+            ItemStack itemStack = GearItem.fromID(id).newInstance().toStack();
+            if (itemStack != null) {
+                itemStack.setAmount(this.amount);
+                return itemStack;
+            } else
+                Mobs.getInstance().getLogger().severe("Item does not exist. Offender: " + id);
+            return null;
         }
 
         @Override
@@ -332,16 +321,8 @@ public class Mob {
             for (Equipment.EquipmentSlot slot : Equipment.EquipmentSlot.values()) {
                 Item item = getRandomEquipment(slot);
 
-                if (item != null) {
-                    ListenableFuture<ItemStack> future = item.getStack();
-                    future.addListener(() -> {
-                        try {
-                            equipment.set(slot, future.get());
-                        } catch (Exception e) {
-                            MessageUtil.sendException(Mobs.getInstance(), null, new Exception("Could not load equipment for instance. Offender: " + item.id + " on " + slot.name() + " in " + mob.id), false);
-                        }
-                    }, Mobs.getInstance().getScheduler()::async);
-                }
+                if (item != null)
+                    equipment.set(slot, item.getStack());
             }
 
             npc.addTrait(new MobTrait(this));

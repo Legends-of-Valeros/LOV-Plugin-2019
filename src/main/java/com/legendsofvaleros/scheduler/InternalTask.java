@@ -1,5 +1,7 @@
 package com.legendsofvaleros.scheduler;
 
+import com.legendsofvaleros.util.MessageUtil;
+
 /*
  * Created by Crystall on 10/10/2018
  * Represents an executing thread for a module
@@ -13,7 +15,11 @@ public class InternalTask {
         this.executor = executor;
     }
 
+    private final String trace;
+    public String getTrace() { return trace; }
+
     private Runnable command;
+    public Runnable getCommand() { return command; }
     public void setTask(Runnable command) {
         this.command = command;
     }
@@ -49,6 +55,8 @@ public class InternalTask {
     public void setRepeatingInterval(long i) { ri = i; }
 
     public InternalTask(Runnable command) {
+        this.trace = MessageUtil.getStackTrace(new Throwable("Created InternalTask"));
+
         this.command = command;
     }
 

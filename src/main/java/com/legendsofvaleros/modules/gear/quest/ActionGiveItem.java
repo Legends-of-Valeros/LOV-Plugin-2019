@@ -1,8 +1,6 @@
 package com.legendsofvaleros.modules.gear.quest;
 
-import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.gear.Gear;
 import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
 import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
@@ -17,22 +15,13 @@ public class ActionGiveItem extends AbstractAction {
 
     @Override
     public void play(Player player, Next next) {
-        ListenableFuture<GearItem> future = GearItem.fromID(itemId);
-        future.addListener(() -> {
-            try {
-                GearItem.Instance instance = future.get().newInstance();
-                instance.amount = amount == null ? 1 : amount;
+        GearItem.Instance instance = GearItem.fromID(itemId).newInstance();
+        instance.amount = amount == null ? 1 : amount;
 
-                MessageUtil.sendUpdate(player, new FancyMessage("You received " + (instance.amount == 1 ? "a " : instance.amount + "x") + "[").color(ChatColor.AQUA)
-                        .then(instance.gear.getName()).color(ChatColor.GREEN)
-                        .then("]!").color(ChatColor.AQUA));
+        MessageUtil.sendUpdate(player, new FancyMessage("You received " + (instance.amount == 1 ? "a " : instance.amount + "x") + "[").color(ChatColor.AQUA)
+                .then(instance.gear.getName()).color(ChatColor.GREEN)
+                .then("]!").color(ChatColor.AQUA));
 
-                ItemUtil.giveItem(Characters.getPlayerCharacter(player), instance);
-            } catch (Exception e) {
-                MessageUtil.sendException(Gear.getInstance(), player, e, false);
-            }
-
-            next.go();
-        }, Gear.getInstance().getScheduler()::async);
+        ItemUtil.giveItem(Characters.getPlayerCharacter(player), instance);
     }
 }

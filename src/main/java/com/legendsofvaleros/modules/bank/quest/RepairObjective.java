@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.bank.quest;
 
-import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.bank.Bank;
 import com.legendsofvaleros.modules.bank.repair.RepairItemEvent;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
@@ -17,14 +16,10 @@ public class RepairObjective extends AbstractObjective<ObjectiveProgressBoolean>
 
     @Override
     protected void onInit() {
-        ListenableFuture<GearItem> future = GearItem.fromID(id);
-        future.addListener(() -> {
-            try {
-                item = future.get();
-            } catch (Exception e) {
-                MessageUtil.sendException(Bank.getInstance(), null, new Exception("No item with that ID in quest. Offender: " + id + " in " + getQuest().getId()), false);
-            }
-        }, Bank.getInstance().getScheduler()::async);
+        item = GearItem.fromID(id);
+
+        if(item == null)
+            MessageUtil.sendException(Bank.getInstance(), null, new Exception("No item with that ID in quest. Offender: " + id + " in " + getQuest().getId()), false);
     }
 
     @Override

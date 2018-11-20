@@ -3,9 +3,7 @@ package com.legendsofvaleros.modules.bank.trade;
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.codingforcookies.robert.slot.Slot;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
-import com.legendsofvaleros.modules.bank.Bank;
 import com.legendsofvaleros.modules.bank.Money;
 import com.legendsofvaleros.modules.bank.gui.ItemMorphGUI;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
@@ -13,7 +11,6 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
-import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.item.Model;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.ChatColor;
@@ -102,17 +99,8 @@ public class TraitTrader extends LOVTrait {
     @Override
     public void onSpawn() {
         gears = new GearItem[items.length];
-        for (int i = 0; i < items.length; i++) {
-            final int j = i;
-            ListenableFuture<GearItem> future = GearItem.fromID(items[j]);
-            future.addListener(() -> {
-                try {
-                    gears[j] = future.get();
-                } catch (Exception e) {
-                    MessageUtil.sendException(Bank.getInstance(), null, e, false);
-                }
-            }, Bank.getInstance().getScheduler()::async);
-        }
+        for (int i = 0; i < items.length; i++)
+            gears[i] = GearItem.fromID(items[i]);
     }
 
     @Override

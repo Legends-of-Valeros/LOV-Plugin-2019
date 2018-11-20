@@ -1,10 +1,6 @@
 package com.legendsofvaleros.modules.loot;
 
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
-import com.legendsofvaleros.modules.gear.Gear;
 import com.legendsofvaleros.modules.gear.item.GearItem;
-import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.inventory.ItemStack;
 
 public class LootTable {
@@ -17,27 +13,17 @@ public class LootTable {
         public String id;
         public double weight = 1;
 
-        public ListenableFuture<GearItem> getItem() {
+        public GearItem getItem() {
             return GearItem.fromID(id);
         }
 
-        public ListenableFuture<ItemStack> getStack() {
-            SettableFuture<ItemStack> ret = SettableFuture.create();
-
-            ListenableFuture<GearItem> future = GearItem.fromID(id);
-            future.addListener(() -> {
-                try {
-                    ItemStack stack = future.get().newInstance().toStack();
-                    if (stack != null)
-                        ret.set(stack);
-                    else
-                        LootManager.getInstance().getLogger().severe("Attempt to use loot table item with unknown item name. Offender: " + id);
-                } catch (Exception e) {
-                    MessageUtil.sendException(LootManager.getInstance(), null, e, false);
-                }
-            }, Gear.getInstance().getScheduler()::async);
-
-            return ret;
+        public ItemStack getStack() {
+            ItemStack stack = GearItem.fromID(id).newInstance().toStack();
+            if (stack != null)
+                return stack;
+            else
+                LootManager.getInstance().getLogger().severe("Attempt to use loot table item with unknown item name. Offender: " + id);
+            return null;
         }
 
         @Override

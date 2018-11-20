@@ -1,9 +1,7 @@
 package com.legendsofvaleros.modules.mobs.trait;
 
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.UUID;
-
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.modules.characters.api.*;
 import com.legendsofvaleros.modules.characters.core.InventoryData;
 import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
@@ -12,32 +10,13 @@ import com.legendsofvaleros.modules.characters.race.EntityRace;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.characters.skill.SkillSet;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
-import com.legendsofvaleros.modules.characters.api.*;
-import com.legendsofvaleros.modules.characters.core.InventoryData;
-import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.race.EntityRace;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.characters.skill.SkillSet;
-import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
+import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import com.google.common.util.concurrent.ListenableFuture;
-import com.legendsofvaleros.modules.characters.api.AbilityStats;
-import com.legendsofvaleros.modules.characters.api.CharacterId;
-import com.legendsofvaleros.modules.characters.api.Cooldowns;
-import com.legendsofvaleros.modules.characters.api.Experience;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.core.InventoryData;
-import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.race.EntityRace;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.characters.skill.SkillSet;
-import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
-
-import net.citizensnpcs.api.npc.NPC;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.UUID;
 
 public class NPCPlayerCharacter implements PlayerCharacter {
     static final Experience experience = new Experience() {
@@ -109,22 +88,39 @@ public class NPCPlayerCharacter implements PlayerCharacter {
         }
     };
     static final InventoryData inventory = new InventoryData() {
-        @Override public void onInvalidated(PlayerCharacter pc) {
+        @Override
+        public ListenableFuture<Void> onInvalidated(PlayerCharacter pc) {
+            SettableFuture<Void> ret = SettableFuture.create();
+            ret.set(null);
+            return ret;
         }
 
-        @Override public void saveInventory(PlayerCharacter pc) {
+        @Override
+        public ListenableFuture<Void> saveInventory(PlayerCharacter pc) {
+            SettableFuture<Void> ret = SettableFuture.create();
+            ret.set(null);
+            return ret;
         }
 
-        @Override public void initInventory(PlayerCharacter pc) {
+        @Override
+        public void initInventory(PlayerCharacter pc) {
+
         }
 
-        @Override public void loadInventory(PlayerCharacter pc) {
+        @Override
+        public ListenableFuture<Void> loadInventory(PlayerCharacter pc) {
+            SettableFuture<Void> ret = SettableFuture.create();
+            ret.set(null);
+            return ret;
         }
 
-        @Override public void onDeath(PlayerCharacter pc) {
+        @Override
+        public void onDeath(PlayerCharacter pc) {
+
         }
 
-        @Override public String getData() {
+        @Override
+        public String getData() {
             return null;
         }
     };

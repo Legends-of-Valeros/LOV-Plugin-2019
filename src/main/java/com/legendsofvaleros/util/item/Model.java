@@ -4,20 +4,15 @@ import com.codingforcookies.doris.orm.ORMTable;
 import com.codingforcookies.doris.orm.annotation.Column;
 import com.codingforcookies.doris.orm.annotation.Table;
 import com.codingforcookies.robert.item.ItemBuilder;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.concurrent.TimeUnit;
+import java.util.HashMap;
+import java.util.Map;
 
 @Table(name = "item_models")
 public class Model {
@@ -26,41 +21,34 @@ public class Model {
 	public static ItemStack EMPTY_SLOT = null;
 
 	private static ORMTable<Model> modelTable;
+
+	private static final Map<String, Model> models = new HashMap<>();
+
 	public static void onEnable() {
 		modelTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), Model.class);
+
+		// Item models are used so extensively in every situation, we just bite the bullet
+		// and load them all on server boot.
+		reload();
 
 		EMPTY_SLOT = stack("empty-slot").create();
 	}
 
-	public static final Cache<String, Model> cache = CacheBuilder.newBuilder()
-													.concurrencyLevel(4)
-													.expireAfterAccess(1, TimeUnit.HOURS)
-													.build();
-	public static ListenableFuture<Model> get(String id) {
-		SettableFuture<Model> ret = SettableFuture.create();
-		
-		Model cached = cache.getIfPresent(id);
-		if(cached != null) {
-			 ret.set(cached);
-		}else{
-			modelTable.query()
-						.get(id)
-					.forEach((model) -> {
-						cache.put(model.id, model);
-						ret.set(model);
-					}).onEmpty(() -> ret.set(NONE))
-					.execute(true);
-		}
-		return ret;
+	public static void reload() {
+		models.clear();
+
+		Utilities.getInstance().getLogger().info("Loading item models...");
+		modelTable.query().all().forEach((model) -> models.put(model.id, model)).execute(false);
+	}
+
+	public static Model get(String id) {
+		if(!models.containsKey(id))
+			return NONE;
+		return models.get(id);
 	}
 
 	public static ItemBuilder stack(String id) {
-		try {
-			return get(id).get(5, TimeUnit.SECONDS).toStack();
-		} catch (Exception e) {
-			MessageUtil.sendException(Utilities.getInstance(), null, new Exception("Failed to load item model! Offender: " + id), false);
-		}
-		return NONE.toStack();
+		return get(id).toStack();
 	}
 	
 	public static ItemStack merge(String id, ItemStack stack) {

@@ -4,6 +4,8 @@ import com.codingforcookies.doris.query.InsertQuery;
 import com.codingforcookies.doris.sql.TableManager;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
@@ -142,44 +144,49 @@ public class PersistingEffects {
 					.execute(true);
 	}
 
-	private static void writeEffects(Set<PersistingEffect> effects) {
+	private static ListenableFuture<Void> writeEffects(Set<PersistingEffect> effects) {
+		SettableFuture<Void> ret = SettableFuture.create();
+
 		if (effects == null || effects.isEmpty()) {
-			return;
-		}
+			ret.set(null);
+		}else {
+			// makes a final, defensive copy of the effects to save
+			final Set<PersistingEffect> effs = new HashSet<>();
+			for (PersistingEffect effect : effects) {
 
-		// makes a final, defensive copy of the effects to save
-		final Set<PersistingEffect> effs = new HashSet<>();
-		for (PersistingEffect effect : effects) {
+				// does not bother writing effects with very short remaining durations
+				if (effect.getRemainingDurationMillis() >= MIN_MILLIS_REMAINING_TO_SAVE) {
+					effs.add(effect);
+				}
+			}
 
-			// does not bother writing effects with very short remaining durations
-			if (effect.getRemainingDurationMillis() >= MIN_MILLIS_REMAINING_TO_SAVE) {
-				effs.add(effect);
+			if (effs.isEmpty()) {
+				ret.set(null);
+			}else{
+				InsertQuery<ResultSet> insert = managerEffects.query()
+						.insert()
+						.onDuplicateUpdate(CHARACTER_ID_FIELD,
+								EFFECT_FIELD,
+								REMAINING_DURATION_FIELD,
+								ELAPSED_DURATION_FIELD,
+								LEVEL_FIELD,
+								STRING_META_FIELD,
+								BYTE_META_FIELD);
+				for (PersistingEffect eff : effs) {
+					insert.values(CHARACTER_ID_FIELD, eff.getAffected().toString(),
+							EFFECT_FIELD, eff.getEffectId(),
+							REMAINING_DURATION_FIELD, eff.getRemainingDurationMillis(),
+							ELAPSED_DURATION_FIELD, eff.getElapsedMillis(),
+							LEVEL_FIELD, eff.getLevel(),
+							STRING_META_FIELD, eff.getStringMeta(),
+							BYTE_META_FIELD, eff.getByteMeta());
+					insert.addBatch();
+				}
+				insert.build().onFinished(() -> ret.set(null)).execute(true);
 			}
 		}
-		if (effs.isEmpty()) {
-			return;
-		}
 
-		InsertQuery<ResultSet> insert = managerEffects.query()
-								.insert()
-									.onDuplicateUpdate(CHARACTER_ID_FIELD,
-											EFFECT_FIELD,
-											REMAINING_DURATION_FIELD,
-											ELAPSED_DURATION_FIELD,
-											LEVEL_FIELD,
-											STRING_META_FIELD, 
-											BYTE_META_FIELD);
-		for (PersistingEffect eff : effs) {
-			insert.values(CHARACTER_ID_FIELD, eff.getAffected().toString(),
-											EFFECT_FIELD, eff.getEffectId(),
-											REMAINING_DURATION_FIELD, eff.getRemainingDurationMillis(),
-											ELAPSED_DURATION_FIELD, eff.getElapsedMillis(),
-											LEVEL_FIELD, eff.getLevel(),
-											STRING_META_FIELD, eff.getStringMeta(),
-											BYTE_META_FIELD, eff.getByteMeta());
-			insert.addBatch();
-		}
-		insert.build().execute(true);
+		return ret;
 	}
 
 	/**
@@ -239,7 +246,8 @@ public class PersistingEffects {
 						}
 					}
 
-					writeEffects(saveThese);
+					PhaseLock lock = event.getLock();
+					writeEffects(saveThese).addListener(lock::release, Characters.getInstance().getScheduler()::async);
 				}
 			}
 		}

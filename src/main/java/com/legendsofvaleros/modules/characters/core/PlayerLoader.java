@@ -2,6 +2,7 @@ package com.legendsofvaleros.modules.characters.core;
 
 import com.codingforcookies.robert.core.StringUtil;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
@@ -23,6 +24,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.*;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
@@ -67,6 +69,15 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
             MessageUtil.sendException(Characters.getInstance(), null, error, true);
         } else if (value != null) {
             Characters.getInstance().getScheduler().executeInSpigotCircle(() -> onDoneLoading(value));
+        }
+    };
+
+    private Callback<CharacterId> logoutCallback = (value, error) -> {
+        if (error != null) {
+            Characters.getInstance().getLogger().severe("error while logging out a player's character data");
+            MessageUtil.sendException(Characters.getInstance(), null, error, true);
+        } else if (value != null) {
+            Characters.getInstance().getScheduler().executeInSpigotCircle(() -> onDoneLoggingOut(value));
         }
     };
 
@@ -139,10 +150,11 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
         }
 
         if (oldCharacter != null) {
-            logoutCharacter(player, false);
-        }
-
-        loadCharacter(newCharacter);
+            logoutCharacter(player, false).addListener(() -> {
+                loadCharacter(newCharacter);
+            }, Characters.getInstance().getScheduler()::sync);
+        }else
+            loadCharacter(newCharacter);
         return true;
     }
 
@@ -214,6 +226,8 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
         } else {
             if (load.getPlayer() == null || !load.getPlayer().isOnline()) return;
 
+            Characters.getInstance().getLogger().info(load.getPlayer().getDisplayName() + " is loading his character: " + load.getUniqueCharacterId());
+
             TaskPhase<CharacterId> tp =
                     new TaskPhase<>(Characters.getInstance().getUiManager()
                             .getProgressView(load.getPlayer()));
@@ -241,38 +255,6 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
                 onDoneLoading(load.getUniqueCharacterId());
             }
         }
-    }
-
-    private void logoutCharacter(Player player, boolean serverLogout) {
-        if (Characters.isPlayerCharacterLoaded(player)) {
-            PlayerCharacter character = Characters.getPlayerCharacter(player);
-            PlayerCharacterLogoutEvent logoutEvent =
-                    new PlayerCharacterLogoutEvent(character, serverLogout);
-
-            if (LegendsOfValeros.getInstance().isEnabled()) {
-                Bukkit.getPluginManager().callEvent(logoutEvent);
-
-            } else {
-                // bypasses Bukkit's stupid system of disabling listeners onDisable. Logs out online
-                // player-characters on shutdown. Especially useful and necessary for writing to the db on
-                // shutdown.
-                for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
-                    for (RegisteredListener lis : HandlerList.getRegisteredListeners(plugin)) {
-                        try {
-                            lis.callEvent(logoutEvent);
-                        } catch (EventException e) {
-                            Logger lg = Characters.getInstance().getLogger();
-                            lg.severe("Encountered an issue while manually informing listeners of a player-characters logout on-disable.");
-                            MessageUtil.sendException(Characters.getInstance(), player, e, true);
-                        }
-                    }
-                }
-            }
-        }
-
-        // tells combat engine to stop using the combat data of the character that was just switched
-        // away from
-        combatEngine.invalidateCombatEntity(player);
     }
 
     private void onDoneLoading(CharacterId uniqueCharacterId) {
@@ -304,6 +286,76 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
         combatEngine.createCombatEntity(doneLoading.getPlayer());
     }
 
+    private ListenableFuture<Void> logoutCharacter(Player player, boolean serverLogout) {
+        Characters.getInstance().getLogger().info(player.getDisplayName() + " is logging out of his character...");
+
+        SettableFuture<Void> ret = SettableFuture.create();
+
+        if (Characters.isPlayerCharacterLoaded(player)) {
+            PlayerCharacter character = Characters.getPlayerCharacter(player);
+
+            TaskPhase<CharacterId> tp =
+                    new TaskPhase<>(Characters.getInstance().getUiManager()
+                            .getProgressView(character.getPlayer()));
+
+            PlayerCharacterLogoutEvent event =
+                    new PlayerCharacterLogoutEvent(character, tp, serverLogout);
+
+            if (LegendsOfValeros.getInstance().isEnabled()) {
+                Bukkit.getPluginManager().callEvent(event);
+
+            } else {
+                // bypasses Bukkit's stupid system of disabling listeners onDisable. Logs out online
+                // player-characters on shutdown. Especially useful and necessary for writing to the db on
+                // shutdown.
+                for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+                    for (RegisteredListener lis : HandlerList.getRegisteredListeners(plugin)) {
+                        try {
+                            lis.callEvent(event);
+                        } catch (EventException e) {
+                            Logger lg = Characters.getInstance().getLogger();
+                            lg.severe("Encountered an issue while manually informing listeners of a player-characters logout on-disable.");
+                            MessageUtil.sendException(Characters.getInstance(), player, e, true);
+                        }
+                    }
+                }
+            }
+
+            if (tp.hasLocks()) {
+                tp.start(character.getUniqueCharacterId(), (value, error) -> {
+                    logoutCallback.callback(value, error);
+
+                    ret.set(null);
+                });
+
+                // locks the player during the logout process and clears any previous locks.
+                // This also prevents logging back in until your logout process completes.
+                PlayerLock previousLock =
+                        locks.put(character.getPlayerId(), PlayerLock.lockPlayer(character.getPlayer()));
+                if (previousLock != null) {
+                    previousLock.release();
+                }
+
+            } else {
+                onDoneLoggingOut(character.getUniqueCharacterId());
+                ret.set(null);
+            }
+        }
+
+        // tells combat engine to stop using the combat data of the character that was just switched
+        // away from
+        combatEngine.invalidateCombatEntity(player);
+
+        return ret;
+    }
+
+    private void onDoneLoggingOut(CharacterId uniqueCharacterId) {
+        PlayerLock playerLock = locks.remove(uniqueCharacterId.getPlayerId());
+        if (playerLock != null) {
+            playerLock.release();
+        }
+    }
+
     private void createNewCharacter(Player player, int number) {
         PlayerLock lock = locks.remove(player.getUniqueId());
         if (lock != null) {
@@ -326,6 +378,14 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
         private PlayerListener(PlayerLoader outer) {
             this.outer = outer;
             Characters.getInstance().registerEvents(this);
+        }
+
+        @EventHandler
+        public void onPlayerLogin(PlayerLoginEvent event) {
+            // If a lock is still active, then processing is still being done for an old
+            // player character. We don't want them to join, right now.
+            if(locks.containsKey(event.getPlayer().getUniqueId()))
+                event.setKickMessage("Logging in too quickly! Try again in a moment.");
         }
 
         @EventHandler
@@ -363,15 +423,18 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
         @EventHandler(priority = EventPriority.HIGH)
         public void onPlayerQuit(final PlayerQuitEvent event) {
             haveAlreadyLoaded.remove(event.getPlayer().getUniqueId());
+
+            // Removes the login phaselock if it exists.
             PlayerLock lock = locks.remove(event.getPlayer().getUniqueId());
             if (lock != null) {
                 lock.release();
             }
 
-            logoutCharacter(event.getPlayer(), true);
+            logoutCharacter(event.getPlayer(), true).addListener(() -> {
+                PlayerCharacterData.onLogout(event.getPlayer().getUniqueId());
 
-            // delays invalidating character data so it can be used during logout
-            Characters.getInstance().getScheduler().executeInSpigotCircleLater(() -> PlayerCharacterData.onLogout(event.getPlayer().getUniqueId()), 1L);
+                locks.remove(event.getPlayer().getUniqueId());
+            }, Characters.getInstance().getScheduler()::async);
         }
 
         @EventHandler
@@ -383,11 +446,12 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
 
             Characters.getInstance().getScheduler().executeInMyCircle(() -> {
                 if (inventory.getData() != null)
-                    inventory.loadInventory(pc);
-                else
+                    inventory.loadInventory(pc).addListener(lock::release, Characters.getInstance().getScheduler()::async);
+                else{
                     inventory.initInventory(pc);
 
-                lock.release();
+                    lock.release();
+                }
             });
         }
     }

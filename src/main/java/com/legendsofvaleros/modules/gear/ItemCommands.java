@@ -3,7 +3,6 @@ package com.legendsofvaleros.modules.gear;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
@@ -18,8 +17,8 @@ public class ItemCommands extends BaseCommand {
     @Description("Clear the item cache.")
     @CommandPermission("gear.clear")
     public void cmdClear(CommandSender sender) {
-        ItemManager.cache.invalidateAll();
-        Model.cache.invalidateAll();
+        ItemManager.reload();
+        Model.reload();
         MessageUtil.sendUpdate(sender, "Item and item model cache cleared.");
     }
 
@@ -28,24 +27,18 @@ public class ItemCommands extends BaseCommand {
     @CommandPermission("gear.spawn")
     @Syntax("<item id> [amount]")
     public void cmdSpawn(Player player, String id, @Optional Integer amount) {
-        ListenableFuture<GearItem> future = GearItem.fromID(id);
+        GearItem gear = GearItem.fromID(id);
 
-        future.addListener(() -> {
-            try {
-                GearItem gear = future.get();
+        if (gear == null) {
+            MessageUtil.sendError(player, "That item name doesn't exist.");
+            return;
+        }
 
-                if (gear == null)
-                    throw new Exception("That item name doesn't exist. Offender: " + id);
+        GearItem.Instance instance = gear.newInstance();
 
-                GearItem.Instance instance = gear.newInstance();
+        instance.amount = amount != null ? amount : 1;
 
-                instance.amount = amount != null ? amount : 1;
-
-                ItemUtil.giveItem(Characters.getPlayerCharacter(player), instance);
-            } catch (Exception e) {
-                MessageUtil.sendException(Gear.getInstance(), player, e, false);
-            }
-        }, Gear.getInstance().getScheduler()::async);
+        ItemUtil.giveItem(Characters.getPlayerCharacter(player), instance);
     }
 
     @Default

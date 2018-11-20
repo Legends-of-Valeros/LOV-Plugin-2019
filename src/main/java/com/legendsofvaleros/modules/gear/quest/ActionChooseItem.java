@@ -2,7 +2,6 @@ package com.legendsofvaleros.modules.gear.quest;
 
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.slot.ISlotAction;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.Gear;
 import com.legendsofvaleros.modules.gear.item.GearItem;
@@ -43,60 +42,52 @@ public class ActionChooseItem extends AbstractAction {
 	
 	@Override
 	public void play(Player player, Next next) {
-		@SuppressWarnings("unchecked")
-		ListenableFuture<GearItem>[] futures = new ListenableFuture[itemIds.length];
-		
-		Runnable run = () -> {
-			for(ListenableFuture<GearItem> future : futures)
-				if (future == null || !future.isDone()) return;
+		GearItem[] items = new GearItem[itemIds.length];
 
-			try {
-				GUI gui = new GUI("Choose One") {
-					private ItemStack stack;
-					@Override public void onOpen(Player p, InventoryView view) { p.getInventory().setItem(17, Model.merge("menu-ui-chest-3", (stack = p.getInventory().getItem(17)))); }
-					@Override public void onClose(Player p, InventoryView view) { p.getInventory().setItem(17, stack); }
+		for(int i = 0; i < itemIds.length; i++)
+			items[i] = GearItem.fromID(itemIds[i]);
+
+		try {
+			GUI gui = new GUI("Choose One") {
+				private ItemStack stack;
+				@Override public void onOpen(Player p, InventoryView view) { p.getInventory().setItem(17, Model.merge("menu-ui-chest-3", (stack = p.getInventory().getItem(17)))); }
+				@Override public void onClose(Player p, InventoryView view) { p.getInventory().setItem(17, stack); }
+			};
+
+			gui.type(3);
+			gui.fixed();
+
+			for(int i = 0; i < items.length; i++) {
+				GearItem.Instance instance = items[i].newInstance();
+				instance.amount = amounts[i] == null ? 1 : amounts[i];
+
+				ISlotAction action = (ui, p, event) -> {
+					ui.close(p);
+
+					MessageUtil.sendUpdate(player, new FancyMessage("You received " + (instance.amount == 1 ? "a " : instance.amount + "x") + "[").color(ChatColor.AQUA)
+							.then(instance.gear.getName()).color(ChatColor.GREEN)
+							.then("]!").color(ChatColor.AQUA));
+
+					ItemUtil.giveItem(Characters.getPlayerCharacter(player), instance);
+
+					next.go();
 				};
-				
-				gui.type(3);
-				gui.fixed();
-				
-				for(int i = 0; i < futures.length; i++) {
-					GearItem.Instance instance = futures[i].get().newInstance();
-					instance.amount = amounts[i] == null ? 1 : amounts[i];
-					
-					ISlotAction action = (ui, p, event) -> {
-						ui.close(p);
-						
-						MessageUtil.sendUpdate(player, new FancyMessage("You received " + (instance.amount == 1 ? "a " : instance.amount + "x") + "[").color(ChatColor.AQUA)
-								.then(instance.gear.getName()).color(ChatColor.GREEN)
-								.then("]!").color(ChatColor.AQUA));
-						
-						ItemUtil.giveItem(Characters.getPlayerCharacter(player), instance);
-						
-						next.go();
-					};
 
-					if(futures.length == 1)
-						gui.slot(4, 1, instance.toStack(), action);
-					else if(futures.length == 2)
-						gui.slot(i == 0 ? 1 : 3, 1, instance.toStack(), action);
-					else if(futures.length == 3)
-						gui.slot(2 + i * 2, 1, instance.toStack(), action);
-					else if(futures.length == 4)
-						gui.slot(1 + i * 2, 1, instance.toStack(), action);
-					else
-						gui.slot(2 + i, 1, instance.toStack(), action);
-				}
-
-				gui.open(player);
-			} catch(Exception e) {
-				MessageUtil.sendException(Gear.getInstance(), player, e, false);
+				if(items.length == 1)
+					gui.slot(4, 1, instance.toStack(), action);
+				else if(items.length == 2)
+					gui.slot(i == 0 ? 1 : 3, 1, instance.toStack(), action);
+				else if(items.length == 3)
+					gui.slot(2 + i * 2, 1, instance.toStack(), action);
+				else if(items.length == 4)
+					gui.slot(1 + i * 2, 1, instance.toStack(), action);
+				else
+					gui.slot(2 + i, 1, instance.toStack(), action);
 			}
-		};
 
-		for(int i = 0; i < itemIds.length; i++) {
-			futures[i] = GearItem.fromID(itemIds[i]);
-			futures[i].addListener(run, Gear.getInstance().getScheduler()::async);
+			gui.open(player);
+		} catch(Exception e) {
+			MessageUtil.sendException(Gear.getInstance(), player, e, false);
 		}
 	}
 }

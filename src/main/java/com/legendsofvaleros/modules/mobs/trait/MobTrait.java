@@ -2,21 +2,13 @@ package com.legendsofvaleros.modules.mobs.trait;
 
 import com.gmail.filoghost.holographicdisplays.api.line.ItemLine;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
-import com.legendsofvaleros.modules.npcs.nameplate.Nameplates;
-import com.legendsofvaleros.util.item.Model;
 import com.legendsofvaleros.modules.mobs.core.Mob;
-import com.legendsofvaleros.modules.npcs.nameplate.Nameplates;
-import com.legendsofvaleros.util.item.Model;
 import com.legendsofvaleros.modules.npcs.nameplate.Nameplates;
 import com.legendsofvaleros.util.item.Model;
 import net.citizensnpcs.api.trait.Trait;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class MobTrait extends Trait {
 	public static final String TRAIT_NAME = "fuck_you_citizens";
@@ -42,13 +34,9 @@ public class MobTrait extends Trait {
 		nameplate = Nameplates.get(entity).get(Nameplates.BASE).appendTextLine(instance.mob.getRarity().newNameplate(instance));
 		
 		{
-			try {
-				Model model = Model.get("instance-rarity-" + instance.mob.getRarity().name().toLowerCase()).get(5L, TimeUnit.SECONDS);
-				if(model != Model.NONE) {
-					rarityPlate = nameplate.getParent().insertItemLine(0, model.toStack().create());
-				}
-			} catch (InterruptedException | ExecutionException | TimeoutException e) {
-				e.printStackTrace();
+			Model model = Model.get("instance-rarity-" + instance.mob.getRarity().name().toLowerCase());
+			if(model != Model.NONE) {
+				rarityPlate = nameplate.getParent().insertItemLine(0, model.toStack().create());
 			}
 		}
 

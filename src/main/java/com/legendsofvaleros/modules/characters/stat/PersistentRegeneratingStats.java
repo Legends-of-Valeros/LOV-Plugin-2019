@@ -2,7 +2,8 @@ package com.legendsofvaleros.modules.characters.stat;
 
 import com.codingforcookies.doris.query.InsertQuery;
 import com.codingforcookies.doris.sql.TableManager;
-import com.legendsofvaleros.LegendsOfValeros;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
@@ -104,19 +105,24 @@ public class PersistentRegeneratingStats {
                 .execute(true);
     }
 
-    private void save(RegeneratingStatData data) {
-        if (data == null) return;
+    private ListenableFuture<Void> save(RegeneratingStatData data) {
+        SettableFuture<Void> ret = SettableFuture.create();
 
-        InsertQuery<ResultSet> insert = managerStats.query()
-                .insert()
-                .onDuplicateUpdate(VALUE_FIELD);
-        for (Map.Entry<RegeneratingStat, Double> ent : data.values.entrySet()) {
-            insert.values(CHARACTER_FIELD, data.id.toString(),
-                    STAT_FIELD, ent.getKey().name(),
-                    VALUE_FIELD, ent.getValue());
-            insert.addBatch();
+        if (data == null) ret.set(null);
+        else {
+            InsertQuery<ResultSet> insert = managerStats.query()
+                    .insert()
+                    .onDuplicateUpdate(VALUE_FIELD);
+            for (Map.Entry<RegeneratingStat, Double> ent : data.values.entrySet()) {
+                insert.values(CHARACTER_FIELD, data.id.toString(),
+                        STAT_FIELD, ent.getKey().name(),
+                        VALUE_FIELD, ent.getValue());
+                insert.addBatch();
+            }
+            insert.build().onFinished(() -> ret.set(null)).execute(true);
         }
-        insert.build().execute(true);
+
+        return ret;
     }
 
     private void updateData(CharacterId characterId, CombatEntity ce) {
@@ -170,7 +176,6 @@ public class PersistentRegeneratingStats {
 
         @EventHandler
         public void onPlayerCharacterLogout(PlayerCharacterLogoutEvent event) {
-
             updateData(event.getPlayerCharacter().getUniqueCharacterId(), CombatEngine.getInstance()
                     .getCombatEntity(event.getPlayer()));
 
@@ -183,13 +188,8 @@ public class PersistentRegeneratingStats {
                     final RegeneratingStatData data = dataMap.remove(pc.getUniqueCharacterId());
 
                     if (data != null) {
-                        Runnable saveTask = () -> save(data);
-
-                        if (LegendsOfValeros.getInstance().isEnabled()) {
-                            Characters.getInstance().getScheduler().executeInMyCircle(saveTask);
-                        } else {
-                            saveTask.run();
-                        }
+                        PhaseLock lock = event.getLock();
+                        save(data).addListener(lock::release, Characters.getInstance().getScheduler()::async);
                     }
                 }
             }

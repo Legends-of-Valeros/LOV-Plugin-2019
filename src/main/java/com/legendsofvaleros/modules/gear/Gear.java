@@ -16,13 +16,8 @@ import com.legendsofvaleros.modules.gear.quest.*;
 import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.action.stf.ActionFactory;
 import com.legendsofvaleros.modules.quests.objective.stf.ObjectiveFactory;
-import com.legendsofvaleros.util.Utilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class Gear extends ListenerModule {
     private static Gear instance;
@@ -63,13 +58,6 @@ public class Gear extends ListenerModule {
         ActionFactory.registerType("item_choose", ActionChooseItem.class);
 
         PlayerInventoryData.method = new GearInventoryLoader();
-
-        try {
-            ERROR_ITEM = GearItem.fromID("perfectly-generic-item").get(5, TimeUnit.SECONDS);
-            Utilities.getInstance().getLogger().info(ERROR_ITEM.toString());
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            e.printStackTrace();
-        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

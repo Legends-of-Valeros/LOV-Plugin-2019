@@ -22,6 +22,9 @@ public class InternalScheduler extends Thread {
     public int getSyncTasksFired() { return totalS; }
     public int getAsyncTasksFired() { return totalA; }
 
+    private long totalBehind = 0;
+    public long getTotalBehind() { return totalBehind; }
+
     private long tick = 0;
     public List<Long> timings = new ArrayList<>();
 
@@ -40,24 +43,23 @@ public class InternalScheduler extends Thread {
         this.setName(name);
 
         long lastTime;
+        InternalTask curr;
+        List<InternalTask> fired = new LinkedList<>();
+        List<InternalTask> requeue = new LinkedList<>();
 
         while (!LegendsOfValeros.shutdown) {
             lastTime = System.currentTimeMillis();
+            requeue.clear();
+            fired.clear();
 
             tick++;
-
-            InternalTask curr;
-            LinkedList<InternalTask> requeue = new LinkedList<>();
-
-            // prev_task_amount = 0;
 
             while(!list.isEmpty()) {
                 curr = list.poll();
 
-                // prev_task_amount++;
-
                 if(curr.nextExecuteTick() == tick) {
                     try {
+                        fired.add(curr);
                         curr.run();
                     } catch(Exception e) {
                         e.printStackTrace();
@@ -74,7 +76,7 @@ public class InternalScheduler extends Thread {
                 }
             }
 
-            for (InternalTask r : requeue) list.add(r);
+            for(InternalTask r : requeue) list.add(r);
 
             long timeTaken = System.currentTimeMillis() - lastTime;
 
@@ -84,17 +86,6 @@ public class InternalScheduler extends Thread {
 
             long timeToSync = TICK_TIME - timeTaken;
 
-            /*tps = 1000D / ((System.currentTimeMillis() - last_ticks[0] + 0D) / 5D);
-            tps = (Math.round(tps * 10) + 0D) / 10D;
-            last_ticks[0] = last_ticks[1];
-            last_ticks[1] = last_ticks[2];
-            last_ticks[2] = last_ticks[3];
-            last_ticks[3] = last_ticks[4];
-            last_ticks[4] = System.currentTimeMillis();
-
-            long still_wait = (long) ((50 - (System.currentTimeMillis() - last_ticks[3])) * 2.5);
-            tick_duration = System.currentTimeMillis() - last_ticks[3];*/
-
             if (timeToSync > 0) {
                 try {
                     Thread.sleep(timeToSync);
@@ -102,7 +93,16 @@ public class InternalScheduler extends Thread {
                     e.printStackTrace();
                 }
             }else{
+                totalBehind += Math.abs(timeToSync);
+
+                // If we fall behind, log the creation traces of all fired tasks. The slowdown may
+                // be the result of queueing many tasks, in which case this can be ignored, but this can
+                // assist in tracking down ornery tasks.
                 LegendsOfValeros.getInstance().getLogger().warning("Scheduler '" + name + "' fell behind by " + Math.abs(timeTaken) + "ms!");
+                LegendsOfValeros.getInstance().getLogger().warning("----------------------------------------");
+                for(InternalTask task : fired)
+                    LegendsOfValeros.getInstance().getLogger().warning(task.getTrace());
+                LegendsOfValeros.getInstance().getLogger().warning("----------------------------------------");
             }
         }
     }
@@ -229,20 +229,8 @@ public class InternalScheduler extends Thread {
         return 20D - getAverageTPSUsage();
     }
 
-    /*public double getTPS() {
-        return tps;
-    }*/
-
-    /*public double getTickDuration() {
-        return tick_duration;
-    }*/
-
     public InternalScheduler startup() {
         if (!this.isAlive()) start();
         return this;
     }
-
-    /*public int getPrevTaskAmount() {
-        return prev_task_amount;
-    }*/
 }

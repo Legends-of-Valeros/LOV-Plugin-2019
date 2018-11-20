@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.gear.quest;
 
-import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.gear.Gear;
 import com.legendsofvaleros.modules.gear.item.GearItem;
@@ -26,20 +25,13 @@ public class FetchForNPCObjective extends AbstractObjective<ObjectiveProgressBoo
 
     @Override
     protected void onInit() {
-        ListenableFuture<GearItem> future = GearItem.fromID(id);
-        future.addListener(() -> {
-            try {
-                item = future.get();
+        item = GearItem.fromID(id);
 
-                if (item == null)
-                    throw new Exception("No item with that ID in quest. Offender: " + id + " in " + getQuest().getId());
-            } catch (Exception e) {
-                MessageUtil.sendException(Gear.getInstance(), null, e, false);
-            }
-        }, Gear.getInstance().getScheduler()::async);
+        if (item == null)
+            MessageUtil.sendException(Gear.getInstance(), null, new Exception("No item with that ID in quest. Offender: " + id + " in " + getQuest().getId()), true);
 
         if (!NPCs.isNPC(npcId)) {
-            MessageUtil.sendException(Gear.getInstance(), null, new Exception("No NPC with that ID in quest. Offender: " + id + " in " + getQuest().getId()), false);
+            MessageUtil.sendException(Gear.getInstance(), null, new Exception("No NPC with that ID in quest. Offender: " + id + " in " + getQuest().getId()), true);
             return;
         }
 

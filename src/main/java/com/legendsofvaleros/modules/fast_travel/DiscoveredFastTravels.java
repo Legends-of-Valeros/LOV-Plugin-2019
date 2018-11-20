@@ -62,17 +62,26 @@ public class DiscoveredFastTravels implements Listener {
 		return ret;
 	}
 
-	public static void onLogout(CharacterId characterId) {
+	public static ListenableFuture<Void> onLogout(CharacterId characterId) {
+		SettableFuture<Void> ret = SettableFuture.create();
+
 		List<Pair> travels = new ArrayList<>();
 
 		for(String id : fastTravels.get(characterId))
 			travels.add(new Pair(characterId, id));
 
-		if(travels.size() == 0) return;
+		if(travels.size() == 0) {
+			ret.set(null);
+		}else{
+			manager.saveAll(travels, true)
+					.addListener(() -> {
+						fastTravels.removeAll(characterId);
 
-		manager.saveAll(travels, true)
-				.addListener(() -> fastTravels.removeAll(characterId),
-						FastTravel.getInstance().getScheduler()::async);
+						ret.set(null);
+					}, FastTravel.getInstance().getScheduler()::async);
+		}
+
+		return ret;
 	}
 	
 	public static void removeAll(PlayerCharacter pc) {
@@ -91,7 +100,9 @@ public class DiscoveredFastTravels implements Listener {
 
 		@EventHandler
 		public void onCharacterLogout(PlayerCharacterLogoutEvent event) {
-			onLogout(event.getPlayerCharacter().getUniqueCharacterId());
+			PhaseLock lock = event.getLock();
+
+			onLogout(event.getPlayerCharacter().getUniqueCharacterId()).addListener(lock::release, FastTravel.getInstance().getScheduler()::async);
 		}
 
 		@EventHandler

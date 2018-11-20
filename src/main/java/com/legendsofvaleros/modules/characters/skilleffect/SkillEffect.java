@@ -460,9 +460,8 @@ public abstract class SkillEffect<T> {
                 effectInstance.getRemainingDurationMillis()).setLevel(effectInstance.getLevel())
                 .setElapsedDurationMillis(effectInstance.getElapsedDurationMillis());
 
-        if (onPersist(pc, effectInstance, builder)) {
+        if (onPersist(pc, effectInstance, builder))
           builder.buildAndSave();
-        }
       }
     }
 

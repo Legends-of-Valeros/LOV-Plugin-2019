@@ -228,23 +228,37 @@ public class PlayerCharacterData {
      * Saves basic player-character data when for a player when they log out.
      * @param playerId The name of the player logging out.
      */
-    static void onLogout(UUID playerId) {
+    static ListenableFuture<Void> onLogout(UUID playerId) {
+        SettableFuture<Void> ret = SettableFuture.create();
+
         PlayerCharacterCollection data = dataMap.remove(playerId);
 
         if (data == null) {
             unfulfilledInvalidations.add(playerId);
 
+            ret.set(null);
         } else {
             data.onQuit();
+
             Set<ReusablePlayerCharacter> changed;
             if (!(changed = data.getChanged()).isEmpty()) {
                 for (ReusablePlayerCharacter rpc : changed) {
-                    if (rpc.isCurrent())
-                        rpc.getInventoryData().saveInventory(rpc);
-                    save(rpc);
+                    if(rpc.isCurrent()) {
+                        rpc.getInventoryData().saveInventory(rpc).addListener(() -> {
+                            save(rpc);
+
+                            ret.set(null);
+                        }, Characters.getInstance().getScheduler()::sync);
+                    }else{
+                        save(rpc);
+
+                        ret.set(null);
+                    }
                 }
             }
         }
+
+        return ret;
     }
 
     public static void remove(UUID playerId, int characterId) {

@@ -7,25 +7,9 @@ import com.legendsofvaleros.modules.gear.component.trigger.PickupTrigger;
 import com.legendsofvaleros.modules.gear.event.GearPickupEvent;
 import com.legendsofvaleros.modules.gear.event.InventoryFullEvent;
 import com.legendsofvaleros.modules.gear.inventory.ItemListener;
-import com.legendsofvaleros.modules.playermenu.InventoryManager;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.gear.component.GearDamage;
-import com.legendsofvaleros.modules.gear.component.GearUseSpeed;
-import com.legendsofvaleros.modules.gear.component.trigger.PickupTrigger;
-import com.legendsofvaleros.modules.gear.event.GearPickupEvent;
-import com.legendsofvaleros.modules.gear.event.InventoryFullEvent;
-import com.legendsofvaleros.modules.gear.inventory.ItemListener;
 import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.playermenu.InventoryManager;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.gear.component.GearDamage;
-import com.legendsofvaleros.modules.gear.component.GearUseSpeed;
-import com.legendsofvaleros.modules.gear.component.trigger.PickupTrigger;
-import com.legendsofvaleros.modules.gear.event.GearPickupEvent;
-import com.legendsofvaleros.modules.gear.event.InventoryFullEvent;
-import com.legendsofvaleros.modules.gear.inventory.ItemListener;
-import com.legendsofvaleros.modules.playermenu.InventoryManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -106,7 +90,7 @@ public class ItemUtil {
 			item = GearItem.Instance.fromStack(contents[i]);
 			if(instance.gear.isSimilar(item)) {
 				if(instance == item)
-					instance = instance.getData().toInstance();
+					instance = instance.copy();
 
 				int newSize = Math.min(item.gear.getMaxAmount(), instance.amount + item.amount);
 				instance.amount -= newSize - item.amount;

@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.skills;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.damage.spell.SpellType;
 import com.legendsofvaleros.modules.gear.component.trigger.SpellAttackTrigger;
