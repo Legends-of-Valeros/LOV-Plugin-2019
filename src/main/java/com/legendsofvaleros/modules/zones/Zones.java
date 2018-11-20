@@ -4,13 +4,17 @@ import com.codingforcookies.ambience.Ambience;
 import com.codingforcookies.ambience.PlayerAmbience;
 import com.codingforcookies.ambience.Sound;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.ListenerModule;
+import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.chat.Chat;
 import com.legendsofvaleros.modules.chat.IChannelHandler;
+import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.pvp.PvP;
 import com.legendsofvaleros.modules.pvp.toggle.PvPToggles;
 import com.legendsofvaleros.modules.quests.QuestManager;
+import com.legendsofvaleros.modules.quests.Quests;
 import com.legendsofvaleros.modules.quests.objective.stf.ObjectiveFactory;
 import com.legendsofvaleros.modules.zones.event.ZoneEnterEvent;
 import com.legendsofvaleros.modules.zones.event.ZoneLeaveEvent;
@@ -30,6 +34,12 @@ import org.bukkit.event.EventPriority;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+@DependsOn(PvP.class)
+@DependsOn(PlayerMenu.class)
+@DependsOn(Chat.class)
+@DependsOn(CombatEngine.class)
+@DependsOn(Characters.class)
+@DependsOn(Quests.class)
 public class Zones extends ListenerModule {
 
     private PvPToggles toggles;

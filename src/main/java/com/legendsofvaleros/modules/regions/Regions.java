@@ -1,11 +1,15 @@
 package com.legendsofvaleros.modules.regions;
 
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.ListenerModule;
-import com.legendsofvaleros.modules.Module;
+import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.Module;
+import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.hearthstones.HearthstoneCastEvent;
+import com.legendsofvaleros.modules.hearthstones.Hearthstones;
 import com.legendsofvaleros.modules.quests.QuestManager;
+import com.legendsofvaleros.modules.quests.Quests;
 import com.legendsofvaleros.modules.quests.action.stf.ActionFactory;
 import com.legendsofvaleros.modules.quests.objective.stf.ObjectiveFactory;
 import com.legendsofvaleros.modules.regions.event.RegionEnterEvent;
@@ -26,6 +30,10 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 
+@DependsOn(CombatEngine.class)
+@DependsOn(Quests.class)
+@DependsOn(Characters.class)
+@DependsOn(Hearthstones.class)
 public class Regions extends ListenerModule {
     private static Regions plugin;
     public static Module getInstance() { return plugin; }

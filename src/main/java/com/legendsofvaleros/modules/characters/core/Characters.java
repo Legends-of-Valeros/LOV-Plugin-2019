@@ -3,7 +3,8 @@ package com.legendsofvaleros.modules.characters.core;
 import com.codingforcookies.doris.orm.ORMField;
 import com.codingforcookies.doris.orm.ORMRegistry;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.ListenerModule;
+import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.CharactersAPI;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
@@ -19,7 +20,10 @@ import com.legendsofvaleros.modules.characters.stat.PersistentRegeneratingStats;
 import com.legendsofvaleros.modules.characters.testing.Test;
 import com.legendsofvaleros.modules.characters.ui.*;
 import com.legendsofvaleros.modules.characters.ui.loading.ProgressView;
+import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.levelarchetypes.core.LevelArchetypes;
+import com.legendsofvaleros.modules.npcs.NPCs;
+import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -32,6 +36,10 @@ import java.util.UUID;
  * Characters allows players to make multiple playable characters, each with their own race, class,
  * and progression.
  */
+@DependsOn(NPCs.class)
+@DependsOn(CombatEngine.class)
+@DependsOn(LevelArchetypes.class)
+@DependsOn(PlayerMenu.class)
 public class Characters extends ListenerModule implements CharactersAPI {
     private static Characters instance;
 

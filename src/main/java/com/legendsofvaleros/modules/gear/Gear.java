@@ -2,9 +2,11 @@ package com.legendsofvaleros.modules.gear;
 
 import com.codingforcookies.armorequip.ArmorEquipEvent;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.ListenerModule;
+import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.core.PlayerInventoryData;
+import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.gear.component.*;
 import com.legendsofvaleros.modules.gear.event.GearPickupEvent;
 import com.legendsofvaleros.modules.gear.event.ItemEquipEvent;
@@ -13,12 +15,22 @@ import com.legendsofvaleros.modules.gear.inventory.InventoryListener;
 import com.legendsofvaleros.modules.gear.inventory.ItemListener;
 import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.gear.quest.*;
+import com.legendsofvaleros.modules.hotswitch.Hotswitch;
+import com.legendsofvaleros.modules.npcs.NPCs;
+import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.quests.QuestManager;
+import com.legendsofvaleros.modules.quests.Quests;
 import com.legendsofvaleros.modules.quests.action.stf.ActionFactory;
 import com.legendsofvaleros.modules.quests.objective.stf.ObjectiveFactory;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
+@DependsOn(NPCs.class)
+@DependsOn(CombatEngine.class)
+@DependsOn(PlayerMenu.class)
+@DependsOn(Characters.class)
+@DependsOn(Hotswitch.class)
+@DependsOn(Quests.class)
 public class Gear extends ListenerModule {
     private static Gear instance;
     public static Gear getInstance() { return instance; }

@@ -38,7 +38,11 @@ public class Model {
 		models.clear();
 
 		Utilities.getInstance().getLogger().info("Loading item models...");
-		modelTable.query().all().forEach((model) -> models.put(model.id, model)).execute(false);
+		modelTable.query().all()
+				.forEach((model) -> models.put(model.id, model))
+				.onFinished(() -> {
+					Utilities.getInstance().getLogger().info("Loaded " + models.size() + " models.");
+				}).execute(false);
 	}
 
 	public static Model get(String id) {

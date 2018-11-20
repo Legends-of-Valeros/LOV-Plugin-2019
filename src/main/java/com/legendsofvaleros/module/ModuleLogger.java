@@ -1,10 +1,8 @@
-package com.legendsofvaleros.modules;
+package com.legendsofvaleros.module;
 
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.plugin.Plugin;
 
 import java.util.logging.Level;
 import java.util.logging.LogRecord;

@@ -1,9 +1,12 @@
 package com.legendsofvaleros.modules.graveyard;
 
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.ListenerModule;
+import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
+import com.legendsofvaleros.modules.gear.Gear;
 import com.legendsofvaleros.modules.zones.Zones;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -13,6 +16,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
+@DependsOn(CombatEngine.class)
+@DependsOn(Characters.class)
+@DependsOn(Gear.class)
+@DependsOn(Zones.class)
 public class Graveyards extends ListenerModule {
     private static Graveyards inst;
 

@@ -3,12 +3,15 @@ package com.legendsofvaleros.modules.parties;
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.ListenerModule;
+import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.chat.Chat;
 import com.legendsofvaleros.modules.chat.IChannelHandler;
+import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
+import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.playermenu.PlayerMenuOpenEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import mkremins.fanciful.FancyMessage;
@@ -18,6 +21,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryType;
 
+@DependsOn(CombatEngine.class)
+@DependsOn(PlayerMenu.class)
+@DependsOn(Characters.class)
+@DependsOn(Chat.class)
 public class Parties extends ListenerModule {
     private static Parties plugin;
     public static Parties getInstance() {

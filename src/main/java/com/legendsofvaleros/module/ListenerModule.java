@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules;
+package com.legendsofvaleros.module;
 
 import org.bukkit.event.Listener;
 

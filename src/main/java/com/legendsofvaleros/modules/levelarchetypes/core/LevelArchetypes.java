@@ -1,7 +1,9 @@
 package com.legendsofvaleros.modules.levelarchetypes.core;
 
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.ListenerModule;
+import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.levelarchetypes.api.Archetype;
 import com.legendsofvaleros.modules.levelarchetypes.api.LevelArchetypesAPI;
 import com.legendsofvaleros.modules.levelarchetypes.api.LevelProvider;
@@ -25,6 +27,7 @@ import java.util.Map;
  * LevelArchetypes relies on other plugins to define the logic of what levels players and mobs are,
  * but provides a logical centralized API through which to access this information.
  */
+@DependsOn(CombatEngine.class)
 public class LevelArchetypes extends ListenerModule implements LevelArchetypesAPI {
 
     public static final int MIN_LEVEL = 0;

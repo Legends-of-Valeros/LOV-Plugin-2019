@@ -1,7 +1,7 @@
 package com.legendsofvaleros;
 
-import com.legendsofvaleros.modules.Module;
-import com.legendsofvaleros.modules.ModuleManager;
+import com.legendsofvaleros.module.Module;
+import com.legendsofvaleros.module.ModuleManager;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;

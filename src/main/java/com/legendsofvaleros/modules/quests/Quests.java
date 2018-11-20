@@ -2,12 +2,15 @@ package com.legendsofvaleros.modules.quests;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.ListenerModule;
+import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterCreateEvent;
+import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.playermenu.InventoryManager;
+import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.quests.action.*;
 import com.legendsofvaleros.modules.quests.action.stf.ActionFactory;
 import com.legendsofvaleros.modules.quests.event.ObjectivesStartedEvent;
@@ -41,6 +44,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
+@DependsOn(NPCs.class)
+@DependsOn(CombatEngine.class)
+@DependsOn(PlayerMenu.class)
+@DependsOn(Characters.class)
 public class Quests extends ListenerModule {
     public static AdvancementAPI NEW_OBJECTIVES;
 

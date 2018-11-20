@@ -1,7 +1,8 @@
 package com.legendsofvaleros.modules.keepoutofocean;
 
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.ListenerModule;
+import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineRegenEvent;
@@ -26,9 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-/**
- * Bukkit plugin main for KeepOutOfOcean.
- */
+@DependsOn(CombatEngine.class)
 public class KeepOutOfOcean extends ListenerModule {
 
     private long checkTicks;

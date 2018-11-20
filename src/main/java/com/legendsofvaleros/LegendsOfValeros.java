@@ -1,8 +1,8 @@
 package com.legendsofvaleros;
 
 import co.aikar.commands.PaperCommandManager;
-import com.legendsofvaleros.modules.Module;
-import com.legendsofvaleros.modules.ModuleManager;
+import com.legendsofvaleros.module.Module;
+import com.legendsofvaleros.module.ModuleManager;
 import com.legendsofvaleros.modules.bank.Bank;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.chat.Chat;
@@ -19,6 +19,7 @@ import com.legendsofvaleros.modules.levelarchetypes.core.LevelArchetypes;
 import com.legendsofvaleros.modules.loot.LootManager;
 import com.legendsofvaleros.modules.mobs.Mobs;
 import com.legendsofvaleros.modules.mount.Mounts;
+import com.legendsofvaleros.modules.nanny.Nanny;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.parties.Parties;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
@@ -89,6 +90,7 @@ public class LegendsOfValeros extends JavaPlugin {
         //TODO add commands to disable single modules (&change the config?)
         //TODO add method to determine dependencies between each module (if a module depends on a disabled module, it wont be enabled either)
         ModuleManager.registerModule(Utilities.class);
+        ModuleManager.registerModule(Nanny.class);
         ModuleManager.registerModule(PlayerMenu.class);
         ModuleManager.registerModule(NPCs.class);
         ModuleManager.registerModule(CombatEngine.class);

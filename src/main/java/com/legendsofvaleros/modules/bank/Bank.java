@@ -2,7 +2,8 @@ package com.legendsofvaleros.modules.bank;
 
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.ListenerModule;
+import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.bank.item.WorthComponent;
 import com.legendsofvaleros.modules.bank.quest.ActionAddCurrency;
 import com.legendsofvaleros.modules.bank.quest.RepairObjective;
@@ -13,6 +14,7 @@ import com.legendsofvaleros.modules.bank.trade.TraitTrader;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterInventoryFillEvent;
+import com.legendsofvaleros.modules.gear.Gear;
 import com.legendsofvaleros.modules.gear.GearRegistry;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.quests.QuestManager;
@@ -26,6 +28,9 @@ import org.bukkit.event.EventPriority;
 import java.util.HashMap;
 import java.util.Map;
 
+@DependsOn(NPCs.class)
+@DependsOn(Characters.class)
+@DependsOn(Gear.class)
 public class Bank extends ListenerModule {
     private static Bank instance;
     public static Bank getInstance() { return instance; }

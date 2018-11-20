@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.playermenu;
 
 import com.codingforcookies.robert.window.ExpandingGUI;
-import com.legendsofvaleros.modules.ListenerModule;
+import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.modules.playermenu.settings.PlayerSettings;
 import com.legendsofvaleros.util.item.Model;
 import org.bukkit.Bukkit;

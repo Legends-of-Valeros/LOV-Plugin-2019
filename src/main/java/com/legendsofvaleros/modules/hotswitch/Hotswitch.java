@@ -1,9 +1,11 @@
 package com.legendsofvaleros.modules.hotswitch;
 
-import com.legendsofvaleros.modules.ListenerModule;
+import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterInventoryFillEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
+import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,6 +17,8 @@ import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
 import java.util.UUID;
 
+@DependsOn(CombatEngine.class)
+@DependsOn(Characters.class)
 public class Hotswitch extends ListenerModule {
     private static Hotswitch instance;
 

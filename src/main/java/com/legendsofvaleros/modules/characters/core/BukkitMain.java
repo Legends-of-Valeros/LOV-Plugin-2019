@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.characters.core;
 
-import com.legendsofvaleros.modules.ListenerModule;
+import com.legendsofvaleros.module.ListenerModule;
 
 /**
  * Bukkit plugin main for Characters.

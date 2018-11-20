@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.npcs;
 
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.ListenerModule;
+import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;

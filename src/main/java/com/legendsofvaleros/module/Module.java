@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules;
+package com.legendsofvaleros.module;
 
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.config.YamlConfigAccessor;

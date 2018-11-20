@@ -10,7 +10,6 @@ import com.legendsofvaleros.modules.gear.component.impl.GearComponent;
 import com.legendsofvaleros.modules.gear.component.impl.PersistMap;
 import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
 import com.legendsofvaleros.util.field.RangedValue;
 import com.legendsofvaleros.util.item.Model;
 
@@ -81,9 +80,6 @@ public class ItemManager {
         // out of hand.
         Gear.getInstance().getScheduler().executeInSpigotCircle(() -> {
             reload();
-
-            Gear.ERROR_ITEM = GearItem.fromID("perfectly-generic-item");
-            Utilities.getInstance().getLogger().info(Gear.ERROR_ITEM.toString());
         });
     }
 
@@ -94,6 +90,9 @@ public class ItemManager {
             item.model = Model.get(item.getModelId());
 
             gear.put(item.getID(), item);
+        }).onFinished(() -> {
+            Gear.ERROR_ITEM = GearItem.fromID("perfectly-generic-item");
+            Gear.getInstance().getLogger().info("Loaded " + gear.size() + " items.");
         }).execute(false);
     }
 

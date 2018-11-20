@@ -1,7 +1,7 @@
 package com.legendsofvaleros.util;
 
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.ListenerModule;
+import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.util.MessageUtil.ExceptionManager;
 import com.legendsofvaleros.util.event.ToggleOpEvent;
 import com.legendsofvaleros.util.item.Model;

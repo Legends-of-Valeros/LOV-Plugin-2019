@@ -1,14 +1,11 @@
-package com.legendsofvaleros.modules;
+package com.legendsofvaleros.module;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.legendsofvaleros.scheduler.InternalTask;
 import org.bukkit.event.Event;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ModuleTimings {
@@ -24,15 +21,17 @@ public class ModuleTimings {
     public ModuleTimings(Module module) {
         // Clean up the timings list every 10 seconds.
         this.cleanupTask = module.getScheduler().executeInMyCircleTimer(() -> {
-            for(Class<? extends Event> ec : getTracked()) {
-                Set<Long> times = new HashSet<>(timings.row(ec).keySet());
+            try {
+                for(Class<? extends Event> ec : getTracked()) {
+                    Set<Long> times = new HashSet<>(timings.row(ec).keySet());
 
-                for(Long time : times) {
-                    // Keep timings or 1 minute.
-                    if(System.currentTimeMillis() - time > 60L * 1000L)
-                        timings.remove(ec, time);
+                    for(Long time : times) {
+                        // Keep timings or 1 minute.
+                        if(System.currentTimeMillis() - time > 60L * 1000L)
+                            timings.remove(ec, time);
+                    }
                 }
-            }
+            } catch(ConcurrentModificationException e) { }
         }, 20L * 60L, 20L * 10L);
     }
 

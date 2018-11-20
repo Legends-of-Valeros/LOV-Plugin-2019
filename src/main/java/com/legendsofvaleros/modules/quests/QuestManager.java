@@ -251,7 +251,7 @@ public class QuestManager {
     }
 
     private synchronized static void onQuestUnCached(Entry<String, IQuest> entry) {
-        Quests.getInstance().getLogger().info("Quest '" + entry.getKey() + "' removed from the cache.");
+        Quests.getInstance().getLogger().warning("Quest '" + entry.getKey() + "' removed from the cache.");
 
         questEvents.column(String.valueOf(entry.getKey())).clear();
     }

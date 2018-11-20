@@ -3,10 +3,14 @@ package com.legendsofvaleros.modules.mount;
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.legendsofvaleros.modules.ListenerModule;
+import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.modules.bank.Bank;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
+import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.npcs.NPCs;
+import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.playermenu.options.PlayerOptionsOpenEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.item.Model;
@@ -19,6 +23,11 @@ import org.bukkit.event.vehicle.VehicleExitEvent;
 import java.util.*;
 import java.util.Map.Entry;
 
+@DependsOn(CombatEngine.class)
+@DependsOn(PlayerMenu.class)
+@DependsOn(Characters.class)
+@DependsOn(Bank.class)
+@DependsOn(NPCs.class)
 public class Mounts extends ListenerModule {
     private static Mounts instance;
 

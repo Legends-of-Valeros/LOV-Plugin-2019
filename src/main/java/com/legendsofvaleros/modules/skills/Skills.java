@@ -2,15 +2,23 @@ package com.legendsofvaleros.modules.skills;
 
 import com.codingforcookies.robert.core.RomanNumeral;
 import com.codingforcookies.robert.item.ItemBuilder;
-import com.legendsofvaleros.modules.ListenerModule;
+import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.modules.bank.Bank;
 import com.legendsofvaleros.modules.characters.api.Cooldowns;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
+import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.gear.Gear;
 import com.legendsofvaleros.modules.gear.GearRegistry;
+import com.legendsofvaleros.modules.hotswitch.Hotswitch;
+import com.legendsofvaleros.modules.mobs.Mobs;
 import com.legendsofvaleros.modules.npcs.NPCs;
+import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.playermenu.options.PlayerOptionsOpenEvent;
+import com.legendsofvaleros.modules.quests.Quests;
 import com.legendsofvaleros.modules.quests.objective.stf.ObjectiveFactory;
 import com.legendsofvaleros.modules.skills.event.*;
 import com.legendsofvaleros.modules.skills.gear.GearCharge;
@@ -36,6 +44,15 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 import java.util.Map.Entry;
 
+@DependsOn(PlayerMenu.class)
+@DependsOn(Quests.class)
+@DependsOn(Bank.class)
+@DependsOn(CombatEngine.class)
+@DependsOn(Characters.class)
+@DependsOn(NPCs.class)
+@DependsOn(Mobs.class)
+@DependsOn(Hotswitch.class)
+@DependsOn(Gear.class)
 public class Skills extends ListenerModule {
     public static final SkillTree[] skillTrees = new SkillTree[] {
             new TreeWarrior(),

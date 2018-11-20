@@ -14,7 +14,6 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import net.citizensnpcs.api.trait.trait.Equipment;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,7 +29,7 @@ public class MobManager {
     public static Cache<String, Mob> entities = CacheBuilder.newBuilder()
             .concurrencyLevel(4)
             .weakValues()
-            .removalListener((entry) -> Mobs.getInstance().getLogger().info("Entity '" + entry.getKey() + "' removed from the cache."))
+            .removalListener((entry) -> Mobs.getInstance().getLogger().warning("Entity '" + entry.getKey() + "' removed from the cache."))
             .build();
 
     public static void clear() {

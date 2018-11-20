@@ -1,7 +1,7 @@
 package com.legendsofvaleros.util;
 
 import com.codingforcookies.doris.sql.TableManager;
-import com.legendsofvaleros.modules.Module;
+import com.legendsofvaleros.module.Module;
 import de.btobastian.javacord.entities.Channel;
 import mkremins.fanciful.FancyMessage;
 import mkremins.fanciful.MessagePart;

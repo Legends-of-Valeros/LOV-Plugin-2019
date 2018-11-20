@@ -1,9 +1,11 @@
 package com.legendsofvaleros.modules.chat;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import com.legendsofvaleros.modules.ListenerModule;
+import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.playermenu.settings.PlayerSettings;
 import com.legendsofvaleros.modules.playermenu.settings.PlayerSettingsOpenEvent;
 import com.legendsofvaleros.util.Discord;
@@ -33,6 +35,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
+@DependsOn(PlayerMenu.class)
+@DependsOn(Characters.class)
 public class Chat extends ListenerModule {
 
     private static Chat instance;

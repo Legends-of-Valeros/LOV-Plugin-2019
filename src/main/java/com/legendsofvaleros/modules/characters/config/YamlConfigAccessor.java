@@ -1,18 +1,16 @@
 package com.legendsofvaleros.modules.characters.config;
 
+import com.legendsofvaleros.module.Module;
+import com.legendsofvaleros.modules.characters.core.Characters;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.logging.Level;
-
-import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.Module;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * A mirrored implementation of Bukkit's config.yml loading, defaults, and saving system.

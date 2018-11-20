@@ -4,9 +4,9 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.Module;
-import com.legendsofvaleros.modules.ModuleManager;
-import com.legendsofvaleros.modules.ModuleTimings;
+import com.legendsofvaleros.module.Module;
+import com.legendsofvaleros.module.ModuleManager;
+import com.legendsofvaleros.module.ModuleTimings;
 import com.legendsofvaleros.scheduler.InternalScheduler;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -80,6 +80,7 @@ public class LOVCommands extends BaseCommand {
 
         sender.sendMessage(ChatColor.GRAY + line);
 
+        boolean shown = false;
         for (Module module : ModuleManager.modules.values()) {
             if(moduleName != null) {
                 if(!module.getName().toLowerCase().contains(moduleName.toLowerCase()))
@@ -99,6 +100,12 @@ public class LOVCommands extends BaseCommand {
             percUsed = (percUsed / 20D) * 100D;
             percUsed = (int)(percUsed * 100D) / 100D;
 
+            if(moduleName == null && percUsed == 0) {
+                continue;
+            }
+
+            shown = true;
+
             sender.sendMessage(ChatColor.DARK_GRAY + module.getName() + ": " + ChatColor.GRAY + percUsed + "% per Tick (last minute)");
 
             if(moduleName != null) {
@@ -111,6 +118,10 @@ public class LOVCommands extends BaseCommand {
                         sender.sendMessage("  " + ChatColor.DARK_GRAY + ec.getSimpleName() + ": " + ChatColor.GRAY + percUsed + "% per Tick (" + timings.getCalls(ec) + ")");
                 }
             }
+        }
+
+        if(!shown) {
+            sender.sendMessage(ChatColor.GREEN + "No modules have shown significant usage in the last minute.");
         }
 
         sender.sendMessage(ChatColor.GRAY + line);

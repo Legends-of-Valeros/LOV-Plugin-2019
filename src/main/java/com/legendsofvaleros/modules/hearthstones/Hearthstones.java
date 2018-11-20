@@ -1,15 +1,19 @@
 package com.legendsofvaleros.modules.hearthstones;
 
-import com.legendsofvaleros.modules.ListenerModule;
+import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.npcs.NPCs;
+import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.playermenu.options.PlayerOptionsOpenEvent;
 import com.legendsofvaleros.util.item.Model;
 import org.bukkit.event.EventHandler;
 
-/**
- * Bukkit instance main for Hearthstones.
- */
+@DependsOn(NPCs.class)
+@DependsOn(CombatEngine.class)
+@DependsOn(PlayerMenu.class)
+@DependsOn(Characters.class)
 public class Hearthstones extends ListenerModule {
     private static Hearthstones instance;
 

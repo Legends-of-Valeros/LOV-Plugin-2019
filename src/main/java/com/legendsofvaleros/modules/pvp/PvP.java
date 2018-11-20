@@ -1,15 +1,23 @@
 package com.legendsofvaleros.modules.pvp;
 
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.Module;
+import com.legendsofvaleros.module.Module;
+import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.bank.Bank;
 import com.legendsofvaleros.modules.bank.Currency;
+import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.pvp.command.CommandDebug;
 import com.legendsofvaleros.modules.pvp.duel.listener.DuelHandler;
 import com.legendsofvaleros.modules.pvp.listener.DamageHandler;
 import com.legendsofvaleros.modules.pvp.listener.MiscHandler;
 import com.legendsofvaleros.modules.pvp.toggle.PvPToggles;
 
+@DependsOn(CombatEngine.class)
+@DependsOn(PlayerMenu.class)
+@DependsOn(Characters.class)
+@DependsOn(Bank.class)
 public class PvP extends Module {
 
     public static final float DAMAGE_MULTIPLIER = 0.6f;

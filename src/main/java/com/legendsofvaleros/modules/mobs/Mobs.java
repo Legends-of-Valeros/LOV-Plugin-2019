@@ -1,10 +1,14 @@
 package com.legendsofvaleros.modules.mobs;
 
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.ListenerModule;
+import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
+import com.legendsofvaleros.modules.gear.Gear;
 import com.legendsofvaleros.modules.levelarchetypes.core.LevelArchetypes;
+import com.legendsofvaleros.modules.loot.LootManager;
 import com.legendsofvaleros.modules.mobs.behavior.BehaviorEngine;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.mobs.core.MobSpawner;
@@ -15,7 +19,9 @@ import com.legendsofvaleros.modules.mobs.pl8.MobHealthbarManager;
 import com.legendsofvaleros.modules.mobs.quest.KillObjective;
 import com.legendsofvaleros.modules.mobs.trait.TraitTitle;
 import com.legendsofvaleros.modules.npcs.NPCs;
+import com.legendsofvaleros.modules.parties.Parties;
 import com.legendsofvaleros.modules.quests.QuestManager;
+import com.legendsofvaleros.modules.quests.Quests;
 import com.legendsofvaleros.modules.quests.objective.stf.ObjectiveFactory;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -26,6 +32,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
+@DependsOn(CombatEngine.class)
+@DependsOn(Characters.class)
+@DependsOn(LevelArchetypes.class)
+@DependsOn(Gear.class)
+@DependsOn(Quests.class)
+@DependsOn(NPCs.class)
+@DependsOn(LootManager.class)
+@DependsOn(Parties.class)
 public class Mobs extends ListenerModule {
     private static Mobs instance;
 
