@@ -1,6 +1,7 @@
 package com.legendsofvaleros.util;
 
 import com.codingforcookies.doris.sql.TableManager;
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.Module;
 import de.btobastian.javacord.entities.Channel;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -129,7 +130,7 @@ public class MessageUtil {
 				p.spigot().sendMessage(bc);
 		}
 
-		if(log)
+		if(log || LegendsOfValeros.getMode().doVerboseLogging())
 			th.printStackTrace();
 
 		return trace;
@@ -149,22 +150,25 @@ public class MessageUtil {
 		String trace = sendException(module, sender, th, true);
 
 		th.printStackTrace();
-		ExceptionManager.add(module, sender, trace);
 
-		if(Discord.SERVER != null) {
-			// Make this channel configurable
-			Channel channel = Discord.SERVER.getChannelById("358612310731915264");
+		if(LegendsOfValeros.getMode().doLogging()) {
+			ExceptionManager.add(module, sender, trace);
 
-			if(channel != null) {
-				Utilities.getInstance().getScheduler().executeInMyCircle(() -> {
-					try {
-						channel.sendMessage("`[" + Discord.TAG + (module != null ? ":" + module.getName(): "") + "]` ="
-								+ (sender != null ? " **__" + sender.getName() + "__ triggered an exception:**" : "")
-								+ " ```" + trace + "```").get();
-					} catch (InterruptedException | ExecutionException _e) {
-						_e.printStackTrace();
-					}
-				});
+			if (Discord.SERVER != null) {
+				// Make this channel configurable
+				Channel channel = Discord.SERVER.getChannelById("358612310731915264");
+
+				if (channel != null) {
+					Utilities.getInstance().getScheduler().executeInMyCircle(() -> {
+						try {
+							channel.sendMessage("`[" + Discord.TAG + (module != null ? ":" + module.getName() : "") + "]` ="
+									+ (sender != null ? " **__" + sender.getName() + "__ triggered an exception:**" : "")
+									+ " ```" + trace + "```").get();
+						} catch (InterruptedException | ExecutionException _e) {
+							_e.printStackTrace();
+						}
+					});
+				}
 			}
 		}
 	}

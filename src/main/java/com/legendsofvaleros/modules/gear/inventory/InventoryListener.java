@@ -1,10 +1,22 @@
 package com.legendsofvaleros.modules.gear.inventory;
 
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 
 public class InventoryListener implements Listener {
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onInventoryMove(InventoryClickEvent e) {
+		if(e.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD
+				|| e.getAction() == InventoryAction.HOTBAR_SWAP
+				|| e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+			e.setCancelled(true);
+			return;
+		}
+	}
 	/*
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onInventoryMove(InventoryClickEvent e) {

@@ -52,6 +52,9 @@ public class LegendsOfValeros extends JavaPlugin {
     public static boolean shutdown;
     public static long startTime = 0;
 
+    private ServerMode mode;
+    public static ServerMode getMode() { return instance.mode; }
+
     private PaperCommandManager manager;
     public PaperCommandManager getCommandManager() { return manager; }
 
@@ -63,6 +66,8 @@ public class LegendsOfValeros extends JavaPlugin {
 
         shutdown = false;
         startTime = System.currentTimeMillis();
+
+        mode = ServerMode.valueOf(getConfig().getString("server-mode", "LIVE"));
 
         manager = new PaperCommandManager(LegendsOfValeros.getInstance());
         manager.enableUnstableAPI("help");

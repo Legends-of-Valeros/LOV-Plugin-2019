@@ -59,6 +59,7 @@ public class SkillFrostbolt extends Skill {
             CombatEngine.getInstance().causeSpellDamage(target, ce.getLivingEntity(), SpellType.ICE,
                     SkillUtil.getSpellDamage(ce, SpellType.ICE, Characters.getInstance().getCharacterConfig().getClassConfig(EntityClass.MAGE).getBaseMeleeDamage())
                             * getEarliest(DAMAGE, level) / 100D, null, false, true);
+
             CombatEngine.getEntity(target).getStats().newStatModifierBuilder(Stat.SPEED)
                     .setDuration(getEarliest(TIME, level) * 20)
                     .setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
