@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.legendsofvaleros.LegendsOfValeros;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
@@ -162,9 +163,9 @@ public class AdvancementAPI {
         return this.triggers;
     }
 
-    public AdvancementAPI show(JavaPlugin plugin, Player... players) {
+    public AdvancementAPI show(Player... players) {
         grant(players);
-        Bukkit.getScheduler().runTaskLater(plugin, () -> revoke(players), 20L);
+        Bukkit.getScheduler().runTaskLater(LegendsOfValeros.getInstance(), () -> revoke(players), 20L);
         return this;
     }
 

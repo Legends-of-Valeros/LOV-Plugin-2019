@@ -120,16 +120,16 @@ public class Quests extends ListenerModule {
 
         getLogger().info("is registering advancements.");
         NEW_OBJECTIVES = AdvancementAPI.builder(new NamespacedKey(LegendsOfValeros.getInstance(), "quests/new_objectives"))
-                .title("New Objectives")
-                .description("See quest book for details.")
-                .icon("minecraft:paper")
-                .trigger(Trigger.builder(Trigger.TriggerType.IMPOSSIBLE, "impossible"))
-                .hidden(true)
-                .toast(true)
-                .background("minecraft:textures/gui/advancements/backgrounds/stone.png")
-                .frame(FrameType.TASK)
+                    .title("New Objectives")
+                    .description("See quest book for details.")
+                    .icon("minecraft:paper")
+                    .trigger(Trigger.builder(Trigger.TriggerType.IMPOSSIBLE, "impossible"))
+                    .hidden(true)
+                    .toast(true)
+                    .background("minecraft:textures/gui/advancements/backgrounds/stone.png")
+                    .frame(FrameType.TASK)
                 .build();
-
+        NEW_OBJECTIVES.add();
     }
 
     @Override
@@ -183,9 +183,8 @@ public class Quests extends ListenerModule {
 
     @EventHandler
     public void onNewObjectives(ObjectivesStartedEvent event) {
-        // FIXME: Why doesn't this work, anymore?
-        // if(NEW_OBJECTIVES != null)
-        //	NEW_OBJECTIVES.show(Quests.getInstance(), event.getPlayer());
+        if(NEW_OBJECTIVES != null)
+        	NEW_OBJECTIVES.show(event.getPlayer());
     }
 
     @EventHandler

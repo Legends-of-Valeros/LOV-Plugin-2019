@@ -1,4 +1,4 @@
-package com.legendsofvaleros.util;
+package com.legendsofvaleros.util.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
@@ -8,6 +8,10 @@ import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.ModuleTimings;
 import com.legendsofvaleros.module.Modules;
 import com.legendsofvaleros.scheduler.InternalScheduler;
+import com.legendsofvaleros.util.Lag;
+import com.legendsofvaleros.util.MessageUtil;
+import com.legendsofvaleros.util.ProgressBar;
+import com.legendsofvaleros.util.Utilities;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -23,14 +27,6 @@ public class LOVCommands extends BaseCommand {
             MessageUtil.sendUpdate(player, "Operator mode enabled.");
         else
             MessageUtil.sendUpdate(player, "Operator mode disabled.");
-    }
-
-    @Subcommand("tmp")
-    @Syntax("<id>")
-    private void cmdTmp(CommandSender sender, String id) {
-        Runnable runnable = TemporaryCommand.get(id);
-        if(runnable == null) return;
-        runnable.run();
     }
 
     @Subcommand("tps")

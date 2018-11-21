@@ -16,9 +16,10 @@ public class Advancements {
 	                .icon("minecraft:golden_apple")
 	                .trigger(Trigger.builder(Trigger.TriggerType.LOCATION, "instant"))
 	                .hidden(false)
-	                .toast(false)
+	                .toast(true)
 	                .background("minecraft:textures/gui/advancements/backgrounds/stone.png")
 	                .frame(FrameType.GOAL)
                 .build();
+		PARENT.add();
 	}
 }

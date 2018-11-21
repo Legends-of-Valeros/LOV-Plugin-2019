@@ -3,6 +3,8 @@ package com.legendsofvaleros.util;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.util.MessageUtil.ExceptionManager;
+import com.legendsofvaleros.util.commands.LOVCommands;
+import com.legendsofvaleros.util.commands.TemporaryCommand;
 import com.legendsofvaleros.util.event.ToggleOpEvent;
 import com.legendsofvaleros.util.item.Model;
 import com.legendsofvaleros.util.title.TitleUtil;
@@ -50,8 +52,12 @@ public class Utilities extends ListenerModule {
 
         instance = this;
 
-        LegendsOfValeros.getInstance().getCommandManager().registerCommand(new LOVCommands());
-        LegendsOfValeros.getInstance().getCommandManager().registerCommand(new DebugFlags());
+        LegendsOfValeros.getInstance().getCommandManager().registerCommand(new TemporaryCommand());
+
+        if(LegendsOfValeros.getMode().isLenient()) {
+            LegendsOfValeros.getInstance().getCommandManager().registerCommand(new LOVCommands());
+            LegendsOfValeros.getInstance().getCommandManager().registerCommand(new DebugFlags());
+        }
 
         Discord.onEnable();
 

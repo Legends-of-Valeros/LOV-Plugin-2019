@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.quests.action;
 
 import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.TemporaryCommand;
+import com.legendsofvaleros.util.commands.TemporaryCommand;
 import com.legendsofvaleros.util.TextBuilder;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -47,7 +47,7 @@ public class ActionConversation extends AbstractAction {
 		tmps.add(tmp);
 		
 		player.spigot().sendMessage(new TextBuilder(" [").color(ChatColor.YELLOW)
-				.append(text).command("/lov tmp " + tmp).color(ChatColor.WHITE)
+				.append(text).command("/tmp " + tmp).color(ChatColor.WHITE)
 				.append("]").color(ChatColor.YELLOW).create());
 
 	}

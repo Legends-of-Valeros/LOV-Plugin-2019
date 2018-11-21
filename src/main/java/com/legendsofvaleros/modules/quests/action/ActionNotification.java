@@ -21,19 +21,19 @@ public class ActionNotification extends AbstractAction {
     public void play(Player player, Next next) {
         if (advancement == null) {
             advancement = AdvancementAPI.builder(new NamespacedKey(LegendsOfValeros.getInstance(), "quests/" + UUID.randomUUID().toString()))
-                    .title(text)
-                    .description("A notification")
-                    .icon(icon)
-                    .trigger(Trigger.builder(Trigger.TriggerType.IMPOSSIBLE, "impossible"))
-                    .hidden(true)
-                    .toast(true)
-                    .background("minecraft:textures/gui/advancements/backgrounds/stone.png")
-                    .frame(FrameType.TASK)
+                        .title(text)
+                        .description("A notification")
+                        .icon(icon)
+                        .trigger(Trigger.builder(Trigger.TriggerType.IMPOSSIBLE, "impossible"))
+                        .hidden(true)
+                        .toast(true)
+                        .background("minecraft:textures/gui/advancements/backgrounds/stone.png")
+                        .frame(FrameType.TASK)
                     .build();
+            advancement.add();
         }
 
-        advancement.show(LegendsOfValeros.getInstance(), player);
-
+        advancement.show(player);
 
         Quests.getInstance().getScheduler().executeInSpigotCircleLater(next::go, 20L);
     }
