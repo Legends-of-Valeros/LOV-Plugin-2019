@@ -1,6 +1,7 @@
 package com.legendsofvaleros.scheduler;
 
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ public class InternalScheduler extends Thread {
                         fired.add(curr);
                         curr.run();
                     } catch(Exception e) {
-                        e.printStackTrace();
+                        MessageUtil.sendSevereException(name, e);
                     }
 
                     curr.setExecuted(true);

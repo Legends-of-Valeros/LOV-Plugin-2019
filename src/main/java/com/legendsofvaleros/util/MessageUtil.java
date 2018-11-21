@@ -118,9 +118,19 @@ public class MessageUtil {
 	 * @param log If the stack trace should be logged to console.
 	 */
 	public static String sendException(Module module, CommandSender sender, Throwable th, boolean log) {
+		return sendException(module, sender, th, log);
+	}
+
+	/**
+	 * @param module The module that generated the exception.
+	 * @param sender Who to send the error to/who caused the error.
+	 * @param th The error object that occured.
+	 * @param log If the stack trace should be logged to console.
+	 */
+	public static String sendException(String module, CommandSender sender, Throwable th, boolean log) {
 		String trace = getStackTrace(th);
 		
-		BaseComponent[] bc = new TextBuilder("[X:" + module.getName() + "] " + (th.getMessage() != null ? th.getMessage() : "Something went wrong!")).color(ChatColor.DARK_RED)
+		BaseComponent[] bc = new TextBuilder("[X" + (module != null ? ":" + module : "") + "] " + (th.getMessage() != null ? th.getMessage() : "Something went wrong!")).color(ChatColor.DARK_RED)
 				.hover(trace.replace("\t", "  ").replace("at ", ""))
 				.color(ChatColor.GRAY).create();
 		if(sender != null)
@@ -147,6 +157,20 @@ public class MessageUtil {
 	 * A sever exception is logged to console and sent to #logs in Discord if in a production server.
 	 */
 	public static void sendSevereException(Module module, CommandSender sender, Throwable th) {
+		sendSevereException(module.getName(), sender, th);
+	}
+
+	/**
+	 * A sever exception is logged to console and sent to #logs in Discord if in a production server.
+	 */
+	public static void sendSevereException(String module, Throwable th) {
+		sendSevereException(module, null, th);
+	}
+
+	/**
+	 * A sever exception is logged to console and sent to #logs in Discord if in a production server.
+	 */
+	public static void sendSevereException(String module, CommandSender sender, Throwable th) {
 		String trace = sendException(module, sender, th, true);
 
 		th.printStackTrace();
@@ -161,7 +185,7 @@ public class MessageUtil {
 				if (channel != null) {
 					Utilities.getInstance().getScheduler().executeInMyCircle(() -> {
 						try {
-							channel.sendMessage("`[" + Discord.TAG + (module != null ? ":" + module.getName() : "") + "]` ="
+							channel.sendMessage("`[" + Discord.TAG + (module != null ? ":" + module : "") + "]` ="
 									+ (sender != null ? " **__" + sender.getName() + "__ triggered an exception:**" : "")
 									+ " ```" + trace + "```").get();
 						} catch (InterruptedException | ExecutionException _e) {
@@ -210,10 +234,10 @@ public class MessageUtil {
 				.column(TRACE, "TEXT").create();
 		}
 
-		public static void add(Module module, CommandSender sender, String trace) {
+		public static void add(String module, CommandSender sender, String trace) {
 			manager.query()
 					.insert()
-						.values(PLUGIN_FIELD, module == null ? "Unknown" : module.getName(),
+						.values(PLUGIN_FIELD, module == null ? "Unknown" : module,
 								PLAYER, sender == null ? "Unknown" : sender.getName(),
 								TRACE, trace)
 					.build()
