@@ -311,8 +311,7 @@ public class Mob {
                         npc.data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA, skin.data);
                         npc.data().setPersistent(NPC.PLAYER_SKIN_USE_LATEST, false);
                     } catch (Exception e) {
-                        MessageUtil.sendException(Mobs.getInstance(), null, e, false);
-                        e.printStackTrace();
+                        MessageUtil.sendException(Mobs.getInstance(), e, false);
                     }
                 }
             }

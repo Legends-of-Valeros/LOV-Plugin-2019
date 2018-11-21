@@ -19,7 +19,7 @@ public class RepairObjective extends AbstractObjective<ObjectiveProgressBoolean>
         item = GearItem.fromID(id);
 
         if(item == null)
-            MessageUtil.sendException(Bank.getInstance(), null, new Exception("No item with that ID in quest. Offender: " + id + " in " + getQuest().getId()), false);
+            MessageUtil.sendException(Bank.getInstance(), "No item with that ID in quest. Offender: " + id + " in " + getQuest().getId(), false);
     }
 
     @Override

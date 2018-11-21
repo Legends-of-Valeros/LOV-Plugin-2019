@@ -157,7 +157,7 @@ public class PlayerCharacterData {
                             Characters.getInstance().getLogger().severe(
                                     "A race name '" + raceName + "' was found in the database, "
                                             + "but no race with that name exists on this server.");
-                            MessageUtil.sendException(Characters.getInstance(), null, ex, true);
+                            MessageUtil.sendException(Characters.getInstance(), null, ex, false);
                             continue;
                         }
 
@@ -168,7 +168,7 @@ public class PlayerCharacterData {
                             Characters.getInstance().getLogger().severe(
                                     "A race name '" + raceName + "' was found in the database, "
                                             + "but no race with that name exists on this server.");
-                            MessageUtil.sendException(Characters.getInstance(), null, ex, true);
+                            MessageUtil.sendException(Characters.getInstance(), null, ex, false);
                             continue;
                         }
 

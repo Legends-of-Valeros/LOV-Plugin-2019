@@ -60,7 +60,7 @@ public class LevelArchetypes extends ListenerModule implements LevelArchetypesAP
 
                 } catch (Exception e) {
                     getLogger().severe("There was an issue while loading the archetype '" + key + "'");
-                    MessageUtil.sendException(LevelArchetypes.getInstance(), null, e, true);
+                    MessageUtil.sendException(LevelArchetypes.getInstance(), e, false);
                 }
             }
         }

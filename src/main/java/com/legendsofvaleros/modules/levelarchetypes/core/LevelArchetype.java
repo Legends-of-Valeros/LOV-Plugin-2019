@@ -154,7 +154,7 @@ public class LevelArchetype implements Archetype {
 
                 } catch (Exception e) {
                     lg.severe("Could not load the exception '" + exceptionId + "' in archetype '" + id + "'.");
-                    MessageUtil.sendException(LevelArchetypes.getInstance(), null, e, true);
+                    MessageUtil.sendException(LevelArchetypes.getInstance(), e, false);
                 }
             }
         }

@@ -2,6 +2,7 @@ package com.legendsofvaleros;
 
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.Modules;
+import com.legendsofvaleros.util.MessageUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -20,8 +21,9 @@ public class EventsAspect {
 
         try {
             returnObject = joinPoint.proceed();
-        } catch(Throwable throwable) {
-            throw throwable;
+        } catch(Throwable th) {
+            MessageUtil.sendSevereException(module, null, th);
+            throw th;
         } finally {
             long tookTime = System.currentTimeMillis() - startTime;
 

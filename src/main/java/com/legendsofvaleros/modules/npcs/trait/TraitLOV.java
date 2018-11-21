@@ -112,7 +112,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
         if (npcData == null) {
             getNPC().data().setPersistent(NPC.NAMEPLATE_VISIBLE_METADATA, true);
             getNPC().getEntity().setCustomNameVisible(true);
-            MessageUtil.sendException(NPCs.getInstance(), null, new Exception("No NPC with that ID exists in the cache. Offender: " + npcId + " on " + getNPC().getId()), false);
+            MessageUtil.sendException(NPCs.getInstance(), "No NPC with that ID exists in the cache. Offender: " + npcId + " on " + getNPC().getId(), false);
             return;
         }
 
@@ -132,7 +132,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
                 return;
             }
         } else {
-            MessageUtil.sendException(NPCs.getInstance(), null, new Exception("NPC has a null name. Offender: " + npcId + " on " + getNPC().getId()), false);
+            MessageUtil.sendException(NPCs.getInstance(), "NPC has a null name. Offender: " + npcId + " on " + getNPC().getId(), false);
         }
 
         nameplates = Nameplates.get(getNPC());

@@ -59,7 +59,7 @@ public class BehaviorEngine {
             try {
                 data.tree.onStep(data.ce, time);
             } catch (Exception e) {
-                MessageUtil.sendException(Mobs.getInstance(), null, e, true);
+                MessageUtil.sendSevereException(Mobs.getInstance(), null, e);
             }
         }
     }

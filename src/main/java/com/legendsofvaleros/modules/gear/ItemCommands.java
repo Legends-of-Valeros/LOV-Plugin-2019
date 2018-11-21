@@ -13,13 +13,13 @@ import org.bukkit.entity.Player;
 
 @CommandAlias("gear")
 public class ItemCommands extends BaseCommand {
-    @Subcommand("clear")
-    @Description("Clear the item cache.")
-    @CommandPermission("gear.clear")
-    public void cmdClear(CommandSender sender) {
+    @Subcommand("reload")
+    @Description("Reload the item cache.")
+    @CommandPermission("gear.reload")
+    public void cmdReload(CommandSender sender) {
         ItemManager.reload();
         Model.reload();
-        MessageUtil.sendUpdate(sender, "Item and item model cache cleared.");
+        MessageUtil.sendUpdate(sender, "Item and item model cache reloaded.");
     }
 
     @Subcommand("spawn")

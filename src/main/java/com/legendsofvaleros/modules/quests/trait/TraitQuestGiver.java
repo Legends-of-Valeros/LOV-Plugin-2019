@@ -196,7 +196,7 @@ public class TraitQuestGiver extends LOVTrait {
                     else
                         throw new Exception("Failed to load quest on NPC! Offender: " + questId + " on " + trait.npcId);
                 } catch (Exception e) {
-                    MessageUtil.sendException(Quests.getInstance(), null, e, true);
+                    MessageUtil.sendException(Quests.getInstance(), e, false);
                 }
 
                 if (left.decrementAndGet() == 0)

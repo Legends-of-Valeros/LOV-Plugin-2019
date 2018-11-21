@@ -67,7 +67,7 @@ public class BukkitConfig implements CombatEngineConfig {
 				statDescriptions.put(Stat.valueOf(key), descSec.getString(key));
 			} catch (Exception ex) {
 				CombatEngine.getInstance().getLogger().severe("Could not load stat description. '" + key + "' is not a recognized stat");
-				MessageUtil.sendException(CombatEngine.getInstance(), null, ex, true);
+				MessageUtil.sendException(CombatEngine.getInstance(), ex, false);
 			}
 		}
 
@@ -88,8 +88,8 @@ public class BukkitConfig implements CombatEngineConfig {
 				} catch (Exception ex2) {
 					CombatEngine.getInstance().getLogger().severe(
 							"Could not load the default profile. '" + key + "' is not a recognized stat");
-					MessageUtil.sendException(CombatEngine.getInstance(), null, ex, true);
-					MessageUtil.sendException(CombatEngine.getInstance(), null, ex2, true);
+					MessageUtil.sendException(CombatEngine.getInstance(), ex, false);
+					MessageUtil.sendException(CombatEngine.getInstance(), ex2, false);
 				}
 			}
 		}

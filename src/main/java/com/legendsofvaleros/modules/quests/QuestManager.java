@@ -118,7 +118,7 @@ public class QuestManager {
 
                 field.set(obj, gson.getAdapter(field.getType()).fromJsonTree(entry.getValue()));
             } catch (Exception e) {
-                MessageUtil.sendException(Quests.getInstance(), null, new Exception("Failed to apply fields! Offender: " + (obj == null ? "null" : obj.getClass().getSimpleName()) + ":" + act), true);
+                MessageUtil.sendException(Quests.getInstance(), "Failed to apply fields! Offender: " + (obj == null ? "null" : obj.getClass().getSimpleName()) + ":" + act, true);
             }
         }
     }
@@ -244,7 +244,7 @@ public class QuestManager {
         quests.cleanUp();
 
         if (quests.size() > 0)
-            MessageUtil.sendException(Quests.getInstance(), null, new Exception(quests.size() + " quests did not get cleared from the cache."), false);
+            MessageUtil.sendException(Quests.getInstance(), quests.size() + " quests did not get cleared from the cache.", false);
 
         for (Player p : Bukkit.getOnlinePlayers())
             loadQuestsForPlayer(Characters.getPlayerCharacter(p), null);
@@ -488,7 +488,7 @@ public class QuestManager {
                         ret.set(quest);
                     } catch (Exception e) {
                         Quests.getInstance().getLogger().severe("Failed to load quest. Offender: " + id);
-                        MessageUtil.sendException(Quests.getInstance(), null, e, true);
+                        MessageUtil.sendException(Quests.getInstance(), null, e, false);
                         ret.set(null);
                     }
                 })

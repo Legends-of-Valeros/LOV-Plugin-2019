@@ -113,7 +113,7 @@ public class GearItem {
                 instance.persists.put(entry.getKey(), entry.getValue().onInit());
             } catch (Exception e) {
                 Gear.getInstance().getLogger().severe("Failed to load component " + entry.getKey() + " on item " + id);
-                MessageUtil.sendException(Gear.getInstance(), null, e, true);
+                MessageUtil.sendException(Gear.getInstance(), e, false);
                 return null;
             }
         }
@@ -346,7 +346,7 @@ public class GearItem {
 
                 return builder.create();
             } catch (Exception e) {
-                MessageUtil.sendException(Gear.getInstance(), null, e, true);
+                MessageUtil.sendException(Gear.getInstance(), e, true);
 
                 GearItem.Instance instance = Gear.ERROR_ITEM.newInstance();
                 instance.amount = amount;

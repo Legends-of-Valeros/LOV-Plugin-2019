@@ -41,7 +41,7 @@ public class ItemManager {
                             components.put(entry.getKey(), gson.fromJson(entry.getValue(), comp));
                         } catch (Exception e) {
                             Exception ex = new Exception(e + ". Offender: " + entry.getKey() + " " + entry.getValue().toString());
-                            MessageUtil.sendException(Gear.getInstance(), null, ex, true);
+                            MessageUtil.sendException(Gear.getInstance(), ex, false);
                         }
                     }
                     return components;

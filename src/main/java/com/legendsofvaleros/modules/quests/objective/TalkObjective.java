@@ -20,7 +20,7 @@ public class TalkObjective extends AbstractObjective<ObjectiveProgressBoolean> {
     @Override
     protected void onInit() {
         if (!NPCs.isNPC(id)) {
-            MessageUtil.sendException(Quests.getInstance(), null, new Exception("No NPC with that ID in quest. Offender: " + id + " in " + getQuest().getId()), false);
+            MessageUtil.sendException(Quests.getInstance(), "No NPC with that ID in quest. Offender: " + id + " in " + getQuest().getId(), false);
             return;
         }
 

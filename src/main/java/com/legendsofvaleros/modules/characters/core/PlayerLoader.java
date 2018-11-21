@@ -65,8 +65,8 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
 
     private Callback<CharacterId> loadingCallback = (value, error) -> {
         if (error != null) {
-            Characters.getInstance().getLogger().severe("error while loading a player's character data");
-            MessageUtil.sendException(Characters.getInstance(), null, error, true);
+            Characters.getInstance().getLogger().severe("Error while loading a player's character data");
+            MessageUtil.sendSevereException(Characters.getInstance(), null, error);
         } else if (value != null) {
             Characters.getInstance().getScheduler().executeInSpigotCircle(() -> onDoneLoading(value));
         }
@@ -74,8 +74,8 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
 
     private Callback<CharacterId> logoutCallback = (value, error) -> {
         if (error != null) {
-            Characters.getInstance().getLogger().severe("error while logging out a player's character data");
-            MessageUtil.sendException(Characters.getInstance(), null, error, true);
+            Characters.getInstance().getLogger().severe("Error while logging out a player's character data");
+            MessageUtil.sendSevereException(Characters.getInstance(), null, error);
         } else if (value != null) {
             Characters.getInstance().getScheduler().executeInSpigotCircle(() -> onDoneLoggingOut(value));
         }

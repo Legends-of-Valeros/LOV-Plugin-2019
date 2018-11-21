@@ -82,36 +82,89 @@ public class MessageUtil {
 		sendDebug(sender, message);
 	}
 
+	/**
+	 * @param module The module that generated the exception.
+	 * @param err The error that occured.
+	 * @param log If the stack trace should be logged to console.
+	 */
+	public static String sendException(Module module, String err, boolean log) {
+		return sendException(module, null, new Exception(err), log);
+	}
 
-	public static void sendException(Module module, CommandSender sender, Throwable th, boolean log) {
+	/**
+	 * @param module The module that generated the exception.
+	 * @param sender Who to send the error to/who caused the error.
+	 * @param err The error that occured.
+	 * @param log If the stack trace should be logged to console.
+	 */
+	public static String sendException(Module module, CommandSender sender, String err, boolean log) {
+		return sendException(module, sender, new Exception(err), log);
+	}
+
+	/**
+	 * @param module The module that generated the exception.
+	 * @param th The error object that occured.
+	 * @param log If the stack trace should be logged to console.
+	 */
+	public static String sendException(Module module, Throwable th, boolean log) {
+		return sendException(module, null, th, log);
+	}
+
+	/**
+	 * @param module The module that generated the exception.
+	 * @param sender Who to send the error to/who caused the error.
+	 * @param th The error object that occured.
+	 * @param log If the stack trace should be logged to console.
+	 */
+	public static String sendException(Module module, CommandSender sender, Throwable th, boolean log) {
 		String trace = getStackTrace(th);
 		
-		BaseComponent[] bc = new TextBuilder("[X] " + (th.getMessage() != null ? th.getMessage() : "Something went wrong!")).color(ChatColor.DARK_RED)
+		BaseComponent[] bc = new TextBuilder("[X:" + module.getName() + "] " + (th.getMessage() != null ? th.getMessage() : "Something went wrong!")).color(ChatColor.DARK_RED)
 				.hover(trace.replace("\t", "  ").replace("at ", ""))
 				.color(ChatColor.GRAY).create();
 		if(sender != null)
 			sender.spigot().sendMessage(bc);
-		else
-			for(Player p : Bukkit.getOnlinePlayers())
+		else {
+			for (Player p : Bukkit.getOnlinePlayers())
 				p.spigot().sendMessage(bc);
-		
-		if(log) {
+		}
+
+		if(log)
 			th.printStackTrace();
-			ExceptionManager.add(module, sender, trace);
 
-			if(Discord.SERVER != null) {
-				// Make this channel configurable
-				Channel channel = Discord.SERVER.getChannelById("358612310731915264");
+		return trace;
+	}
 
-				if (false && channel != null) {
-					Utilities.getInstance().getScheduler().executeInMyCircle(() -> {
-						try {
-							channel.sendMessage("`[" + Discord.TAG + "]` ```" + trace + "```").get();
-						} catch (InterruptedException | ExecutionException _e) {
-							_e.printStackTrace();
-						}
-					});
-				}
+	/**
+	 * A sever exception is logged to console and sent to #logs in Discord if in a production server.
+	 */
+	public static void sendSevereException(Module module, Throwable th) {
+		sendSevereException(module, null, th);
+	}
+
+	/**
+	 * A sever exception is logged to console and sent to #logs in Discord if in a production server.
+	 */
+	public static void sendSevereException(Module module, CommandSender sender, Throwable th) {
+		String trace = sendException(module, sender, th, true);
+
+		th.printStackTrace();
+		ExceptionManager.add(module, sender, trace);
+
+		if(Discord.SERVER != null) {
+			// Make this channel configurable
+			Channel channel = Discord.SERVER.getChannelById("358612310731915264");
+
+			if(channel != null) {
+				Utilities.getInstance().getScheduler().executeInMyCircle(() -> {
+					try {
+						channel.sendMessage("`[" + Discord.TAG + (module != null ? ":" + module.getName(): "") + "]` ="
+								+ (sender != null ? " **__" + sender.getName() + "__ triggered an exception:**" : "")
+								+ " ```" + trace + "```").get();
+					} catch (InterruptedException | ExecutionException _e) {
+						_e.printStackTrace();
+					}
+				});
 			}
 		}
 	}

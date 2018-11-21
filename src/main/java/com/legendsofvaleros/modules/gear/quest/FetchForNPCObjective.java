@@ -28,10 +28,10 @@ public class FetchForNPCObjective extends AbstractObjective<ObjectiveProgressBoo
         item = GearItem.fromID(id);
 
         if (item == null)
-            MessageUtil.sendException(Gear.getInstance(), null, new Exception("No item with that ID in quest. Offender: " + id + " in " + getQuest().getId()), true);
+            MessageUtil.sendException(Gear.getInstance(), "No item with that ID in quest. Offender: " + id + " in " + getQuest().getId(), false);
 
         if (!NPCs.isNPC(npcId)) {
-            MessageUtil.sendException(Gear.getInstance(), null, new Exception("No NPC with that ID in quest. Offender: " + id + " in " + getQuest().getId()), true);
+            MessageUtil.sendException(Gear.getInstance(), "No NPC with that ID in quest. Offender: " + id + " in " + getQuest().getId(), false);
             return;
         }
 

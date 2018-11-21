@@ -23,12 +23,12 @@ import java.util.concurrent.ExecutionException;
 @CommandAlias("quests|quest")
 public class QuestCommands extends BaseCommand {
     @Subcommand("refresh")
-    @Description("Refresh quests currently in the cache.")
-    @CommandPermission("quests.refresh")
-    public void cmdRefresh(CommandSender sender) {
+    @Description("Reload quests currently in the cache.")
+    @CommandPermission("quests.reload")
+    public void cmdReload(CommandSender sender) {
         QuestManager.reloadQuests();
 
-        MessageUtil.sendUpdate(sender, "Quests refreshed.");
+        MessageUtil.sendUpdate(sender, "Quests reloaded.");
     }
 
     @Subcommand("complete")
@@ -95,7 +95,7 @@ public class QuestCommands extends BaseCommand {
 
                 quest.onAccept(pc);
             } catch (Exception e) {
-                MessageUtil.sendException(Quests.getInstance(), player, e, true);
+                MessageUtil.sendException(Quests.getInstance(), player, e, false);
             }
         }, Quests.getInstance().getScheduler()::async);
     }
@@ -112,7 +112,7 @@ public class QuestCommands extends BaseCommand {
             try {
                 future.get().onDecline(pc);
             } catch (Exception e) {
-                MessageUtil.sendException(Quests.getInstance(), player, e, true);
+                MessageUtil.sendException(Quests.getInstance(), player, e, false);
             }
         }, Quests.getInstance().getScheduler()::async);
     }
@@ -199,7 +199,7 @@ public class QuestCommands extends BaseCommand {
                                     if (completed) tb.strikethrough(true);
                                 }
                             } catch (Exception e) {
-                                MessageUtil.sendException(Quests.getInstance(), player, e, true);
+                                MessageUtil.sendException(Quests.getInstance(), player, e, false);
                                 tb.append("*Plugin error\n").color(ChatColor.DARK_RED);
                             }
                         }
