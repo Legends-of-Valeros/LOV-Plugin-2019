@@ -69,6 +69,11 @@ public class LegendsOfValeros extends JavaPlugin {
 
         mode = ServerMode.valueOf(getConfig().getString("server-mode", "LIVE"));
 
+        getLogger().fine("Server mode is set to: " + mode.name());
+        if(mode.doVerboseLogging()) getLogger().info("  - Verbose logging enabled");
+        if(mode.doLogging()) getLogger().info("  - Logging to database enabled");
+        if(mode.isLenient()) getLogger().warning("  - Leniency enabled: THIS SHOULD NOT BE ENABLED ON A LIVE SERVER");
+
         manager = new PaperCommandManager(LegendsOfValeros.getInstance());
         manager.enableUnstableAPI("help");
 
