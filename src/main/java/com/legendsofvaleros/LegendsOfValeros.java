@@ -69,6 +69,7 @@ public class LegendsOfValeros extends JavaPlugin {
 
         try {
             registerModules();
+
             Modules.loadModules();
         } catch(Exception e) {
             e.printStackTrace();
@@ -88,33 +89,35 @@ public class LegendsOfValeros extends JavaPlugin {
     private void registerModules() throws Exception {
         //TODO add config file and add check if module should be enabled or not
         //TODO add commands to disable single modules (&change the config?)
-        //TODO add method to determine dependencies between each module (if a module depends on a disabled module, it wont be enabled either)
-        Modules.registerModule(Utilities.class);
-        Modules.registerModule(Nanny.class);
-        Modules.registerModule(PlayerMenu.class);
-        Modules.registerModule(NPCs.class);
+        // Utilities is not an optional module EVER. In fact, no modules should ever
+        // have define it as a dependency. Load it immediately.
+        Modules.loadModule(Utilities.class);
+
+        Modules.registerModule(Bank.class);
+        Modules.registerModule(Characters.class);
+        Modules.registerModule(Chat.class);
         Modules.registerModule(CombatEngine.class);
+        Modules.registerModule(Dueling.class);
+        Modules.registerModule(Factions.class);
+        Modules.registerModule(FastTravel.class);
+        Modules.registerModule(Gear.class);
+        Modules.registerModule(Graveyards.class);
+        Modules.registerModule(Hearthstones.class);
+        Modules.registerModule(Hotswitch.class);
         Modules.registerModule(KeepOutOfOcean.class);
         Modules.registerModule(LevelArchetypes.class);
-        Modules.registerModule(Characters.class);
-        Modules.registerModule(Quests.class);
-        Modules.registerModule(Hearthstones.class);
-        Modules.registerModule(Factions.class);
-        Modules.registerModule(Regions.class);
-        Modules.registerModule(Chat.class);
-        Modules.registerModule(Hotswitch.class);
-        Modules.registerModule(Parties.class);
-        Modules.registerModule(Gear.class);
         Modules.registerModule(LootManager.class);
-        Modules.registerModule(Bank.class);
-        Modules.registerModule(PvP.class);
         Modules.registerModule(Mobs.class);
-        Modules.registerModule(Zones.class);
-        Modules.registerModule(Skills.class);
         Modules.registerModule(Mounts.class);
-        Modules.registerModule(FastTravel.class);
-        Modules.registerModule(Graveyards.class);
-        Modules.registerModule(Dueling.class);
+        Modules.registerModule(Nanny.class);
+        Modules.registerModule(NPCs.class);
+        Modules.registerModule(Parties.class);
+        Modules.registerModule(PlayerMenu.class);
+        Modules.registerModule(PvP.class);
+        Modules.registerModule(Quests.class);
+        Modules.registerModule(Regions.class);
+        Modules.registerModule(Skills.class);
+        Modules.registerModule(Zones.class);
     }
 
     public void registerEvents(Listener listener, Module module) {

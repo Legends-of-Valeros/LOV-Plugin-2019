@@ -66,6 +66,6 @@ public abstract class Module {
      * Gets the scheduler for the Module
      */
     public InternalScheduler getScheduler() {
-        return Modules.schedulers.get(this.getName());
+        return Modules.getScheduler(this);
     }
 }

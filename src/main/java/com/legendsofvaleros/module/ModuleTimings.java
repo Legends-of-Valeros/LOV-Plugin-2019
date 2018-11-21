@@ -23,7 +23,7 @@ public class ModuleTimings {
         // Clean up the timings list every 10 seconds.
         // Run this under the Utilities module so we don't pollute
         // execution counters with it.
-        this.cleanupTask = (module == Utilities.getInstance() ? module : Utilities.getInstance())
+        this.cleanupTask = (Utilities.getInstance() == null ? module : Utilities.getInstance())
                                 .getScheduler().executeInMyCircleTimer(() -> {
             try {
                 for(Class<? extends Event> ec : getTracked()) {

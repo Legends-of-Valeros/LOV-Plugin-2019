@@ -40,7 +40,6 @@ import java.util.concurrent.ExecutionException;
 @DependsOn(PlayerMenu.class)
 @DependsOn(Characters.class)
 public class Chat extends ListenerModule {
-
     private static Chat instance;
 
     public static Chat getInstance() {

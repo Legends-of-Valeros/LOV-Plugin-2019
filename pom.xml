@@ -8,19 +8,6 @@
     <artifactId>LOV</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>LOV</id>
-            <name>SNAPSHOTS</name>
-            <url>http://artifactory.legendsofvaleros.com/artifactory/libs-snapshot</url>
-        </snapshotRepository>
-        <repository>
-            <id>LOV</id>
-            <name>RELEASES</name>
-            <url>http://artifactory.legendsofvaleros.com/artifactory/libs-release</url>
-        </repository>
-    </distributionManagement>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spigot.version>1.12.2-R0.1-SNAPSHOT</spigot.version>
@@ -99,8 +86,8 @@
 
     <repositories>
         <repository>
-            <id>papermc</id>
-            <url>https://papermc.io/repo/repository/maven-public/</url>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/groups/snapshots/</url>
         </repository>
         <repository>
             <id>citizens-repo</id>
@@ -157,12 +144,13 @@
             <version>2.8.1</version>
             <scope>compile</scope>
         </dependency>
+
         <dependency>
-            <groupId>com.comphenix.executors</groupId>
-            <artifactId>BukkitExecutors</artifactId>
-            <version>1.0.0</version>
-            <scope>compile</scope>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>${spigot.version}</version>
         </dependency>
+
         <dependency>
             <groupId>co.aikar</groupId>
             <artifactId>acf-paper</artifactId>
@@ -242,12 +230,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.4</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.destroystokyo.paper</groupId>
-            <artifactId>paper-api</artifactId>
-            <version>1.12.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
