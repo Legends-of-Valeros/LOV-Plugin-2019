@@ -38,6 +38,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 
 /**
  * Created by Crystall on 11/15/2018
@@ -69,7 +70,7 @@ public class LegendsOfValeros extends JavaPlugin {
 
         mode = ServerMode.valueOf(getConfig().getString("server-mode", "LIVE"));
 
-        getLogger().fine("Server mode is set to: " + mode.name());
+        getLogger().info("Server mode is set to: " + mode.name());
         if(mode.doVerboseLogging()) getLogger().info("  - Verbose logging enabled");
         if(mode.doLogging()) getLogger().info("  - Logging to database enabled");
         if(mode.isLenient()) getLogger().warning("  - Leniency enabled: THIS SHOULD NOT BE ENABLED ON A LIVE SERVER");
