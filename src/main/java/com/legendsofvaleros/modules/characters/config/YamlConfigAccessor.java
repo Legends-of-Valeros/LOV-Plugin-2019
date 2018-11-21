@@ -83,7 +83,7 @@ public class YamlConfigAccessor {
     fileConfiguration = YamlConfiguration.loadConfiguration(configFile);
 
     // Looks for defaults in the jar
-    File f = new File(getFileName());
+    File f = new File("modules", getFileName());
     if (f.exists()) {
       YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(f);
       fileConfiguration.setDefaults(defConfig);
@@ -131,7 +131,7 @@ public class YamlConfigAccessor {
     if (!configFile.exists()) {
       try {
         Files.copy(
-                getClass().getResourceAsStream("/" + getFileName()),
+                getClass().getResourceAsStream("/modules/" + getFileName()),
                 Paths.get(configFile.toURI()),
                 StandardCopyOption.REPLACE_EXISTING);
       } catch (Exception e) { }
@@ -144,9 +144,8 @@ public class YamlConfigAccessor {
    * @return The simple file name, useful for logging and other purposes.
    */
   public final String getFileName() {
-    if (subdirectory == null)
+    if(subdirectory == null)
       return module.getName() + "/" + fileName;
-
     return module.getName() + "/" + subdirectory + fileName;
   }
 }

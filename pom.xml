@@ -127,11 +127,13 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-            <version>1.8.13</version>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>${spigot.version}</version>
+            <scope>provided</scope>
         </dependency>
 
+        <!-- Shaded dependencies -->
         <dependency>
             <groupId>de.btobastian.javacord</groupId>
             <artifactId>javacord</artifactId>
@@ -144,19 +146,15 @@
             <version>2.8.1</version>
             <scope>compile</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
-            <version>${spigot.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>co.aikar</groupId>
             <artifactId>acf-paper</artifactId>
             <version>0.5.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
+
+
+        <!-- Plugin dependencies -->
         <dependency>
             <groupId>net.citizensnpcs</groupId>
             <artifactId>citizensapi</artifactId>
@@ -184,6 +182,7 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- System dependencies -->
         <dependency>
             <groupId>io.brutus.minecraft</groupId>
             <artifactId>dbpools</artifactId>
@@ -225,6 +224,14 @@
             <version>0.0.1-SNAPSHOT</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/ambience-0.0.1.jar</systemPath>
+        </dependency>
+
+        <!-- Compile dependencies -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>1.8.13</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

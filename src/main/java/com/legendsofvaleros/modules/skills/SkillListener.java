@@ -1,5 +1,6 @@
 package com.legendsofvaleros.modules.skills;
 
+import com.legendsofvaleros.module.Modules;
 import com.legendsofvaleros.modules.characters.api.Cooldowns;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -7,10 +8,12 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLevelUpEven
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
+import com.legendsofvaleros.modules.gear.Gear;
 import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger;
 import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.modules.quests.QuestManager;
+import com.legendsofvaleros.modules.quests.Quests;
 import com.legendsofvaleros.modules.skills.event.BindSkillEvent;
 import com.legendsofvaleros.modules.skills.event.SkillPreUseEvent;
 import com.legendsofvaleros.modules.skills.event.SkillUsedEvent;
@@ -18,7 +21,6 @@ import com.legendsofvaleros.modules.skills.gear.CastTrigger;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
 import com.legendsofvaleros.util.Utilities;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -31,19 +33,11 @@ import java.util.Map;
 
 public class SkillListener implements Listener {
     public SkillListener() {
-        if(Bukkit.getServer().getPluginManager().isPluginEnabled("Quests")) {
-            Skills.getInstance().getLogger().info("Quest plugin enabled. Registering event handler.");
-
+        if(Modules.isEnabled(Quests.class))
             Skills.getInstance().registerEvents(new QuestListener());
-        }else
-            Skills.getInstance().getLogger().info("Quest plugin not enabled.");
 
-        if(Bukkit.getServer().getPluginManager().isPluginEnabled("Gear")) {
-            Skills.getInstance().getLogger().info("Gear plugin enabled. Registering event handler.");
-
+        if(Modules.isEnabled(Gear.class))
             Skills.getInstance().registerEvents(new GearListener());
-        }else
-            Skills.getInstance().getLogger().info("Gear plugin not enabled.");
     }
 
     @EventHandler

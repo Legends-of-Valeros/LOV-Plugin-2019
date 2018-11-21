@@ -82,15 +82,19 @@ public class Skills extends ListenerModule {
             GearRegistry.registerComponent("charge", GearCharge.Component.class);
             GearRegistry.registerComponent("skill", SkillComponent.class);
             GearRegistry.registerComponent("skills_reset", SkillResetComponent.class);
-        }
+        }else
+            Skills.getInstance().getLogger().info("Gear integration not enabled.");
 
         if(Modules.isEnabled(NPCs.class))
             NPCs.registerTrait("recharger", TraitRecharger.class);
+        else
+            Skills.getInstance().getLogger().info("NPC integration not enabled.");
 
         if(Modules.isEnabled(Quests.class)) {
             ObjectiveFactory.registerType("skill_bind", SkillBindObjective.class);
             ObjectiveFactory.registerType("skill_use", SkillUseObjective.class);
-        }
+        }else
+            Skills.getInstance().getLogger().info("Quest integration not enabled.");
 
 
         new HotbarListener();
