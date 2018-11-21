@@ -28,7 +28,7 @@ public class Modules {
     private static Map<String, Class<? extends Module>> packages = new HashMap<>();
     private static Map<Class<? extends Module>, Module> modules = new LinkedHashMap<>();
     public static Collection<Module> getLoadedModules() { return modules.values(); }
-    public static boolean isEnabled(Class<? extends Module> clazz) { return modules.containsKey(clazz.getSimpleName()); }
+    public static boolean isEnabled(Class<? extends Module> clazz) { return modules.containsKey(clazz); }
 
 
     /** Schedulers for each module. */

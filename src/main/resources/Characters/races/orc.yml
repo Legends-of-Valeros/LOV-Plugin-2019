@@ -1,9 +1,0 @@
-long-description:
-- "A green race of nomadic peoples who take pride in honor."
-
-climate-description:
-- "Some mountain place I think"
-
-benefits:
-    stats:
-    - PHYSICAL_ATTACK,ADD,0.5

@@ -226,12 +226,12 @@
             <systemPath>${project.basedir}/lib/ambience-0.0.1.jar</systemPath>
         </dependency>
 
-        <!-- Compile dependencies -->
+        <!-- Compiler dependencies -->
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
             <version>1.8.13</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
