@@ -99,10 +99,12 @@ public class InternalScheduler extends Thread {
                 // be the result of queueing many tasks, in which case this can be ignored, but this can
                 // assist in tracking down ornery tasks.
                 LegendsOfValeros.getInstance().getLogger().warning("Scheduler '" + name + "' fell behind by " + Math.abs(timeTaken) + "ms!");
-                LegendsOfValeros.getInstance().getLogger().warning("----------------------------------------");
-                for(InternalTask task : fired)
-                    LegendsOfValeros.getInstance().getLogger().warning(task.getTrace());
-                LegendsOfValeros.getInstance().getLogger().warning("----------------------------------------");
+                if(fired.size() > 0) {
+                    LegendsOfValeros.getInstance().getLogger().warning("----------------------------------------");
+                    for (InternalTask task : fired)
+                        LegendsOfValeros.getInstance().getLogger().warning(task.getTrace());
+                    LegendsOfValeros.getInstance().getLogger().warning("----------------------------------------");
+                }
             }
         }
     }
