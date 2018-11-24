@@ -16,6 +16,8 @@ import de.btobastian.javacord.DiscordAPI;
 import de.btobastian.javacord.entities.Channel;
 import de.btobastian.javacord.entities.Server;
 import de.btobastian.javacord.listener.message.MessageCreateListener;
+import lombok.Getter;
+import lombok.Setter;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import org.apache.commons.lang.WordUtils;
@@ -55,6 +57,10 @@ public class Chat extends ModuleListener {
 
         instance = this;
 
+        for (ChatChannel channel : ChatChannel.values()) {
+            registerChannel(channel.getPrefix(), channel);
+        }
+
         ConfigurationSection config = getConfig().getConfigurationSection("discord");
 
         getLogger().info("" + getConfig().getKeys(false));
@@ -65,112 +71,36 @@ public class Chat extends ModuleListener {
             discordToChan.put(channels.getString(key), key.charAt(0));
         }
 
-        //TODO add channel enum
-        registerChannel('W', new IChannelHandler() {
-            @Override public ChatColor getTagColor() {
-                return ChatColor.GRAY;
-            }
-
-            @Override public ChatColor getChatColor() {
-                return ChatColor.GRAY;
-            }
-
-            @Override public String getName(Player p) {
-                return "World";
-            }
-
-            @Override public boolean canSetDefault() {
-                return false;
-            }
-
-            @Override public boolean canDisable() {
-                return true;
-            }
-
-            @Override
-            public void onChat(Player p, BaseComponent[] bc) {
-                for (Player pl : Bukkit.getOnlinePlayers())
-                    if (isChannelOn(pl, 'W'))
-                        pl.spigot().sendMessage(bc);
-            }
-        });
-        registerChannel('T', new IChannelHandler() {
-            @Override public ChatColor getTagColor() {
-                return ChatColor.GREEN;
-            }
-
-            @Override public ChatColor getChatColor() {
-                return ChatColor.GREEN;
-            }
-
-            @Override public String getName(Player p) {
-                return "Trade";
-            }
-
-            @Override public boolean canSetDefault() {
-                return false;
-            }
-
-            @Override public boolean canDisable() {
-                return true;
-            }
-
-            @Override
-            public void onChat(Player p, BaseComponent[] bc) {
-                for (Player pl : Bukkit.getOnlinePlayers())
-                    if (isChannelOn(pl, 'T'))
-                        pl.spigot().sendMessage(bc);
-            }
-        });
-        registerChannel('L', new IChannelHandler() {
-            @Override public ChatColor getTagColor() {
-                return ChatColor.WHITE;
-            }
-
-            @Override public ChatColor getChatColor() {
-                return ChatColor.WHITE;
-            }
-
-            @Override public String getName(Player p) {
-                return "Local";
-            }
-
-            @Override public boolean canSetDefault() {
-                return true;
-            }
-
-            @Override public boolean canDisable() {
-                return false;
-            }
-
-            @Override
-            public void onChat(Player p, BaseComponent[] bc) {
-                for (Player pl : Bukkit.getOnlinePlayers())
-                    if (pl.getLocation().distance(p.getLocation()) < 25)
-                        pl.spigot().sendMessage(bc);
-            }
-        });
     }
+
+    public void onChat(Player p, BaseComponent[] bc, ChatChannel sendTo) {
+        for (Player pl : Bukkit.getOnlinePlayers()) {
+            if (sendTo == ChatChannel.WORLD && isChannelOn(pl, 'W')) {
+                pl.spigot().sendMessage(bc);
+            } else if (sendTo == ChatChannel.TRADE && isChannelOn(pl, 'T')) {
+                pl.spigot().sendMessage(bc);
+            } else if (sendTo == ChatChannel.LOCAL) {
+                if (pl.getLocation().distance(p.getLocation()) < 25) {
+                    pl.spigot().sendMessage(bc);
+                }
+            }
+        }
+    }
+
 
     @Override
     public void onUnload() {
         super.onUnload();
     }
 
-    private char channelDefault = 'L';
+    @Setter @Getter
+    private ChatChannel channelDefault = ChatChannel.LOCAL;
 
-    public void setChannelDefault(char channelId) {
-        channelDefault = channelId;
-    }
 
-    public char getChannelDefault() {
-        return channelDefault;
-    }
+    protected final Map<Character, ChatChannel> channels = new HashMap<>();
 
-    protected final Map<Character, IChannelHandler> channels = new HashMap<>();
-
-    public void registerChannel(Character c, IChannelHandler handler) {
-        channels.put(c, handler);
+    public void registerChannel(Character c, ChatChannel channel) {
+        channels.put(c, channel);
     }
 
     private final Map<UUID, PlayerChat> players = new HashMap<>();
@@ -185,14 +115,15 @@ public class Chat extends ModuleListener {
         final DiscordAPI api = e.getAPI();
 
         api.registerListener((MessageCreateListener) (api1, message) -> {
-            if (message.getAuthor().isYourself() || message.getAuthor().isBot() || message.isPrivateMessage())
+            if (message.getAuthor().isYourself() || message.getAuthor().isBot() || message.isPrivateMessage() ||
+                    message.getContent().trim().length() == 0 ||
+                    message.getContent().startsWith("/") ||
+                    !discordToChan.containsKey(message.getChannelReceiver().getId())) {
                 return;
-            if (message.getContent().trim().length() == 0) return;
-            if (message.getContent().startsWith("/")) return;
-            if (!discordToChan.containsKey(message.getChannelReceiver().getId())) return;
+            }
 
             char channelId = discordToChan.get(message.getChannelReceiver().getId());
-            IChannelHandler ch = Chat.getInstance().channels.get(channelId);
+            ChatChannel ch = Chat.getInstance().channels.get(channelId);
 
             PlayerData data = null;
             try {
@@ -203,7 +134,7 @@ public class Chat extends ModuleListener {
 
             TextBuilder tb = new TextBuilder("");
 
-            tb.append(channelId + " ").color(ch.getTagColor()).bold(true).hover(ch.getName(null));
+            tb.append(channelId + " ").color(ch.getTagColor()).bold(true).hover(ch.getName());
 
             tb.append(data != null ? data.username :
                     (message.getAuthor().hasNickname(server) ? message.getAuthor().getNickname(server) : message.getAuthor().getName()))
@@ -217,7 +148,7 @@ public class Chat extends ModuleListener {
             tb.append(": ").color(ChatColor.DARK_GRAY);
             tb.append(message.getContent()).color(ch.getChatColor());
 
-            ch.onChat(null, tb.create());
+            onChat(null, tb.create(), ch);
         });
     }
 
@@ -300,7 +231,7 @@ public class Chat extends ModuleListener {
                 }
 
                 if (isChannelOn(e.getPlayer(), channelId)) {
-                    Character oldChannel = (data.channel == null ? channelDefault : data.channel);
+                    Character oldChannel = (data.channel == null ? channelDefault.getPrefix() : data.channel);
                     data.channel = channelId;
 
                     e.getPlayer().chat(e.getMessage().substring(3));
@@ -309,16 +240,14 @@ public class Chat extends ModuleListener {
                 } else
                     MessageUtil.sendError(e.getPlayer(), "You may not speak in a channel you have disabled. Type '/" + channelId + " on' to re-enable it.");
             } else {
-                IChannelHandler ch = channels.get(channelId);
+                ChatChannel ch = channels.get(channelId);
 
-                if (!ch.canSetDefault()) {
+                if (!ch.isCanSetDefault()) {
                     MessageUtil.sendError(e.getPlayer(), "You are not allowed to set that channel as default.");
                 } else {
                     data.channel = channelId;
-
                     PlayerSettings.get(e.getPlayer()).get().put("chat.selected", String.valueOf(channelId));
-
-                    MessageUtil.sendUpdate(e.getPlayer(), "You are now speaking in " + ch.getName(null) + " chat.");
+                    MessageUtil.sendUpdate(e.getPlayer(), "You are now speaking in " + ch.getName() + " chat.");
                 }
             }
         }
@@ -374,11 +303,11 @@ public class Chat extends ModuleListener {
         e.setCancelled(true);
 
         PlayerChat data = players.get(e.getPlayer().getUniqueId());
-        IChannelHandler ch = channels.get(data.channel);
+        ChatChannel ch = channels.get(data.channel);
 
         TextBuilder tb = new TextBuilder("");
         {
-            tb.append(data.channel + " ").color(ch.getTagColor()).bold(true).hover(ch.getName(e.getPlayer()));
+            tb.append(data.channel + " ").color(ch.getTagColor()).bold(true).hover(ch.getName());
 
             if (data.prefix != null) {
                 tb.append(ChatColor.translateAlternateColorCodes('&', data.prefix));
@@ -393,15 +322,14 @@ public class Chat extends ModuleListener {
             } else {
                 PlayerCharacter pc = Characters.getPlayerCharacter(e.getPlayer());
                 if (pc != null) {
-                    tb.color(pc.getPlayerClass().getColor())
-                            .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                    new TextBuilder("Race: ").color(ChatColor.YELLOW)
-                                            .append(pc.getPlayerRace().getUserFriendlyName() + "\n")
-                                            .append("Class: ").color(ChatColor.YELLOW)
-                                            .append(pc.getPlayerClass().getUserFriendlyName() + "\n")
-                                            .append("Level: ").color(ChatColor.YELLOW)
-                                            .append(String.valueOf(pc.getExperience().getLevel())).create()
-                            ));
+                    tb.color(pc.getPlayerClass().getColor()).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                            new TextBuilder("Race: ").color(ChatColor.YELLOW)
+                                    .append(pc.getPlayerRace().getUserFriendlyName() + "\n")
+                                    .append("Class: ").color(ChatColor.YELLOW)
+                                    .append(pc.getPlayerClass().getUserFriendlyName() + "\n")
+                                    .append("Level: ").color(ChatColor.YELLOW)
+                                    .append(String.valueOf(pc.getExperience().getLevel())).create()
+                    ));
                 }
             }
 
@@ -415,8 +343,7 @@ public class Chat extends ModuleListener {
         BaseComponent[] bc = tb.create();
         Bukkit.getConsoleSender().spigot().sendMessage(bc);
 
-        ch.onChat(e.getPlayer(), bc);
-
+        onChat(e.getPlayer(), bc, ch);
         onChat(e, data);
     }
 
