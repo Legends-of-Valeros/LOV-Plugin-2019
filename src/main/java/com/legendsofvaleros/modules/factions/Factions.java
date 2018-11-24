@@ -13,7 +13,6 @@ import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
-import com.legendsofvaleros.modules.factions.Faction.Reputation;
 import com.legendsofvaleros.modules.factions.event.FactionReputationChangeEvent;
 import com.legendsofvaleros.modules.factions.quest.ActionReputation;
 import com.legendsofvaleros.modules.quests.Quests;
@@ -36,7 +35,7 @@ public class Factions extends ModuleListener {
     }
 
     private ORMTable<Faction> factionTable;
-    private ORMTable<Faction.Reputation> reputationTable;
+    private ORMTable<Reputation> reputationTable;
 
     private Map<String, Faction> factions = new HashMap<>();
     private Table<CharacterId, String, Reputation> playerRep = HashBasedTable.create();
@@ -51,7 +50,7 @@ public class Factions extends ModuleListener {
 
         String dbPoolId = LegendsOfValeros.getInstance().getConfig().getString("dbpools-database");
         factionTable = ORMTable.bind(dbPoolId, Faction.class);
-        reputationTable = ORMTable.bind(dbPoolId, Faction.Reputation.class);
+        reputationTable = ORMTable.bind(dbPoolId, Reputation.class);
 
         ActionFactory.registerType("faction_rep", ActionReputation.class);
 
@@ -130,7 +129,7 @@ public class Factions extends ModuleListener {
                         ret.set(reputation);
                     })
                     .onEmpty(() -> {
-                        Reputation reputation = new Faction.Reputation(pc.getUniqueCharacterId(), faction_id);
+                        Reputation reputation = new Reputation(pc.getUniqueCharacterId(), faction_id);
                         playerRep.put(pc.getUniqueCharacterId(), faction_id, reputation);
                         ret.set(reputation);
                     })

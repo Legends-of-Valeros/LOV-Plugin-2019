@@ -53,9 +53,9 @@ public class EntityTracker implements UnsafePlayerInitializer {
         // TODO this would need to be configured if passive/aggressive initialization option is added
         // Run after all plugins are initialized
         CombatEngine.getInstance().getScheduler().executeInSpigotCircle(() -> {
-            for(World world : Bukkit.getServer().getWorlds()) {
-                for(Entity entity : world.getEntities()) {
-                    if(entity instanceof LivingEntity) {
+            for (World world : Bukkit.getServer().getWorlds()) {
+                for (Entity entity : world.getEntities()) {
+                    if (entity instanceof LivingEntity) {
                         getCombatEntity((LivingEntity) entity);
                     }
                 }
@@ -133,7 +133,8 @@ public class EntityTracker implements UnsafePlayerInitializer {
      * Also initiates the construction of combat objects for certain entities.
      */
     public class TrackingListener implements Listener, RemovalListener<UUID, CombinedCombatEntity> {
-        public TrackingListener() { }
+        public TrackingListener() {
+        }
 
         // notifies combat object and server of the object's invalidation
         @Override
@@ -194,7 +195,7 @@ public class EntityTracker implements UnsafePlayerInitializer {
         // initializes combat data for spawning entities
         @EventHandler(priority = EventPriority.MONITOR)
         public void onEntitySpawn(CreatureSpawnEvent event) {
-            if(!event.isCancelled())
+            if (!event.isCancelled())
                 getCombatEntity(event.getEntity());
         }
 
