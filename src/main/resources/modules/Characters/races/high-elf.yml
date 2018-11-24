@@ -1,0 +1,9 @@
+long-description:
+- "Tend to steer clear of matters and issues that don’t directly involve them. High Elves are pure beings and the most magically-developed race."
+
+climate-description:
+- "Prestine Cities"
+
+benefits:
+    stats:
+    - PHYSICAL_ATTACK,ADD,0.5

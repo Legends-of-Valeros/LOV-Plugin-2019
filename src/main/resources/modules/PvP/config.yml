@@ -1,0 +1,5 @@
+pvp:
+  global:
+    enabled: true
+    priority: -1
+    honor: 15

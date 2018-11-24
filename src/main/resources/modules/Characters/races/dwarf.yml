@@ -1,0 +1,9 @@
+long-description:
+- "The great craftsmen and miners of the mountain holds."
+
+climate-description:
+- "Literally Dirt"
+
+benefits:
+    stats:
+    - PHYSICAL_ATTACK,ADD,0.5

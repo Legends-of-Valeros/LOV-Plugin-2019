@@ -1,0 +1,63 @@
+long-description:
+- "Skilled in defence, combat, and heavy armor."
+
+# ---
+# The id of the archetype that this class should use (as it appears in the LevelArchetypes config).
+# Archetypes define the base stats for players of this class at different levels.
+#
+# This archetype must be configured in LevelArchetypes or Characters will not load.
+archetype: "warrior"
+
+
+# ---
+# The base amount damage that this class should deal with melee attacks. This will be heavily affected
+# by a player's level, stats, and inventory. The modifiers may be so great that this base level
+# is relatively insignificant, but we need a base level either way.
+base-melee-damage: 5
+
+
+# ---
+# Define the effects of each strength, stamina, agility, endurance, and intelligence for each
+# class. You can configure an arbitrary amount of effects. For example, intelligence could
+# increase MANA, MANA_REGEN, and MAGIC_POWER, or it could do nothing for a class if you do
+# not configure any effects for it.
+#
+# Format: <STAT>,<MODIFIER TYPE>,<VALUE PER POINT>
+#
+# See the CombatEngine Stat Guide for info on what stats can be modified and precisely what
+# those stats do. All values here can be decimals (ex: 2.5).  For a full list of CombatEngine's stats, see:
+# https://bitbucket.org/legendsofvaleros/combatengine/src/master/src/main/java/com/legendsofvaleros/combatengine/stat/Stat.java?at=master
+#
+# Acceptable modifier types:
+#
+#   ADD - Adds a flat value to the stat per point. Use negative values with ADD to subtract
+#         per point. Ex: Strength with "PHYSICAL_ATTACK,ADD,10" would add 10 physical attack
+#         points per point of Strength.
+#
+#   ADD_IGNORE_MULTIPLIERS - Adds a flat value to the stat per point. If the player has
+#         multipliers applied to the stat in question, the value added/subtracted by this
+#         will not be affected.
+#
+#   MULTIPLY - Multiplies the stat. The amount of the multiplier is defined by the number of
+#         points in the class stat.
+#
+#         The formula for the multiplier is (1 + (valuePerPoint * classStatPoints))
+#
+#         Ex: Endurance with "MAX_HEALTH,MULTIPLY,0.01" would increase max health by 1% for
+#         each point of endurance. If a player had 100 endurance, they would have +100% of
+#         their normal health (double). Using this formula, negative values will make a smaller
+#         multiplier, though not necessary a negative multiplier. If Intelligence had
+#         "MAX_HEALTH,MULTIPLIER,-0.001" it would reduce MAX_HEALTH by 0.1% per point of
+#         Intelligence. So, if a player had 100 intelligence, they would have -10% of their
+#         normal MAX_HEALTH (90% of its normal total value.
+class-stats:
+    strength:
+    - PHYSICAL_ATTACK,ADD,2.5
+    stamina:
+    - MAX_HEALTH,ADD,10
+    agility:
+    - CRIT_CHANCE,ADD,1.5
+    endurance:
+    - MAX_ENERGY,ADD,2.5
+    intelligence:
+    # No effects configured here. Intelligence will do nothing for this class.
