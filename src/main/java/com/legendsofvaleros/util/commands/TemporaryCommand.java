@@ -3,7 +3,6 @@ package com.legendsofvaleros.util.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Default;
-import co.aikar.commands.annotation.Syntax;
 import org.bukkit.command.CommandSender;
 
 import java.util.HashMap;
@@ -26,7 +25,6 @@ public class TemporaryCommand extends BaseCommand {
 	}
 
 	@Default
-	@Syntax("<id>")
 	private void cmdTmp(CommandSender sender, String id) {
 		Runnable runnable = TemporaryCommand.get(id);
 		if(runnable == null) return;

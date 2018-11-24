@@ -19,7 +19,6 @@ public class CharacterCommands extends BaseCommand {
 	@Subcommand("level set")
 	@Description("Set a character's level.")
 	@CommandPermission("character.level.set")
-	@Syntax("[player] <level>")
 	public void cmdSetLevel(CommandSender sender, @Optional Player player, int level) {
 		if(player == null) {
 			if(!(sender instanceof Player)) return;
@@ -47,7 +46,6 @@ public class CharacterCommands extends BaseCommand {
 	@Subcommand("level up")
 	@Description("Up a character's level.")
 	@CommandPermission("character.level.up")
-	@Syntax("[player]")
 	public void cmdLevelup(CommandSender sender, Player player) {
 		if(player == null) {
 			if(!(sender instanceof Player)) return;

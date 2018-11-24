@@ -120,14 +120,12 @@ public class Skills extends ModuleListener {
         if (caster.isPlayer()) {
             PlayerCharacter pc = Characters.getPlayerCharacter((Player) caster.getLivingEntity());
 
-            if (!Utilities.isOp(pc.getPlayer())) {
-                Cooldowns cooldowns = pc.getCooldowns();
-                if (cooldowns.hasCooldown("skill-" + skill.getId()))
-                    return;
+            Cooldowns cooldowns = pc.getCooldowns();
+            if (cooldowns.hasCooldown("skill-" + skill.getId()))
+                return;
 
-                if (caster.getStats().getRegeneratingStat(pc.getPlayerClass().getSkillCostType()) < skill.getSkillCost(level))
-                    return;
-            }
+            if (caster.getStats().getRegeneratingStat(pc.getPlayerClass().getSkillCostType()) < skill.getSkillCost(level))
+                return;
         }
 
         if (!caster.getStatusEffects().canUseSkills()) {

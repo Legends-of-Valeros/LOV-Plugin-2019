@@ -28,7 +28,6 @@ public abstract class SkillTree {
         }
 
         public boolean hasSkill(PlayerCharacter pc) {
-            if (Utilities.isOp(pc.getPlayer())) return true;
             for (String skill : skills) {
                 Entry<Skill, Integer> pair = pc.getSkillSet().getCharacterSkill(skill);
                 if (pair != null && pair.getValue() > 0)
@@ -49,7 +48,7 @@ public abstract class SkillTree {
     public abstract SpecializedTree[] getSpecializedTrees();
 
     public static Entry<ItemStack, ISlotAction> buildStack(final int pointCount, final PlayerCharacter pc, final Entry<Skill, Integer> skill, boolean canCollect, ISlotAction onSuccess) {
-        final int upgradeCost = (Utilities.isOp(pc.getPlayer()) ? 0 : skill.getKey().getNextLevelCost(skill.getValue() + 1));
+        final int upgradeCost = skill.getKey().getNextLevelCost(skill.getValue() + 1);
         if (upgradeCost == -1) canCollect = false;
 
         List<String> desc = new ArrayList<>();
@@ -96,7 +95,7 @@ public abstract class SkillTree {
         return new SimpleImmutableEntry<>(skillStack, (gui, p, event) -> {
             if (event.getHotbarButton() >= 0) {
                 if (event.getHotbarButton() < Hotswitch.SWITCHER_SLOT) {
-                    if (skill.getValue() > 0 || Utilities.isOp(p)) {
+                    if (skill.getValue() > 0) {
                         Skills.getInstance().hotbarManager.updateSlot(pc, Hotswitch.getInstance().getCurrentHotbar(p.getUniqueId()) * Hotswitch.SWITCHER_SLOT + event.getHotbarButton(), skill.getKey().getId());
                         p.getInventory().setItem(event.getHotbarButton(), skillStack);
 
@@ -104,7 +103,7 @@ public abstract class SkillTree {
                     }
                 }
             } else if (canUpgrade && event.isRightClick()) {
-                if (pointCount >= upgradeCost || Utilities.isOp(p)) {
+                if (pointCount >= upgradeCost) {
                     pc.getSkillSet().addCharacterSkill(skill.getKey().getId());
                     onSuccess.doAction(gui, p, event);
                 }

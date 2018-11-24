@@ -25,9 +25,8 @@ public class ItemCommands extends BaseCommand {
     @Subcommand("spawn")
     @Description("Spawn an item.")
     @CommandPermission("gear.spawn")
-    @Syntax("<item id> [amount]")
-    public void cmdSpawn(Player player, String id, @Optional Integer amount) {
-        GearItem gear = GearItem.fromID(id);
+    public void cmdSpawn(Player player, String itemId, @Optional Integer amount) {
+        GearItem gear = GearItem.fromID(itemId);
 
         if (gear == null) {
             MessageUtil.sendError(player, "That item name doesn't exist.");

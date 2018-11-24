@@ -2,8 +2,8 @@ package com.legendsofvaleros.modules.quests.action;
 
 import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.commands.TemporaryCommand;
 import com.legendsofvaleros.util.TextBuilder;
+import com.legendsofvaleros.util.commands.TemporaryCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 

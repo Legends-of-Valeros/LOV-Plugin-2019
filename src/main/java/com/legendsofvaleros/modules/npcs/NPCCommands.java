@@ -38,9 +38,8 @@ public class NPCCommands extends BaseCommand {
 	@Subcommand("bind")
 	@Description("Bind an LOV NPC to a citizens NPC.")
 	@CommandPermission("npcs.bind")
-	@Syntax("<id>")
-	public void cmdBindNPC(Player player, String id) {
-		NPCData npcData = NPCs.manager().npcs.get(id);
+	public void cmdBindNPC(Player player, String npcId) {
+		NPCData npcData = NPCs.manager().npcs.get(npcId);
 		if(npcData == null) {
 			MessageUtil.sendError(player, "NPC with that ID does not exist.");
 			return;
@@ -55,7 +54,7 @@ public class NPCCommands extends BaseCommand {
 		
 		if(!npc.hasTrait(TraitLOV.class))		
 			npc.addTrait(TraitLOV.class);
-		npc.getTrait(TraitLOV.class).npcId = id;
+		npc.getTrait(TraitLOV.class).npcId = npcId;
 
 		npc.setName(UUID.randomUUID().toString());
 	}

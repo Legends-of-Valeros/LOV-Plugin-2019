@@ -88,9 +88,6 @@ public class KeepOutOfOcean extends ModuleListener {
 
     @EventHandler
     public void onPlayerJoin(final PlayerJoinEvent event) {
-        if (event.getPlayer().isOp()) {
-            return;
-        }
         Bukkit.getServer().getScheduler().runTaskLater(LegendsOfValeros.getInstance(), () -> {
             if (event.getPlayer().isOnline() && isInOcean(event.getPlayer())) {
                 double ceDamage = 2 * StatUtils.convertHealth(event.getPlayer(), heartsDamage, false);
@@ -121,7 +118,7 @@ public class KeepOutOfOcean extends ModuleListener {
         @Override
         public void run() {
             for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                if (!Utilities.isOp(player) && !violating.containsKey(player.getUniqueId()) && isInOcean(player)) {
+                if (!violating.containsKey(player.getUniqueId()) && isInOcean(player)) {
                     violating.put(player.getUniqueId(), new OutOfBoundsPlayer(plugin, player));
                 }
             }

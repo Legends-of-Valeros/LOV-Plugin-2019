@@ -9,12 +9,9 @@ import com.legendsofvaleros.module.ModuleTimings;
 import com.legendsofvaleros.module.Modules;
 import com.legendsofvaleros.scheduler.InternalScheduler;
 import com.legendsofvaleros.util.Lag;
-import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.ProgressBar;
-import com.legendsofvaleros.util.Utilities;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
 @CommandAlias("lov")
@@ -60,7 +57,6 @@ public class LOVCommands extends BaseCommand {
     @Subcommand("tps events")
     @Description("Shows the current load of all events.")
     @CommandPermission("lov.tps.events")
-    @Syntax("[module name]")
     public void cmdTpsEvents(CommandSender sender, @Optional String moduleName) {
         String line = "------------------------------------------------";
 

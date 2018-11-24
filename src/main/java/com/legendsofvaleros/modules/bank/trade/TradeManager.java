@@ -186,8 +186,7 @@ class TradeGUI extends GUI {
         GearItem.Instance instance = GearItem.Instance.fromStack(event.getClickedInventory().getItem(event.getSlot()));
         if (instance == null) return;
         if (!instance.gear.getType().isTradable())
-            if (!Utilities.isOp(p))
-                return;
+            return;
 
         // Get an available slot
         available = -1;

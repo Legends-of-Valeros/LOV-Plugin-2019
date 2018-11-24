@@ -31,7 +31,6 @@ public class RegionCommands extends BaseCommand {
 	@Subcommand("notify")
 	@Description("Create a new region. Default access denied.")
 	@CommandPermission("region.create")
-	@Syntax("<name> [access boolean]")
 	public void cmdCreate(Player player, String id, @Optional Boolean access) {
 		if(access == null) access = false;
 
@@ -51,23 +50,21 @@ public class RegionCommands extends BaseCommand {
 	@Subcommand("remove")
 	@Description("Remove a region.")
 	@CommandPermission("region.remove")
-	@Syntax("<id>")
-	public void cmdRemove(CommandSender sender, String id) {
-		if(Regions.manager().getRegion(id) == null) {
+	public void cmdRemove(CommandSender sender, String regionId) {
+		if(Regions.manager().getRegion(regionId) == null) {
 			MessageUtil.sendError(sender, "A region with that ID doesn't exist.");
 			return;
 		}
 		
-		Regions.manager().removeRegion(id);
+		Regions.manager().removeRegion(regionId);
 		MessageUtil.sendError(sender, "Region removed.");
 	}
 
 	@Subcommand("hearthstone")
 	@Description("Toggle if a region allows hearthstones.")
 	@CommandPermission("region.set.hearthstone")
-	@Syntax("<id>")
-	public void cmdToggleHearthstone(CommandSender sender, String id) {
-		Region region = Regions.manager().getRegion(id);
+	public void cmdToggleHearthstone(CommandSender sender, String regionId) {
+		Region region = Regions.manager().getRegion(regionId);
 		if(region == null) {
 			MessageUtil.sendError(sender, "A region with that name doesn't exist.");
 			return;
@@ -82,9 +79,8 @@ public class RegionCommands extends BaseCommand {
 	@Subcommand("enter")
 	@Description("Set a region enter message.")
 	@CommandPermission("region.set.enter")
-	@Syntax("<id> <message>")
-	public void cmdSetEnter(CommandSender sender, String id, String message) {
-		Region region = Regions.manager().getRegion(id);
+	public void cmdSetEnter(CommandSender sender, String regionId, String message) {
+		Region region = Regions.manager().getRegion(regionId);
 		if(region == null) {
 			MessageUtil.sendError(sender, "A region with that name doesn't exist.");
 			return;
@@ -99,9 +95,8 @@ public class RegionCommands extends BaseCommand {
 	@Subcommand("exit")
 	@Description("Set a region exit message.")
 	@CommandPermission("region.set.exit")
-	@Syntax("<id> <message>")
-	public void cmdSetExit(CommandSender sender, String id, String message) {
-		Region region = Regions.manager().getRegion(id);
+	public void cmdSetExit(CommandSender sender, String regionId, String message) {
+		Region region = Regions.manager().getRegion(regionId);
 		if(region == null) {
 			MessageUtil.sendError(sender, "A region with that name doesn't exist.");
 			return;
@@ -116,9 +111,8 @@ public class RegionCommands extends BaseCommand {
 	@Subcommand("failure")
 	@Description("Set a region enter failure message.")
 	@CommandPermission("region.")
-	@Syntax("<id> <message>")
-	public void cmdSetFailure(CommandSender sender, String id, String message) {
-		Region region = Regions.manager().getRegion(id);
+	public void cmdSetFailure(CommandSender sender, String regionId, String message) {
+		Region region = Regions.manager().getRegion(regionId);
 		if(region == null) {
 			MessageUtil.sendError(sender, "A region with that name doesn't exist.");
 			return;

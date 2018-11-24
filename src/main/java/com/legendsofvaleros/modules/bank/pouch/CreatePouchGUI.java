@@ -117,13 +117,11 @@ public class CreatePouchGUI extends GUI {
 					amount = Money.get(pc);
 				
 				if(amount <= 0) return null;
-				
-				if(!Utilities.isOp(p)) {
-					if(amount > Money.get(pc)
-							|| !Money.sub(pc, amount))
-						return null;
-					onOpen(p, getView(p));
-				}
+
+				if(amount > Money.get(pc)
+						|| !Money.sub(pc, amount))
+					return null;
+				onOpen(p, getView(p));
 			}
 		
 			GearItem.Instance instance = GearItem.Instance.fromID("crowns-pouch");
