@@ -3,7 +3,7 @@ package com.legendsofvaleros.modules.parties;
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -25,7 +25,7 @@ import org.bukkit.event.inventory.InventoryType;
 @DependsOn(PlayerMenu.class)
 @DependsOn(Characters.class)
 @DependsOn(Chat.class)
-public class Parties extends ListenerModule {
+public class Parties extends ModuleListener {
     private static Parties plugin;
     public static Parties getInstance() {
         return plugin;

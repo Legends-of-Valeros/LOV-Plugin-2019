@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.playermenu;
 
 import com.codingforcookies.robert.window.ExpandingGUI;
-import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.modules.playermenu.settings.PlayerSettings;
 import com.legendsofvaleros.util.item.Model;
 import org.bukkit.Bukkit;
@@ -13,7 +13,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
-public class PlayerMenu extends ListenerModule {
+public class PlayerMenu extends ModuleListener {
 
     @Override
     public void onLoad() {

@@ -3,7 +3,7 @@ package com.legendsofvaleros.modules.characters.core;
 import com.codingforcookies.doris.orm.ORMField;
 import com.codingforcookies.doris.orm.ORMRegistry;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.CharactersAPI;
@@ -40,7 +40,7 @@ import java.util.UUID;
 @DependsOn(CombatEngine.class)
 @DependsOn(LevelArchetypes.class)
 @DependsOn(PlayerMenu.class)
-public class Characters extends ListenerModule implements CharactersAPI {
+public class Characters extends ModuleListener implements CharactersAPI {
     private static Characters instance;
 
     /**

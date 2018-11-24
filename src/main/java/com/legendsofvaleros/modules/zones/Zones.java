@@ -4,7 +4,7 @@ import com.codingforcookies.ambience.Ambience;
 import com.codingforcookies.ambience.PlayerAmbience;
 import com.codingforcookies.ambience.Sound;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.chat.Chat;
@@ -40,7 +40,7 @@ import java.util.UUID;
 @DependsOn(CombatEngine.class)
 @DependsOn(Characters.class)
 @DependsOn(Quests.class)
-public class Zones extends ListenerModule {
+public class Zones extends ModuleListener {
 
     private PvPToggles toggles;
     private boolean pvpAllow;

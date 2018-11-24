@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.hotswitch;
 
-import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterInventoryFillEvent;
@@ -19,7 +19,7 @@ import java.util.UUID;
 
 @DependsOn(CombatEngine.class)
 @DependsOn(Characters.class)
-public class Hotswitch extends ListenerModule {
+public class Hotswitch extends ModuleListener {
     private static Hotswitch instance;
 
     public static Hotswitch getInstance() {

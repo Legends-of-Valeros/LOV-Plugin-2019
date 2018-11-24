@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.gear;
 
 import com.codingforcookies.armorequip.ArmorEquipEvent;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.core.PlayerInventoryData;
@@ -31,7 +31,7 @@ import org.bukkit.event.EventPriority;
 @DependsOn(Characters.class)
 @DependsOn(Hotswitch.class)
 @DependsOn(Quests.class)
-public class Gear extends ListenerModule {
+public class Gear extends ModuleListener {
     private static Gear instance;
     public static Gear getInstance() { return instance; }
 

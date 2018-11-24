@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.hearthstones;
 
-import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
@@ -14,7 +14,7 @@ import org.bukkit.event.EventHandler;
 @DependsOn(CombatEngine.class)
 @DependsOn(PlayerMenu.class)
 @DependsOn(Characters.class)
-public class Hearthstones extends ListenerModule {
+public class Hearthstones extends ModuleListener {
     private static Hearthstones instance;
 
     public static Hearthstones getInstance() {

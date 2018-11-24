@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.combatengine.core;
 
-import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.combatengine.api.CombatEngineAPI;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
@@ -24,7 +24,7 @@ import org.bukkit.entity.Player;
  * Bukkit's normal combat system.
  */
 @DependsOn(NPCs.class)
-public class CombatEngine extends ListenerModule implements CombatEngineAPI {
+public class CombatEngine extends ModuleListener implements CombatEngineAPI {
     private static CombatEngineConfig config;
     private static CombatEngine singleton;
 

@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.chat;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -39,7 +39,7 @@ import java.util.concurrent.ExecutionException;
 
 @DependsOn(PlayerMenu.class)
 @DependsOn(Characters.class)
-public class Chat extends ListenerModule {
+public class Chat extends ModuleListener {
     private static Chat instance;
 
     public static Chat getInstance() {

@@ -3,7 +3,7 @@ package com.legendsofvaleros.modules.mount;
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.bank.Bank;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -28,7 +28,7 @@ import java.util.Map.Entry;
 @DependsOn(Characters.class)
 @DependsOn(Bank.class)
 @DependsOn(NPCs.class)
-public class Mounts extends ListenerModule {
+public class Mounts extends ModuleListener {
     private static Mounts instance;
 
     public static Mounts getInstance() {

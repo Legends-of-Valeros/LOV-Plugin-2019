@@ -2,7 +2,7 @@ package com.legendsofvaleros.module;
 
 import org.bukkit.event.Listener;
 
-public abstract class ListenerModule extends Module implements Listener {
+public abstract class ModuleListener extends Module implements Listener {
 
     @Override
     public void onLoad() {

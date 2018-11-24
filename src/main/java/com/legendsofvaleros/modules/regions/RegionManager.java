@@ -324,7 +324,7 @@ public class RegionManager implements Listener {
         if (regions.containsKey(region.id))
             return;
 
-        if(region.world == null) {
+        if (region.world == null) {
             MessageUtil.sendException(Regions.getInstance(), "Region has a null world. Offender: " + region.id, false);
             return;
         }

@@ -1,7 +1,7 @@
 package com.legendsofvaleros.util;
 
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.util.MessageUtil.ExceptionManager;
 import com.legendsofvaleros.util.commands.LOVCommands;
 import com.legendsofvaleros.util.commands.TemporaryCommand;
@@ -25,7 +25,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class Utilities extends ListenerModule {
+public class Utilities extends ModuleListener {
     private static Utilities instance;
     public static Utilities getInstance() {
         return instance;

@@ -5,7 +5,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import com.google.gson.Gson;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.gear.Gear;
 
@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @DependsOn(Gear.class)
-public class LootManager extends ListenerModule {
+public class LootManager extends ModuleListener {
     private static final String LOOT_TABLE = "loot";
     private static final String LOOT_ID = "loot_id";
     private static final String LOOT_GROUP = "loot_group";
@@ -62,10 +62,8 @@ public class LootManager extends ListenerModule {
 
                         LootTable loot = gson.fromJson(result.getString(LOOT_CONTENT), LootTable.class);
                         tables.put(result.getString(LOOT_ID), loot);
-
                         ret.set(loot);
-                    })
-                    .execute(true);
+                    }).execute(true);
         }
 
         return ret;
