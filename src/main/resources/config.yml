@@ -3,7 +3,6 @@
 dbpools-database: "mysql1"
 
 # Possible values are DEV, TESTING, and LIVE.
-#
 # DEV = Verbose logging. Doesn't log exceptions.
 # TESTING = Verbose logging.
 # LIVE = Normal logging. Only moderation commands enabled.
