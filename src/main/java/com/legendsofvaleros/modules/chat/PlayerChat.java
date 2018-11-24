@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerChat {
-    public Character channel = Chat.getInstance().getChannelDefault();
+    public Character channel = ChatChannel.LOCAL.getPrefix();
 
     public String title;
     public String prefix;
