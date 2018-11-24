@@ -140,7 +140,7 @@ public class MessageUtil {
 				p.spigot().sendMessage(bc);
 		}
 
-		if(log || LegendsOfValeros.getMode().doVerboseLogging())
+		if(log || LegendsOfValeros.getMode().isVerbose())
 			th.printStackTrace();
 
 		return trace;

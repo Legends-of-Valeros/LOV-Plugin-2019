@@ -18,9 +18,11 @@ public enum ServerMode {
     }
 
     /**
-     * If the server should spit out additional logSaving information.
+     * If the server should spit out additional information.
+     *
+     * This involves everything, not just logs.
      */
-    public boolean doVerboseLogging() { return verbose; }
+    public boolean isVerbose() { return verbose; }
 
     /**
      * If the server should be logSaving exceptions to the database.

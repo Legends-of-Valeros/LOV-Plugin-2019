@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.gear.component;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.gear.component.impl.GearComponent;
 import com.legendsofvaleros.modules.gear.component.impl.GearComponentOrder;
 import com.legendsofvaleros.modules.gear.component.trigger.AttackTrigger;
@@ -102,6 +103,9 @@ public class GearDurability {
 					builder.addLore(ChatColor.GRAY + "❖ " + arr.get(item.gear.getSeed() % arr.size()));
 					break;
 				}
+
+				if(LegendsOfValeros.getMode().isVerbose())
+					builder.addLore(ChatColor.GRAY + "❖ " + persist.current + "/" + persist.max);
 			}
 		}
 	
@@ -109,18 +113,22 @@ public class GearDurability {
 		public Persist fire(GearItem.Instance item, Persist persist, GearTrigger trigger) {
 			if(trigger.equals(PhysicalAttackTrigger.class)) {
 				if(persist.current > 0) {
-					double percCurr = (double)persist.current / persist.max;
-					double percNew = (double)(persist.current - 1) / persist.max;
-					for(DurabilityString dur : STRINGS) {
-						// If we reach a null minimum, then it won't ever be different.
-						if(dur.min == null) break;
-						
-						// If the current minimum matches, and the new one doesn't, then refresh the stack.
-						if(percCurr > dur.min && percNew <= dur.min) {
-							trigger.requestStackRefresh();
-							break;
+					if(!LegendsOfValeros.getMode().isVerbose()) {
+						double percCurr = (double) persist.current / persist.max;
+						double percNew = (double) (persist.current - 1) / persist.max;
+						for (DurabilityString dur : STRINGS) {
+							// If we reach a null minimum, then it won't ever be different.
+							if (dur.min == null) break;
+
+							// If the current minimum matches, and the new one doesn't, then refresh the stack.
+							if (percCurr > dur.min && percNew <= dur.min) {
+								trigger.requestStackRefresh();
+								break;
+							}
 						}
-					}
+					}else
+						// Refresh the stack every time for testing purposes
+						trigger.requestStackRefresh();
 					
 					persist.current--;
 
