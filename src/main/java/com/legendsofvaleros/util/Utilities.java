@@ -21,10 +21,6 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-
 public class Utilities extends ModuleListener {
     private static Utilities instance;
     public static Utilities getInstance() {

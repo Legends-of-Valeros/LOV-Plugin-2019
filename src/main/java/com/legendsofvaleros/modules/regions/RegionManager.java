@@ -199,7 +199,7 @@ public class RegionManager implements Listener {
             return;
 
         List<Region> toRegions = findRegions(event.getTo());
-        if (toRegions.size() > 0 && !Utilities.isOp(event.getPlayer())) {
+        if (toRegions.size() > 0) {
             if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) {
                 MessageUtil.sendError(event.getPlayer(), toRegions.get(0).msgFailure);
                 event.getPlayer().teleport(event.getFrom());

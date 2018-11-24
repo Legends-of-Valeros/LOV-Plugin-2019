@@ -169,16 +169,14 @@ public class ItemListener implements Listener {
         if (e.getCursor() != null && e.getCursor().getType() != Material.AIR) {
             gear = GearItem.Instance.fromStack(e.getCursor());
             if (gear == null) {
-                if (!Utilities.isOp((Player) e.getWhoClicked())) {
-                    MessageUtil.sendError(e.getWhoClicked(), "Your item has morphed into... something.");
+                MessageUtil.sendError(e.getWhoClicked(), "Your item has morphed into... something.");
 
-                    e.setCancelled(true);
-                    GearItem.Instance instance = Gear.ERROR_ITEM.newInstance();
-                    instance.amount = e.getView().getCursor().getAmount();
-                    e.getView().setCursor(instance.toStack());
+                e.setCancelled(true);
+                GearItem.Instance instance = Gear.ERROR_ITEM.newInstance();
+                instance.amount = e.getView().getCursor().getAmount();
+                e.getView().setCursor(instance.toStack());
 
-                    e.setCancelled(true);
-                }
+                e.setCancelled(true);
 
                 return;
             }
@@ -204,16 +202,15 @@ public class ItemListener implements Listener {
         if (e.getCurrentItem() != null && e.getCurrentItem().getType() != Material.AIR) {
             gear = GearItem.Instance.fromStack(e.getCurrentItem());
             if (gear == null) {
-                if (!Utilities.isOp((Player) e.getWhoClicked())) {
-                    MessageUtil.sendError(e.getWhoClicked(), "Your item has morphed into.. something.");
+                MessageUtil.sendError(e.getWhoClicked(), "Your item has morphed into.. something.");
 
-                    e.setCancelled(true);
-                    e.setCurrentItem(Gear.ERROR_ITEM.newInstance().toStack());
+                e.setCancelled(true);
+                e.setCurrentItem(Gear.ERROR_ITEM.newInstance().toStack());
 
-                    GearItem.Instance instance = Gear.ERROR_ITEM.newInstance();
-                    instance.amount = e.getCurrentItem().getAmount();
-                    e.setCurrentItem(instance.toStack());
-                }
+                GearItem.Instance instance = Gear.ERROR_ITEM.newInstance();
+                instance.amount = e.getCurrentItem().getAmount();
+                e.setCurrentItem(instance.toStack());
+
                 return;
             }
 
@@ -224,11 +221,9 @@ public class ItemListener implements Listener {
     @EventHandler
     public void onEquipItem(ItemEquipEvent event) {
         EquipTrigger e = new EquipTrigger(CombatEngine.getEntity(event.getPlayer()));
-        if (!Utilities.isOp(event.getPlayer())) {
-            if (Boolean.FALSE.equals(event.getGear().doTest(e))) {
-                event.setCancelled(true);
-                return;
-            }
+        if (Boolean.FALSE.equals(event.getGear().doTest(e))) {
+            event.setCancelled(true);
+            return;
         }
         event.getGear().doFire(e);
     }
@@ -308,14 +303,9 @@ public class ItemListener implements Listener {
             ItemEquipEvent iee = new ItemEquipEvent(Characters.getPlayerCharacter(event.getPlayer()), gear, null);
             Bukkit.getPluginManager().callEvent(iee);
             if (iee.isCancelled()) {
-                if (Utilities.isOp(event.getPlayer())) {
-                    MessageUtil.sendInfo(event.getPlayer(), "The gods have allowed you to wield that, operator.");
-                } else {
-                    MessageUtil.sendError(event.getPlayer(), "A mysterious force prevents you from equipping that.");
+                MessageUtil.sendError(event.getPlayer(), "A mysterious force prevents you from equipping that.");
 
-                    event.setCancelled(true);
-                    return;
-                }
+                event.setCancelled(true);
             }
         }
 

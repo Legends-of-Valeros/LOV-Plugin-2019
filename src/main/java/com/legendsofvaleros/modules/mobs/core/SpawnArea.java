@@ -10,9 +10,7 @@ import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.mobs.MobManager;
-import com.legendsofvaleros.util.Utilities;
 import org.bukkit.*;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;

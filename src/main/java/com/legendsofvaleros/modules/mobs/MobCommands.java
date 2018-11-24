@@ -22,9 +22,9 @@ public class MobCommands extends BaseCommand {
 	@Subcommand("spawn")
 	@Description("Create a mob spawn point at your current location with radius.")
 	@CommandPermission("mobs.spawn.create")
-	@Syntax("<mob id> <radius> <padding> <level min-max> [spawn count] [spawn seconds] [spawn chance]")
-	public void cmdCreate(Player player, String id, int radius, int padding, String level, @Optional Short count, @Optional Short interval, @Optional Byte percent) {
-		Mob mobData = MobManager.getEntity(id);
+	@Syntax("<mob id> <radius> <padding> <level min-max> [spawn count] [spawn interval] [spawn chance]")
+	public void cmdCreate(Player player, String mobId, int radius, int padding, String level, @Optional Short count, @Optional Short interval, @Optional Byte chance) {
+		Mob mobData = MobManager.getEntity(mobId);
 		if(mobData == null) {
 			MessageUtil.sendError(player, "Unknown mob with that ID.");
 			return;
@@ -40,7 +40,7 @@ public class MobCommands extends BaseCommand {
 			levels = new int[] { Integer.parseInt(level), Integer.parseInt(level) };
 		}
 		
-		SpawnArea data = new SpawnArea(player.getLocation().getWorld().getName(), player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ(), id, radius, padding, levels);
+		SpawnArea data = new SpawnArea(player.getLocation().getWorld().getName(), player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ(), mobId, radius, padding, levels);
 
 		MessageUtil.sendUpdate(player, "Created spawn area with radius " + data.getRadius() + " blocks.");
 
@@ -59,8 +59,8 @@ public class MobCommands extends BaseCommand {
 			MessageUtil.sendUpdate(player, "    If players nearby, spawn new mobs.");
 		}
 		
-		if(percent != null) {
-			data.spawnChance = percent;
+		if(chance != null) {
+			data.spawnChance = chance;
 			MessageUtil.sendUpdate(player, "  There is a " + data.spawnChance + "% chance it'll spawn.");
 		}
 

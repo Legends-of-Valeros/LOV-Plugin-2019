@@ -15,7 +15,6 @@ public class GraveyardCommands extends BaseCommand {
 	@Subcommand("create")
 	@Description("Create a new graveyard.")
 	@CommandPermission("graveyards.create")
-	@Syntax("<radius>")
 	public void cmdCreate(Player player, int radius) {
 		Zone zone = Zones.manager().getZone(player);
 		if(zone == null) {

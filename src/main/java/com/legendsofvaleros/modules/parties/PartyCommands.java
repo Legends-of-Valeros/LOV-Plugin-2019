@@ -28,7 +28,6 @@ public class PartyCommands extends BaseCommand {
 
 	@Subcommand("join")
 	@Description("Join an existing party that you have been invited to.")
-	@Syntax("<player>")
 	public static void cmdPartyJoin(Player player, Player join) {
 		PlayerCharacter pc = getPlayerCharacter(player);
 		if(getCurrentParty(pc) != null) {
@@ -62,7 +61,6 @@ public class PartyCommands extends BaseCommand {
 	
 	@Subcommand("invite")
 	@Description("Invite a player to your party.")
-	@Syntax("<player>")
 	public static void cmdPartyInvite(Player player, Player invite) {
 		PlayerCharacter pc = getPlayerCharacter(player);
 		if(getCurrentParty(pc) == null) {
@@ -84,7 +82,6 @@ public class PartyCommands extends BaseCommand {
 	
 	@Subcommand("kick")
 	@Description("Kick a player from your party.")
-	@Syntax("<player>")
 	public static void cmdPartyKick(Player player, OfflinePlayer kick) {
 		PlayerCharacter pc = getPlayerCharacter(player);
 		if(getCurrentParty(pc) == null) {

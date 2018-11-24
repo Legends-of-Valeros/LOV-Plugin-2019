@@ -34,11 +34,10 @@ public class QuestCommands extends BaseCommand {
     @Subcommand("complete")
     @Description("Complete a quest. Using * will target all quests.")
     @CommandPermission("quests.complete")
-    @Syntax("<quest id>")
-    public void cmdComplete(Player player, String id) {
+    public void cmdComplete(Player player, String questId) {
         PlayerCharacter pc = Characters.getPlayerCharacter(player);
 
-        ListenableFuture<IQuest> future = QuestManager.getQuest(id);
+        ListenableFuture<IQuest> future = QuestManager.getQuest(questId);
         future.addListener(() -> {
             try {
                 IQuest quest = future.get();
@@ -60,31 +59,28 @@ public class QuestCommands extends BaseCommand {
     @Subcommand("uncomplete")
     @Description("Remove a completed quest. Using * will target all quests.")
     @CommandPermission("quests.uncomplete")
-    @Syntax("<quest id>")
-    public void cmdUncomplete(Player player, String id) {
+    public void cmdUncomplete(Player player, String questId) {
         PlayerCharacter pc = Characters.getPlayerCharacter(player);
 
-        QuestManager.removeQuestProgress(id, pc);
+        QuestManager.removeQuestProgress(questId, pc);
         MessageUtil.sendUpdate(player, "Quest uncompleted.");
     }
 
     @Subcommand("talk")
-    @Syntax("<quest id>")
-    private void cmdQuestTalk(Player player, String id) {
+    private void cmdQuestTalk(Player player, String questId) {
         PlayerCharacter pc = Characters.getPlayerCharacter(player);
 
         player.closeInventory();
-        Quests.attemptGiveQuest(pc, id);
+        Quests.attemptGiveQuest(pc, questId);
     }
 
     @Subcommand("accept")
-    @Syntax("<quest id>")
-    private void cmdQuestAccept(Player player, String id) {
+    private void cmdQuestAccept(Player player, String questId) {
         PlayerCharacter pc = Characters.getPlayerCharacter(player);
 
         player.closeInventory();
 
-        ListenableFuture<IQuest> future = QuestManager.getQuest(id);
+        ListenableFuture<IQuest> future = QuestManager.getQuest(questId);
         future.addListener(() -> {
             try {
                 IQuest quest = future.get();
@@ -101,13 +97,12 @@ public class QuestCommands extends BaseCommand {
     }
 
     @Subcommand("defline")
-    @Syntax("<quest id>")
-    private void cmdQuestDecline(Player player, String id) {
+    private void cmdQuestDecline(Player player, String questId) {
         PlayerCharacter pc = Characters.getPlayerCharacter(player);
 
         player.closeInventory();
 
-        ListenableFuture<IQuest> future = QuestManager.getQuest(id);
+        ListenableFuture<IQuest> future = QuestManager.getQuest(questId);
         future.addListener(() -> {
             try {
                 future.get().onDecline(pc);
@@ -123,11 +118,10 @@ public class QuestCommands extends BaseCommand {
     }
 
     @Subcommand("active")
-    @Syntax("<quest id>")
-    public void cmdQuestActive(Player player, String id) {
+    public void cmdQuestActive(Player player, String questId) {
         PlayerCharacter pc = Characters.getPlayerCharacter(player);
 
-        ActiveTracker.setActive(pc, id);
+        ActiveTracker.setActive(pc, questId);
 
         ListenableFuture<IQuest> future = ActiveTracker.getActiveQuest(pc);
         future.addListener(() -> {

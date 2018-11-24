@@ -244,7 +244,7 @@ public class DamageEngine {
 			Player pA = event.getAttacker().isPlayer() ? (Player)event.getAttacker().getLivingEntity() : null;
 			boolean pAOP = pA != null && (DebugFlags.is(pA) && DebugFlags.get(pA).damage);
 			Player pD = event.getDamaged().isPlayer() ? (Player)event.getDamaged().getLivingEntity() : null;
-			boolean pDOP = pD != null && (Utilities.isOp(pD) && DebugFlags.is(pD) && DebugFlags.get(pD).damage);
+			boolean pDOP = pD != null && (DebugFlags.is(pD) && DebugFlags.get(pD).damage);
 			if(!pAOP && !pDOP)
 				return;
 			

@@ -12,7 +12,6 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.FileWriter;

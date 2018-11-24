@@ -1,8 +1,8 @@
 package com.legendsofvaleros.modules.regions;
 
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.Module;
+import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
