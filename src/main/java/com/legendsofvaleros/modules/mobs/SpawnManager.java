@@ -79,7 +79,7 @@ public class SpawnManager {
 
         // If editing is enabled, generate the hologram right away.
         if(LegendsOfValeros.getMode().allowEditing())
-            spawn.getHologram();
+            Mobs.getInstance().getScheduler().sync(spawn::getHologram);
 
         ListenableFuture<Mob> future = spawn.loadMob();
         future.addListener(() -> {
