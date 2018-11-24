@@ -1,0 +1,198 @@
+
+# ------------------------------------------------------------------------------------
+# The different archetypes that entities derive their base stats from.
+#
+# Base stats are generated dynamically as the product of a set of baseline level 0
+# stats which then increase/decrease depending on an entity's current level.
+# ------------------------------------------------------------------------------------
+archetypes:
+
+    # ---
+    # The id/name of the archetype. This will be used to access this archetype through LevelArchetype's API.
+    player:
+
+        # ---
+        # The base stats for this archetype. These are the stats that an entity of this archetype
+        # would have at level 0.
+        #
+        # Stats can be CombatEngine stats, which will affect the base level of this archetype's
+        # CombatEngine stats. For a full list of CombatEngine stats and their enum names, see:
+        # https://bitbucket.org/legendsofvaleros/combatengine/src/master/src/main/java/com/legendsofvaleros/combatengine/stat/Stat.java?at=master
+        #
+        # Archetypes also support arbitrary stats that can be accessed through its api. For example,
+        # I could create a stat "coolness" which could level up by 10% with each level. While
+        # CombatEngine will not automatically use this stat, a second plugin could access it through
+        # LevelArchetypes API in order to put sunglasses on players if they had high enough coolness.
+        base-stats:
+            STRENGTH: 0
+            STAMINA: 0
+            AGILITY: 0
+            ENDURANCE: 0
+            INTELLIGENCE: 0
+            MAX_HEALTH: 100
+            HEALTH_REGEN: 100
+            MAX_MANA: 100
+            MANA_REGEN: 100
+            MAX_ENERGY: 100
+            ENERGY_REGEN: 100
+            SPEED: 100
+            PHYSICAL_ATTACK: 100
+            MAGIC_ATTACK: 100
+            ARMOR: 10
+            FIRE_RESISTANCE: 0
+            ICE_RESISTANCE: 0
+            # Ex: 50.0 HIT_CHANCE is a 50% chance to hit. Same goes for DODGE_CHANCE and CRIT_CHANCE.
+            HIT_CHANCE: 90
+            DODGE_CHANCE: 5
+            CRIT_CHANCE: 5
+            # Yay for arbitrary stat values!
+            coolness: 9999999
+
+        # ---
+        # The default amount by which the stat values are changed with each level. 0.1 = 10%
+        #
+        # This amount is compounded each level. What this means is that the percentage change also
+        # affects previous level-ups' changes. For example, a level 3 player whose health grows at
+        # 10% per level will not have 20% more health than a level 1 player. If the level 1 health
+        # is 250 and grows 10% each level, the level 3 player will have 302.5 health (250 * 1.1 * 1.1),
+        # rather than 300 health (250 * 1.2).
+        #
+        # Negative numbers can be used to decrease stats at higher levels. For example, a percentage
+        # change of -0.05 would make it so a stat is multiplied by 0.95 with each level. 0 is no
+        # change in the stat.
+        default-percentage-change-per-level:
+            MAX_HEALTH: 0.1
+            HEALTH_REGEN: -0.05
+            MAX_MANA: 0.1
+            MANA_REGEN: -0.05
+            MAX_ENERGY: 0.1
+            ENERGY_REGEN: -0.05
+            SPEED: 0
+            PHYSICAL_ATTACK: 0.1
+            MAGIC_ATTACK: 0.1
+            ARMOR: 0
+            FIRE_RESISTANCE: 0
+            ICE_RESISTANCE: 0
+            # Ex: 50.0 HIT_CHANCE is a 50% chance to hit. Same goes for DODGE_CHANCE and CRIT_CHANCE.
+            HIT_CHANCE: 0.01
+            DODGE_CHANCE: 0.01
+            CRIT_CHANCE: 0.01
+            # Yay for arbitrary stat values!
+            coolness: 0.1
+
+        # ---
+        # Exceptions, if any, to the above default changes per level. This section allows for
+        # modifications to normal growth rates within defined level ranges.
+        exceptions:
+            # An arbitrary id for this exception.
+            '1':
+                # ---
+                # The start level of this exception. This is the first level that will use the
+                # following stat percentage multipliers rather than the default.
+                start-level: 10
+
+                # ---
+                # The end level of this exception. This is the last level that will use the
+                # following stat percentage multipliers rather than the defaults.
+                end-level: 20
+
+                # ---
+                # The percentage changes per level within the range of this exception.
+                #
+                # Any stats that are not listed here will use defaults. What this means is that if
+                # from level 10-20 you ONLY want to edit HEALTH_REGEN and leave the rest as defaults,
+                # just place an exception for that one stat and leave the rest out. If you want to
+                # set stats not to change at all during this exception, you must explicitly configure
+                # the stats not to increase/decrease(ex: ICE_RESISTANCE: 0).
+                percentage-change-per-level:
+                    MAX_HEALTH: 0.05
+                    PHYSICAL_ATTACK: 0.15
+                    MAGIC_ATTACK: 0.15
+                    # Yay for arbitrary stat values!
+                    coolness: 10000.9999
+
+    warrior:
+        base-stats:
+            STRENGTH: 10
+            STAMINA: 10
+            AGILITY: 5
+            ENDURANCE: 9
+            INTELLIGENCE: 5
+            MAX_HEALTH: 0
+            HEALTH_REGEN: 100
+            MAX_ENERGY: 77.5
+            ENERGY_REGEN: 100
+            SPEED: 100
+            PHYSICAL_ATTACK: 0
+            MAGIC_ATTACK: 0
+            ARMOR: 0
+            FIRE_RESISTANCE: 0
+            ICE_RESISTANCE: 0
+            HIT_CHANCE: 90
+            DODGE_CHANCE: 5
+            CRIT_CHANCE: 0
+        default-change-per-level:
+            STRENGTH: 3
+            STAMINA: 3
+            AGILITY: 1
+            ENDURANCE: 2
+            INTELLIGENCE: 1
+    mage:
+        base-stats:
+            STRENGTH: 5
+            STAMINA: 12
+            AGILITY: 6
+            ENDURANCE: 5
+            INTELLIGENCE: 12
+            MAX_HEALTH: 110
+            HEALTH_REGEN: 100
+            MAX_MANA: 50
+            MANA_REGEN: 100
+            SPEED: 100
+            PHYSICAL_ATTACK: 0
+            MAGIC_ATTACK: 0
+            ARMOR: 0
+            FIRE_RESISTANCE: 0
+            ICE_RESISTANCE: 0
+            HIT_CHANCE: 90
+            DODGE_CHANCE: 5
+            CRIT_CHANCE: 0
+        default-change-per-level:
+            STRENGTH: 1
+            STAMINA: 6
+            AGILITY: 2
+            ENDURANCE: 1
+            INTELLIGENCE: 3
+
+    enemy-warrior-basic:
+        base-stats:
+            MAX_HEALTH: 20
+            HEALTH_REGEN: 1
+            MAX_ENERGY: 100
+            ENERGY_REGEN: 100
+            SPEED: 100
+            PHYSICAL_ATTACK: 100
+            MAGIC_ATTACK: 100
+            ARMOR: 10
+            FIRE_RESISTANCE: 0
+            ICE_RESISTANCE: 0
+            HIT_CHANCE: 90
+            DODGE_CHANCE: 5
+            CRIT_CHANCE: 5
+        default-change-per-level:
+            MAX_HEALTH: 20
+
+        exceptions:
+            '15-30':
+                start-level: 15
+                end-level: 30
+
+                change-per-level:
+                    MAX_HEALTH: 90
+
+            '30-60':
+                start-level: 30
+                end-level: 60
+
+                percentage-change-per-level:
+                    MAX_HEALTH: 0.065

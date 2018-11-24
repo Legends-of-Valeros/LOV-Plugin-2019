@@ -1,0 +1,25 @@
+# This is how often the plugin will check whether a player is out of bounds, in ticks (usually 1/20 of a second).
+# 
+# The bigger this number is, the longer it might take before the plugin reacts to a player going into the ocean.
+# However, a larger number will also cause less load on the server. For example, if this is 80, the server would 
+# iterate over all online players and their locations every 4 seconds and a player could be in an ocean biome for 
+# up to 4 seconds before they are warned to get away.
+# 
+# This number is independent of the other time settings. Once a player is found to be out of bounds, they will be 
+# tracked separately. What that means is that it is okay if this number is bigger, smaller, or equal to warning-ticks
+# and ticks-between-damage; they are separate.
+check-interval: 100
+
+
+# The length of time, in ticks (usually 1/20 of a second), a player has to get out of the ocean after they are 
+# first detected and warned to get out. 
+warning-ticks: 40
+
+# The message to send players when they are detected in the ocean biome they are not supposed to be in.
+warning-message: "&4Get back to land, you never learned how to swim in the ocean!"
+
+# The length of time between each instance of damage, in ticks (usually 1/20 of a second).
+ticks-between-damage: 20
+
+# The amount of vanilla-hearts damage to deal each time a player is damaged. 1.0 = 1/2 a heart, 2.0 = 1 heart, etc.
+damage: 1.0
