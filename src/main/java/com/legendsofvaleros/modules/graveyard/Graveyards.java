@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.graveyard;
 
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
@@ -20,7 +20,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 @DependsOn(Characters.class)
 @DependsOn(Gear.class)
 @DependsOn(Zones.class)
-public class Graveyards extends ListenerModule {
+public class Graveyards extends ModuleListener {
     private static Graveyards inst;
 
     public static Graveyards getInstance() {

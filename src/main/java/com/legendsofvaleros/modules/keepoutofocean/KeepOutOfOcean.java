@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.keepoutofocean;
 
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @DependsOn(CombatEngine.class)
-public class KeepOutOfOcean extends ListenerModule {
+public class KeepOutOfOcean extends ModuleListener {
 
     private long checkTicks;
     private long warningTicks;

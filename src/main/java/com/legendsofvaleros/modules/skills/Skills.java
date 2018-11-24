@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.skills;
 
 import com.codingforcookies.robert.core.RomanNumeral;
 import com.codingforcookies.robert.item.ItemBuilder;
-import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.Modules;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.bank.Bank;
@@ -54,7 +54,7 @@ import java.util.Map.Entry;
 @DependsOn(Mobs.class)
 @DependsOn(Hotswitch.class)
 @DependsOn(Gear.class)
-public class Skills extends ListenerModule {
+public class Skills extends ModuleListener {
     public static final SkillTree[] skillTrees = new SkillTree[] {
             new TreeWarrior(),
             new TreeRogue(),

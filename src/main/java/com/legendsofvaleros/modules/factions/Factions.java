@@ -6,7 +6,7 @@ import com.google.common.collect.Table;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
@@ -28,7 +28,7 @@ import java.util.concurrent.ExecutionException;
 
 @DependsOn(Characters.class)
 @DependsOn(Quests.class)
-public class Factions extends ListenerModule {
+public class Factions extends ModuleListener {
     private static Factions plugin;
 
     public static Factions getInstance() {

@@ -4,7 +4,7 @@ import com.codingforcookies.robert.item.ItemBuilder;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.common.collect.Table.Cell;
-import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
@@ -22,7 +22,7 @@ import org.bukkit.event.Listener;
 
 import java.util.HashMap;
 
-public class Dueling extends ListenerModule implements Listener {
+public class Dueling extends ModuleListener implements Listener {
     private static Dueling plugin;
 
     public static HashMap<Player, Player> duelRequests = new HashMap<>();

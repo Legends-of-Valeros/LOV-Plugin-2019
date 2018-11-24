@@ -1,13 +1,13 @@
 package com.legendsofvaleros.modules.npcs;
 
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.entity.LivingEntity;
 
-public class NPCs extends ListenerModule {
+public class NPCs extends ModuleListener {
     private static NPCs instance;
     public static NPCs getInstance() {
         return instance;

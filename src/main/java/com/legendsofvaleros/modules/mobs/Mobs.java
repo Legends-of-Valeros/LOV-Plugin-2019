@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.mobs;
 
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
@@ -40,7 +40,7 @@ import org.bukkit.event.EventPriority;
 @DependsOn(NPCs.class)
 @DependsOn(LootManager.class)
 @DependsOn(Parties.class)
-public class Mobs extends ListenerModule {
+public class Mobs extends ModuleListener {
     private static Mobs instance;
 
     public static Mobs getInstance() {

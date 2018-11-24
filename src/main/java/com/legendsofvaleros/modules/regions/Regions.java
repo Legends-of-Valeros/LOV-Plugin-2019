@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.regions;
 
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -34,7 +34,7 @@ import java.util.HashMap;
 @DependsOn(Quests.class)
 @DependsOn(Characters.class)
 @DependsOn(Hearthstones.class)
-public class Regions extends ListenerModule {
+public class Regions extends ModuleListener {
     private static Regions plugin;
     public static Module getInstance() { return plugin; }
 

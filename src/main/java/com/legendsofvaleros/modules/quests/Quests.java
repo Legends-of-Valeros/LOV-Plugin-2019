@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.quests;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -48,7 +48,7 @@ import org.bukkit.event.EventPriority;
 @DependsOn(CombatEngine.class)
 @DependsOn(PlayerMenu.class)
 @DependsOn(Characters.class)
-public class Quests extends ListenerModule {
+public class Quests extends ModuleListener {
     public static AdvancementAPI NEW_OBJECTIVES;
 
     private static Quests instance;

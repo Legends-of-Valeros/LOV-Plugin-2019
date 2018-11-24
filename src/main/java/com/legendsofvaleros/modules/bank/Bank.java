@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.bank;
 
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.bank.item.WorthComponent;
 import com.legendsofvaleros.modules.bank.quest.ActionAddCurrency;
@@ -31,7 +31,7 @@ import java.util.Map;
 @DependsOn(NPCs.class)
 @DependsOn(Characters.class)
 @DependsOn(Gear.class)
-public class Bank extends ListenerModule {
+public class Bank extends ModuleListener {
     private static Bank instance;
     public static Bank getInstance() { return instance; }
 
