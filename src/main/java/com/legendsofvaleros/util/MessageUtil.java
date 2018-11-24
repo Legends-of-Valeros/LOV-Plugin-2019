@@ -118,7 +118,7 @@ public class MessageUtil {
 	 * @param log If the stack trace should be logged to console.
 	 */
 	public static String sendException(Module module, CommandSender sender, Throwable th, boolean log) {
-		return sendException(module, sender, th, log);
+		return sendException(module.getName(), sender, th, log);
 	}
 
 	/**
