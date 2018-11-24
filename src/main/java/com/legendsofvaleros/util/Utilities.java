@@ -5,7 +5,6 @@ import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.util.MessageUtil.ExceptionManager;
 import com.legendsofvaleros.util.commands.LOVCommands;
 import com.legendsofvaleros.util.commands.TemporaryCommand;
-import com.legendsofvaleros.util.event.ToggleOpEvent;
 import com.legendsofvaleros.util.item.Model;
 import com.legendsofvaleros.util.title.TitleUtil;
 import org.bukkit.Bukkit;
@@ -30,11 +29,6 @@ public class Utilities extends ListenerModule {
     private static Utilities instance;
     public static Utilities getInstance() {
         return instance;
-    }
-
-    private static Set<UUID> op = new HashSet<>();
-    public static boolean isOp(Player p) {
-        return op.contains(p.getUniqueId());
     }
 
     /*public static Executor syncExecutor() {
@@ -72,18 +66,8 @@ public class Utilities extends ListenerModule {
         Advancements.onEnable();
     }
 
-    public static boolean toggleOp(Player p) {
-        if (isOp(p))
-            op.remove(p.getUniqueId());
-        else
-            op.add(p.getUniqueId());
-        Bukkit.getPluginManager().callEvent(new ToggleOpEvent(p, isOp(p)));
-        return op.contains(p.getUniqueId());
-    }
-
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onLeaveServer(PlayerQuitEvent event) {
-        op.remove(event.getPlayer().getUniqueId());
         DebugFlags.debug.remove(event.getPlayer().getUniqueId());
     }
 
@@ -98,6 +82,8 @@ public class Utilities extends ListenerModule {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onInteract(PlayerInteractEvent event) {
+        if(LegendsOfValeros.getMode().allowEditing()) return;
+
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             switch (event.getClickedBlock().getType()) {
                 case CHEST:
@@ -112,8 +98,7 @@ public class Utilities extends ListenerModule {
                 case DROPPER:
                 case ITEM_FRAME:
                 case BREWING_STAND:
-                    if (!Utilities.isOp(event.getPlayer()))
-                        event.setCancelled(true);
+                    event.setCancelled(true);
                 default:
                     if (event.getClickedBlock().getType().name().endsWith("_SHULKER_BOX"))
                         event.setCancelled(true);

@@ -19,16 +19,6 @@ import org.bukkit.event.Event;
 
 @CommandAlias("lov")
 public class LOVCommands extends BaseCommand {
-    @Subcommand("op")
-    @Description("Enable op mode.")
-    @CommandPermission("lov.op")
-    public void cmdOp(Player player) {
-        if (Utilities.toggleOp(player))
-            MessageUtil.sendUpdate(player, "Operator mode enabled.");
-        else
-            MessageUtil.sendUpdate(player, "Operator mode disabled.");
-    }
-
     @Subcommand("tps")
     @Description("Shows the current load of all modules.")
     @CommandPermission("lov.tps")

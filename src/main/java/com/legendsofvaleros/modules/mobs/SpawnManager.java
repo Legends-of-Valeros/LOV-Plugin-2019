@@ -78,6 +78,10 @@ public class SpawnManager {
 
         spawns.put(chunk, spawn);
 
+        // If editing is enabled, generate the hologram right away.
+        if(LegendsOfValeros.getMode().allowEditing())
+            spawn.getHologram();
+
         ListenableFuture<Mob> future = spawn.loadMob();
         future.addListener(() -> {
             try {
@@ -145,17 +149,6 @@ public class SpawnManager {
                 cachedSpawns.put(event.getChunk(), spawns.get(event.getChunk()));
 
             spawns.removeAll(event.getChunk());
-        }
-
-        @EventHandler
-        public void onToggleOp(ToggleOpEvent event) {
-            for (SpawnArea spawn : getSpawns()) {
-                if (event.isOp()) {
-                    spawn.getHologram().getVisibilityManager().showTo(event.getPlayer());
-                } else {
-                    spawn.getHologram().getVisibilityManager().hideTo(event.getPlayer());
-                }
-            }
         }
     }
 }

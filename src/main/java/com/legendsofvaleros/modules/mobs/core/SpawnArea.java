@@ -195,24 +195,22 @@ public class SpawnArea {
     }
 
     public Hologram getHologram() {
-        hologram = HologramsAPI.createHologram(LegendsOfValeros.getInstance(), getLocation());
-        textEntityId = hologram.appendTextLine(ChatColor.GOLD + "" + ChatColor.BOLD + entityId);
-        textLevel = hologram.appendTextLine("[" + getLevelRange()[0] + " - " + getLevelRange()[1] + "]");
-        textRadius = hologram.appendTextLine("Radius: " + getRadius());
-        textPadding = hologram.appendTextLine("Padding: " + getPadding());
-        hologram.getVisibilityManager().setVisibleByDefault(false);
+        if(hologram == null) {
+            hologram = HologramsAPI.createHologram(LegendsOfValeros.getInstance(), getLocation());
+            textEntityId = hologram.appendTextLine(ChatColor.GOLD + "" + ChatColor.BOLD + entityId);
+            textLevel = hologram.appendTextLine("[" + getLevelRange()[0] + " - " + getLevelRange()[1] + "]");
+            textRadius = hologram.appendTextLine("Radius: " + getRadius());
+            textPadding = hologram.appendTextLine("Padding: " + getPadding());
+            hologram.getVisibilityManager().setVisibleByDefault(LegendsOfValeros.getMode().allowEditing());
 
-        for (Player p : Bukkit.getOnlinePlayers())
-            if (Utilities.isOp(p))
-                hologram.getVisibilityManager().showTo(p);
+            ItemLine touchLine = hologram.appendItemLine(new ItemStack(Material.EYE_OF_ENDER));
+            touchLine.setPickupHandler((p) -> {
+                if (p.isSneaking())
+                    new SpawnEditorGUI(this).open(p, GUI.Flag.NO_PARENTS);
+            });
 
-        ItemLine touchLine = hologram.appendItemLine(new ItemStack(Material.EYE_OF_ENDER));
-        touchLine.setPickupHandler((p) -> {
-            if (p.isSneaking())
-                new SpawnEditorGUI(this).open(p, GUI.Flag.NO_PARENTS);
-        });
-
-        hologram.teleport(hologram.getLocation().add(0, hologram.getHeight(), 0));
+            hologram.teleport(hologram.getLocation().add(0, hologram.getHeight(), 0));
+        }
 
         return hologram;
     }

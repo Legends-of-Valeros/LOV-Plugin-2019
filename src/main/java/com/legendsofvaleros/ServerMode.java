@@ -1,31 +1,36 @@
 package com.legendsofvaleros;
 
 public enum ServerMode {
-    DEV(true, false, true),
-    TESTING(true, true, true),
-    LIVE(false, true, false);
+    DEV(true, false, true, true),
+    TESTING(true, true, true, true),
+    LIVE(false, true, false, false);
 
     boolean verbose;
-
-    boolean logging;
-
+    boolean logSaving;
+    boolean editing;
     boolean lenient;
 
-    ServerMode(boolean verbose, boolean logging, boolean lenient) {
+    ServerMode(boolean verbose, boolean logSaving, boolean editing, boolean lenient) {
         this.verbose = verbose;
-        this.logging = logging;
+        this.logSaving = logSaving;
+        this.editing = editing;
         this.lenient = lenient;
     }
 
     /**
-     * If the server should spit out additional logging information.
+     * If the server should spit out additional logSaving information.
      */
     public boolean doVerboseLogging() { return verbose; }
 
     /**
-     * If the server should be logging exceptions to the database.
+     * If the server should be logSaving exceptions to the database.
      */
-    public boolean doLogging() { return logging; }
+    public boolean doLogSaving() { return logSaving; }
+
+    /**
+     * If the server should allow editing things.
+     */
+    public boolean allowEditing() { return editing; }
 
     /**
      * A lenient server mode should enable commands that alter the game, such as

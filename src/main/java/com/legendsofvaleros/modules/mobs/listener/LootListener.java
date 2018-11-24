@@ -79,7 +79,7 @@ public class LootListener implements Listener {
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
-            }, Mobs.getInstance().getScheduler()::async);
+            }, Mobs.getInstance().getScheduler()::sync);
         }
     }
 }

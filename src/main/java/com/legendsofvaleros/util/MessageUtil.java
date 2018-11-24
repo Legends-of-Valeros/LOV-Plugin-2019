@@ -175,7 +175,7 @@ public class MessageUtil {
 
 		th.printStackTrace();
 
-		if(LegendsOfValeros.getMode().doLogging()) {
+		if(LegendsOfValeros.getMode().doLogSaving()) {
 			ExceptionManager.add(module, sender, trace);
 
 			if (Discord.SERVER != null) {
