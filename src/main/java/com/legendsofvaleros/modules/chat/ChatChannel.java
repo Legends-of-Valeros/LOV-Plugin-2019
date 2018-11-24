@@ -13,6 +13,8 @@ import java.util.List;
 public enum ChatChannel {
     WORLD('W', "", ChatColor.GRAY, ChatColor.GRAY, "World", false, true, new ArrayList<>()),
     TRADE('T', "", ChatColor.GREEN, ChatColor.GREEN, "Trade", false, true, new ArrayList<>()),
+    PARTY('P', "", ChatColor.YELLOW, ChatColor.YELLOW, "Party", true, false, new ArrayList<>()),
+    ZONE('Z', "", ChatColor.DARK_AQUA, ChatColor.WHITE, "Zone", true, false, new ArrayList<>()),
     LOCAL('L', "", ChatColor.WHITE, ChatColor.WHITE, "Local", true, false, new ArrayList<>());
 
     @Getter

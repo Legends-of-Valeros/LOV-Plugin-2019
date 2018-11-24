@@ -5,9 +5,11 @@ import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.parties.Parties;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.playermenu.settings.PlayerSettings;
 import com.legendsofvaleros.modules.playermenu.settings.PlayerSettingsOpenEvent;
+import com.legendsofvaleros.modules.zones.Zones;
 import com.legendsofvaleros.util.Discord;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.PlayerData;
@@ -48,8 +50,8 @@ public class Chat extends ModuleListener {
         return instance;
     }
 
-    public static Map<Character, String> chanToDiscord = new HashMap<>();
-    public static Map<String, Character> discordToChan = new HashMap<>();
+    private static Map<Character, String> chanToDiscord = new HashMap<>();
+    private static Map<String, Character> discordToChan = new HashMap<>();
 
     @Override
     public void onLoad() {
@@ -58,7 +60,7 @@ public class Chat extends ModuleListener {
         instance = this;
 
         for (ChatChannel channel : ChatChannel.values()) {
-            registerChannel(channel.getPrefix(), channel);
+            channels.put(channel.getPrefix(), channel);
         }
 
         ConfigurationSection config = getConfig().getConfigurationSection("discord");
@@ -73,18 +75,32 @@ public class Chat extends ModuleListener {
 
     }
 
-    public void onChat(Player p, BaseComponent[] bc, ChatChannel sendTo) {
+    private void onChat(Player p, BaseComponent[] bc, ChatChannel sendTo) {
         for (Player pl : Bukkit.getOnlinePlayers()) {
-            if (sendTo == ChatChannel.WORLD && isChannelOn(pl, 'W')) {
-                pl.spigot().sendMessage(bc);
-            } else if (sendTo == ChatChannel.TRADE && isChannelOn(pl, 'T')) {
-                pl.spigot().sendMessage(bc);
-            } else if (sendTo == ChatChannel.LOCAL) {
-                if (pl.getLocation().distance(p.getLocation()) < 25) {
-                    pl.spigot().sendMessage(bc);
-                }
+            switch (sendTo) {
+                case TRADE:
+                    if (isChannelOn(pl, 'T')) {
+                        pl.spigot().sendMessage(bc);
+                    }
+                    break;
+                case LOCAL:
+                    if (pl.getLocation().distance(p.getLocation()) < 25) {
+                        pl.spigot().sendMessage(bc);
+                    }
+                    break;
+                case ZONE:
+                    Zones.getInstance().onChat(p, bc);
+                    break;
+                case PARTY:
+                    Parties.getInstance().onChat(p, bc);
+                    break;
+                case WORLD:
+                    if (isChannelOn(pl, 'W')) {
+                        pl.spigot().sendMessage(bc);
+                    }
             }
         }
+
     }
 
 
@@ -97,11 +113,7 @@ public class Chat extends ModuleListener {
     private ChatChannel channelDefault = ChatChannel.LOCAL;
 
 
-    protected final Map<Character, ChatChannel> channels = new HashMap<>();
-
-    public void registerChannel(Character c, ChatChannel channel) {
-        channels.put(c, channel);
-    }
+    private final Map<Character, ChatChannel> channels = new HashMap<>();
 
     private final Map<UUID, PlayerChat> players = new HashMap<>();
 
@@ -344,10 +356,10 @@ public class Chat extends ModuleListener {
         Bukkit.getConsoleSender().spigot().sendMessage(bc);
 
         onChat(e.getPlayer(), bc, ch);
-        onChat(e, data);
+        sendDiscordMessage(e, data);
     }
 
-    public void onChat(AsyncPlayerChatEvent e, PlayerChat data) {
+    private void sendDiscordMessage(AsyncPlayerChatEvent e, PlayerChat data) {
         if (chanToDiscord.containsKey(data.channel)) {
             if (Discord.SERVER != null) {
                 String channelId = chanToDiscord.get(data.channel);

@@ -8,7 +8,6 @@ import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.chat.Chat;
-import com.legendsofvaleros.modules.chat.IChannelHandler;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.pvp.PvP;
@@ -25,7 +24,6 @@ import com.legendsofvaleros.util.title.Title;
 import com.legendsofvaleros.util.title.TitleUtil;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -68,59 +66,13 @@ public class Zones extends ModuleListener {
         toggles = PvP.getInstance().getToggles();
 
         ConfigurationSection section = getConfig().getConfigurationSection("pvp");
-        pvpAllow = section != null ? section.getBoolean("allow", true) : true;
+        pvpAllow = section == null || section.getBoolean("allow", true);
         pvpPriority = section != null ? (byte) section.getInt("pvp-priority", 0) : 0;
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new ZoneCommands());
 
         ObjectiveFactory.registerType("zone_enter", EnterZoneObjective.class);
         ObjectiveFactory.registerType("zone_exit", ExitZoneObjective.class);
-
-        Chat.getInstance().registerChannel('Z', new IChannelHandler() {
-            @Override public ChatColor getTagColor() {
-                return ChatColor.DARK_AQUA;
-            }
-
-            @Override public ChatColor getChatColor() {
-                return ChatColor.WHITE;
-            }
-
-            @Override public String getName(Player p) {
-                if (p == null) return "Zone";
-
-                Zone zone = Zones.manager().getZone(p);
-                if (zone == null) return "Unknown";
-
-                return zone.name;
-            }
-
-            @Override public boolean canSetDefault() {
-                return true;
-            }
-
-            @Override public boolean canDisable() {
-                return true;
-            }
-
-            @Override
-            public void onChat(Player p, BaseComponent[] bc) {
-                Zone zone = Zones.manager().getZone(p);
-                if (zone == null) {
-                    MessageUtil.sendError(p, "Unable to send message. You are not in a zone!");
-                    return;
-                }
-
-                Player pl;
-                for (Entry<UUID, String> entry : Zones.manager().getPlayerZones()) {
-                    Zone zz = Zones.manager().getZone(entry.getValue());
-                    if (zz.channel.equals(zone.channel)) {
-                        pl = Bukkit.getPlayer(entry.getKey());
-                        if (Chat.getInstance().isChannelOn(pl, 'Z'))
-                            pl.spigot().sendMessage(bc);
-                    }
-                }
-            }
-        });
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -153,5 +105,23 @@ public class Zones extends ModuleListener {
             toggles.removeToggleFor(event.getPlayer().getUniqueId(), pvpPriority);
 
         QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
+    }
+
+    public void onChat(Player p, BaseComponent[] bc) {
+        Zone zone = Zones.manager().getZone(p);
+        if (zone == null) {
+            MessageUtil.sendError(p, "Unable to send message. You are not in a zone!");
+            return;
+        }
+
+        Player pl;
+        for (Entry<UUID, String> entry : Zones.manager().getPlayerZones()) {
+            Zone zz = Zones.manager().getZone(entry.getValue());
+            if (zz.channel.equals(zone.channel)) {
+                pl = Bukkit.getPlayer(entry.getKey());
+                if (Chat.getInstance().isChannelOn(pl, 'Z'))
+                    pl.spigot().sendMessage(bc);
+            }
+        }
     }
 }

@@ -8,14 +8,12 @@ import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.chat.Chat;
-import com.legendsofvaleros.modules.chat.IChannelHandler;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.playermenu.PlayerMenuOpenEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import net.md_5.bungee.api.chat.BaseComponent;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -27,6 +25,7 @@ import org.bukkit.event.inventory.InventoryType;
 @DependsOn(Chat.class)
 public class Parties extends ModuleListener {
     private static Parties plugin;
+
     public static Parties getInstance() {
         return plugin;
     }
@@ -39,42 +38,6 @@ public class Parties extends ModuleListener {
         PartyManager.onEnable();
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new PartyCommands());
-
-        //TODO move into chatchannel enum
-        Chat.getInstance().registerChannel('P', new IChannelHandler() {
-            @Override public ChatColor getTagColor() {
-                return ChatColor.YELLOW;
-            }
-
-            @Override public ChatColor getChatColor() {
-                return ChatColor.YELLOW;
-            }
-
-            @Override public String getName(Player p) {
-                return "Party";
-            }
-
-            @Override public boolean canSetDefault() {
-                return true;
-            }
-
-            @Override public boolean canDisable() {
-                return false;
-            }
-
-            @Override
-            public void onChat(Player p, BaseComponent[] bc) {
-                PlayerParty party = (PlayerParty) PartyManager.getPartyByMember(Characters.getPlayerCharacter(p).getUniqueCharacterId());
-                if (party == null) {
-                    MessageUtil.sendError(p, "You are not in a party.");
-                    return;
-                }
-
-
-                for (Player pl : party.getOnlineMembers())
-                    pl.spigot().sendMessage(bc);
-            }
-        });
     }
 
     @EventHandler
@@ -155,4 +118,17 @@ public class Parties extends ModuleListener {
                 partyUI.open(p);
         });
     }
+
+    public void onChat(Player p, BaseComponent[] bc) {
+        PlayerParty party = (PlayerParty) PartyManager.getPartyByMember(Characters.getPlayerCharacter(p).getUniqueCharacterId());
+        if (party == null) {
+            MessageUtil.sendError(p, "You are not in a party.");
+            return;
+        }
+
+
+        for (Player pl : party.getOnlineMembers())
+            pl.spigot().sendMessage(bc);
+    }
+
 }

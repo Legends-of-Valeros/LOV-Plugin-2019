@@ -40,8 +40,10 @@ public class Factions extends ModuleListener {
     private Map<String, Faction> factions = new HashMap<>();
     private Table<CharacterId, String, Reputation> playerRep = HashBasedTable.create();
 
+    /**
+     * TODO
+     */
     // private static AdvancementAPI NOTIFICATION_UP, NOTIFICATION_DOWN;
-
     @Override
     public void onLoad() {
         super.onLoad();
@@ -54,6 +56,9 @@ public class Factions extends ModuleListener {
 
         ActionFactory.registerType("faction_rep", ActionReputation.class);
 
+        /**
+         * TODO check if this can be removed
+         */
 		/*NOTIFICATION_UP = AdvancementAPI.builder(new NamespacedKey(this, "factions/up"))
 				                .title("Faction Rep+")
 				                .description("Faction rep increased.")
@@ -104,13 +109,10 @@ public class Factions extends ModuleListener {
         if (factions.containsKey(faction_id)) {
             ret.set(factions.get(faction_id));
         } else {
-            factionTable.query().get(faction_id)
-                    .forEach((faction) -> {
-                        factions.put(faction.getId(), faction);
-                        ret.set(faction);
-                    })
-                    .onEmpty(() -> ret.set(null))
-                    .execute(true);
+            factionTable.query().get(faction_id).forEach((faction) -> {
+                factions.put(faction.getId(), faction);
+                ret.set(faction);
+            }).onEmpty(() -> ret.set(null)).execute(true);
         }
 
         return ret;
@@ -122,18 +124,14 @@ public class Factions extends ModuleListener {
         if (playerRep.contains(pc.getUniqueCharacterId(), faction_id)) {
             ret.set(playerRep.get(pc.getUniqueCharacterId(), faction_id));
         } else {
-            reputationTable.query().get(pc.getUniqueCharacterId().toString(), faction_id)
-                    .forEach((reputation) -> {
-                        playerRep.put(pc.getUniqueCharacterId(), faction_id, reputation);
-
-                        ret.set(reputation);
-                    })
-                    .onEmpty(() -> {
-                        Reputation reputation = new Reputation(pc.getUniqueCharacterId(), faction_id);
-                        playerRep.put(pc.getUniqueCharacterId(), faction_id, reputation);
-                        ret.set(reputation);
-                    })
-                    .execute(true);
+            reputationTable.query().get(pc.getUniqueCharacterId().toString(), faction_id).forEach((reputation) -> {
+                playerRep.put(pc.getUniqueCharacterId(), faction_id, reputation);
+                ret.set(reputation);
+            }).onEmpty(() -> {
+                Reputation reputation = new Reputation(pc.getUniqueCharacterId(), faction_id);
+                playerRep.put(pc.getUniqueCharacterId(), faction_id, reputation);
+                ret.set(reputation);
+            }).execute(true);
         }
 
         return ret;
@@ -150,30 +148,23 @@ public class Factions extends ModuleListener {
                 Reputation rep = future.get();
                 if (rep.reputation >= faction.getMaxReputation()) {
                     ret.set(false);
-                    return;
+                } else {
+                    int change = amount;
+                    if (rep.reputation + change > faction.getMaxReputation()) {
+                        change = faction.getMaxReputation() - rep.reputation;
+                    }
+                    rep.reputation += change;
+                    playerRep.put(pc.getUniqueCharacterId(), faction_id, rep);
+
+                    Bukkit.getPluginManager().callEvent(new FactionReputationChangeEvent(pc, faction, change, rep.reputation));
+                    rep.save(false);
+                    ret.set(true);
                 }
-
-                int change = amount;
-                if (rep.reputation + change > faction.getMaxReputation())
-                    change = faction.getMaxReputation() - rep.reputation;
-                rep.reputation += change;
-
-                playerRep.put(pc.getUniqueCharacterId(), faction_id, rep);
-
-                Bukkit.getPluginManager().callEvent(new FactionReputationChangeEvent(pc, faction, change, rep.reputation));
-
-                rep.save(false);
-
-                ret.set(true);
-
-                return;
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
+                ret.set(false);
             }
-
-            ret.set(false);
         }, Factions.getInstance().getScheduler()::async);
-
         return ret;
     }
 }
