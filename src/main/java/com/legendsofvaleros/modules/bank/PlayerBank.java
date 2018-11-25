@@ -18,7 +18,7 @@ public class PlayerBank extends ORM {
         return currencies.values();
     }
 
-    public List<PlayerBank.Entry> content = new ArrayList<>();
+    public Map<Integer, PlayerBank.Entry> content = new HashMap<>();
 
     public PlayerBank(CharacterId characterId) {
         this.characterId = characterId;
@@ -50,6 +50,24 @@ public class PlayerBank extends ORM {
         return true;
     }
 
+    public void setItem(GearItem.Data item) {
+        int i = 0;
+        for(Integer j : content.keySet())
+            if(j > i) {
+                setItem(i, item);
+                return;
+            }else
+                i = j;
+    }
+
+    public void setItem(int index, GearItem.Data item) {
+        content.put(index, new Entry(characterId, index, item));
+    }
+
+    public void removeItem(int i) {
+        content.remove(i);
+    }
+
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder("{");
@@ -61,7 +79,7 @@ public class PlayerBank extends ORM {
 
     @Table(name = "player_bank")
     public static class Currency {
-        // TODO: @ForeignKey(table = BankData.class, name = "character_id", onUpdate = ForeignKey.Trigger.CASCADE, onDelete = ForeignKey.Trigger.CASCADE)
+        // @ForeignKey(table = PlayerCharacterData.class, name = "character_id", onUpdate = ForeignKey.Trigger.CASCADE, onDelete = ForeignKey.Trigger.CASCADE)
         @Column(name = "character_id", length = 39)
         private final CharacterId characterId;
 
@@ -83,16 +101,20 @@ public class PlayerBank extends ORM {
 
     @Table(name = "player_bank_content")
     public static class Entry {
-        // TODO: @ForeignKey(table = BankData.class, name = "character_id", onUpdate = ForeignKey.Trigger.CASCADE, onDelete = ForeignKey.Trigger.CASCADE)
+        // @ForeignKey(table = PlayerCharacterData.class, name = "character_id", onUpdate = ForeignKey.Trigger.CASCADE, onDelete = ForeignKey.Trigger.CASCADE)
         @Column(primary = true, index = true, name = "character_id", length = 39)
-        private String characterId;
+        private final String characterId;
 
-        @Column(name = "bank_entry")
-        public GearItem.Data entry;
+        @Column(name = "bank_index")
+        public final int index;
 
-        public Entry(CharacterId characterId, GearItem.Data entry) {
+        @Column(name = "bank_item")
+        public final GearItem.Data item;
+
+        protected Entry(CharacterId characterId, int index, GearItem.Data item) {
             this.characterId = characterId.toString();
-            this.entry = entry;
+            this.index = index;
+            this.item = item;
         }
     }
 }

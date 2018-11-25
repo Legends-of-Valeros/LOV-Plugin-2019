@@ -66,7 +66,7 @@ public class BankManager {
 
         bankContentTable.query()
                 .get(characterId)
-                .forEach((entry) -> bank.content.add(entry))
+                .forEach((entry) -> bank.content.put(entry.index, entry))
                 .onFinished(finished)
                 .execute(true);
 
@@ -97,7 +97,7 @@ public class BankManager {
                             return;
                         }
 
-                        bankContentTable.saveAll(bank.content, true)
+                        bankContentTable.saveAll(bank.content.values(), true)
                                 .addListener(finished, Bank.getInstance().getScheduler()::async);
                     })
                     .execute(true);

@@ -49,6 +49,4 @@ public class Hearthstones extends ModuleListener {
             teleporter.attemptTeleport(Characters.getPlayerCharacter(p));
         });
     }
-
-
 }

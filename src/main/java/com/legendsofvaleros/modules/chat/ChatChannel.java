@@ -11,11 +11,11 @@ import java.util.List;
  * Represents a chatchannel a player can talk in
  */
 public enum ChatChannel {
-    WORLD('W', "", ChatColor.GRAY, ChatColor.GRAY, "World", false, true, new ArrayList<>()),
-    TRADE('T', "", ChatColor.GREEN, ChatColor.GREEN, "Trade", false, true, new ArrayList<>()),
-    PARTY('P', "", ChatColor.YELLOW, ChatColor.YELLOW, "Party", true, false, new ArrayList<>()),
-    ZONE('Z', "", ChatColor.DARK_AQUA, ChatColor.WHITE, "Zone", true, false, new ArrayList<>()),
-    LOCAL('L', "", ChatColor.WHITE, ChatColor.WHITE, "Local", true, false, new ArrayList<>());
+    WORLD('W', "", ChatColor.GRAY, ChatColor.GRAY, "World", false, true),
+    TRADE('T', "", ChatColor.GREEN, ChatColor.GREEN, "Trade", false, true),
+    PARTY('P', "", ChatColor.YELLOW, ChatColor.YELLOW, "Party", true, false),
+    ZONE('Z', "", ChatColor.DARK_AQUA, ChatColor.WHITE, "Zone", true, false),
+    LOCAL('L', "", ChatColor.WHITE, ChatColor.WHITE, "Local", true, false);
 
     @Getter
     Character prefix;
@@ -38,10 +38,7 @@ public enum ChatChannel {
     @Getter
     boolean canDisable;
 
-    @Getter
-    List<Character> offChannels;
-
-    ChatChannel(Character prefix, String suffix, ChatColor tagColor, ChatColor chatColor, String name, boolean canSetDefault, boolean canDisable, ArrayList offChannels) {
+    ChatChannel(Character prefix, String suffix, ChatColor tagColor, ChatColor chatColor, String name, boolean canSetDefault, boolean canDisable) {
         this.prefix = prefix;
         this.suffix = suffix;
         this.tagColor = tagColor;
@@ -49,7 +46,6 @@ public enum ChatChannel {
         this.name = name;
         this.canSetDefault = canSetDefault;
         this.canDisable = canDisable;
-        this.offChannels = offChannels;
     }
 
 }
