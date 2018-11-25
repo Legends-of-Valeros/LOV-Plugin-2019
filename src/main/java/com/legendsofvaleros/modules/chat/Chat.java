@@ -76,33 +76,36 @@ public class Chat extends ModuleListener {
     }
 
     private void onChat(Player p, BaseComponent[] bc, ChatChannel sendTo) {
-        for (Player pl : Bukkit.getOnlinePlayers()) {
-            switch (sendTo) {
-                case TRADE:
+        switch (sendTo) {
+            case TRADE:
+                for (Player pl : Bukkit.getOnlinePlayers()) {
                     if (isChannelOn(pl, 'T')) {
                         pl.spigot().sendMessage(bc);
                     }
-                    break;
-                case LOCAL:
+                }
+                break;
+            case LOCAL:
+                for (Player pl : Bukkit.getOnlinePlayers()) {
                     if (pl.getLocation().distance(p.getLocation()) < 25) {
                         pl.spigot().sendMessage(bc);
                     }
-                    break;
-                case ZONE:
-                    Zones.getInstance().onChat(p, bc);
-                    break;
-                case PARTY:
-                    Parties.getInstance().onChat(p, bc);
-                    break;
-                case WORLD:
+                }
+                break;
+            case WORLD:
+                for (Player pl : Bukkit.getOnlinePlayers()) {
                     if (isChannelOn(pl, 'W')) {
                         pl.spigot().sendMessage(bc);
                     }
-            }
+                }
+            case ZONE:
+                Zones.getInstance().onChat(p, bc);
+                break;
+            case PARTY:
+                Parties.getInstance().onChat(p, bc);
+                break;
         }
 
     }
-
 
     @Override
     public void onUnload() {

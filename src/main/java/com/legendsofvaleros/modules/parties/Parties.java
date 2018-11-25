@@ -126,9 +126,9 @@ public class Parties extends ModuleListener {
             return;
         }
 
-
-        for (Player pl : party.getOnlineMembers())
+        for (Player pl : party.getOnlineMembers()) {
             pl.spigot().sendMessage(bc);
+        }
     }
 
 }
