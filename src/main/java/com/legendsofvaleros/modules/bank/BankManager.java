@@ -89,18 +89,15 @@ public class BankManager {
             bankCurrencyTable.saveAll(bank.getCurrencies(), true)
                     .addListener(finished, Bank.getInstance().getScheduler()::async);
 
-            bankContentTable.query()
-                    .remove(characterId)
-                    .onFinished(() -> {
-                        if (bank.content.size() == 0) {
-                            finished.run();
-                            return;
-                        }
+            bankContentTable.query().remove(characterId).onFinished(() -> {
+                if (bank.content.size() == 0) {
+                    finished.run();
+                    return;
+                }
 
-                        bankContentTable.saveAll(bank.content, true)
-                                .addListener(finished, Bank.getInstance().getScheduler()::async);
-                    })
-                    .execute(true);
+                bankContentTable.saveAll(bank.content, true)
+                        .addListener(finished, Bank.getInstance().getScheduler()::async);
+            }).execute(true);
         }
 
         return ret;

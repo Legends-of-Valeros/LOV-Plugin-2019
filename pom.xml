@@ -23,8 +23,15 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>3.6.0</version>
                 <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.16.20</version>
+                        </path>
+                    </annotationProcessorPaths>
                     <source>1.8</source>
                     <target>1.8</target>
                     <compilerArgs>
@@ -40,23 +47,23 @@
                     <skipTests>true</skipTests>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>aspectj-maven-plugin</artifactId>
-                <version>1.11</version>
-                <configuration>
-                    <complianceLevel>1.8</complianceLevel>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.codehaus.mojo</groupId>-->
+                <!--<artifactId>aspectj-maven-plugin</artifactId>-->
+                <!--<version>1.11</version>-->
+                <!--<configuration>-->
+                    <!--<complianceLevel>1.8</complianceLevel>-->
+                    <!--<source>1.8</source>-->
+                    <!--<target>1.8</target>-->
+                <!--</configuration>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<goals>-->
+                            <!--<goal>compile</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -108,10 +115,10 @@
             <id>dmulloy2-repo</id>
             <url>http://repo.dmulloy2.net/nexus/repository/public/</url>
         </repository>
-        <repository>
-            <id>inventive-repo</id>
-            <url>https://repo.inventivetalent.org/content/groups/public/</url>
-        </repository>
+        <!--<repository>-->
+        <!--<id>inventive-repo</id>-->
+        <!--<url>https://repo.inventivetalent.org/content/groups/public/</url>-->
+        <!--</repository>-->
         <repository>
             <id>LOV</id>
             <name>artifactory-snapshots</name>
@@ -122,9 +129,8 @@
             <url>http://repo.bastian-oppermann.de</url>
         </repository>
         <repository>
-            <id>comphenix-releases</id>
-            <name>Comphenix Maven Releases</name>
-            <url>http://repo.comphenix.net/content/repositories/releases/</url>
+            <id>projectlombok.org</id>
+            <url>https://projectlombok.org/edge-releases</url>
         </repository>
     </repositories>
 
@@ -182,7 +188,8 @@
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
             <version>4.4.0</version>
-            <scope>provided</scope>
+            <systemPath>${project.basedir}/lib/ProtocolLib.jar</systemPath>
+            <scope>system</scope>
         </dependency>
 
         <!-- System dependencies -->
@@ -239,7 +246,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.4</version>
+            <version>1.16.20</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
