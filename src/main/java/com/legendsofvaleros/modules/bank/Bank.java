@@ -33,10 +33,16 @@ import java.util.Map;
 @DependsOn(Gear.class)
 public class Bank extends ModuleListener {
     private static Bank instance;
-    public static Bank getInstance() { return instance; }
+
+    public static Bank getInstance() {
+        return instance;
+    }
 
     private static final Map<String, Currency> currencies = new HashMap<>();
-    public Currency getCurrency(String id) { return currencies.get(id); }
+
+    public Currency getCurrency(String id) {
+        return currencies.get(id);
+    }
 
     public static void registerCurrency(String id, Currency currency) {
         if (currencies.containsKey(id))
@@ -48,7 +54,7 @@ public class Bank extends ModuleListener {
     public void onLoad() {
         super.onLoad();
 
-        this.instance = this;
+        instance = this;
 
         BankManager.onEnable();
         Money.onEnable();

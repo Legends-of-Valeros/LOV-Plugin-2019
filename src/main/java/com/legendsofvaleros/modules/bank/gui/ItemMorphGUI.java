@@ -21,141 +21,142 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class ItemMorphGUI extends GUI {
-	private static final ItemBuilder ACCEPT_BUTTON = Model.stack("menu-accept-button").setName(null);
-	@Override
-	public void onClose(Player p, InventoryView view) {
-		if(!canInteract) return;
-		
-		returnItems(Characters.getPlayerCharacter(p), view);
-	}
-	
-	protected long cost = 0;
-	
-	private boolean canInteract = true;
-	private ISlotAction acceptAction;
-	
-	protected GearItem.Instance[] items = new GearItem.Instance[6];
-	
-	public ItemMorphGUI(String title) {
-		super(title);
-		
-		acceptAction = (gui, p, event) -> {
+    private static final ItemBuilder ACCEPT_BUTTON = Model.stack("menu-accept-button").setName(null);
+
+    @Override
+    public void onClose(Player p, InventoryView view) {
+        if (!canInteract) return;
+
+        returnItems(Characters.getPlayerCharacter(p), view);
+    }
+
+    protected long cost = 0;
+
+    private boolean canInteract = true;
+    private ISlotAction acceptAction;
+
+    protected GearItem.Instance[] items = new GearItem.Instance[6];
+
+    public ItemMorphGUI(String title) {
+        super(title);
+
+        acceptAction = (gui, p, event) -> {
             canInteract = false;
 
             PlayerCharacter pc = Characters.getPlayerCharacter(p);
 
-			if(isBuy() && Money.get(pc) < cost) {
-				MessageUtil.sendError(p, "You don't have enough crowns to do that!");
+            if (isBuy() && Money.get(pc) < cost) {
+                MessageUtil.sendError(p, "You don't have enough crowns to do that!");
 
-				if(gui.getView(p) == null)
-					returnItems(pc, event.getView());
-			}else{
-				for(int y = 0; y < 2; y++)
-					for(int x = 0; x < 3; x++)
-						gui.getInventory().setItem(x + y * 3, null);
+                if (gui.getView(p) == null)
+                    returnItems(pc, event.getView());
+            } else {
+                for (int y = 0; y < 2; y++)
+                    for (int x = 0; x < 3; x++)
+                        gui.getInventory().setItem(x + y * 3, null);
 
-				for(int i = 0; i < items.length; i++) {
-					if(items[i] == null) continue;
+                for (int i = 0; i < items.length; i++) {
+                    if (items[i] == null) continue;
 
-					executeMorph(pc, items[i]);
+                    executeMorph(pc, items[i]);
 
-					items[i] = null;
-				}
+                    items[i] = null;
+                }
 
-				if(isBuy())
-					Money.sub(pc, cost);
-				else
-					Money.add(pc, cost);
+                if (isBuy())
+                    Money.sub(pc, cost);
+                else
+                    Money.add(pc, cost);
 
-				onCompleted(pc);
+                onCompleted(pc);
 
-				cost = 0;
-			}
+                cost = 0;
+            }
 
-			updateCost();
+            updateCost();
 
-			canInteract = true;
+            canInteract = true;
         };
-		
-		type(InventoryType.DISPENSER);
-		
-		for(int y = 0; y < 2; y++) {
-			for(int x = 0; x < 3; x++)
-				slot(x, y, Material.AIR, new SlotUsable() {
-					@Override
-					public void onPickup(GUI gui, Player p, ItemStack stack, InventoryClickEvent event) {
-						if(!canInteract) {
-							event.setCancelled(true);
-							return;
-						}
 
-						items[event.getSlot()] = null;
-						
-						GearItem.Instance instance = GearItem.Instance.fromStack(stack);
-						cost -= getWorth(instance);
+        type(InventoryType.DISPENSER);
 
-						updateCost();
-					}
+        for (int y = 0; y < 2; y++) {
+            for (int x = 0; x < 3; x++)
+                slot(x, y, Material.AIR, new SlotUsable() {
+                    @Override
+                    public void onPickup(GUI gui, Player p, ItemStack stack, InventoryClickEvent event) {
+                        if (!canInteract) {
+                            event.setCancelled(true);
+                            return;
+                        }
 
-					@Override
-					public void onPlace(GUI gui, Player p, ItemStack stack, InventoryClickEvent event) {
-						if(!canInteract) {
-							event.setCancelled(true);
-							return;
-						}
+                        items[event.getSlot()] = null;
 
-						GearItem.Instance instance = GearItem.Instance.fromStack(stack);
-						if(instance == null || !isValid(instance)) {
-							event.setCancelled(true);
-							return;
-						}
+                        GearItem.Instance instance = GearItem.Instance.fromStack(stack);
+                        cost -= getWorth(instance);
 
-						items[event.getSlot()] = instance;
-						
-						cost += getWorth(instance);
+                        updateCost();
+                    }
 
-						updateCost();
-					}
-				});
-		}
-		
-		slot(0, 2, Model.EMPTY_SLOT, null);
-		slot(2, 2, Model.EMPTY_SLOT, null);
+                    @Override
+                    public void onPlace(GUI gui, Player p, ItemStack stack, InventoryClickEvent event) {
+                        if (!canInteract) {
+                            event.setCancelled(true);
+                            return;
+                        }
 
-		updateCost();
-	}
-	
-	private void updateCost() {
-		ACCEPT_BUTTON.clearLore();
-		
-		boolean hasOne = false;
-		for(GearItem.Instance item : items)
-			if(item != null) {
-				hasOne = true;
-				break;
-			}
+                        GearItem.Instance instance = GearItem.Instance.fromStack(stack);
+                        if (instance == null || !isValid(instance)) {
+                            event.setCancelled(true);
+                            return;
+                        }
 
-		if(hasOne)
-			ACCEPT_BUTTON.addLore(Money.Format.format(cost), "");
-		
-		ACCEPT_BUTTON.addLore(StringUtil.splitForStackLore(ChatColor.DARK_GRAY + "[" + ChatColor.GRAY + "Left Click" + ChatColor.DARK_GRAY + "] " + ChatColor.GRAY + "to complete."));
-		
-		slot(1, 2, ACCEPT_BUTTON.create(), acceptAction);
-	}
-	
-	private void returnItems(PlayerCharacter pc, InventoryView view) {
-		// Clear out the slots just in case
-		for(int y = 0; y < 2; y++) {
-			for(int x = 0; x < 3; x++)
-				slot(x, y, Material.AIR, getSlot(x, y));
-		}
-		
-		if(view != null)
-			ItemUtil.giveItem(pc, GearItem.Instance.fromStack(view.getCursor()));
-		for(GearItem.Instance instance : items)
-			if(instance != null)
-				ItemUtil.giveItem(pc, instance);
-	}
+                        items[event.getSlot()] = instance;
+
+                        cost += getWorth(instance);
+
+                        updateCost();
+                    }
+                });
+        }
+
+        slot(0, 2, Model.EMPTY_SLOT, null);
+        slot(2, 2, Model.EMPTY_SLOT, null);
+
+        updateCost();
+    }
+
+    private void updateCost() {
+        ACCEPT_BUTTON.clearLore();
+
+        boolean hasOne = false;
+        for (GearItem.Instance item : items)
+            if (item != null) {
+                hasOne = true;
+                break;
+            }
+
+        if (hasOne)
+            ACCEPT_BUTTON.addLore(Money.Format.format(cost), "");
+
+        ACCEPT_BUTTON.addLore(StringUtil.splitForStackLore(ChatColor.DARK_GRAY + "[" + ChatColor.GRAY + "Left Click" + ChatColor.DARK_GRAY + "] " + ChatColor.GRAY + "to complete."));
+
+        slot(1, 2, ACCEPT_BUTTON.create(), acceptAction);
+    }
+
+    private void returnItems(PlayerCharacter pc, InventoryView view) {
+        // Clear out the slots just in case
+        for (int y = 0; y < 2; y++) {
+            for (int x = 0; x < 3; x++)
+                slot(x, y, Material.AIR, getSlot(x, y));
+        }
+
+        if (view != null)
+            ItemUtil.giveItem(pc, GearItem.Instance.fromStack(view.getCursor()));
+        for (GearItem.Instance instance : items)
+            if (instance != null)
+                ItemUtil.giveItem(pc, instance);
+    }
 
 	public abstract boolean isBuy();
 	public abstract boolean isValid(GearItem.Instance item);

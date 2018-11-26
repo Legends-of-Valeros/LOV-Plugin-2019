@@ -11,7 +11,6 @@ import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.modules.playermenu.InventoryManager;
 import com.legendsofvaleros.modules.playermenu.PlayerMenuOpenEvent;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
 import com.legendsofvaleros.util.item.Model;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
