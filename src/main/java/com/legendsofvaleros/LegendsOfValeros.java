@@ -3,6 +3,7 @@ package com.legendsofvaleros;
 import co.aikar.commands.PaperCommandManager;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.Modules;
+import com.legendsofvaleros.modules.auction.AuctionController;
 import com.legendsofvaleros.modules.bank.Bank;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.chat.Chat;
@@ -17,6 +18,7 @@ import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.modules.keepoutofocean.KeepOutOfOcean;
 import com.legendsofvaleros.modules.levelarchetypes.core.LevelArchetypes;
 import com.legendsofvaleros.modules.loot.LootManager;
+import com.legendsofvaleros.modules.mailbox.MailboxController;
 import com.legendsofvaleros.modules.mobs.Mobs;
 import com.legendsofvaleros.modules.mount.Mounts;
 import com.legendsofvaleros.modules.nanny.Nanny;
@@ -44,6 +46,7 @@ import java.util.Set;
  */
 public class LegendsOfValeros extends JavaPlugin {
     private static LegendsOfValeros instance;
+
     public static LegendsOfValeros getInstance() {
         return instance;
     }
@@ -53,10 +56,16 @@ public class LegendsOfValeros extends JavaPlugin {
     public static long startTime = 0;
 
     private ServerMode mode;
-    public static ServerMode getMode() { return instance.mode; }
+
+    public static ServerMode getMode() {
+        return instance.mode;
+    }
 
     private PaperCommandManager manager;
-    public PaperCommandManager getCommandManager() { return manager; }
+
+    public PaperCommandManager getCommandManager() {
+        return manager;
+    }
 
     private Set<Listener> loadedEventClasses = new HashSet<>();
 
@@ -70,9 +79,9 @@ public class LegendsOfValeros extends JavaPlugin {
         mode = ServerMode.valueOf(getConfig().getString("server-mode", "LIVE"));
 
         getLogger().info("Server mode is set to: " + mode.name());
-        if(mode.isVerbose()) getLogger().info("  - Verbosity enabled");
-        if(mode.doLogSaving()) getLogger().info("  - Log saving enabled");
-        if(mode.isLenient()) getLogger().warning("  - Leniency enabled: THIS SHOULD NOT BE ENABLED ON A LIVE SERVER");
+        if (mode.isVerbose()) getLogger().info("  - Verbosity enabled");
+        if (mode.doLogSaving()) getLogger().info("  - Log saving enabled");
+        if (mode.isLenient()) getLogger().warning("  - Leniency enabled: THIS SHOULD NOT BE ENABLED ON A LIVE SERVER");
 
         manager = new PaperCommandManager(LegendsOfValeros.getInstance());
         manager.enableUnstableAPI("help");
@@ -81,7 +90,7 @@ public class LegendsOfValeros extends JavaPlugin {
             registerModules();
 
             Modules.loadModules();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
         }
@@ -128,6 +137,8 @@ public class LegendsOfValeros extends JavaPlugin {
         Modules.registerModule(Regions.class);
         Modules.registerModule(Skills.class);
         Modules.registerModule(Zones.class);
+        Modules.registerModule(AuctionController.class);
+        Modules.registerModule(MailboxController.class);
     }
 
     public void registerEvents(Listener listener, Module module) {
@@ -135,7 +146,7 @@ public class LegendsOfValeros extends JavaPlugin {
 
         module.getLogger().info("Registered listener: " + listenerName + ".");
 
-        if(loadedEventClasses.contains(listener))
+        if (loadedEventClasses.contains(listener))
             module.getLogger().severe(listenerName + " has already been registered as an event listener! This may cause unintended side effects!");
         loadedEventClasses.add(listener);
 
