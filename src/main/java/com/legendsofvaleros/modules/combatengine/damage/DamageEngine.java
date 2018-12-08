@@ -277,7 +277,7 @@ public class DamageEngine {
 								.append(String.valueOf(event.getAttacker().getStats().getRegeneratingStat(RegeneratingStat.HEALTH))).color(ChatColor.GRAY)
 								.append("/")
 								.append(String.valueOf(event.getAttacker().getStats().getStat(Stat.MAX_HEALTH))).color(ChatColor.GRAY)
-								.append(" > ").create()));
+								.append(") > ").create()));
 				}
 				if(pDOP) {
 					MessageUtil.sendInfo(pA, MessageUtil.prepend(bc,

@@ -22,7 +22,7 @@ public class Mailbox extends ORM {
     public ArrayList<Mail> mails;
 
     public Mailbox(CharacterId characterId) {
-        this.characterId = characterId;
+        this(characterId, new ArrayList<>());
     }
 
     public Mailbox(CharacterId characterId, ArrayList<Mail> mails) {

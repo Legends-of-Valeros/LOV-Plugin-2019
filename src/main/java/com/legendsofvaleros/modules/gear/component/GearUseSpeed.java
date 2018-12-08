@@ -36,9 +36,9 @@ public class GearUseSpeed {
 
 		@Override
 		protected void onGenerateItem(GearItem.Instance item, Persist persist, ItemBuilder builder) {
-			builder.addAttributeMod(Attributes.ATTACK_SPEED, Attributes.Operation.ADD_NUMBER, persist.speed - 4);
+			builder.addAttributeMod(Attributes.ATTACK_SPEED, Attributes.Operation.ADD_NUMBER, (1D / persist.speed) - 4);
 			
-			builder.addLore(String.format(ChatColor.WHITE + "Speed: %s/s", DF.format(persist.speed)));
+			builder.addLore(String.format(ChatColor.WHITE + "Speed: %s/s", DF.format(1D / persist.speed)));
 		}
 	}
 }

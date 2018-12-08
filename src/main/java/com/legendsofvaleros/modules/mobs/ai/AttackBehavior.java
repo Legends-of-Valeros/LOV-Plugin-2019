@@ -44,7 +44,7 @@ public class AttackBehavior {
                 if (gear != null) {
                     GearUseSpeed.Persist use = gear.getPersist(GearUseSpeed.Component.class);
                     if (use != null)
-                        time = System.currentTimeMillis() + (long) (use.speed * 1000L);
+                        time = System.currentTimeMillis() + (long)(use.speed * 1000L);
                 }
 
                 time += (long) (1000L * rand.nextDouble());

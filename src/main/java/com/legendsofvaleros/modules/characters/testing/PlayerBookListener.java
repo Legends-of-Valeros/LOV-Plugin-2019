@@ -96,8 +96,7 @@ public class PlayerBookListener implements Listener {
                 hasMods = false;
 
             tb.append(as.getUserFriendlyName() + ":").color(ChatColor.BLACK).bold(true)
-                    .hover(as.getUserFriendlyName())
-                    .append("\n"  + tooltip.toString().trim());
+                    .hover(as.getUserFriendlyName(), "\n"  + tooltip.toString().trim());
 
             tb.append(StringUtil.right(Book.WIDTH, ChatColor.BOLD + as.getUserFriendlyName() + ":", as.formatForUserInterface(pc.getAbilityStats().getAbilityStat(as))) + "\n").color(ChatColor.DARK_GRAY);
 
