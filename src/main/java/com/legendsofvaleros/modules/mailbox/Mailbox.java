@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.mailbox;
 import com.codingforcookies.doris.orm.ORM;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.util.MessageUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.entity.Player;
@@ -48,7 +49,7 @@ public class Mailbox extends ORM {
         Player p = Characters.getPlayerCharacter(characterId).getPlayer();
         if (Characters.isPlayerCharacterLoaded(p)) {
             // TODO make pretty like a princess
-            p.sendMessage("You have" + getUnreadMails() + " unread mails!");
+            MessageUtil.sendInfo(p, "You have" + getUnreadMails() + " unread mails!");
         }
     }
 }

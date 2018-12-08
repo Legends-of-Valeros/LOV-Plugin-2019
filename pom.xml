@@ -13,6 +13,7 @@
         <spigot.version>1.12.2-R0.1-SNAPSHOT</spigot.version>
         <citizens.version>2.0.22-SNAPSHOT</citizens.version>
         <java.version>1.8</java.version>
+        <aspectj.version>1.8.13</aspectj.version>
     </properties>
 
     <build>
@@ -33,14 +34,6 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.12.4</version>
-                <configuration>
-                    <skipTests>true</skipTests>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>aspectj-maven-plugin</artifactId>
                 <version>1.11</version>
@@ -48,12 +41,18 @@
                     <dependency>
                         <groupId>org.aspectj</groupId>
                         <artifactId>aspectjrt</artifactId>
-                        <version>1.6.12</version>
+                        <version>${aspectj.version}</version>
                     </dependency>
                     <dependency>
                         <groupId>org.aspectj</groupId>
                         <artifactId>aspectjtools</artifactId>
-                        <version>1.6.12</version>
+                        <version>${aspectj.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.projectlombok</groupId>
+                        <artifactId>lombok</artifactId>
+                        <version>1.18.4</version>
+                        <scope>compile</scope>
                     </dependency>
                 </dependencies>
                 <executions>
@@ -65,17 +64,16 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <showWeaveInfo/>
+                    <showWeaveInfo />
                     <forceAjcCompile>true</forceAjcCompile>
-                    <sources/>
+                    <sources />
                     <weaveDirectories>
                         <weaveDirectory>${project.build.directory}/classes</weaveDirectory>
                     </weaveDirectories>
-                    <aspectLibraries>
-                        ...
-                    </aspectLibraries>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <aspectLibraries></aspectLibraries>
+                    <complianceLevel>${java.version}</complianceLevel>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -130,22 +128,8 @@
             <url>http://repo.dmulloy2.net/nexus/repository/public/</url>
         </repository>
         <repository>
-            <id>inventive-repo</id>
-            <url>https://repo.inventivetalent.org/content/groups/public/</url>
-        </repository>
-        <repository>
-            <id>LOV</id>
-            <name>artifactory-snapshots</name>
-            <url>http://artifactory.legendsofvaleros.com/artifactory/libs-snapshot-local</url>
-        </repository>
-        <repository>
             <id>javacord-repo</id>
             <url>http://repo.bastian-oppermann.de</url>
-        </repository>
-        <repository>
-            <id>comphenix-releases</id>
-            <name>Comphenix Maven Releases</name>
-            <url>http://repo.comphenix.net/content/repositories/releases/</url>
         </repository>
     </repositories>
 
@@ -254,14 +238,14 @@
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
-            <version>1.8.13</version>
+            <version>${aspectj.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.4</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

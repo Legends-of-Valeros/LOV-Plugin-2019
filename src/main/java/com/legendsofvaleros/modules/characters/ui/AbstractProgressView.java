@@ -163,7 +163,8 @@ public abstract class AbstractProgressView implements ProgressView {
 		return bossBar;
 	}
 
-	protected final Player getPlayer() {
+	@Override
+	public final Player getPlayer() {
 		return player;
 	}
 

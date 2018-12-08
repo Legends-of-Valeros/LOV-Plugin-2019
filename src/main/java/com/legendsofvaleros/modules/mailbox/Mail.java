@@ -13,9 +13,9 @@ import lombok.Setter;
  */
 @Table(name = "mail_box_mails")
 public class Mail {
-    @Column(primary = true, index = true, name = "character_id", length = 39)
+    @Column(primary = true, index = true, name = "character_id")
     @Getter @Setter
-    private String characterId;
+    private CharacterId characterId;
 
     @Column(name = "mail_content", length = 255)
     @Getter @Setter
@@ -23,20 +23,26 @@ public class Mail {
 
     @Column(name = "mail_item", length = 255)
     @Getter @Setter
-    private GearItem item;
+    // Has to be GearItem.Data, otherwise we lose persistent values
+    // when turning it back into an item.
+    private GearItem.Data item;
 
     @Column(name = "mail_is_read", length = 32)
     @Getter @Setter
     private boolean isRead;
 
     public Mail(CharacterId characterId, String content, boolean isRead) {
-        this.characterId = characterId.toString();
+        this.characterId = characterId;
         this.content = content;
         this.isRead = isRead;
     }
 
-    public Mail(CharacterId characterId, String content, GearItem item, boolean isRead) {
-        this.characterId = characterId.toString();
+    public Mail(CharacterId characterId, String content, GearItem.Instance item, boolean isRead) {
+        this(characterId, content, item.getData(), isRead);
+    }
+
+    public Mail(CharacterId characterId, String content, GearItem.Data item, boolean isRead) {
+        this.characterId = characterId;
         this.content = content;
         this.item = item;
         this.isRead = isRead;

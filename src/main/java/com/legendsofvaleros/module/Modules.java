@@ -153,7 +153,7 @@ public class Modules {
     /**
      * Attempt to load a module.
      */
-    public static void loadModule(Class<? extends Module> clazz) throws IllegalAccessException, InstantiationException {
+    public static void loadModule(Class<? extends Module> clazz) throws Exception {
         if (modules.containsKey(clazz))
             throw new IllegalStateException("Attempted to initialize an already loaded module!");
 

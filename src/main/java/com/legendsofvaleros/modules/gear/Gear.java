@@ -1,6 +1,8 @@
 package com.legendsofvaleros.modules.gear;
 
 import com.codingforcookies.armorequip.ArmorEquipEvent;
+import com.codingforcookies.doris.orm.ORMField;
+import com.codingforcookies.doris.orm.ORMRegistry;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
@@ -8,6 +10,7 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.core.PlayerInventoryData;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.gear.component.*;
+import com.legendsofvaleros.modules.gear.component.impl.ComponentMap;
 import com.legendsofvaleros.modules.gear.event.GearPickupEvent;
 import com.legendsofvaleros.modules.gear.event.ItemEquipEvent;
 import com.legendsofvaleros.modules.gear.event.ItemUnEquipEvent;
@@ -24,6 +27,9 @@ import com.legendsofvaleros.modules.quests.action.stf.ActionFactory;
 import com.legendsofvaleros.modules.quests.objective.stf.ObjectiveFactory;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 @DependsOn(NPCs.class)
 @DependsOn(CombatEngine.class)
@@ -68,6 +74,23 @@ public class Gear extends ModuleListener {
         ActionFactory.registerType("item_give", ActionGiveItem.class);
         ActionFactory.registerType("item_remove", ActionRemoveItem.class);
         ActionFactory.registerType("item_choose", ActionChooseItem.class);
+
+        ORMRegistry.addMutator(GearItem.Data.class, new ORMRegistry.SQLMutator<GearItem.Data>() {
+            @Override
+            public void applyToField(ORMField field) {
+                field.sqlType = "TEXT";
+            }
+
+            @Override
+            public GearItem.Data fromSQL(ResultSet result, String key) throws SQLException {
+                return GearItem.Data.loadData(result.getString(key));
+            }
+
+            @Override
+            public Object toSQL(GearItem.Data value) {
+                return value.toString();
+            }
+        });
 
         PlayerInventoryData.method = new GearInventoryLoader();
     }

@@ -13,6 +13,7 @@ import com.legendsofvaleros.util.DebugFlags;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
 import com.legendsofvaleros.util.Utilities;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -259,25 +260,29 @@ public class DamageEngine {
 				if(pDOP)
 					MessageUtil.sendInfo(pD, prefix + "Damage prevented by a plugin.");
 			}else{
-				TextBuilder tb = new TextBuilder(prefix)
+				BaseComponent[] bc = new TextBuilder(prefix)
 						.append(DF.format(event.getFinalDamage())).color(ChatColor.AQUA).hover("Final Damage")
 						.append(" = ")
 						.append(DF.format(event.getRawDamage())).hover("Raw Damage")
 						.append(" * ")
 						.append(DF.format(event.getSwingMultiplier())).hover("Swing Multiplier")
 						.append(" * ")
-						.append(DF.format(event.getDamageMultiplier())).hover("Damage Multiplier");
-				if(pAOP)
-					tb.prepend(new TextBuilder(event.getAttacker().getLivingEntity().getName())
-							.append("(")
-							.append(String.valueOf(event.getAttacker().getStats().getRegeneratingStat(RegeneratingStat.HEALTH))).color(ChatColor.GRAY)
-							.append("/")
-							.append(String.valueOf(event.getAttacker().getStats().getStat(Stat.MAX_HEALTH))).color(ChatColor.GRAY)
-							.append(" > "));
-				if(pDOP)
-					tb.prepend(new TextBuilder("<").create());
+						.append(DF.format(event.getDamageMultiplier())).hover("Damage Multiplier")
+						.create();
 
-				MessageUtil.sendInfo(pA, tb.create());
+				if(pAOP) {
+					MessageUtil.sendInfo(pA, MessageUtil.prepend(bc,
+							new TextBuilder(event.getAttacker().getLivingEntity().getName())
+								.append("(")
+								.append(String.valueOf(event.getAttacker().getStats().getRegeneratingStat(RegeneratingStat.HEALTH))).color(ChatColor.GRAY)
+								.append("/")
+								.append(String.valueOf(event.getAttacker().getStats().getStat(Stat.MAX_HEALTH))).color(ChatColor.GRAY)
+								.append(" > ").create()));
+				}
+				if(pDOP) {
+					MessageUtil.sendInfo(pA, MessageUtil.prepend(bc,
+							new TextBuilder("<").create()));
+				}
 			}
 		}
 	}

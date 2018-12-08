@@ -93,14 +93,14 @@ public class DiscoveredFastTravels implements Listener {
 	private static class PlayerCharacterListener implements Listener {
 		@EventHandler
 		public void onCharacterLoading(PlayerCharacterStartLoadingEvent event) {
-			PhaseLock lock = event.getLock();
+			PhaseLock lock = event.getLock("Fast Travel");
 			loadFoundTravels(event.getPlayerCharacter())
 				.addListener(lock::release, FastTravel.getInstance().getScheduler()::async);
 		}
 
 		@EventHandler
 		public void onCharacterLogout(PlayerCharacterLogoutEvent event) {
-			PhaseLock lock = event.getLock();
+			PhaseLock lock = event.getLock("Fast Travel");
 
 			onLogout(event.getPlayerCharacter().getUniqueCharacterId()).addListener(lock::release, FastTravel.getInstance().getScheduler()::async);
 		}

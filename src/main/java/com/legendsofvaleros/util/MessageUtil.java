@@ -18,9 +18,14 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class MessageUtil {
-	/**
-	 * Had to manually expose a few variables, but this basically just prepends the required tag.
-	 */
+	@SuppressWarnings("unchecked")
+	public static BaseComponent[] combine(BaseComponent[] bc1, BaseComponent[] bc2) {
+		List<BaseComponent> bb = new ArrayList<>();
+		Collections.addAll(bb, bc1);
+		Collections.addAll(bb, bc2);
+		return bb.toArray(new BaseComponent[0]);
+	}
+
 	@SuppressWarnings("unchecked")
 	public static BaseComponent[] prepend(BaseComponent[] message, BaseComponent[] prepend) {
 		List<BaseComponent> bb = new ArrayList<>();

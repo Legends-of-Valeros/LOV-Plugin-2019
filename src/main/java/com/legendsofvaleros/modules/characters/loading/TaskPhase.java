@@ -1,6 +1,9 @@
 package com.legendsofvaleros.modules.characters.loading;
 
+import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.ui.loading.ProgressView;
+import com.legendsofvaleros.util.MessageUtil;
+import com.legendsofvaleros.util.Utilities;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -38,6 +41,8 @@ public class TaskPhase<V> implements Callback<PhaseLock> {
   // how often to check whether all locks are released and update the user interface, in millseconds
   private static final long UPDATE_INTERVAL = 100;
 
+  private final String name;
+
   private final AtomicInteger totalLocks; // all locks acquired, not just current ones.
   private final AtomicInteger locksReleased; // how many locks have been released total.
   private final Map<Integer, PhaseLock> locks;
@@ -45,7 +50,6 @@ public class TaskPhase<V> implements Callback<PhaseLock> {
   // tasks executed for the client by this phase (not necessarily the only tasks locking this phase.
   // Clients are able to get locks manually and decide when to release them).
   private final List<Runnable> tasks;
-  private final ExecutorService threadPool;
 
   private volatile boolean started; // defaults to false
   private volatile boolean complete; // defaults to false
@@ -54,20 +58,22 @@ public class TaskPhase<V> implements Callback<PhaseLock> {
 
   private V value; // arbitrary, client-defined value, potentially used to identify this phase
 
-  public TaskPhase(ProgressView progressView) throws IllegalArgumentException {
-    this();
+  public TaskPhase(String name, ProgressView progressView) throws IllegalArgumentException {
+    this(name);
+
     this.view = progressView;
     if (view != null && view.hasStarted()) {
       throw new IllegalArgumentException("view cannot have started");
     }
   }
 
-  public TaskPhase() throws IllegalArgumentException {
+  public TaskPhase(String name) throws IllegalArgumentException {
+    this.name = name;
+
     this.totalLocks = new AtomicInteger();
     this.locksReleased = new AtomicInteger();
     this.locks = new ConcurrentHashMap<>();
     this.tasks = Collections.synchronizedList(new LinkedList<>());
-      this.threadPool = Executors.newCachedThreadPool();
   }
 
   /**
@@ -98,12 +104,14 @@ public class TaskPhase<V> implements Callback<PhaseLock> {
 
     // starts all of the registered tasks
     for (final Runnable task : tasks) {
-      threadPool.execute(task);
+      Utilities.getInstance().getScheduler().executeInMyCircle(task);
     }
 
-    threadPool.execute(() -> {
-      while (!complete) {
+    // Cannot execute this in the scheduler, as it's a looping task.
+    new Thread(() -> {
+      int notifyTimer = 30000; // Ten seconds
 
+      while (!complete) {
         if (view != null) {
           // when this runs for the first time, some locks may have already been released.
           view.update(locksReleased.get());
@@ -117,11 +125,21 @@ public class TaskPhase<V> implements Callback<PhaseLock> {
 
           try {
             Thread.sleep(UPDATE_INTERVAL);
-          } catch (Exception e) {
+          } catch (Exception e) { }
+
+          notifyTimer -= UPDATE_INTERVAL;
+
+          if(notifyTimer <= 0) {
+            StringBuilder sb = new StringBuilder("'" + name + "' phase slow, is it frozen? Unfinished tasks: ");
+            for(PhaseLock lock : locks.values())
+              sb.append(lock.getName() + ", ");
+            MessageUtil.sendError(view.getPlayer(), sb.toString());
+
+            notifyTimer = 30000;
           }
         }
       }
-    });
+    }).start();
   }
 
   /**
@@ -133,12 +151,12 @@ public class TaskPhase<V> implements Callback<PhaseLock> {
    * @param task The task to run.
    * @return <code>true</code> if the task was registered successfully.
    */
-  public boolean registerTask(final Runnable task) {
+  public boolean registerTask(String name, final Runnable task) {
     if (started || task == null) {
       return false;
     }
 
-    final PhaseLock lock = getLock();
+    final PhaseLock lock = getLock(name);
     // wraps the task in another runnable that will inform this class when it finishes.
     tasks.add(() -> {
       task.run();
@@ -152,12 +170,12 @@ public class TaskPhase<V> implements Callback<PhaseLock> {
    * 
    * @return A lock for this phase. Returns <code>null</code> if the phase has already started.
    */
-  public PhaseLock getLock() {
+  public PhaseLock getLock(String name) {
     if (started) {
       return null;
     }
 
-    PhaseLock lock = new PhaseLock(totalLocks.getAndIncrement(), this);
+    PhaseLock lock = new PhaseLock(name, totalLocks.getAndIncrement(), this);
     locks.put(lock.getId(), lock);
 
     return lock;
@@ -185,10 +203,11 @@ public class TaskPhase<V> implements Callback<PhaseLock> {
 
   private void completePhase(Callback<V> callback) {
     complete = true;
-    threadPool.shutdown();
+
     if (view != null) {
       view.end();
     }
+
     callback.callback(value, null);
   }
 

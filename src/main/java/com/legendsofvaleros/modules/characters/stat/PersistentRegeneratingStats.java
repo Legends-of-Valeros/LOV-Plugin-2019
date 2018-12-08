@@ -170,7 +170,7 @@ public class PersistentRegeneratingStats {
         public void onPlayerCharacterStartLoading(PlayerCharacterStartLoadingEvent event) {
             if (!dataMap.containsKey(event.getPlayerCharacter().getUniqueCharacterId())) {
                 // checks the database for any regenerating stat data for the loading character
-                load(event.getPlayerCharacter().getUniqueCharacterId(), event.getLock());
+                load(event.getPlayerCharacter().getUniqueCharacterId(), event.getLock("Stats"));
             }
         }
 
@@ -188,7 +188,7 @@ public class PersistentRegeneratingStats {
                     final RegeneratingStatData data = dataMap.remove(pc.getUniqueCharacterId());
 
                     if (data != null) {
-                        PhaseLock lock = event.getLock();
+                        PhaseLock lock = event.getLock("Stats");
                         save(data).addListener(lock::release, Characters.getInstance().getScheduler()::async);
                     }
                 }

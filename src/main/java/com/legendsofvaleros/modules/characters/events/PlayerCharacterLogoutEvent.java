@@ -49,14 +49,14 @@ public class PlayerCharacterLogoutEvent extends PlayerCharacterEvent {
    * As soon as the task's <code>run</code> method returns, its hold on the player ends. For this
    * reason, if a task creates new threads or otherwise needs to be considered active even when
    * <code>run</code> has returned, <code>run</code> either needs not to return until the task is
-   * really finished or the lock should be managed manually (see {@link #getLock()}).
+   * really finished or the lock should be managed manually (see {@link #getLock(String)}).
    *
    * @param task The task to run.
    * @return <code>true</code> if the task was successfully registered. <code>false</code> if the
    *         registering failed, such as if the player is not currently in a loading screen.
    */
-  public boolean registerLockingTask(Runnable task) {
-    return tp.registerTask(task);
+  public boolean registerLockingTask(String name, Runnable task) {
+    return tp.registerTask(name, task);
   }
 
   /**
@@ -81,8 +81,8 @@ public class PlayerCharacterLogoutEvent extends PlayerCharacterEvent {
    * @return A lock for the player. Returns <code>null</code> if the player is not currently in a
    *         loading screen.
    */
-  public PhaseLock getLock() {
-    return tp.getLock();
+  public PhaseLock getLock(String name) {
+    return tp.getLock(name);
   }
 
   /**

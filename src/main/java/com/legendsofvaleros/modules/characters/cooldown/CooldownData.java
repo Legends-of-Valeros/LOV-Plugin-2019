@@ -210,7 +210,7 @@ public class CooldownData {
 		@EventHandler
 		public void onPlayerCharacterStartLoading(final PlayerCharacterStartLoadingEvent event) {
 			if (!loadedCharacters.add(event.getPlayerCharacter().getUniqueCharacterId())) {
-				final PhaseLock lock = event.getLock();
+				final PhaseLock lock = event.getLock("Cooldowns");
 				Characters.getInstance().getScheduler().executeInMyCircle(() -> load(event.getPlayerCharacter().getUniqueCharacterId(), lock));
 			}
 		}

@@ -498,7 +498,7 @@ public class QuestManager {
     private static class PlayerListener implements Listener {
         @EventHandler
         public void onCharacterStartLoading(PlayerCharacterStartLoadingEvent event) {
-            loadQuestsForPlayer(event.getPlayerCharacter(), event.getLock());
+            loadQuestsForPlayer(event.getPlayerCharacter(), event.getLock("Quests"));
         }
 
         @EventHandler

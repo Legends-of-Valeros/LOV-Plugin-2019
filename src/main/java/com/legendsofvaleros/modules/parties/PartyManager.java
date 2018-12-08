@@ -140,7 +140,7 @@ public class PartyManager {
     private static class PlayerListener implements Listener {
         @EventHandler
         public void onPlayerJoin(final PlayerCharacterStartLoadingEvent e) {
-            PhaseLock lock = e.getLock();
+            PhaseLock lock = e.getLock("Party");
 
             ListenableFuture<PlayerParty> future = loadPlayer(e.getPlayerCharacter().getUniqueCharacterId());
             future.addListener(() -> {

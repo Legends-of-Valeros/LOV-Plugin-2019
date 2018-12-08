@@ -197,7 +197,7 @@ public class PersistingEffects {
 		@EventHandler
 		public void onPlayerCharacterStartLoading(final PlayerCharacterStartLoadingEvent event) {
 			if (loadedCharacters.add(event.getPlayerCharacter().getUniqueCharacterId())) {
-				final PhaseLock lock = event.getLock();
+				final PhaseLock lock = event.getLock("Effects");
 
 				Characters.getInstance().getScheduler().executeInMyCircle(() -> loadEffects(event.getPlayerCharacter().getUniqueCharacterId(), lock));
 			}
@@ -246,7 +246,7 @@ public class PersistingEffects {
 						}
 					}
 
-					PhaseLock lock = event.getLock();
+					PhaseLock lock = event.getLock("Effects");
 					writeEffects(saveThese).addListener(lock::release, Characters.getInstance().getScheduler()::async);
 				}
 			}

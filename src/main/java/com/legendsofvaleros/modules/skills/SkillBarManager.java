@@ -39,7 +39,7 @@ public class SkillBarManager implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerCharacterStartLoadingEvent e) {
-        loadPlayer(e.getPlayerCharacter(), e.getLock());
+        loadPlayer(e.getPlayerCharacter(), e.getLock("Skillbar"));
     }
 
     @EventHandler

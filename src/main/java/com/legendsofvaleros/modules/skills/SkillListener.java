@@ -52,8 +52,6 @@ public class SkillListener implements Listener {
             if(e.getPlayerCharacter().getSkillSet().getCharacterSkillLevel(coreSkills[i]) == 0)
                 e.getPlayerCharacter().getSkillSet().addCharacterSkill(coreSkills[i]);
         }
-
-        e.getLock().release();
     }
 
     @EventHandler

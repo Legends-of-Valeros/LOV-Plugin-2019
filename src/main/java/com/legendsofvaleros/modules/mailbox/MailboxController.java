@@ -70,22 +70,12 @@ public class MailboxController extends ModuleListener {
         SettableFuture<Void> ret = SettableFuture.create();
 
         Mailbox mailbox = mailboxes.get(characterId);
-        AtomicInteger done = new AtomicInteger(2);
-        Runnable finished = () -> {
-            if (done.decrementAndGet() == 0) {
-                mailbox.getMails().add(mail);
-                ret.set(null);
-            }
-        };
 
-        mailBoxMails.query()
-                .insert()
-                .values("character_id", mail.getCharacterId(),
-                        "mail_content", mail.getContent(),
-                        "mail_item", mail.getItem().newInstance().toString()
-                ).build()
-                .onFinished(finished)
-                .execute(true);
+        mailBoxMails.save(mail, true)
+                .addListener(() -> {
+                    mailbox.getMails().add(mail);
+                    ret.set(null);
+                }, MailboxController.getInstance().getScheduler()::sync);
 
         return ret;
     }
@@ -99,18 +89,14 @@ public class MailboxController extends ModuleListener {
         SettableFuture<Void> ret = SettableFuture.create();
 
         Mailbox mailbox = new Mailbox(characterId);
-        AtomicInteger done = new AtomicInteger(2);
-        Runnable finished = () -> {
-            if (done.decrementAndGet() == 0) {
-                mailboxes.put(characterId, mailbox);
-                ret.set(null);
-            }
-        };
 
         mailBoxMails.query()
                 .get(characterId)
                 .forEach((mail) -> addMail(characterId, mail))
-                .onFinished(finished)
+                .onFinished(() -> {
+                    mailboxes.put(characterId, mailbox);
+                    ret.set(null);
+                })
                 .execute(true);
 
         return ret;
@@ -123,14 +109,8 @@ public class MailboxController extends ModuleListener {
         if (mailbox == null) {
             ret.set(null);
         } else {
-            AtomicInteger done = new AtomicInteger(2);
-            Runnable finished = () -> {
-                if (done.decrementAndGet() == 0)
-                    ret.set(null);
-            };
-
             mailBoxMails.saveAll(mailbox.getMails(), true)
-                    .addListener(finished, MailboxController.getInstance().getScheduler()::async);
+                    .addListener(() -> ret.set(null), MailboxController.getInstance().getScheduler()::async);
 
         }
 
@@ -139,7 +119,7 @@ public class MailboxController extends ModuleListener {
 
     @EventHandler
     public void onCharacterStartLoading(PlayerCharacterStartLoadingEvent event) {
-        PhaseLock lock = event.getLock();
+        PhaseLock lock = event.getLock("Mailbox");
 
         loadMailBox(event.getPlayerCharacter().getUniqueCharacterId())
                 .addListener(() -> {
@@ -150,7 +130,7 @@ public class MailboxController extends ModuleListener {
 
     @EventHandler
     public void onCharacterLogout(PlayerCharacterLogoutEvent event) {
-        PhaseLock lock = event.getLock();
+        PhaseLock lock = event.getLock("Mailbox");
         onLogout(event.getPlayerCharacter().getUniqueCharacterId())
                 .addListener(() -> {
                     mailboxes.remove(event.getPlayerCharacter().getUniqueCharacterId());

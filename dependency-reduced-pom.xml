@@ -27,10 +27,46 @@
         </configuration>
       </plugin>
       <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.12.4</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>aspectj-maven-plugin</artifactId>
+        <version>1.11</version>
+        <executions>
+          <execution>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>${aspectj.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjtools</artifactId>
+            <version>${aspectj.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.4</version>
+            <scope>compile</scope>
+          </dependency>
+        </dependencies>
         <configuration>
-          <skipTests>true</skipTests>
+          <showWeaveInfo />
+          <forceAjcCompile>true</forceAjcCompile>
+          <sources />
+          <weaveDirectories>
+            <weaveDirectory>${project.build.directory}/classes</weaveDirectory>
+          </weaveDirectories>
+          <aspectLibraries />
+          <complianceLevel>${java.version}</complianceLevel>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
         </configuration>
       </plugin>
       <plugin>
@@ -74,22 +110,8 @@
       <url>http://repo.dmulloy2.net/nexus/repository/public/</url>
     </repository>
     <repository>
-      <id>inventive-repo</id>
-      <url>https://repo.inventivetalent.org/content/groups/public/</url>
-    </repository>
-    <repository>
-      <id>LOV</id>
-      <name>artifactory-snapshots</name>
-      <url>http://artifactory.legendsofvaleros.com/artifactory/libs-snapshot-local</url>
-    </repository>
-    <repository>
       <id>javacord-repo</id>
       <url>http://repo.bastian-oppermann.de</url>
-    </repository>
-    <repository>
-      <id>comphenix-releases</id>
-      <name>Comphenix Maven Releases</name>
-      <url>http://repo.comphenix.net/content/repositories/releases/</url>
     </repository>
   </repositories>
   <dependencies>
@@ -208,14 +230,9 @@
       <scope>system</scope>
       <systemPath>/home/stumblinbear/Dropbox/Spigot/legendsofvaleros/lib/ambience-0.0.1.jar</systemPath>
     </dependency>
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <version>1.18.4</version>
-      <scope>provided</scope>
-    </dependency>
   </dependencies>
   <properties>
+    <aspectj.version>1.8.13</aspectj.version>
     <java.version>1.8</java.version>
     <citizens.version>2.0.22-SNAPSHOT</citizens.version>
     <spigot.version>1.12.2-R0.1-SNAPSHOT</spigot.version>

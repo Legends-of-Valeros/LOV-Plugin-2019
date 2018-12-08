@@ -1,5 +1,7 @@
 package com.legendsofvaleros.modules.characters.ui.loading;
 
+import org.bukkit.entity.Player;
+
 /**
  * A user interface which shows a player information it is provided about a process that progresses
  * over time.
@@ -16,9 +18,11 @@ package com.legendsofvaleros.modules.characters.ui.loading;
  */
 public interface ProgressView {
 
+  Player getPlayer();
+
   /**
    * Starts the view.
-   * 
+   *
    * @param totalTasks The total number of tasks/things that need to complete. Should be positive.
    *        Once the view is started, this cannot be changed.
    */

@@ -1,20 +1,26 @@
 package com.legendsofvaleros.modules.characters.loading;
 
+import lombok.Getter;
+
 import java.util.Objects;
 
 /**
  * A lock that stops a phase from completing until it is released.
  */
 public class PhaseLock {
+  @Getter
+  private final String name;
 
   private final Integer lockId;
   private final Callback<PhaseLock> callback;
   private volatile boolean locked;
 
-  public PhaseLock(int lockId, Callback<PhaseLock> callback) throws IllegalArgumentException {
+  public PhaseLock(String name, int lockId, Callback<PhaseLock> callback) throws IllegalArgumentException {
     if (callback == null) {
       throw new IllegalArgumentException("callback cannot be null");
     }
+
+    this.name = name;
     this.lockId = lockId;
     this.callback = callback;
     this.locked = true;
@@ -29,7 +35,7 @@ public class PhaseLock {
   }
 
   /**
-   * Gets the name of this lock.
+   * Gets the ID of this lock.
    * 
    * @return This lock's name.
    */

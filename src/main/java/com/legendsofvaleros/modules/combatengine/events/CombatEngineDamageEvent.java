@@ -18,7 +18,7 @@ public class CombatEngineDamageEvent extends Event implements Cancellable {
 	private Location origin;
 	private double rawDamage;
 	private double damageMultiplier;
-	private double swingMultiplier = 1D;
+	private double swingMultiplier;
 	private final boolean isCrit;
 
 	private boolean cancelled;

@@ -127,7 +127,7 @@ public class HearthstonesManager {
 
         @EventHandler
         public void onPlayerCharacterLoad(final PlayerCharacterStartLoadingEvent event) {
-            loadPlayer(event.getPlayerCharacter(), event.getLock());
+            loadPlayer(event.getPlayerCharacter(), event.getLock("Hearthstone"));
         }
 
         @EventHandler

@@ -115,7 +115,7 @@ public class BankManager {
     private static class PlayerCharacterListener implements Listener {
         @EventHandler
         public void onCharacterStartLoading(PlayerCharacterStartLoadingEvent event) {
-            PhaseLock lock = event.getLock();
+            PhaseLock lock = event.getLock("Bank");
 
             loadBank(event.getPlayerCharacter().getUniqueCharacterId())
                     .addListener(lock::release, Bank.getInstance().getScheduler()::async);
@@ -123,7 +123,7 @@ public class BankManager {
 
         @EventHandler
         public void onCharacterLogout(PlayerCharacterLogoutEvent event) {
-            PhaseLock lock = event.getLock();
+            PhaseLock lock = event.getLock("Bank");
             onLogout(event.getPlayerCharacter().getUniqueCharacterId())
                     .addListener(() -> {
                         banks.remove(event.getPlayerCharacter().getUniqueCharacterId());

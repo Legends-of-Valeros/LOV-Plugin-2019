@@ -182,7 +182,7 @@ public class RegionManager implements Listener {
 
     @EventHandler
     public void onPlayerLoading(PlayerCharacterStartLoadingEvent event) {
-        loadRegionsForPlayer(event.getPlayerCharacter(), event.getLock());
+        loadRegionsForPlayer(event.getPlayerCharacter(), event.getLock("Regions"));
     }
 
     @EventHandler

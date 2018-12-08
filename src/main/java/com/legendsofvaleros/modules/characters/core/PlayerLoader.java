@@ -229,7 +229,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
             Characters.getInstance().getLogger().info(load.getPlayer().getDisplayName() + " is loading his character: " + load.getUniqueCharacterId());
 
             TaskPhase<CharacterId> tp =
-                    new TaskPhase<>(Characters.getInstance().getUiManager()
+                    new TaskPhase<>("Login", Characters.getInstance().getUiManager()
                             .getProgressView(load.getPlayer()));
 
             PlayerCharacterStartLoadingEvent event =
@@ -295,7 +295,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
             PlayerCharacter character = Characters.getPlayerCharacter(player);
 
             TaskPhase<CharacterId> tp =
-                    new TaskPhase<>(Characters.getInstance().getUiManager()
+                    new TaskPhase<>("Logout", Characters.getInstance().getUiManager()
                             .getProgressView(character.getPlayer()));
 
             PlayerCharacterLogoutEvent event =
@@ -442,7 +442,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
             PlayerCharacter pc = event.getPlayerCharacter();
             InventoryData inventory = pc.getInventoryData();
 
-            PhaseLock lock = event.getLock();
+            PhaseLock lock = event.getLock("Inventory");
 
             Characters.getInstance().getScheduler().executeInMyCircle(() -> {
                 if (inventory.getData() != null)
