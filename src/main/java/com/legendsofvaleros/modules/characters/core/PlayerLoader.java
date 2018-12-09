@@ -431,7 +431,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
             }
 
             logoutCharacter(event.getPlayer(), true).addListener(() -> {
-                PlayerCharacterData.onLogout(event.getPlayer().getUniqueId());
+                PlayerCharacterData.onLogout(event.getPlayer().getUniqueId(), true);
 
                 locks.remove(event.getPlayer().getUniqueId());
             }, Characters.getInstance().getScheduler()::async);

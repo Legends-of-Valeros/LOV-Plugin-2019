@@ -133,7 +133,7 @@ public class PlayerCharacterCollection implements PlayerCharacters {
 						player.get().getLocation(), new CharacterExperience(0, 0L), new PlayerInventoryData(), new ArrayList<>());
 
 		characters.put(ret.getUniqueCharacterId(), ret);
-		PlayerCharacterData.save(ret);
+		PlayerCharacterData.save(ret, true);
 
 		return ret;
 	}

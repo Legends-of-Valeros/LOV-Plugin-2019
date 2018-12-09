@@ -15,10 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerCommandEvent;
 
 public class Utilities extends ModuleListener {
@@ -27,14 +24,7 @@ public class Utilities extends ModuleListener {
         return instance;
     }
 
-    /*public static Executor syncExecutor() {
-        //return BukkitExecutors.newSynchronous(LegendsOfValeros.getInstance());
-        return instance.getScheduler()::sync;
-    }
-    public static Executor asyncExecutor() {
-        //return MoreExecutors.directExecutor();
-        return instance.getScheduler()::async;
-    }*/
+    private boolean isShutdown = false;
 
     @Override
     public void onLoad() {
@@ -69,8 +59,25 @@ public class Utilities extends ModuleListener {
 
             MessageUtil.sendError(e.getPlayer(), "*smacks you with a newspaper* Don't do that.");
         }else if (e.getMessage().startsWith("/stop")) {
-            // TODO: Should we cancel this and kick all players before telling bukkit to shut down? It may fix some weirdness with bukkit's PlayerQuitEvent.
+            /*e.setCancelled(true);
+
+            isShutdown = true;
+
+            for(Player p : Bukkit.getOnlinePlayers())
+                p.kickPlayer("Server shutting down...");
+
+            // Does this create a race condition with schedulers?
+            getScheduler().executeInMyCircleTimer(() -> {
+                if(Bukkit.getOnlinePlayers().size() == 0)
+                    Bukkit.shutdown();
+            }, 0L, 20L);*/
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onLoginServer(PlayerLoginEvent event) {
+        if(isShutdown)
+            event.setKickMessage("Server shutting down...");
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

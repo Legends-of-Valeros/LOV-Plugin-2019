@@ -13,6 +13,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class InternalScheduler extends Thread {
     private static final long TICK_TIME = 1000L / 20L;
 
+    // Delayed timings to dump on shutdown. (Destroy tasks delayed 5 seconds)
+    // XXX: A task that requeues itself after running with a delay of less
+    //      than five seconds each time will keep the server locked. Make
+    //      sure to always use repeating tasks in this situation so this is
+    //      never a problem
+    private static final int SHUTDOWN_DUMP = 20 * 5;
+    private static final int SHUTDOWN_NOTIFY = 20 * 5;
+
     // Keep five seconds of timings
     private static final int TIMINGS_COUNT = 20 * 5;
 
@@ -48,7 +56,11 @@ public class InternalScheduler extends Thread {
         List<InternalTask> fired = new LinkedList<>();
         List<InternalTask> requeue = new LinkedList<>();
 
-        while (!LegendsOfValeros.shutdown) {
+        while(!LegendsOfValeros.shutdown || list.size() > 0) {
+            // Notify once a second of remaining tasks
+            if(LegendsOfValeros.shutdown && tick % SHUTDOWN_NOTIFY == 0)
+                LegendsOfValeros.getInstance().getLogger().warning("'" + name + "' is waiting for " + list.size() + " tasks to complete...");
+
             lastTime = System.currentTimeMillis();
             requeue.clear();
             fired.clear();
@@ -57,6 +69,16 @@ public class InternalScheduler extends Thread {
 
             while(!list.isEmpty()) {
                 curr = list.poll();
+
+                if(LegendsOfValeros.shutdown) {
+                    // Ignore repeating tasks on shutdown
+                    if(curr.getRepeating())
+                        continue;
+
+                    // Ignore long delayed tasks on shutdown
+                    if(tick - curr.nextExecuteTick() > SHUTDOWN_DUMP)
+                        continue;
+                }
 
                 if(curr.nextExecuteTick() == tick) {
                     try {

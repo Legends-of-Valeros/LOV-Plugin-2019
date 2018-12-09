@@ -62,7 +62,7 @@ public class PersistentRegeneratingStats {
             Player player = Bukkit.getPlayer(data.id.getPlayerId());
             CombatEntity ce = CombatEngine.getEntity(player);
             updateData(data.id, ce);
-            save(data);
+            save(data, false);
         }
 
         dataMap.clear();
@@ -105,7 +105,7 @@ public class PersistentRegeneratingStats {
                 .execute(true);
     }
 
-    private ListenableFuture<Void> save(RegeneratingStatData data) {
+    private ListenableFuture<Void> save(RegeneratingStatData data, boolean async) {
         SettableFuture<Void> ret = SettableFuture.create();
 
         if (data == null) ret.set(null);
@@ -119,7 +119,7 @@ public class PersistentRegeneratingStats {
                         VALUE_FIELD, ent.getValue());
                 insert.addBatch();
             }
-            insert.build().onFinished(() -> ret.set(null)).execute(true);
+            insert.build().onFinished(() -> ret.set(null)).execute(async);
         }
 
         return ret;
@@ -189,7 +189,7 @@ public class PersistentRegeneratingStats {
 
                     if (data != null) {
                         PhaseLock lock = event.getLock("Stats");
-                        save(data).addListener(lock::release, Characters.getInstance().getScheduler()::async);
+                        save(data, true).addListener(lock::release, Characters.getInstance().getScheduler()::async);
                     }
                 }
             }
