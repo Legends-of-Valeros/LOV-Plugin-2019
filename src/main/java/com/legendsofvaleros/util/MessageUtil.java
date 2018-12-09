@@ -190,9 +190,9 @@ public class MessageUtil {
 				if (channel != null) {
 					Utilities.getInstance().getScheduler().executeInMyCircle(() -> {
 						try {
-							channel.sendMessage("`[" + Discord.TAG + (module != null ? ":" + module : "") + "]` ="
-									+ (sender != null ? " **__" + sender.getName() + "__ triggered an exception:**" : "")
-									+ " ```" + trace + "```").get();
+							channel.sendMessage("`[" + Discord.TAG + (module != null ? ":" + module : "") + "]` **"
+									+ (sender != null ? " **__" + sender.getName() + "__ triggered an exception:" : "Triggered an exception:")
+									+ "** ```" + trace + "```").get();
 						} catch (InterruptedException | ExecutionException _e) {
 							_e.printStackTrace();
 						}

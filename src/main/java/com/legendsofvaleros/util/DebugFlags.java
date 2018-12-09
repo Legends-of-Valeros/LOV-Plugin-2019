@@ -1,10 +1,9 @@
 package com.legendsofvaleros.util;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.CommandHelp;
+import co.aikar.commands.annotation.*;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -44,5 +43,11 @@ public class DebugFlags extends BaseCommand {
 			MessageUtil.sendUpdate(player, "Damage debug enabled.");
 		else
 			MessageUtil.sendUpdate(player, "Damage debug disabled.");
+	}
+
+	@Default
+	@HelpCommand
+	public void cmdHelp(CommandSender sender, CommandHelp help) {
+		help.showHelp();
 	}
 }

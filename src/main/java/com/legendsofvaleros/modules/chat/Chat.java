@@ -182,14 +182,6 @@ public class Chat extends ModuleListener {
 
             for (Player p : Bukkit.getOnlinePlayers())
                 p.spigot().sendMessage(bc);
-        } else if (e.getCommand().startsWith("restart")) {
-            e.setCancelled(true);
-
-            e.getSender().sendMessage("Use .restart to restart the server.");
-        } else if (e.getCommand().startsWith("reload")) {
-            e.setCancelled(true);
-
-            e.getSender().sendMessage("Don't do that.");
         }
     }
 

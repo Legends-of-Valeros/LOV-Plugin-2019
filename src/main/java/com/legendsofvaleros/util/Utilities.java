@@ -7,19 +7,19 @@ import com.legendsofvaleros.util.commands.LOVCommands;
 import com.legendsofvaleros.util.commands.TemporaryCommand;
 import com.legendsofvaleros.util.item.Model;
 import com.legendsofvaleros.util.title.TitleUtil;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import net.md_5.bungee.api.chat.BaseComponent;
+import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Painting;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.server.ServerCommandEvent;
 
 public class Utilities extends ModuleListener {
     private static Utilities instance;
@@ -60,6 +60,17 @@ public class Utilities extends ModuleListener {
         Model.onEnable();
         MessageUtil.onEnable();
         Advancements.onEnable();
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onCommandProcess(PlayerCommandPreprocessEvent e) {
+        if (e.getMessage().startsWith("/reload")) {
+            e.setCancelled(true);
+
+            MessageUtil.sendError(e.getPlayer(), "*smacks you with a newspaper* Don't do that.");
+        }else if (e.getMessage().startsWith("/stop")) {
+            // TODO: Should we cancel this and kick all players before telling bukkit to shut down? It may fix some weirdness with bukkit's PlayerQuitEvent.
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
