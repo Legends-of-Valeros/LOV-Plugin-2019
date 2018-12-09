@@ -194,7 +194,7 @@ public class Modules {
         modules.clear();
         packages.clear();
 
-        // schedulers.clear();
+        schedulers.clear();
     }
 
     public static void registerModule(Class<? extends Module> clazz) throws Exception {
