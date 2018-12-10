@@ -405,6 +405,9 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
                             return;
                         }
 
+                        // Clear inventory on login
+                        player.getInventory().clear();
+
                         if (characters.size() > 0) {
                             Characters.getInstance().getUiManager().forceCharacterSelection(characters, outer);
                         } else {
