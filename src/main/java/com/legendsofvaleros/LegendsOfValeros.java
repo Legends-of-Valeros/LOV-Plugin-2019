@@ -110,7 +110,7 @@ public class LegendsOfValeros extends JavaPlugin {
         // TODO add commands to disable single modules (&change the config?)
         // Utilities is not an optional module EVER. In fact, no modules should ever
         // have define it as a dependency. Load it immediately.
-        Modules.loadModule(Utilities.class);
+        Modules.loadModuleBypass(Utilities.class);
 
         Modules.registerModule(Bank.class);
         Modules.registerModule(Characters.class);

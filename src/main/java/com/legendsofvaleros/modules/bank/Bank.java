@@ -4,6 +4,8 @@ import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.module.annotation.IntegratesWith;
+import com.legendsofvaleros.modules.bank.integration.QuestIntegration;
 import com.legendsofvaleros.modules.bank.item.WorthComponent;
 import com.legendsofvaleros.modules.bank.quest.ActionAddCurrency;
 import com.legendsofvaleros.modules.bank.quest.RepairObjective;
@@ -18,6 +20,7 @@ import com.legendsofvaleros.modules.gear.Gear;
 import com.legendsofvaleros.modules.gear.GearRegistry;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.quests.QuestManager;
+import com.legendsofvaleros.modules.quests.Quests;
 import com.legendsofvaleros.modules.quests.action.stf.ActionFactory;
 import com.legendsofvaleros.modules.quests.objective.stf.ObjectiveFactory;
 import org.bukkit.Bukkit;
@@ -31,6 +34,7 @@ import java.util.Map;
 @DependsOn(NPCs.class)
 @DependsOn(Characters.class)
 @DependsOn(Gear.class)
+@IntegratesWith(module = Quests.class, integration = QuestIntegration.class)
 public class Bank extends ModuleListener {
     private static Bank instance;
 
@@ -61,9 +65,6 @@ public class Bank extends ModuleListener {
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new BankCommand());
 
-        ObjectiveFactory.registerType("repair", RepairObjective.class);
-        ActionFactory.registerType("currency_give", ActionAddCurrency.class);
-
         new TradeManager();
 
         NPCs.registerTrait("banker", TraitBanker.class);
@@ -78,6 +79,14 @@ public class Bank extends ModuleListener {
         super.onUnload();
 
         BankManager.onDisable();
+    }
+
+    @IntegratesWith(module = Quests.class)
+    private void onQuests() {
+        getLogger().info("Quests integration function!");
+
+        ObjectiveFactory.registerType("repair", RepairObjective.class);
+        ActionFactory.registerType("currency_give", ActionAddCurrency.class);
     }
 
     @EventHandler

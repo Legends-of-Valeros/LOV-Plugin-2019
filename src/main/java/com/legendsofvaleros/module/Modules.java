@@ -1,67 +1,27 @@
 package com.legendsofvaleros.module;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.module.annotation.IntegratesWith;
 import com.legendsofvaleros.scheduler.InternalScheduler;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import lombok.Getter;
 
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class Modules {
     private static Logger getLogger() {
         return LegendsOfValeros.getInstance().getLogger();
     }
 
-    /**
-     * All available modules (ignoring "enabled")
-     */
-    private static Map<String, Class<? extends Module>> available = new HashMap<>();
-
-    /**
-     * List of modules that are enabled. This does not mean that they are loaded.
-     */
-    private static Set<Class<? extends Module>> enabled = new HashSet<>();
-
-    /**
-     * Module dependency pairs. Pair<optional, module>
-     */
-    private static Multimap<Class<? extends Module>, Pair<Boolean, Class<? extends Module>>> dependencies = HashMultimap.create();
-
-
-    /**
-     * The packages that modules reside in.
-     */
+    /** The packages that modules reside in. */
     private static Map<String, Class<? extends Module>> packages = new HashMap<>();
-    private static Map<Class<? extends Module>, Module> modules = new LinkedHashMap<>();
-
-    public static Collection<Module> getLoadedModules() {
-        return modules.values();
-    }
-
-    public static boolean isEnabled(Class<? extends Module> clazz) {
-        return modules.containsKey(clazz);
-    }
-
-
-    /**
-     * Schedulers for each module.
-     */
-    private static Map<Class<? extends Module>, InternalScheduler> schedulers = new LinkedHashMap<>();
-
-    public static Collection<InternalScheduler> getSchedulers() {
-        return schedulers.values();
-    }
-
-    public static InternalScheduler getScheduler(Class<? extends Module> clazz) {
-        return schedulers.get(clazz);
-    }
-
-    public static InternalScheduler getScheduler(Module module) {
-        return schedulers.get(module.getClass());
+    private static Map<Class<? extends Module>, InternalModule> modules = new LinkedHashMap<>();
+    public static void registerModule(Class<? extends Module> clazz) throws Exception {
+        modules.put(clazz, new InternalModule(clazz));
+        packages.put(getModulePackage(clazz), clazz);
     }
 
     /**
@@ -69,41 +29,40 @@ public class Modules {
      */
     public static void loadModules() {
         // TODO: Check config file to enable/disable modules.
-        enabled.addAll(available.values());
+        long enabled = modules.values().stream().filter(InternalModule::isEnabled).count();
 
-        getLogger().info("Attempting to load " + enabled.size() + " enabled modules...");
+        getLogger().info("Attempting to load " + enabled + " enabled modules...");
 
         int i = 0;
 
-        List<Class<? extends Module>> items = new ArrayList<>(enabled);
+        List<InternalModule> items = modules.values().stream()
+                                    .filter(InternalModule::isEnabled)
+                                    .filter(im -> !im.isLoaded)
+                                    .collect(Collectors.toList());
 
         // While we still have modules waiting to be enabled
         while (items.size() > 0) {
-            List<Class<? extends Module>> remaining = new ArrayList<>();
+            // Filter out dependencies that
+            List<InternalModule> remaining = new ArrayList<>();
             boolean emitted = false;
 
             // Loop through each waiting module
-            mods:
-            for (Class<? extends Module> clazz : items) {
-                Collection<Pair<Boolean, Class<? extends Module>>> depends = dependencies.get(clazz);
-
+            for (InternalModule module : items) {
                 // If their dependencies aren't loaded, add to remaining then try the next module
-                for (Pair<Boolean, Class<? extends Module>> depend : depends) {
-                    if (!isDependencyMet(depend)) {
-                        remaining.add(clazz);
-                        continue mods;
-                    }
+                if (!module.areDependenciesMet()) {
+                    remaining.add(module);
+                    continue;
                 }
 
                 emitted = true;
 
                 // Module has all dependencies satisfied. Load it.
                 try {
-                    getLogger().info("(" + (++i) + "/" + enabled.size() + ") Loading " + clazz.getSimpleName() + "...");
+                    getLogger().info("(" + (++i) + "/" + enabled + ") Loading " + module.getName() + "...");
 
-                    loadModule(clazz);
+                    module.load();
                 } catch (Exception e) {
-                    getLogger().severe("Failed to load module. Aborting! Offender: " + clazz.getSimpleName());
+                    getLogger().severe("Failed to load module. Aborting! Offender: " + module.getName());
                 }
 
                 getLogger().info("");
@@ -114,14 +73,13 @@ public class Modules {
                 i++;
 
                 // Output unloaded (enabled) modules and the dependencies that prevented them from loading
-                for (Class<? extends Module> clazz : remaining) {
-                    List<String> unmet = new ArrayList<>();
-                    for (Pair<Boolean, Class<? extends Module>> depend : dependencies.get(clazz)) {
-                        if (!isDependencyMet(depend))
-                            unmet.add(depend.getRight().getSimpleName());
-                    }
+                for (InternalModule module : remaining) {
+                    List<String> unmet = module.dependencies.entrySet().stream()
+                                                .filter(dep -> isDependencyMet(dep.getKey(), dep.getValue()))
+                                                .map(dep -> modules.get(dep.getKey()).getName())
+                                                .collect(Collectors.toList());
 
-                    getLogger().severe(clazz.getSimpleName() + " has unmet dependencies: " + String.join(", ", unmet));
+                    getLogger().severe(module.getName() + " has unmet dependencies: " + String.join(", ", unmet));
                 }
 
                 break;
@@ -130,79 +88,83 @@ public class Modules {
             items = remaining;
         }
 
-        getLogger().fine("Loaded " + modules.size() + " modules");
+        getLogger().info("Loaded " + modules.size() + " modules");
 
-        if (enabled.size() > modules.size())
-            getLogger().severe("Failed to load " + (enabled.size() - modules.size()) + " modules!");
+        if (enabled > modules.size())
+            getLogger().severe("Failed to load " + (enabled - modules.size()) + " modules!");
+
+        i = 0;
+
+        // For each loaded module
+        for(InternalModule module : modules.values()) {
+            if(module.isLoaded)
+                i += module.loadIntegrations();
+        }
+
+        getLogger().info("Loaded " + i + " integrations");
     }
 
-    /**
-     * Verify that a dependency is met for the dependency pair.
-     */
-    private static boolean isDependencyMet(Pair<Boolean, Class<? extends Module>> depend) {
-        // Ignore optional dependencies if they're not enabled.
-        if (depend.getLeft() && !enabled.contains(depend.getRight())) return true;
+    @Deprecated
+    public static void loadModuleBypass(Class<? extends Module> clazz) throws InstantiationException, IllegalAccessException {
+        InternalModule im;
 
-        // If the module is not yet loaded, add it to the remaining modules.
-        if (!modules.containsKey(depend.getRight()))
+        modules.put(clazz, im = new InternalModule(clazz));
+        packages.put(getModulePackage(clazz), clazz);
+
+        im.load();
+    }
+
+    /** Unload all loaded modules. */
+    public static void unloadModules() {
+        InternalModule[] toUnload = modules.values().stream()
+                                    .filter(InternalModule::isLoaded)
+                                    .toArray(length -> new InternalModule[length]);
+
+        // Unload modules in reverse
+        for (int i = toUnload.length - 1; i >= 0; i--) {
+            InternalModule moduleToUnload = toUnload[i];
+            getLogger().info("(" + (i + 1) + "/" + toUnload.length + ") Unloading " + moduleToUnload.getName() + "...");
+            moduleToUnload.unload();
+        }
+
+        modules.clear();
+        packages.clear();
+    }
+
+    private static boolean isDependencyMet(Class<? extends Module> dependency, boolean optional) {
+        // Ignore optional dependencies if they're not enabled.
+        if(optional && !modules.get(dependency).isEnabled) return true;
+
+        // If the dependency is enabled, but not yet loaded, then dependencies aren't met
+        if(!modules.get(dependency).isLoaded)
             return false;
 
         return true;
     }
 
-    /**
-     * Attempt to load a module.
-     */
-    public static void loadModule(Class<? extends Module> clazz) throws Exception {
-        if (modules.containsKey(clazz))
-            throw new IllegalStateException("Attempted to initialize an already loaded module!");
-
-        Module moduleToLoad = clazz.newInstance();
-
-        modules.put(clazz, moduleToLoad);
-        packages.put(getModulePackage(clazz), clazz);
-
-        schedulers.put(clazz, new InternalScheduler(moduleToLoad.getName()).startup());
-
-        moduleToLoad.onLoad();
+    public static boolean isLoaded(Class<? extends Module> clazz) {
+        return modules.get(clazz).isLoaded;
     }
 
-    /**
-     * Unload all loaded modules.
-     */
-    public static void unloadModules() {
-        List<Module> toUnload = new ArrayList<>();
-        toUnload.addAll(modules.values());
-
-        // Unload modules in reverse
-        for (int i = toUnload.size() - 1; i >= 0; i--) {
-            Module moduleToUnload = toUnload.get(i);
-            getLogger().info("(" + (i + 1) + "/" + toUnload.size() + ") Unloading " + moduleToUnload.getName() + "...");
-            moduleToUnload.onUnload();
-
-            // stopping the modules thread
-            try {
-                InternalScheduler scheduler = moduleToUnload.getScheduler();
-                if (scheduler.isAlive())
-                    scheduler.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        enabled.clear();
-        modules.clear();
-        packages.clear();
-
-        schedulers.clear();
+    public static Module[] getLoadedModules() {
+        return modules.values().stream()
+                .filter(InternalModule::isLoaded)
+                .map(InternalModule::getInstance)
+                .toArray(length -> new Module[length]);
     }
 
-    public static void registerModule(Class<? extends Module> clazz) throws Exception {
-        available.put(clazz.getSimpleName(), clazz);
+    public static InternalScheduler[] getSchedulers() {
+        return modules.values().stream()
+                .map(InternalModule::getScheduler)
+                .toArray(length -> new InternalScheduler[length]);
+    }
 
-        DependsOn[] depends = clazz.getAnnotationsByType(DependsOn.class);
-        for (DependsOn dep : depends)
-            dependencies.put(clazz, new ImmutablePair<>(dep.optional(), dep.value()));
+    public static InternalScheduler getScheduler(Class<? extends Module> clazz) {
+        return modules.get(clazz).scheduler;
+    }
+
+    public static InternalScheduler getScheduler(Module module) {
+        return modules.get(module.getClass()).scheduler;
     }
 
     public static String getModulePackage(Class<?> clazz) {
@@ -221,6 +183,153 @@ public class Modules {
 
     public static Module getModule(Class<?> clazz) {
         Class<? extends Module> c = getModuleClass(clazz);
-        return c != null ? modules.get(c) : null;
+        return c != null ? modules.get(c).instance : null;
+    }
+
+    private static class InternalModule {
+        Class<? extends Module> moduleClass;
+
+        @Getter
+        boolean isEnabled = true; // If the module should be loaded
+
+        @Getter
+        boolean isLoaded = false; // If the module was successfully loaded
+
+        Map<Class<? extends Module>, Boolean> dependencies = new HashMap<>();
+        Map<Class<? extends Module>, Class<? extends Integration>> integrationClasses = new HashMap<>();
+        Map<Class<? extends Module>, Method> integrationMethods = new HashMap<>();
+
+        @Getter
+        Module instance;
+
+        @Getter
+        InternalScheduler scheduler;
+
+        private InternalModule(Class<? extends Module> clazz) {
+            this.moduleClass = clazz;
+
+            DependsOn[] depends = clazz.getAnnotationsByType(DependsOn.class);
+            for (DependsOn dep : depends)
+                this.dependencies.put(dep.value(), dep.optional());
+
+            for (IntegratesWith integrate : clazz.getAnnotationsByType(IntegratesWith.class)) {
+                if(integrate.integration() == Integration.class) {
+                    getLogger().severe("Class-level @IntegratesWith must reference an integration class!");
+                    continue;
+                }
+
+                this.integrationClasses.put(integrate.module(), integrate.integration());
+            }
+
+            for (Method method : clazz.getDeclaredMethods()) {
+                IntegratesWith integrate = method.getAnnotation(IntegratesWith.class);
+                if(integrate == null) continue;
+
+                if(integrate.integration() != Integration.class) {
+                    getLogger().severe("Method-level @IntegratesWith must not reference an integration class!");
+                    continue;
+                }
+
+                method.setAccessible(true);
+
+                this.integrationMethods.put(integrate.module(), method);
+            }
+        }
+
+        public String getName() {
+            return moduleClass.getSimpleName();
+        }
+
+        /**
+         * Verify that a dependency is met for the dependency pair.
+         */
+        private boolean areDependenciesMet() {
+            for(Map.Entry<Class<? extends Module>, Boolean> entry : dependencies.entrySet()) {
+                if(!isDependencyMet(entry.getKey(), entry.getValue()))
+                    return false;
+            }
+
+            return true;
+        }
+
+        public void load() throws IllegalAccessException, InstantiationException {
+            if(isLoaded)
+                throw new IllegalStateException("Attempt to load a module that is already loaded!");
+
+            this.instance = moduleClass.newInstance();
+            this.scheduler = new InternalScheduler(getName()).startup();
+            this.instance.onLoad();
+
+            isLoaded = true;
+        }
+
+        public void unload() {
+            if(!isLoaded)
+                throw new IllegalStateException("Attempt to unload a module that is not loaded!");
+
+            this.instance.onUnload();
+
+            // stopping the modules thread
+            try {
+                if(this.scheduler.isAlive())
+                    this.scheduler.join();
+            } catch(InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            isLoaded = false;
+        }
+
+        public int loadIntegrations() {
+            if(!isLoaded)
+                throw new IllegalStateException("Attempt to load integrations from a module that is not loaded!");
+
+            int i = 0;
+
+            // Loop through each of their integrationClasses
+            for(Map.Entry<Class<? extends Module>, Class<? extends Integration>> integratesWith
+                    : integrationClasses.entrySet()) {
+
+                // If the integration is satisfied, load the class
+                if(modules.containsKey(integratesWith.getKey())) {
+                    Class<? extends Integration> integrate = integratesWith.getValue();
+
+                    // Verify that the integration class is inside of the module's package.
+                    Class<? extends Module> integrateModClass = getModuleClass(integrate);
+                    if(integrateModClass != moduleClass)
+                        getLogger().warning(getName() + " is loading an integration from " + modules.get(integratesWith.getKey()).getName() + "'s package!");
+
+                    try {
+                        // Load the integration
+                        integrate.newInstance();
+                        i++;
+                    } catch(Exception e) {
+                        getLogger().severe("Failed to load " + getName() + "'s integration class for " + modules.get(integratesWith.getKey()).getName() + "!");
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            // Loop through each of their integrationMethods
+            for(Map.Entry<Class<? extends Module>, Method> integratesWith
+                    : integrationMethods.entrySet()) {
+
+                // If the integration is satisfied, invoke the function
+                if(modules.containsKey(integratesWith.getKey())) {
+                    Method method = integratesWith.getValue();
+
+                    try {
+                        // Load the integration
+                        method.invoke(instance);
+                        i++;
+                    } catch(Exception e) {
+                        getLogger().severe("Failed to invoke " + getName() + "'s integration function for " + modules.get(integratesWith.getKey()).getName() + "!");
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            return i;
+        }
     }
 }

@@ -33,10 +33,10 @@ import java.util.Map;
 
 public class SkillListener implements Listener {
     public SkillListener() {
-        if(Modules.isEnabled(Quests.class))
+        if(Modules.isLoaded(Quests.class))
             Skills.getInstance().registerEvents(new QuestListener());
 
-        if(Modules.isEnabled(Gear.class))
+        if(Modules.isLoaded(Gear.class))
             Skills.getInstance().registerEvents(new GearListener());
     }
 
