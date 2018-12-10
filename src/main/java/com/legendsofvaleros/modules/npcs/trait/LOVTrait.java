@@ -19,6 +19,6 @@ public abstract class LOVTrait {
 	 */
 	// public void isActive(Player player, SettableFuture<Boolean> isActive) { isActive.set(true); }
 
-	public void onLeftClick(NPC npc, Player player, SettableFuture<Slot> slot) { slot.set(null); }
-	public void onRightClick(NPC npc, Player player, SettableFuture<Slot> slot) { slot.set(null); }
+	public void onLeftClick(Player player, SettableFuture<Slot> slot) { slot.set(null); }
+	public void onRightClick(Player player, SettableFuture<Slot> slot) { slot.set(null); }
 }

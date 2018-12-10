@@ -201,73 +201,11 @@ public class TraitLOV extends Trait implements CommandConfigurable {
     }
 
     public void onLeftClick(Player player) {
-        SettableFuture<Boolean> future = SettableFuture.create();
-        List<Slot> slots = new ArrayList<>();
-        future.addListener(() -> {
-            if (slots.size() == 0) return;
-
-            if (slots.size() == 1) {
-                slots.get(0).action.doAction(null, player, null);
-            } else {
-                showSeparated(player, slots);
-            }
-        }, NPCs.getInstance().getScheduler()::sync);
-
-
-        AtomicInteger futuresLeft = new AtomicInteger(traits.length);
-
-        for (LOVTrait trait : traits) {
-            SettableFuture<Slot> traitSlot = SettableFuture.create();
-
-            trait.onLeftClick(getNPC(), player, traitSlot);
-
-            traitSlot.addListener(() -> {
-                addSlotListener(player, slots, traitSlot);
-
-                if (futuresLeft.decrementAndGet() == 0)
-                    future.set(true);
-            }, NPCs.getInstance().getScheduler()::async);
-        }
-    }
-
-    private void addSlotListener(Player player, List<Slot> slots, SettableFuture<Slot> traitSlot) {
-        try {
-            Slot slot = traitSlot.get();
-            if (slot != null)
-                slots.add(slot);
-        } catch (Exception e) {
-            MessageUtil.sendException(NPCs.getInstance(), player, e, true);
-        }
+        TraitHelper.onLeftClick(getNPC().getName(), player, traits);
     }
 
     public void onRightClick(Player player) {
-        SettableFuture<List<Slot>> future = SettableFuture.create();
-        future.addListener(() -> {
-            try {
-                List<Slot> slots = future.get();
-                if (slots.size() == 0) return;
-
-                showSeparated(player, slots);
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-        }, NPCs.getInstance().getScheduler()::sync);
-
-        List<Slot> slots = new ArrayList<>();
-        AtomicInteger futuresLeft = new AtomicInteger(traits.length);
-
-        for (LOVTrait trait : traits) {
-            SettableFuture<Slot> traitSlot = SettableFuture.create();
-
-            trait.onRightClick(getNPC(), player, traitSlot);
-
-            traitSlot.addListener(() -> {
-                addSlotListener(player, slots, traitSlot);
-
-                if (futuresLeft.decrementAndGet() == 0)
-                    future.set(slots);
-            }, NPCs.getInstance().getScheduler()::async);
-        }
+        TraitHelper.onRightClick(getNPC().getName(), player, traits);
     }
 	
 	/*private ListenableFuture<List<LOVTrait>> getActiveTraits(Player player) {
@@ -296,15 +234,4 @@ public class TraitLOV extends Trait implements CommandConfigurable {
 		
 		return future;
 	}*/
-
-    public void showSeparated(Player player, List<Slot> slots) {
-        GUI gui = new ExpandingGUI(getNPC().getName(), slots);
-
-        if (slots.size() == 1) {
-            slots.get(0).action.doAction(gui, player, null);
-        } else {
-            // Resync with the main thread.
-            NPCs.getInstance().getScheduler().executeInSpigotCircle(() -> gui.open(player));
-        }
-    }
 }

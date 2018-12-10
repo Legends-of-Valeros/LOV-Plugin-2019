@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.npcs;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
+import com.legendsofvaleros.modules.npcs.trait.TraitHelper;
 import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
 import com.legendsofvaleros.util.MessageUtil;
 import net.citizensnpcs.api.CitizensAPI;
@@ -33,6 +34,20 @@ public class NPCCommands extends BaseCommand {
 		sender.sendMessage(ChatColor.YELLOW + "Enabled Traits:");
 		for(String str : NPCs.manager().traitTypes.keySet())
 			sender.sendMessage(ChatColor.YELLOW + " " + str);
+	}
+
+	@Subcommand("activate")
+	@Description("Activate an NPC remotely.")
+	@CommandPermission("npcs.activate")
+	public void cmdActivateNPC(Player player, String npcId, String side) {
+		NPCData npc = NPCs.manager().npcs.get(npcId);
+
+		if(side.equalsIgnoreCase("left"))
+			TraitHelper.onLeftClick(npc.name, player, npc.traits);
+		else if(side.equalsIgnoreCase("right"))
+			TraitHelper.onRightClick(npc.name, player, npc.traits);
+		else
+			MessageUtil.sendError(player, "Side argument must be 'left' or 'right'!");
 	}
 
 	@Subcommand("bind")

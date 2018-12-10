@@ -22,7 +22,7 @@ public class TraitRecharger extends LOVTrait {
 	long cost = 1;
 
 	@Override
-	public void onRightClick(NPC npc, Player player, SettableFuture<Slot> slot) {
+	public void onRightClick(Player player, SettableFuture<Slot> slot) {
 		if(!Characters.isPlayerCharacterLoaded(player)) {
 			slot.set(null);
 			return;

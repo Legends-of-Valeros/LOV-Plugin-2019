@@ -143,7 +143,7 @@ public class TraitQuestGiver extends LOVTrait {
     public Hologram available;
 
     @Override
-    public void onRightClick(final NPC npc, Player player, SettableFuture<Slot> slot) {
+    public void onRightClick(Player player, SettableFuture<Slot> slot) {
         if (!Characters.isPlayerCharacterLoaded(player)) {
             slot.set(null);
             return;

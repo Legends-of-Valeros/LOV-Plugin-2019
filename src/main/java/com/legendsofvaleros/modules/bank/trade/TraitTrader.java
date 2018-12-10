@@ -104,7 +104,7 @@ public class TraitTrader extends LOVTrait {
     }
 
     @Override
-    public void onRightClick(NPC npc, Player player, SettableFuture<Slot> slot) {
+    public void onRightClick(Player player, SettableFuture<Slot> slot) {
         if (!Characters.isPlayerCharacterLoaded(player)) {
             slot.set(null);
             return;
