@@ -30,7 +30,7 @@ public class RegionCommands extends BaseCommand {
 		MessageUtil.sendUpdate(player, "There you go.");
 	}
 
-	@Subcommand("notify")
+	@Subcommand("create")
 	@Description("Create a new region. Default access denied.")
 	@CommandPermission("region.create")
 	public void cmdCreate(Player player, String id, @Optional Boolean access) {
@@ -46,7 +46,7 @@ public class RegionCommands extends BaseCommand {
 		Region region = new Region(id, locations[0].getWorld(), new RegionBounds().setBounds(locations[0], locations[1]));
 		region.allowAccess = access;
 		Regions.manager().addRegion(region, true);
-		MessageUtil.sendUpdate(player, "Region created.");
+		MessageUtil.sendUpdate(player, "Region created. Default access: " + access);
 	}
 
 	@Subcommand("remove")
@@ -81,7 +81,7 @@ public class RegionCommands extends BaseCommand {
 	@Subcommand("quests")
 	@Description("List the quest triggers in the region.")
 	@CommandPermission("region.quest.list")
-	public void cmdQuestList(CommandSender sender, String regionId, String questId) {
+	public void cmdQuestList(CommandSender sender, String regionId) {
 		Region region = Regions.manager().getRegion(regionId);
 		if(region == null) {
 			MessageUtil.sendError(sender, "A region with that name doesn't exist.");

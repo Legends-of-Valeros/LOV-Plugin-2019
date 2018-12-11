@@ -4,6 +4,7 @@ import com.codingforcookies.doris.orm.annotation.Column;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Region {
@@ -15,7 +16,7 @@ public class Region {
 
 	public boolean allowAccess = false;
 	public boolean allowHearthstone = true;
-	public List<String> quests;
+	public List<String> quests = new ArrayList<>();
 	
 	public String msgEnter;
 	public String msgExit;

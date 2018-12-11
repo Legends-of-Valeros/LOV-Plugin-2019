@@ -209,15 +209,15 @@ public class RegionManager implements Listener {
             }
 
             PlayerCharacter pc = Characters.getPlayerCharacter(event.getPlayer());
-            for (Region region : toRegions) {
-                if (!playerAccess.contains(pc.getUniqueCharacterId(), region.id)
-                        || !playerAccess.get(pc.getUniqueCharacterId(), region.id)) {
-                    MessageUtil.sendError(event.getPlayer(), region.msgFailure);
-                    event.getPlayer().teleport(event.getFrom());
-                    return;
+            for(Region region : toRegions) {
+                if(!region.allowAccess) {
+                    if (!playerAccess.contains(pc.getUniqueCharacterId(), region.id)
+                            || !playerAccess.get(pc.getUniqueCharacterId(), region.id)) {
+                        MessageUtil.sendError(event.getPlayer(), region.msgFailure);
+                        event.getPlayer().teleport(event.getFrom());
+                        return;
+                    }
                 }
-
-                break;
             }
         }
 
@@ -274,7 +274,6 @@ public class RegionManager implements Listener {
                         region.allowHearthstone = result.getBoolean(REGION_ALLOW_HEARTHSTONE);
 
                         String quests = result.getString(REGION_QUESTS);
-                        region.quests = new ArrayList<>();
 
                         if(quests != null)
                             Collections.addAll(region.quests, quests.split(","));
@@ -344,11 +343,7 @@ public class RegionManager implements Listener {
         for (int x = bounds.getStartX(); x <= bounds.getEndX(); x++)
             for (int y = bounds.getStartY(); y <= bounds.getEndY(); y++)
                 for (int z = bounds.getStartZ(); z <= bounds.getEndZ(); z++) {
-                    Chunk chunk = region
-                            .world
-                            .getChunkAt(
-                                    new Location(region
-                                            .world, x, y, z));
+                    Chunk chunk = region.world.getChunkAt(new Location(region.world, x, y, z));
                     String chunkId = chunk.getX() + "," + chunk.getZ();
                     if (!regionChunks.containsEntry(chunkId, region.id))
                         regionChunks.put(chunkId, region.id);
@@ -370,7 +365,7 @@ public class RegionManager implements Listener {
                 for (int z = bounds.getStartZ(); z < bounds.getEndZ(); z++) {
                     Chunk chunk = region.world.getChunkAt(new Location(region.world, x, y, z));
                     String chunkId = chunk.getX() + "," + chunk.getZ();
-                    if (regionChunks.containsEntry(chunkId, region))
+                    if (regionChunks.containsEntry(chunkId, region.id))
                         regionChunks.remove(chunkId, region.id);
                 }
 
