@@ -1,6 +1,7 @@
 package com.legendsofvaleros.scheduler;
 
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.module.ModuleTimings;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -68,8 +69,10 @@ public class InternalScheduler extends Thread {
                 // Notify once a second of remaining tasks
                 if (shutdown && tick % SHUTDOWN_NOTIFY == 0) {
                     LegendsOfValeros.getInstance().getLogger().warning("'" + name + "' is waiting for " + list.size() + " tasks to complete...");
-                    for(InternalTask task : list)
-                        LegendsOfValeros.getInstance().getLogger().warning("  - " + task.getName());
+                    for(InternalTask task : list) {
+                        if(!task.getName().contains("ModuleTimings"))
+                            LegendsOfValeros.getInstance().getLogger().warning("  - " + task.getName());
+                    }
                 }
 
                 lastTime = System.currentTimeMillis();
