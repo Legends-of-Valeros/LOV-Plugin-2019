@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.auction.filter;
 
-import lombok.Getter;
 import org.bukkit.Material;
 
 /**
@@ -11,18 +10,27 @@ public enum FilterDirection {
     ASCENDING("Ascending", "ASC", Material.GLASS_BOTTLE),
     DESCENDING("Descending", "DSC", Material.POTION);
 
-    @Getter
     String name;
 
-    @Getter
     String queryName;
 
-    @Getter
     Material guiMaterial;
 
     FilterDirection(String name, String queryName, Material guiMaterial) {
         this.name = name;
         this.queryName = queryName;
         this.guiMaterial = guiMaterial;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Material getGuiMaterial() {
+        return guiMaterial;
+    }
+
+    public String getQueryName() {
+        return queryName;
     }
 }

@@ -18,8 +18,6 @@ import de.btobastian.javacord.DiscordAPI;
 import de.btobastian.javacord.entities.Channel;
 import de.btobastian.javacord.entities.Server;
 import de.btobastian.javacord.listener.message.MessageCreateListener;
-import lombok.Getter;
-import lombok.Setter;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import org.apache.commons.lang.WordUtils;
@@ -112,9 +110,7 @@ public class Chat extends ModuleListener {
         super.onUnload();
     }
 
-    @Setter @Getter
     private ChatChannel channelDefault = ChatChannel.LOCAL;
-
 
     private final Map<Character, ChatChannel> channels = new HashMap<>();
 

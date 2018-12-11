@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.auction.filter;
 
-import lombok.Getter;
 import org.bukkit.Material;
 
 /**
@@ -13,13 +12,10 @@ public enum FilterType {
     REMAINING_TIME("valid_until", "valid_until", Material.WATCH),
     ITEM_ID("item_id", "item_id", Material.IRON_NUGGET);
 
-    @Getter
     String name;
 
-    @Getter
     String queryName;
 
-    @Getter
     Material guiMaterial;
 
     FilterType(String name, String queryName, Material guiMaterial) {
@@ -28,5 +24,15 @@ public enum FilterType {
         this.guiMaterial = guiMaterial;
     }
 
+    public String getName() {
+        return name;
+    }
 
+    public String getQueryName() {
+        return queryName;
+    }
+
+    public Material getGuiMaterial() {
+        return guiMaterial;
+    }
 }

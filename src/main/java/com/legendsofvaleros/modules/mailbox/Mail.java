@@ -4,8 +4,6 @@ import com.codingforcookies.doris.orm.annotation.Column;
 import com.codingforcookies.doris.orm.annotation.Table;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.gear.item.GearItem;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Created by Crystall on 11/24/2018
@@ -14,21 +12,17 @@ import lombok.Setter;
 @Table(name = "mail_box_mails")
 public class Mail {
     @Column(primary = true, index = true, name = "character_id")
-    @Getter @Setter
     private CharacterId characterId;
 
     @Column(name = "mail_content", length = 255)
-    @Getter @Setter
     private String content;
 
     @Column(name = "mail_item", length = 255)
-    @Getter @Setter
     // Has to be GearItem.Data, otherwise we lose persistent values
     // when turning it back into an item.
     private GearItem.Data item;
 
     @Column(name = "mail_is_read", length = 32)
-    @Getter @Setter
     private boolean isRead;
 
     public Mail(CharacterId characterId, String content, boolean isRead) {
@@ -48,4 +42,35 @@ public class Mail {
         this.isRead = isRead;
     }
 
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setRead(boolean read) {
+        isRead = read;
+    }
+
+    public GearItem.Data getItem() {
+        return item;
+    }
+
+    public void setItem(GearItem.Data item) {
+        this.item = item;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public CharacterId getCharacterId() {
+        return characterId;
+    }
+
+    public void setCharacterId(CharacterId characterId) {
+        this.characterId = characterId;
+    }
 }

@@ -4,8 +4,6 @@ import com.codingforcookies.doris.orm.ORM;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.util.MessageUtil;
-import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -16,9 +14,7 @@ import java.util.ArrayList;
  */
 public class Mailbox extends ORM {
 
-    @Getter @Setter
     public CharacterId characterId;
-    @Getter @Setter
     public ArrayList<Mail> mails;
 
     public Mailbox(CharacterId characterId) {
@@ -51,5 +47,21 @@ public class Mailbox extends ORM {
             // TODO make pretty like a princess
             MessageUtil.sendInfo(p, "You have" + getUnreadMails() + " unread mails!");
         }
+    }
+
+    public ArrayList<Mail> getMails() {
+        return mails;
+    }
+
+    public void setMails(ArrayList<Mail> mails) {
+        this.mails = mails;
+    }
+
+    public CharacterId getCharacterId() {
+        return characterId;
+    }
+
+    public void setCharacterId(CharacterId characterId) {
+        this.characterId = characterId;
     }
 }

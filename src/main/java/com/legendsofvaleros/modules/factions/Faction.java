@@ -2,26 +2,50 @@ package com.legendsofvaleros.modules.factions;
 
 import com.codingforcookies.doris.orm.annotation.Column;
 import com.codingforcookies.doris.orm.annotation.Table;
-import lombok.Getter;
 
 @Table(name = "factions")
 public class Faction {
     @Column(primary = true, name = "faction_id", length = 32)
     private String id;
 
-    public String getId() {
-        return id;
-    }
-
     @Column(name = "faction_name", length = 32)
-    @Getter
     protected String name;
 
     @Column(name = "faction_description")
-    @Getter
     protected String description;
 
     @Column(name = "faction_rep_max")
-    @Getter
     protected int maxReputation;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getMaxReputation() {
+        return maxReputation;
+    }
+
+    public void setMaxReputation(int maxReputation) {
+        this.maxReputation = maxReputation;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
 }

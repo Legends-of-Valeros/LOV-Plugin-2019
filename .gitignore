@@ -53,4 +53,4 @@ crashlytics-build.properties
 fabric.properties
 
 server/
-dependency-reduced-pom.xml
+/dependency-reduced-pom.xml
