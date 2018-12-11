@@ -30,6 +30,7 @@ import com.legendsofvaleros.modules.quests.Quests;
 import com.legendsofvaleros.modules.regions.Regions;
 import com.legendsofvaleros.modules.skills.Skills;
 import com.legendsofvaleros.modules.zones.Zones;
+import com.legendsofvaleros.scheduler.InternalScheduler;
 import com.legendsofvaleros.util.ProgressBar;
 import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
@@ -51,8 +52,6 @@ public class LegendsOfValeros extends JavaPlugin {
         return instance;
     }
 
-    //needed for threads, so they dont continue running after shutdown
-    public static boolean shutdown;
     public static long startTime = 0;
 
     private ServerMode mode;
@@ -73,7 +72,6 @@ public class LegendsOfValeros extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        shutdown = false;
         startTime = System.currentTimeMillis();
 
         mode = ServerMode.valueOf(getConfig().getString("server-mode", "LIVE"));
@@ -98,7 +96,8 @@ public class LegendsOfValeros extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        shutdown = true;
+        for(InternalScheduler scheduler : InternalScheduler.getAllSchedulers())
+            scheduler.shutdown();
 
         Modules.unloadModules();
 

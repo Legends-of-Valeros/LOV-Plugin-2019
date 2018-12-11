@@ -42,12 +42,6 @@ import java.util.UUID;
 @DependsOn(PlayerMenu.class)
 public class Characters extends ModuleListener implements CharactersAPI {
     private static Characters instance;
-
-    /**
-     * Gets the instance instance of Characters, which implements its main API.
-     * @return The Characters instance.
-     * @throws IllegalStateException If Characters is not enabled.
-     */
     public static Characters getInstance() throws IllegalStateException {
         return instance;
     }

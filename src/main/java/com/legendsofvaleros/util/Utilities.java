@@ -2,15 +2,19 @@ package com.legendsofvaleros.util;
 
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ModuleListener;
+import com.legendsofvaleros.module.Modules;
+import com.legendsofvaleros.scheduler.InternalScheduler;
 import com.legendsofvaleros.util.MessageUtil.ExceptionManager;
 import com.legendsofvaleros.util.commands.LOVCommands;
 import com.legendsofvaleros.util.commands.TemporaryCommand;
 import com.legendsofvaleros.util.item.Model;
 import com.legendsofvaleros.util.title.TitleUtil;
+import net.minecraft.server.v1_12_R1.CommandSeed;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Painting;
 import org.bukkit.entity.Player;
@@ -18,6 +22,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.*;
+import org.bukkit.event.server.ServerCommandEvent;
 
 public class Utilities extends ModuleListener {
     private static Utilities instance;
@@ -60,25 +65,65 @@ public class Utilities extends ModuleListener {
 
             MessageUtil.sendError(e.getPlayer(), "*smacks you with a newspaper* Don't do that.");
         }else if (e.getMessage().startsWith("/stop")) {
-            /*e.setCancelled(true);
+            e.setCancelled(true);
 
-            isShutdown = true;
-
-            for(Player p : Bukkit.getOnlinePlayers())
-                p.kickPlayer("Server shutting down...");
-
-            // Does this create a race condition with schedulers?
-            getScheduler().executeInMyCircleTimer(() -> {
-                if(Bukkit.getOnlinePlayers().size() == 0)
-                    Bukkit.shutdown();
-            }, 0L, 20L);*/
+            shutdown(e.getPlayer());
         }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onCommandProcess(ServerCommandEvent e) {
+        if (e.getCommand().startsWith("reload")) {
+            e.setCancelled(true);
+
+            MessageUtil.sendError(e.getSender(), "*smacks you with a newspaper* Don't do that.");
+        }else if (e.getCommand().startsWith("stop")) {
+            e.setCancelled(true);
+
+            shutdown(e.getSender());
+        }
+    }
+
+    private void shutdown(CommandSender sender) {
+        if(isShutdown) {
+            MessageUtil.sendError(sender, "The server is already shutting down!");
+            return;
+        }
+
+        isShutdown = true;
+
+        for (Player p : Bukkit.getOnlinePlayers())
+            try {
+                p.kickPlayer("Server shutting down...");
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+
+        // Not sure if this actually helps, but wait until the next tick
+        // to start additional cleanup. This allows event handlers to
+        // finish (maybe)? Does this create a race condition?
+        getScheduler().executeInMyCircleTimer(() -> {
+            for(InternalScheduler scheduler : InternalScheduler.getAllSchedulers()) {
+                if(scheduler == getScheduler()) continue;
+
+                scheduler.shutdown();
+
+                if (scheduler.getTasksRemaining() > 0)
+                    return;
+            }
+
+            // Once all other schedulers have shut down, start the shutdown of my scheduler
+            getScheduler().shutdown();
+
+            if(getScheduler().getTasksRemaining() == 0)
+                Bukkit.shutdown();
+        }, 20L, 20L);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onLoginServer(PlayerLoginEvent event) {
         if(isShutdown)
-            event.setKickMessage("Server shutting down...");
+            event.setKickMessage("Server is shutting down...");
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

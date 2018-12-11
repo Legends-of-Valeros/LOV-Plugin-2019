@@ -4,10 +4,7 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class InternalScheduler extends Thread {
@@ -24,8 +21,14 @@ public class InternalScheduler extends Thread {
     // Keep five seconds of timings
     private static final int TIMINGS_COUNT = 20 * 5;
 
+    private static Map<String, InternalScheduler> all = new HashMap<>();
+    public static Collection<InternalScheduler> getAllSchedulers() { return all.values(); }
+
     private String name;
+    private boolean shutdown = false;
+
     private Queue<InternalTask> list = new ConcurrentLinkedQueue<>();
+    public int getTasksRemaining() { return list.size(); }
 
     int totalS = 0, totalA = 0;
     public int getSyncTasksFired() { return totalS; }
@@ -49,87 +52,100 @@ public class InternalScheduler extends Thread {
 
     @Override
     public void run() {
+        if(all.containsKey(name))
+            throw new IllegalStateException("A scheduler with that name is already running!");
+        all.put(name, this);
+
         this.setName(name);
 
-        long lastTime;
-        InternalTask curr;
-        List<InternalTask> fired = new LinkedList<>();
-        List<InternalTask> requeue = new LinkedList<>();
+        try {
+            long lastTime;
+            InternalTask curr;
+            List<InternalTask> fired = new LinkedList<>();
+            List<InternalTask> requeue = new LinkedList<>();
 
-        while(!LegendsOfValeros.shutdown || list.size() > 0) {
-            // Notify once a second of remaining tasks
-            if(LegendsOfValeros.shutdown && tick % SHUTDOWN_NOTIFY == 0)
-                LegendsOfValeros.getInstance().getLogger().warning("'" + name + "' is waiting for " + list.size() + " tasks to complete...");
-
-            lastTime = System.currentTimeMillis();
-            requeue.clear();
-            fired.clear();
-
-            tick++;
-
-            while(!list.isEmpty()) {
-                curr = list.poll();
-
-                if(LegendsOfValeros.shutdown) {
-                    // Ignore repeating tasks on shutdown
-                    if(curr.getRepeating())
-                        continue;
-
-                    // Ignore long delayed tasks on shutdown
-                    if(tick - curr.nextExecuteTick() > SHUTDOWN_DUMP)
-                        continue;
+            while (!shutdown || list.size() > 0) {
+                // Notify once a second of remaining tasks
+                if (shutdown && tick % SHUTDOWN_NOTIFY == 0) {
+                    LegendsOfValeros.getInstance().getLogger().warning("'" + name + "' is waiting for " + list.size() + " tasks to complete...");
+                    for(InternalTask task : list)
+                        LegendsOfValeros.getInstance().getLogger().warning("  - " + task.getName());
                 }
 
-                if(curr.nextExecuteTick() == tick) {
-                    try {
-                        fired.add(curr);
-                        curr.run();
-                    } catch(Exception e) {
-                        MessageUtil.sendSevereException(name, e);
+                lastTime = System.currentTimeMillis();
+                requeue.clear();
+                fired.clear();
+
+                tick++;
+
+                while (!list.isEmpty()) {
+                    curr = list.poll();
+
+                    if (shutdown) {
+                        // Ignore repeating tasks on shutdown
+                        if (curr.getRepeating())
+                            continue;
+
+                        // Ignore long delayed tasks on shutdown
+                        if (tick - curr.nextExecuteTick() > SHUTDOWN_DUMP)
+                            continue;
                     }
 
-                    curr.setExecuted(true);
+                    if (curr.nextExecuteTick() == tick) {
+                        try {
+                            fired.add(curr);
+                            curr.run();
+                        } catch (Exception e) {
+                            MessageUtil.sendSevereException(name, e);
+                        }
 
-                    if (curr.getRepeating()) {
-                        requeue.add(curr);
-                        curr.setNextExecuteTick(tick + curr.getRepeatingInterval());
+                        curr.setExecuted(true);
+
+                        if (curr.getRepeating()) {
+                            requeue.add(curr);
+                            curr.setNextExecuteTick(tick + curr.getRepeatingInterval());
+                        }
+                    } else {
+                        if (curr.nextExecuteTick() > tick) requeue.add(curr);
+                    }
+                }
+
+                for (InternalTask r : requeue) list.add(r);
+
+                long timeTaken = System.currentTimeMillis() - lastTime;
+
+                timings.add(timeTaken);
+                while (timings.size() > TIMINGS_COUNT)
+                    timings.remove(0);
+
+                long timeToSync = TICK_TIME - timeTaken;
+
+                if (timeToSync > 0) {
+                    try {
+                        Thread.sleep(timeToSync);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 } else {
-                    if (curr.nextExecuteTick() > tick) requeue.add(curr);
+                    totalBehind += Math.abs(timeToSync);
+
+                    // If we fall behind, log the creation traces of all fired tasks. The slowdown may
+                    // be the result of queueing many tasks, in which case this can be ignored, but this can
+                    // assist in tracking down ornery tasks.
+                    LegendsOfValeros.getInstance().getLogger().warning("Scheduler '" + name + "' fell behind by " + Math.abs(timeTaken) + "ms!");
+                    if (fired.size() > 0) {
+                        LegendsOfValeros.getInstance().getLogger().warning("----------------------------------------");
+                        for (InternalTask task : fired)
+                            LegendsOfValeros.getInstance().getLogger().warning(task.getTrace());
+                        LegendsOfValeros.getInstance().getLogger().warning("----------------------------------------");
+                    }
                 }
             }
-
-            for(InternalTask r : requeue) list.add(r);
-
-            long timeTaken = System.currentTimeMillis() - lastTime;
-
-            timings.add(timeTaken);
-            while(timings.size() > TIMINGS_COUNT)
-                timings.remove(0);
-
-            long timeToSync = TICK_TIME - timeTaken;
-
-            if (timeToSync > 0) {
-                try {
-                    Thread.sleep(timeToSync);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }else{
-                totalBehind += Math.abs(timeToSync);
-
-                // If we fall behind, log the creation traces of all fired tasks. The slowdown may
-                // be the result of queueing many tasks, in which case this can be ignored, but this can
-                // assist in tracking down ornery tasks.
-                LegendsOfValeros.getInstance().getLogger().warning("Scheduler '" + name + "' fell behind by " + Math.abs(timeTaken) + "ms!");
-                if(fired.size() > 0) {
-                    LegendsOfValeros.getInstance().getLogger().warning("----------------------------------------");
-                    for (InternalTask task : fired)
-                        LegendsOfValeros.getInstance().getLogger().warning(task.getTrace());
-                    LegendsOfValeros.getInstance().getLogger().warning("----------------------------------------");
-                }
-            }
+        } catch(Exception e) {
+            e.printStackTrace();
         }
+
+        all.remove(name);
     }
 
     public void async(Runnable command) {
@@ -146,6 +162,9 @@ public class InternalScheduler extends Thread {
         return it;
     }
     public void executeInMyCircle(InternalTask task) {
+        if(!isAlive() && shutdown)
+            throw new IllegalStateException("Cannot add a task to a scheduler that has shut down!");
+
         task.setExecutor(this);
         task.setNextExecuteTick(tick + 1);
         task.setSync(false);
@@ -158,6 +177,9 @@ public class InternalScheduler extends Thread {
         return it;
     }
     public void executeInMyCircleLater(InternalTask task, long delay) {
+        if(!isAlive() && shutdown)
+            throw new IllegalStateException("Cannot add a task to a scheduler that has shut down!");
+
         task.setExecutor(this);
         task.setNextExecuteTick(tick + (delay <= 0 ? 1 : delay));
         task.setSync(false);
@@ -170,6 +192,9 @@ public class InternalScheduler extends Thread {
         return it;
     }
     public void executeInMyCircleTimer(InternalTask task, long delay, long interval) {
+        if(!isAlive() && shutdown)
+            throw new IllegalStateException("Cannot add a task to a scheduler that has shut down!");
+
         task.setExecutor(this);
         task.setNextExecuteTick(tick + (delay <= 0 ? 1 : delay));
         task.setRepeating(true);
@@ -184,6 +209,9 @@ public class InternalScheduler extends Thread {
         return it;
     }
     public void executeInSpigotCircle(final InternalTask task) {
+        if(!isAlive() && shutdown)
+            throw new IllegalStateException("Cannot add a task to a scheduler that has shut down!");
+
         task.setExecutor(this);
         task.setSync(true);
         new BukkitRunnable() {
@@ -201,6 +229,9 @@ public class InternalScheduler extends Thread {
         return it;
     }
     public void executeInSpigotCircleLater(final InternalTask task, long delay) {
+        if(!isAlive() && shutdown)
+            throw new IllegalStateException("Cannot add a task to a scheduler that has shut down!");
+
         task.setExecutor(this);
         task.setSync(true);
         new BukkitRunnable() {
@@ -218,6 +249,9 @@ public class InternalScheduler extends Thread {
         return it;
     }
     public void executeInSpigotCircleTimer(final InternalTask task, long delay, long interval) {
+        if(!isAlive() && shutdown)
+            throw new IllegalStateException("Cannot add a task to a scheduler that has shut down!");
+
         task.setExecutor(this);
         task.setSync(true);
         new BukkitRunnable() {
@@ -257,5 +291,9 @@ public class InternalScheduler extends Thread {
     public InternalScheduler startup() {
         if (!this.isAlive()) start();
         return this;
+    }
+
+    public void shutdown() {
+        this.shutdown = true;
     }
 }

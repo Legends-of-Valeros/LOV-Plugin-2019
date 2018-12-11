@@ -15,14 +15,18 @@ public class InternalTask {
         this.executor = executor;
     }
 
-    private final String trace;
-    public String getTrace() { return trace; }
-
     private Runnable command;
     public Runnable getCommand() { return command; }
-    public void setTask(Runnable command) {
+    public void setCommand(Runnable command) {
+        this.name = command.getClass().getName();
         this.command = command;
     }
+
+    private String name;
+    public String getName() { return name; }
+
+    private final String trace;
+    public String getTrace() { return trace; }
 
     private boolean sync = false;
     public boolean isSync() {
@@ -57,7 +61,7 @@ public class InternalTask {
     public InternalTask(Runnable command) {
         this.trace = MessageUtil.getStackTrace(new Throwable("Created InternalTask"));
 
-        this.command = command;
+        setCommand(command);
     }
 
     public void run() {
