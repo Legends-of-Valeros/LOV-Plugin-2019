@@ -3,7 +3,7 @@ package com.legendsofvaleros.modules.characters.core;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.config.CharactersConfig;
 import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
-import com.legendsofvaleros.modules.characters.events.PlayerCharacterLevelUpEvent;
+import com.legendsofvaleros.modules.characters.events.PlayerCharacterLevelChangeEvent;
 import com.legendsofvaleros.modules.characters.util.ProgressionUtils;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.api.EntityStats;
@@ -35,17 +35,16 @@ public class LevelingListener implements Listener {
 	}
 
 	@EventHandler
-	public void onPlayerCharacterLevelUp(PlayerCharacterLevelUpEvent event) {
+	public void onPlayerCharacterLevelUp(PlayerCharacterLevelChangeEvent event) {
 		Player player = event.getPlayer();
 		PlayerCharacter pc = event.getPlayerCharacter();
-		int levelNow = event.getNewLevel();
 
 		CombatEntity ce = CombatEngine.getEntity(player);
 		EntityStats ceStats = ce.getStats();
 		Archetype arch = config.getClassConfig(pc.getPlayerClass()).getArchetype();
 
-		CombatProfile subtractThis = arch.getCombatProfile(levelNow - 1);
-		CombatProfile fromThis = arch.getCombatProfile(levelNow);
+		CombatProfile subtractThis = arch.getCombatProfile(event.getOldLevel());
+		CombatProfile fromThis = arch.getCombatProfile(event.getNewLevel());
 
 		Map<Stat, Double> ceDifferences = ProgressionUtils.getProfileDifference(subtractThis, fromThis);
 		for (Map.Entry<Stat, Double> ent : ceDifferences.entrySet()) {
@@ -54,8 +53,8 @@ public class LevelingListener implements Listener {
 		}
 
 		for (AbilityStat abilityStat : AbilityStat.values()) {
-			double subtract = arch.getStatValue(abilityStat.name(), levelNow - 1);
-			double from = arch.getStatValue(abilityStat.name(), levelNow);
+			double subtract = arch.getStatValue(abilityStat.name(), event.getOldLevel());
+			double from = arch.getStatValue(abilityStat.name(), event.getNewLevel());
 			double difference = from - subtract;
 			if (difference != 0.0) {
 				pc.getAbilityStats().newAbilityStatModifierBuilder(abilityStat).setValue(difference)

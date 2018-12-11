@@ -5,7 +5,7 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import com.codingforcookies.robert.item.Book;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.events.PlayerCharacterLevelUpEvent;
+import com.legendsofvaleros.modules.characters.events.PlayerCharacterLevelChangeEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerInformationBookEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -33,11 +33,13 @@ public class CharacterCommands extends BaseCommand {
 		}else if(level > Characters.getInstance().getCharacterConfig().getMaxLevel()) {
 			MessageUtil.sendError(sender, "That is over the max level.");
 		}else{
+			int oldLevel = pc.getExperience().getLevel();
+
 			pc.getExperience().setLevel(level);
-			
-			PlayerCharacterLevelUpEvent event = new PlayerCharacterLevelUpEvent(pc, pc.getExperience().getLevel());
+
+			PlayerCharacterLevelChangeEvent event = new PlayerCharacterLevelChangeEvent(pc, oldLevel, level);
 			Bukkit.getPluginManager().callEvent(event);
-			
+
 			MessageUtil.sendUpdate(sender, "Level changed to " + level + "!");
 		}
 	}
@@ -58,12 +60,7 @@ public class CharacterCommands extends BaseCommand {
 		if(pc.getExperience().getLevel() + 1 > Characters.getInstance().getCharacterConfig().getMaxLevel()) {
 			MessageUtil.sendError(sender, "You are max level.");
 		}else{
-			pc.getExperience().setLevel(pc.getExperience().getLevel() + 1);
-			
-			PlayerCharacterLevelUpEvent event = new PlayerCharacterLevelUpEvent(pc, pc.getExperience().getLevel());
-			Bukkit.getPluginManager().callEvent(event);
-			
-			MessageUtil.sendUpdate(sender, "Leveled up!");
+			pc.getExperience().addExperience(pc.getExperience().getExperienceForNextLevel(), true);
 		}
 	}
 	

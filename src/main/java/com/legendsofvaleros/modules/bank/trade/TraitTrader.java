@@ -12,7 +12,6 @@ import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import com.legendsofvaleros.util.item.Model;
-import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

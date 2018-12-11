@@ -13,7 +13,6 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.Gear;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.scheduler.InternalTask;
-import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -33,7 +32,6 @@ import java.util.concurrent.TimeUnit;
 @DependsOn(Characters.class)
 public class AuctionController extends ModuleListener {
 
-    @Getter
     private static AuctionController instance;
 
     //TODO create prompt helper or check for existing
@@ -54,6 +52,10 @@ public class AuctionController extends ModuleListener {
             .build();
 
     private static ORMTable<Auction> auctionsTable;
+
+    public static AuctionController getInstance() {
+        return AuctionController.instance;
+    }
 
     @Override
     public void onLoad() {

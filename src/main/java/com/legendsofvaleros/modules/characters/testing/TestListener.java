@@ -135,7 +135,7 @@ public class TestListener implements Listener {
 	}
 
 	@EventHandler
-	public void onValerosLevelUp(PlayerCharacterLevelUpEvent event) {
+	public void onValerosLevelUp(PlayerCharacterLevelChangeEvent event) {
 		Player player = event.getPlayer();
 		ActionBar.set(player, ChatColor.YELLOW + "You have leveled up!");
 

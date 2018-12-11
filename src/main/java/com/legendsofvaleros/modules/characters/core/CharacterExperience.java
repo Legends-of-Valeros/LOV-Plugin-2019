@@ -6,7 +6,7 @@ import com.legendsofvaleros.modules.characters.api.Experience;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.config.ExperienceConfig;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterExperienceChangeEvent;
-import com.legendsofvaleros.modules.characters.events.PlayerCharacterLevelUpEvent;
+import com.legendsofvaleros.modules.characters.events.PlayerCharacterLevelChangeEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
 
@@ -196,7 +196,7 @@ public class CharacterExperience implements Experience {
 
 			refreshXpToLevel();
 
-			PlayerCharacterLevelUpEvent event = new PlayerCharacterLevelUpEvent(playerCharacter, getLevel());
+			PlayerCharacterLevelChangeEvent event = new PlayerCharacterLevelChangeEvent(playerCharacter, getLevel() - 1, getLevel());
 			Bukkit.getPluginManager().callEvent(event);
 		}
 	}

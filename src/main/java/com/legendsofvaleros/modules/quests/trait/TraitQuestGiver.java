@@ -173,7 +173,7 @@ public class TraitQuestGiver extends LOVTrait {
 
             if (playerQuests.size() == 1) {
                 Entry<IQuest, QuestStatus> quest = playerQuests.entrySet().iterator().next();
-                player.performCommand("lov quests talk " + quest.getKey().getId());
+                player.performCommand("quests talk " + quest.getKey().getId());
             } else if (playerQuests.size() != 0) {
                 slot.set(new Slot(new ItemBuilder(Material.BOOK_AND_QUILL).setName("Quests").create(), (gui, p, event) -> {
                     gui.close(p);

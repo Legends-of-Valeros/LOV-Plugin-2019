@@ -10,7 +10,6 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.core.PlayerInventoryData;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.gear.component.*;
-import com.legendsofvaleros.modules.gear.component.impl.ComponentMap;
 import com.legendsofvaleros.modules.gear.event.GearPickupEvent;
 import com.legendsofvaleros.modules.gear.event.ItemEquipEvent;
 import com.legendsofvaleros.modules.gear.event.ItemUnEquipEvent;

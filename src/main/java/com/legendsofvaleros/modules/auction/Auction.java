@@ -8,8 +8,6 @@ import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.mailbox.Mail;
 import com.legendsofvaleros.modules.mailbox.Mailbox;
 import com.legendsofvaleros.modules.mailbox.MailboxController;
-import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -23,27 +21,21 @@ import java.util.UUID;
 public class Auction {
 
     @Column(name = "id", primary = true, length = 32)
-    @Getter @Setter
     private int id;
 
     @Column(name = "price", length = 32)
-    @Getter @Setter
     private int price;
 
     @Column(name = "owner_id", length = 32)
-    @Getter @Setter
     private UUID ownerId;
 
-    @Getter @Setter
     @Column(name = "auction_item", length = 255)
     private GearItem item;
 
     @Column(name = "valid_until", length = 32)
-    @Getter @Setter
     private int validUntil;
 
     @Column(name = "is_bid_offer", length = 32)
-    @Getter @Setter
     private boolean isBidOffer = false;
 
     public Auction(UUID ownerId, int price, GearItem item) {
@@ -101,5 +93,53 @@ public class Auction {
         } else {
             MailboxController.getInstance().addMail(characterId, new Mail(characterId, contentBuilder.toString(), false));
         }
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
+    public int getPrice() {
+        return this.price;
+    }
+
+    public UUID getOwnerId() {
+        return this.ownerId;
+    }
+
+    public GearItem getItem() {
+        return this.item;
+    }
+
+    public int getValidUntil() {
+        return this.validUntil;
+    }
+
+    public boolean isBidOffer() {
+        return this.isBidOffer;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public void setOwnerId(UUID ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    public void setItem(GearItem item) {
+        this.item = item;
+    }
+
+    public void setValidUntil(int validUntil) {
+        this.validUntil = validUntil;
+    }
+
+    public void setBidOffer(boolean isBidOffer) {
+        this.isBidOffer = isBidOffer;
     }
 }

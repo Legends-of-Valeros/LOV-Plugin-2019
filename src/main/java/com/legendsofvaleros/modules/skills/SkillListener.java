@@ -4,7 +4,7 @@ import com.legendsofvaleros.module.Modules;
 import com.legendsofvaleros.modules.characters.api.Cooldowns;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.events.PlayerCharacterLevelUpEvent;
+import com.legendsofvaleros.modules.characters.events.PlayerCharacterLevelChangeEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
@@ -20,7 +20,6 @@ import com.legendsofvaleros.modules.skills.event.SkillUsedEvent;
 import com.legendsofvaleros.modules.skills.gear.CastTrigger;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
-import com.legendsofvaleros.util.Utilities;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -55,8 +54,8 @@ public class SkillListener implements Listener {
     }
 
     @EventHandler
-    public void onCharacterLevelUp(PlayerCharacterLevelUpEvent e) {
-        int i = (int)Math.floor(e.getPlayerCharacter().getExperience().getLevel() / 10);
+    public void onCharacterLevelUp(PlayerCharacterLevelChangeEvent e) {
+        int i = (int)Math.floor(e.getNewLevel() / 10);
 
         SkillTree tree = Skills.skillTrees[e.getPlayerCharacter().getPlayerClass().ordinal()];
         if(tree.getCoreSkills().length <= i)

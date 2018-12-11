@@ -8,14 +8,10 @@ import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
-import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class TraitBanker extends LOVTrait {
 	@Override

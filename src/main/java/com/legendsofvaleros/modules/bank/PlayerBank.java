@@ -7,7 +7,9 @@ import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.item.GearItem;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PlayerBank extends ORM {
     private final CharacterId characterId;
