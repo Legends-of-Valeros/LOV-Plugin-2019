@@ -8,7 +8,7 @@ import com.codingforcookies.robert.item.Book;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.quests.objective.stf.IObjective;
+import com.legendsofvaleros.modules.quests.objective.stf.IQuestObjective;
 import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
@@ -181,11 +181,11 @@ public class QuestCommands extends BaseCommand {
                 tb.append("*No objectives, yet\n").color(ChatColor.DARK_RED);
             } else
                 for (int i = currentI; i >= 0; i--) {
-                    IObjective<?>[] objs = quest.getObjectives().getGroup(i);
+                    IQuestObjective<?>[] objs = quest.getObjectives().getGroup(i);
                     if (objs.length == 0)
                         tb.append("*An error occurred\n").color(ChatColor.DARK_RED);
                     else
-                        for (IObjective<?> obj : objs) {
+                        for (IQuestObjective<?> obj : objs) {
                             try {
                                 boolean completed = currentI != i || obj.isCompleted(pc);
                                 if (obj.isVisible()) {

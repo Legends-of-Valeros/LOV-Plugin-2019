@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.quests.quest;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.QuestUtil;
-import com.legendsofvaleros.modules.quests.objective.stf.IObjective;
+import com.legendsofvaleros.modules.quests.objective.stf.IQuestObjective;
 import com.legendsofvaleros.modules.quests.quest.stf.QuestStatus;
 import com.legendsofvaleros.util.title.Title;
 import com.legendsofvaleros.util.title.TitleUtil;
@@ -42,9 +42,9 @@ public class BasicQuest extends AbstractQuest {
         if (getProgress(pc).actionI != null)
             return false;
 
-        IObjective<?>[] group = getCurrentGroup(pc);
+        IQuestObjective<?>[] group = getCurrentGroup(pc);
         if (group != null)
-            for (IObjective<?> obj : group)
+            for (IQuestObjective<?> obj : group)
                 if (!obj.isCompleted(pc))
                     return false;
 
@@ -56,9 +56,9 @@ public class BasicQuest extends AbstractQuest {
         if (getProgress(pc).actionI != null)
             return;
 
-        IObjective<?>[] group = getCurrentGroup(pc);
+        IQuestObjective<?>[] group = getCurrentGroup(pc);
         if (group != null)
-            for (IObjective<?> obj : group)
+            for (IQuestObjective<?> obj : group)
                 if (!obj.isCompleted(pc))
                     return;
 

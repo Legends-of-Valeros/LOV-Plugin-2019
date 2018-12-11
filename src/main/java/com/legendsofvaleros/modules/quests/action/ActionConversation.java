@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.quests.action;
 
-import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
+import com.legendsofvaleros.modules.quests.action.stf.AbstractQuestAction;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
 import com.legendsofvaleros.util.commands.TemporaryCommand;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // XXX: This whole action is garbage.
-public class ActionConversation extends AbstractAction {
+public class ActionConversation extends AbstractQuestAction {
 	String option_1, option_2, option_3, option_4, option_5;
 	int action_1, action_2, action_3, action_4, action_5;
 	

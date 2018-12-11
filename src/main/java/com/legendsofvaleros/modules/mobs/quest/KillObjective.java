@@ -7,8 +7,8 @@ import com.legendsofvaleros.modules.mobs.MobManager;
 import com.legendsofvaleros.modules.mobs.Mobs;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.mobs.core.SpawnArea;
-import com.legendsofvaleros.modules.quests.objective.stf.AbstractObjective;
-import com.legendsofvaleros.modules.quests.progress.ObjectiveProgressInteger;
+import com.legendsofvaleros.modules.quests.objective.stf.AbstractQuestObjective;
+import com.legendsofvaleros.modules.quests.progress.QuestObjectiveProgressInteger;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -16,7 +16,7 @@ import org.bukkit.event.Event;
 
 import java.util.concurrent.ExecutionException;
 
-public class KillObjective extends AbstractObjective<ObjectiveProgressInteger> {
+public class KillObjective extends AbstractQuestObjective<QuestObjectiveProgressInteger> {
     private String id;
     private int amount;
 
@@ -54,12 +54,12 @@ public class KillObjective extends AbstractObjective<ObjectiveProgressInteger> {
     }
 
     @Override
-    public boolean isCompleted(PlayerCharacter pc, ObjectiveProgressInteger progress) {
+    public boolean isCompleted(PlayerCharacter pc, QuestObjectiveProgressInteger progress) {
         return progress.value >= amount;
     }
 
     @Override
-    public String getProgressText(PlayerCharacter pc, ObjectiveProgressInteger progress) {
+    public String getProgressText(PlayerCharacter pc, QuestObjectiveProgressInteger progress) {
         if (amount == 1) return "Kill " + mob.getName();
         return progress.value + "/" + amount + " " + mob.getName() + " killed";
     }
@@ -76,7 +76,7 @@ public class KillObjective extends AbstractObjective<ObjectiveProgressInteger> {
     }
 
     @Override
-    public void onEvent(Event event, PlayerCharacter pc, ObjectiveProgressInteger progress) {
+    public void onEvent(Event event, PlayerCharacter pc, QuestObjectiveProgressInteger progress) {
         if (mob == null) return;
 
         CombatEngineDeathEvent e = (CombatEngineDeathEvent) event;

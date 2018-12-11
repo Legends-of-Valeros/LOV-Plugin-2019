@@ -7,14 +7,14 @@ import com.legendsofvaleros.modules.gear.util.ItemUtil;
 import com.legendsofvaleros.modules.npcs.NPCData;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
-import com.legendsofvaleros.modules.quests.objective.stf.AbstractObjective;
-import com.legendsofvaleros.modules.quests.progress.ObjectiveProgressBoolean;
+import com.legendsofvaleros.modules.quests.objective.stf.AbstractQuestObjective;
+import com.legendsofvaleros.modules.quests.progress.QuestObjectiveProgressBoolean;
 import com.legendsofvaleros.util.MessageUtil;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import org.bukkit.Location;
 import org.bukkit.event.Event;
 
-public class FetchForNPCObjective extends AbstractObjective<ObjectiveProgressBoolean> {
+public class FetchForNPCObjective extends AbstractQuestObjective<QuestObjectiveProgressBoolean> {
     private String id;
     private int amount;
 
@@ -44,12 +44,12 @@ public class FetchForNPCObjective extends AbstractObjective<ObjectiveProgressBoo
     }
 
     @Override
-    public boolean isCompleted(PlayerCharacter pc, ObjectiveProgressBoolean progress) {
+    public boolean isCompleted(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
         return progress.value;
     }
 
     @Override
-    public String getProgressText(PlayerCharacter pc, ObjectiveProgressBoolean progress) {
+    public String getProgressText(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
         return "Bring " + npc.name + " " + (amount > 1 ? "x" + amount + " " : "") + (item == null ? "UNKNOWN" : item.getName());
     }
 
@@ -64,7 +64,7 @@ public class FetchForNPCObjective extends AbstractObjective<ObjectiveProgressBoo
     }
 
     @Override
-    public void onEvent(Event event, PlayerCharacter pc, ObjectiveProgressBoolean progress) {
+    public void onEvent(Event event, PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
         if (id == null || item == null) return;
 
         if (npcId == null || npc.name == null) return;

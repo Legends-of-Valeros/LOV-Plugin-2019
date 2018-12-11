@@ -16,7 +16,7 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent
 import com.legendsofvaleros.modules.factions.event.FactionReputationChangeEvent;
 import com.legendsofvaleros.modules.factions.quest.ActionReputation;
 import com.legendsofvaleros.modules.quests.Quests;
-import com.legendsofvaleros.modules.quests.action.stf.ActionFactory;
+import com.legendsofvaleros.modules.quests.action.stf.QuestActionFactory;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -54,7 +54,7 @@ public class Factions extends ModuleListener {
         factionTable = ORMTable.bind(dbPoolId, Faction.class);
         reputationTable = ORMTable.bind(dbPoolId, Reputation.class);
 
-        ActionFactory.registerType("faction_rep", ActionReputation.class);
+        QuestActionFactory.registerType("faction_rep", ActionReputation.class);
 
         /**
          * TODO check if this can be removed

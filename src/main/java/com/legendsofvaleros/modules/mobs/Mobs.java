@@ -22,7 +22,7 @@ import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.parties.Parties;
 import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.Quests;
-import com.legendsofvaleros.modules.quests.objective.stf.ObjectiveFactory;
+import com.legendsofvaleros.modules.quests.objective.stf.QuestObjectiveFactory;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -74,7 +74,7 @@ public class Mobs extends ModuleListener {
         Mobs.getInstance().registerEvents(new MobListener());
         Mobs.getInstance().registerEvents(new MobHealthbarManager());
 
-        ObjectiveFactory.registerType("kill", KillObjective.class);
+        QuestObjectiveFactory.registerType("kill", KillObjective.class);
 
         for (EntityType type : EntityType.values()) {
             if (type == EntityType.PLAYER || type.getEntityClass() == null)

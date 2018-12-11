@@ -1,11 +1,11 @@
 package com.legendsofvaleros.modules.regions.quest;
 
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
+import com.legendsofvaleros.modules.quests.action.stf.AbstractQuestAction;
 import com.legendsofvaleros.modules.regions.Regions;
 import org.bukkit.entity.Player;
 
-public class ActionRegionDeny extends AbstractAction {
+public class ActionRegionDeny extends AbstractQuestAction {
 	String regionId;
 	
 	@Override

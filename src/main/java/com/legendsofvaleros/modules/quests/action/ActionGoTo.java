@@ -1,9 +1,9 @@
 package com.legendsofvaleros.modules.quests.action;
 
-import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
+import com.legendsofvaleros.modules.quests.action.stf.AbstractQuestAction;
 import org.bukkit.entity.Player;
 
-public class ActionGoTo extends AbstractAction {
+public class ActionGoTo extends AbstractQuestAction {
 	int action;
 	
 	@Override

@@ -6,7 +6,7 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.Gear;
 import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
-import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
+import com.legendsofvaleros.modules.quests.action.stf.AbstractQuestAction;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
 import com.legendsofvaleros.util.item.Model;
@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
-public class ActionChooseItem extends AbstractAction {
+public class ActionChooseItem extends AbstractQuestAction {
 	String itemId_1, itemId_2, itemId_3, itemId_4, itemId_5;
 	int amount_1, amount_2, amount_3, amount_4, amount_5;
 

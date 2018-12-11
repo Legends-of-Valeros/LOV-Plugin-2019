@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.quests.action;
 
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.quests.Quests;
-import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
+import com.legendsofvaleros.modules.quests.action.stf.AbstractQuestAction;
 import io.chazza.advancementapi.AdvancementAPI;
 import io.chazza.advancementapi.FrameType;
 import io.chazza.advancementapi.Trigger;
@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class ActionNotification extends AbstractAction {
+public class ActionNotification extends AbstractQuestAction {
     String icon;
     String text;
 

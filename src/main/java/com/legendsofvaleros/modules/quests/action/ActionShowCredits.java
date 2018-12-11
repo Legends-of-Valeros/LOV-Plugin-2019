@@ -5,7 +5,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
+import com.legendsofvaleros.modules.quests.action.stf.AbstractQuestAction;
 import net.minecraft.server.v1_12_R1.EntityPlayer;
 import net.minecraft.server.v1_12_R1.PacketPlayOutGameStateChange;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class ActionShowCredits extends AbstractAction {
+public class ActionShowCredits extends AbstractQuestAction {
     private static class PacketListener extends PacketAdapter {
         private final Map<UUID, Next> waiting = new HashMap<>();
 

@@ -21,8 +21,8 @@ import com.legendsofvaleros.modules.gear.GearRegistry;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.Quests;
-import com.legendsofvaleros.modules.quests.action.stf.ActionFactory;
-import com.legendsofvaleros.modules.quests.objective.stf.ObjectiveFactory;
+import com.legendsofvaleros.modules.quests.action.stf.QuestActionFactory;
+import com.legendsofvaleros.modules.quests.objective.stf.QuestObjectiveFactory;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -85,8 +85,8 @@ public class Bank extends ModuleListener {
     private void onQuests() {
         getLogger().info("Quests integration function!");
 
-        ObjectiveFactory.registerType("repair", RepairObjective.class);
-        ActionFactory.registerType("currency_give", ActionAddCurrency.class);
+        QuestObjectiveFactory.registerType("repair", RepairObjective.class);
+        QuestActionFactory.registerType("currency_give", ActionAddCurrency.class);
     }
 
     @EventHandler

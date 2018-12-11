@@ -6,7 +6,7 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.quests.objective.stf.IObjective;
+import com.legendsofvaleros.modules.quests.objective.stf.IQuestObjective;
 import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
 import com.legendsofvaleros.modules.quests.quest.stf.QuestStatus;
 import org.bukkit.Bukkit;
@@ -110,9 +110,9 @@ public class ActiveTracker {
                             IQuest active = future.get();
                             if(active == null) return;
 
-                            IObjective<?>[] group = active.getCurrentGroup(pc);
+                            IQuestObjective<?>[] group = active.getCurrentGroup(pc);
                             if(group != null)
-                                for(IObjective<?> obj : group) {
+                                for(IQuestObjective<?> obj : group) {
                                     if(!obj.isCompleted(pc)) {
                                         Location loc = obj.getLocation(pc);
                                         if (loc != null) {

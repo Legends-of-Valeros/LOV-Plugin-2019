@@ -4,12 +4,12 @@ import com.legendsofvaleros.modules.bank.Bank;
 import com.legendsofvaleros.modules.bank.repair.RepairItemEvent;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.gear.item.GearItem;
-import com.legendsofvaleros.modules.quests.objective.stf.AbstractObjective;
-import com.legendsofvaleros.modules.quests.progress.ObjectiveProgressBoolean;
+import com.legendsofvaleros.modules.quests.objective.stf.AbstractQuestObjective;
+import com.legendsofvaleros.modules.quests.progress.QuestObjectiveProgressBoolean;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.event.Event;
 
-public class RepairObjective extends AbstractObjective<ObjectiveProgressBoolean> {
+public class RepairObjective extends AbstractQuestObjective<QuestObjectiveProgressBoolean> {
     private String id;
 
     private transient GearItem item;
@@ -23,12 +23,12 @@ public class RepairObjective extends AbstractObjective<ObjectiveProgressBoolean>
     }
 
     @Override
-    public boolean isCompleted(PlayerCharacter pc, ObjectiveProgressBoolean progress) {
+    public boolean isCompleted(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
         return progress.value;
     }
 
     @Override
-    public String getProgressText(PlayerCharacter pc, ObjectiveProgressBoolean progress) {
+    public String getProgressText(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
         return "Repair " + item.getName();
     }
 
@@ -43,7 +43,7 @@ public class RepairObjective extends AbstractObjective<ObjectiveProgressBoolean>
     }
 
     @Override
-    public void onEvent(Event event, PlayerCharacter pc, ObjectiveProgressBoolean progress) {
+    public void onEvent(Event event, PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
         RepairItemEvent e = (RepairItemEvent) event;
 
         if (id == null || item == null) return;

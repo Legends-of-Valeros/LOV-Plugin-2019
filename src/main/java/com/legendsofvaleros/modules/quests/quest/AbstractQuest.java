@@ -7,16 +7,16 @@ import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.Quests;
-import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
+import com.legendsofvaleros.modules.quests.action.stf.AbstractQuestAction;
 import com.legendsofvaleros.modules.quests.action.stf.QuestActionPlay;
 import com.legendsofvaleros.modules.quests.action.stf.QuestActions;
-import com.legendsofvaleros.modules.quests.event.ObjectivesCompletedEvent;
-import com.legendsofvaleros.modules.quests.event.ObjectivesStartedEvent;
+import com.legendsofvaleros.modules.quests.event.QuestObjectivesCompletedEvent;
+import com.legendsofvaleros.modules.quests.event.QuestObjectivesStartedEvent;
 import com.legendsofvaleros.modules.quests.event.QuestCompletedEvent;
 import com.legendsofvaleros.modules.quests.event.QuestStartedEvent;
-import com.legendsofvaleros.modules.quests.objective.stf.IObjective;
+import com.legendsofvaleros.modules.quests.objective.stf.IQuestObjective;
 import com.legendsofvaleros.modules.quests.prerequisite.stf.IQuestPrerequisite;
-import com.legendsofvaleros.modules.quests.progress.stf.IObjectiveProgress;
+import com.legendsofvaleros.modules.quests.progress.stf.IQuestObjectiveProgress;
 import com.legendsofvaleros.modules.quests.progress.stf.ObjectiveProgressPack;
 import com.legendsofvaleros.modules.quests.progress.stf.QuestProgressPack;
 import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
@@ -176,7 +176,7 @@ public abstract class AbstractQuest implements IQuest {
     }
 
     @Override
-    public IObjective<?>[] getCurrentGroup(PlayerCharacter pc) {
+    public IQuestObjective<?>[] getCurrentGroup(PlayerCharacter pc) {
         return objectives.getGroup(getCurrentGroupI(pc));
     }
 
@@ -195,7 +195,7 @@ public abstract class AbstractQuest implements IQuest {
             } else {
                 if (currentGroup == group) return;
 
-                Bukkit.getPluginManager().callEvent(new ObjectivesCompletedEvent(pc, this));
+                Bukkit.getPluginManager().callEvent(new QuestObjectivesCompletedEvent(pc, this));
 
                 if (objectives.groups.length > 0) {
                     // Clean up the objectives
@@ -209,7 +209,7 @@ public abstract class AbstractQuest implements IQuest {
     }
 
     private void startActions(PlayerCharacter pc, int currentGroup) {
-        AbstractAction[] acts = null;
+        AbstractQuestAction[] acts = null;
         if (currentGroup == -1)
             acts = actions.accept;
         else if (currentGroup < actions.groups.length)
@@ -238,17 +238,17 @@ public abstract class AbstractQuest implements IQuest {
 
             // Set up the new objective group progress information
             QuestProgressPack pack;
-            IObjective<?>[] objectiveGroup = objectives.groups[nextGroup];
+            IQuestObjective<?>[] objectiveGroup = objectives.groups[nextGroup];
             loadProgress(pc, (pack = new QuestProgressPack(nextGroup, objectiveGroup.length)));
 
             // Build the objective object and initialize it
             for (int i = 0; i < objectiveGroup.length; i++) {
                 try {
-                    IObjective<?> obj = objectiveGroup[i];
+                    IQuestObjective<?> obj = objectiveGroup[i];
                     ParameterizedType superClass = (ParameterizedType) obj.getClass().getGenericSuperclass();
                     @SuppressWarnings("unchecked")
-                    Class<? extends IObjectiveProgress> type = (Class<? extends IObjectiveProgress>) superClass.getActualTypeArguments()[0];
-                    IObjectiveProgress prog = type.newInstance();
+                    Class<? extends IQuestObjectiveProgress> type = (Class<? extends IQuestObjectiveProgress>) superClass.getActualTypeArguments()[0];
+                    IQuestObjectiveProgress prog = type.newInstance();
                     pack.data[i] = new ObjectiveProgressPack(prog);
 
                     obj.onBegin(pc);
@@ -258,7 +258,7 @@ public abstract class AbstractQuest implements IQuest {
             }
         }
 
-        Bukkit.getPluginManager().callEvent(new ObjectivesStartedEvent(pc, this, nextGroup == 0));
+        Bukkit.getPluginManager().callEvent(new QuestObjectivesStartedEvent(pc, this, nextGroup == 0));
 
         // Check if the new objective is already completed
         checkCompleted(pc);

@@ -20,7 +20,7 @@ import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.playermenu.options.PlayerOptionsOpenEvent;
 import com.legendsofvaleros.modules.quests.Quests;
-import com.legendsofvaleros.modules.quests.objective.stf.ObjectiveFactory;
+import com.legendsofvaleros.modules.quests.objective.stf.QuestObjectiveFactory;
 import com.legendsofvaleros.modules.skills.event.*;
 import com.legendsofvaleros.modules.skills.gear.GearCharge;
 import com.legendsofvaleros.modules.skills.gear.SkillComponent;
@@ -34,7 +34,6 @@ import com.legendsofvaleros.modules.skills.quest.SkillUseObjective;
 import com.legendsofvaleros.modules.skills.rogue.TreeRogue;
 import com.legendsofvaleros.modules.skills.warrior.TreeWarrior;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
 import com.legendsofvaleros.util.item.Model;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -91,8 +90,8 @@ public class Skills extends ModuleListener {
             Skills.getInstance().getLogger().info("NPC integration not enabled.");
 
         if(Modules.isLoaded(Quests.class)) {
-            ObjectiveFactory.registerType("skill_bind", SkillBindObjective.class);
-            ObjectiveFactory.registerType("skill_use", SkillUseObjective.class);
+            QuestObjectiveFactory.registerType("skill_bind", SkillBindObjective.class);
+            QuestObjectiveFactory.registerType("skill_use", SkillUseObjective.class);
         }else
             Skills.getInstance().getLogger().info("Quest integration not enabled.");
 

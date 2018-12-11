@@ -17,14 +17,14 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
-import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
-import com.legendsofvaleros.modules.quests.action.stf.ActionFactory;
+import com.legendsofvaleros.modules.quests.action.stf.AbstractQuestAction;
+import com.legendsofvaleros.modules.quests.action.stf.QuestActionFactory;
 import com.legendsofvaleros.modules.quests.action.stf.QuestActions;
-import com.legendsofvaleros.modules.quests.objective.stf.IObjective;
-import com.legendsofvaleros.modules.quests.objective.stf.ObjectiveFactory;
+import com.legendsofvaleros.modules.quests.objective.stf.IQuestObjective;
+import com.legendsofvaleros.modules.quests.objective.stf.QuestObjectiveFactory;
 import com.legendsofvaleros.modules.quests.prerequisite.stf.IQuestPrerequisite;
 import com.legendsofvaleros.modules.quests.prerequisite.stf.PrerequisiteFactory;
-import com.legendsofvaleros.modules.quests.progress.stf.IObjectiveProgress;
+import com.legendsofvaleros.modules.quests.progress.stf.IQuestObjectiveProgress;
 import com.legendsofvaleros.modules.quests.progress.stf.ObjectiveProgressPack;
 import com.legendsofvaleros.modules.quests.progress.stf.ProgressFactory;
 import com.legendsofvaleros.modules.quests.progress.stf.QuestProgressPack;
@@ -89,7 +89,7 @@ public class QuestManager {
     }
 
     // Event class, quest ID, objective list
-    private static HashBasedTable<Class<? extends Event>, String, Set<IObjective>> questEvents = HashBasedTable.create();
+    private static HashBasedTable<Class<? extends Event>, String, Set<IQuestObjective>> questEvents = HashBasedTable.create();
 
     /**
      * A map containing each user to a list of all their accepted quests. This
@@ -151,14 +151,14 @@ public class QuestManager {
                     }
                     return loader;
                 })
-                .registerTypeAdapter(AbstractAction.class, (JsonDeserializer<AbstractAction>) (json, typeOfT, context) -> {
+                .registerTypeAdapter(AbstractQuestAction.class, (JsonDeserializer<AbstractQuestAction>) (json, typeOfT, context) -> {
                     try {
                         JsonObject obj = json.getAsJsonObject();
 
                         if (obj.get("type") == null || obj.get("type").getAsString() == null)
                             throw new JsonParseException("No type defined in action. Offender: " + obj.toString());
 
-                        AbstractAction act = ActionFactory.newAction(obj.get("type").getAsString());
+                        AbstractQuestAction act = QuestActionFactory.newAction(obj.get("type").getAsString());
                         applyFields(obj.get("type").getAsString(), act, obj.get("fields").getAsJsonObject());
                         act.onInit();
                         return act;
@@ -167,14 +167,14 @@ public class QuestManager {
                         throw new RuntimeException("Failed to decode action! " + (e.getMessage() != null ? e.getMessage() : e.getCause().toString()) + " (" + json.toString() + ")");
                     }
                 })
-                .registerTypeAdapter(IObjective.class, (JsonDeserializer<IObjective<?>>) (json, typeOfT, context) -> {
+                .registerTypeAdapter(IQuestObjective.class, (JsonDeserializer<IQuestObjective<?>>) (json, typeOfT, context) -> {
                     try {
                         JsonObject obj = json.getAsJsonObject();
 
                         if (obj.get("type").getAsString() == null)
                             throw new JsonParseException("No type defined in action. Offender: " + obj.toString());
 
-                        IObjective<?> objective = ObjectiveFactory.newObjective(obj.get("type").getAsString());
+                        IQuestObjective<?> objective = QuestObjectiveFactory.newObjective(obj.get("type").getAsString());
                         applyFields(obj.get("type").getAsString(), objective, obj.get("fields").getAsJsonObject());
                         return objective;
                     } catch (Exception e) {
@@ -189,7 +189,7 @@ public class QuestManager {
                         if (obj.get("type").getAsString() == null)
                             throw new JsonParseException("No type defined in action. Offender: " + obj.toString());
 
-                        IObjectiveProgress progress = ProgressFactory.forType(obj.get("type").getAsString());
+                        IQuestObjectiveProgress progress = ProgressFactory.forType(obj.get("type").getAsString());
                         applyFields(obj.get("type").getAsString(), progress, obj.get("progress").getAsJsonObject());
                         return new ObjectiveProgressPack(progress);
                     } catch (Exception e) {
@@ -257,14 +257,14 @@ public class QuestManager {
     }
 
     public synchronized static void callEvent(Event event, PlayerCharacter pc) {
-        for (Entry<String, Set<IObjective>> entry : questEvents.row(event.getClass()).entrySet()) {
+        for (Entry<String, Set<IQuestObjective>> entry : questEvents.row(event.getClass()).entrySet()) {
             IQuest quest = quests.getIfPresent(entry.getKey());
             if (quest == null) continue;
 
             if (!quest.hasProgress(pc)) continue;
             int group = quest.getCurrentGroupI(pc);
 
-            for (IObjective objective : entry.getValue()) {
+            for (IQuestObjective objective : entry.getValue()) {
                 if (objective.getGroupIndex() != group) continue;
                 objective.onEvent(event, pc);
             }
@@ -471,10 +471,10 @@ public class QuestManager {
                             quest.setObjectives(gson.fromJson(objectives, QuestObjectives.class));
 
                         {
-                            HashMultimap<Class<? extends Event>, IObjective> eventMap = HashMultimap.create();
+                            HashMultimap<Class<? extends Event>, IQuestObjective> eventMap = HashMultimap.create();
 
-                            for (IObjective<?>[] group : quest.getObjectives().groups)
-                                for (IObjective<?> obj : group) {
+                            for (IQuestObjective<?>[] group : quest.getObjectives().groups)
+                                for (IQuestObjective<?> obj : group) {
                                     Class<? extends Event>[] requested = obj.getRequestedEvents();
                                     if (requested == null) continue;
                                     for (Class<? extends Event> e : requested)

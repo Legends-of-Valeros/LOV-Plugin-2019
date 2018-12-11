@@ -10,7 +10,7 @@ public class QuestProgressPack {
 		this.data = new ObjectiveProgressPack[objectivesSize];
 	}
 
-	public IObjectiveProgress getForObjective(int objectiveI) {
+	public IQuestObjectiveProgress getForObjective(int objectiveI) {
 		return data[objectiveI].progress;
 	}
 }

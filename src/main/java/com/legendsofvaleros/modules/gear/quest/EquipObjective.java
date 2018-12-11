@@ -8,13 +8,13 @@ import com.legendsofvaleros.modules.gear.event.ItemEquipEvent;
 import com.legendsofvaleros.modules.gear.event.ItemUnEquipEvent;
 import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.gear.item.GearType;
-import com.legendsofvaleros.modules.quests.objective.stf.AbstractObjective;
-import com.legendsofvaleros.modules.quests.progress.ObjectiveProgressBoolean;
+import com.legendsofvaleros.modules.quests.objective.stf.AbstractQuestObjective;
+import com.legendsofvaleros.modules.quests.progress.QuestObjectiveProgressBoolean;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 
-public class EquipObjective extends AbstractObjective<ObjectiveProgressBoolean> {
+public class EquipObjective extends AbstractQuestObjective<QuestObjectiveProgressBoolean> {
 	private String id;
 	
 	private transient GearItem item;
@@ -28,12 +28,12 @@ public class EquipObjective extends AbstractObjective<ObjectiveProgressBoolean> 
 	}
 
 	@Override
-	public boolean isCompleted(PlayerCharacter pc, ObjectiveProgressBoolean progress) {
+	public boolean isCompleted(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
 		return progress.value;
 	}
 
 	@Override
-	public String getProgressText(PlayerCharacter pc, ObjectiveProgressBoolean progress) {
+	public String getProgressText(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
 		return "Equip " + item.getName();
 	}
 
@@ -48,7 +48,7 @@ public class EquipObjective extends AbstractObjective<ObjectiveProgressBoolean> 
 	}
 
 	@Override
-	public void onEvent(Event event, PlayerCharacter pc, ObjectiveProgressBoolean progress) {
+	public void onEvent(Event event, PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
 		if(id == null || item == null) return;
 
 		if(event.getClass() == ArmorEquipEvent.class) {

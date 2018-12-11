@@ -49,7 +49,7 @@ public class TraitQuestGiver extends LOVTrait {
         }
 
 		/*@EventHandler
-		public void onObjectivesComplete(ObjectivesCompletedEvent event) {
+		public void onObjectivesComplete(QuestObjectivesCompletedEvent event) {
 			update(event.getPlayerCharacter());
 		}*/
 

@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.quests.quest.stf;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.action.stf.QuestActions;
-import com.legendsofvaleros.modules.quests.objective.stf.IObjective;
+import com.legendsofvaleros.modules.quests.objective.stf.IQuestObjective;
 import com.legendsofvaleros.modules.quests.prerequisite.stf.IQuestPrerequisite;
 import com.legendsofvaleros.modules.quests.progress.stf.QuestProgressPack;
 
@@ -51,7 +51,7 @@ public interface IQuest {
 	void setObjectives(QuestObjectives objectives);
 	
 	int getCurrentGroupI(PlayerCharacter pc);
-	IObjective<?>[] getCurrentGroup(PlayerCharacter pc);
+	IQuestObjective<?>[] getCurrentGroup(PlayerCharacter pc);
 
 	/**
 	 * Called when a player talks to a quest NPC.

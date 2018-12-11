@@ -4,12 +4,12 @@ import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.npcs.util.NPCEmulator;
 import com.legendsofvaleros.modules.quests.QuestUtil;
 import com.legendsofvaleros.modules.quests.Quests;
-import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
+import com.legendsofvaleros.modules.quests.action.stf.AbstractQuestAction;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class ActionSpeech extends AbstractAction {
+public class ActionSpeech extends AbstractQuestAction {
     String npcId;
     String text;
     boolean wait;

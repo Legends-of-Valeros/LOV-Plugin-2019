@@ -3,10 +3,10 @@ package com.legendsofvaleros.modules.factions.quest;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.factions.Factions;
-import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
+import com.legendsofvaleros.modules.quests.action.stf.AbstractQuestAction;
 import org.bukkit.entity.Player;
 
-public class ActionReputation extends AbstractAction {
+public class ActionReputation extends AbstractQuestAction {
     String faction_id;
     int amount;
 

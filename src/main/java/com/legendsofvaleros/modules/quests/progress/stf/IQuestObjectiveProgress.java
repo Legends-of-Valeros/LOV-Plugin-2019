@@ -1,5 +1,5 @@
 package com.legendsofvaleros.modules.quests.progress.stf;
 
-public interface IObjectiveProgress {
+public interface IQuestObjectiveProgress {
 	
 }

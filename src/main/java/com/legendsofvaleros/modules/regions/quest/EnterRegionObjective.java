@@ -1,8 +1,8 @@
 package com.legendsofvaleros.modules.regions.quest;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.quests.objective.stf.AbstractObjective;
-import com.legendsofvaleros.modules.quests.progress.ObjectiveProgressBoolean;
+import com.legendsofvaleros.modules.quests.objective.stf.AbstractQuestObjective;
+import com.legendsofvaleros.modules.quests.progress.QuestObjectiveProgressBoolean;
 import com.legendsofvaleros.modules.regions.Region;
 import com.legendsofvaleros.modules.regions.Regions;
 import com.legendsofvaleros.modules.regions.event.RegionEnterEvent;
@@ -11,7 +11,7 @@ import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Location;
 import org.bukkit.event.Event;
 
-public class EnterRegionObjective extends AbstractObjective<ObjectiveProgressBoolean> {
+public class EnterRegionObjective extends AbstractQuestObjective<QuestObjectiveProgressBoolean> {
     private String id;
     private String name;
 
@@ -33,19 +33,19 @@ public class EnterRegionObjective extends AbstractObjective<ObjectiveProgressBoo
     }
 
     @Override
-    public void onBegin(PlayerCharacter pc, ObjectiveProgressBoolean progress) {
+    public void onBegin(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
         if (region == null) return;
 
         progress.value = region.isInside(pc.getLocation());
     }
 
     @Override
-    public boolean isCompleted(PlayerCharacter pc, ObjectiveProgressBoolean progress) {
+    public boolean isCompleted(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
         return progress.value;
     }
 
     @Override
-    public String getProgressText(PlayerCharacter pc, ObjectiveProgressBoolean progress) {
+    public String getProgressText(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
         return "Go to " + name;
     }
 
@@ -60,7 +60,7 @@ public class EnterRegionObjective extends AbstractObjective<ObjectiveProgressBoo
     }
 
     @Override
-    public void onEvent(Event event, PlayerCharacter pc, ObjectiveProgressBoolean progress) {
+    public void onEvent(Event event, PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
         if (event.getClass() == RegionEnterEvent.class) {
             progress.value = true;
 

@@ -12,18 +12,18 @@ import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.playermenu.InventoryManager;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.quests.action.*;
-import com.legendsofvaleros.modules.quests.action.stf.ActionFactory;
-import com.legendsofvaleros.modules.quests.event.ObjectivesStartedEvent;
+import com.legendsofvaleros.modules.quests.action.stf.QuestActionFactory;
+import com.legendsofvaleros.modules.quests.event.QuestObjectivesStartedEvent;
 import com.legendsofvaleros.modules.quests.event.QuestCompletedEvent;
 import com.legendsofvaleros.modules.quests.event.QuestStartedEvent;
 import com.legendsofvaleros.modules.quests.objective.DummyObjective;
 import com.legendsofvaleros.modules.quests.objective.ReturnObjective;
 import com.legendsofvaleros.modules.quests.objective.TalkObjective;
-import com.legendsofvaleros.modules.quests.objective.stf.ObjectiveFactory;
+import com.legendsofvaleros.modules.quests.objective.stf.QuestObjectiveFactory;
 import com.legendsofvaleros.modules.quests.prerequisite.*;
 import com.legendsofvaleros.modules.quests.prerequisite.stf.PrerequisiteFactory;
-import com.legendsofvaleros.modules.quests.progress.ObjectiveProgressBoolean;
-import com.legendsofvaleros.modules.quests.progress.ObjectiveProgressInteger;
+import com.legendsofvaleros.modules.quests.progress.QuestObjectiveProgressBoolean;
+import com.legendsofvaleros.modules.quests.progress.QuestObjectiveProgressInteger;
 import com.legendsofvaleros.modules.quests.progress.stf.ProgressFactory;
 import com.legendsofvaleros.modules.quests.quest.BasicQuest;
 import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
@@ -87,31 +87,31 @@ public class Quests extends ModuleListener {
         PrerequisiteFactory.registerType("time", TimePrerequisite.class);
 
         getLogger().info("is registering progress loaders");
-        ProgressFactory.registerType("int", ObjectiveProgressInteger.class);
-        ProgressFactory.registerType("bool", ObjectiveProgressBoolean.class);
+        ProgressFactory.registerType("int", QuestObjectiveProgressInteger.class);
+        ProgressFactory.registerType("bool", QuestObjectiveProgressBoolean.class);
 
         getLogger().info("is registering objectives");
-        ObjectiveFactory.registerType("dummy", DummyObjective.class);
-        ObjectiveFactory.registerType("talk", TalkObjective.class);
-        ObjectiveFactory.registerType("return", ReturnObjective.class);
+        QuestObjectiveFactory.registerType("dummy", DummyObjective.class);
+        QuestObjectiveFactory.registerType("talk", TalkObjective.class);
+        QuestObjectiveFactory.registerType("return", ReturnObjective.class);
 
         getLogger().info("is registering actions");
-        ActionFactory.registerType("conversation", ActionConversation.class);
-        ActionFactory.registerType("goto", ActionGoTo.class);
+        QuestActionFactory.registerType("conversation", ActionConversation.class);
+        QuestActionFactory.registerType("goto", ActionGoTo.class);
 
-        ActionFactory.registerType("command_run", ActionRunCommand.class);
-        ActionFactory.registerType("speech", ActionSpeech.class);
-        ActionFactory.registerType("wait", ActionWait.class);
+        QuestActionFactory.registerType("command_run", ActionRunCommand.class);
+        QuestActionFactory.registerType("speech", ActionSpeech.class);
+        QuestActionFactory.registerType("wait", ActionWait.class);
 
-        ActionFactory.registerType("quest_new", ActionNewQuest.class);
+        QuestActionFactory.registerType("quest_new", ActionNewQuest.class);
 
-        ActionFactory.registerType("notify", ActionNotification.class);
+        QuestActionFactory.registerType("notify", ActionNotification.class);
 
-        ActionFactory.registerType("text", ActionText.class);
+        QuestActionFactory.registerType("text", ActionText.class);
 
-        ActionFactory.registerType("xp", ActionExperience.class);
-        ActionFactory.registerType("teleport", ActionTeleport.class);
-        ActionFactory.registerType("show_credits", ActionShowCredits.class);
+        QuestActionFactory.registerType("xp", ActionExperience.class);
+        QuestActionFactory.registerType("teleport", ActionTeleport.class);
+        QuestActionFactory.registerType("show_credits", ActionShowCredits.class);
 
         InventoryManager.addFixedItem(42, new InventoryManager.InventoryItem(null,
                 (p, event) -> p.performCommand("quests gui")));
@@ -182,7 +182,7 @@ public class Quests extends ModuleListener {
     }
 
     @EventHandler
-    public void onNewObjectives(ObjectivesStartedEvent event) {
+    public void onNewObjectives(QuestObjectivesStartedEvent event) {
         if(NEW_OBJECTIVES != null)
         	NEW_OBJECTIVES.show(event.getPlayer());
     }

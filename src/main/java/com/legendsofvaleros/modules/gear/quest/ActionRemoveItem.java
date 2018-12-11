@@ -2,13 +2,13 @@ package com.legendsofvaleros.modules.gear.quest;
 
 import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
-import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
+import com.legendsofvaleros.modules.quests.action.stf.AbstractQuestAction;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class ActionRemoveItem extends AbstractAction {
+public class ActionRemoveItem extends AbstractQuestAction {
 	String itemId;
 	Integer amount;
 	

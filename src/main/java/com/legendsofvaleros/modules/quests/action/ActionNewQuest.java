@@ -5,12 +5,12 @@ import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.Quests;
-import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
+import com.legendsofvaleros.modules.quests.action.stf.AbstractQuestAction;
 import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.entity.Player;
 
-public class ActionNewQuest extends AbstractAction {
+public class ActionNewQuest extends AbstractQuestAction {
     String questId;
 
     @Override

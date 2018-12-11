@@ -14,7 +14,7 @@ import com.legendsofvaleros.modules.pvp.PvP;
 import com.legendsofvaleros.modules.pvp.toggle.PvPToggles;
 import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.Quests;
-import com.legendsofvaleros.modules.quests.objective.stf.ObjectiveFactory;
+import com.legendsofvaleros.modules.quests.objective.stf.QuestObjectiveFactory;
 import com.legendsofvaleros.modules.zones.event.ZoneEnterEvent;
 import com.legendsofvaleros.modules.zones.event.ZoneLeaveEvent;
 import com.legendsofvaleros.modules.zones.quest.EnterZoneObjective;
@@ -71,8 +71,8 @@ public class Zones extends ModuleListener {
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new ZoneCommands());
 
-        ObjectiveFactory.registerType("zone_enter", EnterZoneObjective.class);
-        ObjectiveFactory.registerType("zone_exit", ExitZoneObjective.class);
+        QuestObjectiveFactory.registerType("zone_enter", EnterZoneObjective.class);
+        QuestObjectiveFactory.registerType("zone_exit", ExitZoneObjective.class);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

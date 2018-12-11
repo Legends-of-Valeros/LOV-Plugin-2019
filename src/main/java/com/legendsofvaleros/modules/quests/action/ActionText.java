@@ -1,12 +1,12 @@
 package com.legendsofvaleros.modules.quests.action;
 
 import com.legendsofvaleros.modules.quests.QuestUtil;
-import com.legendsofvaleros.modules.quests.action.stf.AbstractAction;
+import com.legendsofvaleros.modules.quests.action.stf.AbstractQuestAction;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class ActionText extends AbstractAction {
+public class ActionText extends AbstractQuestAction {
 	String format;
 	String text;
 	

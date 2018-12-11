@@ -10,15 +10,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public abstract class QuestActionPlay {
-    public static ListenableFuture<Boolean> start(Player player, AbstractAction[] questActions) {
+    public static ListenableFuture<Boolean> start(Player player, AbstractQuestAction[] questActions) {
         return start(Characters.getPlayerCharacter(player), new QuestProgressPack(0, 0), questActions);
     }
 
-    public static ListenableFuture<Boolean> start(Player player, QuestProgressPack progress, AbstractAction[] questActions) {
+    public static ListenableFuture<Boolean> start(Player player, QuestProgressPack progress, AbstractQuestAction[] questActions) {
         return start(Characters.getPlayerCharacter(player), progress, questActions);
     }
 
-    public static ListenableFuture<Boolean> start(PlayerCharacter pc, QuestProgressPack progress, AbstractAction[] questActions) {
+    public static ListenableFuture<Boolean> start(PlayerCharacter pc, QuestProgressPack progress, AbstractQuestAction[] questActions) {
         SettableFuture<Boolean> ret = SettableFuture.create();
 
         next(pc, progress, questActions, ret);
@@ -26,7 +26,7 @@ public abstract class QuestActionPlay {
         return ret;
     }
 
-    private static void next(PlayerCharacter pc, QuestProgressPack progress, AbstractAction[] questActions, SettableFuture<Boolean> future) {
+    private static void next(PlayerCharacter pc, QuestProgressPack progress, AbstractQuestAction[] questActions, SettableFuture<Boolean> future) {
         // If the player logs out or switches characters we should STOP processing actions ASAP.
         if (!pc.isCurrent() || !pc.getPlayer().isOnline()) return;
 

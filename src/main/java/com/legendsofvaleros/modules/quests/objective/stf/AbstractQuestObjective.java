@@ -1,14 +1,14 @@
 package com.legendsofvaleros.modules.quests.objective.stf;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.quests.progress.stf.IObjectiveProgress;
+import com.legendsofvaleros.modules.quests.progress.stf.IQuestObjectiveProgress;
 import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
 import org.bukkit.Location;
 import org.bukkit.event.Event;
 
 import java.lang.ref.WeakReference;
 
-public abstract class AbstractObjective<T extends IObjectiveProgress> implements IObjective<T> {
+public abstract class AbstractQuestObjective<T extends IQuestObjectiveProgress> implements IQuestObjective<T> {
 	private WeakReference<IQuest> quest;
 	public IQuest getQuest() { return quest.get(); }
 

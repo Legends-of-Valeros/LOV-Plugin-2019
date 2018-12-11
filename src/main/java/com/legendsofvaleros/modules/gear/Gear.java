@@ -22,8 +22,8 @@ import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.Quests;
-import com.legendsofvaleros.modules.quests.action.stf.ActionFactory;
-import com.legendsofvaleros.modules.quests.objective.stf.ObjectiveFactory;
+import com.legendsofvaleros.modules.quests.action.stf.QuestActionFactory;
+import com.legendsofvaleros.modules.quests.objective.stf.QuestObjectiveFactory;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
@@ -66,13 +66,13 @@ public class Gear extends ModuleListener {
 
         GearRegistry.registerComponent("stats", GearStats.Component.class);
 
-        ObjectiveFactory.registerType("equip", EquipObjective.class);
-        ObjectiveFactory.registerType("fetch", FetchObjective.class);
-        ObjectiveFactory.registerType("fetch_for", FetchForNPCObjective.class);
+        QuestObjectiveFactory.registerType("equip", EquipObjective.class);
+        QuestObjectiveFactory.registerType("fetch", FetchObjective.class);
+        QuestObjectiveFactory.registerType("fetch_for", FetchForNPCObjective.class);
 
-        ActionFactory.registerType("item_give", ActionGiveItem.class);
-        ActionFactory.registerType("item_remove", ActionRemoveItem.class);
-        ActionFactory.registerType("item_choose", ActionChooseItem.class);
+        QuestActionFactory.registerType("item_give", ActionGiveItem.class);
+        QuestActionFactory.registerType("item_remove", ActionRemoveItem.class);
+        QuestActionFactory.registerType("item_choose", ActionChooseItem.class);
 
         ORMRegistry.addMutator(GearItem.Data.class, new ORMRegistry.SQLMutator<GearItem.Data>() {
             @Override

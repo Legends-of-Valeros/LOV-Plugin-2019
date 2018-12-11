@@ -1,20 +1,20 @@
 package com.legendsofvaleros.modules.quests.objective;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.quests.objective.stf.AbstractObjective;
-import com.legendsofvaleros.modules.quests.objective.stf.IObjective;
-import com.legendsofvaleros.modules.quests.progress.ObjectiveProgressBoolean;
+import com.legendsofvaleros.modules.quests.objective.stf.AbstractQuestObjective;
+import com.legendsofvaleros.modules.quests.objective.stf.IQuestObjective;
+import com.legendsofvaleros.modules.quests.progress.QuestObjectiveProgressBoolean;
 import org.bukkit.event.Event;
 
-public class DummyObjective extends AbstractObjective<ObjectiveProgressBoolean> {
+public class DummyObjective extends AbstractQuestObjective<QuestObjectiveProgressBoolean> {
 	public String uncomplete;
 	public String completed;
 	public Integer objective;
 
 	@Override
-	public boolean isCompleted(PlayerCharacter pc, ObjectiveProgressBoolean progress) {
+	public boolean isCompleted(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
 		if(objective == null) {
-			for (IObjective<?> obj : getQuest().getCurrentGroup(pc))
+			for (IQuestObjective<?> obj : getQuest().getCurrentGroup(pc))
 				if (!(obj instanceof DummyObjective) && !obj.isCompleted(pc))
 					return false;
 		}else
@@ -23,7 +23,7 @@ public class DummyObjective extends AbstractObjective<ObjectiveProgressBoolean> 
 	}
 
 	@Override
-	public String getProgressText(PlayerCharacter pc, ObjectiveProgressBoolean progress) { return uncomplete; }
+	public String getProgressText(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) { return uncomplete; }
 
 	@Override
 	public String getCompletedText(PlayerCharacter pc) {
@@ -36,7 +36,7 @@ public class DummyObjective extends AbstractObjective<ObjectiveProgressBoolean> 
 	}
 
 	@Override
-	public void onEvent(Event event, PlayerCharacter pc, ObjectiveProgressBoolean progress) {
+	public void onEvent(Event event, PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
 
 	}
 }

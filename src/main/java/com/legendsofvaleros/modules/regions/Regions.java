@@ -10,8 +10,8 @@ import com.legendsofvaleros.modules.hearthstones.HearthstoneCastEvent;
 import com.legendsofvaleros.modules.hearthstones.Hearthstones;
 import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.Quests;
-import com.legendsofvaleros.modules.quests.action.stf.ActionFactory;
-import com.legendsofvaleros.modules.quests.objective.stf.ObjectiveFactory;
+import com.legendsofvaleros.modules.quests.action.stf.QuestActionFactory;
+import com.legendsofvaleros.modules.quests.objective.stf.QuestObjectiveFactory;
 import com.legendsofvaleros.modules.regions.event.RegionEnterEvent;
 import com.legendsofvaleros.modules.regions.event.RegionLeaveEvent;
 import com.legendsofvaleros.modules.regions.quest.ActionRegionAccess;
@@ -63,11 +63,11 @@ public class Regions extends ModuleListener {
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new RegionCommands());
 
-        ObjectiveFactory.registerType("region_enter", EnterRegionObjective.class);
-        ObjectiveFactory.registerType("region_exit", ExitRegionObjective.class);
+        QuestObjectiveFactory.registerType("region_enter", EnterRegionObjective.class);
+        QuestObjectiveFactory.registerType("region_exit", ExitRegionObjective.class);
 
-        ActionFactory.registerType("region_access", ActionRegionAccess.class);
-        ActionFactory.registerType("region_deny", ActionRegionDeny.class);
+        QuestActionFactory.registerType("region_access", ActionRegionAccess.class);
+        QuestActionFactory.registerType("region_deny", ActionRegionDeny.class);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
