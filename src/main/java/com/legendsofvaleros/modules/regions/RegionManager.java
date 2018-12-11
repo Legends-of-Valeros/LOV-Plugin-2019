@@ -45,6 +45,7 @@ public class RegionManager implements Listener {
 
     private static String REGION_ALLOW_ACCESS = "region_allow_access";
     private static String REGION_ALLOW_HEARTHSTONE = "region_allow_hearthstone";
+    private static String REGION_QUESTS = "region_quests";
 
     private static String REGION_MSG_ENTER = "region_msg_enter";
     private static String REGION_MSG_EXIT = "region_msg_exit";
@@ -117,6 +118,7 @@ public class RegionManager implements Listener {
 
                 .column(REGION_ALLOW_ACCESS, "BOOLEAN")
                 .column(REGION_ALLOW_HEARTHSTONE, "BOOLEAN")
+                .column(REGION_QUESTS, "TEXT")
 
                 .column(REGION_MSG_ENTER, "TEXT")
                 .column(REGION_MSG_EXIT, "TEXT")
@@ -271,6 +273,10 @@ public class RegionManager implements Listener {
                         region.allowAccess = result.getBoolean(REGION_ALLOW_ACCESS);
                         region.allowHearthstone = result.getBoolean(REGION_ALLOW_HEARTHSTONE);
 
+
+                        String quests = result.getString(REGION_QUESTS);
+                        region.quests = quests != null ? quests.split(",") : new String[0];
+
                         region.msgEnter = result.getString(REGION_MSG_ENTER);
                         region.msgExit = result.getString(REGION_MSG_EXIT);
                         region.msgFailure = result.getString(REGION_MSG_ERROR);
@@ -304,6 +310,7 @@ public class RegionManager implements Listener {
 
                         REGION_ALLOW_ACCESS, region.allowAccess,
                         REGION_ALLOW_HEARTHSTONE, region.allowHearthstone,
+                        REGION_QUESTS, String.join(",", region.quests),
 
                         REGION_MSG_ENTER, region.msgEnter,
                         REGION_MSG_EXIT, region.msgExit,
@@ -313,7 +320,7 @@ public class RegionManager implements Listener {
                         REGION_START_X, REGION_START_Y, REGION_START_Z,
                         REGION_END_X, REGION_END_Y, REGION_END_Z,
 
-                        REGION_ALLOW_ACCESS, REGION_ALLOW_HEARTHSTONE,
+                        REGION_ALLOW_ACCESS, REGION_ALLOW_HEARTHSTONE, REGION_QUESTS,
 
                         REGION_MSG_ENTER, REGION_MSG_EXIT, REGION_MSG_ERROR)
                 .build()

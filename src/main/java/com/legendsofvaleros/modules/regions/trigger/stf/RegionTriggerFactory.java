@@ -1,7 +1,6 @@
-package com.legendsofvaleros.modules.regions.event.stf;
+package com.legendsofvaleros.modules.regions.trigger.stf;
 
 import com.legendsofvaleros.modules.quests.Quests;
-import com.legendsofvaleros.modules.quests.prerequisite.stf.IQuestPrerequisite;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,5 +1,6 @@
 package com.legendsofvaleros.modules.regions;
 
+import com.codingforcookies.doris.orm.annotation.Column;
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -12,6 +13,7 @@ public class Region {
 
 	public boolean allowAccess = false;
 	public boolean allowHearthstone = true;
+	public String[] quests;
 	
 	public String msgEnter;
 	public String msgExit;
