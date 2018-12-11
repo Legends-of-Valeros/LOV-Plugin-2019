@@ -42,7 +42,7 @@ public class BankManager {
     public static void onDisable() {
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (!Characters.isPlayerCharacterLoaded(p)) continue;
-            onLogout(Characters.getPlayerCharacter(p).getUniqueCharacterId(), false);
+            onLogout(Characters.getPlayerCharacter(p).getUniqueCharacterId());
         }
     }
 
@@ -73,7 +73,7 @@ public class BankManager {
         return ret;
     }
 
-    private static ListenableFuture<Void> onLogout(final CharacterId characterId, boolean async) {
+    private static ListenableFuture<Void> onLogout(final CharacterId characterId) {
         SettableFuture<Void> ret = SettableFuture.create();
 
         PlayerBank bank = banks.remove(characterId);
@@ -86,7 +86,7 @@ public class BankManager {
                     ret.set(null);
             };
 
-            bankCurrencyTable.saveAll(bank.getCurrencies(), async)
+            bankCurrencyTable.saveAll(bank.getCurrencies(), true)
                     .addListener(finished, Bank.getInstance().getScheduler()::async);
 
             bankContentTable.query()
@@ -97,7 +97,7 @@ public class BankManager {
                             return;
                         }
 
-                        bankContentTable.saveAll(bank.content.values(), async)
+                        bankContentTable.saveAll(bank.content.values(), true)
                                 .addListener(finished, Bank.getInstance().getScheduler()::async);
                     })
                     .execute(true);
@@ -124,7 +124,7 @@ public class BankManager {
         @EventHandler
         public void onCharacterLogout(PlayerCharacterLogoutEvent event) {
             PhaseLock lock = event.getLock("Bank");
-            onLogout(event.getPlayerCharacter().getUniqueCharacterId(), true)
+            onLogout(event.getPlayerCharacter().getUniqueCharacterId())
                     .addListener(() -> {
                         banks.remove(event.getPlayerCharacter().getUniqueCharacterId());
                         lock.release();

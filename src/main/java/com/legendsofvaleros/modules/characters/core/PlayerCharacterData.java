@@ -71,7 +71,7 @@ public class PlayerCharacterData {
 
     static void onDisable() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            onLogout(player.getUniqueId(), false);
+            onLogout(player.getUniqueId());
         }
     }
 
@@ -228,7 +228,7 @@ public class PlayerCharacterData {
      * Saves basic player-character data when for a player when they log out.
      * @param playerId The name of the player logging out.
      */
-    static ListenableFuture<Void> onLogout(UUID playerId, boolean async) {
+    static ListenableFuture<Void> onLogout(UUID playerId) {
         SettableFuture<Void> ret = SettableFuture.create();
 
         PlayerCharacterCollection data = dataMap.remove(playerId);
@@ -245,12 +245,12 @@ public class PlayerCharacterData {
                 for (ReusablePlayerCharacter rpc : changed) {
                     if(rpc.isCurrent()) {
                         rpc.getInventoryData().saveInventory(rpc).addListener(() -> {
-                            save(rpc, async);
+                            save(rpc);
 
                             ret.set(null);
                         }, Characters.getInstance().getScheduler()::sync);
                     }else{
-                        save(rpc, async);
+                        save(rpc);
 
                         ret.set(null);
                     }
@@ -270,7 +270,7 @@ public class PlayerCharacterData {
                 .execute(true);
     }
 
-    public static void save(ReusablePlayerCharacter pc, boolean async) {
+    public static void save(ReusablePlayerCharacter pc) {
         Location loc = pc.getLocation();
 
         List<Entry<Skill, Integer>> skills = pc.getSkillSet().getCharacterSkills();
@@ -308,7 +308,7 @@ public class PlayerCharacterData {
                         X_COORD_FIELD, Y_COORD_FIELD, Z_COORD_FIELD, YAW_FIELD, PITCH_FIELD,
                         INVENTORY_FIELD, SKILLSET_FIELD)
                 .build()
-                .execute(async);
+                .execute(false);
     }
 
     /**

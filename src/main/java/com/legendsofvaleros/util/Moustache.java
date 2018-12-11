@@ -11,6 +11,11 @@ public class Moustache {
 	
 	public static String translate(Player p, String str) {
 		str = str.replaceAll("\\{\\{name\\}\\}", p.getName());
+
+		str = str.replaceAll("\\{\\{x\\}\\}", String.valueOf(p.getLocation().getX()));
+		str = str.replaceAll("\\{\\{y\\}\\}", String.valueOf(p.getLocation().getY()));
+		str = str.replaceAll("\\{\\{z\\}\\}", String.valueOf(p.getLocation().getZ()));
+
 		return str;
 	}
 	

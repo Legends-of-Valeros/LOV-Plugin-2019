@@ -77,7 +77,7 @@ public class PersistingEffects {
 		dataMap.clear();
 
 		if(!saveAll.isEmpty())
-			writeEffects(saveAll, false);
+			writeEffects(saveAll);
 	}
 
 	/**
@@ -145,7 +145,7 @@ public class PersistingEffects {
 					.execute(true);
 	}
 
-	private static ListenableFuture<Void> writeEffects(Set<PersistingEffect> effects, boolean async) {
+	private static ListenableFuture<Void> writeEffects(Set<PersistingEffect> effects) {
 		SettableFuture<Void> ret = SettableFuture.create();
 
 		if (effects == null || effects.isEmpty()) {
@@ -183,7 +183,7 @@ public class PersistingEffects {
 							BYTE_META_FIELD, eff.getByteMeta());
 					insert.addBatch();
 				}
-				insert.build().onFinished(() -> ret.set(null)).execute(async);
+				insert.build().onFinished(() -> ret.set(null)).execute(true);
 			}
 		}
 
@@ -248,7 +248,7 @@ public class PersistingEffects {
 					}
 
 					PhaseLock lock = event.getLock("Effects");
-					writeEffects(saveThese, true).addListener(lock::release, Characters.getInstance().getScheduler()::async);
+					writeEffects(saveThese).addListener(lock::release, Characters.getInstance().getScheduler()::async);
 				}
 			}
 		}

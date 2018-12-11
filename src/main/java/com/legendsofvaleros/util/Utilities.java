@@ -1,5 +1,6 @@
 package com.legendsofvaleros.util;
 
+import com.codingforcookies.doris.Doris;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.Modules;
@@ -103,6 +104,12 @@ public class Utilities extends ModuleListener {
         // to start additional cleanup. This allows event handlers to
         // finish (maybe)? Does this create a race condition?
         getScheduler().executeInMyCircleTimer(() -> {
+            // Wait for async tasks to complete. Unless a task hits the database
+            // every second, this should pass eventually every time.
+            if(Doris.inst().waitingAsync.get() > 0) {
+                return;
+            }
+
             for(InternalScheduler scheduler : InternalScheduler.getAllSchedulers()) {
                 if(scheduler == getScheduler()) continue;
 
