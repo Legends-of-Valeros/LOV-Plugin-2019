@@ -10,6 +10,8 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Arrays;
+
 @CommandAlias("regions|region")
 public class RegionCommands extends BaseCommand {
 	@Subcommand("notify")
@@ -69,11 +71,66 @@ public class RegionCommands extends BaseCommand {
 			MessageUtil.sendError(sender, "A region with that name doesn't exist.");
 			return;
 		}
-		
+
 		region.allowHearthstone = !region.allowHearthstone;
-		
+
 		Regions.manager().updateRegion(region);
 		MessageUtil.sendUpdate(sender, "Region updated. Allows Hearthstones: " + region.allowHearthstone);
+	}
+
+	@Subcommand("quests")
+	@Description("List the quest triggers in the region.")
+	@CommandPermission("region.quest.list")
+	public void cmdQuestList(CommandSender sender, String regionId, String questId) {
+		Region region = Regions.manager().getRegion(regionId);
+		if(region == null) {
+			MessageUtil.sendError(sender, "A region with that name doesn't exist.");
+			return;
+		}
+
+		MessageUtil.sendUpdate(sender, "'" + regionId + "' triggers: " + String.join(", ", region.quests));
+	}
+
+	@Subcommand("quests add")
+	@Description("Add a quest trigger to the region.")
+	@CommandPermission("region.quest.modify")
+	public void cmdQuestAdd(CommandSender sender, String regionId, String questId) {
+		Region region = Regions.manager().getRegion(regionId);
+		if(region == null) {
+			MessageUtil.sendError(sender, "A region with that name doesn't exist.");
+			return;
+		}
+
+		if(region.quests.contains(questId)) {
+			MessageUtil.sendError(sender, "Quest already attached to that region.");
+			return;
+		}
+
+		region.quests.add(questId);
+
+		Regions.manager().updateRegion(region);
+		MessageUtil.sendUpdate(sender, "Region updated. Now triggers quest: " + questId);
+	}
+
+	@Subcommand("quests del")
+	@Description("Delete a quest trigger from the region.")
+	@CommandPermission("region.quest.modify")
+	public void cmdQuestDel(CommandSender sender, String regionId, String questId) {
+		Region region = Regions.manager().getRegion(regionId);
+		if(region == null) {
+			MessageUtil.sendError(sender, "A region with that name doesn't exist.");
+			return;
+		}
+
+		if(!region.quests.contains(questId)) {
+			MessageUtil.sendError(sender, "Quest is not attached to that region.");
+			return;
+		}
+
+		region.quests.remove(questId);
+
+		Regions.manager().updateRegion(region);
+		MessageUtil.sendUpdate(sender, "Region updated. No longer triggers quest: " + questId);
 	}
 
 	@Subcommand("enter")

@@ -4,6 +4,8 @@ import com.codingforcookies.doris.orm.annotation.Column;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+import java.util.List;
+
 public class Region {
 	public String id;
 	public World world;
@@ -13,7 +15,7 @@ public class Region {
 
 	public boolean allowAccess = false;
 	public boolean allowHearthstone = true;
-	public String[] quests;
+	public List<String> quests;
 	
 	public String msgEnter;
 	public String msgExit;

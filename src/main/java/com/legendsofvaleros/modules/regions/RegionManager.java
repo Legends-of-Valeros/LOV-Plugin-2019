@@ -273,9 +273,11 @@ public class RegionManager implements Listener {
                         region.allowAccess = result.getBoolean(REGION_ALLOW_ACCESS);
                         region.allowHearthstone = result.getBoolean(REGION_ALLOW_HEARTHSTONE);
 
-
                         String quests = result.getString(REGION_QUESTS);
-                        region.quests = quests != null ? quests.split(",") : new String[0];
+                        region.quests = new ArrayList<>();
+
+                        if(quests != null)
+                            Collections.addAll(region.quests, quests.split(","));
 
                         region.msgEnter = result.getString(REGION_MSG_ENTER);
                         region.msgExit = result.getString(REGION_MSG_EXIT);

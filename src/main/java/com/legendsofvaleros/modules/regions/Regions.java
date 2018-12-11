@@ -4,6 +4,7 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.module.annotation.IntegratesWith;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.hearthstones.HearthstoneCastEvent;
@@ -14,10 +15,7 @@ import com.legendsofvaleros.modules.quests.action.stf.QuestActionFactory;
 import com.legendsofvaleros.modules.quests.objective.stf.QuestObjectiveFactory;
 import com.legendsofvaleros.modules.regions.event.RegionEnterEvent;
 import com.legendsofvaleros.modules.regions.event.RegionLeaveEvent;
-import com.legendsofvaleros.modules.regions.quest.ActionRegionAccess;
-import com.legendsofvaleros.modules.regions.quest.ActionRegionDeny;
-import com.legendsofvaleros.modules.regions.quest.EnterRegionObjective;
-import com.legendsofvaleros.modules.regions.quest.ExitRegionObjective;
+import com.legendsofvaleros.modules.regions.quest.*;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -31,9 +29,9 @@ import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
 
 @DependsOn(CombatEngine.class)
-@DependsOn(Quests.class)
 @DependsOn(Characters.class)
 @DependsOn(Hearthstones.class)
+@IntegratesWith(module = Quests.class, integration = QuestIntegration.class)
 public class Regions extends ModuleListener {
     private static Regions plugin;
     public static Module getInstance() { return plugin; }
@@ -62,12 +60,6 @@ public class Regions extends ModuleListener {
         regionManager = new RegionManager();
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new RegionCommands());
-
-        QuestObjectiveFactory.registerType("region_enter", EnterRegionObjective.class);
-        QuestObjectiveFactory.registerType("region_exit", ExitRegionObjective.class);
-
-        QuestActionFactory.registerType("region_access", ActionRegionAccess.class);
-        QuestActionFactory.registerType("region_deny", ActionRegionDeny.class);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
