@@ -5,6 +5,7 @@ import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.characters.skilleffect.MetaEffectInstance;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
+import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
 import com.legendsofvaleros.modules.skills.event.NextAttack;
 import org.bukkit.World;
 
@@ -34,7 +35,10 @@ public class SkillBleed extends Skill {
 	public boolean onSkillUse(World world, CombatEntity ce, int level) {
 		NextAttack.on(ce.getUniqueId(), 100, (e) -> {
 			Characters.getInstance().getSkillEffectManager().getSkillEffect("Bleed").apply(e.getAttacker().getLivingEntity(), ce.getLivingEntity(), getEarliest(BLEED, level), getEarliest(BLEED_TIME, level) * 1000);
-			e.setRawDamage(e.getRawDamage() * getEarliest(DAMAGE, level) / 100D);
+			e.newDamageModifierBuilder("Bleed")
+					.setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
+					.setValue(getEarliest(DAMAGE, level) / 100D)
+				.build();
 		});
 		return true;
 	}

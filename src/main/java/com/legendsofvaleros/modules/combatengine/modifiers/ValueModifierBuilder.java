@@ -185,27 +185,17 @@ public class ValueModifierBuilder {
     /**
      * Adds or subtracts to/from the modified value by some set amount. Affected by multipliers.
      */
-    FLAT_EDIT("+"),
+    FLAT_EDIT,
 
     /**
      * Multiplies the modified value.
      */
-    MULTIPLIER("*"),
+    MULTIPLIER,
 
     /**
      * Adds or subtracts to/from the modified value by some set amount. Not affected by multipliers.
      */
-    FLAT_EDIT_IGNORES_MULTIPLIERS("(+)");
-
-    final String sign;
-
-    ModifierType(String sign) {
-      this.sign = sign;
-    }
-
-    public String getSign() {
-      return sign;
-    }
+    FLAT_EDIT_IGNORES_MULTIPLIERS
   }
 
 }

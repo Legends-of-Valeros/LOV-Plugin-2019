@@ -119,7 +119,6 @@ public class RespawnListener implements Listener {
     public void onCombatEngineDamage(CombatEngineDamageEvent event) {
         if (event.getDamaged().getLivingEntity().getType() == EntityType.PLAYER
                 && dying.contains(event.getDamaged().getLivingEntity().getUniqueId())) {
-            event.setRawDamage(0);
             event.setCancelled(true);
         }
     }

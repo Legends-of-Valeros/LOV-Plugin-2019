@@ -14,6 +14,7 @@ import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEnginePhysicalDamageEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEntityCreateEvent;
 import com.legendsofvaleros.modules.combatengine.events.VanillaDamageCancelledEvent;
+import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
 import com.legendsofvaleros.modules.gear.Gear;
 import com.legendsofvaleros.modules.gear.component.trigger.*;
 import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger.TriggerEvent;
@@ -236,11 +237,7 @@ public class ItemListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onLivingEntityDamage(CombatEnginePhysicalDamageEvent event) {
         GearItem.Instance gear = GearItem.Instance.fromStack(event.getAttacker().getLivingEntity().getEquipment().getItemInMainHand());
-        if (gear == null) {
-            // No weapon? No damage.
-            event.setRawDamage(0);
-            return;
-        }
+        if (gear == null) return;
 
         PhysicalAttackTrigger e = new PhysicalAttackTrigger(event.getAttacker());
 
@@ -251,7 +248,11 @@ public class ItemListener implements Listener {
         } else {
             if (gear.doFire(e) == TriggerEvent.REFRESH_STACK && event.getAttacker().isPlayer())
                 event.getAttacker().getLivingEntity().getEquipment().setItemInMainHand(gear.toStack());
-            event.setRawDamage(e.getDamage());
+
+            event.newDamageModifierBuilder("Gear")
+                        .setModifierType(ValueModifierBuilder.ModifierType.FLAT_EDIT)
+                        .setValue(e.getDamage())
+                    .build();
         }
     }
 

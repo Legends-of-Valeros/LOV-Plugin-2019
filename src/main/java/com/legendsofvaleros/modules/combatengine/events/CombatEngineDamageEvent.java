@@ -31,7 +31,6 @@ public class CombatEngineDamageEvent extends Event implements Cancellable {
 	private final CombatEntity attacker;
 	private Location origin;
 
-	private double rawDamage;
 	private final boolean isCrit;
 
 	private ModifiableDouble damage;
@@ -62,11 +61,11 @@ public class CombatEngineDamageEvent extends Event implements Cancellable {
 		this.attacker = attacker;
 		this.origin = damageOrigin;
 
-		this.rawDamage = rawDamage;
 		this.damage = new ModifiableDouble() {
 			@Override protected double sanitizeValue(double sanitize) { return sanitize < 0 ? 0 : sanitize; }
 			@Override protected void onChange(double newValue, double previousValue) { }
 		};
+		this.damage.flatEdit(rawDamage, false);
 
 		this.isCrit = isCrit;
 	}
@@ -110,16 +109,6 @@ public class CombatEngineDamageEvent extends Event implements Cancellable {
 	 */
 	public Location getDamageOrigin() {
 		return origin;
-	}
-
-	/**
-	 * Gets the raw amount of damage that was done, before any modifiers or defensive stats are
-	 * applied.
-	 * 
-	 * @return The raw, unprocessed amount of damage.
-	 */
-	public double getRawDamage() {
-		return rawDamage;
 	}
 
 	public Map<String, ValueModifier> getModifiers() {
@@ -175,15 +164,7 @@ public class CombatEngineDamageEvent extends Event implements Cancellable {
 		this.origin = origin;
 	}
 
-	/**
-	 * Sets the raw amount of damage done.
-	 * <p>
-	 * To set final damage to an exact amount, cause true damage rather than physical or spell damage.
-	 * True damage is not affected by multipliers.
-	 * 
-	 * @param damage The damage that should be edited by modifiers and then applied.
-	 */
-	public void setRawDamage(double damage) {
-		this.rawDamage = damage;
+	public double getBaseDamage() {
+	    return this.damage.getBaseValue();
 	}
 }

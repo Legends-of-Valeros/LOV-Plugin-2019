@@ -26,6 +26,10 @@ public abstract class ModifiableDouble {
     this.multiplier = 1.0;
   }
 
+  public final double getBaseValue() {
+    return baseValue;
+  }
+
   /**
    * Gets the final value of this stat.
    * 

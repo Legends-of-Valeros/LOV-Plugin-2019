@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.skills.warrior.core;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
+import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
 import com.legendsofvaleros.modules.skills.event.NextAttack;
 import org.bukkit.World;
 
@@ -26,7 +27,10 @@ public class SkillSlash extends Skill {
 
 	@Override
 	public boolean onSkillUse(World world, CombatEntity ce, final int level) {
-		NextAttack.on(ce.getUniqueId(), 100, (e) -> e.setRawDamage(e.getRawDamage() * getEarliest(DAMAGE, level) / 100D));
+		NextAttack.on(ce.getUniqueId(), 100, (e) -> e.newDamageModifierBuilder("Slash")
+					.setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
+					.setValue(getEarliest(DAMAGE, level) / 100D)
+				.build());
 		return true;
 	}
 }

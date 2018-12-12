@@ -118,7 +118,7 @@ public class DamageEngine {
 		event.newDamageModifierBuilder("Resistance")
 				.setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
 				.setValue(multiplierHandler.getPhysicalDamageMultiplier(ceTarget, ceAttacker, crit, type))
-				.build();
+			.build();
 
 		return handleEvent(event);
 	}
@@ -154,9 +154,6 @@ public class DamageEngine {
 	}
 
 	private boolean handleEvent(CombatEngineDamageEvent event) {
-		if(event.getFinalDamage() <= 0)
-			return false;
-		
 		Bukkit.getServer().getPluginManager().callEvent(event);
 
 		if (!event.isCancelled() && event.getFinalDamage() > 0) {
@@ -252,9 +249,10 @@ public class DamageEngine {
 			boolean pAOP = pA != null && (DebugFlags.is(pA) && DebugFlags.get(pA).damage);
 			Player pD = event.getDamaged().isPlayer() ? (Player)event.getDamaged().getLivingEntity() : null;
 			boolean pDOP = pD != null && (DebugFlags.is(pD) && DebugFlags.get(pD).damage);
+
 			if(!pAOP && !pDOP)
 				return;
-			
+
 			if(event.isCriticalHit()) prefix += "*";
 			else prefix += " ";
 			
@@ -268,22 +266,37 @@ public class DamageEngine {
 			}else{
 				TextBuilder tb = new TextBuilder(prefix)
 						.append(DF.format(event.getFinalDamage())).color(ChatColor.AQUA).hover("Final Damage")
-						.append(" = ")
-						.append(DF.format(event.getRawDamage())).hover("Raw Damage");
+						.append(" = ");
 
-				for(Map.Entry<String, ValueModifier> entry : event.getModifiers().entrySet())
-					tb.append(" " + entry.getValue().getType().getSign() + " ").append(DF.format(entry.getValue().getValue())).hover(entry.getKey());
+				tb.append("((");
+
+				tb.append(DF.format(event.getBaseDamage())).hover("Base Damage");
+
+				boolean one = false;
+				for(Map.Entry<String, ValueModifier> entry : event.getModifiers().entrySet()) {
+					if(entry.getValue().getType() != ValueModifierBuilder.ModifierType.FLAT_EDIT) continue;
+					tb.append(" + ").append(DF.format(entry.getValue().getValue())).color(ChatColor.YELLOW).hover(entry.getKey());
+				}
+
+				tb.append(")");
+
+				for(Map.Entry<String, ValueModifier> entry : event.getModifiers().entrySet()) {
+					if(entry.getValue().getType() != ValueModifierBuilder.ModifierType.MULTIPLIER) continue;
+					tb.append(" * ").append(DF.format(entry.getValue().getValue())).color(ChatColor.YELLOW).hover(entry.getKey());
+				}
+
+				tb.append(")");
+
+				for(Map.Entry<String, ValueModifier> entry : event.getModifiers().entrySet()) {
+					if(entry.getValue().getType() != ValueModifierBuilder.ModifierType.FLAT_EDIT_IGNORES_MULTIPLIERS) continue;
+					tb.append(" + ").append(DF.format(entry.getValue().getValue())).color(ChatColor.YELLOW).hover(entry.getKey());
+				}
 
 				BaseComponent[] bc = tb.create();
 
 				if(pAOP) {
 					MessageUtil.sendInfo(pA, MessageUtil.prepend(bc,
-							new TextBuilder(event.getAttacker().getLivingEntity().getName())
-								.append("(")
-								.append(String.valueOf(event.getAttacker().getStats().getRegeneratingStat(RegeneratingStat.HEALTH))).color(ChatColor.GRAY)
-								.append("/")
-								.append(String.valueOf(event.getAttacker().getStats().getStat(Stat.MAX_HEALTH))).color(ChatColor.GRAY)
-								.append(") > ").create()));
+							new TextBuilder(">").create()));
 				}
 				if(pDOP) {
 					MessageUtil.sendInfo(pA, MessageUtil.prepend(bc,

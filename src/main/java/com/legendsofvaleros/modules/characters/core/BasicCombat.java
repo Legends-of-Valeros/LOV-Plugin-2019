@@ -91,32 +91,34 @@ public class BasicCombat {
         @EventHandler
         public void onDamageEvent(CombatEnginePhysicalDamageEvent event) {
             if(!event.getAttacker().isPlayer()) return;
+
             Player player = (Player)event.getAttacker().getLivingEntity();
+            AttributeInstance attr = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
+            double realSpeed = attr.getBaseValue();
 
             if (player.getInventory().getItemInMainHand().getType() != Material.AIR) {
                 ItemReader reader = new ItemReader(player.getInventory().getItemInMainHand());
-                AttributeInstance attr = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
-                if (reader.hasAttribute(Attributes.ATTACK_SPEED)) {
-                    double realSpeed = attr.getBaseValue() + reader.getAttribute(Attributes.ATTACK_SPEED);
 
-                    long millis = System.currentTimeMillis();
-                    Long last = lastSwing.get(player.getUniqueId());
-                    if(last == null) last = 0L;
+                if (reader.hasAttribute(Attributes.ATTACK_SPEED))
+                    realSpeed += reader.getAttribute(Attributes.ATTACK_SPEED);
+            }
 
-                    // The amount of time that must be awaited before full damage is dealt.
-                    long wait = (long)(1D / realSpeed * 1000);
+            long millis = System.currentTimeMillis();
+            Long last = lastSwing.get(player.getUniqueId());
+            if(last == null) last = 0L;
 
-                    // The amount of time remaining to be at full power.
-                    long remaining = last + wait - millis;
+            // The amount of time that must be awaited before full damage is dealt.
+            long wait = (long)(1D / realSpeed * 1000);
 
-                    if(remaining > 0) {
-                        event.newDamageModifierBuilder("Swing Multiplier")
-                                .setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
-                                .setValue(1D - ((double)remaining / wait))
-                            .build();
-                        //swingMultiplier = Math.pow(x, x + 3); // Creates a power curve between 0 and 1.
-                    }
-                }
+            // The amount of time remaining to be at full power.
+            long remaining = last + wait - millis;
+
+            if(remaining > 0) {
+                event.newDamageModifierBuilder("Swing Multiplier")
+                        .setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
+                        .setValue(1D - ((double)remaining / wait))
+                    .build();
+                //swingMultiplier = Math.pow(x, x + 3); // Creates a power curve between 0 and 1.
             }
 
             lastSwing.put(player.getUniqueId(), System.currentTimeMillis());
