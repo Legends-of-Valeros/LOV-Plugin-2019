@@ -109,6 +109,8 @@ public class Quests extends ModuleListener {
 
         QuestActionFactory.registerType("text", ActionText.class);
 
+        QuestActionFactory.registerType("particle", ActionParticle.class);
+        QuestActionFactory.registerType("sound", ActionSound.class);
         QuestActionFactory.registerType("xp", ActionExperience.class);
         QuestActionFactory.registerType("teleport", ActionTeleport.class);
         QuestActionFactory.registerType("show_credits", ActionShowCredits.class);
