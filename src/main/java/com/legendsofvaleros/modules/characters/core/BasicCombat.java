@@ -68,6 +68,9 @@ public class BasicCombat {
             }
             EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) dEvent;
 
+            // Cancel out all vanilla damage.
+            event.setDamage(0);
+
             if (!(event.getDamager() instanceof LivingEntity)
                     || !(event.getEntity() instanceof LivingEntity)
                     || event.getDamager().getType() != EntityType.PLAYER) {
@@ -79,6 +82,8 @@ public class BasicCombat {
             if (current == null) {
                 return;
             }
+
+            player.sendMessage("G: " + player.getAttribute(Attribute.GENERIC_ATTACK_SPEED).getBaseValue());
 
             double baseDamage = config.getClassConfig(current.getPlayerClass()).getBaseMeleeDamage();
 
@@ -93,14 +98,20 @@ public class BasicCombat {
             if(!event.getAttacker().isPlayer()) return;
 
             Player player = (Player)event.getAttacker().getLivingEntity();
+
             AttributeInstance attr = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
             double realSpeed = attr.getBaseValue();
+
+            event.getAttacker().getLivingEntity().sendMessage("S: " + realSpeed);
 
             if (player.getInventory().getItemInMainHand().getType() != Material.AIR) {
                 ItemReader reader = new ItemReader(player.getInventory().getItemInMainHand());
 
-                if (reader.hasAttribute(Attributes.ATTACK_SPEED))
+                if (reader.hasAttribute(Attributes.ATTACK_SPEED)) {
+                    event.getAttacker().getLivingEntity().sendMessage("I: " + reader.getAttribute(Attributes.ATTACK_SPEED));
+
                     realSpeed += reader.getAttribute(Attributes.ATTACK_SPEED);
+                }
             }
 
             long millis = System.currentTimeMillis();
@@ -112,6 +123,8 @@ public class BasicCombat {
 
             // The amount of time remaining to be at full power.
             long remaining = last + wait - millis;
+
+            event.getAttacker().getLivingEntity().sendMessage("W: " + wait + " ? " + remaining);
 
             if(remaining > 0) {
                 event.newDamageModifierBuilder("Swing Multiplier")

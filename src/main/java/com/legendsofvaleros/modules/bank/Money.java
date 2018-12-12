@@ -35,7 +35,7 @@ public class Money {
         Bank.registerCurrency(ID, new Currency() {
             @Override
             public String getName() {
-                return "Money";
+                return "Crowns";
             }
 
             @Override

@@ -1,5 +1,6 @@
-pvp:
-  global:
-    enabled: true
-    priority: -1
-    honor: 15
+world-pvp: false
+
+honor:
+  reward: 25
+  cooldown: 180
+  max-level-difference: 5

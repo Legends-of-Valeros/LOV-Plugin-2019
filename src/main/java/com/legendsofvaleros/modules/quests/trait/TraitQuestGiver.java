@@ -95,7 +95,9 @@ public class TraitQuestGiver extends LOVTrait {
                 future.addListener(() -> {
                     try {
                         try {
-                            IQuest quest = future.get();
+                            IQuest quest
+                                    = future
+                                    .get();
                             QuestStatus status = QuestManager.getStatus(pc, quest);
 
                             if (status.canAccept()) {

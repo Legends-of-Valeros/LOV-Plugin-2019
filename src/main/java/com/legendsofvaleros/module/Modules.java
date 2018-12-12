@@ -65,6 +65,7 @@ public class Modules {
                     module.load();
                 } catch (Exception e) {
                     getLogger().severe("Failed to load module. Aborting! Offender: " + module.getName());
+                    e.printStackTrace();
                 }
 
                 getLogger().info("");

@@ -15,6 +15,7 @@ import com.legendsofvaleros.modules.bank.trade.TradeManager;
 import com.legendsofvaleros.modules.bank.trade.TraitTrader;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.characters.events.PlayerCharacterFinishLoadingEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterInventoryFillEvent;
 import com.legendsofvaleros.modules.gear.Gear;
 import com.legendsofvaleros.modules.gear.GearRegistry;
@@ -24,6 +25,7 @@ import com.legendsofvaleros.modules.quests.Quests;
 import com.legendsofvaleros.modules.quests.action.stf.QuestActionFactory;
 import com.legendsofvaleros.modules.quests.objective.stf.QuestObjectiveFactory;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -90,7 +92,7 @@ public class Bank extends ModuleListener {
     }
 
     @EventHandler
-    public void onFillInventory(PlayerCharacterInventoryFillEvent event) {
+    public void onPlayerFinishedLoading(PlayerCharacterFinishLoadingEvent event) {
         updateInv(event.getPlayerCharacter());
     }
 
@@ -108,7 +110,8 @@ public class Bank extends ModuleListener {
                 if (display == null) continue;
                 item.addLore(display);
             }
-        }
+        }else
+            item.addLore(ChatColor.RED + " - BANK DATA EMPTY - ");
 
         if (Bukkit.isPrimaryThread()) {
             pc.getPlayer().getInventory().setItem(17, item.create());

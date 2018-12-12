@@ -272,7 +272,6 @@ public class DamageEngine {
 
 				tb.append(DF.format(event.getBaseDamage())).hover("Base Damage");
 
-				boolean one = false;
 				for(Map.Entry<String, ValueModifier> entry : event.getModifiers().entrySet()) {
 					if(entry.getValue().getType() != ValueModifierBuilder.ModifierType.FLAT_EDIT) continue;
 					tb.append(" + ").append(DF.format(entry.getValue().getValue())).color(ChatColor.YELLOW).hover(entry.getKey());
@@ -299,7 +298,7 @@ public class DamageEngine {
 							new TextBuilder(">").create()));
 				}
 				if(pDOP) {
-					MessageUtil.sendInfo(pA, MessageUtil.prepend(bc,
+					MessageUtil.sendInfo(pD, MessageUtil.prepend(bc,
 							new TextBuilder("<").create()));
 				}
 			}

@@ -440,7 +440,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
             }, Characters.getInstance().getScheduler()::async);
         }
 
-        @EventHandler
+        @EventHandler(priority = EventPriority.HIGHEST)
         public void onStartLoading(PlayerCharacterStartLoadingEvent event) {
             PlayerCharacter pc = event.getPlayerCharacter();
             InventoryData inventory = pc.getInventoryData();
