@@ -20,16 +20,14 @@ public class CombatEnginePhysicalDamageEvent extends CombatEngineDamageEvent {
    * @param damageOrigin The location the damage is coming from. The entity will be knocked
    *        backwards from this location. Can be <code>null</code> for no knockback to take place.
    * @param rawDamage The raw amount of damage being applied.
-   * @param damageMultiplier The final result, as a multiplier for the raw damage amount, of the sum
-   *        of the damaged entity's resistances, defensive stats, and other modifiers.
    * @param isCrit <code>true</code> if this is a critical hit, else <code>false</code>.
    * @param physicalType The type of physical damage being dealt.
    * @throws IllegalArgumentException On a <code>null</code> damaged entity.
    */
   public CombatEnginePhysicalDamageEvent(CombatEntity damaged, CombatEntity damager,
-      Location damageOrigin, double rawDamage, double damageMultiplier, double swingMultiplier, boolean isCrit,
+      Location damageOrigin, double rawDamage, boolean isCrit,
       PhysicalType physicalType) throws IllegalArgumentException {
-    super(damaged, damager, damageOrigin, rawDamage, damageMultiplier, swingMultiplier, isCrit);
+    super(damaged, damager, damageOrigin, rawDamage, isCrit);
     if (physicalType == null) {
       this.type = PhysicalType.OTHER;
     } else {

@@ -25,7 +25,7 @@ public class CombatEngineTrueDamageEvent extends CombatEngineDamageEvent {
   public CombatEngineTrueDamageEvent(CombatEntity damaged, CombatEntity damager,
       Location damageOrigin, double damage) throws IllegalArgumentException {
     // 1.0 because true damage ignores modifiers
-    super(damaged, damager, damageOrigin, damage, 1.0D, 1D, false);
+    super(damaged, damager, damageOrigin, damage, false);
   }
 
 }

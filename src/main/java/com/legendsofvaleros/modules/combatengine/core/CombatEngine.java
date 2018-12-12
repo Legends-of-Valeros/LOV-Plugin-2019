@@ -107,15 +107,7 @@ public class CombatEngine extends ModuleListener implements CombatEngineAPI {
     @Override
     public boolean causePhysicalDamage(LivingEntity target, LivingEntity attacker, PhysicalType type,
                                        double baseDamage, Location damageOrigin, boolean canMiss, boolean canCrit) {
-        return damageEngine.causePhysicalDamage(target, attacker, type, baseDamage, 1, damageOrigin,
-                canMiss, canCrit);
-    }
-
-    @Override
-    public boolean causePhysicalDamage(LivingEntity target, LivingEntity attacker, PhysicalType type,
-                                       double baseDamage, double swingMultiplier, Location damageOrigin, boolean canMiss, boolean canCrit) {
-        return damageEngine.causePhysicalDamage(target, attacker, type, baseDamage, swingMultiplier, damageOrigin,
-                canMiss, canCrit);
+        return damageEngine.causePhysicalDamage(target, attacker, type, baseDamage, damageOrigin, canMiss, canCrit);
     }
 
     @Override

@@ -7,6 +7,8 @@ import com.legendsofvaleros.modules.combatengine.core.MinecraftHealthHandler;
 import com.legendsofvaleros.modules.combatengine.damage.physical.PhysicalType;
 import com.legendsofvaleros.modules.combatengine.damage.spell.SpellType;
 import com.legendsofvaleros.modules.combatengine.events.*;
+import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifier;
+import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import com.legendsofvaleros.util.DebugFlags;
@@ -25,6 +27,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 
 import java.text.DecimalFormat;
+import java.util.Map;
 
 /**
  * Deals CombatEngine damage.
@@ -73,17 +76,19 @@ public class DamageEngine {
 		// does the attack crit?
 		boolean crit = canCrit && hitAndCit.doesAttackCrit(ceTarget, ceAttacker);
 
-		double resistanceMultiplier = multiplierHandler.getSpellDamageMultiplier(ceTarget, ceAttacker, crit, type);
-
 		CombatEngineSpellDamageEvent event =
-				new CombatEngineSpellDamageEvent(ceTarget, ceAttacker, damageOrigin, baseDamage,
-						resistanceMultiplier, crit, type);
+				new CombatEngineSpellDamageEvent(ceTarget, ceAttacker, damageOrigin, baseDamage, crit, type);
+
+		event.newDamageModifierBuilder("Resistance")
+				.setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
+				.setValue(multiplierHandler.getSpellDamageMultiplier(ceTarget, ceAttacker, crit, type))
+			.build();
 		
 		return handleEvent(event);
 	}
 
 	public boolean causePhysicalDamage(LivingEntity target, LivingEntity attacker, PhysicalType type,
-			double baseDamage, double swingMultiplier, Location damageOrigin, boolean canMiss, boolean canCrit) {
+			double baseDamage, Location damageOrigin, boolean canMiss, boolean canCrit) {
 		if (target == null || baseDamage <= 0) {
 			return false;
 		}
@@ -107,13 +112,14 @@ public class DamageEngine {
 		// does the attack crit?
 		boolean crit = canCrit && hitAndCit.doesAttackCrit(ceTarget, ceAttacker);
 
-		double resistanceMultiplier =
-				multiplierHandler.getPhysicalDamageMultiplier(ceTarget, ceAttacker, crit, type);
-
 		CombatEnginePhysicalDamageEvent event =
-				new CombatEnginePhysicalDamageEvent(ceTarget, ceAttacker, damageOrigin, baseDamage,
-                        resistanceMultiplier, swingMultiplier, crit, type);
-		
+				new CombatEnginePhysicalDamageEvent(ceTarget, ceAttacker, damageOrigin, baseDamage, crit, type);
+
+		event.newDamageModifierBuilder("Resistance")
+				.setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
+				.setValue(multiplierHandler.getPhysicalDamageMultiplier(ceTarget, ceAttacker, crit, type))
+				.build();
+
 		return handleEvent(event);
 	}
 
@@ -260,15 +266,15 @@ public class DamageEngine {
 				if(pDOP)
 					MessageUtil.sendInfo(pD, prefix + "Damage prevented by a plugin.");
 			}else{
-				BaseComponent[] bc = new TextBuilder(prefix)
+				TextBuilder tb = new TextBuilder(prefix)
 						.append(DF.format(event.getFinalDamage())).color(ChatColor.AQUA).hover("Final Damage")
 						.append(" = ")
-						.append(DF.format(event.getRawDamage())).hover("Raw Damage")
-						.append(" * ")
-						.append(DF.format(event.getSwingMultiplier())).hover("Swing Multiplier")
-						.append(" * ")
-						.append(DF.format(event.getDamageMultiplier())).hover("Damage Multiplier")
-						.create();
+						.append(DF.format(event.getRawDamage())).hover("Raw Damage");
+
+				for(Map.Entry<String, ValueModifier> entry : event.getModifiers().entrySet())
+					tb.append(" " + entry.getValue().getType().getSign() + " ").append(DF.format(entry.getValue().getValue())).hover(entry.getKey());
+
+				BaseComponent[] bc = tb.create();
 
 				if(pAOP) {
 					MessageUtil.sendInfo(pA, MessageUtil.prepend(bc,

@@ -7,8 +7,11 @@ import com.legendsofvaleros.modules.characters.config.CharactersConfig;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.damage.physical.PhysicalType;
 import com.legendsofvaleros.modules.combatengine.damage.spell.SpellType;
+import com.legendsofvaleros.modules.combatengine.events.CombatEnginePhysicalDamageEvent;
 import com.legendsofvaleros.modules.combatengine.events.VanillaDamageCancelledEvent;
+import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
 import com.legendsofvaleros.modules.combatengine.stat.StatUtils;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -78,7 +81,17 @@ public class BasicCombat {
             }
 
             double baseDamage = config.getClassConfig(current.getPlayerClass()).getBaseMeleeDamage();
-            double swingMultiplier = 1;
+
+            // causes damage through CombatEngine to replace the invalidated vanilla damage
+            CombatEngine.getInstance().causePhysicalDamage((LivingEntity) event.getEntity(),
+                    (LivingEntity) event.getDamager(), PhysicalType.MELEE, baseDamage,
+                    event.getDamager().getLocation(), true, true);
+        }
+
+        @EventHandler
+        public void onDamageEvent(CombatEnginePhysicalDamageEvent event) {
+            if(!event.getAttacker().isPlayer()) return;
+            Player player = (Player)event.getAttacker().getLivingEntity();
 
             if (player.getInventory().getItemInMainHand().getType() != Material.AIR) {
                 ItemReader reader = new ItemReader(player.getInventory().getItemInMainHand());
@@ -97,17 +110,14 @@ public class BasicCombat {
                     long remaining = last + wait - millis;
 
                     if(remaining > 0) {
-                        double x = 1D - ((double)remaining / wait); // Percentage between
-                        swingMultiplier = x;
+                        event.newDamageModifierBuilder("Swing Multiplier")
+                                .setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
+                                .setValue(1D - ((double)remaining / wait))
+                            .build();
                         //swingMultiplier = Math.pow(x, x + 3); // Creates a power curve between 0 and 1.
                     }
                 }
             }
-
-            // causes damage through CombatEngine to replace the invalidated vanilla damage
-            CombatEngine.getInstance().causePhysicalDamage((LivingEntity) event.getEntity(),
-                    (LivingEntity) event.getDamager(), PhysicalType.MELEE, baseDamage, swingMultiplier,
-                    event.getDamager().getLocation(), true, true);
 
             lastSwing.put(player.getUniqueId(), System.currentTimeMillis());
         }

@@ -11,7 +11,6 @@ import com.legendsofvaleros.modules.chat.Chat;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.pvp.PvP;
-import com.legendsofvaleros.modules.pvp.toggle.PvPToggles;
 import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.Quests;
 import com.legendsofvaleros.modules.quests.objective.stf.QuestObjectiveFactory;
@@ -39,11 +38,6 @@ import java.util.UUID;
 @DependsOn(Characters.class)
 @DependsOn(Quests.class)
 public class Zones extends ModuleListener {
-
-    private PvPToggles toggles;
-    private boolean pvpAllow;
-    private byte pvpPriority;
-
     private static Zones instance;
 
     public static Zones getInstance() {
@@ -63,11 +57,6 @@ public class Zones extends ModuleListener {
         instance = this;
 
         manager = new ZoneManager();
-        toggles = PvP.getInstance().getToggles();
-
-        ConfigurationSection section = getConfig().getConfigurationSection("pvp");
-        pvpAllow = section == null || section.getBoolean("allow", true);
-        pvpPriority = section != null ? (byte) section.getInt("pvp-priority", 0) : 0;
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new ZoneCommands());
 
@@ -78,9 +67,6 @@ public class Zones extends ModuleListener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerEnterZone(ZoneEnterEvent event) {
         if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
-
-        if (pvpAllow)
-            toggles.setToggleFor(event.getPlayer().getUniqueId(), pvpPriority, event.getZone().pvp, 0);
 
         QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
 
@@ -100,9 +86,6 @@ public class Zones extends ModuleListener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerLeaveZone(ZoneLeaveEvent event) {
         if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
-
-        if (pvpAllow)
-            toggles.removeToggleFor(event.getPlayer().getUniqueId(), pvpPriority);
 
         QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
     }

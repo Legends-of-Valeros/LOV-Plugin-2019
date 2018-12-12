@@ -1,25 +1,41 @@
 package com.legendsofvaleros.modules.combatengine.events;
 
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
+import com.legendsofvaleros.modules.combatengine.modifiers.ConstructionListener;
+import com.legendsofvaleros.modules.combatengine.modifiers.ModifiableDouble;
+import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifier;
+import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
+import com.legendsofvaleros.modules.combatengine.stat.Stat;
+import com.legendsofvaleros.modules.combatengine.stat.StatValue;
 import org.bukkit.Location;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * An event called when damage is dealt through the combat engine.
  */
 public class CombatEngineDamageEvent extends Event implements Cancellable {
-
 	private static final HandlerList handlers = new HandlerList();
+	@Override public HandlerList getHandlers() {
+		return handlers;
+	}
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
 
 	private final CombatEntity damaged;
 	private final CombatEntity attacker;
 	private Location origin;
+
 	private double rawDamage;
-	private double damageMultiplier;
-	private double swingMultiplier;
 	private final boolean isCrit;
+
+	private ModifiableDouble damage;
+	private Map<String, ValueModifier> modifiers;
 
 	private boolean cancelled;
 
@@ -32,13 +48,11 @@ public class CombatEngineDamageEvent extends Event implements Cancellable {
 	 * @param damageOrigin The location the damage is coming from. The entity will be knocked
 	 *        backwards from this location. Can be <code>null</code> for no knockback to take place.
 	 * @param rawDamage The raw amount of damage being applied.
-	 * @param damageMultiplier The final result, as a multiplier for the raw damage amount, of the sum
-	 *        of the damaged entity's resistances, defensive stats, and other modifiers.
 	 * @param isCrit <code>true</code> if this is a critical hit, else <code>false</code>.
 	 * @throws IllegalArgumentException On a <code>null</code> damaged entity.
 	 */
 	protected CombatEngineDamageEvent(CombatEntity damaged, CombatEntity attacker,
-			Location damageOrigin, double rawDamage, double damageMultiplier, double swingMultiplier, boolean isCrit)
+			Location damageOrigin, double rawDamage, boolean isCrit)
 					throws IllegalArgumentException {
 		if (damaged == null) {
 			throw new IllegalArgumentException("damaged entity cannot be null");
@@ -47,9 +61,13 @@ public class CombatEngineDamageEvent extends Event implements Cancellable {
 		this.damaged = damaged;
 		this.attacker = attacker;
 		this.origin = damageOrigin;
+
 		this.rawDamage = rawDamage;
-		this.damageMultiplier = damageMultiplier;
-		this.swingMultiplier = swingMultiplier;
+		this.damage = new ModifiableDouble() {
+			@Override protected double sanitizeValue(double sanitize) { return sanitize < 0 ? 0 : sanitize; }
+			@Override protected void onChange(double newValue, double previousValue) { }
+		};
+
 		this.isCrit = isCrit;
 	}
 
@@ -104,19 +122,24 @@ public class CombatEngineDamageEvent extends Event implements Cancellable {
 		return rawDamage;
 	}
 
-	/**
-	 * @return The damage multiplier.
-	 */
-	public double getDamageMultiplier() {
-		return damageMultiplier;
+	public Map<String, ValueModifier> getModifiers() {
+		return modifiers;
 	}
 
-	public double getSwingMultiplier() {
-		return swingMultiplier;
-	}
+	public ValueModifierBuilder newDamageModifierBuilder(String name) throws IllegalArgumentException {
+		return new ValueModifierBuilder(damage, null) {
+			@Override
+			public ValueModifier build() {
+				ValueModifier mod = super.build();
 
-	public void setSwingMultiplier(double swingMultiplier) {
-		this.swingMultiplier = swingMultiplier;
+				if(modifiers == null)
+					modifiers = new HashMap<>();
+
+				modifiers.put(name, mod);
+
+				return mod;
+			}
+		};
 	}
 
 	/**
@@ -125,7 +148,7 @@ public class CombatEngineDamageEvent extends Event implements Cancellable {
 	 * @return The final amount of damage that will the damaged entity will actually take.
 	 */
 	public double getFinalDamage() {
-		return rawDamage * swingMultiplier * damageMultiplier;
+		return damage.getFinalValue();
 	}
 
 	/**
@@ -163,14 +186,4 @@ public class CombatEngineDamageEvent extends Event implements Cancellable {
 	public void setRawDamage(double damage) {
 		this.rawDamage = damage;
 	}
-
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
-
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
-
 }
