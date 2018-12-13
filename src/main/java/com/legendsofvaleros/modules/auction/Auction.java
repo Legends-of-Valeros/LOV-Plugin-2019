@@ -2,17 +2,19 @@ package com.legendsofvaleros.modules.auction;
 
 import com.codingforcookies.doris.orm.annotation.Column;
 import com.codingforcookies.doris.orm.annotation.Table;
+import com.legendsofvaleros.modules.bank.BankManager;
+import com.legendsofvaleros.modules.bank.Money;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
+import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.mailbox.Mail;
-import com.legendsofvaleros.modules.mailbox.Mailbox;
 import com.legendsofvaleros.modules.mailbox.MailboxController;
-import org.bukkit.Bukkit;
+import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.UUID;
+import java.util.Dictionary;
 
 /**
  * Created by Crystall on 10/10/2018
@@ -27,10 +29,10 @@ public class Auction {
     private int price;
 
     @Column(name = "owner_id", length = 32)
-    private UUID ownerId;
+    private CharacterId ownerId;
 
     @Column(name = "auction_item", length = 255)
-    private GearItem item;
+    private GearItem.Data item;
 
     @Column(name = "valid_until", length = 32)
     private int validUntil;
@@ -38,18 +40,17 @@ public class Auction {
     @Column(name = "is_bid_offer", length = 32)
     private boolean isBidOffer = false;
 
-    public Auction(UUID ownerId, int price, GearItem item) {
+    private Dictionary<String, Integer> bidHistory;
+
+    public Auction(CharacterId ownerId, GearItem.Data item) {
         this.ownerId = ownerId;
-        this.price = price;
         this.item = item;
-        this.validUntil = (int) (System.currentTimeMillis() / 1000D);
     }
 
-    public Auction(UUID ownerId, int price, GearItem item, boolean isBidOffer) {
+    public Auction(CharacterId ownerId, int price, GearItem.Data item, boolean isBidOffer) {
         this.ownerId = ownerId;
         this.price = price;
         this.item = item;
-        this.validUntil = (int) (System.currentTimeMillis() / 1000D);
         this.isBidOffer = isBidOffer;
     }
 
@@ -69,30 +70,67 @@ public class Auction {
     public ArrayList<String> getDescription() {
         ArrayList<String> lore = new ArrayList<>();
         // TODO add useful lore description
-        lore.add(Bukkit.getPlayer(getOwnerId()).getDisplayName());
-        lore.add(Bukkit.getPlayer(getOwnerId()).getDisplayName());
-        lore.add(Bukkit.getPlayer(getOwnerId()).getDisplayName());
-        lore.add(Bukkit.getPlayer(getOwnerId()).getDisplayName());
+//        lore.add(Bukkit.getPlayer(getOwnerId()).getDisplayName());
+//        lore.add(Bukkit.getPlayer(getOwnerId()).getDisplayName());
+//        lore.add(Bukkit.getPlayer(getOwnerId()).getDisplayName());
+//        lore.add(Bukkit.getPlayer(getOwnerId()).getDisplayName());
         return lore;
+    }
+
+    /**
+     * Bids on an auction, sets the new price, and adds the bidding person to the bid history
+     * @param value
+     * @return
+     */
+    public boolean bid(CharacterId characterId, int value) {
+        if (!isBidOffer) {
+            return false;
+        }
+        if (!Characters.isPlayerCharacterLoaded(characterId)) {
+            return false;
+        }
+        PlayerCharacter playerCharacter = Characters.getPlayerCharacter(characterId);
+        if (value <= price) {
+            //TODO make pretty
+            playerCharacter.getPlayer().sendMessage("Your bid price " + value + "is below the current bid price of " + price);
+            return false;
+        }
+        if (Money.sub(playerCharacter, value)) {
+            this.price = value;
+            this.bidHistory.put(playerCharacter.getUniqueCharacterId().toString(), value);
+            notifyOwner(playerCharacter.getPlayer().getDisplayName() + " bid " + value + " on " + getItem().toInstance().gear.getName(), false);
+            return true;
+        }
+        return false;
+
     }
 
     /**
      * Notifies the owner of the auction
      * @param contentLines
      */
-    public void notifyOwner(ArrayList<String> contentLines) {
-        Player p = Bukkit.getPlayer(ownerId);
-        CharacterId characterId = Characters.getPlayerCharacter(p).getUniqueCharacterId();
+    public void notifyOwner(ArrayList<String> contentLines, boolean sendMail) {
+        Player p = Characters.getPlayerCharacter(ownerId).getPlayer();
         StringBuilder contentBuilder = new StringBuilder();
         contentLines.forEach(contentBuilder::append);
 
+        if (sendMail)
+            MailboxController.getInstance().addMail(getOwnerId(), new Mail(getOwnerId(), contentBuilder.toString(), false));
+
         if (p.isOnline() && Characters.isPlayerCharacterLoaded(p)) {
-            Mailbox mailbox = MailboxController.getInstance().getMailbox(characterId);
             // TODO make pretty like a princess
-            p.sendMessage(contentBuilder.toString());
-        } else {
-            MailboxController.getInstance().addMail(characterId, new Mail(characterId, contentBuilder.toString(), false));
+            MessageUtil.sendInfo(p, contentBuilder.toString());
         }
+    }
+
+    /**
+     * Notifies the owner of the auction
+     * @param message
+     */
+    public void notifyOwner(String message, boolean sendMail) {
+        ArrayList<String> messages = new ArrayList<>();
+        messages.add(message);
+        notifyOwner(messages, sendMail);
     }
 
     public int getId() {
@@ -103,11 +141,11 @@ public class Auction {
         return this.price;
     }
 
-    public UUID getOwnerId() {
+    public CharacterId getOwnerId() {
         return this.ownerId;
     }
 
-    public GearItem getItem() {
+    public GearItem.Data getItem() {
         return this.item;
     }
 
@@ -127,11 +165,11 @@ public class Auction {
         this.price = price;
     }
 
-    public void setOwnerId(UUID ownerId) {
+    public void setOwnerId(CharacterId ownerId) {
         this.ownerId = ownerId;
     }
 
-    public void setItem(GearItem item) {
+    public void setItem(GearItem.Data item) {
         this.item = item;
     }
 
@@ -141,5 +179,9 @@ public class Auction {
 
     public void setBidOffer(boolean isBidOffer) {
         this.isBidOffer = isBidOffer;
+    }
+
+    public Dictionary<String, Integer> getBidHistory() {
+        return bidHistory;
     }
 }

@@ -71,9 +71,7 @@ public class LegendsOfValeros extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-
         startTime = System.currentTimeMillis();
-
         mode = ServerMode.valueOf(getConfig().getString("server-mode", "LIVE"));
 
         getLogger().info("Server mode is set to: " + mode.name());
@@ -86,7 +84,6 @@ public class LegendsOfValeros extends JavaPlugin {
 
         try {
             registerModules();
-
             Modules.loadModules();
         } catch (Exception e) {
             e.printStackTrace();
@@ -96,10 +93,10 @@ public class LegendsOfValeros extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        for(InternalScheduler scheduler : InternalScheduler.getAllSchedulers())
-            scheduler.shutdown();
-
         Modules.unloadModules();
+
+        for (InternalScheduler scheduler : InternalScheduler.getAllSchedulers())
+            scheduler.shutdown();
 
         loadedEventClasses.clear();
     }
