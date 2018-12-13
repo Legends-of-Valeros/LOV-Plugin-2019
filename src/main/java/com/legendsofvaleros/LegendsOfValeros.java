@@ -3,6 +3,7 @@ package com.legendsofvaleros;
 import co.aikar.commands.PaperCommandManager;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.RemovalCause;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.Modules;
 import com.legendsofvaleros.modules.auction.AuctionController;
@@ -15,6 +16,7 @@ import com.legendsofvaleros.modules.factions.Factions;
 import com.legendsofvaleros.modules.fast_travel.FastTravel;
 import com.legendsofvaleros.modules.gear.Gear;
 import com.legendsofvaleros.modules.graveyard.Graveyards;
+import com.legendsofvaleros.modules.guilds.Guilds;
 import com.legendsofvaleros.modules.hearthstones.Hearthstones;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.modules.keepoutofocean.KeepOutOfOcean;
@@ -40,10 +42,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Crystall on 11/15/2018
@@ -66,7 +65,12 @@ public class LegendsOfValeros extends JavaPlugin {
         return manager;
     }
 
-    private Cache<Integer, Listener> loadedEventClasses = CacheBuilder.newBuilder().weakValues().build();
+    private Map<Integer, String> loadedEventClassesName = new HashMap<>();
+    private Cache<Integer, Listener> loadedEventClasses = CacheBuilder.newBuilder()
+                                                                        .weakValues()
+                                                                        .removalListener((v) -> {
+                                                                            instance.getLogger().severe("Event listener GC'd: " + loadedEventClassesName.remove(v.getKey()));
+                                                                        }).build();
 
     @Override
     public void onEnable() {
@@ -83,6 +87,11 @@ public class LegendsOfValeros extends JavaPlugin {
 
         manager = new PaperCommandManager(LegendsOfValeros.getInstance());
         manager.enableUnstableAPI("help");
+
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
+            // This is done so we get almost-live updates on GC'd listeners.
+            loadedEventClasses.cleanUp();
+        }, 0L, 20L);
 
         try {
             registerModules();
@@ -120,6 +129,7 @@ public class LegendsOfValeros extends JavaPlugin {
         Modules.registerModule(FastTravel.class);
         Modules.registerModule(Gear.class);
         Modules.registerModule(Graveyards.class);
+        Modules.registerModule(Guilds.class);
         Modules.registerModule(Hearthstones.class);
         Modules.registerModule(Hotswitch.class);
         Modules.registerModule(KeepOutOfOcean.class);
@@ -141,7 +151,7 @@ public class LegendsOfValeros extends JavaPlugin {
     }
 
     public void registerEvents(Listener listener, Module module) {
-        String listenerName = listener.getClass().getSimpleName() + "@" + Integer.toHexString(listener.hashCode());
+        String listenerName = listener.getClass().getName() + "@" + Integer.toHexString(listener.hashCode());
 
         module.getLogger().info("Registered listener: " + listenerName + ".");
 
@@ -149,6 +159,7 @@ public class LegendsOfValeros extends JavaPlugin {
         if (loadedEventClasses.getIfPresent(listener.hashCode()) != null)
             module.getLogger().severe(listenerName + " has already been registered as an event listener! This may cause unintended side effects!");
         loadedEventClasses.put(listener.hashCode(), listener);
+        loadedEventClassesName.put(listener.hashCode(), listenerName);
 
         Bukkit.getServer().getPluginManager().registerEvents(listener, this);
     }

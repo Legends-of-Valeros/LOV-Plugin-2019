@@ -1,7 +1,5 @@
 package com.legendsofvaleros.modules.characters.core;
 
-import com.codingforcookies.robert.item.ItemBuilder.Attributes;
-import com.codingforcookies.robert.item.ItemReader;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.config.CharactersConfig;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
@@ -11,11 +9,8 @@ import com.legendsofvaleros.modules.combatengine.events.CombatEnginePhysicalDama
 import com.legendsofvaleros.modules.combatengine.events.VanillaDamageCancelledEvent;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
 import com.legendsofvaleros.modules.combatengine.stat.StatUtils;
-import com.sun.org.apache.xpath.internal.operations.Mod;
-import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
