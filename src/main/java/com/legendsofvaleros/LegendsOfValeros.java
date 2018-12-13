@@ -1,6 +1,8 @@
 package com.legendsofvaleros;
 
 import co.aikar.commands.PaperCommandManager;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.Modules;
 import com.legendsofvaleros.modules.auction.AuctionController;
@@ -40,6 +42,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -47,7 +50,6 @@ import java.util.Set;
  */
 public class LegendsOfValeros extends JavaPlugin {
     private static LegendsOfValeros instance;
-
     public static LegendsOfValeros getInstance() {
         return instance;
     }
@@ -55,18 +57,16 @@ public class LegendsOfValeros extends JavaPlugin {
     public static long startTime = 0;
 
     private ServerMode mode;
-
     public static ServerMode getMode() {
         return instance.mode;
     }
 
     private PaperCommandManager manager;
-
     public PaperCommandManager getCommandManager() {
         return manager;
     }
 
-    private Set<Listener> loadedEventClasses = new HashSet<>();
+    private Cache<Integer, Listener> loadedEventClasses = CacheBuilder.newBuilder().weakValues().build();
 
     @Override
     public void onEnable() {
@@ -101,7 +101,7 @@ public class LegendsOfValeros extends JavaPlugin {
 
         Modules.unloadModules();
 
-        loadedEventClasses.clear();
+        loadedEventClasses.invalidateAll();
     }
 
     private void registerModules() throws Exception {
@@ -145,9 +145,10 @@ public class LegendsOfValeros extends JavaPlugin {
 
         module.getLogger().info("Registered listener: " + listenerName + ".");
 
-        if (loadedEventClasses.contains(listener))
+        // Is it possible to have hashCode collisions for non-similar classes?
+        if (loadedEventClasses.getIfPresent(listener.hashCode()) != null)
             module.getLogger().severe(listenerName + " has already been registered as an event listener! This may cause unintended side effects!");
-        loadedEventClasses.add(listener);
+        loadedEventClasses.put(listener.hashCode(), listener);
 
         Bukkit.getServer().getPluginManager().registerEvents(listener, this);
     }
