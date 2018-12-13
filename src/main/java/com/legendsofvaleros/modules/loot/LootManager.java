@@ -25,9 +25,7 @@ public class LootManager extends ModuleListener {
     private final Map<String, LootTable> tables = new HashMap<>();
     private static LootManager instance;
 
-    public static LootManager getInstance() {
-        return instance;
-    }
+    public static LootManager getInstance() { return instance; }
 
     @Override
     public void onLoad() {

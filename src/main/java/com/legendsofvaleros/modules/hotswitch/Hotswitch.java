@@ -22,10 +22,7 @@ import java.util.UUID;
 @DependsOn(Characters.class)
 public class Hotswitch extends ModuleListener {
     private static Hotswitch instance;
-
-    public static Hotswitch getInstance() {
-        return instance;
-    }
+    public static Hotswitch getInstance() { return instance; }
 
     public static final int SWITCHER_SLOT = 5;
     public static final int HELD_SLOT = 6;

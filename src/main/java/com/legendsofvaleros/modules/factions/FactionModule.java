@@ -8,57 +8,52 @@ import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.module.annotation.IntegratesWith;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
 import com.legendsofvaleros.modules.factions.event.FactionReputationChangeEvent;
+import com.legendsofvaleros.modules.factions.integration.QuestIntegration;
+import com.legendsofvaleros.modules.factions.listener.ReputationListener;
 import com.legendsofvaleros.modules.factions.quest.ActionReputation;
 import com.legendsofvaleros.modules.quests.Quests;
 import com.legendsofvaleros.modules.quests.action.stf.QuestActionFactory;
-import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @DependsOn(Characters.class)
-@DependsOn(Quests.class)
-public class Factions extends ModuleListener {
-    private static Factions plugin;
+@IntegratesWith(module = Quests.class, integration = QuestIntegration.class)
+public class FactionModule extends ModuleListener {
+    private static FactionModule instance;
+    public static FactionModule getInstance() { return instance; }
 
-    public static Factions getInstance() {
-        return plugin;
-    }
+    private static ORMTable<Faction> factionTable;
+    private static ORMTable<Reputation> reputationTable;
 
-    private ORMTable<Faction> factionTable;
-    private ORMTable<Reputation> reputationTable;
+    private static Map<String, Faction> factions = new HashMap<>();
+    private static Table<CharacterId, String, Reputation> playerRep = HashBasedTable.create();
 
-    private Map<String, Faction> factions = new HashMap<>();
-    private Table<CharacterId, String, Reputation> playerRep = HashBasedTable.create();
-
-    /**
-     * TODO
-     */
-    // private static AdvancementAPI NOTIFICATION_UP, NOTIFICATION_DOWN;
     @Override
     public void onLoad() {
         super.onLoad();
 
-        plugin = this;
+        instance = this;
+
+        registerEvents(new ReputationListener());
 
         String dbPoolId = LegendsOfValeros.getInstance().getConfig().getString("dbpools-database");
         factionTable = ORMTable.bind(dbPoolId, Faction.class);
         reputationTable = ORMTable.bind(dbPoolId, Reputation.class);
 
-        QuestActionFactory.registerType("faction_rep", ActionReputation.class);
+        FactionModule.getInstance().registerEvents(new PlayerListener());
 
-        /**
-         * TODO check if this can be removed
-         */
 		/*NOTIFICATION_UP = AdvancementAPI.builder(new NamespacedKey(this, "factions/up"))
 				                .title("Faction Rep+")
 				                .description("Faction rep increased.")
@@ -80,27 +75,6 @@ public class Factions extends ModuleListener {
 				                .background("minecraft:textures/gui/advancements/backgrounds/stone.png")
 				                .frame(FrameType.TASK)
 				            .build();*/
-    }
-
-    @EventHandler
-    public void onFactionRepChange(FactionReputationChangeEvent event) {
-        double percent = (int) (((double) event.getReputation() / event.getFaction().getMaxReputation()) * 1000) / 10D;
-
-        if (event.getChange() > 0) {
-            MessageUtil.sendUpdate(event.getPlayer(), event.getFaction().getName() + " reputation rose by " + event.getChange() + ". (" + percent + "%)");
-        } else {
-            MessageUtil.sendUpdate(event.getPlayer(), event.getFaction().getName() + " reputation dropped by " + event.getChange() + ". (" + percent + "%)");
-        }
-    }
-
-    @EventHandler
-    public void onPlayerLeave(PlayerCharacterLogoutEvent event) {
-        playerRep.row(event.getPlayerCharacter().getUniqueCharacterId()).clear();
-    }
-
-    @EventHandler
-    public void onPlayerRemoved(PlayerCharacterRemoveEvent event) {
-        reputationTable.query().remove(event.getPlayerCharacter().getUniqueCharacterId());
     }
 
     public ListenableFuture<Faction> getFaction(String faction_id) {
@@ -164,7 +138,19 @@ public class Factions extends ModuleListener {
                 e.printStackTrace();
                 ret.set(false);
             }
-        }, Factions.getInstance().getScheduler()::async);
+        }, FactionModule.getInstance().getScheduler()::async);
         return ret;
+    }
+
+    private class PlayerListener implements Listener {
+        @EventHandler
+        public void onPlayerLeave(PlayerCharacterLogoutEvent event) {
+            playerRep.row(event.getPlayerCharacter().getUniqueCharacterId()).clear();
+        }
+
+        @EventHandler
+        public void onPlayerRemoved(PlayerCharacterRemoveEvent event) {
+            reputationTable.query().remove(event.getPlayerCharacter().getUniqueCharacterId());
+        }
     }
 }

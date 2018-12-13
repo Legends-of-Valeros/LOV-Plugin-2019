@@ -39,10 +39,7 @@ import java.util.UUID;
 @DependsOn(Quests.class)
 public class Zones extends ModuleListener {
     private static Zones instance;
-
-    public static Zones getInstance() {
-        return instance;
-    }
+    public static Zones getInstance() { return instance; }
 
     private static ZoneManager manager;
 

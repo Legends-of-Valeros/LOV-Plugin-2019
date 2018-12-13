@@ -9,9 +9,7 @@ import org.bukkit.entity.LivingEntity;
 
 public class NPCs extends ModuleListener {
     private static NPCs instance;
-    public static NPCs getInstance() {
-        return instance;
-    }
+    public static NPCs getInstance() { return instance; }
 
     private static NPCManager manager;
     public static NPCManager manager() {

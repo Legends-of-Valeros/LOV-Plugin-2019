@@ -21,17 +21,14 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 @DependsOn(Gear.class)
 @DependsOn(Zones.class)
 public class Graveyards extends ModuleListener {
-    private static Graveyards inst;
-
-    public static Graveyards getInstance() {
-        return inst;
-    }
+    private static Graveyards instance;
+    public static Graveyards getInstance() { return instance; }
 
     @Override
     public void onLoad() {
         super.onLoad();
 
-        this.inst = this;
+        instance = this;
 
         LegendsOfValeros.getInstance().getCommand("suicide").setExecutor((sender, arg1, arg2, arg3) -> {
             CombatEngine.getInstance().causeTrueDamage((Player) sender, null, CombatEngine.getEntity((Player) sender).getStats().getStat(Stat.MAX_HEALTH), ((Player) sender).getLocation());

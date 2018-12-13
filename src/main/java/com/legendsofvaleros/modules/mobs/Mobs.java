@@ -42,10 +42,7 @@ import org.bukkit.event.EventPriority;
 @DependsOn(Parties.class)
 public class Mobs extends ModuleListener {
     private static Mobs instance;
-
-    public static Mobs getInstance() {
-        return instance;
-    }
+    public static Mobs getInstance() { return instance; }
 
     private BehaviorEngine ai;
 

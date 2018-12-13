@@ -24,16 +24,14 @@ import org.bukkit.event.inventory.InventoryType;
 @DependsOn(Characters.class)
 @DependsOn(Chat.class)
 public class Parties extends ModuleListener {
-    private static Parties plugin;
-
-    public static Parties getInstance() {
-        return plugin;
-    }
+    private static Parties instance;
+    public static Parties getInstance() { return instance; }
 
     @Override
     public void onLoad() {
         super.onLoad();
-        plugin = this;
+
+        instance = this;
 
         PartyManager.onEnable();
 

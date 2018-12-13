@@ -3,7 +3,6 @@ package com.legendsofvaleros;
 import co.aikar.commands.PaperCommandManager;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.RemovalCause;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.Modules;
 import com.legendsofvaleros.modules.auction.AuctionController;
@@ -12,11 +11,11 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.chat.Chat;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.dueling.Dueling;
-import com.legendsofvaleros.modules.factions.Factions;
+import com.legendsofvaleros.modules.factions.FactionModule;
 import com.legendsofvaleros.modules.fast_travel.FastTravel;
 import com.legendsofvaleros.modules.gear.Gear;
 import com.legendsofvaleros.modules.graveyard.Graveyards;
-import com.legendsofvaleros.modules.guilds.Guilds;
+import com.legendsofvaleros.modules.guilds.GuildController;
 import com.legendsofvaleros.modules.hearthstones.Hearthstones;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.modules.keepoutofocean.KeepOutOfOcean;
@@ -49,9 +48,7 @@ import java.util.*;
  */
 public class LegendsOfValeros extends JavaPlugin {
     private static LegendsOfValeros instance;
-    public static LegendsOfValeros getInstance() {
-        return instance;
-    }
+    public static LegendsOfValeros getInstance() { return instance; }
 
     public static long startTime = 0;
 
@@ -125,11 +122,11 @@ public class LegendsOfValeros extends JavaPlugin {
         Modules.registerModule(Chat.class);
         Modules.registerModule(CombatEngine.class);
         Modules.registerModule(Dueling.class);
-        Modules.registerModule(Factions.class);
+        Modules.registerModule(FactionModule.class);
         Modules.registerModule(FastTravel.class);
         Modules.registerModule(Gear.class);
         Modules.registerModule(Graveyards.class);
-        Modules.registerModule(Guilds.class);
+        Modules.registerModule(GuildController.class);
         Modules.registerModule(Hearthstones.class);
         Modules.registerModule(Hotswitch.class);
         Modules.registerModule(KeepOutOfOcean.class);

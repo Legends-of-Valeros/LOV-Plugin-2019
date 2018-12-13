@@ -32,20 +32,17 @@ public class LevelArchetypes extends ModuleListener implements LevelArchetypesAP
 
     public static final int MIN_LEVEL = 0;
 
-    private static LevelArchetypes singleton;
+    private static LevelArchetypes instance;
+    public static LevelArchetypes getInstance() { return instance; }
 
     private Map<String, Archetype> archetypes;
     private Map<EntityType, LevelProvider> providers;
-
-    public static LevelArchetypes getInstance() {
-        return singleton;
-    }
 
     @Override
     public void onLoad() {
         super.onLoad();
 
-        singleton = this;
+        instance = this;
 
         archetypes = new HashMap<>();
         providers = new HashMap<>();
