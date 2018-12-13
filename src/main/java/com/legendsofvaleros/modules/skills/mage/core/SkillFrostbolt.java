@@ -45,7 +45,7 @@ public class SkillFrostbolt extends Skill {
 
     @Override
     public boolean onSkillUse(World world, CombatEntity ce, int level) {
-        LivingEntity target = getTarget(ce, 15);
+        CombatEntity target = validateTarget(ce, getTarget(ce, 15), false);
 
         world.playSound(ce.getLivingEntity().getLocation(), "spell.ice.icewind.soft", .5F, .5F);
 
@@ -56,11 +56,11 @@ public class SkillFrostbolt extends Skill {
         }
 
         if (target != null) {
-            CombatEngine.getInstance().causeSpellDamage(target, ce.getLivingEntity(), SpellType.ICE,
+            CombatEngine.getInstance().causeSpellDamage(target.getLivingEntity(), ce.getLivingEntity(), SpellType.ICE,
                     SkillUtil.getSpellDamage(ce, SpellType.ICE, Characters.getInstance().getCharacterConfig().getClassConfig(EntityClass.MAGE).getBaseMeleeDamage())
                             * getEarliest(DAMAGE, level) / 100D, null, false, true);
 
-            CombatEngine.getEntity(target).getStats().newStatModifierBuilder(Stat.SPEED)
+            target.getStats().newStatModifierBuilder(Stat.SPEED)
                     .setDuration(getEarliest(TIME, level) * 20)
                     .setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
                     .setValue(getEarliest(SLOW, level) / 100D)

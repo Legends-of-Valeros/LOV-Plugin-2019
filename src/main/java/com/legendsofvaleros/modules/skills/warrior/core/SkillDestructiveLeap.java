@@ -50,11 +50,10 @@ public class SkillDestructiveLeap extends Skill {
 
         int area = getEarliest(RADIUS, level);
         OnTouchGround.call(ce.getLivingEntity(), (le) -> {
-            for (Entity e : getNearbyEntities(le.getLocation(), area, 1, area)) {
-                if (e != ce.getLivingEntity() && e instanceof LivingEntity)
-                    CombatEngine.getInstance().causePhysicalDamage((LivingEntity) e, ce.getLivingEntity(), PhysicalType.OTHER,
-                            Characters.getInstance().getCharacterConfig().getClassConfig(EntityClass.WARRIOR).getBaseMeleeDamage()
-                                    * getEarliest(DAMAGE, level) / 100D, null, false, true);
+            for (CombatEntity e : validateTargets(ce, getNearbyEntities(le.getLocation(), area, 1, area), false)) {
+                CombatEngine.getInstance().causePhysicalDamage((LivingEntity) e, ce.getLivingEntity(), PhysicalType.OTHER,
+                        Characters.getInstance().getCharacterConfig().getClassConfig(EntityClass.WARRIOR).getBaseMeleeDamage()
+                                * getEarliest(DAMAGE, level) / 100D, null, false, true);
             }
         });
         return true;

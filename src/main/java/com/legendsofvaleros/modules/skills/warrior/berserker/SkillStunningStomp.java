@@ -35,16 +35,14 @@ public class SkillStunningStomp extends Skill {
 
 	@Override
 	public boolean onSkillUse(World world, CombatEntity ce, int level) {
-		Collection<LivingEntity> targets = getTargets(ce, getEarliest(RADIUS, level), LivingEntity.class);
-		for(LivingEntity entity : targets) {
-			if(entity != ce.getLivingEntity())
-				CombatEngine.getEntity(entity)
-					.getStats().newStatModifierBuilder(Stat.SPEED)
-						.setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
-						.setValue(1 - getEarliest(SPEED, level) / 100D)
-						.setDuration(getEarliest(TIME, level) * 20)
-						.setRemovedOnDeath(true)
-						.build();
+		Collection<CombatEntity> targets = validateTargets(ce, getTargets(ce, getEarliest(RADIUS, level), LivingEntity.class), false);
+		for(CombatEntity entity : targets) {
+			entity.getStats().newStatModifierBuilder(Stat.SPEED)
+					.setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
+					.setValue(1 - getEarliest(SPEED, level) / 100D)
+					.setDuration(getEarliest(TIME, level) * 20)
+					.setRemovedOnDeath(true)
+					.build();
 		}
 		
 		return targets.size() != 0;

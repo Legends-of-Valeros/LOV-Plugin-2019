@@ -79,9 +79,9 @@ public class SkillHailstorm extends Skill {
 
                 if (runTimes % 10 == 0) {
                     Random rand = new Random();
-                    for (LivingEntity e : getNearbyEntities(loc, radius, radius, radius)) {
+                    for (CombatEntity e : validateTargets(ce, getNearbyEntities(loc, radius, radius, radius), false)) {
                         if (rand.nextFloat() > chance) continue;
-                        Characters.getInstance().getSkillEffectManager().getSkillEffect("Freeze").apply(e, ce.getLivingEntity(), getEarliest(TIME, level));
+                        Characters.getInstance().getSkillEffectManager().getSkillEffect("Freeze").apply(e.getLivingEntity(), ce.getLivingEntity(), getEarliest(TIME, level));
                     }
                 }
 

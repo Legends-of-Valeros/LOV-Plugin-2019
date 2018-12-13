@@ -67,7 +67,7 @@ public class SkillAvalanche extends Skill {
             dir = eyeLoc.getDirection();
         }
 
-        List<Entity> attacked = new ArrayList<>();
+        List<CombatEntity> attacked = new ArrayList<>();
 
         world.playSound(currLoc, "spell.ice.icewind.strong", 1F, 1F);
         new BukkitRunnable() {
@@ -109,10 +109,10 @@ public class SkillAvalanche extends Skill {
                     return;
                 }
 
-                for (Entity e : getNearbyEntities(perp, thickness / 2F, 2F, thickness / 2F)) {
-                    if (e != ce.getLivingEntity() && e instanceof LivingEntity && !attacked.contains(e)) {
+                for (CombatEntity e : validateTargets(ce, getNearbyEntities(perp, thickness / 2F, 2F, thickness / 2F), false)) {
+                    if (!attacked.contains(e)) {
                         attacked.add(e);
-                        CombatEngine.getInstance().causeSpellDamage((LivingEntity) e, ce.getLivingEntity(), SpellType.FIRE,
+                        CombatEngine.getInstance().causeSpellDamage(e.getLivingEntity(), ce.getLivingEntity(), SpellType.FIRE,
                                 damage / 100D, ce.getLivingEntity().getLocation(), false, true);
                     }
                 }

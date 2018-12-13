@@ -7,6 +7,7 @@ import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.characters.skill.SkillTargetEvent;
 import com.legendsofvaleros.modules.chat.Chat;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
@@ -39,7 +40,27 @@ public class Parties extends ModuleListener {
     }
 
     @EventHandler
-    public void onEntityDeath(CombatEngineDamageEvent event) {
+    public void onEntityTargetted(SkillTargetEvent event) {
+        // Only disable targetting of bad effects in parties.
+        if(!Boolean.FALSE.equals(event.isGood())) return;
+
+        if (!(event.getUser().getLivingEntity() instanceof Player
+                && event.getTarget().getLivingEntity() instanceof Player))
+            return;
+
+        if (!Characters.isPlayerCharacterLoaded((Player) event.getUser().getLivingEntity())) return;
+        if (!Characters.isPlayerCharacterLoaded((Player) event.getTarget().getLivingEntity())) return;
+
+        PlayerCharacter pc1 = Characters.getPlayerCharacter((Player) event.getUser().getLivingEntity());
+        PlayerCharacter pc2 = Characters.getPlayerCharacter((Player) event.getTarget().getLivingEntity());
+
+        IParty party = PartyManager.getPartyByMember(pc1.getUniqueCharacterId());
+        if (party != null && party.getMembers().contains(pc2.getUniqueCharacterId()))
+            event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onEntityDamaged(CombatEngineDamageEvent event) {
         if (event.getAttacker() == null) return;
 
         if (!(event.getDamaged().getLivingEntity() instanceof Player

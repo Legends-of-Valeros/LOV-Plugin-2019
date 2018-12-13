@@ -96,12 +96,15 @@ public class Modules {
         if (enabled > modules.size())
             getLogger().severe("Failed to load " + (enabled - modules.size()) + " modules!");
 
+        getLogger().info("");
+
         i = 0;
 
         // For each loaded module
         for (InternalModule module : modules.values()) {
-            if (module.isLoaded)
+            if (module.isLoaded) {
                 i += module.loadIntegrations();
+            }
         }
 
         getLogger().info("Loaded " + i + " integrations");

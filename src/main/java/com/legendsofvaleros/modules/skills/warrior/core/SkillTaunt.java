@@ -30,12 +30,10 @@ public class SkillTaunt extends Skill {
 
 	@Override
 	public boolean onSkillUse(World world, CombatEntity ce, int level) {
-		Collection<Player> targets = getTargets(ce, getEarliest(RADIUS, level), Player.class);
-		for(LivingEntity entity : targets) {
-			CombatEntity ece = CombatEngine.getEntity(entity);
-			if(ece == null) continue;
-			if(ece.getThreat() == null) continue;
-			ece.getThreat().editThreat(ce.getLivingEntity(), 100);
+		Collection<CombatEntity> targets = validateTargets(ce, getTargets(ce, getEarliest(RADIUS, level), Player.class), false);
+		for(CombatEntity entity : targets) {
+			if(entity.getThreat() == null) continue;
+			entity.getThreat().editThreat(ce.getLivingEntity(), 100);
 		}
 		return targets.size() != 0;
 	}

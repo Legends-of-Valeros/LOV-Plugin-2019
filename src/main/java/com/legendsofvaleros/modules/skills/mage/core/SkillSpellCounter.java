@@ -32,18 +32,15 @@ public class SkillSpellCounter extends Skill {
 
 	@Override
 	public boolean onSkillUse(World world, CombatEntity ce, int level) {
-		LivingEntity target = getTarget(ce, 16D);
+		CombatEntity target = validateTarget(ce, getTarget(ce, 16D), false);
 		if(target == null) return false;
-		
-		CombatEntity targetCE = CombatEngine.getEntity(target);
-		if(!targetCE.isActive()) return false;
-		
+
 		EntityClass clazz;
 		
-		if(targetCE.isPlayer()) {
-			clazz = Characters.getPlayerCharacter((Player)targetCE.getLivingEntity()).getPlayerClass();
+		if(target.isPlayer()) {
+			clazz = Characters.getPlayerCharacter((Player)target.getLivingEntity()).getPlayerClass();
 		}else{
-			Mob.Instance mob = Mob.Instance.get(target);
+			Mob.Instance mob = Mob.Instance.get(target.getLivingEntity());
 			clazz = mob.mob.getEntityClass();
 		}
 		
@@ -51,7 +48,7 @@ public class SkillSpellCounter extends Skill {
 
 		world.playSound(ce.getLivingEntity().getLocation(), Sound.ENTITY_ENDERMEN_SCREAM, .5F, .5F);
 		
-		targetCE.getStatusEffects().addStatusEffect(StatusEffectType.SILENCE, getEarliest(TIME, level));
+		target.getStatusEffects().addStatusEffect(StatusEffectType.SILENCE, getEarliest(TIME, level));
 		
 		return true;
 	}

@@ -53,14 +53,13 @@ public class SkillIcyBlast extends Skill {
         world.playSound(ce.getLivingEntity().getLocation(), "spell.ice.icewind.strong", 1F, 1F);
 
         int radius = getEarliest(RADIUS, level);
-        for (LivingEntity e : getTargets(ce, radius, LivingEntity.class)) {
-            if (e == ce.getLivingEntity()) continue;
-            if (e instanceof Player) {
+        for (CombatEntity e : validateTargets(ce, getTargets(ce, radius, LivingEntity.class), false)) {
+            if (e.getLivingEntity() instanceof Player) {
                 if (!Characters.isPlayerCharacterLoaded((Player) e))
                     continue;
-                ((Player) ce.getLivingEntity()).playSound(ce.getLivingEntity().getLocation(), "spell.ice.freeze", 1F, 1F);
+                ((Player)ce.getLivingEntity()).playSound(ce.getLivingEntity().getLocation(), "spell.ice.freeze", 1F, 1F);
             }
-            Characters.getInstance().getSkillEffectManager().getSkillEffect("Freeze").apply(e, ce.getLivingEntity(), getEarliest(FREEZE_LEVEL, level));
+            Characters.getInstance().getSkillEffectManager().getSkillEffect("Freeze").apply(e.getLivingEntity(), ce.getLivingEntity(), getEarliest(FREEZE_LEVEL, level));
         }
 
         Location start = ce.getLivingEntity().getLocation().clone();

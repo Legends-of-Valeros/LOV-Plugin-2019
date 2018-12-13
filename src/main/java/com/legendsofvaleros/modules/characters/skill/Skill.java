@@ -13,10 +13,7 @@ import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.damage.DamageHistory;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -255,22 +252,54 @@ public abstract class Skill {
      */
     public abstract boolean onSkillUse(World world, CombatEntity ce, int level);
 
-    public Collection<LivingEntity> getNearbyEntities(CombatEntity ce, double x, double y, double z) {
+    public List<CombatEntity> getNearbyEntities(CombatEntity ce, double x, double y, double z) {
         return getNearbyEntities(ce.getLivingEntity(), ce.getLivingEntity().getLocation(), x, y, z);
     }
 
-    public Collection<LivingEntity> getNearbyEntities(Location l, double x, double y, double z) {
+    public List<CombatEntity> getNearbyEntities(Location l, double x, double y, double z) {
         return getNearbyEntities(null, l, x, y, z);
     }
 
-    public Collection<LivingEntity> getNearbyEntities(LivingEntity ignore, Location l, double x, double y, double z) {
-        List<LivingEntity> entities = new ArrayList<>();
+    public List<CombatEntity> getNearbyEntities(LivingEntity ignore, Location l, double x, double y, double z) {
+        List<CombatEntity> entities = new ArrayList<>();
+        CombatEntity ce;
+
         for (Entity e : l.getWorld().getNearbyEntities(l, x, y, z)) {
             if (e == ignore || !(e instanceof LivingEntity)) continue;
-            if (CombatEngine.getEntity((LivingEntity) e) == null) continue;
-            entities.add((LivingEntity) e);
+            if ((ce = CombatEngine.getEntity((LivingEntity) e)) == null) continue;
+            entities.add(ce);
         }
+
         return entities;
+    }
+
+    /**
+     * Throws an event and ensures that the target is valid.
+     */
+    public CombatEntity validateTarget(CombatEntity user, CombatEntity target, Boolean good) {
+        if(target == null) return null;
+        SkillTargetEvent event = new SkillTargetEvent(this, user, target, good);
+        Bukkit.getPluginManager().callEvent(event);
+        return !event.isCancelled() ? target : null;
+    }
+
+    /**
+     * Throws an event and ensures that the targets are valid. Modifies the
+     * list in-place, but returns it again for inline usage.
+     */
+    public List<CombatEntity> validateTargets(CombatEntity user, List<CombatEntity> targets, Boolean good) {
+        for(int i = 0; i < targets.size(); i++) {
+            if(targets.get(i) == user) {
+                targets.remove(i--);
+                continue;
+            }
+
+            SkillTargetEvent event = new SkillTargetEvent(this, user, targets.get(i), good);
+            Bukkit.getPluginManager().callEvent(event);
+            if(event.isCancelled())
+                targets.remove(i--);
+        }
+        return targets;
     }
 
     public Location getLookTargetGround(CombatEntity ce, int range) {
@@ -303,18 +332,18 @@ public abstract class Skill {
      * Once done, it checks for approximate line of sight, if an entity is within
      * it, it is returned. Otherwise <code>null</code>.
      */
-    public LivingEntity getTarget(CombatEntity ce, double reach) {
-        LivingEntity target = null;
+    public CombatEntity getTarget(CombatEntity ce, double reach) {
+        CombatEntity target = null;
         double targetDistance = 0;
 
         Vector l = ce.getLivingEntity().getEyeLocation().toVector(),
                 playerLoc = ce.getLivingEntity().getLocation().getDirection().normalize();
 
-        for (LivingEntity other : getTargets(ce, reach, LivingEntity.class)) {
-            double dist = ce.getLivingEntity().getLocation().distance(other.getLocation());
+        for (CombatEntity other : getTargets(ce, reach, LivingEntity.class)) {
+            double dist = ce.getLivingEntity().getLocation().distance(other.getLivingEntity().getLocation());
 
             if (target == null || dist < targetDistance) {
-                Vector entityLoc = other.getLocation().add(0, 1, 0).toVector().subtract(l);
+                Vector entityLoc = other.getLivingEntity().getLocation().add(0, 1, 0).toVector().subtract(l);
                 double radius = Math.max(.25, .9 - (dist / 3) * .55);
                 if (playerLoc.clone().crossProduct(entityLoc).lengthSquared() < radius && entityLoc.normalize().dot(playerLoc) >= .97D) {
                     target = other;
@@ -335,30 +364,28 @@ public abstract class Skill {
      * and if the entity that did the most recent damage to the player is within
      * 10 blocks, that is returned. Otherwise <code>null</code>.
      */
-    public LivingEntity getTargetOrLast(CombatEntity ce, double reach) {
-        LivingEntity target = getTarget(ce, reach);
-        if (target == null) {
-            DamageHistory history = CombatEngine.getInstance().getDamageHistory(ce.getLivingEntity());
-            if (history == null) return null;
-            target = history.getLastDamager();
-            if (target != null && ce.getLivingEntity().getLocation().distance(target.getLocation()) > 10)
-                return null;
-        }
+    public CombatEntity getTargetOrLast(CombatEntity ce, double reach) {
+        CombatEntity targetCE = getTarget(ce, reach);
+        if(targetCE != null) return targetCE;
 
-        if (CombatEngine.getEntity(target) == null) return null;
+        DamageHistory history = CombatEngine.getInstance().getDamageHistory(ce.getLivingEntity());
+        if (history == null) return null;
+        LivingEntity targetLE = history.getLastDamager();
+        if (targetLE != null && ce.getLivingEntity().getLocation().distance(targetLE.getLocation()) > 10)
+            return null;
 
-        return target;
+        return null;
     }
 
     @SafeVarargs
-    public final Collection<LivingEntity> getTargets(CombatEntity ce, double radius, Class<? extends LivingEntity>... types) {
+    public final Collection<CombatEntity> getTargets(CombatEntity ce, double radius, Class<? extends LivingEntity>... types) {
         if (types != null && types.length > 0) {
-            List<LivingEntity> entities = new ArrayList<>();
+            List<CombatEntity> entities = new ArrayList<>();
 
-            Collection<LivingEntity> targets = getTargets(ce, radius);
-            for (LivingEntity target : targets) {
+            Collection<CombatEntity> targets = getTargets(ce, radius);
+            for (CombatEntity target : targets) {
                 for (Class<? extends LivingEntity> type : types) {
-                    if (type.isAssignableFrom(target.getClass())) {
+                    if (type.isAssignableFrom(target.getLivingEntity().getClass())) {
                         entities.add(target);
                         break;
                     }
@@ -371,13 +398,13 @@ public abstract class Skill {
         return getNearbyEntities(ce, radius, radius, radius);
     }
 
-    public <T extends LivingEntity> Collection<T> getTargets(CombatEntity ce, double radius, Class<T> type) {
-        List<T> entities = new ArrayList<>();
+    public <T extends LivingEntity> List<CombatEntity> getTargets(CombatEntity ce, double radius, Class<T> type) {
+        List<CombatEntity> entities = new ArrayList<>();
 
-        Collection<LivingEntity> targets = getTargets(ce, radius);
-        for (Entity target : targets)
-            if (type.isAssignableFrom(target.getClass()))
-                entities.add(type.cast(target));
+        Collection<CombatEntity> targets = getTargets(ce, radius);
+        for (CombatEntity target : targets)
+            if (type.isAssignableFrom(target.getLivingEntity().getClass()))
+                entities.add(target);
 
         return entities;
     }
