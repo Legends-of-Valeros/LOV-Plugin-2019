@@ -11,7 +11,7 @@ import com.legendsofvaleros.util.item.Model;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-@CommandAlias("gear")
+@CommandAlias("gear|lov gear")
 public class ItemCommands extends BaseCommand {
     @Subcommand("reload")
     @Description("Reload the item cache.")

@@ -10,7 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-@CommandAlias("graveyards|graveyard|grave")
+@CommandAlias("graveyards|lov graveyards")
 public class GraveyardCommands extends BaseCommand {
 	@Subcommand("create")
 	@Description("Create a new graveyard.")

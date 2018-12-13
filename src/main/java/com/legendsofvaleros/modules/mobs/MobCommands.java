@@ -9,7 +9,7 @@ import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-@CommandAlias("mobs|mob")
+@CommandAlias("mobs|lov mobs")
 public class MobCommands extends BaseCommand {
 	@Subcommand("clear")
 	@Description("Clear the mob cache.")

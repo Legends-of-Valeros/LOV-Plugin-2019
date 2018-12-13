@@ -8,7 +8,7 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-@CommandAlias("banks|bank")
+@CommandAlias("banks|lov banks")
 public class BankCommand extends BaseCommand {
 	@Subcommand("add")
 	@Description("Add \"currency\" to a player.")
