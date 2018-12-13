@@ -15,6 +15,7 @@ import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -83,8 +84,6 @@ public class BasicCombat {
                 return;
             }
 
-            player.sendMessage("G: " + player.getAttribute(Attribute.GENERIC_ATTACK_SPEED).getBaseValue());
-
             double baseDamage = config.getClassConfig(current.getPlayerClass()).getBaseMeleeDamage();
 
             // causes damage through CombatEngine to replace the invalidated vanilla damage
@@ -100,31 +99,16 @@ public class BasicCombat {
             Player player = (Player)event.getAttacker().getLivingEntity();
 
             AttributeInstance attr = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
-            double realSpeed = attr.getBaseValue();
-
-            event.getAttacker().getLivingEntity().sendMessage("S: " + realSpeed);
-
-            if (player.getInventory().getItemInMainHand().getType() != Material.AIR) {
-                ItemReader reader = new ItemReader(player.getInventory().getItemInMainHand());
-
-                if (reader.hasAttribute(Attributes.ATTACK_SPEED)) {
-                    event.getAttacker().getLivingEntity().sendMessage("I: " + reader.getAttribute(Attributes.ATTACK_SPEED));
-
-                    realSpeed += reader.getAttribute(Attributes.ATTACK_SPEED);
-                }
-            }
 
             long millis = System.currentTimeMillis();
             Long last = lastSwing.get(player.getUniqueId());
             if(last == null) last = 0L;
 
             // The amount of time that must be awaited before full damage is dealt.
-            long wait = (long)(1D / realSpeed * 1000);
+            long wait = (long)(1D / attr.getValue() * 1000);
 
             // The amount of time remaining to be at full power.
             long remaining = last + wait - millis;
-
-            event.getAttacker().getLivingEntity().sendMessage("W: " + wait + " ? " + remaining);
 
             if(remaining > 0) {
                 event.newDamageModifierBuilder("Swing Multiplier")

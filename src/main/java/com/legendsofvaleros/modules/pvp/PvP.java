@@ -105,9 +105,14 @@ public class PvP extends ModuleListener {
             event.setCancelled(true);
 
         if(Modules.isLoaded(Dueling.class)) {
-            Duel duel = Dueling.getInstance().getDuel(p1, p2);
-            if(duel != null)
+            // If they're in a duel with each other, enable pvp.
+            if(Dueling.getInstance().getDuel(p1, p2) != null)
                 event.setCancelled(false);
+
+            // If either player is in a duel, cancel damage.
+            else if(Dueling.getInstance().getDuel(p1) != null
+                    || Dueling.getInstance().getDuel(p2) != null)
+                event.setCancelled(true);
         }
 
         if(!event.isCancelled())

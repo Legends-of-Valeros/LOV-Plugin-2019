@@ -155,7 +155,7 @@ public class ItemUtil {
 		double avg = (pdc.max - pdc.min) / 2D + pdc.min;
 		
 		GearUseSpeed.Persist usc = item.getPersist(GearUseSpeed.Component.class);
-		if(usc != null) avg *= 1D / usc.speed;
+		if(usc != null) avg *= usc.speed;
 		
 		return avg;
 	}

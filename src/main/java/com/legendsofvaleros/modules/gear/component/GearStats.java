@@ -22,6 +22,7 @@ import com.legendsofvaleros.util.DebugFlags;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.field.RangedValue;
 import org.bukkit.ChatColor;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -128,7 +129,7 @@ public class GearStats {
 		public Persist fire(GearItem.Instance item, Persist persist, GearTrigger trigger) {
 			if(trigger.equals(EquipTrigger.class)) {
 				EquipTrigger t = (EquipTrigger)trigger;
-				
+
 				PlayerCharacter pc = null;
 				if(t.getEntity().isPlayer())
 					pc = Characters.getPlayerCharacter((Player)t.getEntity().getLivingEntity());
