@@ -192,8 +192,8 @@ public class GearUsable {
 			
 			PlayerCharacter pc = Characters.getPlayerCharacter((Player)t.getEntity().getLivingEntity());
 			
-			if(cooldown > 0 && pc.getCooldowns().hasCooldown("usable-" + item.gear.getID())) {
-				MessageUtil.sendError(pc.getPlayer(), "You cannot use that for another " + (int)Math.ceil(pc.getCooldowns().getCooldown("usable-" + item.gear.getID()).getRemainingDurationMillis() / 1000) + " seconds.");
+			if(cooldown > 0 && pc.getCooldowns().hasCooldown("usable-" + item.getID())) {
+				MessageUtil.sendError(pc.getPlayer(), "You cannot use that for another " + (int)Math.ceil(pc.getCooldowns().getCooldown("usable-" + item.getID()).getRemainingDurationMillis() / 1000) + " seconds.");
 				return false;
 			}
 	
@@ -249,9 +249,9 @@ public class GearUsable {
 			}
 			
 			if(cooldown > 0)
-				pc.getCooldowns().offerCooldown("usable-" + item.gear.getID(), Cooldowns.CooldownType.CHARACTER_PLAY_TIME, cooldown);
+				pc.getCooldowns().offerCooldown("usable-" + item.getID(), Cooldowns.CooldownType.CHARACTER_PLAY_TIME, cooldown);
 			
-			if(item.gear.getType() == GearType.POTION)
+			if(item.getType() == GearType.POTION)
 				pc.getPlayer().playSound(pc.getLocation(), "ui.potion.drink", 1F, 1F);
 
 			return null;

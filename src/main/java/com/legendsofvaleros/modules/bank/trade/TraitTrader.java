@@ -71,7 +71,7 @@ public class TraitTrader extends LOVTrait {
 
         @Override
         public boolean isValid(GearItem.Instance item) {
-            return item.gear.getType().isTradable();
+            return item.getType().isTradable();
         }
 
         @Override

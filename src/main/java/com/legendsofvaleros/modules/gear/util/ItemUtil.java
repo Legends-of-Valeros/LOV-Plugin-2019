@@ -68,7 +68,7 @@ public class ItemUtil {
 		ItemListener.itemOwner.put(item.getUniqueId(), owner.getPlayerId());
 		
 		item.setGlowing(true);
-		instance.gear.getRarityLevel().getTeam().addEntry(item.getUniqueId().toString());
+		instance.getRarityLevel().getTeam().addEntry(item.getUniqueId().toString());
 	}
 	
 	public static void giveItem(PlayerCharacter pc, GearItem.Instance instance) {
@@ -92,7 +92,7 @@ public class ItemUtil {
 				if(instance == item)
 					instance = instance.copy();
 
-				int newSize = Math.min(item.gear.getMaxAmount(), instance.amount + item.amount);
+				int newSize = Math.min(item.getMaxAmount(), instance.amount + item.amount);
 				instance.amount -= newSize - item.amount;
 				item.amount = newSize;
 				

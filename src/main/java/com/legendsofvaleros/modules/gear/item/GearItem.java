@@ -25,67 +25,58 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Table(name = "items")
-public class GearItem {
+public class GearItem implements IGear {
     @Column(primary = true, name = "item_id", length = 64)
     private final String id;
-
-    public String getID() {
+    @Override public String getID() {
         return id;
     }
 
     @Column(name = "item_group", length = 64)
     private String group;
-
     public String getGroup() {
         return group;
     }
 
     @Column(name = "item_version")
     private final int version;
-
-    public int getVersion() {
+    @Override public int getVersion() {
         return version;
     }
 
     @Column(name = "item_name", length = 64)
     private String name;
-
-    public String getName() {
+    @Override public String getName() {
         return name;
     }
 
     @Column(name = "item_type")
     private GearType type;
-
-    public GearType getType() {
+    @Override public GearType getType() {
         return type;
     }
 
     @ForeignKey(table = Model.class, name = "model_id", onUpdate = ForeignKey.Trigger.CASCADE, onDelete = ForeignKey.Trigger.SET_DEFAULT)
     @Column(name = "item_model", length = 48)
     private String modelId;
-
-    public String getModelId() {
+    @Override public String getModelId() {
         return modelId;
     }
 
     public Model model;
-
     public Model getModel() {
         return model;
     }
 
     @Column(name = "item_amount")
     private byte maxAmount = 1;
-
-    public byte getMaxAmount() {
+    @Override public byte getMaxAmount() {
         return maxAmount;
     }
 
     @Column(name = "item_rarity")
     private GearRarity rarity;
-
-    public GearRarity getRarityLevel() {
+    @Override public GearRarity getRarityLevel() {
         return rarity;
     }
 
@@ -97,6 +88,7 @@ public class GearItem {
         this.id = id;
     }
 
+    @Override
     public int getSeed() {
         int seed = 0;
         for (int i = 0; i < id.length(); i++)
@@ -126,7 +118,7 @@ public class GearItem {
     }
 
     public boolean isSimilar(GearItem.Instance gear) {
-        return gear != null && (this == gear.gear || this.id.equals(gear.gear.id));
+        return gear != null && (this == gear.gear || this.id.equals(gear.getID()));
     }
 
     @Override
@@ -138,7 +130,7 @@ public class GearItem {
         return ItemManager.getItem(id);
     }
 
-    public static class Instance {
+    public static class Instance implements IGear {
         private static final Cache<String, GearItem.Instance> cache = CacheBuilder.newBuilder()
                 .concurrencyLevel(4)
                 .expireAfterAccess(5, TimeUnit.MINUTES)
@@ -171,6 +163,16 @@ public class GearItem {
             this.version = gear.version;
             this.uuid = uuid;
         }
+
+        @Override public String getID() { return gear.getID(); }
+        @Override public int getVersion() { return gear.getVersion(); }
+        @Override public String getName() { return gear.getName(); }
+        @Override public GearType getType() { return gear.getType(); }
+        @Override public String getModelId() { return gear.getModelId(); }
+        @Override public Model getModel() { return gear.getModel(); }
+        @Override public byte getMaxAmount() { return gear.getMaxAmount(); }
+        @Override public GearRarity getRarityLevel() { return gear.getRarityLevel(); }
+        @Override public int getSeed() { return gear.getSeed(); }
 
         /**
          * Needed when creating two instances of an item from one instance. This prevents

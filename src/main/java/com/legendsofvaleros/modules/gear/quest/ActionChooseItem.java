@@ -65,7 +65,7 @@ public class ActionChooseItem extends AbstractQuestAction {
 					ui.close(p);
 
 					MessageUtil.sendUpdate(player, new TextBuilder("You received " + (instance.amount == 1 ? "a " : instance.amount + "x") + "[").color(ChatColor.AQUA)
-							.append(instance.gear.getName()).color(ChatColor.GREEN)
+							.append(instance.getName()).color(ChatColor.GREEN)
 							.append("]!").color(ChatColor.AQUA).create());
 
 					ItemUtil.giveItem(Characters.getPlayerCharacter(player), instance);
