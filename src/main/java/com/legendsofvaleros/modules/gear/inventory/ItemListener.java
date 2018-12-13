@@ -69,7 +69,7 @@ public class ItemListener implements Listener {
 
         if (instance == null) return;
 
-        if (!instance.gear.getType().isTradable()) {
+        if (!instance.getType().isTradable()) {
             ItemUtil.giveItem(Characters.getPlayerCharacter(event.getPlayer()), instance);
         } else {
             Gear.getInstance().getScheduler().executeInSpigotCircle(() -> new WindowYesNo("Destroy Item") {
@@ -182,8 +182,8 @@ public class ItemListener implements Listener {
                 return;
             }
 
-            if ((!offhand && gear.gear.getType() != GearType.WEAPON)
-                    || (offhand && gear.gear.getType() != GearType.SHIELD)) {
+            if ((!offhand && gear.getType() != GearType.WEAPON)
+                    || (offhand && gear.getType() != GearType.SHIELD)) {
                 MessageUtil.sendError(e.getWhoClicked(), "You can't wield that item there.");
 
                 e.setCancelled(true);

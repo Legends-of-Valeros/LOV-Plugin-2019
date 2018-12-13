@@ -2,6 +2,8 @@ package com.legendsofvaleros.modules.bank.trade;
 
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.item.ItemBuilder;
+import com.codingforcookies.robert.slot.SlotGrabbable;
+import com.codingforcookies.robert.slot.SlotUsable;
 import com.legendsofvaleros.modules.bank.Bank;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
@@ -77,8 +79,8 @@ class TradeState {
         this.p1 = p1;
         this.p2 = p2;
 
-        g1 = new TradeGUI(this, "Trade: " + p2.getName());
-        g2 = new TradeGUI(this, "Trade: " + p1.getName());
+        g1 = new TradeGUI(this, p2.getName());
+        g2 = new TradeGUI(this, p1.getName());
     }
 
     public void open() {
@@ -99,10 +101,8 @@ class TradeState {
 
         for (int i = 0; i < 7; i++) {
             int slot = i < 4 ? i : 5 + i;
-            if (g1.getInventory().getItem(slot) != null)
-                g2.slot(5 + slot, g1.getInventory().getItem(slot), null);
-            if (g2.getInventory().getItem(slot) != null)
-                g1.slot(5 + slot, g2.getInventory().getItem(slot), null);
+            g2.getInventory().setItem(5 + slot, g1.getInventory().getItem(slot));
+            g1.getInventory().setItem(5 + slot, g2.getInventory().getItem(slot));
         }
 
         g1.slot(5, 2, Model.stack("menu-accept-button" + (g2.accepted ? "-pressed" : "")).setName(g2.accepted ? "Accepted" : "Not Accepted").create(), null);
@@ -140,12 +140,7 @@ class TradeState {
 
 class TradeGUI extends GUI {
     private ItemStack stack;
-
-    @Override
-    public void onOpen(Player p, InventoryView view) {
-        p.getInventory().setItem(17, Model.merge("menu-ui-trade", (stack = p.getInventory().getItem(17))));
-    }
-
+    @Override public void onOpen(Player p, InventoryView view) { p.getInventory().setItem(17, Model.merge("menu-ui-trade", (stack = p.getInventory().getItem(17)))); }
     @Override public void onClose(Player p, InventoryView view) {
         p.getInventory().setItem(17, stack);
     }
@@ -161,6 +156,26 @@ class TradeGUI extends GUI {
         fixed();
 
         this.state = state;
+
+        for (int x = 0; x < 4; x++)
+            for (int y = 0; y < 2; y++)
+                slot(x, y, Material.AIR, new SlotUsable() {
+                    @Override
+                    public void onPickup(GUI gui, Player p, ItemStack stack, InventoryClickEvent event) {
+                        // Should we delay upateSlots by 1 tick instead of setting this?
+                        // gui.getInventory().setItem(event.getSlot(), new ItemStack(Material.AIR));
+
+                        Bank.getInstance().getScheduler().executeInSpigotCircleLater(() -> state.updateSlots(true), 1L);
+                    }
+
+                    @Override
+                    public void onPlace(GUI gui, Player p, ItemStack stack, InventoryClickEvent event) {
+                        // Should we delay upateSlots by 1 tick instead of setting this?
+                        // gui.getInventory().setItem(event.getSlot(), stack);
+
+                        Bank.getInstance().getScheduler().executeInSpigotCircleLater(() -> state.updateSlots(true), 1L);
+                    }
+                });
 
         for (int i = 0; i < 3; i++)
             slot(4, i, Model.stack("empty-slot").create(), null);
@@ -179,7 +194,7 @@ class TradeGUI extends GUI {
 
     @Override
     public void onClickPlayerInventory(GUI gui, Player p, InventoryClickEvent event) {
-        if (InventoryManager.hasFixedItem(event.getSlot()) || event.getSlot() <= Hotswitch.SWITCHER_SLOT)
+        /*if (InventoryManager.hasFixedItem(event.getSlot()) || event.getSlot() <= Hotswitch.SWITCHER_SLOT)
             return;
 
         GearItem.Instance instance = GearItem.Instance.fromStack(event.getClickedInventory().getItem(event.getSlot()));
@@ -234,10 +249,10 @@ class TradeGUI extends GUI {
                 // If the stack is not zero, just decrease it by one
             else
                 stack.setAmount(stack.getAmount() - 1);
-        }
+        }*/
     }
 
     public void onClose(Player p) {
-
+        state.close();
     }
 }

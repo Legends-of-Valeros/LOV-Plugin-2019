@@ -98,9 +98,9 @@ public class GearDurability {
 					if(dur.min != null && perc <= dur.min) continue;
 					
 					arr.addAll(dur.strings.get(null));
-					arr.addAll(dur.strings.get(item.gear.getType()));
+					arr.addAll(dur.strings.get(item.getType()));
 					
-					builder.addLore(ChatColor.GRAY + "❖ " + arr.get(item.gear.getSeed() % arr.size()));
+					builder.addLore(ChatColor.GRAY + "❖ " + arr.get(item.getSeed() % arr.size()));
 					break;
 				}
 

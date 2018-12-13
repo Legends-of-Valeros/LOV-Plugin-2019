@@ -25,8 +25,10 @@ import org.bukkit.entity.Player;
  */
 @DependsOn(NPCs.class)
 public class CombatEngine extends ModuleListener implements CombatEngineAPI {
+    private static CombatEngine instance;
+    public static CombatEngine getInstance() { return instance; }
+
     private static CombatEngineConfig config;
-    private static CombatEngine singleton;
 
     private EntityTracker entities;
     private MinecraftHealthHandler mcHealthHandler;
@@ -36,14 +38,6 @@ public class CombatEngine extends ModuleListener implements CombatEngineAPI {
 
     private Unsafe unsafe;
 
-    /**
-     * Gets the singleton instance of CombatEngine, which implements its main API.
-     * @return The CombatEngine instance.
-     */
-    public static CombatEngine getInstance() {
-        return singleton;
-    }
-
     @Override
     public void onLoad() {
         super.onLoad();
@@ -52,7 +46,7 @@ public class CombatEngine extends ModuleListener implements CombatEngineAPI {
             getLogger().warning("LibsDisguises is not enabled on this server. Disguises will not work without it!");
         }
 
-        singleton = this;
+        instance = this;
 
         config = new BukkitConfig();
 
@@ -82,7 +76,7 @@ public class CombatEngine extends ModuleListener implements CombatEngineAPI {
     }
 
     public static CombatEntity getEntity(LivingEntity getFor) {
-        return singleton.getCombatEntity(getFor);
+        return instance.getCombatEntity(getFor);
     }
 
     @Override

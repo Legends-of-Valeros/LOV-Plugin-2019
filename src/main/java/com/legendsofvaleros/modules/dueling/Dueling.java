@@ -23,21 +23,18 @@ import org.bukkit.event.Listener;
 import java.util.HashMap;
 
 public class Dueling extends ModuleListener implements Listener {
-    private static Dueling plugin;
+    private static Dueling instance;
+    public static Dueling getInstance() { return instance; }
 
     public static HashMap<Player, Player> duelRequests = new HashMap<>();
 
     public Table<Player, Player, Duel> duels = HashBasedTable.create();
 
-    public static Dueling getInstance() {
-        return plugin;
-    }
-
     @Override
     public void onLoad() {
         super.onLoad();
 
-        plugin = this;
+        instance = this;
     }
 
     @Override

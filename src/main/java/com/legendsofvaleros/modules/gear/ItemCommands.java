@@ -38,6 +38,8 @@ public class ItemCommands extends BaseCommand {
         instance.amount = amount != null ? amount : 1;
 
         ItemUtil.giveItem(Characters.getPlayerCharacter(player), instance);
+
+        MessageUtil.sendUpdate(player, "Spawned: " + gear.getName());
     }
 
     @Default

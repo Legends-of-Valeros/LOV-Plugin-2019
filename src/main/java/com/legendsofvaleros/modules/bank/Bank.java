@@ -39,10 +39,7 @@ import java.util.Map;
 @IntegratesWith(module = Quests.class, integration = QuestIntegration.class)
 public class Bank extends ModuleListener {
     private static Bank instance;
-
-    public static Bank getInstance() {
-        return instance;
-    }
+    public static Bank getInstance() { return instance; }
 
     private static final Map<String, Currency> currencies = new HashMap<>();
 

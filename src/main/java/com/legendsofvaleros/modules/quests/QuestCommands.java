@@ -20,7 +20,7 @@ import org.bukkit.entity.Player;
 import java.util.Collection;
 import java.util.concurrent.ExecutionException;
 
-@CommandAlias("quests|quest")
+@CommandAlias("quests")
 public class QuestCommands extends BaseCommand {
     @Subcommand("refresh")
     @Description("Reload quests currently in the cache.")

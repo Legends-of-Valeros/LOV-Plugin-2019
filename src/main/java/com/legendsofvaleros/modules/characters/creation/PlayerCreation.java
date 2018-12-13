@@ -135,6 +135,7 @@ public class PlayerCreation implements Listener {
 	}
 
 	@CommandAlias("creation")
+	@Private
 	public static class CreationCommand extends BaseCommand {
 		@Subcommand("finalize")
 		@Private
@@ -148,8 +149,6 @@ public class PlayerCreation implements Listener {
 		@Subcommand("race")
 		@Private
 		public void cmdSelectRace(Player player, @Optional String selection) {
-			player.sendMessage("race");
-
 			CreationInfo info = creators.get(player.getUniqueId());
 			if(info == null) return;
 

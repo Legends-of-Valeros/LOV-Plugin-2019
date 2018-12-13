@@ -62,10 +62,7 @@ public class Skills extends ModuleListener {
     };
 
     private static Skills instance;
-
-    public static Skills getInstance() {
-        return instance;
-    }
+    public static Skills getInstance() { return instance; }
 
     public SkillBarManager hotbarManager;
 

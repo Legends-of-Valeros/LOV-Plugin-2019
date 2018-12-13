@@ -63,13 +63,13 @@ public class EquipObjective extends AbstractQuestObjective<QuestObjectiveProgres
 		}else if(event.getClass() == ItemEquipEvent.class) {
 			if(item.getType() == GearType.ARMOR) return;
 
-			if(((ItemEquipEvent)event).getGear().gear.getID().equals(id))
+			if(((ItemEquipEvent)event).getGear().getID().equals(id))
 				progress.value = true;
 
 		}else if(event.getClass() == ItemUnEquipEvent.class) {
 			if(item.getType() == GearType.ARMOR) return;
 
-			if(((ItemUnEquipEvent)event).getGear().gear.getID().equals(id))
+			if(((ItemUnEquipEvent)event).getGear().getID().equals(id))
 				progress.value = false;
 		}
 	}

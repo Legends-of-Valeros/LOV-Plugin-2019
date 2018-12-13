@@ -44,9 +44,7 @@ public class PvP extends ModuleListener {
     public static final float DAMAGE_MULTIPLIER = 0.6f;
 
     private static PvP instance;
-    public static PvP getInstance() {
-        return instance;
-    }
+    public static PvP getInstance() { return instance; }
 
     private boolean enabled;
     private int honorReward;

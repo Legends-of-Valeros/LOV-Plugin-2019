@@ -43,10 +43,7 @@ import java.util.concurrent.ExecutionException;
 @DependsOn(Characters.class)
 public class Chat extends ModuleListener {
     private static Chat instance;
-
-    public static Chat getInstance() {
-        return instance;
-    }
+    public static Chat getInstance() { return instance; }
 
     private static Map<Character, String> chanToDiscord = new HashMap<>();
     private static Map<String, Character> discordToChan = new HashMap<>();

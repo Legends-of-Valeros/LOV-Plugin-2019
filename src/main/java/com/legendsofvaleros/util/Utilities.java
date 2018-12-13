@@ -27,9 +27,7 @@ import org.bukkit.event.server.ServerCommandEvent;
 
 public class Utilities extends ModuleListener {
     private static Utilities instance;
-    public static Utilities getInstance() {
-        return instance;
-    }
+    public static Utilities getInstance() { return instance; }
 
     private boolean isShutdown = false;
 

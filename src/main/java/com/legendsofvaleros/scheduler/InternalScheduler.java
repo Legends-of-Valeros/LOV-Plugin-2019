@@ -148,6 +148,8 @@ public class InternalScheduler extends Thread {
                                     if (line.contains("com.legendsofvaleros.scheduler")) continue;
 
                                     start = true;
+
+                                    LegendsOfValeros.getInstance().getLogger().warning(task.getName());
                                 }
 
                                 LegendsOfValeros.getInstance().getLogger().warning(line);

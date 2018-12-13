@@ -52,9 +52,7 @@ public class Quests extends ModuleListener {
     public static AdvancementAPI NEW_OBJECTIVES;
 
     private static Quests instance;
-    public static Quests getInstance() {
-        return instance;
-    }
+    public static Quests getInstance() { return instance; }
 
     private String introQuestId;
 

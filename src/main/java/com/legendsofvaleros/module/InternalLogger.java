@@ -3,20 +3,38 @@ package com.legendsofvaleros.module;
 import com.legendsofvaleros.LegendsOfValeros;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.plugin.PluginLogger;
+import org.bukkit.plugin.java.JavaPlugin;
 
+import java.lang.reflect.Field;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-public class ModuleLogger extends Logger {
-    private String prefix;
+public class InternalLogger extends PluginLogger {
+    Field superField;
 
-    public ModuleLogger(Module module) {
-        super(module.getClass().getCanonicalName(), null);
+    String prefix = "";
 
-        prefix = LegendsOfValeros.getInstance().getDescription().getPrefix();
-        prefix = prefix != null ? "[" + prefix + "] " : "[" + LegendsOfValeros.getInstance().getDescription().getName() + "] ";
-        prefix += "[" + module.getName() + "] ";
+    public InternalLogger() {
+        super(LegendsOfValeros.getInstance());
+
+        try {
+            superField = PluginLogger.class.getDeclaredField("pluginName");
+            superField.setAccessible(true);
+            prefix += superField.get(this);
+        } catch(Exception e) { e.printStackTrace(); }
+
+        this.setLevel(Level.ALL);
+    }
+
+    public InternalLogger(Module module) {
+        this();
+
+        try {
+            prefix += "[" + module.getName() + "] ";
+            superField.set(this, prefix);
+        } catch(Exception e) { e.printStackTrace(); }
 
         this.setLevel(Level.ALL);
     }
@@ -45,9 +63,11 @@ public class ModuleLogger extends Logger {
             }
         }
 
-        logRecord.setMessage(this.prefix + (color != null ? color : "") + logRecord.getMessage());
+        logRecord.setMessage((color != null ? color : "") + logRecord.getMessage());
 
         if(Bukkit.getConsoleSender() != null) {
+            logRecord.setMessage(prefix + logRecord.getMessage());
+
             Bukkit.getConsoleSender().sendMessage(logRecord.getMessage());
             return;
         }
