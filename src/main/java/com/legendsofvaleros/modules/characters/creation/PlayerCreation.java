@@ -148,8 +148,6 @@ public class PlayerCreation implements Listener {
 		@Subcommand("race")
 		@Private
 		public void cmdSelectRace(Player player, @Optional String selection) {
-			player.sendMessage("race");
-
 			CreationInfo info = creators.get(player.getUniqueId());
 			if(info == null) return;
 

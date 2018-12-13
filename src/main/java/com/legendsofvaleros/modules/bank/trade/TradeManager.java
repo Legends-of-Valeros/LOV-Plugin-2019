@@ -2,6 +2,8 @@ package com.legendsofvaleros.modules.bank.trade;
 
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.item.ItemBuilder;
+import com.codingforcookies.robert.slot.SlotGrabbable;
+import com.codingforcookies.robert.slot.SlotUsable;
 import com.legendsofvaleros.modules.bank.Bank;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
@@ -140,12 +142,7 @@ class TradeState {
 
 class TradeGUI extends GUI {
     private ItemStack stack;
-
-    @Override
-    public void onOpen(Player p, InventoryView view) {
-        p.getInventory().setItem(17, Model.merge("menu-ui-trade", (stack = p.getInventory().getItem(17))));
-    }
-
+    @Override public void onOpen(Player p, InventoryView view) { p.getInventory().setItem(17, Model.merge("menu-ui-trade", (stack = p.getInventory().getItem(17)))); }
     @Override public void onClose(Player p, InventoryView view) {
         p.getInventory().setItem(17, stack);
     }
@@ -163,7 +160,17 @@ class TradeGUI extends GUI {
         this.state = state;
 
         for (int i = 0; i < 3; i++)
-            slot(4, i, Model.stack("empty-slot").create(), null);
+            slot(4, i, Model.stack("empty-slot").create(), new SlotUsable() {
+                @Override
+                public void onPickup(GUI gui, Player p, ItemStack stack, InventoryClickEvent event) {
+                    state.updateSlots(true);
+                }
+
+                @Override
+                public void onPlace(GUI gui, Player p, ItemStack stack, InventoryClickEvent event) {
+                    state.updateSlots(true);
+                }
+            });
 
         regenButtons();
     }
@@ -179,7 +186,7 @@ class TradeGUI extends GUI {
 
     @Override
     public void onClickPlayerInventory(GUI gui, Player p, InventoryClickEvent event) {
-        if (InventoryManager.hasFixedItem(event.getSlot()) || event.getSlot() <= Hotswitch.SWITCHER_SLOT)
+        /*if (InventoryManager.hasFixedItem(event.getSlot()) || event.getSlot() <= Hotswitch.SWITCHER_SLOT)
             return;
 
         GearItem.Instance instance = GearItem.Instance.fromStack(event.getClickedInventory().getItem(event.getSlot()));
@@ -234,10 +241,10 @@ class TradeGUI extends GUI {
                 // If the stack is not zero, just decrease it by one
             else
                 stack.setAmount(stack.getAmount() - 1);
-        }
+        }*/
     }
 
     public void onClose(Player p) {
-
+        state.close();
     }
 }
