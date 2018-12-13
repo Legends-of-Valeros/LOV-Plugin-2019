@@ -8,6 +8,7 @@ import com.legendsofvaleros.modules.bank.Currency;
 import com.legendsofvaleros.modules.characters.api.Cooldowns;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.characters.skill.SkillTargetEvent;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
@@ -65,12 +66,39 @@ public class PvP extends ModuleListener {
         NPCs.registerTrait("honor-trader", TraitHonorTrader.class);
     }
 
+    private boolean isPvPAllowed(boolean allow, Player p1, Player p2) {
+        if(this.enabled) {
+            // If PvP is disabled in the zone
+            if (Modules.isLoaded(Zones.class)) {
+                if (!Zones.manager().getZone(p1).pvp
+                        || !Zones.manager().getZone(p2).pvp) {
+                    allow = false;
+                }
+            }
+
+            if (Modules.isLoaded(Parties.class)) {
+                // Disable PvP within parties
+            }
+        }else
+            allow = false;
+
+        if(Modules.isLoaded(Dueling.class)) {
+            // If they're in a duel with each other, enable pvp.
+            if(Dueling.getInstance().getDuel(p1, p2) != null)
+                allow = true;
+
+                // If either player is in a duel, cancel damage.
+            else if(Dueling.getInstance().getDuel(p1) != null
+                    || Dueling.getInstance().getDuel(p2) != null)
+                allow = false;
+        }
+
+        return allow;
+    }
+
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerDamagePlayer(CombatEngineDamageEvent event) {
-        CombatEntity attacker = event.getAttacker();
-        CombatEntity target = event.getDamaged();
-
-        if (!attacker.isPlayer() || !target.isPlayer()) return;
+        if (!event.getAttacker().isPlayer() || !event.getDamaged().isPlayer()) return;
 
         /*if(!attackerToggle.isEnabled() || !targetToggle.isEnabled() || attackerToggle.getPriority() != targetToggle.getPriority()) {
             event.setCancelled(true);
@@ -83,37 +111,32 @@ public class PvP extends ModuleListener {
         Player p2 = (Player)event.getDamaged().getLivingEntity();
         if (!Characters.isPlayerCharacterLoaded(p2)) { event.setCancelled(true); return; }
 
-        if(this.enabled) {
-            // If PvP is disabled in the zone
-            if (Modules.isLoaded(Zones.class)) {
-                if (!Zones.manager().getZone(p1).pvp
-                        || !Zones.manager().getZone(p2).pvp) {
-                    event.setCancelled(true);
-                }
-            }
-
-            if (Modules.isLoaded(Parties.class)) {
-                // Disable PvP within parties
-            }
-        }else
-            event.setCancelled(true);
-
-        if(Modules.isLoaded(Dueling.class)) {
-            // If they're in a duel with each other, enable pvp.
-            if(Dueling.getInstance().getDuel(p1, p2) != null)
-                event.setCancelled(false);
-
-            // If either player is in a duel, cancel damage.
-            else if(Dueling.getInstance().getDuel(p1) != null
-                    || Dueling.getInstance().getDuel(p2) != null)
-                event.setCancelled(true);
-        }
+        event.setCancelled(isPvPAllowed(event.isCancelled(), p1, p2));
 
         if(!event.isCancelled())
             event.newDamageModifierBuilder("PvP")
                     .setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
                     .setValue(PvP.DAMAGE_MULTIPLIER)
                 .build();
+    }
+
+    @EventHandler
+    public void onEntityTargetted(SkillTargetEvent event) {
+        // Always allow "good" spells.
+        if(Boolean.TRUE.equals(event.isGood())) {
+            event.setCancelled(true);
+            return;
+        }
+
+        if (!event.getUser().isPlayer() || !event.getTarget().isPlayer()) return;
+
+        Player p1 = (Player)event.getUser().getLivingEntity();
+        if (!Characters.isPlayerCharacterLoaded(p1)) { event.setCancelled(true); return; }
+
+        Player p2 = (Player)event.getTarget().getLivingEntity();
+        if (!Characters.isPlayerCharacterLoaded(p2)) { event.setCancelled(true); return; }
+
+        event.setCancelled(isPvPAllowed(event.isCancelled(), p1, p2));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
