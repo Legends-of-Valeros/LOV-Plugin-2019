@@ -20,7 +20,7 @@ public class SkillAbsorb extends Skill {
 			" range for ", new TimePart().seconds(TIME), "."
 		};
 
-	public SkillAbsorb() { super(ID, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillAbsorb() { super(ID, Type.HARMFUL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Absorb"; }

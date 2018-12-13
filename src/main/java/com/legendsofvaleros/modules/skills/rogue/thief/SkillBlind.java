@@ -17,7 +17,7 @@ public class SkillBlind extends Skill {
 			"Blinds the target within ", RANGE, " block range for ", BLIND, " seconds."
 		};
 
-	public SkillBlind() { super(ID, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillBlind() { super(ID, Type.HARMFUL, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Blind"; }

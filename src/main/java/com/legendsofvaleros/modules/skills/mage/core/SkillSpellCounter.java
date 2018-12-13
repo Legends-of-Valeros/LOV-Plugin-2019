@@ -22,7 +22,7 @@ public class SkillSpellCounter extends Skill {
 			"Prevents enemy spellcasting for ", new TimePart().seconds(TIME), "."
 		};
 
-	public SkillSpellCounter() { super(ID, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillSpellCounter() { super(ID, Type.HARMFUL, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 	
 	@Override
 	public String getUserFriendlyName(int level) { return "Spell Counter"; }
@@ -32,7 +32,7 @@ public class SkillSpellCounter extends Skill {
 
 	@Override
 	public boolean onSkillUse(World world, CombatEntity ce, int level) {
-		CombatEntity target = validateTarget(ce, getTarget(ce, 16D), false);
+		CombatEntity target = validateTarget(ce, getTarget(ce, 16D));
 		if(target == null) return false;
 
 		EntityClass clazz;

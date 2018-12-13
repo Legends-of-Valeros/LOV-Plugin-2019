@@ -24,7 +24,7 @@ public class SkillWarCry extends Skill {
 			new RadiusPart(RADIUS), " do ", DAMAGE, "% increased melee damage."
 		};
 	
-	public SkillWarCry() { super(ID, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillWarCry() { super(ID, Type.BENEFICIAL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "War Cry"; }
@@ -34,7 +34,7 @@ public class SkillWarCry extends Skill {
 	
 	@Override
 	public boolean onSkillUse(World world, CombatEntity ce, int level) {
-		Collection<CombatEntity> targets = validateTargets(ce, getTargets(ce, getEarliest(RADIUS, level), Player.class), true);
+		Collection<CombatEntity> targets = validateTargets(ce, getTargets(ce, getEarliest(RADIUS, level), Player.class));
 		for(CombatEntity entity : targets) {
 			entity.getStats().newStatModifierBuilder(Stat.PHYSICAL_ATTACK)
 					.setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)

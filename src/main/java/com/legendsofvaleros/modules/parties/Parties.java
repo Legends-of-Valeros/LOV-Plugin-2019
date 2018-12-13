@@ -7,6 +7,7 @@ import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.characters.skill.SkillTargetEvent;
 import com.legendsofvaleros.modules.chat.Chat;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
@@ -42,7 +43,7 @@ public class Parties extends ModuleListener {
     @EventHandler
     public void onEntityTargetted(SkillTargetEvent event) {
         // Only disable targetting of bad effects in parties.
-        if(!Boolean.FALSE.equals(event.isGood())) return;
+        if(event.getSkill().getType() == Skill.Type.HARMFUL) return;
 
         if (!(event.getUser().getLivingEntity() instanceof Player
                 && event.getTarget().getLivingEntity() instanceof Player))

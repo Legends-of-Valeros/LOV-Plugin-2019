@@ -26,7 +26,7 @@ public class SkillPolymorph extends Skill {
 			}, " to target, cancelled when receiving damage, heals enemy 200% rate."
 		};
 
-	public SkillPolymorph() { super(ID, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillPolymorph() { super(ID, Type.NEUTRAL, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 	
 	@Override
 	public String getUserFriendlyName(int level) { return "Polymorph"; }
@@ -36,7 +36,7 @@ public class SkillPolymorph extends Skill {
 
 	@Override
 	public boolean onSkillUse(World world, CombatEntity ce, int level) {
-		CombatEntity target = validateTarget(ce, getTarget(ce, 16D), null);
+		CombatEntity target = validateTarget(ce, getTarget(ce, 16D));
 		if(target == null) return false;
 
 		world.playSound(target.getLivingEntity().getLocation(), "misc.resurrect", 1F, 1F);

@@ -20,7 +20,7 @@ public class SkillSpellTheft extends Skill {
 			"Steals a beneficial buff from the targeted enemy."
 		};
 
-	public SkillSpellTheft() { super(ID, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillSpellTheft() { super(ID, Type.HARMFUL, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 	
 	@Override
 	public String getUserFriendlyName(int level) { return "Spell Theft"; }
@@ -30,7 +30,7 @@ public class SkillSpellTheft extends Skill {
 
 	@Override
 	public boolean onSkillUse(World world, CombatEntity ce, int level) {
-		CombatEntity target = validateTarget(ce, getTarget(ce, 16D), false);
+		CombatEntity target = validateTarget(ce, getTarget(ce, 16D));
 		if(target == null) return false;
 
 		for(SkillEffect<?> effect : Characters.getInstance().getSkillEffectManager().getActiveEffects(target.getLivingEntity())) {

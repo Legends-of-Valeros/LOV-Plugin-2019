@@ -21,7 +21,7 @@ public class Modules {
     private static Map<String, Class<? extends Module>> packages = new HashMap<>();
     private static Map<Class<? extends Module>, InternalModule> modules = new LinkedHashMap<>();
 
-    public static void registerModule(Class<? extends Module> clazz) throws Exception {
+    public static void registerModule(Class<? extends Module> clazz) {
         modules.put(clazz, new InternalModule(clazz));
         packages.put(getModulePackage(clazz), clazz);
     }

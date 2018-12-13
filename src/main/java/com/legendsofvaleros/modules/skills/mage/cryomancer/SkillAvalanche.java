@@ -35,7 +35,7 @@ public class SkillAvalanche extends Skill {
     static final Random rand = new Random();
 
     public SkillAvalanche() {
-        super(ID, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION);
+        super(ID, Type.HARMFUL, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION);
     }
 
     @Override
@@ -109,7 +109,7 @@ public class SkillAvalanche extends Skill {
                     return;
                 }
 
-                for (CombatEntity e : validateTargets(ce, getNearbyEntities(perp, thickness / 2F, 2F, thickness / 2F), false)) {
+                for (CombatEntity e : validateTargets(ce, getNearbyEntities(perp, thickness / 2F, 2F, thickness / 2F))) {
                     if (!attacked.contains(e)) {
                         attacked.add(e);
                         CombatEngine.getInstance().causeSpellDamage(e.getLivingEntity(), ce.getLivingEntity(), SpellType.FIRE,

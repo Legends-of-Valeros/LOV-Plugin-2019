@@ -22,7 +22,7 @@ public class SkillFlameStrike extends Skill {
     };
 
     public SkillFlameStrike() {
-        super(ID, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION);
+        super(ID, Type.HARMFUL, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION);
     }
 
     @Override

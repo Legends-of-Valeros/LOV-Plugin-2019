@@ -38,7 +38,7 @@ public class SkillHailstorm extends Skill {
     };
 
     public SkillHailstorm() {
-        super(ID, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION);
+        super(ID, Type.HARMFUL, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION);
     }
 
     @Override
@@ -79,7 +79,7 @@ public class SkillHailstorm extends Skill {
 
                 if (runTimes % 10 == 0) {
                     Random rand = new Random();
-                    for (CombatEntity e : validateTargets(ce, getNearbyEntities(loc, radius, radius, radius), false)) {
+                    for (CombatEntity e : validateTargets(ce, getNearbyEntities(loc, radius, radius, radius))) {
                         if (rand.nextFloat() > chance) continue;
                         Characters.getInstance().getSkillEffectManager().getSkillEffect("Freeze").apply(e.getLivingEntity(), ce.getLivingEntity(), getEarliest(TIME, level));
                     }

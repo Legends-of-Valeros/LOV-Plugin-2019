@@ -17,7 +17,7 @@ public class SkillTrueStrike extends Skill {
 			"Deals weapon damage ", DAMAGE, "% once."
 		};
 
-	public SkillTrueStrike() { super(ID, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillTrueStrike() { super(ID, Type.HARMFUL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "True Strike"; }

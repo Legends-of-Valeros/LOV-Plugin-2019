@@ -19,7 +19,7 @@ public class SkillShieldSlam extends Skill {
 			"Slams target with shield, causing ", DAMAGE, "% of weapon damage. Generates ", RAGE, " rage."
 		};
 
-	public SkillShieldSlam() { super(ID, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillShieldSlam() { super(ID, Type.HARMFUL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Shield Slam"; }

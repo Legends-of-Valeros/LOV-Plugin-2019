@@ -18,7 +18,7 @@ public class SkillSprint extends Skill {
 			"The thief moves ", SPEED, "% faster for ", new TimePart().seconds(TIME), "."
 		};
 
-	public SkillSprint() { super(ID, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillSprint() { super(ID, Type.SELF, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Sprint"; }

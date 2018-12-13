@@ -19,7 +19,7 @@ public class SkillExecute extends Skill {
 			"Does ", DAMAGE, "% of the weapon damage and heals the warrior by ", HEAL, "% of the damage dealt."
 		};
 
-	public SkillExecute() { super(ID, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillExecute() { super(ID, Type.HARMFUL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Execute"; }

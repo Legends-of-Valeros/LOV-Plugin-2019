@@ -15,7 +15,7 @@ public class SkillSinisterStrike extends Skill {
 			"Strike that does ", new WDPart(DAMAGE), "."
 		};
 
-	public SkillSinisterStrike() { super(ID, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillSinisterStrike() { super(ID, Type.HARMFUL, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Sinister Strike"; }

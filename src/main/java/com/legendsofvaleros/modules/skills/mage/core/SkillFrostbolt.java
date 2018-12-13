@@ -30,7 +30,7 @@ public class SkillFrostbolt extends Skill {
     };
 
     public SkillFrostbolt() {
-        super(ID, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION);
+        super(ID, Type.HARMFUL, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class SkillFrostbolt extends Skill {
 
     @Override
     public boolean onSkillUse(World world, CombatEntity ce, int level) {
-        CombatEntity target = validateTarget(ce, getTarget(ce, 15), false);
+        CombatEntity target = validateTarget(ce, getTarget(ce, 15));
 
         world.playSound(ce.getLivingEntity().getLocation(), "spell.ice.icewind.soft", .5F, .5F);
 

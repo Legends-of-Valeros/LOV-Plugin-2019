@@ -31,7 +31,7 @@ public class SkillFrostShield extends Skill {
     };
 
     public SkillFrostShield() {
-        super(ID, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION);
+        super(ID, Type.BENEFICIAL, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION);
     }
 
     @Override

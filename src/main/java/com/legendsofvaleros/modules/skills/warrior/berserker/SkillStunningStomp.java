@@ -25,7 +25,7 @@ public class SkillStunningStomp extends Skill {
 			new TimePart().seconds(TIME), "."
 		};
 
-	public SkillStunningStomp() { super(ID, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillStunningStomp() { super(ID, Type.HARMFUL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Stunning Stomp"; }
@@ -35,7 +35,7 @@ public class SkillStunningStomp extends Skill {
 
 	@Override
 	public boolean onSkillUse(World world, CombatEntity ce, int level) {
-		Collection<CombatEntity> targets = validateTargets(ce, getTargets(ce, getEarliest(RADIUS, level), LivingEntity.class), false);
+		Collection<CombatEntity> targets = validateTargets(ce, getTargets(ce, getEarliest(RADIUS, level), LivingEntity.class));
 		for(CombatEntity entity : targets) {
 			entity.getStats().newStatModifierBuilder(Stat.SPEED)
 					.setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)

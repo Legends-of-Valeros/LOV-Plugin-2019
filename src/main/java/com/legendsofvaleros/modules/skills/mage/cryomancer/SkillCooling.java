@@ -21,7 +21,7 @@ public class SkillCooling extends Skill {
 			HEALTH, "% of his total health, regenerate ", MANA, "% mana."
 		};
 
-	public SkillCooling() { super(ID, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillCooling() { super(ID, Type.SELF, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 	
 	@Override
 	public String getUserFriendlyName(int level) { return "Cooling"; }

@@ -16,7 +16,7 @@ public class SkillShuriken extends Skill {
 			"Throw a shuriken up to ", new RangePart(RANGE), " dealing ", new WDPart(DAMAGE), "."
 		};
 
-	public SkillShuriken() { super(ID, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillShuriken() { super(ID, Type.HARMFUL, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Shuriken"; }

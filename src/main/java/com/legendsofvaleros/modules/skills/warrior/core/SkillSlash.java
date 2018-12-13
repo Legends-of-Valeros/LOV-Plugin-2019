@@ -17,7 +17,7 @@ public class SkillSlash extends Skill {
 			"Slashes the target, doing ", DAMAGE,  "% physical damage."
 		};
 	
-	public SkillSlash() { super(ID, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillSlash() { super(ID, Type.HARMFUL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Slash"; }

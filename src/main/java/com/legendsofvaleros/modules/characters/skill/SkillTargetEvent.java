@@ -21,13 +21,9 @@ public class SkillTargetEvent extends Event implements Cancellable {
     public CombatEntity getUser() { return user; }
     public CombatEntity getTarget() { return target; }
 
-    final Boolean good;
-    public Boolean isGood() { return good; }
-
-    public SkillTargetEvent(Skill skill, CombatEntity user, CombatEntity target, Boolean good) {
+    public SkillTargetEvent(Skill skill, CombatEntity user, CombatEntity target) {
         this.skill = skill;
         this.user = user;
         this.target = target;
-        this.good = good;
     }
 }

@@ -25,6 +25,14 @@ import java.util.*;
  * An ability of a player-class.
  */
 public abstract class Skill {
+    public enum Type {
+        SELF,
+
+        NEUTRAL,
+        BENEFICIAL,
+        HARMFUL
+    }
+
     protected static final String NONE = "None";
     protected static final String INSTANT = "Instant";
     protected static final String TARGET = "Targeted Instant";
@@ -61,6 +69,7 @@ public abstract class Skill {
 
 
     private final String id;
+    private final Type type;
     private final EntityClass pclass;
     private final int[] levelCosts;
 
@@ -84,7 +93,7 @@ public abstract class Skill {
         return arr[Math.max(0, Math.min(level, arr.length) - 1)];
     }
 
-    public Skill(String id, EntityClass pclass, int[] levelCosts, int[] powerCost, double[] cooldown, Object[] description) throws IllegalArgumentException {
+    public Skill(String id, Type type, EntityClass pclass, int[] levelCosts, int[] powerCost, double[] cooldown, Object[] description) throws IllegalArgumentException {
         if (id == null || id.isEmpty()) {
             throw new IllegalArgumentException("name cannot be null or empty!");
         } else if (getSkillById(id) != null) {
@@ -92,6 +101,7 @@ public abstract class Skill {
         }
 
         this.id = id;
+        this.type = type;
         this.pclass = pclass;
         this.levelCosts = levelCosts;
         this.powerCost = powerCost;
@@ -121,6 +131,14 @@ public abstract class Skill {
      */
     public final String getId() {
         return id;
+    }
+
+    /**
+     * Gets the type of the skill.
+     * @return This skill's type.
+     */
+    public final Type getType() {
+        return type;
     }
 
     /**
@@ -276,9 +294,9 @@ public abstract class Skill {
     /**
      * Throws an event and ensures that the target is valid.
      */
-    public CombatEntity validateTarget(CombatEntity user, CombatEntity target, Boolean good) {
+    public CombatEntity validateTarget(CombatEntity user, CombatEntity target) {
         if(target == null) return null;
-        SkillTargetEvent event = new SkillTargetEvent(this, user, target, good);
+        SkillTargetEvent event = new SkillTargetEvent(this, user, target);
         Bukkit.getPluginManager().callEvent(event);
         return !event.isCancelled() ? target : null;
     }
@@ -287,14 +305,14 @@ public abstract class Skill {
      * Throws an event and ensures that the targets are valid. Modifies the
      * list in-place, but returns it again for inline usage.
      */
-    public List<CombatEntity> validateTargets(CombatEntity user, List<CombatEntity> targets, Boolean good) {
+    public List<CombatEntity> validateTargets(CombatEntity user, List<CombatEntity> targets) {
         for(int i = 0; i < targets.size(); i++) {
             if(targets.get(i) == user) {
                 targets.remove(i--);
                 continue;
             }
 
-            SkillTargetEvent event = new SkillTargetEvent(this, user, targets.get(i), good);
+            SkillTargetEvent event = new SkillTargetEvent(this, user, targets.get(i));
             Bukkit.getPluginManager().callEvent(event);
             if(event.isCancelled())
                 targets.remove(i--);

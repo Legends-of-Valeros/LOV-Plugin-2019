@@ -27,7 +27,7 @@ public class SkillDestructiveLeap extends Skill {
     };
 
     public SkillDestructiveLeap() {
-        super(ID, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION);
+        super(ID, Type.HARMFUL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class SkillDestructiveLeap extends Skill {
 
         int area = getEarliest(RADIUS, level);
         OnTouchGround.call(ce.getLivingEntity(), (le) -> {
-            for (CombatEntity e : validateTargets(ce, getNearbyEntities(le.getLocation(), area, 1, area), false)) {
+            for (CombatEntity e : validateTargets(ce, getNearbyEntities(le.getLocation(), area, 1, area))) {
                 CombatEngine.getInstance().causePhysicalDamage((LivingEntity) e, ce.getLivingEntity(), PhysicalType.OTHER,
                         Characters.getInstance().getCharacterConfig().getClassConfig(EntityClass.WARRIOR).getBaseMeleeDamage()
                                 * getEarliest(DAMAGE, level) / 100D, null, false, true);

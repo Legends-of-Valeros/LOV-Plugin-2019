@@ -18,7 +18,7 @@ public class SkillEnrage extends Skill {
 			"The warrior enrages for ", new TimePart().seconds(TIME), " increasing defense and damage by ", DEFENCE, "%."
 		};
 
-	public SkillEnrage() { super(ID, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillEnrage() { super(ID, Type.BENEFICIAL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Enrage"; }

@@ -24,7 +24,7 @@ public class SkillFlamingStreak extends Skill {
     };
 
     public SkillFlamingStreak() {
-        super(ID, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION);
+        super(ID, Type.HARMFUL, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class SkillFlamingStreak extends Skill {
 
     @Override
     public boolean onSkillUse(World world, CombatEntity ce, int level) {
-        CombatEntity target = validateTarget(ce, getTarget(ce, 15), false);
+        CombatEntity target = validateTarget(ce, getTarget(ce, 15));
         if (target == null) return false;
 
         world.playSound(target.getLivingEntity().getLocation(), "spell.fire.fireball.impact", 1F, 1F);

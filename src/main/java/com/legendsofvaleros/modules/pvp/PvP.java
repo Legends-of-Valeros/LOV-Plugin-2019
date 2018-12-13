@@ -8,6 +8,7 @@ import com.legendsofvaleros.modules.bank.Currency;
 import com.legendsofvaleros.modules.characters.api.Cooldowns;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.characters.skill.SkillTargetEvent;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
@@ -123,7 +124,7 @@ public class PvP extends ModuleListener {
     @EventHandler
     public void onEntityTargetted(SkillTargetEvent event) {
         // Always allow "good" spells.
-        if(Boolean.TRUE.equals(event.isGood())) {
+        if(event.getSkill().getType() == Skill.Type.BENEFICIAL) {
             event.setCancelled(true);
             return;
         }

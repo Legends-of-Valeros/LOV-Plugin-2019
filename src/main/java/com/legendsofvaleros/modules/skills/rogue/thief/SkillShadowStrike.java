@@ -15,7 +15,7 @@ public class SkillShadowStrike extends Skill {
 			"Attacks from stealth, dealing ", new WDPart(DAMAGE), "."
 		};
 
-	public SkillShadowStrike() { super(ID, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillShadowStrike() { super(ID, Type.HARMFUL, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Shadow Strike"; }

@@ -30,7 +30,7 @@ public class SkillIcyBlast extends Skill {
     };
 
     public SkillIcyBlast() {
-        super(ID, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION);
+        super(ID, Type.HARMFUL, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class SkillIcyBlast extends Skill {
         world.playSound(ce.getLivingEntity().getLocation(), "spell.ice.icewind.strong", 1F, 1F);
 
         int radius = getEarliest(RADIUS, level);
-        for (CombatEntity e : validateTargets(ce, getTargets(ce, radius, LivingEntity.class), false)) {
+        for (CombatEntity e : validateTargets(ce, getTargets(ce, radius, LivingEntity.class))) {
             if (e.getLivingEntity() instanceof Player) {
                 if (!Characters.isPlayerCharacterLoaded((Player) e))
                     continue;

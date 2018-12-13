@@ -17,7 +17,7 @@ public class SkillBackstab extends Skill {
 			DAMAGE_STEALTH, "% when from stealth"
 		};
 
-	public SkillBackstab() { super(ID, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillBackstab() { super(ID, Type.HARMFUL, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Backstab"; }

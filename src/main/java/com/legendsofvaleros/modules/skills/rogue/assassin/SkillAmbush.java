@@ -16,7 +16,7 @@ public class SkillAmbush extends Skill {
 			"Does ", new WDPart(DAMAGE), " and dazes the target for ", new TimePart().seconds(TIME), "."
 		};
 
-	public SkillAmbush() { super(ID, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillAmbush() { super(ID, Type.HARMFUL, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Ambush"; }

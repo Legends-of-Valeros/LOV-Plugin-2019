@@ -20,7 +20,7 @@ public class SkillTaunt extends Skill {
 			"Draws attention of mobs to the warrior in a ", new RadiusPart(RADIUS), "."
 		};
 	
-	public SkillTaunt() { super(ID, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillTaunt() { super(ID, Type.SELF, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Taunt"; }
@@ -30,7 +30,7 @@ public class SkillTaunt extends Skill {
 
 	@Override
 	public boolean onSkillUse(World world, CombatEntity ce, int level) {
-		Collection<CombatEntity> targets = validateTargets(ce, getTargets(ce, getEarliest(RADIUS, level), Player.class), false);
+		Collection<CombatEntity> targets = validateTargets(ce, getTargets(ce, getEarliest(RADIUS, level), Player.class));
 		for(CombatEntity entity : targets) {
 			if(entity.getThreat() == null) continue;
 			entity.getThreat().editThreat(ce.getLivingEntity(), 100);

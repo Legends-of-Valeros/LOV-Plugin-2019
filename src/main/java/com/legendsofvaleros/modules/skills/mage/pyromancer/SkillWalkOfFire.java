@@ -30,7 +30,7 @@ public class SkillWalkOfFire extends Skill {
     };
 
     public SkillWalkOfFire() {
-        super(ID, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION);
+        super(ID, Type.HARMFUL, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION);
     }
 
     @Override
@@ -124,7 +124,7 @@ public class SkillWalkOfFire extends Skill {
                     world.spawnParticle(Particle.FLAME, loc, 1, .5, .2, .5, 0.01);
 
                 if (runtime % 2 == 0)
-                    for (CombatEntity e : validateTargets(ce, getNearbyEntities(loc, .5, .5, .5), false)) {
+                    for (CombatEntity e : validateTargets(ce, getNearbyEntities(loc, .5, .5, .5))) {
                         CombatEngine.getInstance().causeSpellDamage(e.getLivingEntity(), ce.getLivingEntity(), SpellType.FIRE,
                                 damage / 20D / 100D, null, false, true);
                     }
