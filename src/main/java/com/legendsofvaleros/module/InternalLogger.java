@@ -4,12 +4,10 @@ import com.legendsofvaleros.LegendsOfValeros;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginLogger;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Field;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 
 public class InternalLogger extends PluginLogger {
     Field superField;

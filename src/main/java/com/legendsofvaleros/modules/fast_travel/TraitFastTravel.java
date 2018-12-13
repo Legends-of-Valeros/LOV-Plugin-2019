@@ -13,7 +13,6 @@ import com.legendsofvaleros.modules.npcs.util.NPCEmulator;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.title.Title;
 import com.legendsofvaleros.util.title.TitleUtil;
-import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

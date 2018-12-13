@@ -17,9 +17,7 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent
 import com.legendsofvaleros.modules.factions.event.FactionReputationChangeEvent;
 import com.legendsofvaleros.modules.factions.integration.QuestIntegration;
 import com.legendsofvaleros.modules.factions.listener.ReputationListener;
-import com.legendsofvaleros.modules.factions.quest.ActionReputation;
 import com.legendsofvaleros.modules.quests.Quests;
-import com.legendsofvaleros.modules.quests.action.stf.QuestActionFactory;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

@@ -9,7 +9,6 @@ import com.legendsofvaleros.modules.combatengine.events.CombatEngineRegenEvent;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import com.legendsofvaleros.modules.combatengine.stat.StatUtils;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;

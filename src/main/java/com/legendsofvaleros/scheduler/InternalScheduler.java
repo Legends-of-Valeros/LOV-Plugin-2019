@@ -1,7 +1,6 @@
 package com.legendsofvaleros.scheduler;
 
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.module.ModuleTimings;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.scheduler.BukkitRunnable;
 

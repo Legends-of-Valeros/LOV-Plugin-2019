@@ -21,7 +21,6 @@ import com.legendsofvaleros.modules.quests.quest.stf.QuestStatus;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
 import com.legendsofvaleros.util.item.Model;
-import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

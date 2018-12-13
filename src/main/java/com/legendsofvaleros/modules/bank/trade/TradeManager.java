@@ -2,15 +2,12 @@ package com.legendsofvaleros.modules.bank.trade;
 
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.item.ItemBuilder;
-import com.codingforcookies.robert.slot.SlotGrabbable;
 import com.codingforcookies.robert.slot.SlotUsable;
 import com.legendsofvaleros.modules.bank.Bank;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
-import com.legendsofvaleros.modules.hotswitch.Hotswitch;
-import com.legendsofvaleros.modules.playermenu.InventoryManager;
 import com.legendsofvaleros.modules.playermenu.PlayerMenuOpenEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.item.Model;

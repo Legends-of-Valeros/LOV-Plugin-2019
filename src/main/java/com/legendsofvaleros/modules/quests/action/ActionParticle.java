@@ -2,7 +2,6 @@ package com.legendsofvaleros.modules.quests.action;
 
 import com.legendsofvaleros.modules.quests.action.stf.AbstractQuestAction;
 import org.bukkit.Particle;
-import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 
 public class ActionParticle extends AbstractQuestAction {

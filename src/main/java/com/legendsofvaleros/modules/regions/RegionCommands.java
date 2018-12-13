@@ -10,8 +10,6 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
-
 @CommandAlias("regions")
 public class RegionCommands extends BaseCommand {
 	@Subcommand("notify")

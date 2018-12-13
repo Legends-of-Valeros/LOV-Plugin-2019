@@ -1,12 +1,9 @@
 package com.legendsofvaleros.modules.combatengine.events;
 
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.modifiers.ConstructionListener;
 import com.legendsofvaleros.modules.combatengine.modifiers.ModifiableDouble;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifier;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
-import com.legendsofvaleros.modules.combatengine.stat.Stat;
-import com.legendsofvaleros.modules.combatengine.stat.StatValue;
 import org.bukkit.Location;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;

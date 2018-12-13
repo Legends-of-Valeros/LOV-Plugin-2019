@@ -25,7 +25,6 @@ import com.legendsofvaleros.modules.gear.item.GearType;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;

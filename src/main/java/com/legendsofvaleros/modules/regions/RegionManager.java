@@ -16,7 +16,6 @@ import com.legendsofvaleros.modules.characters.loading.PhaseLock;
 import com.legendsofvaleros.modules.regions.event.RegionEnterEvent;
 import com.legendsofvaleros.modules.regions.event.RegionLeaveEvent;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;

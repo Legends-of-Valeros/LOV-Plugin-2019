@@ -16,7 +16,6 @@ import com.legendsofvaleros.modules.bank.trade.TraitTrader;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterFinishLoadingEvent;
-import com.legendsofvaleros.modules.characters.events.PlayerCharacterInventoryFillEvent;
 import com.legendsofvaleros.modules.gear.Gear;
 import com.legendsofvaleros.modules.gear.GearRegistry;
 import com.legendsofvaleros.modules.npcs.NPCs;

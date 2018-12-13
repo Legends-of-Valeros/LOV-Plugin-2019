@@ -22,7 +22,6 @@ import com.legendsofvaleros.util.DebugFlags;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.field.RangedValue;
 import org.bukkit.ChatColor;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;

@@ -4,7 +4,6 @@ import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterFinishLoadingEvent;
-import com.legendsofvaleros.modules.characters.events.PlayerCharacterInventoryFillEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import org.bukkit.Bukkit;
