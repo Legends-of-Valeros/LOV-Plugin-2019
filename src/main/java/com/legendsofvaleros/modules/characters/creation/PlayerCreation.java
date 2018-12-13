@@ -1,9 +1,8 @@
 package com.legendsofvaleros.modules.characters.creation;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.*;
 import co.aikar.commands.annotation.Optional;
-import co.aikar.commands.annotation.Subcommand;
 import com.codingforcookies.robert.core.StringUtil;
 import com.codingforcookies.robert.item.Book;
 import com.legendsofvaleros.LegendsOfValeros;
@@ -138,7 +137,8 @@ public class PlayerCreation implements Listener {
 	@CommandAlias("creation")
 	public static class CreationCommand extends BaseCommand {
 		@Subcommand("finalize")
-		private void cmdFinalize(Player player) {
+		@Private
+		public void cmdFinalize(Player player) {
 			CreationInfo info = creators.get(player.getUniqueId());
 			if(info == null) return;
 
@@ -146,7 +146,10 @@ public class PlayerCreation implements Listener {
 		}
 
 		@Subcommand("race")
-		private void cmdSelectRace(Player player, @Optional String selection) {
+		@Private
+		public void cmdSelectRace(Player player, @Optional String selection) {
+			player.sendMessage("race");
+
 			CreationInfo info = creators.get(player.getUniqueId());
 			if(info == null) return;
 
@@ -205,6 +208,8 @@ public class PlayerCreation implements Listener {
 				}
 
 				book.open(player, false);
+
+				return;
 			}
 
 			info.race = EntityRace.valueOf(selection);
@@ -213,7 +218,8 @@ public class PlayerCreation implements Listener {
 		}
 
 		@Subcommand("class")
-		private void cmdSelectClass(Player player, @Optional String selection) {
+		@Private
+		public void cmdSelectClass(Player player, @Optional String selection) {
 			CreationInfo info = creators.get(player.getUniqueId());
 			if(info == null) return;
 
@@ -238,6 +244,8 @@ public class PlayerCreation implements Listener {
 				}
 
 				book.open(player, false);
+
+				return;
 			}
 
 			info.clazz = EntityClass.valueOf(selection);

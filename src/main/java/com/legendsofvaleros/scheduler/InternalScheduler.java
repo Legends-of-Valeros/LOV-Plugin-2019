@@ -138,8 +138,21 @@ public class InternalScheduler extends Thread {
                     LegendsOfValeros.getInstance().getLogger().warning("Scheduler '" + name + "' fell behind by " + Math.abs(timeTaken) + "ms!");
                     if (fired.size() > 0) {
                         LegendsOfValeros.getInstance().getLogger().warning("----------------------------------------");
-                        for (InternalTask task : fired)
-                            LegendsOfValeros.getInstance().getLogger().warning(task.getTrace());
+                        for (InternalTask task : fired) {
+                            boolean start = false;
+                            for(String line : task.getTrace().split("\n")) {
+                                if(!start) {
+                                    // Ignore non-LOV packages
+                                    if (!line.contains("com.legendsofvaleros")) continue;
+                                    // Ignore scheduler package
+                                    if (line.contains("com.legendsofvaleros.scheduler")) continue;
+
+                                    start = true;
+                                }
+
+                                LegendsOfValeros.getInstance().getLogger().warning(line);
+                            }
+                        }
                         LegendsOfValeros.getInstance().getLogger().warning("----------------------------------------");
                     }
                 }

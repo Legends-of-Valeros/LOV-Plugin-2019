@@ -67,7 +67,8 @@ public class QuestCommands extends BaseCommand {
     }
 
     @Subcommand("talk")
-    private void cmdQuestTalk(Player player, String questId) {
+    @Private
+    public void cmdQuestTalk(Player player, String questId) {
         PlayerCharacter pc = Characters.getPlayerCharacter(player);
 
         player.closeInventory();
@@ -75,7 +76,8 @@ public class QuestCommands extends BaseCommand {
     }
 
     @Subcommand("accept")
-    private void cmdQuestAccept(Player player, String questId) {
+    @Private
+    public void cmdQuestAccept(Player player, String questId) {
         PlayerCharacter pc = Characters.getPlayerCharacter(player);
 
         player.closeInventory();
@@ -96,8 +98,9 @@ public class QuestCommands extends BaseCommand {
         }, Quests.getInstance().getScheduler()::async);
     }
 
-    @Subcommand("defline")
-    private void cmdQuestDecline(Player player, String questId) {
+    @Subcommand("decline")
+    @Private
+    public void cmdQuestDecline(Player player, String questId) {
         PlayerCharacter pc = Characters.getPlayerCharacter(player);
 
         player.closeInventory();
@@ -113,7 +116,8 @@ public class QuestCommands extends BaseCommand {
     }
 
     @Subcommand("close")
-    private void cmdQuestClose(Player player) {
+    @Private
+    public void cmdQuestClose(Player player) {
         player.closeInventory();
     }
 
