@@ -11,7 +11,6 @@ public enum FilterDirection {
     DESCENDING("Descending", "DSC", Material.POTION);
 
     String name;
-
     String queryName;
 
     Material guiMaterial;

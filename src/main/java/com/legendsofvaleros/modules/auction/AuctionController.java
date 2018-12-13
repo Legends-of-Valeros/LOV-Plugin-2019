@@ -1,28 +1,26 @@
 package com.legendsofvaleros.modules.auction;
 
 import com.codingforcookies.doris.orm.ORMTable;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.auction.traits.TraitAuctioneer;
+import com.legendsofvaleros.modules.characters.api.CharacterId;
+import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.Gear;
+import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.scheduler.InternalTask;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.inventory.Inventory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Crystall on 10/10/2018
@@ -34,28 +32,18 @@ public class AuctionController extends ModuleListener {
 
     private static AuctionController instance;
 
-    //TODO create prompt helper or check for existing
-    // arraylist of players that are asked if they want to buy the clicked item
-    public HashMap<Player, Auction> chatBuyPrompt = new HashMap<>();
+    public static AuctionController getInstance() {
+        return instance;
+    }
 
-    // arraylist of players that are asked if they want to buy the clicked item
-    public HashMap<Player, Auction> chatBidPrompt = new HashMap<>();
-
-    // arraylist of players that are asked for how much they want to sell the item
-    public HashMap<Player, Auction> pricePrompt = new HashMap<>();
-
-    // TODO add caching of inventory / filter
-    private static final Cache<String, Inventory> cache = CacheBuilder.newBuilder()
-            .concurrencyLevel(4)
-            .maximumSize(1024)
-            .expireAfterAccess(5, TimeUnit.MINUTES)
-            .build();
+    private HashMap<CharacterId, AuctionChatPrompt> auctionPrompts = new HashMap<>();
+//    private static final Cache<String, Inventory> cache = CacheBuilder.newBuilder()
+//            .concurrencyLevel(4)
+//            .maximumSize(1024)
+//            .expireAfterAccess(5, TimeUnit.MINUTES)
+//            .build();
 
     private static ORMTable<Auction> auctionsTable;
-
-    public static AuctionController getInstance() {
-        return AuctionController.instance;
-    }
 
     @Override
     public void onLoad() {
@@ -67,53 +55,24 @@ public class AuctionController extends ModuleListener {
         NPCs.registerTrait("auctioneer", TraitAuctioneer.class);
 
         //TODO add scheduler that checks every second if an item has run out and if it is an bid item
+        getScheduler().executeInMyCircleTimer(new InternalTask(() -> {
+
+        }), 0, 10);
     }
 
     public void onUnload() {
         super.onUnload();
     }
 
-    public void startBuyPrompt(Player p, Auction auction) {
-        if (chatBuyPrompt.containsKey(p)) {
-            //TODO add item with hover
-            p.sendMessage("You are already in a buy prompt for an item");
-            return;
-        }
-        p.closeInventory();
-        chatBuyPrompt.put(p, auction);
-        // TODO add ChatComponent with hoverable item
-        // p.spigot().sendMessage();
-        p.sendMessage(ChatColor.DARK_BLUE + "Do you really want to buy this Item?");
-    }
-
-    /**
-     * Enters a bid prompt with a player
-     * @param p
-     * @param auction
-     */
-    public void startBidPrompt(Player p, Auction auction) {
-        if (chatBidPrompt.containsKey(p)) {
-            //TODO add item with hover
-            p.sendMessage("You are already in a buy prompt for an item");
-            return;
-        }
-        p.closeInventory();
-        chatBidPrompt.put(p, auction);
-        // TODO add ChatComponent with hoverable item
-        // p.spigot().sendMessage();
-        p.sendMessage(ChatColor.DARK_BLUE + "How much do you want to bid on the item?");
-    }
-
     public ArrayList<Auction> loadEntries() {
         ArrayList<Auction> auctions = new ArrayList<>();
 
-        getScheduler().executeInMyCircle(new InternalTask(() -> {
-            auctionsTable.query()
-                    .all()
-                    .forEach((entry) -> auctions.add(entry))
-                    .execute(true);
-        }));
-
+        getScheduler().executeInMyCircle(new InternalTask(() ->
+                auctionsTable.query()
+                        .all()
+                        .forEach(auctions::add)
+                        .execute(true))
+        );
         return auctions;
     }
 
@@ -121,21 +80,22 @@ public class AuctionController extends ModuleListener {
         getScheduler().executeInMyCircle(new InternalTask(() ->
                 auctionsTable.query().insert().values(
                         "owner_id", auction.getOwnerId(),
-                        "auction_item", auction.getItem().newInstance().toString(),
+                        "auction_item", auction.getItem().toString(),
                         "valid_until", auction.getValidUntil(),
                         "is_bid_offer", auction.isBidOffer(),
                         "price", auction.getPrice()
-                ).build().execute(true)));
+                ).build().execute(true))
+        );
     }
 
     public void removeAuction(Auction auction) {
-        getScheduler().executeInMyCircle(new InternalTask(() -> {
-            auctionsTable.query()
-                    .remove()
-                    .where("id", auction.getId())
-                    .build()
-                    .execute(true);
-        }));
+        getScheduler().executeInMyCircle(new InternalTask(() ->
+                auctionsTable.query()
+                        .remove()
+                        .where("id", auction.getId())
+                        .build()
+                        .execute(true))
+        );
     }
 
     /**
@@ -147,57 +107,100 @@ public class AuctionController extends ModuleListener {
         SettableFuture<Boolean> ret = SettableFuture.create();
 
         if (!ret.isDone()) {
-            getScheduler().executeInMyCircle(new InternalTask(() -> {
-                auctionsTable.query()
-                        .select()
-                        .where("id", auction.getId())
-                        .build()
-                        .callback((result) -> {
-                            if (!result.next()) {
-                                ret.set(false);
-                                return;
-                            }
-                            ret.set(true);
-                        }).execute(true);
-            }));
+            getScheduler().executeInMyCircle(new InternalTask(() ->
+                    auctionsTable.query()
+                            .select()
+                            .where("id", auction.getId())
+                            .build()
+                            .callback((result) -> {
+                                if (!result.next()) {
+                                    ret.set(false);
+                                    return;
+                                }
+                                ret.set(true);
+                            }).execute(true))
+            );
         }
 
         return ret;
     }
 
+    /**
+     * Starts an auction chat prompt to (buy / sell / bid) an item
+     * @param p
+     * @param itemData
+     */
+    public void startPrompt(Player p, GearItem.Data itemData, AuctionChatPrompt.AuctionPromptType type) {
+        this.startPrompt(p, new Auction(Characters.getPlayerCharacter(p).getUniqueCharacterId(), itemData), type);
+    }
+
+    public void startPrompt(Player p, Auction auction, AuctionChatPrompt.AuctionPromptType type) {
+        p.closeInventory();
+        if (Characters.isPlayerCharacterLoaded(p)) {
+            PlayerCharacter playerCharacter = Characters.getPlayerCharacter(p);
+            CharacterId characterId = playerCharacter.getUniqueCharacterId();
+            if (auctionPrompts.containsKey(characterId)) {
+                //TODO check if this goes shorter
+                p.sendMessage("You are already " + auctionPrompts.get(characterId).getPrompt().getChatString() + " an item.");
+                return;
+            }
+            auctionPrompts.put(characterId, new AuctionChatPrompt(playerCharacter, auction, type));
+        }
+    }
+
     @EventHandler
-    public void OnChatEvent(AsyncPlayerChatEvent e) {
-        if (chatBuyPrompt.containsKey(e.getPlayer())) {
-            if (!e.isCancelled()) {
+    private void onPromptMessage(AsyncPlayerChatEvent e) {
+        if (Characters.isPlayerCharacterLoaded(e.getPlayer())) {
+            PlayerCharacter character = Characters.getPlayerCharacter(e.getPlayer());
+            if (auctionPrompts.containsKey(character.getUniqueCharacterId())) {
                 e.setCancelled(true);
-                e.setMessage("");
+                auctionPrompts.get(character.getUniqueCharacterId()).handleDecision(e.getMessage());
             }
+        }
+    }
 
-            Auction auction = chatBuyPrompt.get(e.getPlayer());
-            //Player did accept to buy the item
-            if (!e.getMessage().equalsIgnoreCase("y") || e.getMessage().equalsIgnoreCase("yes")) {
-                chatBuyPrompt.remove(e.getPlayer());
-                //TODO make pretty
-                e.getPlayer().sendMessage("Canceled purchase!");
-                return;
+    /**
+     * Executes the last step of the AuctionChatPrompt
+     * @param characterId
+     */
+    public void confirmBuyPrompt(CharacterId characterId) {
+        if (Characters.isPlayerCharacterLoaded(characterId)) {
+            Player p = Characters.getPlayerCharacter(characterId).getPlayer();
+            if (auctionPrompts.containsKey(characterId)) {
+                AuctionChatPrompt prompt = auctionPrompts.get(p);
+
+                boolean result = false;
+                try {
+                    result = checkIfAuctionStillExists(prompt.getAuction()).get();
+                } catch (InterruptedException | ExecutionException ee) {
+                    ee.printStackTrace();
+                }
+
+                if (!result) {
+                    //TODO send msg
+                    if (Characters.isPlayerCharacterLoaded(characterId))
+                        p.sendMessage("Item is already sold");
+                    return;
+                }
+
+                removeAuction(prompt.getAuction());
+                p.getInventory().addItem(prompt.getAuction().getItem().toStack());
+                auctionPrompts.remove(characterId);
             }
+        }
+    }
 
+    public void confirmBidPrompt(CharacterId characterId) {
 
-            boolean result = false;
-            try {
-                result = checkIfAuctionStillExists(auction).get();
-            } catch (InterruptedException | ExecutionException ee) {
-                ee.printStackTrace();
-            }
+    }
 
-            if (!result) {
-                e.getPlayer().sendMessage("Item is already sold");
-                return;
-            }
+    public void confirmSellPrompt(CharacterId characterId) {
 
-            removeAuction(auction);
-            e.getPlayer().getInventory().addItem(auction.getItem().newInstance().toStack());
-            chatBuyPrompt.remove(e.getPlayer());
+    }
+
+    public void removePrompt(CharacterId characterId) {
+        if (auctionPrompts.containsKey(characterId)) {
+            auctionPrompts.remove(characterId);
         }
     }
 }

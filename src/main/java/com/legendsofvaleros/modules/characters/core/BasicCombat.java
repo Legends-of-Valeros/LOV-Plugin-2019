@@ -89,27 +89,27 @@ public class BasicCombat {
 
         @EventHandler
         public void onDamageEvent(CombatEnginePhysicalDamageEvent event) {
-            if(!event.getAttacker().isPlayer()) return;
+            if (!event.getAttacker().isPlayer()) return;
 
-            Player player = (Player)event.getAttacker().getLivingEntity();
+            Player player = (Player) event.getAttacker().getLivingEntity();
 
             AttributeInstance attr = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
 
             long millis = System.currentTimeMillis();
             Long last = lastSwing.get(player.getUniqueId());
-            if(last == null) last = 0L;
+            if (last == null) last = 0L;
 
             // The amount of time that must be awaited before full damage is dealt.
-            long wait = (long)(1D / attr.getValue() * 1000);
+            long wait = (long) (1D / attr.getValue() * 1000);
 
             // The amount of time remaining to be at full power.
             long remaining = last + wait - millis;
 
-            if(remaining > 0) {
+            if (remaining > 0) {
                 event.newDamageModifierBuilder("Swing Multiplier")
                         .setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
-                        .setValue(1D - ((double)remaining / wait))
-                    .build();
+                        .setValue(1D - ((double) remaining / wait))
+                        .build();
                 //swingMultiplier = Math.pow(x, x + 3); // Creates a power curve between 0 and 1.
             }
 

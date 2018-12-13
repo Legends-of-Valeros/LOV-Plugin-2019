@@ -3,11 +3,15 @@ package com.legendsofvaleros.modules.auction.gui;
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.slot.SlotUsable;
 import com.legendsofvaleros.modules.auction.Auction;
+import com.legendsofvaleros.modules.auction.AuctionChatPrompt;
 import com.legendsofvaleros.modules.auction.AuctionController;
 import com.legendsofvaleros.modules.auction.filter.FilterDirection;
 import com.legendsofvaleros.modules.auction.filter.FilterType;
+import com.legendsofvaleros.modules.gear.item.GearItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -17,7 +21,7 @@ import java.util.ArrayList;
 /**
  * Created by Crystall on 11/24/2018
  */
-public class AuctionGui extends GUI {
+public class AuctionGui extends GUI implements Listener {
     private ArrayList<Auction> auctions;
     private int currentPage = 1;
     private int totalPages;
@@ -30,13 +34,18 @@ public class AuctionGui extends GUI {
         super("Auctioneer");
         type(6);
         this.auctions = auctions;
-        this.totalPages = (int) Math.ceil(auctions.size() / 36);
-
-        addItemsToPage(1);
+        this.totalPages = (int) Math.ceil(auctions.size() / ITEM_COUNT_PER_PAGE);
+        AuctionController.getInstance().registerEvents(this);
+        this.init();
     }
 
     @Override
     public void onClose(Player p, InventoryView view) {
+    }
+
+    private void init() {
+        loadItemsForPage();
+        addUIElements();
     }
 
     private void addUIElements() {
@@ -45,7 +54,8 @@ public class AuctionGui extends GUI {
                 @Override
                 public void onPickup(GUI gui, Player p, ItemStack stack, InventoryClickEvent e) {
                     e.setCancelled(true);
-                    //TODO
+                    currentPage--;
+                    init();
                 }
 
                 @Override
@@ -59,7 +69,6 @@ public class AuctionGui extends GUI {
             @Override
             public void onPickup(GUI gui, Player p, ItemStack stack, InventoryClickEvent e) {
                 e.setCancelled(true);
-                //TODO
             }
 
             @Override
@@ -98,6 +107,8 @@ public class AuctionGui extends GUI {
                 @Override
                 public void onPickup(GUI gui, Player p, ItemStack stack, InventoryClickEvent e) {
                     e.setCancelled(true);
+                    currentPage++;
+                    init();
                 }
 
                 @Override
@@ -110,17 +121,25 @@ public class AuctionGui extends GUI {
 
     /**
      * Adds all items to the current page
-     * @param page
      */
-    private void addItemsToPage(int page) {
+    private void loadItemsForPage() {
+        //TODO check if replacing or recreating the ui is more effecient (recreating should be)
         for (int i = 0; i < AuctionGui.ITEM_COUNT_PER_PAGE; i++) {
-            Auction auction = auctions.get(ITEM_COUNT_PER_PAGE * currentPage);
+            ItemStack slotItem = null;
+            Auction auction;
 
-            slot(i, auction.getItem() != null ? auction.getItem().newInstance().getData().toStack() : null, new SlotUsable() {
+            auction = getAuctionFromSlot(i);
+            if (auction != null) {
+                slotItem = auction.getItem().toStack();
+            }
+
+            slot(i, slotItem != null ? slotItem : new ItemStack(Material.AIR), new SlotUsable() {
                 @Override
                 public void onPickup(GUI gui, Player p, ItemStack stack, InventoryClickEvent e) {
                     e.setCancelled(true);
-                    AuctionController.getInstance().startBuyPrompt(p, auction);
+                    Auction auction = getAuctionFromSlot(e.getSlot());
+                    if (auction == null) return;
+                    AuctionController.getInstance().startPrompt(p, auction, AuctionChatPrompt.AuctionPromptType.BUY);
                 }
 
                 @Override
@@ -130,5 +149,33 @@ public class AuctionGui extends GUI {
             });
         }
         addUIElements();
+    }
+
+    /**
+     * @param slot
+     * @return
+     */
+    private Auction getAuctionFromSlot(int slot) {
+        Auction auction = null;
+        try {
+            auction = auctions.get(slot + (currentPage - 1) * ITEM_COUNT_PER_PAGE);
+        } catch (Exception ex) { //silent catch to prevent OutOfBoundsException
+        }
+        return auction;
+    }
+
+    @Override
+    public void onClickPlayerInventory(GUI gui, Player p, InventoryClickEvent e) {
+        if (gui instanceof AuctionGui) {
+            e.setCancelled(true);
+            GearItem.Instance item = GearItem.Instance.fromStack(e.getCurrentItem());
+            if (item != null) {
+                AuctionController.getInstance().startPrompt(
+                        (Player) e.getWhoClicked(),
+                        item.getData(),
+                        AuctionChatPrompt.AuctionPromptType.SELL
+                );
+            }
+        }
     }
 }

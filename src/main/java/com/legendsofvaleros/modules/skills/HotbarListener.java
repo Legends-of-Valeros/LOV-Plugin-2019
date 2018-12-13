@@ -59,11 +59,9 @@ public class HotbarListener implements Runnable, Listener {
     @EventHandler
     public void onPlayerSwitchbar(PlayerSwitchHotbarEvent e) {
         PlayerCharacter pc = Characters.getPlayerCharacter(e.getPlayer());
-
         int newBar = (e.getCurrentHotbar() + 1) % 2;
 
         fillBar(pc, newBar);
-
         e.setCurrentHotbar(newBar);
     }
 

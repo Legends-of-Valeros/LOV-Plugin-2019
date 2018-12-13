@@ -152,6 +152,10 @@ public class Characters extends ModuleListener implements CharactersAPI {
         return instance.getCharacter(id);
     }
 
+    public static boolean isPlayerCharacterLoaded(CharacterId id) {
+        return instance.isCharacterLoaded(instance.getCharacter(id).getPlayer());
+    }
+
     public static boolean isPlayerCharacterLoaded(Player player) {
         return instance.isCharacterLoaded(player);
     }
