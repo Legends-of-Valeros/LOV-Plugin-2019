@@ -1,13 +1,10 @@
 package com.legendsofvaleros;
 
-import co.aikar.commands.BaseCommand;
+import co.aikar.commands.BukkitCommandManager;
 import co.aikar.commands.PaperCommandManager;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Private;
-import co.aikar.commands.annotation.Syntax;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.legendsofvaleros.module.InternalLogger;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.Modules;
 import com.legendsofvaleros.modules.auction.AuctionController;
@@ -43,14 +40,18 @@ import com.legendsofvaleros.util.ProgressBar;
 import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_12_R1.CraftServer;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.PluginLogger;
 import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.*;
+import java.lang.reflect.Field;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 /**
  * Created by Crystall on 11/15/2018
@@ -93,6 +94,15 @@ public class LegendsOfValeros extends JavaPlugin {
 
         manager = new PaperCommandManager(LegendsOfValeros.getInstance());
         manager.enableUnstableAPI("help");
+
+        try {
+            Field field = JavaPlugin.class.getDeclaredField("logger");
+            field.setAccessible(true);
+
+            field = BukkitCommandManager.class.getDeclaredField("logger");
+            field.setAccessible(true);
+            field.set(manager, getLogger());
+        } catch (Exception e) { e.printStackTrace(); }
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
             // This is done so we get almost-live updates on GC'd listeners.
