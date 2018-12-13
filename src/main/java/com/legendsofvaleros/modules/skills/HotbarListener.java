@@ -62,7 +62,6 @@ public class HotbarListener implements Runnable, Listener {
         PlayerCharacter pc = Characters.getPlayerCharacter(e.getPlayer());
 
         int newBar = (e.getCurrentHotbar() + 1) % 2;
-        e.getPlayer().sendMessage("bar: " + newBar);
 
         fillBar(pc, newBar);
 
