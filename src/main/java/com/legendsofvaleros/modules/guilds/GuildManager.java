@@ -40,7 +40,7 @@ public class GuildManager {
         guildRolePermissionTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), GuildRolePermission.class);
         guildMemberTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), GuildMember.class);
 
-        GuildController.getInstance().registerEvents(new PlayerListener());
+        // GuildController.getInstance().registerEvents(new PlayerListener());
     }
 
     public static ListenableFuture<Guild> load(UUID guildId) {

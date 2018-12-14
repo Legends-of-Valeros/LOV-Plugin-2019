@@ -23,5 +23,7 @@ public class ActionGiveItem extends AbstractQuestAction {
                 .append("]!").color(ChatColor.AQUA).create());
 
         ItemUtil.giveItem(Characters.getPlayerCharacter(player), instance);
+
+        next.go();
     }
 }

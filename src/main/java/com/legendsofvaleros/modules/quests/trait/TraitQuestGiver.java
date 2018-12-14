@@ -89,14 +89,12 @@ public class TraitQuestGiver extends LOVTrait {
 
             for (String id : trait.questIDs) {
                 ListenableFuture<IQuest> future = QuestManager.getQuest(id);
-                if(future == null) {
-                    MessageUtil.sendException(Quests.getInstance(), "Quest giver has a null quest ID. Offender: " + trait.npc_id, false);
-                    continue;
-                }
 
                 futures.add(future);
 
                 future.addListener(() -> {
+                    if(future.isCancelled()) return;
+
                     try {
                         try {
                             IQuest quest = future.get();

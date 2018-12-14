@@ -138,8 +138,7 @@ public class GearStats {
 				if(ability != null && ability.size() > 0)
 					for(Entry<AbilityStat, Integer> s : persist.ability.entrySet()) {
 						if(pc != null) {
-							if(DebugFlags.get(pc.getPlayer()).verbose)
-								pc.getPlayer().sendMessage("Added " + s.getKey() + " " + s.getValue());
+							MessageUtil.sendDebugVerbose(pc.getPlayer(), "Added " + s.getKey() + " " + s.getValue());
 
 							mods.add(pc.getAbilityStats().newAbilityStatModifierBuilder(s.getKey())
 								.setModifierType(ValueModifierBuilder.ModifierType.FLAT_EDIT)

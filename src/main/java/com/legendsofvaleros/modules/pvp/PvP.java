@@ -20,6 +20,7 @@ import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.parties.Parties;
 import com.legendsofvaleros.modules.pvp.traits.TraitHonorTrader;
 import com.legendsofvaleros.modules.zones.Zones;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -67,86 +68,59 @@ public class PvP extends ModuleListener {
         NPCs.registerTrait("honor-trader", TraitHonorTrader.class);
     }
 
-    private boolean isPvPAllowed(boolean allow, Player p1, Player p2) {
-        p1.sendMessage("start " + allow);
-        if(this.enabled) {
-            // If PvP is disabled in the zone
-            if (Modules.isLoaded(Zones.class)) {
-                if (!Zones.manager().getZone(p1).pvp
-                        || !Zones.manager().getZone(p2).pvp) {
-                    p1.sendMessage("  zone disabled");
-                    allow = false;
-                }
-            }
-
-            if (Modules.isLoaded(Parties.class)) {
-                // Disable PvP within parties
-            }
-        }else{
-            p1.sendMessage("  world disabled");
-            allow = false;
-        }
-
-        if(Modules.isLoaded(Dueling.class)) {
-            // If they're in a duel with each other, enable pvp.
-            if(Dueling.getInstance().getDuel(p1, p2) != null) {
-                p1.sendMessage("  duel allowed");
-                allow = true;
-
-                // If either player is in a duel, cancel damage.
-            }else if(Dueling.getInstance().getDuel(p1) != null
-                    || Dueling.getInstance().getDuel(p2) != null) {
-                p1.sendMessage("  duel disabled");
-                allow = false;
-            }
-        }
-
-        return allow;
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerDamagePlayer(CombatEngineDamageEvent event) {
         if(event.isCancelled()) return;
 
         if (!event.getAttacker().isPlayer() || !event.getDamaged().isPlayer()) return;
 
+        if (!Characters.isPlayerCharacterLoaded((Player)event.getDamaged().getLivingEntity())) return;
+        if (!Characters.isPlayerCharacterLoaded((Player)event.getAttacker().getLivingEntity())) return;
+
+        // If PvP is disabled, cancel it. Duh.
+        if(!this.enabled) { event.setCancelled(true); }
+
+        // We still need to check if PvP is allowed. (For duels and such)
+        PvPCheckEvent pvp = new PvPCheckEvent((Player)event.getAttacker().getLivingEntity(), (Player)event.getDamaged().getLivingEntity(), null);
+        Bukkit.getPluginManager().callEvent(pvp);
+
+        if(pvp.isCancelled())
+            event.setCancelled(true);
+        else{
+            // If the damage event is not cancelled, add the PvP modifier.
+            event.newDamageModifierBuilder("PvP")
+                    .setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
+                    .setValue(PvP.DAMAGE_MULTIPLIER)
+                    .build();
+        }
+
         /*if(!attackerToggle.isEnabled() || !targetToggle.isEnabled() || attackerToggle.getPriority() != targetToggle.getPriority()) {
             event.setCancelled(true);
             return;
         }*/
-
-        Player p1 = (Player)event.getAttacker().getLivingEntity();
-        if (!Characters.isPlayerCharacterLoaded(p1)) { event.setCancelled(true); return; }
-
-        Player p2 = (Player)event.getDamaged().getLivingEntity();
-        if (!Characters.isPlayerCharacterLoaded(p2)) { event.setCancelled(true); return; }
-
-        event.setCancelled(!isPvPAllowed(!event.isCancelled(), p1, p2));
-
-        if(!event.isCancelled())
-            event.newDamageModifierBuilder("PvP")
-                    .setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
-                    .setValue(PvP.DAMAGE_MULTIPLIER)
-                .build();
     }
 
     @EventHandler
     public void onEntityTargetted(SkillTargetEvent event) {
-        // Always allow "good" spells.
-        if(event.getSkill().getType() == Skill.Type.BENEFICIAL) {
-            event.setCancelled(true);
+        // Ignore "good" spells. We only care about harmful attacks.
+        if(event.getSkill().getType() != Skill.Type.HARMFUL)
             return;
-        }
 
         if (!event.getUser().isPlayer() || !event.getTarget().isPlayer()) return;
 
-        Player p1 = (Player)event.getUser().getLivingEntity();
-        if (!Characters.isPlayerCharacterLoaded(p1)) { event.setCancelled(true); return; }
+        if (!Characters.isPlayerCharacterLoaded((Player)event.getUser().getLivingEntity())) return;
+        if (!Characters.isPlayerCharacterLoaded((Player)event.getTarget().getLivingEntity())) return;
 
-        Player p2 = (Player)event.getTarget().getLivingEntity();
-        if (!Characters.isPlayerCharacterLoaded(p2)) { event.setCancelled(true); return; }
+        // If PvP is disabled, cancel it. Duh.
+        if(!this.enabled) { event.setCancelled(true); }
 
-        event.setCancelled(isPvPAllowed(event.isCancelled(), p1, p2));
+        // We still need to check if PvP is allowed. (For duels and such)
+        PvPCheckEvent pvp = new PvPCheckEvent((Player)event.getUser().getLivingEntity(), (Player)event.getTarget().getLivingEntity(), event.getSkill());
+        Bukkit.getPluginManager().callEvent(pvp);
+
+        // PvP is disabled! Don't target the player!
+        if(pvp.isCancelled())
+            event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

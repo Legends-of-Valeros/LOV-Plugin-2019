@@ -9,8 +9,10 @@ import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.chat.Chat;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.pvp.PvP;
+import com.legendsofvaleros.modules.pvp.PvPCheckEvent;
 import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.Quests;
 import com.legendsofvaleros.modules.quests.objective.stf.QuestObjectiveFactory;
@@ -84,6 +86,17 @@ public class Zones extends ModuleListener {
         if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
 
         QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
+    }
+
+    @EventHandler
+    public void isPvPAllowed(PvPCheckEvent event) {
+        // Zones should never override a PvP check.
+        if(event.isCancelled()) return;
+
+        if (!manager.getZone(event.getAttacker()).pvp
+                || !manager.getZone(event.getDamaged()).pvp) {
+            event.setCancelled(true);
+        }
     }
 
     public void onChat(Player p, BaseComponent[] bc) {

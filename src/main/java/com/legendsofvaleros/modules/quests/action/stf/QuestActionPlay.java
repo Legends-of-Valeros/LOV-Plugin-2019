@@ -6,6 +6,7 @@ import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.quests.Quests;
 import com.legendsofvaleros.modules.quests.progress.stf.QuestProgressPack;
+import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -57,7 +58,7 @@ public abstract class QuestActionPlay {
             public void run(Integer actionI) {
                 Quests.getInstance().getScheduler().executeInSpigotCircle(() -> {
                     if (progress.actionI == null) {
-                        Bukkit.getLogger().info("A weird thing happened");
+                        MessageUtil.sendException(Quests.getInstance(), "A weird thing happened", false);
                         return;
                     }
 
