@@ -15,7 +15,7 @@ import com.legendsofvaleros.modules.gear.event.ItemEquipEvent;
 import com.legendsofvaleros.modules.gear.event.ItemUnEquipEvent;
 import com.legendsofvaleros.modules.gear.inventory.InventoryListener;
 import com.legendsofvaleros.modules.gear.inventory.ItemListener;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.quest.*;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.modules.npcs.NPCs;
@@ -36,11 +36,11 @@ import java.sql.SQLException;
 @DependsOn(Characters.class)
 @DependsOn(Hotswitch.class)
 @DependsOn(Quests.class)
-public class Gear extends ModuleListener {
-    private static Gear instance;
-    public static Gear getInstance() { return instance; }
+public class GearController extends ModuleListener {
+    private static GearController instance;
+    public static GearController getInstance() { return instance; }
 
-    public static GearItem ERROR_ITEM;
+    public static Gear ERROR_ITEM;
 
     @Override
     public void onLoad() {
@@ -74,19 +74,19 @@ public class Gear extends ModuleListener {
         QuestActionFactory.registerType("item_remove", ActionRemoveItem.class);
         QuestActionFactory.registerType("item_choose", ActionChooseItem.class);
 
-        ORMRegistry.addMutator(GearItem.Data.class, new ORMRegistry.SQLMutator<GearItem.Data>() {
+        ORMRegistry.addMutator(Gear.Data.class, new ORMRegistry.SQLMutator<Gear.Data>() {
             @Override
             public void applyToField(ORMField field) {
                 field.sqlType = "TEXT";
             }
 
             @Override
-            public GearItem.Data fromSQL(ResultSet result, String key) throws SQLException {
-                return GearItem.Data.loadData(result.getString(key));
+            public Gear.Data fromSQL(ResultSet result, String key) throws SQLException {
+                return Gear.Data.loadData(result.getString(key));
             }
 
             @Override
-            public Object toSQL(GearItem.Data value) {
+            public Object toSQL(Gear.Data value) {
                 return value.toString();
             }
         });

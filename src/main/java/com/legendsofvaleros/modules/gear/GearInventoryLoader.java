@@ -3,7 +3,7 @@ package com.legendsofvaleros.modules.gear;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.modules.characters.core.PlayerInventoryData;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -13,9 +13,9 @@ public class GearInventoryLoader implements PlayerInventoryData.InventoryMethod 
     public ListenableFuture<String> encode(ItemStack[] contents) {
         SettableFuture<String> ret = SettableFuture.create();
 
-        GearItem.Data[] data = new GearItem.Data[contents.length];
+        Gear.Data[] data = new Gear.Data[contents.length];
         for (int i = 0; i < contents.length; i++) {
-            GearItem.Instance instance = GearItem.Instance.fromStack(contents[i]);
+            Gear.Instance instance = Gear.Instance.fromStack(contents[i]);
             if (instance != null)
                 data[i] = instance.getData();
         }
@@ -28,7 +28,7 @@ public class GearInventoryLoader implements PlayerInventoryData.InventoryMethod 
     public ListenableFuture<ItemStack[]> decode(String data) {
         SettableFuture<ItemStack[]> ret = SettableFuture.create();
 
-        GearItem.Data[] gearData = ItemManager.gson.fromJson(data, GearItem.Data[].class);
+        Gear.Data[] gearData = ItemManager.gson.fromJson(data, Gear.Data[].class);
         ItemStack[] contents = new ItemStack[gearData.length];
 
         AtomicInteger amount = new AtomicInteger(contents.length);

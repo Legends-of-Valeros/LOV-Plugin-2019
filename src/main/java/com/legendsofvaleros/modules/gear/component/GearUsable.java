@@ -12,7 +12,7 @@ import com.legendsofvaleros.modules.gear.component.impl.GearComponent;
 import com.legendsofvaleros.modules.gear.component.impl.GearComponentOrder;
 import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger;
 import com.legendsofvaleros.modules.gear.component.trigger.UseTrigger;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.item.GearType;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
 import com.legendsofvaleros.util.MessageUtil;
@@ -116,7 +116,7 @@ public class GearUsable {
 		}
 
 		@Override
-		public double getValue(GearItem.Instance item, Persist persist) {
+		public double getValue(Gear.Instance item, Persist persist) {
 			double power = 0;
 
 			if(persist.regenerating != null) {
@@ -129,7 +129,7 @@ public class GearUsable {
 		}
 
 		@Override
-		protected void onGenerateItem(GearItem.Instance item, Persist persist, ItemBuilder builder) {
+		protected void onGenerateItem(Gear.Instance item, Persist persist, ItemBuilder builder) {
 			if(alter == null || alter.size() == 0) return;
 	
 			if(persist.regenerating == null && persist.ability == null && persist.stats == null) {
@@ -184,7 +184,7 @@ public class GearUsable {
 		}
 		
 		@Override
-		public Boolean test(GearItem.Instance item, Persist persist, GearTrigger trigger) {
+		public Boolean test(Gear.Instance item, Persist persist, GearTrigger trigger) {
 			if(!trigger.equals(UseTrigger.class)) return null;
 			
 			UseTrigger t = (UseTrigger)trigger;
@@ -201,7 +201,7 @@ public class GearUsable {
 		}
 		
 		@Override
-		public Persist fire(GearItem.Instance item, Persist persist, GearTrigger trigger) {
+		public Persist fire(Gear.Instance item, Persist persist, GearTrigger trigger) {
 			if(!trigger.equals(UseTrigger.class)) return null;
 			
 			UseTrigger t = (UseTrigger)trigger;

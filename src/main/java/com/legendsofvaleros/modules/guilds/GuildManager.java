@@ -12,6 +12,7 @@ import com.legendsofvaleros.modules.guilds.guild.Guild;
 import com.legendsofvaleros.modules.guilds.guild.GuildMember;
 import com.legendsofvaleros.modules.guilds.guild.GuildRole;
 import com.legendsofvaleros.modules.guilds.guild.GuildRolePermission;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -33,30 +34,6 @@ public class GuildManager {
     private static ORMTable<GuildMember> guildMemberTable;
     public static ORMTable<GuildMember> getGuildMemberTable() { return guildMemberTable; }
 
-    /**
-     * Guilds are in this map as long as a single player in the guild is online.
-     * Once all go offline or leave, it is dumped to the database.
-     */
-    private static Map<UUID, Guild> guilds = new HashMap<>();
-    public static Guild getGuild(UUID guildId) { return guilds.get(guildId); }
-
-    /**
-     * Guilds are in this map as long as a single player in the guild is online.
-     * Once all go offline or leave, it is dumped to the database.
-     */
-    private static Map<UUID, UUID> guildMembers = new HashMap<>();
-    private static Multimap<UUID, UUID> onlineMembers = HashMultimap.create();
-
-    /**
-     * Get the guild for the specified UUID.
-     * @param uuid The UUID.
-     * @return The guild that the UUID is in. Returns null if it is not in a guild.
-     */
-    public static Guild getGuildByMember(UUID uuid) {
-        if(!guildMembers.containsKey(uuid)) return null;
-        return guilds.get(guildMembers.get(uuid));
-    }
-
     protected static void onEnable() {
         guildTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), Guild.class);
         guildRoleTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), GuildRole.class);
@@ -64,15 +41,6 @@ public class GuildManager {
         guildMemberTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), GuildMember.class);
 
         GuildController.getInstance().registerEvents(new PlayerListener());
-    }
-
-    public static void remove(UUID guildId) {
-        Guild g = guilds.remove(guildId);
-
-        for(GuildMember m : g.getMembers())
-            guildMembers.remove(m.getId());
-
-        onlineMembers.removeAll(guildId);
     }
 
     public static ListenableFuture<Guild> load(UUID guildId) {
@@ -131,7 +99,7 @@ public class GuildManager {
             // Only load a guild when the player first logs in.
             if(!event.isFirstInSession()) return;
 
-            if(!guildMembers.containsKey(event.getPlayer().getUniqueId())) {
+            if(Guild.getGuildByMember(event.getPlayer().getUniqueId()) == null) {
                 PhaseLock lock = event.getLock("guild");
 
                 guildMemberTable.query().select()
@@ -139,8 +107,11 @@ public class GuildManager {
                             .limit(1)
                         .build()
                         .forEach((guildMember) -> {
-                            load(guildMember.getGuildId()).addListener(() -> {
-                                onlineMembers.put(guildMember.getGuildId(), guildMember.getId());
+                            ListenableFuture<Guild> future = load(guildMember.getGuildId());
+                            future.addListener(() -> {
+                                try {
+                                    future.get().onLogin(guildMember.getId());
+                                } catch(Exception e) { e.printStackTrace(); }
 
                                 lock.release();
                             }, GuildController.getInstance().getScheduler()::async);
@@ -150,17 +121,9 @@ public class GuildManager {
 
         @EventHandler
         public void onPlayerQuit(PlayerQuitEvent event) {
-            if(guildMembers.containsKey(event.getPlayer().getUniqueId())) {
-                Guild guild = getGuildByMember(event.getPlayer().getUniqueId());
-
-                onlineMembers.remove(guild.getId(), event.getPlayer().getUniqueId());
-
-                // If no more players in the guild are online
-                if(onlineMembers.get(guild.getId()).size() == 0) {
-                    // Unload guild
-                    remove(guild.getId());
-                }
-            }
+            Guild guild;
+            if((guild = Guild.getGuildByMember(event.getPlayer().getUniqueId())) != null)
+                guild.onLogout(event.getPlayer().getUniqueId());
         }
     }
 }

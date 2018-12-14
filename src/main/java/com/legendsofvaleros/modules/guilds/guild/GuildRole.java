@@ -47,7 +47,13 @@ public class GuildRole {
 
     public ListenableFuture<Boolean> save() { return GuildManager.getGuildRoleTable().save(this, true); }
     public ListenableFuture<Boolean> remove() {
-        GuildManager.remove(getId());
+        for(GuildMember member : Guild.getIfLoaded(guildId).getMembers()) {
+            if(member.getRole() == this) {
+                member.setRole(null);
+                member.save();
+            }
+        }
+
         return GuildManager.getGuildRoleTable().delete(this, true);
     }
 }

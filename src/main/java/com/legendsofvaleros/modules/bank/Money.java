@@ -6,7 +6,7 @@ import com.legendsofvaleros.modules.bank.pouch.CreatePouchGUI;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.event.InventoryFullEvent;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.playermenu.InventoryManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -51,7 +51,7 @@ public class Money {
             PlayerCharacter pc = Characters.getPlayerCharacter(p);
 
             if(event.getCursor() != null && event.getCursor().getType() != Material.AIR) {
-                GearItem.Instance instance = GearItem.Instance.fromStack(event.getView().getCursor());
+                Gear.Instance instance = Gear.Instance.fromStack(event.getView().getCursor());
                 if(instance == null) return;
 
 //                Long worth = instance.getPersist(WorthComponent.class);
@@ -76,7 +76,7 @@ public class Money {
 			try {
 				BankData data = future.get();
 
-				GearItem.Instance instance = event.getItem();
+				Gear.Instance instance = event.getItem();
 
 				data.content.add(instance.getData());
 

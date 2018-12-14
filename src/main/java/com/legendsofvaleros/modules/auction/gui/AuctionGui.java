@@ -7,10 +7,9 @@ import com.legendsofvaleros.modules.auction.AuctionChatPrompt;
 import com.legendsofvaleros.modules.auction.AuctionController;
 import com.legendsofvaleros.modules.auction.filter.FilterDirection;
 import com.legendsofvaleros.modules.auction.filter.FilterType;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.InventoryView;
@@ -168,7 +167,7 @@ public class AuctionGui extends GUI implements Listener {
     public void onClickPlayerInventory(GUI gui, Player p, InventoryClickEvent e) {
         if (gui instanceof AuctionGui) {
             e.setCancelled(true);
-            GearItem.Instance item = GearItem.Instance.fromStack(e.getCurrentItem());
+            Gear.Instance item = Gear.Instance.fromStack(e.getCurrentItem());
             if (item != null) {
                 AuctionController.getInstance().startPrompt(
                         (Player) e.getWhoClicked(),

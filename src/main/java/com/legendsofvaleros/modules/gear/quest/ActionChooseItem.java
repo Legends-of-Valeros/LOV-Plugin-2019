@@ -3,8 +3,8 @@ package com.legendsofvaleros.modules.gear.quest;
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.slot.ISlotAction;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.gear.Gear;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.GearController;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
 import com.legendsofvaleros.modules.quests.action.stf.AbstractQuestAction;
 import com.legendsofvaleros.util.MessageUtil;
@@ -42,10 +42,10 @@ public class ActionChooseItem extends AbstractQuestAction {
 	
 	@Override
 	public void play(Player player, Next next) {
-		GearItem[] items = new GearItem[itemIds.length];
+		Gear[] items = new Gear[itemIds.length];
 
 		for(int i = 0; i < itemIds.length; i++)
-			items[i] = GearItem.fromID(itemIds[i]);
+			items[i] = Gear.fromID(itemIds[i]);
 
 		try {
 			GUI gui = new GUI("Choose One") {
@@ -58,7 +58,7 @@ public class ActionChooseItem extends AbstractQuestAction {
 			gui.fixed();
 
 			for(int i = 0; i < items.length; i++) {
-				GearItem.Instance instance = items[i].newInstance();
+				Gear.Instance instance = items[i].newInstance();
 				instance.amount = amounts[i] == null ? 1 : amounts[i];
 
 				ISlotAction action = (ui, p, event) -> {
@@ -87,7 +87,7 @@ public class ActionChooseItem extends AbstractQuestAction {
 
 			gui.open(player);
 		} catch(Exception e) {
-			MessageUtil.sendException(Gear.getInstance(), player, e, false);
+			MessageUtil.sendException(GearController.getInstance(), player, e, false);
 		}
 	}
 }

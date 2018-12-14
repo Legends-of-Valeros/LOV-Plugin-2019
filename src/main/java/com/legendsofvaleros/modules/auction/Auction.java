@@ -2,12 +2,11 @@ package com.legendsofvaleros.modules.auction;
 
 import com.codingforcookies.doris.orm.annotation.Column;
 import com.codingforcookies.doris.orm.annotation.Table;
-import com.legendsofvaleros.modules.bank.BankManager;
 import com.legendsofvaleros.modules.bank.Money;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.mailbox.Mail;
 import com.legendsofvaleros.modules.mailbox.MailboxController;
 import com.legendsofvaleros.util.MessageUtil;
@@ -32,7 +31,7 @@ public class Auction {
     private CharacterId ownerId;
 
     @Column(name = "auction_item", length = 255)
-    private GearItem.Data item;
+    private Gear.Data item;
 
     @Column(name = "valid_until", length = 32)
     private int validUntil;
@@ -42,12 +41,12 @@ public class Auction {
 
     private Dictionary<String, Integer> bidHistory;
 
-    public Auction(CharacterId ownerId, GearItem.Data item) {
+    public Auction(CharacterId ownerId, Gear.Data item) {
         this.ownerId = ownerId;
         this.item = item;
     }
 
-    public Auction(CharacterId ownerId, int price, GearItem.Data item, boolean isBidOffer) {
+    public Auction(CharacterId ownerId, int price, Gear.Data item, boolean isBidOffer) {
         this.ownerId = ownerId;
         this.price = price;
         this.item = item;
@@ -145,7 +144,7 @@ public class Auction {
         return this.ownerId;
     }
 
-    public GearItem.Data getItem() {
+    public Gear.Data getItem() {
         return this.item;
     }
 
@@ -169,7 +168,7 @@ public class Auction {
         this.ownerId = ownerId;
     }
 
-    public void setItem(GearItem.Data item) {
+    public void setItem(Gear.Data item) {
         this.item = item;
     }
 

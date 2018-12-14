@@ -4,7 +4,7 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.item.Model;
@@ -26,14 +26,14 @@ public class ItemCommands extends BaseCommand {
     @Description("Spawn an item.")
     @CommandPermission("gear.spawn")
     public void cmdSpawn(Player player, String itemId, @Optional Integer amount) {
-        GearItem gear = GearItem.fromID(itemId);
+        Gear gear = Gear.fromID(itemId);
 
         if (gear == null) {
             MessageUtil.sendError(player, "That item name doesn't exist.");
             return;
         }
 
-        GearItem.Instance instance = gear.newInstance();
+        Gear.Instance instance = gear.newInstance();
 
         instance.amount = amount != null ? amount : 1;
 

@@ -8,7 +8,7 @@ import com.legendsofvaleros.modules.gear.component.impl.GearComponent;
 import com.legendsofvaleros.modules.gear.component.impl.GearComponentOrder;
 import com.legendsofvaleros.modules.gear.component.trigger.CombineTrigger;
 import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.item.GearType;
 import com.legendsofvaleros.util.field.RangedValue;
 import org.bukkit.ChatColor;
@@ -72,12 +72,12 @@ public class GearCharge {
 			return persist;
 		}
 
-		@Override public double getValue(GearItem.Instance item, Persist persist) {
+		@Override public double getValue(Gear.Instance item, Persist persist) {
 			return persist.current;
 		}
 
 		@Override
-		protected void onGenerateItem(GearItem.Instance item, Persist persist, ItemBuilder builder) {
+		protected void onGenerateItem(Gear.Instance item, Persist persist, ItemBuilder builder) {
 			if(persist.max <= 0)
 				builder.addLore(ChatColor.AQUA + "❅ The extent of its power is unknowable.");
 			else{
@@ -101,7 +101,7 @@ public class GearCharge {
 		}
 		
 		@Override
-		public Boolean test(GearItem.Instance item, Persist persist, GearTrigger trigger) {
+		public Boolean test(Gear.Instance item, Persist persist, GearTrigger trigger) {
 			if(trigger.equals(CastTrigger.class)) {
 				return persist.current > 0 || !((CastTrigger)trigger).skill.doesRequireFocus() || persist.max == 0;
 			}else if(trigger.equals(CombineTrigger.class)) {
@@ -120,7 +120,7 @@ public class GearCharge {
 		}
 	
 		@Override
-		public Persist fire(GearItem.Instance item, Persist persist, GearTrigger trigger) {
+		public Persist fire(Gear.Instance item, Persist persist, GearTrigger trigger) {
 			if(trigger.equals(CastTrigger.class)) {
 				if(((CastTrigger)trigger).skill.doesRequireFocus() && persist.current > 0) {
 					if(!LegendsOfValeros.getMode().isVerbose()) {

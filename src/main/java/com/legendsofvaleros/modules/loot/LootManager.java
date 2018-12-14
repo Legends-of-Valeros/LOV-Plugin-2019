@@ -7,12 +7,12 @@ import com.google.gson.Gson;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
-import com.legendsofvaleros.modules.gear.Gear;
+import com.legendsofvaleros.modules.gear.GearController;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@DependsOn(Gear.class)
+@DependsOn(GearController.class)
 public class LootManager extends ModuleListener {
     private static final String LOOT_TABLE = "loot";
     private static final String LOOT_ID = "loot_id";

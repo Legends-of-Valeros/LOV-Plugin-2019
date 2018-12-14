@@ -7,7 +7,7 @@ import com.legendsofvaleros.modules.gear.component.trigger.PickupTrigger;
 import com.legendsofvaleros.modules.gear.event.GearPickupEvent;
 import com.legendsofvaleros.modules.gear.event.InventoryFullEvent;
 import com.legendsofvaleros.modules.gear.inventory.ItemListener;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.playermenu.InventoryManager;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
@@ -42,17 +42,17 @@ public class ItemUtil {
 		return random.nextBoolean();
 	}
 	
-	public static boolean hasItem(Player p, GearItem gear, int amount) {
+	public static boolean hasItem(Player p, Gear gear, int amount) {
 		if(amount <= 0) return true;
 		
 		int count = 0;
 		ItemStack[] contents = p.getInventory().getContents();
-		GearItem.Instance item;
+		Gear.Instance item;
 		// First pass for similar stacking
 		for(int i = 9; i < 9 + 9 * 3; i++) {
 			if(InventoryManager.hasFixedItem(i)) continue;
 			
-			item = GearItem.Instance.fromStack(contents[i]);
+			item = Gear.Instance.fromStack(contents[i]);
 			if(gear.isSimilar(item)) {
 				count += item.amount;
 				if(count >= amount)
@@ -63,7 +63,7 @@ public class ItemUtil {
 		return count >= amount;
 	}
 
-	public static void dropItem(Location dieLoc, GearItem.Instance instance, PlayerCharacter owner) {
+	public static void dropItem(Location dieLoc, Gear.Instance instance, PlayerCharacter owner) {
 		Item item = dieLoc.getWorld().dropItemNaturally(dieLoc, instance.toStack());
 		ItemListener.itemOwner.put(item.getUniqueId(), owner.getPlayerId());
 		
@@ -71,7 +71,7 @@ public class ItemUtil {
 		instance.getRarityLevel().getTeam().addEntry(item.getUniqueId().toString());
 	}
 	
-	public static void giveItem(PlayerCharacter pc, GearItem.Instance instance) {
+	public static void giveItem(PlayerCharacter pc, Gear.Instance instance) {
 		if(instance == null) return;
 
 		PickupTrigger trigger = new PickupTrigger(pc);
@@ -82,12 +82,12 @@ public class ItemUtil {
 		if(stack == null) return;
 		
 		ItemStack[] contents = pc.getPlayer().getInventory().getContents();
-		GearItem.Instance item;
+		Gear.Instance item;
 		// First pass for similar stacking
 		for(int i = 9; i < 9 + 9 * 3; i++) {
 			if(InventoryManager.hasFixedItem(i)) continue;
 			
-			item = GearItem.Instance.fromStack(contents[i]);
+			item = Gear.Instance.fromStack(contents[i]);
 			if(instance.gear.isSimilar(item)) {
 				if(instance == item)
 					instance = instance.copy();
@@ -105,7 +105,7 @@ public class ItemUtil {
 		for(int i = 9; i < contents.length; i++) {
 			if(InventoryManager.hasFixedItem(i)) continue;
 			
-			item = GearItem.Instance.fromStack(contents[i]);
+			item = Gear.Instance.fromStack(contents[i]);
 			if(item == null) {
 				pc.getPlayer().getInventory().setItem(i, instance.toStack());
 				instance.amount = 0;
@@ -124,15 +124,15 @@ public class ItemUtil {
 		}
 	}
 	
-	public static boolean removeItem(Player p, GearItem gear, int amount) {
+	public static boolean removeItem(Player p, Gear gear, int amount) {
 		if(gear == null) return false;
 
 		ItemStack[] contents = p.getInventory().getContents();
-		GearItem.Instance item;
+		Gear.Instance item;
 		for(int i = 9; i < 9 + 9 * 3; i++) {
 			if(InventoryManager.hasFixedItem(i)) continue;
 			
-			item = GearItem.Instance.fromStack(contents[i]);
+			item = Gear.Instance.fromStack(contents[i]);
 			if(gear.isSimilar(item)) {
 				int newSize = Math.max(0, item.amount - amount);
 				amount -= item.amount - newSize;
@@ -148,7 +148,7 @@ public class ItemUtil {
 		return amount <= 0;
 	}
 
-	public static double getAverageDPS(GearItem.Instance item) {
+	public static double getAverageDPS(Gear.Instance item) {
 		GearDamage.Persist pdc = item.getPersist(GearDamage.Component.class);
 		if(pdc == null) return 0;
 		
@@ -168,7 +168,7 @@ public class ItemUtil {
 		if(mainHand.getType() == Material.AIR)
 			return 0;
 		
-		Gear heldItem = ItemHandler.toStatItem(mainHand);
+		GearController heldItem = ItemHandler.toStatItem(mainHand);
 		if(heldItem != null)
 			if(heldItem.getCurrentDurability() > 0) {
 				int damage = heldItem.getMaximumDamage() - heldItem.getMinimumDamage();

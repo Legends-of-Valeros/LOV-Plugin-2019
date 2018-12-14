@@ -10,7 +10,7 @@ import com.legendsofvaleros.modules.gear.component.impl.GearComponent;
 import com.legendsofvaleros.modules.gear.component.impl.GearComponentOrder;
 import com.legendsofvaleros.modules.gear.component.trigger.EquipTrigger;
 import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.item.NoPersist;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -26,12 +26,12 @@ public class RequireComponent extends GearComponent<NoPersist> {
 	public EntityRace entityRace;
 
 	@Override
-	public double getValue(GearItem.Instance item, NoPersist persist) {
+	public double getValue(Gear.Instance item, NoPersist persist) {
 		return 0;
 	}
 
 	@Override
-	protected void onGenerateItem(GearItem.Instance item, NoPersist persist, ItemBuilder builder) {
+	protected void onGenerateItem(Gear.Instance item, NoPersist persist, ItemBuilder builder) {
 		StringBuilder sb = new StringBuilder(String.valueOf(ChatColor.YELLOW) + " ✓");
 		
 		if(level != null && level > 0) {
@@ -53,7 +53,7 @@ public class RequireComponent extends GearComponent<NoPersist> {
 	}
 
 	@Override
-	public Boolean test(GearItem.Instance item, NoPersist persist, GearTrigger trigger) {
+	public Boolean test(Gear.Instance item, NoPersist persist, GearTrigger trigger) {
 		if(!trigger.equals(EquipTrigger.class)) return null;
 		
 		EquipTrigger t = (EquipTrigger)trigger;

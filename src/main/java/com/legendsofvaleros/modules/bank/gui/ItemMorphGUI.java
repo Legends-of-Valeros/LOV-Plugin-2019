@@ -8,7 +8,7 @@ import com.codingforcookies.robert.slot.SlotUsable;
 import com.legendsofvaleros.modules.bank.Money;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.item.Model;
@@ -35,7 +35,7 @@ public abstract class ItemMorphGUI extends GUI {
     private boolean canInteract = true;
     private ISlotAction acceptAction;
 
-    protected GearItem.Instance[] items = new GearItem.Instance[6];
+    protected Gear.Instance[] items = new Gear.Instance[6];
 
     public ItemMorphGUI(String title) {
         super(title);
@@ -92,7 +92,7 @@ public abstract class ItemMorphGUI extends GUI {
 
                         items[event.getSlot()] = null;
 
-                        GearItem.Instance instance = GearItem.Instance.fromStack(stack);
+                        Gear.Instance instance = Gear.Instance.fromStack(stack);
                         cost -= getWorth(instance);
 
                         updateCost();
@@ -105,7 +105,7 @@ public abstract class ItemMorphGUI extends GUI {
                             return;
                         }
 
-                        GearItem.Instance instance = GearItem.Instance.fromStack(stack);
+                        Gear.Instance instance = Gear.Instance.fromStack(stack);
                         if (instance == null || !isValid(instance)) {
                             event.setCancelled(true);
                             return;
@@ -130,7 +130,7 @@ public abstract class ItemMorphGUI extends GUI {
         ACCEPT_BUTTON.clearLore();
 
         boolean hasOne = false;
-        for (GearItem.Instance item : items)
+        for (Gear.Instance item : items)
             if (item != null) {
                 hasOne = true;
                 break;
@@ -152,15 +152,15 @@ public abstract class ItemMorphGUI extends GUI {
         }
 
         if (view != null)
-            ItemUtil.giveItem(pc, GearItem.Instance.fromStack(view.getCursor()));
-        for (GearItem.Instance instance : items)
+            ItemUtil.giveItem(pc, Gear.Instance.fromStack(view.getCursor()));
+        for (Gear.Instance instance : items)
             if (instance != null)
                 ItemUtil.giveItem(pc, instance);
     }
 
 	public abstract boolean isBuy();
-	public abstract boolean isValid(GearItem.Instance item);
-	public abstract long getWorth(GearItem.Instance item);
-	public abstract void executeMorph(PlayerCharacter pc, GearItem.Instance item);
+	public abstract boolean isValid(Gear.Instance item);
+	public abstract long getWorth(Gear.Instance item);
+	public abstract void executeMorph(PlayerCharacter pc, Gear.Instance item);
 	public abstract void onCompleted(PlayerCharacter pc);
 }

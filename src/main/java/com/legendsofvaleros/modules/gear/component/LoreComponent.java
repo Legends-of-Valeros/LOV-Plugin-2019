@@ -4,7 +4,7 @@ import com.codingforcookies.robert.core.StringUtil;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.modules.gear.component.impl.GearComponent;
 import com.legendsofvaleros.modules.gear.component.impl.GearComponentOrder;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.item.NoPersist;
 import org.bukkit.ChatColor;
 
@@ -15,12 +15,12 @@ public class LoreComponent extends GearComponent<NoPersist> {
 	public String text;
 
 	@Override
-	public double getValue(GearItem.Instance item, NoPersist persist) {
+	public double getValue(Gear.Instance item, NoPersist persist) {
 		return 0;
 	}
 
 	@Override
-	protected void onGenerateItem(GearItem.Instance item, NoPersist persist, ItemBuilder builder) {
+	protected void onGenerateItem(Gear.Instance item, NoPersist persist, ItemBuilder builder) {
 		for(String line : StringUtil.splitForStackLore(text))
 			builder.addLore(ChatColor.YELLOW + "" + ChatColor.ITALIC + line);
 	}

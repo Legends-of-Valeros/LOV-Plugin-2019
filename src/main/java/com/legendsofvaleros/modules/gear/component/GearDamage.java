@@ -5,7 +5,7 @@ import com.legendsofvaleros.modules.gear.component.impl.GearComponent;
 import com.legendsofvaleros.modules.gear.component.impl.GearComponentOrder;
 import com.legendsofvaleros.modules.gear.component.trigger.AttackTrigger;
 import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
 import com.legendsofvaleros.util.field.RangedValue;
 import org.bukkit.ChatColor;
@@ -36,12 +36,12 @@ public class GearDamage {
 		}
 
 		@Override
-		public double getValue(GearItem.Instance item, Persist persist) {
+		public double getValue(Gear.Instance item, Persist persist) {
 			return persist.getAverageDamage() * 1.3D;
 		}
 
 		@Override
-		protected void onGenerateItem(GearItem.Instance item, Persist persist, ItemBuilder builder) {
+		protected void onGenerateItem(Gear.Instance item, Persist persist, ItemBuilder builder) {
 			if(persist.max > 0) {
 				double dps = (int)Math.round(ItemUtil.getAverageDPS(item) * 100D) / 100D;
 
@@ -53,7 +53,7 @@ public class GearDamage {
 		}
 
 		@Override
-		protected Persist fire(GearItem.Instance item, Persist persist, GearTrigger trigger) {
+		protected Persist fire(Gear.Instance item, Persist persist, GearTrigger trigger) {
 			if(trigger.equals(AttackTrigger.class))
 				((AttackTrigger)trigger).setDamage(ItemUtil.random_double(persist.min, persist.max));
 			return null;

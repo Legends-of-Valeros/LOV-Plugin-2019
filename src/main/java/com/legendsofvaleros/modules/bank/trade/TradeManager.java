@@ -6,7 +6,7 @@ import com.codingforcookies.robert.slot.SlotUsable;
 import com.legendsofvaleros.modules.bank.Bank;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
 import com.legendsofvaleros.modules.playermenu.PlayerMenuOpenEvent;
 import com.legendsofvaleros.util.MessageUtil;
@@ -109,9 +109,9 @@ class TradeState {
             for (int i = 0; i < 7; i++) {
                 int slot = i < 4 ? i : 5 + i;
                 if (g1.getInventory().getItem(slot) != null)
-                    ItemUtil.giveItem(Characters.getPlayerCharacter(p2), GearItem.Instance.fromStack(g1.getInventory().getItem(slot)));
+                    ItemUtil.giveItem(Characters.getPlayerCharacter(p2), Gear.Instance.fromStack(g1.getInventory().getItem(slot)));
                 if (g2.getInventory().getItem(slot) != null)
-                    ItemUtil.giveItem(Characters.getPlayerCharacter(p1), GearItem.Instance.fromStack(g2.getInventory().getItem(slot)));
+                    ItemUtil.giveItem(Characters.getPlayerCharacter(p1), Gear.Instance.fromStack(g2.getInventory().getItem(slot)));
             }
 
             g1.getInventory().clear();
@@ -125,9 +125,9 @@ class TradeState {
         for (int i = 0; i < 7; i++) {
             int slot = i < 4 ? i : 5 + i;
             if (g1.getInventory().getItem(slot) != null)
-                ItemUtil.giveItem(Characters.getPlayerCharacter(p1), GearItem.Instance.fromStack(g1.getInventory().getItem(slot)));
+                ItemUtil.giveItem(Characters.getPlayerCharacter(p1), Gear.Instance.fromStack(g1.getInventory().getItem(slot)));
             if (g2.getInventory().getItem(slot) != null)
-                ItemUtil.giveItem(Characters.getPlayerCharacter(p2), GearItem.Instance.fromStack(g2.getInventory().getItem(slot)));
+                ItemUtil.giveItem(Characters.getPlayerCharacter(p2), Gear.Instance.fromStack(g2.getInventory().getItem(slot)));
         }
 
         g1.close(p1);
@@ -194,7 +194,7 @@ class TradeGUI extends GUI {
         /*if (InventoryManager.hasFixedItem(event.getSlot()) || event.getSlot() <= Hotswitch.SWITCHER_SLOT)
             return;
 
-        GearItem.Instance instance = GearItem.Instance.fromStack(event.getClickedInventory().getItem(event.getSlot()));
+        Gear.Instance instance = Gear.Instance.fromStack(event.getClickedInventory().getItem(event.getSlot()));
         if (instance == null) return;
         if (!instance.gear.getType().isTradable())
             return;
@@ -226,7 +226,7 @@ class TradeGUI extends GUI {
                 // Create a new slot action
                 gui.slot(theSlot, newStack, (gui1, p1, event1) -> {
                     // Add the item back to the player's inventory
-                    ItemUtil.giveItem(Characters.getPlayerCharacter(p1), GearItem.Instance.fromStack(gui1.getInventory().getItem(theSlot)));
+                    ItemUtil.giveItem(Characters.getPlayerCharacter(p1), Gear.Instance.fromStack(gui1.getInventory().getItem(theSlot)));
 
                     // Clear the slot
                     gui1.slot(theSlot, (ItemStack) null, null);

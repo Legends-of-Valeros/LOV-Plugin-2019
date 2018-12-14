@@ -5,7 +5,7 @@ import com.codingforcookies.doris.orm.annotation.Column;
 import com.codingforcookies.doris.orm.annotation.Table;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -52,7 +52,7 @@ public class PlayerBank extends ORM {
         return true;
     }
 
-    public void setItem(GearItem.Data item) {
+    public void setItem(Gear.Data item) {
         int i = 0;
         for(Integer j : content.keySet())
             if(j > i) {
@@ -62,7 +62,7 @@ public class PlayerBank extends ORM {
                 i = j;
     }
 
-    public void setItem(int index, GearItem.Data item) {
+    public void setItem(int index, Gear.Data item) {
         content.put(index, new Entry(characterId, index, item));
     }
 
@@ -111,9 +111,9 @@ public class PlayerBank extends ORM {
         public final int index;
 
         @Column(name = "bank_item")
-        public final GearItem.Data item;
+        public final Gear.Data item;
 
-        protected Entry(CharacterId characterId, int index, GearItem.Data item) {
+        protected Entry(CharacterId characterId, int index, Gear.Data item) {
             this.characterId = characterId.toString();
             this.index = index;
             this.item = item;

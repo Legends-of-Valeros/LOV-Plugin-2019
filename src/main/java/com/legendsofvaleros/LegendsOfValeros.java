@@ -14,7 +14,7 @@ import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.dueling.Dueling;
 import com.legendsofvaleros.modules.factions.FactionModule;
 import com.legendsofvaleros.modules.fast_travel.FastTravel;
-import com.legendsofvaleros.modules.gear.Gear;
+import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.graveyard.Graveyards;
 import com.legendsofvaleros.modules.guilds.GuildController;
 import com.legendsofvaleros.modules.hearthstones.Hearthstones;
@@ -137,7 +137,7 @@ public class LegendsOfValeros extends JavaPlugin {
         Modules.registerModule(Dueling.class);
         Modules.registerModule(FactionModule.class);
         Modules.registerModule(FastTravel.class);
-        Modules.registerModule(Gear.class);
+        Modules.registerModule(GearController.class);
         Modules.registerModule(Graveyards.class);
         Modules.registerModule(GuildController.class);
         Modules.registerModule(Hearthstones.class);

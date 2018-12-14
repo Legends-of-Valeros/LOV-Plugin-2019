@@ -7,7 +7,7 @@ import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.damage.physical.PhysicalType;
 import com.legendsofvaleros.modules.gear.component.GearUseSpeed;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.mobs.behavior.BehaviorAction;
 import com.legendsofvaleros.modules.mobs.behavior.NodeStatus;
 import com.legendsofvaleros.modules.mobs.trait.MobTrait;
@@ -40,7 +40,7 @@ public class AttackBehavior {
             if (time == null || time - System.currentTimeMillis() <= 0) {
                 time = System.currentTimeMillis() + 1000L;
 
-                GearItem.Instance gear = GearItem.Instance.fromStack(ce.getLivingEntity().getEquipment().getItemInMainHand());
+                Gear.Instance gear = Gear.Instance.fromStack(ce.getLivingEntity().getEquipment().getItemInMainHand());
                 if (gear != null) {
                     GearUseSpeed.Persist use = gear.getPersist(GearUseSpeed.Component.class);
                     if (use != null)

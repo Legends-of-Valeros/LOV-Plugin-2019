@@ -3,7 +3,7 @@ package com.legendsofvaleros.modules.mailbox;
 import com.codingforcookies.doris.orm.annotation.Column;
 import com.codingforcookies.doris.orm.annotation.Table;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 
 /**
  * Created by Crystall on 11/24/2018
@@ -18,9 +18,9 @@ public class Mail {
     private String content;
 
     @Column(name = "mail_item", length = 255)
-    // Has to be GearItem.Data, otherwise we lose persistent values
+    // Has to be Gear.Data, otherwise we lose persistent values
     // when turning it back into an item.
-    private GearItem.Data item;
+    private Gear.Data item;
 
     @Column(name = "mail_is_read", length = 32)
     private boolean isRead;
@@ -31,11 +31,11 @@ public class Mail {
         this.isRead = isRead;
     }
 
-    public Mail(CharacterId characterId, String content, GearItem.Instance item, boolean isRead) {
+    public Mail(CharacterId characterId, String content, Gear.Instance item, boolean isRead) {
         this(characterId, content, item.getData(), isRead);
     }
 
-    public Mail(CharacterId characterId, String content, GearItem.Data item, boolean isRead) {
+    public Mail(CharacterId characterId, String content, Gear.Data item, boolean isRead) {
         this.characterId = characterId;
         this.content = content;
         this.item = item;
@@ -50,11 +50,11 @@ public class Mail {
         isRead = read;
     }
 
-    public GearItem.Data getItem() {
+    public Gear.Data getItem() {
         return item;
     }
 
-    public void setItem(GearItem.Data item) {
+    public void setItem(Gear.Data item) {
         this.item = item;
     }
 

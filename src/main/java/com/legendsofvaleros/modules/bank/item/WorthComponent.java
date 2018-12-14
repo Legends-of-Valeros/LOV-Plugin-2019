@@ -7,7 +7,7 @@ import com.legendsofvaleros.modules.gear.component.impl.GearComponent;
 import com.legendsofvaleros.modules.gear.component.impl.GearComponentOrder;
 import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger;
 import com.legendsofvaleros.modules.gear.component.trigger.PickupTrigger;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.field.RangedValue;
 
@@ -19,17 +19,17 @@ public class WorthComponent extends GearComponent<Long> {
 	@Override public Long onInit() { return worth == null ? 0 : worth.longValue(); }
 
 	@Override
-	public double getValue(GearItem.Instance item, Long persist) {
+	public double getValue(Gear.Instance item, Long persist) {
 		return persist;
 	}
 
 	@Override
-	protected void onGenerateItem(GearItem.Instance item, Long persist, ItemBuilder builder) {
+	protected void onGenerateItem(Gear.Instance item, Long persist, ItemBuilder builder) {
 		builder.addLore(Money.Format.format(persist));
 	}
 
 	@Override
-	protected Long fire(GearItem.Instance item, Long persist, GearTrigger trigger) {
+	protected Long fire(Gear.Instance item, Long persist, GearTrigger trigger) {
 		if(!trigger.equals(PickupTrigger.class)) return null;
 		
 		if(persist > 0) {

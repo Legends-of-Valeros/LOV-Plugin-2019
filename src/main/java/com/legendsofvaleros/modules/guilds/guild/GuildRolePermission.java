@@ -31,7 +31,7 @@ public class GuildRolePermission {
 
     public ListenableFuture<Boolean> save() { return GuildManager.getGuildRolePermissionTable().save(this, true); }
     public ListenableFuture<Boolean> remove() {
-        GuildManager.getGuild(guildId).getRole(roleId).removePermission(permission);
+        Guild.getIfLoaded(guildId).getRole(roleId).removePermission(permission);
         return GuildManager.getGuildRolePermissionTable().delete(this, true);
     }
 }

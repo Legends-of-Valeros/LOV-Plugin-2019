@@ -1,8 +1,8 @@
 package com.legendsofvaleros.modules.gear.quest;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.gear.Gear;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.GearController;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
 import com.legendsofvaleros.modules.npcs.NPCData;
 import com.legendsofvaleros.modules.npcs.NPCs;
@@ -18,20 +18,20 @@ public class FetchForNPCObjective extends AbstractQuestObjective<QuestObjectiveP
     private String id;
     private int amount;
 
-    private transient GearItem item;
+    private transient Gear item;
 
     private String npcId;
     private transient NPCData npc;
 
     @Override
     protected void onInit() {
-        item = GearItem.fromID(id);
+        item = Gear.fromID(id);
 
         if (item == null)
-            MessageUtil.sendException(Gear.getInstance(), "No item with that ID in quest. Offender: " + id + " in " + getQuest().getId(), false);
+            MessageUtil.sendException(GearController.getInstance(), "No item with that ID in quest. Offender: " + id + " in " + getQuest().getId(), false);
 
         if (!NPCs.isNPC(npcId)) {
-            MessageUtil.sendException(Gear.getInstance(), "No NPC with that ID in quest. Offender: " + id + " in " + getQuest().getId(), false);
+            MessageUtil.sendException(GearController.getInstance(), "No NPC with that ID in quest. Offender: " + id + " in " + getQuest().getId(), false);
             return;
         }
 

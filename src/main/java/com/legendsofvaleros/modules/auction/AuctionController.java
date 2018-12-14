@@ -10,8 +10,8 @@ import com.legendsofvaleros.modules.auction.traits.TraitAuctioneer;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.gear.Gear;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.GearController;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.scheduler.InternalTask;
 import org.bukkit.entity.Player;
@@ -26,7 +26,7 @@ import java.util.concurrent.ExecutionException;
  * Created by Crystall on 10/10/2018
  */
 @DependsOn(NPCs.class)
-@DependsOn(Gear.class)
+@DependsOn(GearController.class)
 @DependsOn(Characters.class)
 public class AuctionController extends ModuleListener {
 
@@ -130,7 +130,7 @@ public class AuctionController extends ModuleListener {
      * @param p
      * @param itemData
      */
-    public void startPrompt(Player p, GearItem.Data itemData, AuctionChatPrompt.AuctionPromptType type) {
+    public void startPrompt(Player p, Gear.Data itemData, AuctionChatPrompt.AuctionPromptType type) {
         this.startPrompt(p, new Auction(Characters.getPlayerCharacter(p).getUniqueCharacterId(), itemData), type);
     }
 

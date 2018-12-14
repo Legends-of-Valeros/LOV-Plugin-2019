@@ -35,9 +35,9 @@ public class InventoryListener implements Listener {
 
 		if(!Characters.isPlayerCharacterLoaded((Player)e.getWhoClicked())) return;
 
-		GearItem.Instance onCursor = GearItem.Instance.fromStack(e.getCursor());
+		Gear.Instance onCursor = Gear.Instance.fromStack(e.getCursor());
 
-		GearItem.Instance inSlot = GearItem.Instance.fromStack(e.getCurrentItem());
+		Gear.Instance inSlot = Gear.Instance.fromStack(e.getCurrentItem());
 
 		if(onCursor == null && inSlot == null) return;
 
@@ -140,7 +140,7 @@ public class InventoryListener implements Listener {
 			}
 		}
 
-		GearItem.Instance getInstance = GearItem.Instance.fromStack(e.getCursor());
+		Gear.Instance getInstance = Gear.Instance.fromStack(e.getCursor());
 		if(getInstance == null) return;
 
 		int i = 0;
@@ -148,7 +148,7 @@ public class InventoryListener implements Listener {
 		for(Map.Entry<Integer, ItemStack> entry : e.getNewItems().entrySet()) {
 			i += entry.getValue().getAmount();
 
-			GearItem.Instance ii = getInstance.copy();
+			Gear.Instance ii = getInstance.copy();
 
 			ii.amount = entry.getValue().getAmount();
 			getInstance.amount -= ii.amount;

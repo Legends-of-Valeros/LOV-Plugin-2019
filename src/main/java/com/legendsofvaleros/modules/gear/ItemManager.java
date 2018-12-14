@@ -8,7 +8,7 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.gear.component.impl.ComponentMap;
 import com.legendsofvaleros.modules.gear.component.impl.GearComponent;
 import com.legendsofvaleros.modules.gear.component.impl.PersistMap;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.field.RangedValue;
 import com.legendsofvaleros.util.item.Model;
@@ -23,9 +23,9 @@ import java.util.Map.Entry;
 public class ItemManager {
     public static Gson gson;
 
-    private static ORMTable<GearItem> gearTable;
+    private static ORMTable<Gear> gearTable;
 
-    private static Map<String, GearItem> gear = new HashMap<>();
+    private static Map<String, Gear> gear = new HashMap<>();
 
     public static void onEnable() {
         gson = new GsonBuilder()
@@ -41,7 +41,7 @@ public class ItemManager {
                             components.put(entry.getKey(), gson.fromJson(entry.getValue(), comp));
                         } catch (Exception e) {
                             Exception ex = new Exception(e + ". Offender: " + entry.getKey() + " " + entry.getValue().toString());
-                            MessageUtil.sendException(Gear.getInstance(), ex, false);
+                            MessageUtil.sendException(GearController.getInstance(), ex, false);
                         }
                     }
                     return components;
@@ -53,7 +53,7 @@ public class ItemManager {
                         try {
                             persists.put(entry.getKey(), gson.fromJson(entry.getValue(), c));
                         } catch (Exception e) {
-                            Gear.getInstance().getLogger().warning("Error thrown when decoding persist data. Offender: " + entry.getKey() + " as " + c);
+                            GearController.getInstance().getLogger().warning("Error thrown when decoding persist data. Offender: " + entry.getKey() + " as " + c);
                             e.printStackTrace();
                         }
                     }
@@ -74,11 +74,11 @@ public class ItemManager {
             }
         });
 
-        gearTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), GearItem.class);
+        gearTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), Gear.class);
 
         // Bite the bullet and load all gear into memory to prevent code complexity. This was getting
         // out of hand.
-        Gear.getInstance().getScheduler().executeInSpigotCircle(() -> {
+        GearController.getInstance().getScheduler().executeInSpigotCircle(() -> {
             reload();
         });
     }
@@ -91,13 +91,13 @@ public class ItemManager {
 
             gear.put(item.getID(), item);
         }).onFinished(() -> {
-            Gear.ERROR_ITEM = GearItem.fromID("perfectly-generic-item");
-            Gear.getInstance().getLogger().info("Loaded " + gear.size() + " items.");
+            GearController.ERROR_ITEM = Gear.fromID("perfectly-generic-item");
+            GearController.getInstance().getLogger().info("Loaded " + gear.size() + " items.");
         }).execute(false);
     }
 
-    public static GearItem getItem(String id) {
-        if(!gear.containsKey(id)) return Gear.ERROR_ITEM;
+    public static Gear getItem(String id) {
+        if(!gear.containsKey(id)) return GearController.ERROR_ITEM;
         return gear.get(id);
     }
 }

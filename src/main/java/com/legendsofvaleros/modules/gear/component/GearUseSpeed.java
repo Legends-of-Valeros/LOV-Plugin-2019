@@ -6,7 +6,7 @@ import com.legendsofvaleros.modules.gear.component.impl.GearComponentOrder;
 import com.legendsofvaleros.modules.gear.component.trigger.EquipTrigger;
 import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger;
 import com.legendsofvaleros.modules.gear.component.trigger.UnEquipTrigger;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.util.field.RangedValue;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
@@ -33,19 +33,19 @@ public class GearUseSpeed {
 		}
 
 		@Override
-		public double getValue(GearItem.Instance item, Persist persist) {
+		public double getValue(Gear.Instance item, Persist persist) {
 			return 0;
 		}
 
 		@Override
-		protected void onGenerateItem(GearItem.Instance item, Persist persist, ItemBuilder builder) {
+		protected void onGenerateItem(Gear.Instance item, Persist persist, ItemBuilder builder) {
 			// builder.addAttributeMod(Attributes.ATTACK_SPEED, Attributes.Operation.ADD_NUMBER, persist.speed);
 			
 			builder.addLore(String.format(ChatColor.WHITE + "Attack Speed: %s/s", DF.format(persist.speed)));
 		}
 
 		@Override
-		public GearUseSpeed.Persist fire(GearItem.Instance item, GearUseSpeed.Persist persist, GearTrigger trigger) {
+		public GearUseSpeed.Persist fire(Gear.Instance item, GearUseSpeed.Persist persist, GearTrigger trigger) {
 			if(trigger.equals(EquipTrigger.class)) {
 				((EquipTrigger)trigger).getEntity().getLivingEntity()
 						.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(persist.speed);
