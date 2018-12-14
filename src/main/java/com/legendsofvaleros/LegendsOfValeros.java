@@ -161,7 +161,7 @@ public class LegendsOfValeros extends JavaPlugin {
     }
 
     public void registerEvents(Listener listener, Module module) {
-        String listenerName = listener.getClass().getName() + "@" + Integer.toHexString(listener.hashCode());
+        String listenerName = listener.getClass().getName().replace("com.legendsofvaleros.modules.", "") + "@" + Integer.toHexString(listener.hashCode());
 
         module.getLogger().info("Registered listener: " + listenerName + ".");
 
