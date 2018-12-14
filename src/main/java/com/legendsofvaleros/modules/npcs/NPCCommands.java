@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-@CommandAlias("npcs")
+@CommandAlias("npcs|lov npcs")
 public class NPCCommands extends BaseCommand {
 	@Subcommand("reload")
 	@Description("Reload the NPC cache and citizens.")
@@ -120,7 +120,6 @@ public class NPCCommands extends BaseCommand {
 	}
 
 	@Default
-	@HelpCommand
 	public void cmdHelp(CommandSender sender, CommandHelp help) {
 		help.showHelp();
 	}

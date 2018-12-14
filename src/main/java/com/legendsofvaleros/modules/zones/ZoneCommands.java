@@ -6,7 +6,7 @@ import co.aikar.commands.annotation.*;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.command.CommandSender;
 
-@CommandAlias("zones")
+@CommandAlias("zones|lov zones")
 public class ZoneCommands extends BaseCommand {
 	@Subcommand("reload")
 	@Description("Reload the zone cache.")
@@ -17,7 +17,6 @@ public class ZoneCommands extends BaseCommand {
 	}
 
 	@Default
-	@HelpCommand
 	public void cmdHelp(CommandSender sender, CommandHelp help) {
 		help.showHelp();
 	}

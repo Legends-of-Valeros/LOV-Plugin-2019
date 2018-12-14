@@ -20,7 +20,7 @@ import org.bukkit.entity.Player;
 import java.util.Collection;
 import java.util.concurrent.ExecutionException;
 
-@CommandAlias("quests")
+@CommandAlias("quests|lov quests")
 public class QuestCommands extends BaseCommand {
     @Subcommand("refresh")
     @Description("Reload quests currently in the cache.")
@@ -141,7 +141,6 @@ public class QuestCommands extends BaseCommand {
         }, Quests.getInstance().getScheduler()::async);
     }
 
-    @Default
     @Subcommand("gui")
     @Description("Show the quest book.")
     public void cmdListQuestGUI(Player player) {
@@ -211,7 +210,7 @@ public class QuestCommands extends BaseCommand {
         book.open(player, false);
     }
 
-    @HelpCommand
+    @Default
     public void cmdHelp(CommandSender sender, CommandHelp help) {
         help.showHelp();
     }

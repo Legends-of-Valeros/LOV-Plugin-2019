@@ -13,7 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-@CommandAlias("char|character|characters")
+@CommandAlias("char|character|characters|lov char|lov character|lov characters")
 public class CharacterCommands extends BaseCommand {
 	@SuppressWarnings("deprecation")
 	@Subcommand("level set")
@@ -80,10 +80,5 @@ public class CharacterCommands extends BaseCommand {
 			book.addPage(page);
 		
 		book.open(player, false);
-	}
-
-	@HelpCommand
-	public void cmdHelp(CommandSender sender, CommandHelp help) {
-		help.showHelp();
 	}
 }
