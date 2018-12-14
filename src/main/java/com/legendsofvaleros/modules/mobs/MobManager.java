@@ -28,7 +28,7 @@ public class MobManager {
 
     public static Cache<String, Mob> entities = CacheBuilder.newBuilder()
             .concurrencyLevel(4)
-            .weakValues()
+            .softValues()
             .removalListener((entry) -> Mobs.getInstance().getLogger().warning("Entity '" + entry.getKey() + "' removed from the cache."))
             .build();
 

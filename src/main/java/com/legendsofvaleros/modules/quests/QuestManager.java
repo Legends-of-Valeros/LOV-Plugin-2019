@@ -229,7 +229,7 @@ public class QuestManager {
 
         quests = new FutureCache<>(CacheBuilder.newBuilder()
                 .concurrencyLevel(4)
-                .weakValues()
+                .softValues()
                 .removalListener(QuestManager::onQuestUnCached)
                 .build(), QuestManager::loadQuest);
     }
