@@ -14,5 +14,7 @@ public class GuildController extends ModuleListener {
         super.onLoad();
 
         instance = this;
+
+        GuildManager.onEnable();
     }
 }
