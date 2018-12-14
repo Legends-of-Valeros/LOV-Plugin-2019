@@ -22,7 +22,7 @@ public class GuildMember {
     public UUID getId() { return playerId; }
 
     @ForeignKey(table = GuildRole.class, name = "guild_role_id", onUpdate = ForeignKey.Trigger.CASCADE, onDelete = ForeignKey.Trigger.SET_NULL)
-    @Column(name = "guild_role_id")
+    @Column(index = true, name = "guild_role_id")
     private UUID roleId;
     public UUID getRoleId() { return roleId; }
 

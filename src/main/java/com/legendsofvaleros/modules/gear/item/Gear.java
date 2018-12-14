@@ -57,7 +57,7 @@ public class Gear implements IGear {
     }
 
     @ForeignKey(table = Model.class, name = "model_id", onUpdate = ForeignKey.Trigger.CASCADE, onDelete = ForeignKey.Trigger.SET_DEFAULT)
-    @Column(name = "item_model", length = 48)
+    @Column(index = true, name = "item_model", length = 48)
     private String modelId;
     @Override public String getModelId() {
         return modelId;
