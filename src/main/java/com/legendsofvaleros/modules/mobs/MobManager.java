@@ -28,7 +28,7 @@ public class MobManager {
 
     public static Cache<String, Mob> entities = CacheBuilder.newBuilder()
             .concurrencyLevel(4)
-            .softValues()
+            .weakValues()
             .removalListener((entry) -> Mobs.getInstance().getLogger().warning("Entity '" + entry.getKey() + "' removed from the cache."))
             .build();
 
@@ -82,6 +82,11 @@ public class MobManager {
         });
 
         entitiesTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), Mob.class, gson);
+
+        Mobs.getInstance().getScheduler().executeInMyCircleTimer(() -> {
+            // This is done so we get almost-live updates on GC'd listeners.
+            entities.cleanUp();
+        }, 0L, 20L);
     }
 
     public static Mob getEntity(String id) {

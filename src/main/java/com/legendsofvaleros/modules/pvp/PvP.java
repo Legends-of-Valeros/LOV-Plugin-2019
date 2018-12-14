@@ -68,11 +68,13 @@ public class PvP extends ModuleListener {
     }
 
     private boolean isPvPAllowed(boolean allow, Player p1, Player p2) {
+        p1.sendMessage("start " + allow);
         if(this.enabled) {
             // If PvP is disabled in the zone
             if (Modules.isLoaded(Zones.class)) {
                 if (!Zones.manager().getZone(p1).pvp
                         || !Zones.manager().getZone(p2).pvp) {
+                    p1.sendMessage("  zone disabled");
                     allow = false;
                 }
             }
@@ -80,18 +82,23 @@ public class PvP extends ModuleListener {
             if (Modules.isLoaded(Parties.class)) {
                 // Disable PvP within parties
             }
-        }else
+        }else{
+            p1.sendMessage("  world disabled");
             allow = false;
+        }
 
         if(Modules.isLoaded(Dueling.class)) {
             // If they're in a duel with each other, enable pvp.
-            if(Dueling.getInstance().getDuel(p1, p2) != null)
+            if(Dueling.getInstance().getDuel(p1, p2) != null) {
+                p1.sendMessage("  duel allowed");
                 allow = true;
 
                 // If either player is in a duel, cancel damage.
-            else if(Dueling.getInstance().getDuel(p1) != null
-                    || Dueling.getInstance().getDuel(p2) != null)
+            }else if(Dueling.getInstance().getDuel(p1) != null
+                    || Dueling.getInstance().getDuel(p2) != null) {
+                p1.sendMessage("  duel disabled");
                 allow = false;
+            }
         }
 
         return allow;
@@ -112,7 +119,7 @@ public class PvP extends ModuleListener {
         Player p2 = (Player)event.getDamaged().getLivingEntity();
         if (!Characters.isPlayerCharacterLoaded(p2)) { event.setCancelled(true); return; }
 
-        event.setCancelled(isPvPAllowed(event.isCancelled(), p1, p2));
+        event.setCancelled(isPvPAllowed(!event.isCancelled(), p1, p2));
 
         if(!event.isCancelled())
             event.newDamageModifierBuilder("PvP")

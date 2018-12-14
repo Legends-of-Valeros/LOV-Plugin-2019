@@ -23,7 +23,7 @@ public class MobCommands extends BaseCommand {
 	@Description("Create a mob spawn point at your current location with radius.")
 	@CommandPermission("mobs.spawn.create")
 	@Syntax("<mob id> <radius> <padding> <level min-max> [spawn count] [spawn interval] [spawn chance]")
-	public void cmdCreate(Player player, String mobId, int radius, int padding, String level, @Optional Short count, @Optional Short interval, @Optional Byte chance) {
+	public void cmdCreate(Player player, String mobId, int radius, int padding, String level, @Optional Integer count, @Optional Integer interval, @Optional Integer chance) {
 		Mob mobData = MobManager.getEntity(mobId);
 		if(mobData == null) {
 			MessageUtil.sendError(player, "Unknown mob with that ID.");
@@ -47,7 +47,7 @@ public class MobCommands extends BaseCommand {
 		MessageUtil.sendUpdate(player, "Set spawn point " + data.getLocation() + " level to [" + data.getLevelRange()[0] + "-" + data.getLevelRange()[1] + "].");
 		
 		if(count != null) {
-			data.spawnCount = count;
+			data.spawnCount = count.shortValue();
 			MessageUtil.sendUpdate(player, "  Will spawn up to " + data.spawnCount + " entities.");
 		}
 
@@ -60,11 +60,11 @@ public class MobCommands extends BaseCommand {
 		}
 		
 		if(chance != null) {
-			data.spawnChance = chance;
+			data.spawnChance = chance.byteValue();
 			MessageUtil.sendUpdate(player, "  There is a " + data.spawnChance + "% chance it'll spawn.");
 		}
 
-		SpawnManager.addSpawn(null, data);
+		SpawnManager.addSpawn(data);
 		SpawnManager.updateSpawn(data);
 	}
 

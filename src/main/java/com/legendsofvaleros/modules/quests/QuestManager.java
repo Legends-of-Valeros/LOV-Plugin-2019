@@ -17,6 +17,7 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
+import com.legendsofvaleros.modules.mobs.Mobs;
 import com.legendsofvaleros.modules.quests.action.stf.AbstractQuestAction;
 import com.legendsofvaleros.modules.quests.action.stf.QuestActionFactory;
 import com.legendsofvaleros.modules.quests.action.stf.QuestActions;
@@ -229,9 +230,14 @@ public class QuestManager {
 
         quests = new FutureCache<>(CacheBuilder.newBuilder()
                 .concurrencyLevel(4)
-                .softValues()
+                .weakValues()
                 .removalListener(QuestManager::onQuestUnCached)
                 .build(), QuestManager::loadQuest);
+
+        Quests.getInstance().getScheduler().executeInMyCircleTimer(() -> {
+            // This is done so we get almost-live updates on GC'd listeners.
+            quests.cleanUp();
+        }, 0L, 20L);
     }
 
     public static void reloadQuests() {

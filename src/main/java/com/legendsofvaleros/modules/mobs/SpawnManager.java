@@ -27,8 +27,7 @@ public class SpawnManager {
 
     private static ORMTable<SpawnArea> spawnsTable;
 
-    private static Multimap<Chunk, SpawnArea> spawns = HashMultimap.create();
-
+    private static Multimap<String, SpawnArea> spawns = HashMultimap.create();
     public static Collection<SpawnArea> getSpawns() {
         return spawns.values();
     }
@@ -37,21 +36,20 @@ public class SpawnManager {
             loaded = new AtomicInteger(0),
             unloaded = new AtomicInteger(0);
 
-    private static Cache<Chunk, Collection<SpawnArea>> cachedSpawns = CacheBuilder.newBuilder()
-            .expireAfterAccess(10L, TimeUnit.MINUTES)
-            .removalListener((entry) -> {
-                if (entry.getValue() == null) return;
-                for (SpawnArea spawn : (Collection<SpawnArea>) entry.getValue()) {
-                    unloaded.incrementAndGet();
-                    spawn.delete();
-                }
-            })
+    private static Cache<String, Collection<SpawnArea>> cachedSpawns = CacheBuilder.newBuilder()
+            .expireAfterWrite(10L, TimeUnit.MINUTES)
+            .removalListener((entry) -> unloaded.addAndGet(((Collection<SpawnArea>) entry.getValue()).size()))
             .build();
 
     public static void onEnable() {
         Mobs.getInstance().registerEvents(new SpawnsListener());
 
         spawnsTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), SpawnArea.class);
+
+        Mobs.getInstance().getScheduler().executeInMyCircleTimer(() -> {
+            // This is done so we get almost-live updates on GC'd listeners.
+            cachedSpawns.cleanUp();
+        }, 0L, 20L);
 
         Mobs.getInstance().getScheduler().executeInMyCircleTimer(() -> {
             if (misses.get() > 0) {
@@ -71,22 +69,24 @@ public class SpawnManager {
         }, 20L * 60L * 60L, 20L * 60L * 60L);
     }
 
-    public static void addSpawn(Chunk chunk, SpawnArea spawn) {
-        if (chunk == null)
-            chunk = spawn.getWorld().getChunkAt(spawn.getLocation());
+    public static void addSpawn(SpawnArea spawn) {
+        Chunk chunk = spawn.getLocation().getChunk();
 
-        spawns.put(chunk, spawn);
+        spawns.put(getId(chunk), spawn);
 
         // If editing is enabled, generate the hologram right away.
         if(LegendsOfValeros.getMode().allowEditing())
             Mobs.getInstance().getScheduler().sync(spawn::getHologram);
 
-        ListenableFuture<Mob> future = spawn.loadMob();
+        ListenableFuture<Mob> future = MobManager.loadEntity(spawn.getEntityId());
         future.addListener(() -> {
             try {
                 Mob mob = future.get();
-                if (mob != null)
+                if (mob != null) {
+                    spawn.getMob(); // Get the spawn to save its Mob object
+
                     mob.getSpawns().add(spawn);
+                }
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
@@ -109,16 +109,22 @@ public class SpawnManager {
         spawnsTable.delete(spawn, true);
     }
 
+    private static String getId(Chunk chunk) {
+        return chunk.getX() + "," + chunk.getZ();
+    }
+
     private static class SpawnsListener implements Listener {
         @EventHandler
         public void onChunkLoad(ChunkLoadEvent event) {
-            Collection<SpawnArea> cached = cachedSpawns.getIfPresent(event.getChunk());
+            String chunkId = getId(event.getChunk());
+
+            Collection<SpawnArea> cached = cachedSpawns.getIfPresent(chunkId);
             if (cached != null) {
                 for (SpawnArea spawn : cached)
-                    addSpawn(event.getChunk(), spawn);
+                    addSpawn(spawn);
             } else {
-                // Cache spawns so they aren't requeried for some time
-                cachedSpawns.put(event.getChunk(), EMPTY);
+                // Cache spawns so they aren't requeried while this query runs
+                cachedSpawns.put(chunkId, EMPTY);
 
                 spawnsTable.query()
                         .select()
@@ -134,7 +140,7 @@ public class SpawnManager {
                                 result.beforeFirst();
                             }
                         })
-                        .forEach(spawn -> addSpawn(event.getChunk(), spawn))
+                        .forEach(spawn -> addSpawn(spawn))
                         .onEmpty(() -> misses.incrementAndGet())
                         .execute(true);
             }
@@ -143,11 +149,19 @@ public class SpawnManager {
 
         @EventHandler
         public void onChunkUnload(ChunkUnloadEvent event) {
-            // Put the chunk spawns in the temporary cache
-            if (spawns.containsKey(event.getChunk()))
-                cachedSpawns.put(event.getChunk(), spawns.get(event.getChunk()));
+            String chunkId = event.getChunk().getX() + "," + event.getChunk().getZ();
 
-            spawns.removeAll(event.getChunk());
+            // Put the chunk spawns in the temporary cache
+            if (spawns.containsKey(chunkId)) {
+                Collection<SpawnArea> spawns = SpawnManager.spawns.get(chunkId);
+
+                cachedSpawns.put(chunkId, spawns);
+
+                for (SpawnArea spawn : spawns)
+                    spawn.delete();
+            }
+
+            spawns.removeAll(chunkId);
         }
     }
 }

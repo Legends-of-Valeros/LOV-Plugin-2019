@@ -89,14 +89,17 @@ public class TraitQuestGiver extends LOVTrait {
 
             for (String id : trait.questIDs) {
                 ListenableFuture<IQuest> future = QuestManager.getQuest(id);
+                if(future == null) {
+                    MessageUtil.sendException(Quests.getInstance(), "Quest giver has a null quest ID. Offender: " + trait.npc_id, false);
+                    continue;
+                }
+
                 futures.add(future);
 
                 future.addListener(() -> {
                     try {
                         try {
-                            IQuest quest
-                                    = future
-                                    .get();
+                            IQuest quest = future.get();
                             QuestStatus status = QuestManager.getStatus(pc, quest);
 
                             if (status.canAccept()) {
@@ -108,9 +111,8 @@ public class TraitQuestGiver extends LOVTrait {
                             e.printStackTrace();
                         }
 
-                        if (left.decrementAndGet() == 0) {
+                        if (left.decrementAndGet() == 0)
                             trait.available.getVisibilityManager().hideTo(pc.getPlayer());
-                        }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
