@@ -128,7 +128,7 @@ public class Money {
                     }
                 }
 
-            return sb.toString().trim();
+            return sb.toString().trim() + ChatColor.RESET;
         }
     }
 

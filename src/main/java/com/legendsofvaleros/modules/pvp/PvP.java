@@ -104,8 +104,10 @@ public class PvP extends ModuleListener {
         return allow;
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerDamagePlayer(CombatEngineDamageEvent event) {
+        if(event.isCancelled()) return;
+
         if (!event.getAttacker().isPlayer() || !event.getDamaged().isPlayer()) return;
 
         /*if(!attackerToggle.isEnabled() || !targetToggle.isEnabled() || attackerToggle.getPriority() != targetToggle.getPriority()) {
@@ -119,7 +121,7 @@ public class PvP extends ModuleListener {
         Player p2 = (Player)event.getDamaged().getLivingEntity();
         if (!Characters.isPlayerCharacterLoaded(p2)) { event.setCancelled(true); return; }
 
-        event.setCancelled(isPvPAllowed(!event.isCancelled(), p1, p2));
+        event.setCancelled(!isPvPAllowed(!event.isCancelled(), p1, p2));
 
         if(!event.isCancelled())
             event.newDamageModifierBuilder("PvP")
