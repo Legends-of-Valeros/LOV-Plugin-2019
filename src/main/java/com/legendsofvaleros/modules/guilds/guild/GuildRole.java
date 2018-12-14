@@ -19,6 +19,9 @@ public class GuildRole {
     private UUID roleId;
     public UUID getId() { return roleId; }
 
+    @Column(name = "guild_role_position")
+    private byte position;
+
     @Column(name = "guild_role_name", length = 16)
     private String name;
     public void setName(String name) { this.name = name; }
