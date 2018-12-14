@@ -138,20 +138,23 @@ public class InternalScheduler extends Thread {
                     if (fired.size() > 0) {
                         LegendsOfValeros.getInstance().getLogger().warning("----------------------------------------");
                         for (InternalTask task : fired) {
-                            boolean start = false;
+                            int i = -1;
                             for(String line : task.getTrace().split("\n")) {
-                                if(!start) {
+                                if(i == -1) {
                                     // Ignore non-LOV packages
                                     if (!line.contains("com.legendsofvaleros")) continue;
                                     // Ignore scheduler package
                                     if (line.contains("com.legendsofvaleros.scheduler")) continue;
 
-                                    start = true;
-
                                     LegendsOfValeros.getInstance().getLogger().warning(task.getName());
                                 }
 
+                                i++;
+
                                 LegendsOfValeros.getInstance().getLogger().warning(line);
+
+                                // Don't print too many lines. After an amount, it's just spam.
+                                if(i > 6 && !line.contains("legendsofvaleros")) break;
                             }
                         }
                         LegendsOfValeros.getInstance().getLogger().warning("----------------------------------------");
