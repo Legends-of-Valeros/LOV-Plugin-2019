@@ -43,7 +43,7 @@ public class GuildManager {
 
         GuildController.getInstance().registerEvents(new PlayerListener());
 
-        Quests.getInstance().getScheduler().executeInMyCircleTimer(() -> {
+        GuildController.getInstance().getScheduler().executeInMyCircleTimer(() -> {
             // This is done so we get almost-live updates on GC'd listeners.
             Guild.cleanUp();
         }, 0L, 20L);

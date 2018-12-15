@@ -114,6 +114,7 @@ public class Guild {
     public void onLogout(UUID playerId) { onlineMembers.remove(this, playerId); }
 
     // State management
+    // TODO: I don't think guilds are getting removed from the cache correctly.
 
     private static Map<UUID, UUID> playerGuild = new HashMap<>(); // <Player UUID, Guild UUID>
     private static Multimap<UUID, UUID> guildMembers = HashMultimap.create(); // <Guild UUID, Player UUID>
