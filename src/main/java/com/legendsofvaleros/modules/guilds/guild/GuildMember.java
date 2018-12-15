@@ -13,23 +13,23 @@ import java.util.UUID;
 @Table(name = "guild_members")
 public class GuildMember {
     @ForeignKey(table = Guild.class, name = "guild_id", onUpdate = ForeignKey.Trigger.CASCADE, onDelete = ForeignKey.Trigger.CASCADE)
-    @Column(primary = true, name = "guild_id", length = 32)
+    @Column(primary = true, index = true, name = "guild_id")
     private UUID guildId;
     public UUID getGuildId() { return guildId; }
 
-    @Column(primary = true, unique = true, name = "player_id")
+    @Column(primary = true, index = true, unique = true, name = "player_id")
     private UUID playerId;
     public UUID getId() { return playerId; }
 
     @ForeignKey(table = GuildRole.class, name = "guild_role_id", onUpdate = ForeignKey.Trigger.CASCADE, onDelete = ForeignKey.Trigger.SET_NULL)
-    @Column(index = true, name = "guild_role_id")
-    private UUID roleId;
-    public UUID getRoleId() { return roleId; }
+    @Column(index = true, name = "guild_role_id", length = 16)
+    private String roleId;
+    public String getRoleId() { return roleId; }
 
     private transient GuildRole role;
     public GuildRole getRole() { return role; }
 
-    public GuildMember(UUID guildId, UUID playerId, UUID roleId) {
+    public GuildMember(UUID guildId, UUID playerId, String roleId) {
         this.guildId = guildId;
         this.playerId = playerId;
         this.roleId = roleId;
@@ -38,6 +38,10 @@ public class GuildMember {
     public void setRole(GuildRole role) {
         this.roleId = role.getId();
         this.role = role;
+    }
+
+    public boolean hasPermission(GuildPermission perm) {
+        return role.hasPermission(perm);
     }
 
     public boolean isPlayerOnline() {

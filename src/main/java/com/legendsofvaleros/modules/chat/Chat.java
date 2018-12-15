@@ -5,6 +5,7 @@ import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.guilds.guild.Guild;
 import com.legendsofvaleros.modules.parties.Parties;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.playermenu.settings.PlayerSettings;
@@ -308,6 +309,12 @@ public class Chat extends ModuleListener {
         TextBuilder tb = new TextBuilder("");
         {
             tb.append(data.channel + " ").color(ch.getTagColor()).bold(true).hover(ch.getName());
+
+            Guild g = Guild.getGuildByMember(e.getPlayer().getUniqueId());
+            if(g != null && g.getTag() != null) {
+                tb.append(g.getTag()).bold(true).hover(g.getName());
+                tb.append(" ");
+            }
 
             if (data.prefix != null) {
                 tb.append(ChatColor.translateAlternateColorCodes('&', data.prefix));

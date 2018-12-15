@@ -1,8 +1,8 @@
 package com.legendsofvaleros.modules.guilds.guild;
 
 public enum GuildPermission {
+    GUILD_ADMIN,
     GUILD_UPGRADE,
-    GUILD_TRANSFER,
     GUILD_REMOVE,
     GUILD_RENAME,
 
@@ -28,5 +28,5 @@ public enum GuildPermission {
     BANK_WITHDRAW,
 
     CHAT_GUILD,
-    CHAT_ALLY
+    CHAT_ALLY;
 }

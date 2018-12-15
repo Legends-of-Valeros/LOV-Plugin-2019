@@ -16,16 +16,16 @@ import java.util.*;
 
 @Table(name = "guilds")
 public class Guild {
-    @Column(primary = true, name = "guild_id")
+    @Column(primary = true, index = true, name = "guild_id")
     private UUID guildId;
     public UUID getId() { return guildId; }
 
-    @Column(name = "guild_tag", length = 3)
+    @Column(index = true, name = "guild_tag", length = 3)
     private String tag;
     public void setTag(String tag) { this.tag = tag; }
     public String getTag() { return tag; }
 
-    @Column(name = "guild_name", length = 16)
+    @Column(name = "guild_name", length = 24)
     private String name;
     public void setName(String name) { this.name = name; }
     public String getName() { return name; }
@@ -35,23 +35,31 @@ public class Guild {
     public void setMOTD(String motd) { this.motd = motd; }
     public String getMOTD() { return motd; }
 
-    private transient Map<UUID, GuildRole> roles = new HashMap<>();
+    private transient Map<String, GuildRole> roles;
     public Collection<GuildRole> getRoles() { return roles.values(); }
-    public GuildRole getRole(UUID id) { return roles.get(id); }
-    public void putRole(GuildRole role) { roles.put(role.getId(), role); }
+    public GuildRole getRole(String id) { return roles.get(id); }
 
-    private transient Map<UUID, GuildMember> members = new HashMap<>();
+    private transient Map<UUID, GuildMember> members;
     public Collection<GuildMember> getMembers() { return members.values(); }
     public GuildMember getMember(UUID id) { return members.get(id); }
 
+    @Deprecated
+    public Guild() {
+        roles = new HashMap<>();
+        members = new HashMap<>();
+    }
+
     public Guild(String name) {
+        this();
+
         this.guildId = UUID.randomUUID();
-        this.tag = name.substring(0, Math.min(3, name.length())).toUpperCase();
         this.name = name;
     }
 
-    public ListenableFuture<GuildRole> addRole(String name) {
-        GuildRole role = new GuildRole(guildId, name);
+    public void putRole(GuildRole role) { roles.put(role.getId(), role); }
+
+    public ListenableFuture<GuildRole> addRole(String name) { return addRole(new GuildRole(guildId, name)); }
+    public ListenableFuture<GuildRole> addRole(GuildRole role) {
         roles.put(role.getId(), role);
 
         SettableFuture<GuildRole> ret = SettableFuture.create();
@@ -81,6 +89,7 @@ public class Guild {
 
         playerGuild.put(player.getUniqueId(), guildId);
         guildMembers.put(guildId, player.getUniqueId());
+        onlineMembers.remove(this, player.getUniqueId());
 
         return gm;
     }
@@ -91,6 +100,7 @@ public class Guild {
 
         playerGuild.remove(playerId);
         guildMembers.remove(guildId, playerId);
+        onlineMembers.remove(this, playerId);
     }
 
     public ListenableFuture<Boolean> save() { return GuildManager.getGuildTable().save(this, true); }
@@ -112,18 +122,22 @@ public class Guild {
 
     /**
      * Guilds are in this map as long as a single player in the guild is online.
-     * Once all go offline or leave, it is dumped to the database.
+     * Once all go offline or leave, it is removed.
      */
     private static Cache<UUID, Guild> guilds = CacheBuilder.newBuilder()
                                                     .weakValues()
                                                     .concurrencyLevel(4)
                                                     .removalListener(val -> {
+                                                        GuildController.getInstance().getLogger().warning("Entity '" + val.getKey() + "' removed from the cache.");
+
                                                         for(UUID playerId : guildMembers.get((UUID)val.getKey()))
                                                             playerGuild.remove(playerId);
 
                                                         guildMembers.removeAll(val.getKey());
                                                     })
                                                     .build();
+    public static void cleanUp() { guilds.cleanUp(); }
+    public static void track(Guild guild) { guilds.put(guild.guildId, guild); }
     public static Guild getIfLoaded(UUID guildId) { return guilds.getIfPresent(guildId); }
 
     public static Guild getGuildByMember(UUID uuid) {

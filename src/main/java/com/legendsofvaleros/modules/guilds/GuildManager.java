@@ -12,6 +12,7 @@ import com.legendsofvaleros.modules.guilds.guild.Guild;
 import com.legendsofvaleros.modules.guilds.guild.GuildMember;
 import com.legendsofvaleros.modules.guilds.guild.GuildRole;
 import com.legendsofvaleros.modules.guilds.guild.GuildRolePermission;
+import com.legendsofvaleros.modules.quests.Quests;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -40,7 +41,12 @@ public class GuildManager {
         guildRolePermissionTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), GuildRolePermission.class);
         guildMemberTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), GuildMember.class);
 
-        // GuildController.getInstance().registerEvents(new PlayerListener());
+        GuildController.getInstance().registerEvents(new PlayerListener());
+
+        Quests.getInstance().getScheduler().executeInMyCircleTimer(() -> {
+            // This is done so we get almost-live updates on GC'd listeners.
+            Guild.cleanUp();
+        }, 0L, 20L);
     }
 
     public static ListenableFuture<Guild> load(UUID guildId) {
@@ -67,6 +73,8 @@ public class GuildManager {
                                 // Set the member's role object
                                 member.setRole(guild.getRole(member.getRoleId()));
                             }
+
+                            Guild.track(guild);
 
                             ret.set(guild);
                         }
@@ -99,24 +107,27 @@ public class GuildManager {
             // Only load a guild when the player first logs in.
             if(!event.isFirstInSession()) return;
 
-            if(Guild.getGuildByMember(event.getPlayer().getUniqueId()) == null) {
+            Guild g;
+            if((g = Guild.getGuildByMember(event.getPlayer().getUniqueId())) == null) {
                 PhaseLock lock = event.getLock("guild");
 
                 guildMemberTable.query().select()
-                            .where("player_id", event.getPlayer().getUniqueId())
+                            .where("player_id", event.getPlayer().getUniqueId().toString())
                             .limit(1)
                         .build()
                         .forEach((guildMember) -> {
                             ListenableFuture<Guild> future = load(guildMember.getGuildId());
                             future.addListener(() -> {
                                 try {
-                                    future.get().onLogin(guildMember.getId());
+                                    future.get().onLogin(event.getPlayer().getUniqueId());
                                 } catch(Exception e) { e.printStackTrace(); }
 
                                 lock.release();
                             }, GuildController.getInstance().getScheduler()::async);
-                        }).onEmpty(() -> lock.release());
-            }
+                        }).onEmpty(() -> lock.release())
+                        .execute(true);
+            }else
+                g.onLogin(event.getPlayer().getUniqueId());
         }
 
         @EventHandler
