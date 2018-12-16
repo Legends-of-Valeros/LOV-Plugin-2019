@@ -5,6 +5,7 @@ import com.codingforcookies.doris.orm.ORMRegistry;
 import com.codingforcookies.doris.orm.ORMTable;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.RemovalCause;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import com.google.gson.Gson;
@@ -29,7 +30,12 @@ public class MobManager {
     public static Cache<String, Mob> entities = CacheBuilder.newBuilder()
             .concurrencyLevel(4)
             .weakValues()
-            .removalListener((entry) -> Mobs.getInstance().getLogger().warning("Entity '" + entry.getKey() + "' removed from the cache."))
+            .removalListener(entry -> {
+                // Ignore replacements
+                if(entry.getCause() == RemovalCause.REPLACED) return;
+
+                Mobs.getInstance().getLogger().warning("Entity '" + entry.getKey() + "' removed from the cache: " + entry.getCause());
+            })
             .build();
 
     public static void clear() {
@@ -107,7 +113,7 @@ public class MobManager {
         } else {
             entitiesTable.query()
                     .get(id)
-                    .forEach((mob) -> {
+                    .forEach((mob, i) -> {
                         entities.put(id, mob);
                         ret.set(mob);
                     })

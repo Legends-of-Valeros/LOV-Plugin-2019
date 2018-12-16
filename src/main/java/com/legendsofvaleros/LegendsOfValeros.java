@@ -69,8 +69,8 @@ public class LegendsOfValeros extends JavaPlugin {
     private Map<Integer, String> loadedEventClassesName = new HashMap<>();
     private Cache<Integer, Listener> loadedEventClasses = CacheBuilder.newBuilder()
                                                                         .weakValues()
-                                                                        .removalListener((v) -> {
-                                                                            instance.getLogger().severe("Event listener GC'd: " + loadedEventClassesName.remove(v.getKey()));
+                                                                        .removalListener(entry -> {
+                                                                            instance.getLogger().severe("Event listener GC'd: " + loadedEventClassesName.remove(entry.getKey()));
                                                                         }).build();
 
     @Override

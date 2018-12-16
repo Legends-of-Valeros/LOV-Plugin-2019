@@ -90,7 +90,7 @@ public class MailboxController extends ModuleListener {
 
         mailBoxMails.query()
                 .get(characterId)
-                .forEach((mail) -> addMail(characterId, mail))
+                .forEach((mail, i) -> addMail(characterId, mail))
                 .onFinished(() -> {
                     mailboxes.put(characterId, mailbox);
                     ret.set(null);

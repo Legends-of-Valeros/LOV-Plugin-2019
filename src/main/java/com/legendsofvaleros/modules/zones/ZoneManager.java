@@ -18,6 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
+import java.sql.ResultSet;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -93,7 +94,9 @@ public class ZoneManager implements Listener {
         manager.query()
                 .select()
                 .build()
-                .callback((result) -> {
+                .callback((statement, count) -> {
+                    ResultSet result = statement.getResultSet();
+
                     while (result.next()) {
                         Zone zone = new Zone();
                         zone.id = result.getString(ZONE_ID);

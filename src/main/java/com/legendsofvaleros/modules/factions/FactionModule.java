@@ -81,7 +81,7 @@ public class FactionModule extends ModuleListener {
         if (factions.containsKey(faction_id)) {
             ret.set(factions.get(faction_id));
         } else {
-            factionTable.query().get(faction_id).forEach((faction) -> {
+            factionTable.query().get(faction_id).forEach((faction, i) -> {
                 factions.put(faction.getId(), faction);
                 ret.set(faction);
             }).onEmpty(() -> ret.set(null)).execute(true);
@@ -96,7 +96,7 @@ public class FactionModule extends ModuleListener {
         if (playerRep.contains(pc.getUniqueCharacterId(), faction_id)) {
             ret.set(playerRep.get(pc.getUniqueCharacterId(), faction_id));
         } else {
-            reputationTable.query().get(pc.getUniqueCharacterId().toString(), faction_id).forEach((reputation) -> {
+            reputationTable.query().get(pc.getUniqueCharacterId().toString(), faction_id).forEach((reputation, i) -> {
                 playerRep.put(pc.getUniqueCharacterId(), faction_id, reputation);
                 ret.set(reputation);
             }).onEmpty(() -> {

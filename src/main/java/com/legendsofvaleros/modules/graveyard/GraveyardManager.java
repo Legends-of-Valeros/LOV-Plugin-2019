@@ -9,6 +9,7 @@ import com.legendsofvaleros.modules.zones.Zones;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.World;
 
+import java.sql.ResultSet;
 import java.util.Collection;
 
 public class GraveyardManager {
@@ -32,7 +33,9 @@ public class GraveyardManager {
 
         manager.query()
                 .all()
-                .callback((result) -> {
+                .callback((statement, count) -> {
+                    ResultSet result = statement.getResultSet();
+
                     while (result != null && result.next()) {
                         Graveyard sd = new Graveyard();
 

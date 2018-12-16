@@ -44,7 +44,7 @@ public class MobCommands extends BaseCommand {
 
 		MessageUtil.sendUpdate(player, "Created spawn area with radius " + data.getRadius() + " blocks.");
 
-		MessageUtil.sendUpdate(player, "Set spawn point " + data.getLocation() + " level to [" + data.getLevelRange()[0] + "-" + data.getLevelRange()[1] + "].");
+		MessageUtil.sendUpdate(player, "Set spawn point level to [" + data.getLevelRange()[0] + "-" + data.getLevelRange()[1] + "].");
 		
 		if(count != null) {
 			data.spawnCount = count.shortValue();

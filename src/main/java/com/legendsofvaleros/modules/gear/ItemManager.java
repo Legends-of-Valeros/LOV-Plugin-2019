@@ -86,7 +86,7 @@ public class ItemManager {
     public static void reload() {
         gear.clear();
 
-        gearTable.query().all().forEach((item) -> {
+        gearTable.query().all().forEach((item, i) -> {
             item.model = Model.get(item.getModelId());
 
             gear.put(item.getID(), item);

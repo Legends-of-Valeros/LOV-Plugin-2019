@@ -53,7 +53,7 @@ public class GuildManager {
         SettableFuture<Guild> ret = SettableFuture.create();
 
         guildTable.query().first(guildId)
-                .forEach(guild -> {
+                .forEach((guild, i) -> {
                     List<GuildRole> roles = new ArrayList<>();
                     List<GuildRolePermission> rolePermissions = new ArrayList<>();
                     List<GuildMember> members = new ArrayList<>();
@@ -81,17 +81,17 @@ public class GuildManager {
                     };
 
                     guildRoleTable.query().select(guildId).build()
-                            .forEach((r) -> roles.add(r))
+                            .forEach((r, j) -> roles.add(r))
                             .onFinished(finished)
                             .execute(true);
 
                     guildRolePermissionTable.query().select(guildId).build()
-                            .forEach((rp) -> rolePermissions.add(rp))
+                            .forEach((rp, j) -> rolePermissions.add(rp))
                             .onFinished(finished)
                             .execute(true);
 
                     guildMemberTable.query().select(guildId).build()
-                            .forEach((m) -> members.add(m))
+                            .forEach((m, j) -> members.add(m))
                             .onFinished(finished)
                             .execute(true);
                 })
@@ -115,7 +115,7 @@ public class GuildManager {
                             .where("player_id", event.getPlayer().getUniqueId().toString())
                             .limit(1)
                         .build()
-                        .forEach((guildMember) -> {
+                        .forEach((guildMember, i) -> {
                             ListenableFuture<Guild> future = load(guildMember.getGuildId());
                             future.addListener(() -> {
                                 try {

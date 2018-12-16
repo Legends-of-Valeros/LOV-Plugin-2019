@@ -42,6 +42,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.lang.reflect.Field;
+import java.sql.ResultSet;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -231,7 +232,11 @@ public class QuestManager {
         quests = new FutureCache<>(CacheBuilder.newBuilder()
                 .concurrencyLevel(4)
                 .weakValues()
-                .removalListener(QuestManager::onQuestUnCached)
+                .removalListener(entry -> {
+                    Quests.getInstance().getLogger().warning("Quest '" + entry.getKey() + "' removed from the cache: " + entry.getCause());
+
+                    questEvents.column(String.valueOf(entry.getKey())).clear();
+                })
                 .build(), QuestManager::loadQuest);
 
         Quests.getInstance().getScheduler().executeInMyCircleTimer(() -> {
@@ -254,12 +259,6 @@ public class QuestManager {
 
         for (Player p : Bukkit.getOnlinePlayers())
             loadQuestsForPlayer(Characters.getPlayerCharacter(p), null);
-    }
-
-    private synchronized static void onQuestUnCached(Entry<String, IQuest> entry) {
-        Quests.getInstance().getLogger().warning("Quest '" + entry.getKey() + "' removed from the cache.");
-
-        questEvents.column(String.valueOf(entry.getKey())).clear();
     }
 
     public synchronized static void callEvent(Event event, PlayerCharacter pc) {
@@ -285,7 +284,9 @@ public class QuestManager {
                 .select()
                 .where(CHARACTER_FIELD, pc.getUniqueCharacterId().toString())
                 .build()
-                .callback((result) -> {
+                .callback((statement, count) -> {
+                    ResultSet result = statement.getResultSet();
+
                     final AtomicInteger questsToLoad = new AtomicInteger(0);
 
                     while (result.next()) {
@@ -439,7 +440,9 @@ public class QuestManager {
                 .where(QUEST_ID, quest_id)
                 .limit(1)
                 .build()
-                .callback((result) -> {
+                .callback((statement, count) -> {
+                    ResultSet result = statement.getResultSet();
+
                     if (!result.next()) {
                         ret.set(null);
                         return;

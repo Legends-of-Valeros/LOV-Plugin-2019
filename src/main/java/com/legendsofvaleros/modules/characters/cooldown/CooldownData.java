@@ -134,7 +134,9 @@ public class CooldownData {
 							.select()
 								.where(ID_FIELD, characterId.toString())
 							.build()
-						.callback((result) -> {
+						.callback((statement, count) -> {
+							ResultSet result = statement.getResultSet();
+
 							Logger lg = Characters.getInstance().getLogger();
 							final List<CooldownDatum> fromDb = new ArrayList<>();
 							

@@ -7,6 +7,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
 
+import java.sql.ResultSet;
 import java.util.concurrent.TimeUnit;
 
 public class Skins {
@@ -62,7 +63,9 @@ public class Skins {
                     .where(SKIN_ID, id)
                     .limit(1)
                     .build()
-                    .callback((result) -> {
+                    .callback((statement, count) -> {
+                        ResultSet result = statement.getResultSet();
+
                         if (!result.next()) {
                             ret.set(null);
                             return;

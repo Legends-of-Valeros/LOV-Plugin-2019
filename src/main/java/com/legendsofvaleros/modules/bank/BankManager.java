@@ -60,13 +60,13 @@ public class BankManager {
 
         bankCurrencyTable.query()
                 .get(characterId)
-                .forEach((currency) -> bank.setCurrency(currency.getCurrencyId(), currency.amount))
+                .forEach((currency, i) -> bank.setCurrency(currency.getCurrencyId(), currency.amount))
                 .onFinished(finished)
                 .execute(true);
 
         bankContentTable.query()
                 .get(characterId)
-                .forEach((entry) -> bank.content.put(entry.index, entry))
+                .forEach((entry, i) -> bank.content.put(entry.index, entry))
                 .onFinished(finished)
                 .execute(true);
 

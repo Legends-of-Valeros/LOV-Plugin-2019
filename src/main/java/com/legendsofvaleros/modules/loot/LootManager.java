@@ -9,6 +9,7 @@ import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.gear.GearController;
 
+import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,7 +53,9 @@ public class LootManager extends ModuleListener {
                     .where(LOOT_ID, loot_id)
                     .limit(1)
                     .build()
-                    .callback((result) -> {
+                    .callback((statement, count) -> {
+                        ResultSet result = statement.getResultSet();
+
                         if (!result.next()) {
                             ret.set(null);
                             return;

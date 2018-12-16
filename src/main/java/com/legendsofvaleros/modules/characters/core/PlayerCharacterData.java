@@ -14,6 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.sql.ResultSet;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -103,7 +104,11 @@ public class PlayerCharacterData {
                         CHAR_NUM_FIELD, characterId.getCharacterNumber())
                 .limit(1)
                 .build()
-                .callback((result) -> ret.set(result.next() ? result.getInt(LEVEL_FIELD) : 0))
+                .callback((statement, count) -> {
+                    ResultSet result = statement.getResultSet();
+
+                    ret.set(result.next() ? result.getInt(LEVEL_FIELD) : 0);
+                })
                 .execute(true);
 
         return ret;
@@ -125,7 +130,11 @@ public class PlayerCharacterData {
                         CHAR_NUM_FIELD, characterId.getCharacterNumber())
                 .limit(1)
                 .build()
-                .callback((result) -> ret.set(result.next() ? result.getLong(PROGRESS_FIELD) : 0L))
+                .callback((statement, count) -> {
+                    ResultSet result = statement.getResultSet();
+
+                    ret.set(result.next() ? result.getLong(PROGRESS_FIELD) : 0L);
+                })
                 .execute(true);
 
         return ret;
@@ -143,7 +152,9 @@ public class PlayerCharacterData {
                 .select()
                 .where(UUID_FIELD, playerId.toString())
                 .build()
-                .callback((result) -> {
+                .callback((statement, count) -> {
+                    ResultSet result = statement.getResultSet();
+
                     final List<CharacterData> loaded = new LinkedList<>();
                     while (result.next()) {
                         CharacterData datum = new CharacterData();

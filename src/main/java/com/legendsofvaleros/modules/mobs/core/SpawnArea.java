@@ -184,8 +184,11 @@ public class SpawnArea {
         this.entityId = entityId;
         this.radius = radius;
         this.padding = padding;
-        this.levels = levels;
+        this.entityLevel = levels[0] + "-" + levels[1];
 
+        this.x = x;
+        this.y = y;
+        this.z = z;
         this.location = new Location(getWorld(), x, y, z);
     }
 

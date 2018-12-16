@@ -4,6 +4,7 @@ import com.codingforcookies.doris.orm.annotation.Column;
 import com.codingforcookies.doris.orm.annotation.Table;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.RemovalCause;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -128,13 +129,16 @@ public class Guild {
     private static Cache<UUID, Guild> guilds = CacheBuilder.newBuilder()
                                                     .weakValues()
                                                     .concurrencyLevel(4)
-                                                    .removalListener(val -> {
-                                                        GuildController.getInstance().getLogger().warning("Entity '" + val.getKey() + "' removed from the cache.");
+                                                    .removalListener(entry -> {
+                                                        // Ignore replacements
+                                                        if(entry.getCause() == RemovalCause.REPLACED) return;
 
-                                                        for(UUID playerId : guildMembers.get((UUID)val.getKey()))
+                                                        GuildController.getInstance().getLogger().warning("Entity '" + entry.getKey() + "' removed from the cache: " + entry.getCause());
+
+                                                        for(UUID playerId : guildMembers.get((UUID)entry.getKey()))
                                                             playerGuild.remove(playerId);
 
-                                                        guildMembers.removeAll(val.getKey());
+                                                        guildMembers.removeAll(entry.getKey());
                                                     })
                                                     .build();
     public static void cleanUp() { guilds.cleanUp(); }

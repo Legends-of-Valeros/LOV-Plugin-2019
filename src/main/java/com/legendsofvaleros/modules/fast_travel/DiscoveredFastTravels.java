@@ -55,7 +55,7 @@ public class DiscoveredFastTravels implements Listener {
 		final SettableFuture<Void> ret = SettableFuture.create();
 
 		manager.query().get(pc.getUniqueCharacterId())
-				.forEach((pair) -> fastTravels.put(pc.getUniqueCharacterId(), pair.travelId))
+				.forEach((pair, i) -> fastTravels.put(pc.getUniqueCharacterId(), pair.travelId))
 				.onFinished(() -> ret.set(null))
 				.execute(true);
 

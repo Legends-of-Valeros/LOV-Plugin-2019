@@ -70,7 +70,7 @@ public class AuctionController extends ModuleListener {
         getScheduler().executeInMyCircle(new InternalTask(() ->
                 auctionsTable.query()
                         .all()
-                        .forEach(auctions::add)
+                        .forEach((auction, i) -> auctions.add(auction))
                         .execute(true))
         );
         return auctions;
@@ -112,8 +112,8 @@ public class AuctionController extends ModuleListener {
                             .select()
                             .where("id", auction.getId())
                             .build()
-                            .callback((result) -> {
-                                if (!result.next()) {
+                            .callback((statement, count) -> {
+                                if (count == 0) {
                                     ret.set(false);
                                     return;
                                 }

@@ -24,6 +24,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
+import java.sql.ResultSet;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -171,7 +172,9 @@ public class RegionManager implements Listener {
                 .select()
                 .where(CHARACTER_FIELD, pc.getUniqueCharacterId().toString())
                 .build()
-                .callback((result) -> {
+                .callback((statement, count) -> {
+                    ResultSet result = statement.getResultSet();
+
                     while (result.next()) {
                         playerAccess.put(pc.getUniqueCharacterId(), result.getString(REGION_ID), result.getBoolean(ACCESS_LEVEL));
                     }
@@ -257,7 +260,9 @@ public class RegionManager implements Listener {
 
         manager.query()
                 .select().build()
-                .callback((result) -> {
+                .callback((statement, count) -> {
+                    ResultSet result = statement.getResultSet();
+
                     while (result != null && result.next()) {
                         Region region = new Region(result.getString(REGION_ID),
                                 Bukkit.getWorld(result.getString(REGION_WORLD)),

@@ -4,12 +4,15 @@ import com.codingforcookies.doris.orm.ORMTable;
 import com.codingforcookies.doris.sql.QueryMethod;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.RemovalCause;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.mobs.core.SpawnArea;
+import com.legendsofvaleros.modules.quests.Quests;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -38,7 +41,14 @@ public class SpawnManager {
 
     private static Cache<String, Collection<SpawnArea>> cachedSpawns = CacheBuilder.newBuilder()
             .expireAfterWrite(10L, TimeUnit.MINUTES)
-            .removalListener((entry) -> unloaded.addAndGet(((Collection<SpawnArea>) entry.getValue()).size()))
+            .removalListener(entry -> {
+                // Ignore replacements
+                if(entry.getCause() == RemovalCause.REPLACED) return;
+
+                unloaded.addAndGet(((Collection<SpawnArea>) entry.getValue()).size());
+
+                // Mobs.getInstance().getLogger().warning("Chunk '" + entry.getKey() + "' removed from the cache: " + entry.getCause());
+            })
             .build();
 
     public static void onEnable() {
@@ -120,8 +130,13 @@ public class SpawnManager {
 
             Collection<SpawnArea> cached = cachedSpawns.getIfPresent(chunkId);
             if (cached != null) {
+                if(cached.size() == 0) return;
+
                 for (SpawnArea spawn : cached)
                     addSpawn(spawn);
+
+                // Set the cache to empty to save a marginal amount of memory
+                cachedSpawns.put(chunkId, EMPTY);
             } else {
                 // Cache spawns so they aren't requeried while this query runs
                 cachedSpawns.put(chunkId, EMPTY);
@@ -129,33 +144,30 @@ public class SpawnManager {
                 spawnsTable.query()
                         .select()
                         .where("spawn_world", event.getWorld().getName(),
-                                "spawn_x", QueryMethod.GREATER_THAN, event.getChunk().getX() * 16,
+                                "spawn_x", QueryMethod.GREATER_THAN_EQ, event.getChunk().getX() * 16,
                                 "spawn_x", QueryMethod.LESS_THAN, (event.getChunk().getX() * 16 + 16),
-                                "spawn_z", QueryMethod.GREATER_THAN, event.getChunk().getZ() * 16,
+                                "spawn_z", QueryMethod.GREATER_THAN_EQ, event.getChunk().getZ() * 16,
                                 "spawn_z", QueryMethod.LESS_THAN, (event.getChunk().getZ() * 16 + 16))
                         .build()
-                        .callback((result) -> {
-                            if (result.last()) {
-                                loaded.addAndGet(result.getRow());
-                                result.beforeFirst();
-                            }
+                        .callback((result, count) -> {
+                            if (count != null)
+                                loaded.addAndGet(count);
                         })
-                        .forEach(spawn -> addSpawn(spawn))
+                        .forEach((spawn, i) -> addSpawn(spawn))
                         .onEmpty(() -> misses.incrementAndGet())
                         .execute(true);
             }
-
         }
 
         @EventHandler
         public void onChunkUnload(ChunkUnloadEvent event) {
-            String chunkId = event.getChunk().getX() + "," + event.getChunk().getZ();
+            String chunkId = getId(event.getChunk());
 
             // Put the chunk spawns in the temporary cache
             if (spawns.containsKey(chunkId)) {
                 Collection<SpawnArea> spawns = SpawnManager.spawns.get(chunkId);
 
-                cachedSpawns.put(chunkId, spawns);
+                cachedSpawns.put(chunkId, new ArrayList<>(spawns));
 
                 for (SpawnArea spawn : spawns)
                     spawn.delete();
