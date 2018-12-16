@@ -58,11 +58,11 @@ public class TalkObjective extends AbstractQuestObjective<QuestObjectiveProgress
 
     @Override
     public String getProgressText(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
-        return "Talk to " + npc.name;
+        return "Talk to " + (npc == null ? "UNKNOWN" : npc.name);
     }
 
     @Override
     public String getCompletedText(PlayerCharacter pc) {
-        return "Spoke to " + npc.name;
+        return "Spoke to " + (npc == null ? "UNKNOWN" : npc.name);
     }
 }

@@ -34,12 +34,12 @@ public class EquipObjective extends AbstractQuestObjective<QuestObjectiveProgres
 
 	@Override
 	public String getProgressText(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
-		return "Equip " + item.getName();
+		return "Equip " + (item == null ? "UNKNOWN" : item.getName());
 	}
 
 	@Override
 	public String getCompletedText(PlayerCharacter pc) {
-		return "Equip " + item.getName();
+		return "Equipped " + (item == null ? "UNKNOWN" : item.getName());
 	}
 
 	@Override

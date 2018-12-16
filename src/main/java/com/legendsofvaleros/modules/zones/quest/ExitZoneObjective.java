@@ -38,12 +38,12 @@ public class ExitZoneObjective extends AbstractQuestObjective<QuestObjectiveProg
 
     @Override
     public String getProgressText(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
-        return "Leave " + zone.name;
+        return "Leave " + (zone == null ? "UNKNOWN" : zone.name);
     }
 
     @Override
     public String getCompletedText(PlayerCharacter pc) {
-        return "You left " + zone.name;
+        return "You left " + (zone == null ? "UNKNOWN" : zone.name);
     }
 
     @Override

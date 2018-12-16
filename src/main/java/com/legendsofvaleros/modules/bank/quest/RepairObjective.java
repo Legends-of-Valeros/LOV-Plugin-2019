@@ -29,12 +29,12 @@ public class RepairObjective extends AbstractQuestObjective<QuestObjectiveProgre
 
     @Override
     public String getProgressText(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
-        return "Repair " + item.getName();
+        return "Repair " + (item == null ? "UNKNOWN" : item.getName());
     }
 
     @Override
     public String getCompletedText(PlayerCharacter pc) {
-        return "Repair " + item.getName();
+        return "Repaired " + (item == null ? "UNKNOWN" : item.getName());
     }
 
     @Override
