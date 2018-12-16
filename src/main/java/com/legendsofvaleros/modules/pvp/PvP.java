@@ -5,6 +5,7 @@ import com.legendsofvaleros.module.Modules;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.bank.Bank;
 import com.legendsofvaleros.modules.bank.Currency;
+import com.legendsofvaleros.modules.bank.Money;
 import com.legendsofvaleros.modules.characters.api.Cooldowns;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -20,6 +21,7 @@ import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.parties.Parties;
 import com.legendsofvaleros.modules.pvp.traits.TraitHonorTrader;
 import com.legendsofvaleros.modules.zones.Zones;
+import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -137,6 +139,8 @@ public class PvP extends ModuleListener {
 
         if(Math.abs(killerPC.getExperience().getLevel() - targetPC.getExperience().getLevel()) <= honorMaxLevelDifference) {
             if(killerPC.getCooldowns().offerCooldown("honor:" + target.getUniqueId(), Cooldowns.CooldownType.CALENDAR_TIME, honorCooldown * 1000) != null) {
+                MessageUtil.sendUpdate(killerPC.getPlayer(), "You received " + HONOR.getDisplay(honorReward));
+
                 Bank.getBank(killerPC).addCurrency(HONOR_ID, honorReward);
             }
         }

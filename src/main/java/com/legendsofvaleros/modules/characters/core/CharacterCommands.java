@@ -48,7 +48,7 @@ public class CharacterCommands extends BaseCommand {
 	@Subcommand("level up")
 	@Description("Up a character's level.")
 	@CommandPermission("character.level.up")
-	public void cmdLevelup(CommandSender sender, Player player) {
+	public void cmdLevelup(CommandSender sender, @Optional Player player) {
 		if(player == null) {
 			if(!(sender instanceof Player)) return;
 			player = (Player)sender;
