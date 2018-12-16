@@ -185,6 +185,9 @@ public abstract class AbstractQuest implements IQuest {
         Quests.getInstance().getScheduler().executeInSpigotCircle(() -> {
             int currentGroup = getCurrentGroupI(pc);
 
+            if(currentGroup == -1 && group != -1)
+                throw new IllegalStateException(pc.getPlayer().getName() + "(" + pc.getUniqueCharacterId() + ") attempted to go to group " + group + " from " + currentGroup + " in quest '" + getId() + "'! This should never happen!");
+
             // If the player is just now starting the quest
             if (group == -1) {
                 loadProgress(pc, new QuestProgressPack(group, 0));
