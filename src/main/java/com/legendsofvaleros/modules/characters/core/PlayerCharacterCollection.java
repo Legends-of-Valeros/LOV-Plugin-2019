@@ -130,7 +130,7 @@ public class PlayerCharacterCollection implements PlayerCharacters {
 	public PlayerCharacter addNewCharacter(int number, EntityRace playerRace, EntityClass playerClass) {
 		ReusablePlayerCharacter ret =
 				new ReusablePlayerCharacter(player.get(), number, playerRace, playerClass,
-						Characters.getInstance().getCharacterConfig().getCreateLocation(),
+						player.get().getLocation(),
 						new CharacterExperience(0, 0L), new PlayerInventoryData(), new ArrayList<>());
 
 		characters.put(ret.getUniqueCharacterId(), ret);
