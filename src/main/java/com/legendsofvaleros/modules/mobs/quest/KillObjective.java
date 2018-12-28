@@ -39,6 +39,8 @@ public class KillObjective extends AbstractQuestObjective<QuestObjectiveProgress
 
     @Override
     public Location getLocation(PlayerCharacter pc) {
+        if(mob == null) return null;
+
         Location loc = null;
         double distance = Double.MAX_VALUE;
 
