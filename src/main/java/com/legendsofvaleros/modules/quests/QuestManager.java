@@ -4,6 +4,7 @@ import com.codingforcookies.doris.sql.TableManager;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
@@ -46,15 +47,13 @@ import java.sql.ResultSet;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class QuestManager {
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final Collection<IQuest> EMPTY_LIST = ImmutableList.of();
 
     private static final String QUEST_ID = "quest_id";
 
@@ -100,6 +99,8 @@ public class QuestManager {
     private static Multimap<CharacterId, IQuest> playerQuests = HashMultimap.create();
 
     public static Collection<IQuest> getQuestsForEntity(PlayerCharacter pc) {
+        if(!playerQuests.containsKey(pc.getUniqueCharacterId()))
+            return EMPTY_LIST;
         return playerQuests.get(pc.getUniqueCharacterId());
     }
 
@@ -257,8 +258,10 @@ public class QuestManager {
         if (quests.size() > 0)
             MessageUtil.sendException(Quests.getInstance(), quests.size() + " quests did not get cleared from the cache.", false);
 
-        for (Player p : Bukkit.getOnlinePlayers())
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if(!Characters.isPlayerCharacterLoaded(p)) continue;
             loadQuestsForPlayer(Characters.getPlayerCharacter(p), null);
+        }
     }
 
     public synchronized static void callEvent(Event event, PlayerCharacter pc) {
@@ -303,8 +306,8 @@ public class QuestManager {
                             future.addListener(() -> {
                                 try {
                                     IQuest quest = future.get();
-                                    playerQuests.put(pc.getUniqueCharacterId(), quest);
                                     quest.loadProgress(pc, progressPack);
+                                    playerQuests.put(pc.getUniqueCharacterId(), quest);
                                 } catch (Exception e) {
                                     Quests.getInstance().getLogger().warning("Player attempt to load progress for quest, but something went wrong. Offender: " + pc.getPlayer().getName() + " in quest " + questId);
                                     MessageUtil.sendException(Quests.getInstance(), pc.getPlayer(), e, true);

@@ -1,10 +1,7 @@
 package com.legendsofvaleros.modules.regions;
 
 import com.codingforcookies.doris.sql.TableManager;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Table;
+import com.google.common.collect.*;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
@@ -55,7 +52,7 @@ public class RegionManager implements Listener {
     private static String CHARACTER_FIELD = "character_id";
     private static String ACCESS_LEVEL = "can_access";
 
-    private static final List<Region> EMPTY_LIST = new ArrayList<>();
+    private static final List<Region> EMPTY_LIST = ImmutableList.of();
 
     private TableManager manager;
     private TableManager managerPlayers;

@@ -6,6 +6,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalCause;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
@@ -26,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SpawnManager {
-    private static final Collection<SpawnArea> EMPTY = new ArrayList<>();
+    private static final Collection<SpawnArea> EMPTY = ImmutableList.of();
 
     private static ORMTable<SpawnArea> spawnsTable;
 
