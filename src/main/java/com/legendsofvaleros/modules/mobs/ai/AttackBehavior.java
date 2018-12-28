@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.mobs.ai;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.damage.physical.PhysicalType;
@@ -55,9 +56,12 @@ public class AttackBehavior {
                 npc.faceLocation(target.getEyeLocation());
                 MobTrait trait = npc.getTrait(MobTrait.class);
 
+                // This might be null.
+                EntityClass ec = trait.instance.mob.getEntityClass();
+
                 CombatEngine.getInstance().causePhysicalDamage(target,
                         ce.getLivingEntity(), PhysicalType.MELEE,
-                        Characters.getInstance().getCharacterConfig().getClassConfig(trait.instance.mob.getEntityClass()).getBaseMeleeDamage(),
+                        ec == null ? 1 : Characters.getInstance().getCharacterConfig().getClassConfig(ec).getBaseMeleeDamage(),
                         ce.getLivingEntity().getLocation(), true, true);
 
                 if (ce.getThreat().getTarget() != null && ce.getThreat().getTarget().isPlayer()) {
