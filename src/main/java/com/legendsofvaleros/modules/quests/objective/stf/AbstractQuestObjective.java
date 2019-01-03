@@ -1,9 +1,11 @@
 package com.legendsofvaleros.modules.quests.objective.stf;
 
+import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.progress.stf.IQuestObjectiveProgress;
 import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
 import java.lang.ref.WeakReference;
@@ -19,7 +21,13 @@ public abstract class AbstractQuestObjective<T extends IQuestObjectiveProgress> 
 	public int getObjectiveIndex() { return objectiveI; }
 
 	private boolean visible = true;
-	
+
+	@SerializedName("template_active")
+	private String templateActive;
+
+	@SerializedName("template_completed")
+	private String templateCompleted;
+
 	@Override
 	public final void init(WeakReference<IQuest> quest, int groupI, int objectiveI) {
 		this.quest = quest;
@@ -45,7 +53,22 @@ public abstract class AbstractQuestObjective<T extends IQuestObjectiveProgress> 
 	public final boolean isVisible() { return visible; }
 
 	@Override
-	public final String getProgressText(PlayerCharacter pc) { return getProgressText(pc, getProgress(pc)); }
+	public final String getProgressText(PlayerCharacter pc) {
+		// TODO: Use a map to let objectives add replacement variables to these templates
+		// this will let us override any objective text on the panel without using a dummy
+		// objective
+		if(getProgress(pc) != null) {
+			if(templateActive != null) {
+				return templateActive;
+			}
+		}else{
+			if(templateCompleted != null) {
+				return templateCompleted;
+			}
+		}
+
+		return getProgressText(pc, getProgress(pc));
+	}
 	public abstract String getProgressText(PlayerCharacter pc, T progress);
 
 	@Override
@@ -65,4 +88,10 @@ public abstract class AbstractQuestObjective<T extends IQuestObjectiveProgress> 
 	@Override
 	public final void onEvent(Event event, PlayerCharacter pc) { onEvent(event, pc, getProgress(pc)); }
 	public abstract void onEvent(Event event, PlayerCharacter pc, T progress);
+
+	@Override
+	public int getUpdateTimer() { return 0; }
+	@Override
+	public final void onUpdate(PlayerCharacter pc, int ticks) { onUpdate(pc, getProgress(pc), ticks); }
+	public void onUpdate(PlayerCharacter pc, T progress, int ticks) { }
 }

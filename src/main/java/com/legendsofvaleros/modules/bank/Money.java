@@ -2,6 +2,7 @@ package com.legendsofvaleros.modules.bank;
 
 import com.codingforcookies.robert.core.RobertStack;
 import com.codingforcookies.robert.item.ItemBuilder;
+import com.legendsofvaleros.modules.bank.item.WorthComponent;
 import com.legendsofvaleros.modules.bank.pouch.CreatePouchGUI;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -46,7 +47,6 @@ public class Money {
 
         InventoryManager.addFixedItem(17, new InventoryManager.InventoryItem(new ItemBuilder(Material.GOLD_INGOT).setName(null).create(), (p, event) -> {
             if(!Characters.isPlayerCharacterLoaded(p)) return;
-            if(RobertStack.top(p) instanceof CreatePouchGUI) return;
 
             PlayerCharacter pc = Characters.getPlayerCharacter(p);
 
@@ -54,14 +54,21 @@ public class Money {
                 Gear.Instance instance = Gear.Instance.fromStack(event.getView().getCursor());
                 if(instance == null) return;
 
-//                Long worth = instance.getPersist(WorthComponent.class);
-//                if(worth == null) return;
-//
-//                Money.add(pc, worth);
-//                event.getView().setCursor(null);
+                Long worth = instance.getPersist(WorthComponent.class);
+                if(worth == null) return;
+
+                Money.add(pc, worth);
+                event.getView().setCursor(null);
+
+                if(RobertStack.top(p) instanceof CreatePouchGUI) {
+                    // Set the open stack, again.
+                    RobertStack.top(p).onOpen(p, event.getView());
+                }
 
                 return;
             }
+
+            if(RobertStack.top(p) instanceof CreatePouchGUI) return;
 
             new CreatePouchGUI().open(p);
         }));

@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.guilds;
 
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.ServerMode;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -18,6 +19,7 @@ public class GuildController extends ModuleListener {
 
         GuildManager.onEnable();
 
-        LegendsOfValeros.getInstance().getCommandManager().registerCommand(new GuildCommands());
+        if(LegendsOfValeros.getMode() == ServerMode.DEV)
+            LegendsOfValeros.getInstance().getCommandManager().registerCommand(new GuildCommands());
     }
 }

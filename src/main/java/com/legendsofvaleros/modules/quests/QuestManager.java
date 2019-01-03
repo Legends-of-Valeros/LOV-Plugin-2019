@@ -34,6 +34,7 @@ import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
 import com.legendsofvaleros.modules.quests.quest.stf.QuestFactory;
 import com.legendsofvaleros.modules.quests.quest.stf.QuestObjectives;
 import com.legendsofvaleros.modules.quests.quest.stf.QuestStatus;
+import com.legendsofvaleros.scheduler.InternalTask;
 import com.legendsofvaleros.util.FutureCache;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
@@ -91,6 +92,7 @@ public class QuestManager {
 
     // Event class, quest ID, objective list
     private static HashBasedTable<Class<? extends Event>, String, Set<IQuestObjective>> questEvents = HashBasedTable.create();
+    private static Multimap<String, InternalTask> questUpdates = HashMultimap.create();
 
     /**
      * A map containing each user to a list of all their accepted quests. This
@@ -237,6 +239,10 @@ public class QuestManager {
                     Quests.getInstance().getLogger().warning("Quest '" + entry.getKey() + "' removed from the cache: " + entry.getCause());
 
                     questEvents.column(String.valueOf(entry.getKey())).clear();
+
+                    for(InternalTask task : questUpdates.values())
+                        task.cancel();
+                    questUpdates.removeAll(String.valueOf(entry.getKey()));
                 })
                 .build(), QuestManager::loadQuest);
 
@@ -306,8 +312,12 @@ public class QuestManager {
                             future.addListener(() -> {
                                 try {
                                     IQuest quest = future.get();
-                                    quest.loadProgress(pc, progressPack);
-                                    playerQuests.put(pc.getUniqueCharacterId(), quest);
+                                    if(quest == null) {
+                                        throw new Exception("Quest didn't load. Does it still exist?");
+                                    }else{
+                                        quest.loadProgress(pc, progressPack);
+                                        playerQuests.put(pc.getUniqueCharacterId(), quest);
+                                    }
                                 } catch (Exception e) {
                                     Quests.getInstance().getLogger().warning("Player attempt to load progress for quest, but something went wrong. Offender: " + pc.getPlayer().getName() + " in quest " + questId);
                                     MessageUtil.sendException(Quests.getInstance(), pc.getPlayer(), e, true);
@@ -495,6 +505,27 @@ public class QuestManager {
 
                             for (Class<? extends Event> event : eventMap.keySet())
                                 questEvents.put(event, quest_id, eventMap.get(event));
+
+                            for (IQuestObjective<?>[] group : quest.getObjectives().groups)
+                                for (IQuestObjective<?> obj : group) {
+                                    int timer = obj.getUpdateTimer();
+                                    if (timer <= 0) continue;
+
+                                    AtomicInteger i = new AtomicInteger();
+
+                                    questUpdates.put(quest_id, Quests.getInstance().getScheduler().executeInSpigotCircleTimer(() -> {
+                                        for(Map.Entry<CharacterId, QuestProgressPack> prog : quest.getProgressions()) {
+                                            if(Characters.isPlayerCharacterLoaded(prog.getKey())) {
+                                                PlayerCharacter pc = Characters.getPlayerCharacter(prog.getKey());
+                                                if(!quest.hasProgress(pc)) continue;
+
+                                                if(obj.getGroupIndex() != quest.getCurrentGroupI(pc)) continue;
+
+                                                obj.onUpdate(pc, i.getAndIncrement());
+                                            }
+                                        }
+                                    }, 0L, timer));
+                                }
                         }
 
                         ret.set(quest);

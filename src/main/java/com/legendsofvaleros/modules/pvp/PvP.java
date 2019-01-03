@@ -48,6 +48,8 @@ public class PvP extends ModuleListener {
     public static PvP getInstance() { return instance; }
 
     private boolean enabled;
+    public boolean isPvPEnabled() { return enabled; }
+
     private int honorReward;
     private int honorCooldown;
     private int honorMaxLevelDifference;

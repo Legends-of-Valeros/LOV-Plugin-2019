@@ -51,4 +51,16 @@ public interface IQuestObjective<T extends IQuestObjectiveProgress> extends List
 	Class<? extends Event>[] getRequestedEvents();
 
 	void onEvent(Event event, PlayerCharacter pc);
+
+	/**
+	 * How often the update function should be fired in ticks per second.
+	 * Minimum resolution is 1, meaning 20 times per second.
+	 */
+	int getUpdateTimer();
+
+	/**
+	 * Fires each tick while the player has the quest accepted.
+	 * @param ticks is the number of ticks since the objective was started.
+	 */
+	void onUpdate(PlayerCharacter pc, int ticks);
 }

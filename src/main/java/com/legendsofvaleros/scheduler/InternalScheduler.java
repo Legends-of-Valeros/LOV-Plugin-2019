@@ -38,6 +38,8 @@ public class InternalScheduler extends Thread {
     public long getTotalBehind() { return totalBehind; }
 
     private long tick = 0;
+    public long getTotalTicks() { return tick; }
+
     public List<Long> timings = new ArrayList<>();
 
     /*private long[] last_ticks = new long[] { 1, 1, 1, 1, 1 };

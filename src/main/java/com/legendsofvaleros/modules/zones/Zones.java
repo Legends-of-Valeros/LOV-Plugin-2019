@@ -25,6 +25,7 @@ import com.legendsofvaleros.util.title.Title;
 import com.legendsofvaleros.util.title.TitleUtil;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -68,7 +69,9 @@ public class Zones extends ModuleListener {
 
         QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
 
-        Title title = new Title(event.getZone().name, event.getZone().subname);
+        boolean pvp = PvP.getInstance().isPvPEnabled() && event.getZone().pvp;
+
+        Title title = new Title(event.getZone().name, event.getZone().subname + (pvp ? ChatColor.RED + "(pvp enabled)" : ""));
         title.setTitleColor(org.bukkit.ChatColor.GOLD);
         title.setSubtitleColor(org.bukkit.ChatColor.WHITE);
         TitleUtil.queueTitle(title, event.getPlayer());

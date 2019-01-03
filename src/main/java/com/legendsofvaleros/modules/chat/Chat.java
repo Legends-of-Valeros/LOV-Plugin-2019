@@ -93,6 +93,7 @@ public class Chat extends ModuleListener {
                         pl.spigot().sendMessage(bc);
                     }
                 }
+                break;
             case ZONE:
                 Zones.getInstance().onChat(p, bc);
                 break;

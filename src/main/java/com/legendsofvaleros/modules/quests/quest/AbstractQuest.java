@@ -28,15 +28,17 @@ import org.bukkit.entity.Player;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public abstract class AbstractQuest implements IQuest {
     /**
      * Due to quests being instantiated once, we need to make sure the players progress is saved.
      */
     private final HashMap<CharacterId, QuestProgressPack> progress = new HashMap<>();
+
+    @Override public Set<Map.Entry<CharacterId, QuestProgressPack>> getProgressions() {
+        return progress.entrySet();
+    }
 
     @Override public QuestProgressPack getProgress(PlayerCharacter pc) {
         return progress.get(pc.getUniqueCharacterId());
@@ -71,7 +73,6 @@ public abstract class AbstractQuest implements IQuest {
     }
 
     private final List<IQuestPrerequisite> prerequisites = new ArrayList<>();
-
     @Override public List<IQuestPrerequisite> getPrerequisites() {
         return prerequisites;
     }
