@@ -18,8 +18,9 @@ public class SlotNewCharacter implements ISlotAction {
 	
 	public void doAction(GUI gui, Player p, InventoryClickEvent event) {
 		if(event.getClick() == ClickType.LEFT) {
-			if(listener.onNewCharacterSelected(p, number))
+			if(listener.onNewCharacterSelected(p, number)) {
 				gui.close(p, GUI.Flag.NO_PARENTS);
+			}
 		}
 	}
 }
