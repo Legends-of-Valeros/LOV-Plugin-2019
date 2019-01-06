@@ -2,7 +2,6 @@ package com.legendsofvaleros.modules.auction;
 
 import com.codingforcookies.doris.orm.annotation.Column;
 import com.codingforcookies.doris.orm.annotation.Table;
-import com.legendsofvaleros.modules.bank.BankManager;
 import com.legendsofvaleros.modules.bank.Money;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
@@ -21,23 +20,23 @@ import java.util.Dictionary;
  */
 @Table(name = "auctions")
 public class Auction {
-
-    @Column(name = "id", primary = true, length = 32)
+    @Column(primary = true, autoincrement = true, name = "id")
     private int id;
 
-    @Column(name = "price", length = 32)
-    private int price;
-
-    @Column(name = "owner_id", length = 32)
+    @Column(name = "owner_id")
     private CharacterId ownerId;
 
-    @Column(name = "auction_item", length = 255)
+
+    @Column(name = "auction_item")
     private GearItem.Data item;
 
-    @Column(name = "valid_until", length = 32)
+    @Column(name = "price")
+    private int price;
+
+    @Column(name = "valid_until")
     private int validUntil;
 
-    @Column(name = "is_bid_offer", length = 32)
+    @Column(name = "is_bid_offer")
     private boolean isBidOffer = false;
 
     private Dictionary<String, Integer> bidHistory;
@@ -69,11 +68,9 @@ public class Auction {
      */
     public ArrayList<String> getDescription() {
         ArrayList<String> lore = new ArrayList<>();
-        // TODO add useful lore description
-//        lore.add(Bukkit.getPlayer(getOwnerId()).getDisplayName());
-//        lore.add(Bukkit.getPlayer(getOwnerId()).getDisplayName());
-//        lore.add(Bukkit.getPlayer(getOwnerId()).getDisplayName());
-//        lore.add(Bukkit.getPlayer(getOwnerId()).getDisplayName());
+        lore.add("Owner: " + Characters.getPlayerCharacter(getOwnerId()).getPlayer().getDisplayName());
+        lore.add("Type: " + (isBidOffer ? "Bid" : "Sell"));
+        lore.add((isBidOffer ? "Current bid: " : "Price: ") + getPriceFormatted());
         return lore;
     }
 
@@ -91,18 +88,39 @@ public class Auction {
         }
         PlayerCharacter playerCharacter = Characters.getPlayerCharacter(characterId);
         if (value <= price) {
-            //TODO make pretty
-            playerCharacter.getPlayer().sendMessage("Your bid price " + value + "is below the current bid price of " + price);
+            playerCharacter.getPlayer().sendMessage("Your bid price " + Money.Format.format(value) + " is below the current bid price of " + getPriceFormatted());
             return false;
         }
         if (Money.sub(playerCharacter, value)) {
             this.price = value;
             this.bidHistory.put(playerCharacter.getUniqueCharacterId().toString(), value);
-            notifyOwner(playerCharacter.getPlayer().getDisplayName() + " bid " + value + " on " + getItem().toInstance().gear.getName(), false);
+            notifyOwner(playerCharacter.getPlayer().getDisplayName() + " bid " + Money.Format.format(value) + " on " + getItem().toInstance().gear.getName(), false);
             return true;
+        } else {
+            playerCharacter.getPlayer().sendMessage("You don't have enough money to bid on " + getItem().toInstance().gear.getName());
         }
         return false;
+    }
 
+    public boolean buy(CharacterId characterId, int amount) {
+        if (isBidOffer) {
+            return false;
+        }
+        if (!Characters.isPlayerCharacterLoaded(characterId)) {
+            return false;
+        }
+        int value = price * amount;
+        PlayerCharacter playerCharacter = Characters.getPlayerCharacter(characterId);
+
+        if (Money.sub(playerCharacter, value)) {
+            this.price = value;
+            this.bidHistory.put(playerCharacter.getUniqueCharacterId().toString(), value);
+            notifyOwner(playerCharacter.getPlayer().getDisplayName() + " bought " + getItem().toInstance().gear.getName() + "for " + Money.Format.format(value), false);
+            return true;
+        }
+
+        playerCharacter.getPlayer().sendMessage("You don't have enough money to buy " + amount + " of" + getItem().toInstance().gear.getName());
+        return false;
     }
 
     /**
@@ -139,6 +157,10 @@ public class Auction {
 
     public int getPrice() {
         return this.price;
+    }
+
+    public String getPriceFormatted() {
+        return Money.Format.format(this.price);
     }
 
     public CharacterId getOwnerId() {

@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.chat;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.modules.auction.AuctionController;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.parties.Parties;
@@ -303,6 +304,13 @@ public class Chat extends ModuleListener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void playerChat(AsyncPlayerChatEvent e) {
+        if (e.isCancelled()) {
+            return;
+        }
+        //player is in an auction prompt and therefore the message should not be sent
+        if (AuctionController.getInstance().isPrompted(e.getPlayer())) {
+            return;
+        }
         e.setCancelled(true);
 
         PlayerChat data = players.get(e.getPlayer().getUniqueId());

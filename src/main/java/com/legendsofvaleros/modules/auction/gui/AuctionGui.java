@@ -5,18 +5,20 @@ import com.codingforcookies.robert.slot.SlotUsable;
 import com.legendsofvaleros.modules.auction.Auction;
 import com.legendsofvaleros.modules.auction.AuctionChatPrompt;
 import com.legendsofvaleros.modules.auction.AuctionController;
+import com.legendsofvaleros.modules.auction.AuctionChatPrompt.AuctionPromptType;
 import com.legendsofvaleros.modules.auction.filter.FilterDirection;
 import com.legendsofvaleros.modules.auction.filter.FilterType;
 import com.legendsofvaleros.modules.gear.item.GearItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Crystall on 11/24/2018
@@ -33,6 +35,7 @@ public class AuctionGui extends GUI implements Listener {
     public AuctionGui(ArrayList<Auction> auctions) {
         super("Auctioneer");
         type(6);
+        System.out.println(auctions);
         this.auctions = auctions;
         this.totalPages = (int) Math.ceil(auctions.size() / ITEM_COUNT_PER_PAGE);
         AuctionController.getInstance().registerEvents(this);
@@ -126,20 +129,30 @@ public class AuctionGui extends GUI implements Listener {
         //TODO check if replacing or recreating the ui is more effecient (recreating should be)
         for (int i = 0; i < AuctionGui.ITEM_COUNT_PER_PAGE; i++) {
             ItemStack slotItem = null;
-            Auction auction;
+            Auction auction = getAuctionFromSlot(i);
 
-            auction = getAuctionFromSlot(i);
             if (auction != null) {
                 slotItem = auction.getItem().toStack();
+            }
+
+            if (slotItem != null) {
+                ItemMeta im = slotItem.getItemMeta();
+                ArrayList<String> lore = (ArrayList<String>) im.getLore();
+                lore.addAll(auction.getDescription());
+                im.setLore(lore);
+                slotItem.setItemMeta(im);
             }
 
             slot(i, slotItem != null ? slotItem : new ItemStack(Material.AIR), new SlotUsable() {
                 @Override
                 public void onPickup(GUI gui, Player p, ItemStack stack, InventoryClickEvent e) {
                     e.setCancelled(true);
+
                     Auction auction = getAuctionFromSlot(e.getSlot());
                     if (auction == null) return;
-                    AuctionController.getInstance().startPrompt(p, auction, AuctionChatPrompt.AuctionPromptType.BUY);
+
+                    AuctionPromptType promptType = auction.isBidOffer() ? AuctionPromptType.BID : AuctionPromptType.BUY;
+                    AuctionController.getInstance().startPrompt(p, auction, promptType);
                 }
 
                 @Override
@@ -159,6 +172,7 @@ public class AuctionGui extends GUI implements Listener {
         Auction auction = null;
         try {
             auction = auctions.get(slot + (currentPage - 1) * ITEM_COUNT_PER_PAGE);
+            System.out.println(auction);
         } catch (Exception ex) { //silent catch to prevent OutOfBoundsException
         }
         return auction;
@@ -170,6 +184,7 @@ public class AuctionGui extends GUI implements Listener {
             e.setCancelled(true);
             GearItem.Instance item = GearItem.Instance.fromStack(e.getCurrentItem());
             if (item != null) {
+                e.setCurrentItem(new ItemStack(Material.AIR));
                 AuctionController.getInstance().startPrompt(
                         (Player) e.getWhoClicked(),
                         item.getData(),

@@ -4,7 +4,7 @@ import com.legendsofvaleros.modules.bank.Money;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 
 /**
- * Respresent a chat intstance
+ * Respresents an auction chat prompt instance
  * Created by Crystall on 12/11/2018
  */
 public class AuctionChatPrompt {
@@ -20,9 +20,10 @@ public class AuctionChatPrompt {
         this.playerCharacter = player;
         this.auction = auction;
         this.prompt = prompt;
-        //TODO MessageUtil.sendInfo ?
+        //TODO MessageUtil.sendInfo
         playerCharacter.getPlayer().sendMessage(divider);
         playerCharacter.getPlayer().sendMessage("You started " + prompt.getChatString() + " " + auction.getItem().toInstance().gear.getName());
+        handleDecision();
     }
 
     public void finish() {
@@ -33,6 +34,11 @@ public class AuctionChatPrompt {
     private void cancelPrompt() {
         isCancelled = true;
         AuctionController.getInstance().removePrompt(playerCharacter.getUniqueCharacterId());
+
+        //readd the item to the player inventory if he is trying to sell stuff
+        if (prompt == AuctionPromptType.SELL) {
+            playerCharacter.getPlayer().getInventory().addItem(getAuction().getItem().toStack());
+        }
 
         playerCharacter.getPlayer().sendMessage("You Stopped " + prompt.getChatString() + " " + auction.getItem().toInstance().gear.getName());
         getPlayerCharacter().getPlayer().sendMessage(divider);
@@ -72,13 +78,14 @@ public class AuctionChatPrompt {
     private boolean handleBidSteps(String decision) {
         if (currentStep == 1) {
             playerCharacter.getPlayer().sendMessage(
-                    "The current bid price is " + Money.Format.format(auction.getPrice()) + ". How much do you want to bid?"
+                    "The current bid price is " + auction.getPriceFormatted() + ". How much do you want to bid?"
             );
         } else if (currentStep == 2) {
             try {
                 int price = Integer.parseInt(decision);
-                auction.bid(playerCharacter.getUniqueCharacterId(), price);
-                return true;
+                if (auction.bid(playerCharacter.getUniqueCharacterId(), price)) {
+                    playerCharacter.getPlayer().sendMessage("You successfully bid " + Money.Format.format(price) + " on " + auction.getItem().toInstance().gear.getName());
+                }
             } catch (NumberFormatException e) {
                 playerCharacter.getPlayer().sendMessage("Please enter a valid number");
                 cancelPrompt();
@@ -89,15 +96,38 @@ public class AuctionChatPrompt {
 
     private boolean handleBuySteps(String decision) {
         if (currentStep == 1) {
-            if (auction.getItem().amount > 0) {
-                playerCharacter.getPlayer().sendMessage("How many do you want to buy?");
+            if (auction.getItem().amount > 1) {
+                playerCharacter.getPlayer().sendMessage("How many " + auction.getItem().toInstance().gear.getName() + " do you want to buy?");
             } else {
                 playerCharacter.getPlayer().sendMessage("Do you really want to buy " + auction.getItem().toInstance().gear.getName() + " ?");
             }
         } else if (currentStep == 2) {
-            if (decision.equalsIgnoreCase("yes") || decision.equalsIgnoreCase("y")) {
-                AuctionController.getInstance().confirmBuyPrompt(playerCharacter.getUniqueCharacterId());
-                return true;
+            if (auction.getItem().amount > 1) {
+                try {
+                    int amount = Integer.parseInt(decision);
+                    if (amount > auction.getItem().amount) {
+                        playerCharacter.getPlayer().sendMessage("You are trying to buy more items than the auction has. The maximum amount is " + auction.getItem().amount);
+                        cancelPrompt();
+                        return false;
+                    }
+                    //buying the items failed
+                    if (!auction.buy(playerCharacter.getUniqueCharacterId(), amount)) {
+                        cancelPrompt();
+                        return false;
+                    }
+                    playerCharacter.getPlayer().sendMessage("You successfully bought " + amount + "x of " + auction.getItem().toInstance().gear.getName());
+                } catch (NumberFormatException e) {
+                    playerCharacter.getPlayer().sendMessage("Please enter a valid number");
+                    cancelPrompt();
+                    return false;
+                }
+            } else {
+                if (decision.equalsIgnoreCase("yes") || decision.equalsIgnoreCase("y")) {
+                    AuctionController.getInstance().confirmBuyPrompt(playerCharacter.getUniqueCharacterId());
+                    playerCharacter.getPlayer().sendMessage("You successfuly bought " + auction.getItem().toInstance().gear.getName());
+                } else {
+                    cancelPrompt();
+                }
             }
         }
         return false;
@@ -110,10 +140,10 @@ public class AuctionChatPrompt {
                 break;
             case 2:
                 auction.setBidOffer(decision.equalsIgnoreCase("auction"));
-                break;
+                return true;
             case 3:
                 if (auction.isBidOffer()) {
-                    playerCharacter.getPlayer().sendMessage("Please enter a minimum bid?");
+                    playerCharacter.getPlayer().sendMessage("Please enter a minimum bid");
                 } else {
                     playerCharacter.getPlayer().sendMessage(
                             "How much should 1x " + auction.getItem().toInstance().gear.getName() + " cost?"
@@ -150,7 +180,7 @@ public class AuctionChatPrompt {
     }
 
     public enum AuctionPromptType {
-        BUY("buying", 3),
+        BUY("buying", 2),
         SELL("selling", 5),
         BID("bidding on", 2);
 
