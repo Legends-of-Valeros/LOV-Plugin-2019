@@ -13,10 +13,11 @@ import com.legendsofvaleros.modules.playermenu.InventoryManager;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.quests.action.*;
 import com.legendsofvaleros.modules.quests.action.stf.QuestActionFactory;
-import com.legendsofvaleros.modules.quests.event.QuestObjectivesStartedEvent;
 import com.legendsofvaleros.modules.quests.event.QuestCompletedEvent;
+import com.legendsofvaleros.modules.quests.event.QuestObjectivesStartedEvent;
 import com.legendsofvaleros.modules.quests.event.QuestStartedEvent;
 import com.legendsofvaleros.modules.quests.objective.DummyObjective;
+import com.legendsofvaleros.modules.quests.objective.InteractBlockObjective;
 import com.legendsofvaleros.modules.quests.objective.ReturnObjective;
 import com.legendsofvaleros.modules.quests.objective.TalkObjective;
 import com.legendsofvaleros.modules.quests.objective.stf.QuestObjectiveFactory;
@@ -43,6 +44,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 @DependsOn(NPCs.class)
 @DependsOn(CombatEngine.class)
@@ -52,9 +54,7 @@ public class Quests extends ModuleListener {
     public static AdvancementAPI NEW_OBJECTIVES;
 
     private static Quests instance;
-    public static Quests getInstance() {
-        return instance;
-    }
+    public static Quests getInstance() { return instance; }
 
     private String introQuestId;
 
@@ -94,6 +94,7 @@ public class Quests extends ModuleListener {
         QuestObjectiveFactory.registerType("dummy", DummyObjective.class);
         QuestObjectiveFactory.registerType("talk", TalkObjective.class);
         QuestObjectiveFactory.registerType("return", ReturnObjective.class);
+        QuestObjectiveFactory.registerType("interact_block", InteractBlockObjective.class);
 
         getLogger().info("is registering actions");
         QuestActionFactory.registerType("conversation", ActionConversation.class);
@@ -200,5 +201,14 @@ public class Quests extends ModuleListener {
         if (!Characters.isPlayerCharacterLoaded(event.getClicker())) return;
 
         QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getClicker()));
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onInteractBock(PlayerInteractEvent event) {
+        if(event.isCancelled()) return;
+
+        if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
+
+        QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
     }
 }

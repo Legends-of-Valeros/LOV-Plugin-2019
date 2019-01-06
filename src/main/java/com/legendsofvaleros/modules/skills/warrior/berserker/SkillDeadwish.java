@@ -17,7 +17,7 @@ public class SkillDeadwish extends Skill {
 			"Next single strike does ", DAMAGE, "% damage."
 		};
 
-	public SkillDeadwish() { super(ID, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillDeadwish() { super(ID, Type.HARMFUL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Deadwish"; }

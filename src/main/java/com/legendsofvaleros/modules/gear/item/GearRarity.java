@@ -40,8 +40,10 @@ public enum GearRarity {
     public Team getTeam() {
     	if(SB == null) SB = Bukkit.getServer().getScoreboardManager().getMainScoreboard();
     	if(team == null) {
-    		team = SB.registerNewTeam("gear-" + name());
-    		team.setPrefix(chatColor + "");
+    	    if((team = SB.getTeam("gear-" + name())) == null) {
+                team = SB.registerNewTeam("gear-" + name());
+                team.setPrefix(chatColor + "");
+            }
     	}
     	return team;
     }

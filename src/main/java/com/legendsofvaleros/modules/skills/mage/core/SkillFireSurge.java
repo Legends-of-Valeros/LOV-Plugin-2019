@@ -24,7 +24,7 @@ public class SkillFireSurge extends Skill {
     };
 
     public SkillFireSurge() {
-        super(ID, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION);
+        super(ID, Type.HARMFUL, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION);
     }
 
     @Override
@@ -39,15 +39,14 @@ public class SkillFireSurge extends Skill {
 
     @Override
     public boolean onSkillUse(World world, CombatEntity ce, int level) {
-        LivingEntity target = getTarget(ce, 15);
-        if (target == null)
-            return false;
+        CombatEntity target = validateTarget(ce, getTarget(ce, 15));
+        if (target == null) return false;
 
-        world.playSound(target.getLocation(), "spell.fire.flame.scary.short", 1F, 1F);
-        world.spawnParticle(Particle.EXPLOSION_LARGE, target.getLocation(), 5, .5, .5, .5, .01);
-        ParticleFollow.follow(target, 20, Particle.FLAME, 3, .5, 2, .5, .01);
+        world.playSound(target.getLivingEntity().getLocation(), "spell.fire.flame.scary.short", 1F, 1F);
+        world.spawnParticle(Particle.EXPLOSION_LARGE, target.getLivingEntity().getLocation(), 5, .5, .5, .5, .01);
+        ParticleFollow.follow(target.getLivingEntity(), 20, Particle.FLAME, 3, .5, 2, .5, .01);
 
-        CombatEngine.getInstance().causeSpellDamage(target, ce.getLivingEntity(), SpellType.FIRE,
+        CombatEngine.getInstance().causeSpellDamage(target.getLivingEntity(), ce.getLivingEntity(), SpellType.FIRE,
                 SkillUtil.getSpellDamage(ce, SpellType.FIRE, Characters.getInstance().getCharacterConfig().getClassConfig(EntityClass.MAGE).getBaseMeleeDamage())
                         * getEarliest(DAMAGE, level) / 100D,
                 ce.getLivingEntity().getLocation(), false, true);

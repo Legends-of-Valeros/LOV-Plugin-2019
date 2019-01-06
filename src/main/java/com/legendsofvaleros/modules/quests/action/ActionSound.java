@@ -1,8 +1,6 @@
 package com.legendsofvaleros.modules.quests.action;
 
-import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.quests.action.stf.AbstractQuestAction;
-import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 

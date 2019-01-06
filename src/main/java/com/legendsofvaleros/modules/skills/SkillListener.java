@@ -8,9 +8,9 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLevelChange
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
-import com.legendsofvaleros.modules.gear.Gear;
+import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.Quests;
@@ -35,7 +35,7 @@ public class SkillListener implements Listener {
         if(Modules.isLoaded(Quests.class))
             Skills.getInstance().registerEvents(new QuestListener());
 
-        if(Modules.isLoaded(Gear.class))
+        if(Modules.isLoaded(GearController.class))
             Skills.getInstance().registerEvents(new GearListener());
     }
 
@@ -87,7 +87,7 @@ public class SkillListener implements Listener {
     }
 
     /**
-     * Only activated if Gear is installed. It typically will be, but keeping things in
+     * Only activated if GearController is installed. It typically will be, but keeping things in
      * one place will assist testing.
      */
     private class GearListener implements Listener {
@@ -98,7 +98,7 @@ public class SkillListener implements Listener {
             PlayerCharacter pc = Characters.getPlayerCharacter((Player)e.getLivingEntity());
 
             if(e.getSkill().doesRequireFocus()) {
-                GearItem.Instance instance = GearItem.Instance.fromStack(pc.getPlayer().getInventory().getItem(Hotswitch.HELD_SLOT));
+                Gear.Instance instance = Gear.Instance.fromStack(pc.getPlayer().getInventory().getItem(Hotswitch.HELD_SLOT));
                 if(instance != null && Boolean.TRUE.equals(instance.doTest(new CastTrigger(e.getCombatEntity(), e.getSkill(), e.getLevel()))))
                     return;
 
@@ -114,7 +114,7 @@ public class SkillListener implements Listener {
             PlayerCharacter pc = Characters.getPlayerCharacter((Player)e.getLivingEntity());
 
             if(pc.getPlayerClass().getSkillCostType() == RegeneratingStat.MANA) {
-                GearItem.Instance instance = GearItem.Instance.fromStack(pc.getPlayer().getInventory().getItem(Hotswitch.HELD_SLOT));
+                Gear.Instance instance = Gear.Instance.fromStack(pc.getPlayer().getInventory().getItem(Hotswitch.HELD_SLOT));
                 if(instance != null) {
                     if(instance.doFire(new CastTrigger(e.getCombatEntity(), e.getSkill(), e.getLevel())) == GearTrigger.TriggerEvent.REFRESH_STACK)
                         pc.getPlayer().getInventory().setItem(Hotswitch.HELD_SLOT, instance.toStack());

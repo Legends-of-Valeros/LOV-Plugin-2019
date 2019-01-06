@@ -1,8 +1,10 @@
 package com.legendsofvaleros.modules.characters.creation;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.*;
+import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Optional;
+import co.aikar.commands.annotation.Private;
+import co.aikar.commands.annotation.Subcommand;
 import com.codingforcookies.robert.core.StringUtil;
 import com.codingforcookies.robert.item.Book;
 import com.legendsofvaleros.LegendsOfValeros;
@@ -135,6 +137,7 @@ public class PlayerCreation implements Listener {
 	}
 
 	@CommandAlias("creation")
+	@Private
 	public static class CreationCommand extends BaseCommand {
 		@Subcommand("finalize")
 		@Private
@@ -148,8 +151,6 @@ public class PlayerCreation implements Listener {
 		@Subcommand("race")
 		@Private
 		public void cmdSelectRace(Player player, @Optional String selection) {
-			player.sendMessage("race");
-
 			CreationInfo info = creators.get(player.getUniqueId());
 			if(info == null) return;
 

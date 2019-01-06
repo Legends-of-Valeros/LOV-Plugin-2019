@@ -9,6 +9,7 @@ import com.legendsofvaleros.modules.npcs.NPCs;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -27,6 +28,14 @@ public class ThreatBehavior {
 				if(entity instanceof LivingEntity && !NPCs.manager().registry.isNPC(entity)) {
 					if(entity.getLocation().getBlockY() - npc.getEntity().getLocation().getBlockY() >= 2)
 						continue;
+					if(entity instanceof Player) {
+						if(((Player)entity).isSneaking()) {
+							// Sneaking players have a halved detection distance
+							if(entity.getLocation().distance(ce.getLivingEntity().getLocation()) > trait.instance.mob.getOptions().distance.detection / 2) {
+								continue;
+							}
+						}
+					}
 
 					ce.getThreat().editThreat((LivingEntity)entity, 10);
 					

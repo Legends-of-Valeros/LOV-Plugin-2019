@@ -5,23 +5,24 @@ import com.legendsofvaleros.module.Modules;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.bank.Bank;
 import com.legendsofvaleros.modules.bank.Currency;
-import com.legendsofvaleros.modules.bank.PlayerBank;
-import com.legendsofvaleros.modules.bank.trade.TraitTrader;
+import com.legendsofvaleros.modules.bank.Money;
 import com.legendsofvaleros.modules.characters.api.Cooldowns;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.characters.skill.Skill;
+import com.legendsofvaleros.modules.characters.skill.SkillTargetEvent;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
-import com.legendsofvaleros.modules.dueling.Duel;
 import com.legendsofvaleros.modules.dueling.Dueling;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.parties.Parties;
-import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.pvp.traits.TraitHonorTrader;
 import com.legendsofvaleros.modules.zones.Zones;
+import com.legendsofvaleros.util.MessageUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -44,11 +45,11 @@ public class PvP extends ModuleListener {
     public static final float DAMAGE_MULTIPLIER = 0.6f;
 
     private static PvP instance;
-    public static PvP getInstance() {
-        return instance;
-    }
+    public static PvP getInstance() { return instance; }
 
     private boolean enabled;
+    public boolean isPvPEnabled() { return enabled; }
+
     private int honorReward;
     private int honorCooldown;
     private int honorMaxLevelDifference;
@@ -73,53 +74,57 @@ public class PvP extends ModuleListener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerDamagePlayer(CombatEngineDamageEvent event) {
-        CombatEntity attacker = event.getAttacker();
-        CombatEntity target = event.getDamaged();
+        if(event.isCancelled()) return;
 
-        if (!attacker.isPlayer() || !target.isPlayer()) return;
+        if (!event.getAttacker().isPlayer() || !event.getDamaged().isPlayer()) return;
+
+        if (!Characters.isPlayerCharacterLoaded((Player)event.getDamaged().getLivingEntity())) return;
+        if (!Characters.isPlayerCharacterLoaded((Player)event.getAttacker().getLivingEntity())) return;
+
+        // If PvP is disabled, cancel it. Duh.
+        if(!this.enabled) { event.setCancelled(true); }
+
+        // We still need to check if PvP is allowed. (For duels and such)
+        PvPCheckEvent pvp = new PvPCheckEvent((Player)event.getAttacker().getLivingEntity(), (Player)event.getDamaged().getLivingEntity(), null);
+        Bukkit.getPluginManager().callEvent(pvp);
+
+        if(pvp.isCancelled())
+            event.setCancelled(true);
+        else{
+            // If the damage event is not cancelled, add the PvP modifier.
+            event.newDamageModifierBuilder("PvP")
+                    .setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
+                    .setValue(PvP.DAMAGE_MULTIPLIER)
+                    .build();
+        }
 
         /*if(!attackerToggle.isEnabled() || !targetToggle.isEnabled() || attackerToggle.getPriority() != targetToggle.getPriority()) {
             event.setCancelled(true);
             return;
         }*/
+    }
 
-        Player p1 = (Player)event.getAttacker().getLivingEntity();
-        if (!Characters.isPlayerCharacterLoaded(p1)) { event.setCancelled(true); return; }
+    @EventHandler
+    public void onEntityTargetted(SkillTargetEvent event) {
+        // Ignore "good" spells. We only care about harmful attacks.
+        if(event.getSkill().getType() != Skill.Type.HARMFUL)
+            return;
 
-        Player p2 = (Player)event.getDamaged().getLivingEntity();
-        if (!Characters.isPlayerCharacterLoaded(p2)) { event.setCancelled(true); return; }
+        if (!event.getUser().isPlayer() || !event.getTarget().isPlayer()) return;
 
-        if(this.enabled) {
-            // If PvP is disabled in the zone
-            if (Modules.isLoaded(Zones.class)) {
-                if (!Zones.manager().getZone(p1).pvp
-                        || !Zones.manager().getZone(p2).pvp) {
-                    event.setCancelled(true);
-                }
-            }
+        if (!Characters.isPlayerCharacterLoaded((Player)event.getUser().getLivingEntity())) return;
+        if (!Characters.isPlayerCharacterLoaded((Player)event.getTarget().getLivingEntity())) return;
 
-            if (Modules.isLoaded(Parties.class)) {
-                // Disable PvP within parties
-            }
-        }else
+        // If PvP is disabled, cancel it. Duh.
+        if(!this.enabled) { event.setCancelled(true); }
+
+        // We still need to check if PvP is allowed. (For duels and such)
+        PvPCheckEvent pvp = new PvPCheckEvent((Player)event.getUser().getLivingEntity(), (Player)event.getTarget().getLivingEntity(), event.getSkill());
+        Bukkit.getPluginManager().callEvent(pvp);
+
+        // PvP is disabled! Don't target the player!
+        if(pvp.isCancelled())
             event.setCancelled(true);
-
-        if(Modules.isLoaded(Dueling.class)) {
-            // If they're in a duel with each other, enable pvp.
-            if(Dueling.getInstance().getDuel(p1, p2) != null)
-                event.setCancelled(false);
-
-            // If either player is in a duel, cancel damage.
-            else if(Dueling.getInstance().getDuel(p1) != null
-                    || Dueling.getInstance().getDuel(p2) != null)
-                event.setCancelled(true);
-        }
-
-        if(!event.isCancelled())
-            event.newDamageModifierBuilder("PvP")
-                    .setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
-                    .setValue(PvP.DAMAGE_MULTIPLIER)
-                .build();
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -136,6 +141,8 @@ public class PvP extends ModuleListener {
 
         if(Math.abs(killerPC.getExperience().getLevel() - targetPC.getExperience().getLevel()) <= honorMaxLevelDifference) {
             if(killerPC.getCooldowns().offerCooldown("honor:" + target.getUniqueId(), Cooldowns.CooldownType.CALENDAR_TIME, honorCooldown * 1000) != null) {
+                MessageUtil.sendUpdate(killerPC.getPlayer(), "You received " + HONOR.getDisplay(honorReward));
+
                 Bank.getBank(killerPC).addCurrency(HONOR_ID, honorReward);
             }
         }

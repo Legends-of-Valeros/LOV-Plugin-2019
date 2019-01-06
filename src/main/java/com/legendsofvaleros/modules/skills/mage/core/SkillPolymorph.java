@@ -26,7 +26,7 @@ public class SkillPolymorph extends Skill {
 			}, " to target, cancelled when receiving damage, heals enemy 200% rate."
 		};
 
-	public SkillPolymorph() { super(ID, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillPolymorph() { super(ID, Type.NEUTRAL, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 	
 	@Override
 	public String getUserFriendlyName(int level) { return "Polymorph"; }
@@ -36,15 +36,14 @@ public class SkillPolymorph extends Skill {
 
 	@Override
 	public boolean onSkillUse(World world, CombatEntity ce, int level) {
-		LivingEntity target = getTarget(ce, 16D);
+		CombatEntity target = validateTarget(ce, getTarget(ce, 16D));
 		if(target == null) return false;
-		if(CombatEngine.getEntity(target) == null) return false;
 
-		world.playSound(target.getLocation(), "misc.resurrect", 1F, 1F);
-		world.playSound(target.getLocation(), Sound.ENTITY_SHEEP_AMBIENT, .5F, 1F);
+		world.playSound(target.getLivingEntity().getLocation(), "misc.resurrect", 1F, 1F);
+		world.playSound(target.getLivingEntity().getLocation(), Sound.ENTITY_SHEEP_AMBIENT, .5F, 1F);
 		
-		Characters.getInstance().getSkillEffectManager().getSkillEffect("Polymorph").apply(target, ce.getLivingEntity(), getEarliest(MORPH_LEVEL, level));
-		CombatEngine.getEntity(target).getStats().newStatModifierBuilder(Stat.HEALTH_REGEN)
+		Characters.getInstance().getSkillEffectManager().getSkillEffect("Polymorph").apply(target.getLivingEntity(), ce.getLivingEntity(), getEarliest(MORPH_LEVEL, level));
+		target.getStats().newStatModifierBuilder(Stat.HEALTH_REGEN)
 							.setDuration(getEarliest(MORPH_LEVEL, level) * 20)
 							.setValue(2)
 							.setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)

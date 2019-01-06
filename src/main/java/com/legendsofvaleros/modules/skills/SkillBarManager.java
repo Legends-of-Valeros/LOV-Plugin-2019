@@ -13,6 +13,8 @@ import com.legendsofvaleros.modules.characters.loading.PhaseLock;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.sql.ResultSet;
+
 public class SkillBarManager implements Listener {
     private static final String SKILLBAR_TABLE = "player_skillbar";
     private static final String CHARACTER_ID = "character_id";
@@ -61,7 +63,9 @@ public class SkillBarManager implements Listener {
                 .select()
                 .where(CHARACTER_ID, pc.getUniqueCharacterId().toString())
                 .build()
-                .callback((result) -> {
+                .callback((statement, count) -> {
+                    ResultSet result = statement.getResultSet();
+
                     while (result.next()) {
                         int slot = result.getInt(SLOT_ID);
                         String skillId = result.getString(SLOT_SKILL);

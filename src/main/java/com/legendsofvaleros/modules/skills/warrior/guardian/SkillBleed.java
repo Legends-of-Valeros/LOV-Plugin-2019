@@ -23,7 +23,7 @@ public class SkillBleed extends Skill {
 			" for ", new TimePart().seconds(BLEED_TIME), "."
 		};
 
-	public SkillBleed() { super(ID, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillBleed() { super(ID, Type.HARMFUL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Bleed"; }

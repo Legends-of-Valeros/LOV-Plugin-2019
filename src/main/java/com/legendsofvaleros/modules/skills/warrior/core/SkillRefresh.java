@@ -16,7 +16,7 @@ public class SkillRefresh extends Skill {
 			"The warrior gains ", RAGE, " rage."
 		};
 	
-	public SkillRefresh() { super(ID, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillRefresh() { super(ID, Type.SELF, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Refresh"; }

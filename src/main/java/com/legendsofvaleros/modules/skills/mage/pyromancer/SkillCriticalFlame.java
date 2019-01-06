@@ -24,7 +24,7 @@ public class SkillCriticalFlame extends Skill {
 			new TimePart().seconds(TIME), ", mana regen ", MANA_REGEN, "%/s."
 		};
 
-	public SkillCriticalFlame() { super(ID, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillCriticalFlame() { super(ID, Type.SELF, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Critical Flame"; }

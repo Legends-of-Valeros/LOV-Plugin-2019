@@ -1,11 +1,7 @@
 package com.legendsofvaleros.modules.npcs.trait;
 
-import com.codingforcookies.robert.core.GUI;
-import com.codingforcookies.robert.slot.Slot;
-import com.codingforcookies.robert.window.ExpandingGUI;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.modules.npcs.NPCData;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.npcs.Skins;
@@ -29,8 +25,6 @@ import org.bukkit.entity.Snowball;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class TraitLOV extends Trait implements CommandConfigurable {
     public static String TRAIT_NAME = "lov";

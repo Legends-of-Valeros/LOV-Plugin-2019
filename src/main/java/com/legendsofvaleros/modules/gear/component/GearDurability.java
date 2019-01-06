@@ -9,7 +9,7 @@ import com.legendsofvaleros.modules.gear.component.impl.GearComponentOrder;
 import com.legendsofvaleros.modules.gear.component.trigger.AttackTrigger;
 import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger;
 import com.legendsofvaleros.modules.gear.component.trigger.PhysicalAttackTrigger;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.item.GearType;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.field.RangedValue;
@@ -81,12 +81,12 @@ public class GearDurability {
 		}
 
 		@Override
-		public double getValue(GearItem.Instance item, Persist persist) {
+		public double getValue(Gear.Instance item, Persist persist) {
 			return 0;
 		}
 
 		@Override
-		protected void onGenerateItem(GearItem.Instance item, Persist persist, ItemBuilder builder) {
+		protected void onGenerateItem(Gear.Instance item, Persist persist, ItemBuilder builder) {
 			if(persist.max <= 0)
 				builder.addLore(ChatColor.AQUA + "❖ Unbreakable");
 			else {
@@ -98,9 +98,9 @@ public class GearDurability {
 					if(dur.min != null && perc <= dur.min) continue;
 					
 					arr.addAll(dur.strings.get(null));
-					arr.addAll(dur.strings.get(item.gear.getType()));
+					arr.addAll(dur.strings.get(item.getType()));
 					
-					builder.addLore(ChatColor.GRAY + "❖ " + arr.get(item.gear.getSeed() % arr.size()));
+					builder.addLore(ChatColor.GRAY + "❖ " + arr.get(item.getSeed() % arr.size()));
 					break;
 				}
 
@@ -110,7 +110,7 @@ public class GearDurability {
 		}
 	
 		@Override
-		public Persist fire(GearItem.Instance item, Persist persist, GearTrigger trigger) {
+		public Persist fire(Gear.Instance item, Persist persist, GearTrigger trigger) {
 			if(trigger.equals(PhysicalAttackTrigger.class)) {
 				if(persist.current > 0) {
 					if(!LegendsOfValeros.getMode().isVerbose()) {

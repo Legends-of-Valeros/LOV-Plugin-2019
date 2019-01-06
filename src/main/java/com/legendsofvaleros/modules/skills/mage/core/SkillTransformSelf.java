@@ -23,7 +23,7 @@ public class SkillTransformSelf extends Skill {
 			new TimePart().seconds(MORPH_LEVEL), " until damage is taken."
 		};
 
-	public SkillTransformSelf() { super(ID, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillTransformSelf() { super(ID, Type.SELF, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 	
 	@Override
 	public String getUserFriendlyName(int level) { return "Transform Self"; }

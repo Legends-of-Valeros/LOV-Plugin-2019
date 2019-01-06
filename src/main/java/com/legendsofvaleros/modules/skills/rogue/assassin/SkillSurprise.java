@@ -16,7 +16,7 @@ public class SkillSurprise extends Skill {
 			"Teleports up to ", new RangePart(RANGE), " to a target, stabbing it from behind dealing ", new WDPart(DAMAGE), "."
 		};
 
-	public SkillSurprise() { super(ID, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillSurprise() { super(ID, Type.HARMFUL, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Surprise"; }

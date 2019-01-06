@@ -29,7 +29,7 @@ public class SkillIceCrystal extends Skill {
     };
 
     public SkillIceCrystal() {
-        super(ID, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION);
+        super(ID, Type.HARMFUL, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION);
     }
 
     @Override

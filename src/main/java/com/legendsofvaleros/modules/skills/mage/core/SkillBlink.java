@@ -19,7 +19,7 @@ public class SkillBlink extends Skill {
 			" or until they reach an obstacle; also removes any stun effects."
 		};
 
-	public SkillBlink() { super(ID, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillBlink() { super(ID, Type.SELF, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 	
 	@Override
 	public String getUserFriendlyName(int level) { return "Blink"; }

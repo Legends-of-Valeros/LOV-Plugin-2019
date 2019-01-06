@@ -39,6 +39,8 @@ public class KillObjective extends AbstractQuestObjective<QuestObjectiveProgress
 
     @Override
     public Location getLocation(PlayerCharacter pc) {
+        if(mob == null) return null;
+
         Location loc = null;
         double distance = Double.MAX_VALUE;
 
@@ -60,8 +62,8 @@ public class KillObjective extends AbstractQuestObjective<QuestObjectiveProgress
 
     @Override
     public String getProgressText(PlayerCharacter pc, QuestObjectiveProgressInteger progress) {
-        if (amount == 1) return "Kill " + mob.getName();
-        return progress.value + "/" + amount + " " + mob.getName() + " killed";
+        if (amount == 1) return "Kill " + (mob == null ? "UNKNOWN" : mob.getName());
+        return progress.value + "/" + amount + " " + (mob == null ? "UNKNOWN" : mob.getName()) + " killed";
     }
 
     @Override

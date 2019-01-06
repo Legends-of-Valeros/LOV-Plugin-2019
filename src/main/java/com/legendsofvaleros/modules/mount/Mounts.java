@@ -30,10 +30,7 @@ import java.util.Map.Entry;
 @DependsOn(NPCs.class)
 public class Mounts extends ModuleListener {
     private static Mounts instance;
-
-    public static Mounts getInstance() {
-        return instance;
-    }
+    public static Mounts getInstance() { return instance; }
 
     private MountManager manager;
 

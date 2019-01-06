@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.UUID;
 
-@CommandAlias("debug")
+@CommandAlias("debug|lov debug")
 public class DebugFlags extends BaseCommand {
 	protected static HashMap<UUID, DebugFlags> debug = new HashMap<>();
 	public static boolean is(Player p) { return debug.containsKey(p.getUniqueId()); }
@@ -46,7 +46,6 @@ public class DebugFlags extends BaseCommand {
 	}
 
 	@Default
-	@HelpCommand
 	public void cmdHelp(CommandSender sender, CommandHelp help) {
 		help.showHelp();
 	}

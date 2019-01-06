@@ -3,7 +3,7 @@ package com.legendsofvaleros.modules.bank.quest;
 import com.legendsofvaleros.modules.bank.Bank;
 import com.legendsofvaleros.modules.bank.repair.RepairItemEvent;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.quests.objective.stf.AbstractQuestObjective;
 import com.legendsofvaleros.modules.quests.progress.QuestObjectiveProgressBoolean;
 import com.legendsofvaleros.util.MessageUtil;
@@ -12,11 +12,11 @@ import org.bukkit.event.Event;
 public class RepairObjective extends AbstractQuestObjective<QuestObjectiveProgressBoolean> {
     private String id;
 
-    private transient GearItem item;
+    private transient Gear item;
 
     @Override
     protected void onInit() {
-        item = GearItem.fromID(id);
+        item = Gear.fromID(id);
 
         if(item == null)
             MessageUtil.sendException(Bank.getInstance(), "No item with that ID in quest. Offender: " + id + " in " + getQuest().getId(), false);
@@ -29,12 +29,12 @@ public class RepairObjective extends AbstractQuestObjective<QuestObjectiveProgre
 
     @Override
     public String getProgressText(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
-        return "Repair " + item.getName();
+        return "Repair " + (item == null ? "UNKNOWN" : item.getName());
     }
 
     @Override
     public String getCompletedText(PlayerCharacter pc) {
-        return "Repair " + item.getName();
+        return "Repaired " + (item == null ? "UNKNOWN" : item.getName());
     }
 
     @Override

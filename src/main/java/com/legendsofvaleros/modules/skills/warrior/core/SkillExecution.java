@@ -20,7 +20,7 @@ public class SkillExecution extends Skill {
 			"% physical damage. Only succeeds if enemy is below 20% health."
 		};
 	
-	public SkillExecution() { super(ID, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillExecution() { super(ID, Type.HARMFUL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Execution"; }

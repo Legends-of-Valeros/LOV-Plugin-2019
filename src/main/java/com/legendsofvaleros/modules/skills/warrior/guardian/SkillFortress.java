@@ -22,7 +22,7 @@ public class SkillFortress extends Skill {
 			}, "."
 		};
 
-	public SkillFortress() { super(ID, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillFortress() { super(ID, Type.BENEFICIAL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Fortress"; }

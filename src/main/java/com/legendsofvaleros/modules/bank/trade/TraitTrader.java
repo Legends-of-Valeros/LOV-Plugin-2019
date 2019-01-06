@@ -8,7 +8,7 @@ import com.legendsofvaleros.modules.bank.Money;
 import com.legendsofvaleros.modules.bank.gui.ItemMorphGUI;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import com.legendsofvaleros.util.item.Model;
@@ -25,7 +25,7 @@ public class TraitTrader extends LOVTrait {
     private static final ItemStack SELL_BUTTON = Model.stack("menu-price-button").setName("Sell Items").create();
 
     private static class BuyGUI extends GUI {
-        BuyGUI(Player p, GearItem[] gears, int[] costs) {
+        BuyGUI(Player p, Gear[] gears, int[] costs) {
             super("Trader");
 
             int rows = (int) Math.ceil((gears.length + 1) / 9D);
@@ -36,7 +36,7 @@ public class TraitTrader extends LOVTrait {
             for (int i = 0; i < gears.length; i++) {
                 if (gears[i] == null) continue;
 
-                GearItem.Instance instance = gears[i].newInstance();
+                Gear.Instance instance = gears[i].newInstance();
                 ItemStack item = instance.toStack();
 
                 ItemMeta meta = item.getItemMeta();
@@ -70,17 +70,17 @@ public class TraitTrader extends LOVTrait {
         }
 
         @Override
-        public boolean isValid(GearItem.Instance item) {
-            return item.gear.getType().isTradable();
+        public boolean isValid(Gear.Instance item) {
+            return item.getType().isTradable();
         }
 
         @Override
-        public long getWorth(GearItem.Instance item) {
+        public long getWorth(Gear.Instance item) {
             return Math.round(item.getValue() * item.amount);
         }
 
         @Override
-        public void executeMorph(PlayerCharacter pc, GearItem.Instance item) {
+        public void executeMorph(PlayerCharacter pc, Gear.Instance item) {
 
         }
 
@@ -93,13 +93,13 @@ public class TraitTrader extends LOVTrait {
     private String[] items = new String[0];
     private int[] costs = new int[0];
 
-    private transient GearItem[] gears = new GearItem[0];
+    private transient Gear[] gears = new Gear[0];
 
     @Override
     public void onSpawn() {
-        gears = new GearItem[items.length];
+        gears = new Gear[items.length];
         for (int i = 0; i < items.length; i++)
-            gears[i] = GearItem.fromID(items[i]);
+            gears[i] = Gear.fromID(items[i]);
     }
 
     @Override

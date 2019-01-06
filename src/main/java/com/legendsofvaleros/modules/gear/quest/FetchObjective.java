@@ -1,9 +1,9 @@
 package com.legendsofvaleros.modules.gear.quest;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.gear.Gear;
+import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.gear.event.GearPickupEvent;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.quests.objective.stf.AbstractQuestObjective;
 import com.legendsofvaleros.modules.quests.progress.QuestObjectiveProgressInteger;
 import com.legendsofvaleros.util.MessageUtil;
@@ -15,14 +15,14 @@ public class FetchObjective extends AbstractQuestObjective<QuestObjectiveProgres
     private String id;
     private int amount;
 
-    private transient GearItem item;
+    private transient Gear item;
 
     @Override
     protected void onInit() {
-        item = GearItem.fromID(id);
+        item = Gear.fromID(id);
 
         if (item == null)
-            MessageUtil.sendException(Gear.getInstance(), "No item with that ID in quest. Offender: " + id + " in " + getQuest().getId(), false);
+            MessageUtil.sendException(GearController.getInstance(), "No item with that ID in quest. Offender: " + id + " in " + getQuest().getId(), false);
     }
 
     @Override

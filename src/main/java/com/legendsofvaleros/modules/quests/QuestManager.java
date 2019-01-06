@@ -4,6 +4,7 @@ import com.codingforcookies.doris.sql.TableManager;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
@@ -17,6 +18,7 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
+import com.legendsofvaleros.modules.mobs.Mobs;
 import com.legendsofvaleros.modules.quests.action.stf.AbstractQuestAction;
 import com.legendsofvaleros.modules.quests.action.stf.QuestActionFactory;
 import com.legendsofvaleros.modules.quests.action.stf.QuestActions;
@@ -32,6 +34,7 @@ import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
 import com.legendsofvaleros.modules.quests.quest.stf.QuestFactory;
 import com.legendsofvaleros.modules.quests.quest.stf.QuestObjectives;
 import com.legendsofvaleros.modules.quests.quest.stf.QuestStatus;
+import com.legendsofvaleros.scheduler.InternalTask;
 import com.legendsofvaleros.util.FutureCache;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
@@ -41,18 +44,17 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.lang.reflect.Field;
+import java.sql.ResultSet;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class QuestManager {
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final Collection<IQuest> EMPTY_LIST = ImmutableList.of();
 
     private static final String QUEST_ID = "quest_id";
 
@@ -90,6 +92,7 @@ public class QuestManager {
 
     // Event class, quest ID, objective list
     private static HashBasedTable<Class<? extends Event>, String, Set<IQuestObjective>> questEvents = HashBasedTable.create();
+    private static Multimap<String, InternalTask> questUpdates = HashMultimap.create();
 
     /**
      * A map containing each user to a list of all their accepted quests. This
@@ -98,6 +101,8 @@ public class QuestManager {
     private static Multimap<CharacterId, IQuest> playerQuests = HashMultimap.create();
 
     public static Collection<IQuest> getQuestsForEntity(PlayerCharacter pc) {
+        if(!playerQuests.containsKey(pc.getUniqueCharacterId()))
+            return EMPTY_LIST;
         return playerQuests.get(pc.getUniqueCharacterId());
     }
 
@@ -230,8 +235,21 @@ public class QuestManager {
         quests = new FutureCache<>(CacheBuilder.newBuilder()
                 .concurrencyLevel(4)
                 .weakValues()
-                .removalListener(QuestManager::onQuestUnCached)
+                .removalListener(entry -> {
+                    Quests.getInstance().getLogger().warning("Quest '" + entry.getKey() + "' removed from the cache: " + entry.getCause());
+
+                    questEvents.column(String.valueOf(entry.getKey())).clear();
+
+                    for(InternalTask task : questUpdates.values())
+                        task.cancel();
+                    questUpdates.removeAll(String.valueOf(entry.getKey()));
+                })
                 .build(), QuestManager::loadQuest);
+
+        Quests.getInstance().getScheduler().executeInMyCircleTimer(() -> {
+            // This is done so we get almost-live updates on GC'd listeners.
+            quests.cleanUp();
+        }, 0L, 20L);
     }
 
     public static void reloadQuests() {
@@ -246,14 +264,10 @@ public class QuestManager {
         if (quests.size() > 0)
             MessageUtil.sendException(Quests.getInstance(), quests.size() + " quests did not get cleared from the cache.", false);
 
-        for (Player p : Bukkit.getOnlinePlayers())
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if(!Characters.isPlayerCharacterLoaded(p)) continue;
             loadQuestsForPlayer(Characters.getPlayerCharacter(p), null);
-    }
-
-    private synchronized static void onQuestUnCached(Entry<String, IQuest> entry) {
-        Quests.getInstance().getLogger().warning("Quest '" + entry.getKey() + "' removed from the cache.");
-
-        questEvents.column(String.valueOf(entry.getKey())).clear();
+        }
     }
 
     public synchronized static void callEvent(Event event, PlayerCharacter pc) {
@@ -279,7 +293,9 @@ public class QuestManager {
                 .select()
                 .where(CHARACTER_FIELD, pc.getUniqueCharacterId().toString())
                 .build()
-                .callback((result) -> {
+                .callback((statement, count) -> {
+                    ResultSet result = statement.getResultSet();
+
                     final AtomicInteger questsToLoad = new AtomicInteger(0);
 
                     while (result.next()) {
@@ -296,8 +312,12 @@ public class QuestManager {
                             future.addListener(() -> {
                                 try {
                                     IQuest quest = future.get();
-                                    playerQuests.put(pc.getUniqueCharacterId(), quest);
-                                    quest.loadProgress(pc, progressPack);
+                                    if(quest == null) {
+                                        throw new Exception("Quest didn't load. Does it still exist?");
+                                    }else{
+                                        quest.loadProgress(pc, progressPack);
+                                        playerQuests.put(pc.getUniqueCharacterId(), quest);
+                                    }
                                 } catch (Exception e) {
                                     Quests.getInstance().getLogger().warning("Player attempt to load progress for quest, but something went wrong. Offender: " + pc.getPlayer().getName() + " in quest " + questId);
                                     MessageUtil.sendException(Quests.getInstance(), pc.getPlayer(), e, true);
@@ -433,7 +453,9 @@ public class QuestManager {
                 .where(QUEST_ID, quest_id)
                 .limit(1)
                 .build()
-                .callback((result) -> {
+                .callback((statement, count) -> {
+                    ResultSet result = statement.getResultSet();
+
                     if (!result.next()) {
                         ret.set(null);
                         return;
@@ -483,6 +505,27 @@ public class QuestManager {
 
                             for (Class<? extends Event> event : eventMap.keySet())
                                 questEvents.put(event, quest_id, eventMap.get(event));
+
+                            for (IQuestObjective<?>[] group : quest.getObjectives().groups)
+                                for (IQuestObjective<?> obj : group) {
+                                    int timer = obj.getUpdateTimer();
+                                    if (timer <= 0) continue;
+
+                                    AtomicInteger i = new AtomicInteger();
+
+                                    questUpdates.put(quest_id, Quests.getInstance().getScheduler().executeInSpigotCircleTimer(() -> {
+                                        for(Map.Entry<CharacterId, QuestProgressPack> prog : quest.getProgressions()) {
+                                            if(Characters.isPlayerCharacterLoaded(prog.getKey())) {
+                                                PlayerCharacter pc = Characters.getPlayerCharacter(prog.getKey());
+                                                if(!quest.hasProgress(pc)) continue;
+
+                                                if(obj.getGroupIndex() != quest.getCurrentGroupI(pc)) continue;
+
+                                                obj.onUpdate(pc, i.getAndIncrement());
+                                            }
+                                        }
+                                    }, 0L, timer));
+                                }
                         }
 
                         ret.set(quest);

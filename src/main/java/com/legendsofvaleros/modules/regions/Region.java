@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.regions;
 
-import com.codingforcookies.doris.orm.annotation.Column;
 import org.bukkit.Location;
 import org.bukkit.World;
 

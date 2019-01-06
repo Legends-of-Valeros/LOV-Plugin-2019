@@ -39,7 +39,7 @@ public class Model {
 
 		Utilities.getInstance().getLogger().info("Loading item models...");
 		modelTable.query().all()
-				.forEach((model) -> models.put(model.id, model))
+				.forEach((model, i) -> models.put(model.id, model))
 				.onFinished(() -> {
 					Utilities.getInstance().getLogger().info("Loaded " + models.size() + " models.");
 				}).execute(false);

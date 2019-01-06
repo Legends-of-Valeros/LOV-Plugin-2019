@@ -15,7 +15,7 @@ public class SkillRetreat extends Skill {
 			"The rogue jumps back ", DISTANCE, " blocks"
 		};
 
-	public SkillRetreat() { super(ID, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillRetreat() { super(ID, Type.SELF, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Retreat"; }

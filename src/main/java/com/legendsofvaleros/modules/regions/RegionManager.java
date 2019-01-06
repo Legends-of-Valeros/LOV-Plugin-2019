@@ -1,10 +1,7 @@
 package com.legendsofvaleros.modules.regions;
 
 import com.codingforcookies.doris.sql.TableManager;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Table;
+import com.google.common.collect.*;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
@@ -16,7 +13,6 @@ import com.legendsofvaleros.modules.characters.loading.PhaseLock;
 import com.legendsofvaleros.modules.regions.event.RegionEnterEvent;
 import com.legendsofvaleros.modules.regions.event.RegionLeaveEvent;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -25,6 +21,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
+import java.sql.ResultSet;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -55,7 +52,7 @@ public class RegionManager implements Listener {
     private static String CHARACTER_FIELD = "character_id";
     private static String ACCESS_LEVEL = "can_access";
 
-    private static final List<Region> EMPTY_LIST = new ArrayList<>();
+    private static final List<Region> EMPTY_LIST = ImmutableList.of();
 
     private TableManager manager;
     private TableManager managerPlayers;
@@ -172,7 +169,9 @@ public class RegionManager implements Listener {
                 .select()
                 .where(CHARACTER_FIELD, pc.getUniqueCharacterId().toString())
                 .build()
-                .callback((result) -> {
+                .callback((statement, count) -> {
+                    ResultSet result = statement.getResultSet();
+
                     while (result.next()) {
                         playerAccess.put(pc.getUniqueCharacterId(), result.getString(REGION_ID), result.getBoolean(ACCESS_LEVEL));
                     }
@@ -258,7 +257,9 @@ public class RegionManager implements Listener {
 
         manager.query()
                 .select().build()
-                .callback((result) -> {
+                .callback((statement, count) -> {
+                    ResultSet result = statement.getResultSet();
+
                     while (result != null && result.next()) {
                         Region region = new Region(result.getString(REGION_ID),
                                 Bukkit.getWorld(result.getString(REGION_WORLD)),

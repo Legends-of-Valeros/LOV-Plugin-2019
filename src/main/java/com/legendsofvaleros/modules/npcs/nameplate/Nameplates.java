@@ -3,10 +3,13 @@ package com.legendsofvaleros.modules.npcs.nameplate;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.mobs.Mobs;
+import com.legendsofvaleros.util.MessageUtil;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.entity.Entity;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.lang.ref.WeakReference;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -31,11 +34,15 @@ public class Nameplates {
 
     private boolean active = true;
 
-    private final Entity entity;
+    private final UUID uuid;
+    private final WeakReference<Entity> entity;
     public final Map<String, Hologram> holograms = new LinkedHashMap<>();
 
     public Hologram add(String id) {
-        Hologram holo = HologramsAPI.createHologram(LegendsOfValeros.getInstance(), entity.getLocation().add(0, entity.getHeight() + .25D, 0));
+        if(entity.get() == null)
+            throw new IllegalStateException("Entity is gone.");
+
+        Hologram holo = HologramsAPI.createHologram(LegendsOfValeros.getInstance(), entity.get().getLocation().add(0, entity.get().getHeight() + .25D, 0));
         holograms.put(id, holo);
         return holo;
     }
@@ -53,8 +60,9 @@ public class Nameplates {
         this(npc.getEntity());
     }
 
-    public Nameplates(Entity entity) {
-        this.entity = entity;
+    public Nameplates(Entity e) {
+        this.uuid = e.getUniqueId();
+        this.entity = new WeakReference<>(e);
 
         add(BASE);
 
@@ -67,11 +75,23 @@ public class Nameplates {
                     return;
                 }
 
-                double y = entity.getHeight() + .25D;
-                for (Hologram holo : holograms.values()) {
-                    y += holo.getHeight();
+                Entity entity = Nameplates.this.entity.get();
 
-                    holo.teleport(entity.getLocation().add(0, y, 0));
+                try {
+                    double y = entity.getHeight() + .25D;
+                    for (Hologram holo : holograms.values()) {
+                        y += holo.getHeight();
+
+                        holo.teleport(entity.getLocation().add(0, y, 0));
+                    }
+                } catch(IllegalArgumentException e) {
+                    // Something happened. Log it and destroy the hologram.
+                    MessageUtil.sendException(Mobs.getInstance(), "Nameplate error. Offender: " + uuid + " or " + entity.getName(), false);
+
+                    e.printStackTrace();
+
+                    remove();
+                    cancel();
                 }
             }
         };
@@ -79,7 +99,7 @@ public class Nameplates {
     }
 
     public boolean isActive() {
-        return active && !entity.isDead();
+        return entity.get() != null && active && !entity.get().isDead();
     }
 
     public void remove() {
@@ -92,6 +112,6 @@ public class Nameplates {
 
         holograms.clear();
 
-        bound.remove(entity.getUniqueId());
+        bound.remove(uuid);
     }
 }

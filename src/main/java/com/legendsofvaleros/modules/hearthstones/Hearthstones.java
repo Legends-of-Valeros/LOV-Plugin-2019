@@ -16,10 +16,7 @@ import org.bukkit.event.EventHandler;
 @DependsOn(Characters.class)
 public class Hearthstones extends ModuleListener {
     private static Hearthstones instance;
-
-    public static Hearthstones getInstance() {
-        return instance;
-    }
+    public static Hearthstones getInstance() { return instance; }
 
     private HomeTeleporter teleporter;
 

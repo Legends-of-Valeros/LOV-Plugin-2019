@@ -40,12 +40,12 @@ public class ReturnObjective extends AbstractQuestObjective<QuestObjectiveProgre
 
     @Override
     public String getProgressText(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
-        return "Return to " + npc.name;
+        return "Return to " + (npc == null ? "UNKNOWN" : npc.name);
     }
 
     @Override
     public String getCompletedText(PlayerCharacter pc) {
-        return "Returned to " + npc.name;
+        return "Returned to " + (npc == null ? "UNKNOWN" : npc.name);
     }
 
     @Override

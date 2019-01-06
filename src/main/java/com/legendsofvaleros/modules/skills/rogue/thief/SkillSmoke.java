@@ -16,7 +16,7 @@ public class SkillSmoke extends Skill {
 			"Instant invisibility for ", new TimePart().seconds(TIME), ", damage received will not uncover you."
 		};
 
-	public SkillSmoke() { super(ID, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillSmoke() { super(ID, Type.BENEFICIAL, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Smoke"; }

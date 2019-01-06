@@ -12,7 +12,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-@CommandAlias("party|p")
+@CommandAlias("party|p|lov party")
 public class PartyCommands extends BaseCommand {
 	@Subcommand("create")
 	@Description("Create a new party.")

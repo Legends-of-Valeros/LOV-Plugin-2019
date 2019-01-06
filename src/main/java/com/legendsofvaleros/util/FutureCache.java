@@ -8,6 +8,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
@@ -35,9 +36,8 @@ public class FutureCache<K, V> {
         return cache.getIfPresent(k);
     }
 
-    @Nullable
-    public synchronized ListenableFuture<V> get(K k) {
-        if(k == null) throw new NullPointerException("Key cannot be null!");
+    public synchronized ListenableFuture<V> get(@Nonnull K k) {
+        if(k == null) return null;
 
         SettableFuture<V> ret = SettableFuture.create();
 

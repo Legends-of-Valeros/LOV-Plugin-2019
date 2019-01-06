@@ -12,7 +12,7 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
-import com.legendsofvaleros.modules.gear.Gear;
+import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.gear.GearRegistry;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.modules.mobs.Mobs;
@@ -52,7 +52,7 @@ import java.util.Map.Entry;
 @DependsOn(NPCs.class)
 @DependsOn(Mobs.class)
 @DependsOn(Hotswitch.class)
-@DependsOn(Gear.class)
+@DependsOn(GearController.class)
 public class Skills extends ModuleListener {
     public static final SkillTree[] skillTrees = new SkillTree[] {
             new TreeWarrior(),
@@ -62,10 +62,7 @@ public class Skills extends ModuleListener {
     };
 
     private static Skills instance;
-
-    public static Skills getInstance() {
-        return instance;
-    }
+    public static Skills getInstance() { return instance; }
 
     public SkillBarManager hotbarManager;
 
@@ -77,12 +74,12 @@ public class Skills extends ModuleListener {
 
         hotbarManager = new SkillBarManager();
 
-        if(Modules.isLoaded(Gear.class)) {
+        if(Modules.isLoaded(GearController.class)) {
             GearRegistry.registerComponent("charge", GearCharge.Component.class);
             GearRegistry.registerComponent("skill", SkillComponent.class);
             GearRegistry.registerComponent("skills_reset", SkillResetComponent.class);
         }else
-            Skills.getInstance().getLogger().info("Gear integration not enabled.");
+            Skills.getInstance().getLogger().info("GearController integration not enabled.");
 
         if(Modules.isLoaded(NPCs.class))
             NPCs.registerTrait("recharger", TraitRecharger.class);

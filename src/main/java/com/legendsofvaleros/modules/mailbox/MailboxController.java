@@ -13,11 +13,9 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by Crystall on 11/24/2018
@@ -92,7 +90,7 @@ public class MailboxController extends ModuleListener {
 
         mailBoxMails.query()
                 .get(characterId)
-                .forEach((mail) -> addMail(characterId, mail))
+                .forEach((mail, i) -> addMail(characterId, mail))
                 .onFinished(() -> {
                     mailboxes.put(characterId, mailbox);
                     ret.set(null);

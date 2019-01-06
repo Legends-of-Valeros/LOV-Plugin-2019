@@ -10,6 +10,8 @@ import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.mobs.MobManager;
+import com.legendsofvaleros.modules.mobs.Mobs;
+import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.*;
 import org.bukkit.inventory.ItemStack;
 
@@ -87,11 +89,6 @@ public class SpawnArea {
     }
 
     private Mob mob;
-
-    public ListenableFuture<Mob> loadMob() {
-        return MobManager.loadEntity(entityId);
-    }
-
     public Mob getMob() {
         if (mob == null)
             mob = MobManager.getEntity(entityId);
@@ -187,8 +184,11 @@ public class SpawnArea {
         this.entityId = entityId;
         this.radius = radius;
         this.padding = padding;
-        this.levels = levels;
+        this.entityLevel = levels[0] + "-" + levels[1];
 
+        this.x = x;
+        this.y = y;
+        this.z = z;
         this.location = new Location(getWorld(), x, y, z);
     }
 
@@ -242,10 +242,16 @@ public class SpawnArea {
         World world = getWorld();
         Location ground = getGround();
 
+        if(radius < 0) {
+            radius = 0;
+
+            MessageUtil.sendException(null, "Spawn '" + id + "' has a radius of < 0, setting it to 0.", false);
+        }
+
         Location loc = new Location(world,
-                ground.getBlockX() - radius + rand.nextInt(radius * 2),
+                ground.getBlockX() - (radius == 0 ? 0 : radius + rand.nextInt(radius * 2)),
                 ground.getBlockY(),
-                ground.getBlockZ() - radius + rand.nextInt(radius * 2)
+                ground.getBlockZ() - (radius == 0 ? 0 : radius + rand.nextInt(radius * 2))
         );
 
         // Move up until loc is a transparent block

@@ -24,7 +24,7 @@ public class SkillFlamingStreak extends Skill {
     };
 
     public SkillFlamingStreak() {
-        super(ID, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION);
+        super(ID, Type.HARMFUL, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION);
     }
 
     @Override
@@ -44,22 +44,21 @@ public class SkillFlamingStreak extends Skill {
 
     @Override
     public boolean onSkillUse(World world, CombatEntity ce, int level) {
-        LivingEntity target = getTarget(ce, 15);
-        if (target == null)
-            return false;
+        CombatEntity target = validateTarget(ce, getTarget(ce, 15));
+        if (target == null) return false;
 
-        world.playSound(target.getLocation(), "spell.fire.fireball.impact", 1F, 1F);
-        world.spawnParticle(Particle.EXPLOSION_LARGE, target.getLocation(), 5, .5, .5, .5, .01);
+        world.playSound(target.getLivingEntity().getLocation(), "spell.fire.fireball.impact", 1F, 1F);
+        world.spawnParticle(Particle.EXPLOSION_LARGE, target.getLivingEntity().getLocation(), 5, .5, .5, .5, .01);
 
         Location loc = ce.getLivingEntity().getEyeLocation().clone();
         for (int i = 0; i < 15; i++) {
             loc.add(loc.getDirection());
             world.spawnParticle(Particle.FLAME, loc, 2, .1, .1, .1, 0.01);
 
-            if (target.getLocation().distance(loc) < 1.5D) break;
+            if (target.getLivingEntity().getLocation().distance(loc) < 1.5D) break;
         }
 
-        CombatEngine.getInstance().causeSpellDamage(target, ce.getLivingEntity(), SpellType.FIRE,
+        CombatEngine.getInstance().causeSpellDamage(target.getLivingEntity(), ce.getLivingEntity(), SpellType.FIRE,
                 SkillUtil.getSpellDamage(ce, SpellType.FIRE, Characters.getInstance().getCharacterConfig().getClassConfig(EntityClass.MAGE).getBaseMeleeDamage())
                         * getEarliest(DAMAGE, level) / 100D, null, false, true);
 

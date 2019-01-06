@@ -5,15 +5,11 @@ import com.codingforcookies.robert.item.ItemBuilder;
 import com.codingforcookies.robert.slot.Slot;
 import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.modules.bank.Bank;
-import com.legendsofvaleros.modules.bank.Money;
-import com.legendsofvaleros.modules.bank.gui.ItemMorphGUI;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import com.legendsofvaleros.modules.pvp.PvP;
-import com.legendsofvaleros.util.item.Model;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -25,7 +21,7 @@ import java.util.List;
 
 public class TraitHonorTrader extends LOVTrait {
     private static class BuyGUI extends GUI {
-        BuyGUI(Player p, GearItem[] gears, int[] costs) {
+        BuyGUI(Player p, Gear[] gears, int[] costs) {
             super("Honor Trader");
 
             int rows = (int) Math.ceil((gears.length + 1) / 9D);
@@ -34,7 +30,7 @@ public class TraitHonorTrader extends LOVTrait {
             for (int i = 0; i < gears.length; i++) {
                 if (gears[i] == null) continue;
 
-                GearItem.Instance instance = gears[i].newInstance();
+                Gear.Instance instance = gears[i].newInstance();
                 ItemStack item = instance.toStack();
 
                 ItemMeta meta = item.getItemMeta();
@@ -60,13 +56,13 @@ public class TraitHonorTrader extends LOVTrait {
     private String[] items = new String[0];
     private int[] costs = new int[0];
 
-    private transient GearItem[] gears = new GearItem[0];
+    private transient Gear[] gears = new Gear[0];
 
     @Override
     public void onSpawn() {
-        gears = new GearItem[items.length];
+        gears = new Gear[items.length];
         for (int i = 0; i < items.length; i++)
-            gears[i] = GearItem.fromID(items[i]);
+            gears[i] = Gear.fromID(items[i]);
     }
 
     @Override

@@ -16,7 +16,7 @@ public class SkillCheapShot extends Skill {
 			"Only works when in stealth, ", new WDPart(DAMAGE), " stuns target for ", new TimePart().seconds(TIME), "."
 		};
 
-	public SkillCheapShot() { super(ID, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillCheapShot() { super(ID, Type.HARMFUL, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Cheap Shot"; }

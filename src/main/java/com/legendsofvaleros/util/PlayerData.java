@@ -8,6 +8,7 @@ import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
 import org.bukkit.Bukkit;
 
+import java.sql.ResultSet;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -51,7 +52,8 @@ public class PlayerData {
 						.select()
 							.where(PLAYER_DISCORD_ID, id)
 						.build()
-					.callback((result) -> {
+					.callback((statement, count) -> {
+						ResultSet result = statement.getResultSet();
 						if(!result.next()) {
 							ret.set(null);
 							return;
@@ -82,7 +84,9 @@ public class PlayerData {
 						.select()
 							.where(PLAYER_UUID, uuid.toString())
 						.build()
-					.callback((result) -> {
+					.callback((statement, count) -> {
+						ResultSet result = statement.getResultSet();
+
 						PlayerData data = new PlayerData(uuid);
 						if(result.next()) {
 							data.username = result.getString(PLAYER_NAME);

@@ -15,17 +15,16 @@ import com.legendsofvaleros.modules.combatengine.events.CombatEnginePhysicalDama
 import com.legendsofvaleros.modules.combatengine.events.CombatEntityCreateEvent;
 import com.legendsofvaleros.modules.combatengine.events.VanillaDamageCancelledEvent;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
-import com.legendsofvaleros.modules.gear.Gear;
+import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.gear.component.trigger.*;
 import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger.TriggerEvent;
 import com.legendsofvaleros.modules.gear.event.ItemEquipEvent;
 import com.legendsofvaleros.modules.gear.event.ItemUnEquipEvent;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.item.GearType;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -62,17 +61,17 @@ public class ItemListener implements Listener {
 
     @EventHandler
     public void onDropItem(PlayerDropItemEvent event) {
-        GearItem.Instance instance = GearItem.Instance.fromStack(event.getItemDrop().getItemStack());
+        Gear.Instance instance = Gear.Instance.fromStack(event.getItemDrop().getItemStack());
 
         event.getItemDrop().setItemStack(null);
         event.getItemDrop().remove();
 
         if (instance == null) return;
 
-        if (!instance.gear.getType().isTradable()) {
+        if (!instance.getType().isTradable()) {
             ItemUtil.giveItem(Characters.getPlayerCharacter(event.getPlayer()), instance);
         } else {
-            Gear.getInstance().getScheduler().executeInSpigotCircle(() -> new WindowYesNo("Destroy Item") {
+            GearController.getInstance().getScheduler().executeInSpigotCircle(() -> new WindowYesNo("Destroy Item") {
                 @Override
                 public void onOpen(Player p, InventoryView view) {
                     view.setCursor(null);
@@ -106,7 +105,7 @@ public class ItemListener implements Listener {
         if (player == null || player.compareTo(pc.getPlayerId()) == 0) {
             event.getItem().remove();
 
-            GearItem.Instance instance = GearItem.Instance.fromStack(event.getItem().getItemStack());
+            Gear.Instance instance = Gear.Instance.fromStack(event.getItem().getItemStack());
             if (instance != null)
                 ItemUtil.giveItem(pc, instance);
         }
@@ -139,10 +138,10 @@ public class ItemListener implements Listener {
     public void onItemCombine(InventoryClickEvent e) {
         if (e.getClickedInventory() != e.getWhoClicked().getInventory()) return;
 
-        GearItem.Instance agent = GearItem.Instance.fromStack(e.getCursor());
+        Gear.Instance agent = Gear.Instance.fromStack(e.getCursor());
         if (agent == null) return;
 
-        GearItem.Instance base = GearItem.Instance.fromStack(e.getCurrentItem());
+        Gear.Instance base = Gear.Instance.fromStack(e.getCurrentItem());
         if (base == null) return;
 
         CombineTrigger trigger = new CombineTrigger(CombatEngine.getEntity(e.getWhoClicked()), base, agent);
@@ -165,15 +164,15 @@ public class ItemListener implements Listener {
         boolean offhand = e.getSlot() == 40;
         if (e.getSlot() != Hotswitch.HELD_SLOT && !offhand) return;
 
-        GearItem.Instance gear;
+        Gear.Instance gear;
 
         if (e.getCursor() != null && e.getCursor().getType() != Material.AIR) {
-            gear = GearItem.Instance.fromStack(e.getCursor());
+            gear = Gear.Instance.fromStack(e.getCursor());
             if (gear == null) {
                 MessageUtil.sendError(e.getWhoClicked(), "Your item has morphed into... something.");
 
                 e.setCancelled(true);
-                GearItem.Instance instance = Gear.ERROR_ITEM.newInstance();
+                Gear.Instance instance = GearController.ERROR_ITEM.newInstance();
                 instance.amount = e.getView().getCursor().getAmount();
                 e.getView().setCursor(instance.toStack());
 
@@ -182,8 +181,8 @@ public class ItemListener implements Listener {
                 return;
             }
 
-            if ((!offhand && gear.gear.getType() != GearType.WEAPON)
-                    || (offhand && gear.gear.getType() != GearType.SHIELD)) {
+            if ((!offhand && gear.getType() != GearType.WEAPON)
+                    || (offhand && gear.getType() != GearType.SHIELD)) {
                 MessageUtil.sendError(e.getWhoClicked(), "You can't wield that item there.");
 
                 e.setCancelled(true);
@@ -201,14 +200,14 @@ public class ItemListener implements Listener {
         }
 
         if (e.getCurrentItem() != null && e.getCurrentItem().getType() != Material.AIR) {
-            gear = GearItem.Instance.fromStack(e.getCurrentItem());
+            gear = Gear.Instance.fromStack(e.getCurrentItem());
             if (gear == null) {
                 MessageUtil.sendError(e.getWhoClicked(), "Your item has morphed into.. something.");
 
                 e.setCancelled(true);
-                e.setCurrentItem(Gear.ERROR_ITEM.newInstance().toStack());
+                e.setCurrentItem(GearController.ERROR_ITEM.newInstance().toStack());
 
-                GearItem.Instance instance = Gear.ERROR_ITEM.newInstance();
+                Gear.Instance instance = GearController.ERROR_ITEM.newInstance();
                 instance.amount = e.getCurrentItem().getAmount();
                 e.setCurrentItem(instance.toStack());
 
@@ -236,7 +235,7 @@ public class ItemListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onLivingEntityDamage(CombatEnginePhysicalDamageEvent event) {
-        GearItem.Instance gear = GearItem.Instance.fromStack(event.getAttacker().getLivingEntity().getEquipment().getItemInMainHand());
+        Gear.Instance gear = Gear.Instance.fromStack(event.getAttacker().getLivingEntity().getEquipment().getItemInMainHand());
         if (gear == null) return;
 
         PhysicalAttackTrigger e = new PhysicalAttackTrigger(event.getAttacker());
@@ -249,7 +248,7 @@ public class ItemListener implements Listener {
             if (gear.doFire(e) == TriggerEvent.REFRESH_STACK && event.getAttacker().isPlayer())
                 event.getAttacker().getLivingEntity().getEquipment().setItemInMainHand(gear.toStack());
 
-            event.newDamageModifierBuilder("Gear")
+            event.newDamageModifierBuilder("GearController")
                         .setModifierType(ValueModifierBuilder.ModifierType.FLAT_EDIT)
                         .setValue(e.getDamage())
                     .build();
@@ -262,9 +261,9 @@ public class ItemListener implements Listener {
         DefendTrigger e = new DefendTrigger(event);
 
         ItemStack[] armor = event.getDamaged().getLivingEntity().getEquipment().getArmorContents();
-        GearItem.Instance instance;
+        Gear.Instance instance;
         for (int i = 0; i < armor.length; i++) {
-            instance = GearItem.Instance.fromStack(armor[i]);
+            instance = Gear.Instance.fromStack(armor[i]);
             if (instance != null)
                 if (Boolean.TRUE.equals(instance.doTest(e))) {
                     if (instance.doFire(e).didChange())
@@ -277,7 +276,7 @@ public class ItemListener implements Listener {
     @EventHandler
     public void onItemUse(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            GearItem.Instance gear = GearItem.Instance.fromStack(event.getItem());
+            Gear.Instance gear = Gear.Instance.fromStack(event.getItem());
             if (gear == null) return;
 
             UseTrigger e = new UseTrigger(event);
@@ -299,7 +298,7 @@ public class ItemListener implements Listener {
     public void onArmorEquip(ArmorEquipEvent event) {
         if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
 
-        GearItem.Instance gear = GearItem.Instance.fromStack(event.getNewArmorPiece());
+        Gear.Instance gear = Gear.Instance.fromStack(event.getNewArmorPiece());
         if (gear != null) {
             ItemEquipEvent iee = new ItemEquipEvent(Characters.getPlayerCharacter(event.getPlayer()), gear, null);
             Bukkit.getPluginManager().callEvent(iee);
@@ -310,7 +309,7 @@ public class ItemListener implements Listener {
             }
         }
 
-        gear = GearItem.Instance.fromStack(event.getOldArmorPiece());
+        gear = Gear.Instance.fromStack(event.getOldArmorPiece());
         if (gear != null)
             Bukkit.getPluginManager().callEvent(new ItemUnEquipEvent(Characters.getPlayerCharacter(event.getPlayer()), gear));
     }
@@ -322,16 +321,16 @@ public class ItemListener implements Listener {
         Player p = (Player) event.getLivingEntity();
         EquipTrigger e = new EquipTrigger(event.getCombatEntity());
 
-        GearItem.Instance instance;
+        Gear.Instance instance;
         for (ItemStack stack : p.getInventory().getArmorContents()) {
-            instance = GearItem.Instance.fromStack(stack);
+            instance = Gear.Instance.fromStack(stack);
             if (instance != null) instance.doFire(e);
         }
 
-        instance = GearItem.Instance.fromStack(p.getInventory().getItem(Hotswitch.HELD_SLOT));
+        instance = Gear.Instance.fromStack(p.getInventory().getItem(Hotswitch.HELD_SLOT));
         if (instance != null) instance.doFire(e);
 
-        instance = GearItem.Instance.fromStack(p.getInventory().getItemInOffHand());
+        instance = Gear.Instance.fromStack(p.getInventory().getItemInOffHand());
         if (instance != null) instance.doFire(e);
     }
 
@@ -341,16 +340,16 @@ public class ItemListener implements Listener {
 
         UnEquipTrigger e = new UnEquipTrigger(ce);
 
-        GearItem.Instance instance;
+        Gear.Instance instance;
         for (ItemStack stack : event.getPlayer().getInventory().getArmorContents()) {
-            instance = GearItem.Instance.fromStack(stack);
+            instance = Gear.Instance.fromStack(stack);
             if (instance != null) instance.doFire(e);
         }
 
-        instance = GearItem.Instance.fromStack(event.getPlayer().getInventory().getItem(Hotswitch.HELD_SLOT));
+        instance = Gear.Instance.fromStack(event.getPlayer().getInventory().getItem(Hotswitch.HELD_SLOT));
         if (instance != null) instance.doFire(e);
 
-        instance = GearItem.Instance.fromStack(event.getPlayer().getInventory().getItemInOffHand());
+        instance = Gear.Instance.fromStack(event.getPlayer().getInventory().getItemInOffHand());
         if (instance != null) instance.doFire(e);
     }
 }

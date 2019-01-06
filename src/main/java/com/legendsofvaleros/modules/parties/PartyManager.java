@@ -119,13 +119,13 @@ public class PartyManager {
                         .where("character_id", uuid.toString())
                         .build()
                         .onEmpty(() -> ret.set(null))
-                        .forEach((pair) -> {
+                        .forEach((pair, i) -> {
                             PlayerParty p = new PlayerParty(pair.partyId);
 
                             // Now that we have the party UUID, lets load all players in the party.
                             partyTable.query()
                                     .get(pair.partyId.toString())
-                                    .forEach((pp) -> {
+                                    .forEach((pp, j) -> {
                                         parties.put(pp.characterId, p);
                                         p.getMembers().add(pp.characterId);
                                     })

@@ -16,7 +16,7 @@ public class SkillStealth extends Skill {
 			"Toggles sneaking, invisibility for ", new TimePart().seconds(TIME), ", cancelled by attacking or taking damage."
 		};
 
-	public SkillStealth() { super(ID, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillStealth() { super(ID, Type.BENEFICIAL, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Stealth"; }

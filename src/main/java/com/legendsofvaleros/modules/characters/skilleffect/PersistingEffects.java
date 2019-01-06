@@ -98,7 +98,9 @@ public class PersistingEffects {
 							.select()
 								.where(CHARACTER_ID_FIELD, characterId.toString())
 							.build()
-						.callback((result) -> {
+						.callback((statement, count) -> {
+							ResultSet result = statement.getResultSet();
+
 							final List<PersistingEffect> fromDb = new ArrayList<>();
 							while (result.next()) {
 								String effectId = result.getString(EFFECT_FIELD);

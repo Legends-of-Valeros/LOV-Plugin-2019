@@ -18,7 +18,7 @@ public class SkillMagicArmor extends Skill {
 			"Decreases spell damage received by ", SPELL_DEFENCE, "% for ", new TimePart().seconds(TIME), "."
 		};
 
-	public SkillMagicArmor() { super(ID, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillMagicArmor() { super(ID, Type.BENEFICIAL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Magic Armor"; }

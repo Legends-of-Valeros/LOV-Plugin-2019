@@ -26,7 +26,7 @@ public class SkillRush extends Skill {
 			SPEED, "% for ", new TimePart().seconds(TIME), "."
 		};
 	
-	public SkillRush() { super(ID, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillRush() { super(ID, Type.HARMFUL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Rush"; }
@@ -43,15 +43,14 @@ public class SkillRush extends Skill {
 		ce.getLivingEntity().setVelocity(VelocityUtil.calculateVelocity(VelocityUtil.PLAYER, ce.getLivingEntity().getLocation().toVector(), to.toVector(), 1));
 		
 		OnTouchGround.call(ce.getLivingEntity(), (le) -> {
-			for(Entity e : getNearbyEntities(le.getLocation(), 3, 1, 3)) {
-				if(e != ce.getLivingEntity() && e instanceof LivingEntity)
-					CombatEngine.getEntity((LivingEntity)e)
-						.getStats().newStatModifierBuilder(Stat.SPEED)
-							.setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
-							.setValue(1 - getEarliest(SPEED, level) / 100D)
-							.setDuration(getEarliest(TIME, level) * 20)
-							.setRemovedOnDeath(true)
-							.build();
+			for(CombatEntity e : validateTargets(ce, getNearbyEntities(le.getLocation(), 3, 1, 3))) {
+				CombatEngine.getEntity((LivingEntity)e)
+					.getStats().newStatModifierBuilder(Stat.SPEED)
+						.setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
+						.setValue(1 - getEarliest(SPEED, level) / 100D)
+						.setDuration(getEarliest(TIME, level) * 20)
+						.setRemovedOnDeath(true)
+						.build();
 			}
 		});
 		return true;

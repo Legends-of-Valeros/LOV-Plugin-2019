@@ -97,7 +97,7 @@ public class HearthstonesManager {
     private static void loadPlayer(final PlayerCharacter pc, PhaseLock lock) {
         homeTable.query()
                 .get(pc.getUniqueCharacterId().toString())
-                .forEach((home) -> {
+                .forEach((home, i) -> {
                     World world = Bukkit.getWorld(home.world);
 
                     if (world == null) {

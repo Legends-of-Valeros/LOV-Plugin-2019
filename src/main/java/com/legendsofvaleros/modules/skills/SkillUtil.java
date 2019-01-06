@@ -3,16 +3,16 @@ package com.legendsofvaleros.modules.skills;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.damage.spell.SpellType;
 import com.legendsofvaleros.modules.gear.component.trigger.SpellAttackTrigger;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import org.bukkit.entity.Player;
 
 public class SkillUtil {
     public static double getSpellDamage(CombatEntity attacker, SpellType type, double baseDamage) {
-        GearItem.Instance held = null;
+        Gear.Instance held = null;
         if (attacker.isPlayer())
             if (((Player) attacker.getLivingEntity()).getInventory().getHeldItemSlot() == Hotswitch.HELD_SLOT)
-                held = GearItem.Instance.fromStack(attacker.getLivingEntity().getEquipment().getItemInMainHand());
+                held = Gear.Instance.fromStack(attacker.getLivingEntity().getEquipment().getItemInMainHand());
 
         if (held != null) {
             SpellAttackTrigger t = new SpellAttackTrigger(attacker);

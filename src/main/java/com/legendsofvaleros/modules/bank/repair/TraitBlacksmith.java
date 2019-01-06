@@ -7,7 +7,7 @@ import com.legendsofvaleros.modules.bank.gui.ItemMorphGUI;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.component.GearDurability;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import com.legendsofvaleros.util.item.Model;
@@ -54,21 +54,21 @@ public class TraitBlacksmith extends LOVTrait {
 		}
 
 		@Override
-		public boolean isValid(GearItem.Instance item) {
+		public boolean isValid(Gear.Instance item) {
 			if(!item.hasComponent(GearDurability.Component.class))
 				return false;
 			return item.getPersist(GearDurability.Component.class).max > 0;
 		}
 
 		@Override
-		public long getWorth(GearItem.Instance item) {
+		public long getWorth(Gear.Instance item) {
 			Integer max = item.getPersist(GearDurability.Component.class).max;
 			Integer current = item.getPersist(GearDurability.Component.class).current;
 			return (int)Math.ceil((max - current) * costFactor);
 		}
 
 		@Override
-		public void executeMorph(PlayerCharacter pc, GearItem.Instance item) {
+		public void executeMorph(PlayerCharacter pc, Gear.Instance item) {
 			RepairItemEvent repairEvent = new RepairItemEvent(pc.getPlayer(), item);
 			Bukkit.getPluginManager().callEvent(repairEvent);
 

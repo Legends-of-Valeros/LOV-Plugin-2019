@@ -22,7 +22,7 @@ public class SkillSkullCrack extends Skill {
 			}, "."
 		};
 
-	public SkillSkullCrack() { super(ID, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillSkullCrack() { super(ID, Type.HARMFUL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Skull Crack"; }

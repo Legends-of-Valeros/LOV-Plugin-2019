@@ -38,12 +38,12 @@ public class EnterZoneObjective extends AbstractQuestObjective<QuestObjectivePro
 
     @Override
     public String getProgressText(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
-        return "Travel to " + zone.name;
+        return "Travel to " + (zone == null ? "UNKNOWN" : zone.name);
     }
 
     @Override
     public String getCompletedText(PlayerCharacter pc) {
-        return "You traveled to " + zone.name;
+        return "You traveled to " + (zone == null ? "UNKNOWN" : zone.name);
     }
 
     @Override

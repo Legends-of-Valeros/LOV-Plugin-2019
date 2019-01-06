@@ -19,7 +19,7 @@ public class SkillVenom extends Skill {
 			" to your weapon for ", new TimePart().seconds(TIME), "."
 		};
 
-	public SkillVenom() { super(ID, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillVenom() { super(ID, Type.SELF, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Venom"; }

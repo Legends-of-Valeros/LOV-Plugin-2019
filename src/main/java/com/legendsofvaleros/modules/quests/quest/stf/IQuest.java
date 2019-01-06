@@ -1,5 +1,6 @@
 package com.legendsofvaleros.modules.quests.quest.stf;
 
+import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.action.stf.QuestActions;
 import com.legendsofvaleros.modules.quests.objective.stf.IQuestObjective;
@@ -7,6 +8,8 @@ import com.legendsofvaleros.modules.quests.prerequisite.stf.IQuestPrerequisite;
 import com.legendsofvaleros.modules.quests.progress.stf.QuestProgressPack;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public interface IQuest {
 	/**
@@ -75,6 +78,8 @@ public interface IQuest {
 
 	boolean isCompleted(PlayerCharacter pc);
 	void checkCompleted(PlayerCharacter pc);
+
+	Set<Map.Entry<CharacterId, QuestProgressPack>> getProgressions();
 
 	boolean hasProgress(PlayerCharacter pc);
 	QuestProgressPack getProgress(PlayerCharacter pc);

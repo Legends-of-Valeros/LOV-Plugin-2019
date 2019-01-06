@@ -24,7 +24,7 @@ public class SkillFlameShield extends Skill {
     };
 
     public SkillFlameShield() {
-        super(ID, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION);
+        super(ID, Type.HARMFUL, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION);
     }
 
     @Override

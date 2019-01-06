@@ -23,7 +23,7 @@ public class SkillWhirlwind extends Skill {
     };
 
     public SkillWhirlwind() {
-        super(ID, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION);
+        super(ID, Type.HARMFUL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION);
     }
 
     @Override
@@ -38,10 +38,10 @@ public class SkillWhirlwind extends Skill {
 
     @Override
     public boolean onSkillUse(World world, CombatEntity ce, int level) {
-        Collection<LivingEntity> targets = getTargets(ce, getEarliest(RADIUS, level), LivingEntity.class);
+        Collection<CombatEntity> targets = validateTargets(ce, getTargets(ce, getEarliest(RADIUS, level), LivingEntity.class));
 
-        for (LivingEntity e : targets) {
-            CombatEngine.getInstance().causePhysicalDamage(e, ce.getLivingEntity(), PhysicalType.OTHER,
+        for (CombatEntity e : targets) {
+            CombatEngine.getInstance().causePhysicalDamage(e.getLivingEntity(), ce.getLivingEntity(), PhysicalType.OTHER,
                     Characters.getInstance().getCharacterConfig().getClassConfig(EntityClass.WARRIOR).getBaseMeleeDamage()
                             * getEarliest(DAMAGE, level) / 100D, null, false, true);
         }

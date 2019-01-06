@@ -6,7 +6,7 @@ import com.codingforcookies.robert.slot.Slot;
 import com.codingforcookies.robert.slot.SlotUsable;
 import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -40,7 +40,7 @@ public class TraitBanker extends LOVTrait {
 
 			for(int i = 0; i < 6 * 9; i++) {
 				PlayerBank.Entry entry = bank.content.get(i);
-				GearItem.Data item = entry != null ? entry.item : null;
+				Gear.Data item = entry != null ? entry.item : null;
 
 				int j = i;
 				slot(i, item != null ? item.toStack() : null, new SlotUsable() {
@@ -52,7 +52,7 @@ public class TraitBanker extends LOVTrait {
 
 					@Override
 					public void onPlace(GUI gui, Player p, ItemStack stack, InventoryClickEvent event) {
-						GearItem.Instance instance = GearItem.Instance.fromStack(stack);
+						Gear.Instance instance = Gear.Instance.fromStack(stack);
 						if(instance == null) {
 							event.setCancelled(true);
 							return;

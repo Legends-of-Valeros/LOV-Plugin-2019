@@ -15,7 +15,7 @@ public class SkillDisarm extends Skill {
 			"Disarms an enemy for ", new TimePart().seconds(TIME), "."
 		};
 	
-	public SkillDisarm() { super(ID, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillDisarm() { super(ID, Type.HARMFUL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Diarm"; }

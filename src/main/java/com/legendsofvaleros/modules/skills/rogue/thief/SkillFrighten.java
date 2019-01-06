@@ -16,7 +16,7 @@ public class SkillFrighten extends Skill {
 			"Do ", new WDPart(DAMAGE), " and stun the enemy for up to ", new TimePart().seconds(TIME), "."
 		};
 
-	public SkillFrighten() { super(ID, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillFrighten() { super(ID, Type.HARMFUL, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Frighten"; }

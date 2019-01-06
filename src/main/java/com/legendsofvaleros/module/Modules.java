@@ -21,7 +21,7 @@ public class Modules {
     private static Map<String, Class<? extends Module>> packages = new HashMap<>();
     private static Map<Class<? extends Module>, InternalModule> modules = new LinkedHashMap<>();
 
-    public static void registerModule(Class<? extends Module> clazz) throws Exception {
+    public static void registerModule(Class<? extends Module> clazz) {
         modules.put(clazz, new InternalModule(clazz));
         packages.put(getModulePackage(clazz), clazz);
     }
@@ -96,12 +96,15 @@ public class Modules {
         if (enabled > modules.size())
             getLogger().severe("Failed to load " + (enabled - modules.size()) + " modules!");
 
+        getLogger().info("");
+
         i = 0;
 
         // For each loaded module
         for (InternalModule module : modules.values()) {
-            if (module.isLoaded)
+            if (module.isLoaded) {
                 i += module.loadIntegrations();
+            }
         }
 
         getLogger().info("Loaded " + i + " integrations");

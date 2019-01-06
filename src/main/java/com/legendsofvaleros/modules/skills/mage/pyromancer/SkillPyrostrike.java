@@ -25,7 +25,7 @@ public class SkillPyrostrike extends Skill {
     };
 
     public SkillPyrostrike() {
-        super(ID, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION);
+        super(ID, Type.HARMFUL, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION);
     }
 
     @Override

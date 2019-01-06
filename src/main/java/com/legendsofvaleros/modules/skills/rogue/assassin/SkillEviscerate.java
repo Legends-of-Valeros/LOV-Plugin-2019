@@ -17,7 +17,7 @@ public class SkillEviscerate extends Skill {
 			"Does ", new WDPart(DAMAGE), " within a ", RANGE, " block range, bypassing armor by ", BYPASS, "%."
 		};
 
-	public SkillEviscerate() { super(ID, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillEviscerate() { super(ID, Type.HARMFUL, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Eviscerate"; }

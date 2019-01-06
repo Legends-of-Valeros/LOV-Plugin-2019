@@ -15,7 +15,7 @@ public class SkillRedFlask extends Skill {
 			"Drink a potion to regain ", HEALTH, "% of your maximum health"
 		};
 
-	public SkillRedFlask() { super(ID, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillRedFlask() { super(ID, Type.BENEFICIAL, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Red Flask"; }

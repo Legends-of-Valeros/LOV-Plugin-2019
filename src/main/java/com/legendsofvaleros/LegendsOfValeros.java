@@ -1,6 +1,9 @@
 package com.legendsofvaleros;
 
+import co.aikar.commands.BukkitCommandManager;
 import co.aikar.commands.PaperCommandManager;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.Modules;
 import com.legendsofvaleros.modules.auction.AuctionController;
@@ -9,10 +12,11 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.chat.Chat;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.dueling.Dueling;
-import com.legendsofvaleros.modules.factions.Factions;
+import com.legendsofvaleros.modules.factions.FactionModule;
 import com.legendsofvaleros.modules.fast_travel.FastTravel;
-import com.legendsofvaleros.modules.gear.Gear;
+import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.graveyard.Graveyards;
+import com.legendsofvaleros.modules.guilds.GuildController;
 import com.legendsofvaleros.modules.hearthstones.Hearthstones;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.modules.keepoutofocean.KeepOutOfOcean;
@@ -38,40 +42,43 @@ import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.lang.reflect.Field;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Crystall on 11/15/2018
  */
 public class LegendsOfValeros extends JavaPlugin {
     private static LegendsOfValeros instance;
-
-    public static LegendsOfValeros getInstance() {
-        return instance;
-    }
+    public static LegendsOfValeros getInstance() { return instance; }
 
     public static long startTime = 0;
 
     private ServerMode mode;
-
     public static ServerMode getMode() {
         return instance.mode;
     }
 
     private PaperCommandManager manager;
-
     public PaperCommandManager getCommandManager() {
         return manager;
     }
 
-    private Set<Listener> loadedEventClasses = new HashSet<>();
+    private Map<Integer, String> loadedEventClassesName = new HashMap<>();
+    private Cache<Integer, Listener> loadedEventClasses = CacheBuilder.newBuilder()
+                                                                        .weakValues()
+                                                                        .removalListener(entry -> {
+                                                                            instance.getLogger().severe("Event listener GC'd: " + loadedEventClassesName.remove(entry.getKey()));
+                                                                        }).build();
 
     @Override
     public void onEnable() {
         instance = this;
+
         startTime = System.currentTimeMillis();
+
         mode = ServerMode.valueOf(getConfig().getString("server-mode", "LIVE"));
 
         getLogger().info("Server mode is set to: " + mode.name());
@@ -83,7 +90,22 @@ public class LegendsOfValeros extends JavaPlugin {
         manager.enableUnstableAPI("help");
 
         try {
+            Field field = JavaPlugin.class.getDeclaredField("logger");
+            field.setAccessible(true);
+
+            field = BukkitCommandManager.class.getDeclaredField("logger");
+            field.setAccessible(true);
+            field.set(manager, getLogger());
+        } catch (Exception e) { e.printStackTrace(); }
+
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
+            // This is done so we get almost-live updates on GC'd listeners.
+            loadedEventClasses.cleanUp();
+        }, 0L, 20L);
+
+        try {
             registerModules();
+
             Modules.loadModules();
         } catch (Exception e) {
             e.printStackTrace();
@@ -93,12 +115,12 @@ public class LegendsOfValeros extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        Modules.unloadModules();
-
-        for (InternalScheduler scheduler : InternalScheduler.getAllSchedulers())
+        for(InternalScheduler scheduler : InternalScheduler.getAllSchedulers())
             scheduler.shutdown();
 
-        loadedEventClasses.clear();
+        Modules.unloadModules();
+
+        loadedEventClasses.invalidateAll();
     }
 
     private void registerModules() throws Exception {
@@ -113,10 +135,11 @@ public class LegendsOfValeros extends JavaPlugin {
         Modules.registerModule(Chat.class);
         Modules.registerModule(CombatEngine.class);
         Modules.registerModule(Dueling.class);
-        Modules.registerModule(Factions.class);
+        Modules.registerModule(FactionModule.class);
         Modules.registerModule(FastTravel.class);
-        Modules.registerModule(Gear.class);
+        Modules.registerModule(GearController.class);
         Modules.registerModule(Graveyards.class);
+        Modules.registerModule(GuildController.class);
         Modules.registerModule(Hearthstones.class);
         Modules.registerModule(Hotswitch.class);
         Modules.registerModule(KeepOutOfOcean.class);
@@ -138,13 +161,15 @@ public class LegendsOfValeros extends JavaPlugin {
     }
 
     public void registerEvents(Listener listener, Module module) {
-        String listenerName = listener.getClass().getSimpleName() + "@" + Integer.toHexString(listener.hashCode());
+        String listenerName = listener.getClass().getName().replace("com.legendsofvaleros.modules.", "") + "@" + Integer.toHexString(listener.hashCode());
 
         module.getLogger().info("Registered listener: " + listenerName + ".");
 
-        if (loadedEventClasses.contains(listener))
+        // Is it possible to have hashCode collisions for non-similar classes?
+        if (loadedEventClasses.getIfPresent(listener.hashCode()) != null)
             module.getLogger().severe(listenerName + " has already been registered as an event listener! This may cause unintended side effects!");
-        loadedEventClasses.add(listener);
+        loadedEventClasses.put(listener.hashCode(), listener);
+        loadedEventClassesName.put(listener.hashCode(), listenerName);
 
         Bukkit.getServer().getPluginManager().registerEvents(listener, this);
     }

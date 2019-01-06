@@ -7,16 +7,20 @@ import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.characters.skill.Skill;
+import com.legendsofvaleros.modules.characters.skill.SkillTargetEvent;
 import com.legendsofvaleros.modules.chat.Chat;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.playermenu.PlayerMenuOpenEvent;
+import com.legendsofvaleros.modules.pvp.PvPCheckEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.InventoryType;
 
 @DependsOn(CombatEngine.class)
@@ -24,16 +28,14 @@ import org.bukkit.event.inventory.InventoryType;
 @DependsOn(Characters.class)
 @DependsOn(Chat.class)
 public class Parties extends ModuleListener {
-    private static Parties plugin;
-
-    public static Parties getInstance() {
-        return plugin;
-    }
+    private static Parties instance;
+    public static Parties getInstance() { return instance; }
 
     @Override
     public void onLoad() {
         super.onLoad();
-        plugin = this;
+
+        instance = this;
 
         PartyManager.onEnable();
 
@@ -41,21 +43,17 @@ public class Parties extends ModuleListener {
     }
 
     @EventHandler
-    public void onEntityDeath(CombatEngineDamageEvent event) {
-        if (event.getAttacker() == null) return;
+    public void isPvPAllowed(PvPCheckEvent event) {
+        // If PvP is already disabled, parties certainly don't need to enable them!
+        if(event.isCancelled()) return;
 
-        if (!(event.getDamaged().getLivingEntity() instanceof Player
-                && event.getAttacker().getLivingEntity() instanceof Player))
-            return;
+        if(event.getSkill() != null) {
+            // Only disable targetting of bad effects in parties.
+            if(event.getSkill().getType() != Skill.Type.HARMFUL) return;
+        }
 
-        if (!Characters.isPlayerCharacterLoaded((Player) event.getDamaged().getLivingEntity())) return;
-        if (!Characters.isPlayerCharacterLoaded((Player) event.getAttacker().getLivingEntity())) return;
-
-        PlayerCharacter pc1 = Characters.getPlayerCharacter((Player) event.getDamaged().getLivingEntity());
-        PlayerCharacter pc2 = Characters.getPlayerCharacter((Player) event.getAttacker().getLivingEntity());
-
-        IParty party = PartyManager.getPartyByMember(pc1.getUniqueCharacterId());
-        if (party != null && party.getMembers().contains(pc2.getUniqueCharacterId()))
+        IParty party = PartyManager.getPartyByMember(Characters.getPlayerCharacter(event.getAttacker()).getUniqueCharacterId());
+        if (party != null && party.getMembers().contains(Characters.getPlayerCharacter(event.getDamaged()).getUniqueCharacterId()))
             event.setCancelled(true);
     }
 

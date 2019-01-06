@@ -16,13 +16,12 @@ import com.legendsofvaleros.modules.gear.component.trigger.DefendTrigger;
 import com.legendsofvaleros.modules.gear.component.trigger.EquipTrigger;
 import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger;
 import com.legendsofvaleros.modules.gear.component.trigger.UnEquipTrigger;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
 import com.legendsofvaleros.util.DebugFlags;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.field.RangedValue;
 import org.bukkit.ChatColor;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -90,7 +89,7 @@ public class GearStats {
 		}
 
 		@Override
-		public double getValue(GearItem.Instance item, Persist persist) {
+		public double getValue(Gear.Instance item, Persist persist) {
 			double power = 0;
 
 			if(persist.stats != null) {
@@ -105,7 +104,7 @@ public class GearStats {
 		}
 	
 		@Override
-		protected void onGenerateItem(GearItem.Instance item, Persist persist, ItemBuilder builder) {
+		protected void onGenerateItem(Gear.Instance item, Persist persist, ItemBuilder builder) {
 			if(alter == null || alter.size() == 0) return;
 	
 			if(persist.stats != null && persist.stats.containsKey(Stat.ARMOR))
@@ -126,7 +125,7 @@ public class GearStats {
 								.build();
 
 		@Override
-		public Persist fire(GearItem.Instance item, Persist persist, GearTrigger trigger) {
+		public Persist fire(Gear.Instance item, Persist persist, GearTrigger trigger) {
 			if(trigger.equals(EquipTrigger.class)) {
 				EquipTrigger t = (EquipTrigger)trigger;
 
@@ -139,8 +138,7 @@ public class GearStats {
 				if(ability != null && ability.size() > 0)
 					for(Entry<AbilityStat, Integer> s : persist.ability.entrySet()) {
 						if(pc != null) {
-							if(DebugFlags.get(pc.getPlayer()).verbose)
-								pc.getPlayer().sendMessage("Added " + s.getKey() + " " + s.getValue());
+							MessageUtil.sendDebugVerbose(pc.getPlayer(), "Added " + s.getKey() + " " + s.getValue());
 
 							mods.add(pc.getAbilityStats().newAbilityStatModifierBuilder(s.getKey())
 								.setModifierType(ValueModifierBuilder.ModifierType.FLAT_EDIT)

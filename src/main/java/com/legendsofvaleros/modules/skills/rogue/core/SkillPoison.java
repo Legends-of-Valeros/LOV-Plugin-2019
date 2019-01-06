@@ -23,7 +23,7 @@ public class SkillPoison extends Skill {
 			" to your weapon for ", new TimePart().seconds(WEAPON_TIME), "."
 		};
 
-	public SkillPoison() { super(ID, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillPoison() { super(ID, Type.SELF, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Poison"; }

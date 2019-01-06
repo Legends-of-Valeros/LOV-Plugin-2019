@@ -10,9 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
-
-@CommandAlias("regions|region")
+@CommandAlias("regions|lov regions")
 public class RegionCommands extends BaseCommand {
 	@Subcommand("notify")
 	@Description("Notify when entering and exiting a region.")
@@ -182,7 +180,6 @@ public class RegionCommands extends BaseCommand {
 	}
 
 	@Default
-	@HelpCommand
 	public void cmdHelp(CommandSender sender, CommandHelp help) {
 		help.showHelp();
 	}

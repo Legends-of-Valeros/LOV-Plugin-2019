@@ -11,20 +11,22 @@ import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
 import com.legendsofvaleros.modules.quests.quest.stf.QuestStatus;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 public class ActiveTracker {
+    private static Random RAND = new Random();
+
     private static int allUpdateInterval;
 
     private static final Map<CharacterId, String> active = new HashMap<>();
 
     public static void onEnable() {
-        allUpdateInterval = Quests.getInstance().getConfig().getInt("compass-tracker-update-smear", 20 * 10);
+        allUpdateInterval = Quests.getInstance().getConfig().getInt("compass-tracker-update-smear", 20 * 5);
 
         Quests.getInstance().getLogger().info("Smearing compass tracker updates across " + allUpdateInterval + " ticks.");
 
@@ -54,11 +56,13 @@ public class ActiveTracker {
         String activeId = getActive(pc);
         if(activeId == null) {
             Collection<IQuest> quests = QuestManager.getQuestsForEntity(pc);
-            if(quests.size() == 0)
+            if(quests == null || quests.size() == 0)
                 ret.set(null);
             else{
                 IQuest active = quests.iterator().next();
+
                 setActive(pc, active.getId());
+
                 ret.set(active);
             }
         }else{
@@ -106,23 +110,33 @@ public class ActiveTracker {
 
                     ListenableFuture<IQuest> future = getActiveQuest(pc);
                     future.addListener(() -> {
+                        boolean invalid = true;
+
                         try {
                             IQuest active = future.get();
-                            if(active == null) return;
-
-                            IQuestObjective<?>[] group = active.getCurrentGroup(pc);
-                            if(group != null)
-                                for(IQuestObjective<?> obj : group) {
-                                    if(!obj.isCompleted(pc)) {
-                                        Location loc = obj.getLocation(pc);
-                                        if (loc != null) {
-                                            pc.getPlayer().setCompassTarget(loc);
-                                            return;
+                            if(active != null) {
+                                IQuestObjective<?>[] group = active.getCurrentGroup(pc);
+                                if (group != null)
+                                    for (IQuestObjective<?> obj : group) {
+                                        if (!obj.isCompleted(pc)) {
+                                            Location loc = obj.getLocation(pc);
+                                            if (loc != null) {
+                                                pc.getPlayer().setCompassTarget(loc);
+                                                invalid = false;
+                                                break;
+                                            }
                                         }
                                     }
-                                }
+                            }
                         } catch (ExecutionException | InterruptedException e) {
                             e.printStackTrace();
+                        }
+
+                        if(invalid) {
+                            pc.getPlayer().setCompassTarget(new Location(pc.getPlayer().getWorld(),
+                                    pc.getPlayer().getLocation().getX() + RAND.nextInt(100) - 50,
+                                    0,
+                                    pc.getPlayer().getLocation().getZ() + RAND.nextInt(100) - 50));
                         }
                     }, Quests.getInstance().getScheduler()::async);
                 });

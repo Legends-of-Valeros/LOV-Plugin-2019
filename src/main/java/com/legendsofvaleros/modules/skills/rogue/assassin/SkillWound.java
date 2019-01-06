@@ -18,7 +18,7 @@ public class SkillWound extends Skill {
 			HEALING, "% for ", new TimePart().seconds(TIME), "."
 		};
 
-	public SkillWound() { super(ID, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillWound() { super(ID, Type.HARMFUL, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Wound"; }

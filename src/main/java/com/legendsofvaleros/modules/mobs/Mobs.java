@@ -6,7 +6,7 @@ import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
-import com.legendsofvaleros.modules.gear.Gear;
+import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.levelarchetypes.core.LevelArchetypes;
 import com.legendsofvaleros.modules.loot.LootManager;
 import com.legendsofvaleros.modules.mobs.behavior.BehaviorEngine;
@@ -35,17 +35,14 @@ import org.bukkit.event.EventPriority;
 @DependsOn(CombatEngine.class)
 @DependsOn(Characters.class)
 @DependsOn(LevelArchetypes.class)
-@DependsOn(Gear.class)
+@DependsOn(GearController.class)
 @DependsOn(Quests.class)
 @DependsOn(NPCs.class)
 @DependsOn(LootManager.class)
 @DependsOn(Parties.class)
 public class Mobs extends ModuleListener {
     private static Mobs instance;
-
-    public static Mobs getInstance() {
-        return instance;
-    }
+    public static Mobs getInstance() { return instance; }
 
     private BehaviorEngine ai;
 

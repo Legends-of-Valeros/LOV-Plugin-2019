@@ -14,6 +14,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -74,7 +75,9 @@ public class MountManager implements Listener {
         manager.query()
                 .select()
                 .build()
-                .callback((result) -> {
+                .callback((statement, count) -> {
+                    ResultSet result = statement.getResultSet();
+
                     while (result.next()) {
                         mounts.put(result.getString(MOUNT_ID), new Mount(result.getString(MOUNT_ID),
                                 result.getString(MOUNT_NAME),
@@ -117,7 +120,9 @@ public class MountManager implements Listener {
                     .select()
                     .where(CHARACTER_ID, identifier.toString())
                     .build()
-                    .callback((result) -> {
+                    .callback((statement, count) -> {
+                        ResultSet result = statement.getResultSet();
+
                         while (result.next()) {
                             String characterID = result.getString(CHARACTER_ID);
                             String characterMount = result.getString(CHARACTER_MOUNT);

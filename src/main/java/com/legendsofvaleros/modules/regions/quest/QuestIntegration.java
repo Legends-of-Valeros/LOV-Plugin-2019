@@ -1,7 +1,6 @@
 package com.legendsofvaleros.modules.regions.quest;
 
 import com.legendsofvaleros.module.Integration;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.quests.Quests;
 import com.legendsofvaleros.modules.quests.action.stf.QuestActionFactory;

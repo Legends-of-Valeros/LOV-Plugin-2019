@@ -19,7 +19,7 @@ public class SkillEvasiveMoves extends Skill {
 			DODGE, "% for ", new TimePart().seconds(TIME), "."
 		};
 
-	public SkillEvasiveMoves() { super(ID, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillEvasiveMoves() { super(ID, Type.BENEFICIAL, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Evasive Moves"; }

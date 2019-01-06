@@ -7,12 +7,13 @@ import com.google.gson.Gson;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
-import com.legendsofvaleros.modules.gear.Gear;
+import com.legendsofvaleros.modules.gear.GearController;
 
+import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
 
-@DependsOn(Gear.class)
+@DependsOn(GearController.class)
 public class LootManager extends ModuleListener {
     private static final String LOOT_TABLE = "loot";
     private static final String LOOT_ID = "loot_id";
@@ -25,9 +26,7 @@ public class LootManager extends ModuleListener {
     private final Map<String, LootTable> tables = new HashMap<>();
     private static LootManager instance;
 
-    public static LootManager getInstance() {
-        return instance;
-    }
+    public static LootManager getInstance() { return instance; }
 
     @Override
     public void onLoad() {
@@ -54,7 +53,9 @@ public class LootManager extends ModuleListener {
                     .where(LOOT_ID, loot_id)
                     .limit(1)
                     .build()
-                    .callback((result) -> {
+                    .callback((statement, count) -> {
+                        ResultSet result = statement.getResultSet();
+
                         if (!result.next()) {
                             ret.set(null);
                             return;

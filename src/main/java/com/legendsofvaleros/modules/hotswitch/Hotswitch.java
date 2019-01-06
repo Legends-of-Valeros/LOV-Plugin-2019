@@ -3,7 +3,7 @@ package com.legendsofvaleros.modules.hotswitch;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.events.PlayerCharacterInventoryFillEvent;
+import com.legendsofvaleros.modules.characters.events.PlayerCharacterFinishLoadingEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import org.bukkit.Bukkit;
@@ -21,10 +21,7 @@ import java.util.UUID;
 @DependsOn(Characters.class)
 public class Hotswitch extends ModuleListener {
     private static Hotswitch instance;
-
-    public static Hotswitch getInstance() {
-        return instance;
-    }
+    public static Hotswitch getInstance() { return instance; }
 
     public static final int SWITCHER_SLOT = 5;
     public static final int HELD_SLOT = 6;
@@ -49,7 +46,7 @@ public class Hotswitch extends ModuleListener {
     }
 
     @EventHandler
-    public void onFillInventory(PlayerCharacterInventoryFillEvent e) {
+    public void onFinishedLoading(PlayerCharacterFinishLoadingEvent e) {
         e.getPlayer().getInventory().setHeldItemSlot(HELD_SLOT);
 
         currentHotbar.put(e.getPlayer().getUniqueId(), -1);

@@ -16,8 +16,7 @@ import com.legendsofvaleros.modules.bank.trade.TraitTrader;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterFinishLoadingEvent;
-import com.legendsofvaleros.modules.characters.events.PlayerCharacterInventoryFillEvent;
-import com.legendsofvaleros.modules.gear.Gear;
+import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.gear.GearRegistry;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.quests.QuestManager;
@@ -35,14 +34,11 @@ import java.util.Map;
 
 @DependsOn(NPCs.class)
 @DependsOn(Characters.class)
-@DependsOn(Gear.class)
+@DependsOn(GearController.class)
 @IntegratesWith(module = Quests.class, integration = QuestIntegration.class)
 public class Bank extends ModuleListener {
     private static Bank instance;
-
-    public static Bank getInstance() {
-        return instance;
-    }
+    public static Bank getInstance() { return instance; }
 
     private static final Map<String, Currency> currencies = new HashMap<>();
 

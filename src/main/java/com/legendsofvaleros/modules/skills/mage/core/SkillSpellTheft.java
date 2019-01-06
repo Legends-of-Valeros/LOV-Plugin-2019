@@ -20,7 +20,7 @@ public class SkillSpellTheft extends Skill {
 			"Steals a beneficial buff from the targeted enemy."
 		};
 
-	public SkillSpellTheft() { super(ID, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillSpellTheft() { super(ID, Type.HARMFUL, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 	
 	@Override
 	public String getUserFriendlyName(int level) { return "Spell Theft"; }
@@ -30,18 +30,15 @@ public class SkillSpellTheft extends Skill {
 
 	@Override
 	public boolean onSkillUse(World world, CombatEntity ce, int level) {
-		LivingEntity target = getTarget(ce, 16D);
+		CombatEntity target = validateTarget(ce, getTarget(ce, 16D));
 		if(target == null) return false;
-		
-		CombatEntity targetCE = CombatEngine.getEntity(target);
-		if(!targetCE.isActive()) return false;
-		
-		for(SkillEffect<?> effect : Characters.getInstance().getSkillEffectManager().getActiveEffects(target)) {
+
+		for(SkillEffect<?> effect : Characters.getInstance().getSkillEffectManager().getActiveEffects(target.getLivingEntity())) {
 			if(!effect.isGood()) continue;
 			if(effect.isAffected(ce.getLivingEntity())) continue;
 			
-			SkillEffectInstance instance = effect.getEntityInstance(target);
-			effect.remove(target);
+			SkillEffectInstance instance = effect.getEntityInstance(target.getLivingEntity());
+			effect.remove(target.getLivingEntity());
 			effect.apply(ce.getLivingEntity(), instance.getAppliedBy(), instance.getLevel(), instance.getRemainingDurationMillis());
 
 			world.playSound(ce.getLivingEntity().getLocation(), Sound.ENTITY_ENDERMEN_SCREAM, .5F, .5F);

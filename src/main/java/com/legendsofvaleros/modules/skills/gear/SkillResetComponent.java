@@ -8,7 +8,7 @@ import com.legendsofvaleros.modules.gear.component.impl.GearComponent;
 import com.legendsofvaleros.modules.gear.component.impl.GearComponentOrder;
 import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger;
 import com.legendsofvaleros.modules.gear.component.trigger.UseTrigger;
-import com.legendsofvaleros.modules.gear.item.GearItem;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.item.NoPersist;
 import com.legendsofvaleros.modules.skills.SkillTree.SpecializedTree;
 import com.legendsofvaleros.modules.skills.Skills;
@@ -22,18 +22,18 @@ public class SkillResetComponent extends GearComponent<NoPersist> {
 	@Override public GearComponentOrder getOrder() { return GearComponentOrder.EXTRA; }
 	@Override public NoPersist onInit() { return null; }
 
-	@Override public double getValue(GearItem.Instance item, NoPersist persist) {
+	@Override public double getValue(Gear.Instance item, NoPersist persist) {
 		//TODO check if correct value
 		return 0;
 	}
 
 	@Override
-	protected void onGenerateItem(GearItem.Instance item, NoPersist persist, ItemBuilder builder) {
+	protected void onGenerateItem(Gear.Instance item, NoPersist persist, ItemBuilder builder) {
 		builder.addLore(ChatColor.LIGHT_PURPLE + "* Resets your skill points");
 	}
 	
 	@Override
-	public Boolean test(GearItem.Instance item, NoPersist persist, GearTrigger trigger) {
+	public Boolean test(Gear.Instance item, NoPersist persist, GearTrigger trigger) {
 		if(trigger.equals(UseTrigger.class)) {
 			UseTrigger t = (UseTrigger)trigger;
 			if(t.getEntity().isPlayer()) {
@@ -50,7 +50,7 @@ public class SkillResetComponent extends GearComponent<NoPersist> {
 	}
 	
 	@Override
-	public NoPersist fire(GearItem.Instance item, NoPersist persist, GearTrigger trigger) {
+	public NoPersist fire(Gear.Instance item, NoPersist persist, GearTrigger trigger) {
 		if(trigger.equals(UseTrigger.class)) {
 			UseTrigger t = (UseTrigger)trigger;
 			if(t.getEntity().isPlayer()) {

@@ -18,7 +18,7 @@ public class SkillIronHide extends Skill {
 			"Increases the warriors defense by ", DEFENCE, "% for ", new TimePart().seconds(TIME), "."
 		};
 
-	public SkillIronHide() { super(ID, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillIronHide() { super(ID, Type.BENEFICIAL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Iron Hide"; }

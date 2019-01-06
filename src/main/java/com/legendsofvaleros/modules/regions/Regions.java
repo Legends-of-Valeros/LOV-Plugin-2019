@@ -1,7 +1,6 @@
 package com.legendsofvaleros.modules.regions;
 
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.IntegratesWith;
@@ -11,11 +10,9 @@ import com.legendsofvaleros.modules.hearthstones.HearthstoneCastEvent;
 import com.legendsofvaleros.modules.hearthstones.Hearthstones;
 import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.Quests;
-import com.legendsofvaleros.modules.quests.action.stf.QuestActionFactory;
-import com.legendsofvaleros.modules.quests.objective.stf.QuestObjectiveFactory;
 import com.legendsofvaleros.modules.regions.event.RegionEnterEvent;
 import com.legendsofvaleros.modules.regions.event.RegionLeaveEvent;
-import com.legendsofvaleros.modules.regions.quest.*;
+import com.legendsofvaleros.modules.regions.quest.QuestIntegration;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -33,12 +30,8 @@ import java.util.HashMap;
 @DependsOn(Hearthstones.class)
 @IntegratesWith(module = Quests.class, integration = QuestIntegration.class)
 public class Regions extends ModuleListener {
-    private static Regions plugin;
-    public static Module getInstance() { return plugin; }
-
-    public static Regions inst() {
-        return plugin;
-    }
+    private static Regions instance;
+    public static Regions getInstance() { return instance; }
 
     public static boolean REGION_DEBUG = false;
 
@@ -55,7 +48,7 @@ public class Regions extends ModuleListener {
     public void onLoad() {
         super.onLoad();
 
-        plugin = this;
+        instance = this;
 
         regionManager = new RegionManager();
 

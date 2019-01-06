@@ -17,6 +17,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
+import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -51,7 +52,9 @@ public class PlayerSettings extends HashMap<String, String> {
 							.select()
 								.where(PLAYER_ID, p.getUniqueId().toString())
 							.build()
-						.callback((result) -> {
+						.callback((statement, count) -> {
+							ResultSet result = statement.getResultSet();
+
 							PlayerSettings ps = new PlayerSettings();
 							
 							while(result.next())

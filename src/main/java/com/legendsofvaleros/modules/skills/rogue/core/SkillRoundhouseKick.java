@@ -19,7 +19,7 @@ public class SkillRoundhouseKick extends Skill {
 			new TimePart().seconds(TIME), "."
 		};
 
-	public SkillRoundhouseKick() { super(ID, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillRoundhouseKick() { super(ID, Type.HARMFUL, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Roundhouse Kick"; }

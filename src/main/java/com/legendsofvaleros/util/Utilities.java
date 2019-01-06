@@ -3,14 +3,12 @@ package com.legendsofvaleros.util;
 import com.codingforcookies.doris.Doris;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ModuleListener;
-import com.legendsofvaleros.module.Modules;
 import com.legendsofvaleros.scheduler.InternalScheduler;
 import com.legendsofvaleros.util.MessageUtil.ExceptionManager;
 import com.legendsofvaleros.util.commands.LOVCommands;
 import com.legendsofvaleros.util.commands.TemporaryCommand;
 import com.legendsofvaleros.util.item.Model;
 import com.legendsofvaleros.util.title.TitleUtil;
-import net.minecraft.server.v1_12_R1.CommandSeed;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -27,9 +25,7 @@ import org.bukkit.event.server.ServerCommandEvent;
 
 public class Utilities extends ModuleListener {
     private static Utilities instance;
-    public static Utilities getInstance() {
-        return instance;
-    }
+    public static Utilities getInstance() { return instance; }
 
     private boolean isShutdown = false;
 

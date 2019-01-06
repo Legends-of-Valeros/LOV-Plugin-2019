@@ -16,7 +16,7 @@ public class SkillDistract extends Skill {
 			"Throws a decoy up to ", new RangePart(RANGE), " to lure monsters in a ", new RadiusPart(RADIUS), "."
 		};
 
-	public SkillDistract() { super(ID, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillDistract() { super(ID, Type.NEUTRAL, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Distract"; }

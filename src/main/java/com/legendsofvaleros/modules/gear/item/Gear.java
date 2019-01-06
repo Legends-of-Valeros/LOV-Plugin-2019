@@ -7,7 +7,7 @@ import com.codingforcookies.robert.item.ItemBuilder;
 import com.codingforcookies.robert.item.NBTEditor;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.legendsofvaleros.modules.gear.Gear;
+import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.gear.ItemManager;
 import com.legendsofvaleros.modules.gear.component.impl.ComponentMap;
 import com.legendsofvaleros.modules.gear.component.impl.GearComponent;
@@ -25,78 +25,70 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Table(name = "items")
-public class GearItem {
+public class Gear implements IGear {
     @Column(primary = true, name = "item_id", length = 64)
     private final String id;
-
-    public String getID() {
+    @Override public String getID() {
         return id;
     }
 
     @Column(name = "item_group", length = 64)
     private String group;
-
     public String getGroup() {
         return group;
     }
 
     @Column(name = "item_version")
     private final int version;
-
-    public int getVersion() {
+    @Override public int getVersion() {
         return version;
     }
 
     @Column(name = "item_name", length = 64)
     private String name;
-
-    public String getName() {
+    @Override public String getName() {
         return name;
     }
 
     @Column(name = "item_type")
     private GearType type;
-
-    public GearType getType() {
+    @Override public GearType getType() {
         return type;
     }
 
     @ForeignKey(table = Model.class, name = "model_id", onUpdate = ForeignKey.Trigger.CASCADE, onDelete = ForeignKey.Trigger.SET_DEFAULT)
-    @Column(name = "item_model", length = 48)
+    @Column(index = true, name = "item_model", length = 48)
     private String modelId;
-
-    public String getModelId() {
+    @Override public String getModelId() {
         return modelId;
     }
 
     public Model model;
-
     public Model getModel() {
         return model;
     }
 
     @Column(name = "item_amount")
     private byte maxAmount = 1;
-
-    public byte getMaxAmount() {
+    @Override public byte getMaxAmount() {
         return maxAmount;
     }
 
     @Column(name = "item_rarity")
     private GearRarity rarity;
-
-    public GearRarity getRarityLevel() {
+    @Override public GearRarity getRarityLevel() {
         return rarity;
     }
 
     @Column(name = "item_components")
     private ComponentMap components;
 
-    public GearItem(int version, String id) {
+    public Gear(int version, String id) {
         this.version = version;
         this.id = id;
     }
 
+    @Override
     public int getSeed() {
         int seed = 0;
         for (int i = 0; i < id.length(); i++)
@@ -104,16 +96,16 @@ public class GearItem {
         return seed;
     }
 
-    public GearItem.Instance newInstance() {
-        GearItem.Instance instance = new GearItem.Instance(this, UUID.randomUUID());
+    public Gear.Instance newInstance() {
+        Gear.Instance instance = new Gear.Instance(this, UUID.randomUUID());
         instance.amount = 1;
 
         for (Entry<String, GearComponent<?>> entry : components.entrySet()) {
             try {
                 instance.persists.put(entry.getKey(), entry.getValue().onInit());
             } catch (Exception e) {
-                Gear.getInstance().getLogger().severe("Failed to load component " + entry.getKey() + " on item " + id);
-                MessageUtil.sendException(Gear.getInstance(), e, false);
+                GearController.getInstance().getLogger().severe("Failed to load component " + entry.getKey() + " on item " + id);
+                MessageUtil.sendException(GearController.getInstance(), e, false);
                 return null;
             }
         }
@@ -125,26 +117,26 @@ public class GearItem {
         return isSimilar(stack);
     }
 
-    public boolean isSimilar(GearItem.Instance gear) {
-        return gear != null && (this == gear.gear || this.id.equals(gear.gear.id));
+    public boolean isSimilar(Gear.Instance gear) {
+        return gear != null && (this == gear.gear || this.id.equals(gear.getID()));
     }
 
     @Override
     public String toString() {
-        return "Gear(version=" + version + ", id=" + id + ", group=" + group + ", name=" + name + ", type=" + type + ", model=" + modelId + ", rarity=" + rarity + ", components=" + components + ")";
+        return "GearController(version=" + version + ", id=" + id + ", group=" + group + ", name=" + name + ", type=" + type + ", model=" + modelId + ", rarity=" + rarity + ", components=" + components + ")";
     }
 
-    public static GearItem fromID(String id) {
+    public static Gear fromID(String id) {
         return ItemManager.getItem(id);
     }
 
-    public static class Instance {
-        private static final Cache<String, GearItem.Instance> cache = CacheBuilder.newBuilder()
+    public static class Instance implements IGear {
+        private static final Cache<String, Gear.Instance> cache = CacheBuilder.newBuilder()
                 .concurrencyLevel(4)
                 .expireAfterAccess(5, TimeUnit.MINUTES)
                 .build();
 
-        public final GearItem gear;
+        public final Gear gear;
         public int version;
         public UUID uuid;
         public int amount;
@@ -166,11 +158,21 @@ public class GearItem {
             return gear.components.getComponent(component);
         }
 
-        public Instance(GearItem gear, UUID uuid) {
+        public Instance(Gear gear, UUID uuid) {
             this.gear = gear;
             this.version = gear.version;
             this.uuid = uuid;
         }
+
+        @Override public String getID() { return gear.getID(); }
+        @Override public int getVersion() { return gear.getVersion(); }
+        @Override public String getName() { return gear.getName(); }
+        @Override public GearType getType() { return gear.getType(); }
+        @Override public String getModelId() { return gear.getModelId(); }
+        @Override public Model getModel() { return gear.getModel(); }
+        @Override public byte getMaxAmount() { return gear.getMaxAmount(); }
+        @Override public GearRarity getRarityLevel() { return gear.getRarityLevel(); }
+        @Override public int getSeed() { return gear.getSeed(); }
 
         /**
          * Needed when creating two instances of an item from one instance. This prevents
@@ -180,7 +182,7 @@ public class GearItem {
          * caching system. And doesn't understand instanciating persist data.
          */
         public Instance copy() {
-            GearItem.Instance copy = new GearItem.Instance(gear, UUID.randomUUID());
+            Gear.Instance copy = new Gear.Instance(gear, UUID.randomUUID());
             copy.amount = amount;
             copy.persists = persists;
             cache.put(copy.uuid.toString(), copy);
@@ -228,9 +230,9 @@ public class GearItem {
             return GearTrigger.TriggerEvent.NOTHING;
         }
 
-        public static GearItem.Instance fromID(String id) {
+        public static Gear.Instance fromID(String id) {
             try {
-                GearItem.Instance instance = new GearItem.Instance(GearItem.fromID(id), UUID.randomUUID());
+                Gear.Instance instance = new Gear.Instance(Gear.fromID(id), UUID.randomUUID());
                 if (instance.gear == null) return null;
                 instance.amount = 1;
                 instance.persists = new PersistMap();
@@ -242,7 +244,7 @@ public class GearItem {
             return null;
         }
 
-        public static GearItem.Instance fromStack(ItemStack stack) {
+        public static Gear.Instance fromStack(ItemStack stack) {
             if (stack == null || stack.getType() == Material.AIR)
                 return null;
 
@@ -252,18 +254,18 @@ public class GearItem {
                 return null;
 
             if (nbt.getString("lov.cache") != null) {
-                GearItem.Instance data = cache.getIfPresent(nbt.getString("lov.cache"));
+                Gear.Instance data = cache.getIfPresent(nbt.getString("lov.cache"));
                 if (data != null) {
                     data.amount = stack.getAmount();
                     return data;
                 }
             }
 
-            GearItem gear = GearItem.fromID(nbt.getString("lov.name"));
+            Gear gear = Gear.fromID(nbt.getString("lov.name"));
             if (gear == null)
                 return null;
 
-            GearItem.Instance data = new GearItem.Instance(gear, nbt.getString("lov.cache") == null ? UUID.randomUUID() : UUID.fromString(nbt.getString("lov.cache")));
+            Gear.Instance data = new Gear.Instance(gear, nbt.getString("lov.cache") == null ? UUID.randomUUID() : UUID.fromString(nbt.getString("lov.cache")));
             data.version = nbt.getInteger("lov.version");
             data.amount = stack.getAmount();
             data.persists = ItemManager.gson.fromJson(nbt.getString("lov.persist"), PersistMap.class);
@@ -271,8 +273,8 @@ public class GearItem {
             return data;
         }
 
-        public GearItem.Data getData() {
-            GearItem.Data data = new GearItem.Data();
+        public Gear.Data getData() {
+            Gear.Data data = new Gear.Data();
 
             data.id = gear.id;
             data.amount = amount;
@@ -346,9 +348,9 @@ public class GearItem {
 
                 return builder.create();
             } catch (Exception e) {
-                MessageUtil.sendException(Gear.getInstance(), e, true);
+                MessageUtil.sendException(GearController.getInstance(), e, true);
 
-                GearItem.Instance instance = Gear.ERROR_ITEM.newInstance();
+                Gear.Instance instance = GearController.ERROR_ITEM.newInstance();
                 instance.amount = amount;
                 return instance.toStack();
             }
@@ -361,11 +363,11 @@ public class GearItem {
         public int amount;
         public PersistMap persist = new PersistMap();
 
-        public GearItem.Instance toInstance() {
-            GearItem gear = GearItem.fromID(id);
+        public Gear.Instance toInstance() {
+            Gear gear = Gear.fromID(id);
             if (gear == null) return null;
 
-            GearItem.Instance instance = new GearItem.Instance(gear, UUID.randomUUID());
+            Gear.Instance instance = new Gear.Instance(gear, UUID.randomUUID());
             instance.version = version;
             instance.amount = amount;
             instance.persists = persist;
@@ -373,7 +375,7 @@ public class GearItem {
         }
 
         public ItemStack toStack() {
-            GearItem.Instance instance = toInstance();
+            Gear.Instance instance = toInstance();
             if (instance == null) return null;
             return instance.toStack();
         }

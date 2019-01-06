@@ -20,7 +20,7 @@ public class SkillSunder extends Skill {
 			"Decreases the targets defence by ", DEFENCE, "% for ", new TimePart().seconds(TIME), "."
 		};
 
-	public SkillSunder() { super(ID, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillSunder() { super(ID, Type.HARMFUL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Sunder"; }
@@ -30,12 +30,10 @@ public class SkillSunder extends Skill {
 
 	@Override
 	public boolean onSkillUse(World world, CombatEntity ce, int level) {
-		LivingEntity target = getTarget(ce, 12);
-		if(target == null)
-			return false;
+		CombatEntity target = validateTarget(ce, getTarget(ce, 12));
+		if(target == null) return false;
 		
-		CombatEngine.getEntity(target)
-			.getStats().newStatModifierBuilder(Stat.ARMOR)
+		target.getStats().newStatModifierBuilder(Stat.ARMOR)
 				.setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
 				.setValue(getEarliest(DEFENCE, level) / 100D)
 				.setDuration(getEarliest(TIME, level) * 20)

@@ -75,7 +75,9 @@ public class PersistentRegeneratingStats {
                 .select()
                 .where(CHARACTER_FIELD, characterId.toString())
                 .build()
-                .callback((result) -> {
+                .callback((statement, count) -> {
+                    ResultSet result = statement.getResultSet();
+
                     RegeneratingStatData data = null;
 
                     while (result.next()) {

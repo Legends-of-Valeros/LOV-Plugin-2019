@@ -6,7 +6,7 @@ import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
-import com.legendsofvaleros.modules.gear.Gear;
+import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.zones.Zones;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -18,20 +18,17 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 
 @DependsOn(CombatEngine.class)
 @DependsOn(Characters.class)
-@DependsOn(Gear.class)
+@DependsOn(GearController.class)
 @DependsOn(Zones.class)
 public class Graveyards extends ModuleListener {
-    private static Graveyards inst;
-
-    public static Graveyards getInstance() {
-        return inst;
-    }
+    private static Graveyards instance;
+    public static Graveyards getInstance() { return instance; }
 
     @Override
     public void onLoad() {
         super.onLoad();
 
-        this.inst = this;
+        instance = this;
 
         LegendsOfValeros.getInstance().getCommand("suicide").setExecutor((sender, arg1, arg2, arg3) -> {
             CombatEngine.getInstance().causeTrueDamage((Player) sender, null, CombatEngine.getEntity((Player) sender).getStats().getStat(Stat.MAX_HEALTH), ((Player) sender).getLocation());
@@ -63,7 +60,7 @@ public class Graveyards extends ModuleListener {
 			if(armor == null || armor.getType() != Material.AIR)
 				continue;
 
-			Gear armorItem = ItemHandler.toStatItem(armor);
+			GearController armorItem = ItemHandler.toStatItem(armor);
 			if(armorItem != null) {
 				ItemHandler.hurtItem(armorItem, (int)Math.floor(armorItem.getCurrentDurability() * .1));
 			}else
@@ -73,7 +70,7 @@ public class Graveyards extends ModuleListener {
 		
 		ItemStack mainHand = p.getEquipment().getItemInMainHand();
 		if(mainHand != null && mainHand.getType() != Material.AIR) {
-			Gear heldItem = ItemHandler.toStatItem(mainHand);
+			GearController heldItem = ItemHandler.toStatItem(mainHand);
 			if(heldItem != null)
 				p.getEquipment().setItemInMainHand(ItemHandler.hurtItem(heldItem, (int)Math.floor(heldItem.getCurrentDurability() * .1)));
 			else
@@ -82,7 +79,7 @@ public class Graveyards extends ModuleListener {
 		
 		ItemStack offHand = p.getEquipment().getItemInMainHand();
 		if(offHand != null && offHand.getType() != Material.AIR) {
-			Gear heldItem = ItemHandler.toStatItem(offHand);
+			GearController heldItem = ItemHandler.toStatItem(offHand);
 			if(heldItem != null)
 				p.getEquipment().setItemInOffHand(ItemHandler.hurtItem(heldItem, (int)Math.floor(heldItem.getCurrentDurability() * .1)));
 			else

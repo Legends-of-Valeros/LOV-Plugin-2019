@@ -17,7 +17,7 @@ public class SkillPummel extends Skill {
 			"Pummels the target interrupting spellcasting and silencing them for ", SILENCE, " seconds."
 		};
 	
-	public SkillPummel() { super(ID, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
+	public SkillPummel() { super(ID, Type.HARMFUL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }
 
 	@Override
 	public String getUserFriendlyName(int level) { return "Pummel"; }

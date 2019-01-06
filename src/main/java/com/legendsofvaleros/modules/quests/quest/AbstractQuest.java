@@ -10,9 +10,9 @@ import com.legendsofvaleros.modules.quests.Quests;
 import com.legendsofvaleros.modules.quests.action.stf.AbstractQuestAction;
 import com.legendsofvaleros.modules.quests.action.stf.QuestActionPlay;
 import com.legendsofvaleros.modules.quests.action.stf.QuestActions;
+import com.legendsofvaleros.modules.quests.event.QuestCompletedEvent;
 import com.legendsofvaleros.modules.quests.event.QuestObjectivesCompletedEvent;
 import com.legendsofvaleros.modules.quests.event.QuestObjectivesStartedEvent;
-import com.legendsofvaleros.modules.quests.event.QuestCompletedEvent;
 import com.legendsofvaleros.modules.quests.event.QuestStartedEvent;
 import com.legendsofvaleros.modules.quests.objective.stf.IQuestObjective;
 import com.legendsofvaleros.modules.quests.prerequisite.stf.IQuestPrerequisite;
@@ -28,15 +28,17 @@ import org.bukkit.entity.Player;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public abstract class AbstractQuest implements IQuest {
     /**
      * Due to quests being instantiated once, we need to make sure the players progress is saved.
      */
     private final HashMap<CharacterId, QuestProgressPack> progress = new HashMap<>();
+
+    @Override public Set<Map.Entry<CharacterId, QuestProgressPack>> getProgressions() {
+        return progress.entrySet();
+    }
 
     @Override public QuestProgressPack getProgress(PlayerCharacter pc) {
         return progress.get(pc.getUniqueCharacterId());
@@ -71,7 +73,6 @@ public abstract class AbstractQuest implements IQuest {
     }
 
     private final List<IQuestPrerequisite> prerequisites = new ArrayList<>();
-
     @Override public List<IQuestPrerequisite> getPrerequisites() {
         return prerequisites;
     }
@@ -184,6 +185,9 @@ public abstract class AbstractQuest implements IQuest {
         // Run the task later. This is done to be sure objective events finish firing before starting the next objective group.
         Quests.getInstance().getScheduler().executeInSpigotCircle(() -> {
             int currentGroup = getCurrentGroupI(pc);
+
+            if(currentGroup == -1 && group != -1)
+                throw new IllegalStateException(pc.getPlayer().getName() + "(" + pc.getUniqueCharacterId() + ") attempted to go to group " + group + " from " + currentGroup + " in quest '" + getId() + "'! This should never happen!");
 
             // If the player is just now starting the quest
             if (group == -1) {
