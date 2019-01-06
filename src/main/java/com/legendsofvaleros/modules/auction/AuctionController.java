@@ -10,9 +10,9 @@ import com.legendsofvaleros.modules.auction.traits.TraitAuctioneer;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.gear.item.Gear;
-import com.legendsofvaleros.modules.gear.item.GearItem;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.scheduler.InternalTask;
 import org.bukkit.entity.Player;
@@ -37,7 +37,7 @@ public class AuctionController extends ModuleListener {
         return instance;
     }
 
-    public HashMap<CharacterId, AuctionChatPrompt> auctionPrompts = new HashMap<>();
+    private HashMap<CharacterId, AuctionChatPrompt> auctionPrompts = new HashMap<>();
 //    private static final Cache<String, Inventory> cache = CacheBuilder.newBuilder()
 //            .concurrencyLevel(4)
 //            .maximumSize(1024)
@@ -71,7 +71,7 @@ public class AuctionController extends ModuleListener {
         getScheduler().executeInMyCircle(new InternalTask(() ->
                 auctionsTable.query()
                         .all()
-                        .forEach(auctions::add)
+                        .forEach((auction, i) -> auctions.add(auction))
                         .onFinished(() -> ret.set(auctions))
                         .execute(false))
         );
@@ -106,7 +106,7 @@ public class AuctionController extends ModuleListener {
      * @param auction
      * @return
      */
-    public ListenableFuture<Boolean> checkIfAuctionStillExists(Auction auction) {
+    private ListenableFuture<Boolean> checkIfAuctionStillExists(Auction auction) {
         SettableFuture<Boolean> ret = SettableFuture.create();
 
         if (!ret.isDone()) {
@@ -221,9 +221,7 @@ public class AuctionController extends ModuleListener {
     public boolean isPrompted(Player p) {
         PlayerCharacter playerCharacter = Characters.getPlayerCharacter(p);
         if (playerCharacter.isCurrent()) {
-            if (auctionPrompts.containsKey(playerCharacter.getUniqueCharacterId())) {
-                return true;
-            }
+            return auctionPrompts.containsKey(playerCharacter.getUniqueCharacterId());
         }
         return false;
     }
