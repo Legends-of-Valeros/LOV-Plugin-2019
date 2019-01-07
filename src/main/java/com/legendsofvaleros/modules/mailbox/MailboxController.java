@@ -51,6 +51,7 @@ public class MailboxController extends ModuleListener {
 
     /**
      * Returns the mailbox object of a player character
+     *
      * @param characterId
      * @return
      */
@@ -60,11 +61,12 @@ public class MailboxController extends ModuleListener {
 
     /**
      * Adds a mail to the mailbox of player character
+     *
      * @param characterId
      * @param mail
      * @return
      */
-    public ListenableFuture<Void> addMail(CharacterId characterId, Mail mail) {
+    public ListenableFuture<Void> saveMail(CharacterId characterId, Mail mail) {
         SettableFuture<Void> ret = SettableFuture.create();
 
         Mailbox mailbox = mailboxes.get(characterId);
@@ -80,6 +82,7 @@ public class MailboxController extends ModuleListener {
 
     /**
      * Load the Mailbox object with all emails into the cache / RAM
+     *
      * @param characterId
      * @return
      */
@@ -90,7 +93,7 @@ public class MailboxController extends ModuleListener {
 
         mailBoxMails.query()
                 .get(characterId)
-                .forEach((mail, i) -> addMail(characterId, mail))
+                .forEach((mail, i) -> mailbox.addMail(mail))
                 .onFinished(() -> {
                     mailboxes.put(characterId, mailbox);
                     ret.set(null);

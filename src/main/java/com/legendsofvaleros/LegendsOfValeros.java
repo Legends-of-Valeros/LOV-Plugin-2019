@@ -52,26 +52,31 @@ import java.util.Map;
  */
 public class LegendsOfValeros extends JavaPlugin {
     private static LegendsOfValeros instance;
-    public static LegendsOfValeros getInstance() { return instance; }
+
+    public static LegendsOfValeros getInstance() {
+        return instance;
+    }
 
     public static long startTime = 0;
 
     private ServerMode mode;
+
     public static ServerMode getMode() {
         return instance.mode;
     }
 
     private PaperCommandManager manager;
+
     public PaperCommandManager getCommandManager() {
         return manager;
     }
 
     private Map<Integer, String> loadedEventClassesName = new HashMap<>();
     private Cache<Integer, Listener> loadedEventClasses = CacheBuilder.newBuilder()
-                                                                        .weakValues()
-                                                                        .removalListener(entry -> {
-                                                                            instance.getLogger().severe("Event listener GC'd: " + loadedEventClassesName.remove(entry.getKey()));
-                                                                        }).build();
+            .weakValues()
+            .removalListener(entry -> {
+                instance.getLogger().severe("Event listener GC'd: " + loadedEventClassesName.remove(entry.getKey()));
+            }).build();
 
     @Override
     public void onEnable() {
@@ -96,7 +101,9 @@ public class LegendsOfValeros extends JavaPlugin {
             field = BukkitCommandManager.class.getDeclaredField("logger");
             field.setAccessible(true);
             field.set(manager, getLogger());
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
             // This is done so we get almost-live updates on GC'd listeners.
@@ -115,7 +122,7 @@ public class LegendsOfValeros extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        for(InternalScheduler scheduler : InternalScheduler.getAllSchedulers())
+        for (InternalScheduler scheduler : InternalScheduler.getAllSchedulers())
             scheduler.shutdown();
 
         Modules.unloadModules();
@@ -176,6 +183,7 @@ public class LegendsOfValeros extends JavaPlugin {
 
     /**
      * Creates a progressbar for the given tps
+     *
      * @param tps
      * @return
      */
@@ -190,6 +198,7 @@ public class LegendsOfValeros extends JavaPlugin {
 
     /**
      * Returns the current uptime of the server
+     *
      * @return
      */
     public String getUptime() {

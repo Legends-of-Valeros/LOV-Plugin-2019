@@ -26,8 +26,17 @@ public class Mailbox extends ORM {
         this.mails = mails;
     }
 
+    public boolean addMail(Mail mail) {
+        if (!this.mails.contains(mail)) {
+            this.mails.add(mail);
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Returns the amount of unread mails in the mailbox
+     *
      * @return
      */
     public int getUnreadMails() {

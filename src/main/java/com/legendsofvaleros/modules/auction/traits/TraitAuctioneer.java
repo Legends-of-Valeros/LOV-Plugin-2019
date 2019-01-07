@@ -30,6 +30,7 @@ public class TraitAuctioneer extends LOVTrait {
             gui.close(p);
             ArrayList<Auction> auctions = null;
 
+            //TODO prevent freeze of main thread with callback
             try {
                 auctions = AuctionController.getInstance().loadEntries().get();
             } catch (InterruptedException | ExecutionException e) {

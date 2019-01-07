@@ -13,8 +13,11 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.gear.item.Gear;
+import com.legendsofvaleros.modules.mailbox.Mail;
+import com.legendsofvaleros.modules.mailbox.MailboxController;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.scheduler.InternalTask;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -32,6 +35,8 @@ import java.util.concurrent.ExecutionException;
 @DependsOn(Characters.class)
 public class AuctionController extends ModuleListener {
     private static AuctionController instance;
+    //auction fee in percentage
+    public static final float AUCTION_FEE = 0.1f;
 
     public static AuctionController getInstance() {
         return instance;
@@ -45,6 +50,7 @@ public class AuctionController extends ModuleListener {
 //            .build();
 
     private static ORMTable<Auction> auctionsTable;
+    private static ORMTable<BidHistoryEntry> auctionBidHistoryTable;
 
     @Override
     public void onLoad() {
@@ -52,12 +58,21 @@ public class AuctionController extends ModuleListener {
         instance = this;
 
         auctionsTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), Auction.class);
+        auctionBidHistoryTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), BidHistoryEntry.class);
         NPCs.registerTrait("auctioneer", TraitAuctioneer.class);
 
-        //TODO add scheduler that checks every second if an item has run out and if it is an bid item
         getScheduler().executeInMyCircleTimer(new InternalTask(() -> {
-
-        }), 0, 1000);
+            try {
+                //TODO remove freeze of the thread with callback
+                this.loadBidAuctions().get().forEach(auction -> {
+                    if (auction.getValidUntil() <= System.currentTimeMillis()) {
+                        this.handleBidEnd(auction);
+                    }
+                });
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }), 0, 15000); //call every 15 seconds.
     }
 
     public void onUnload() {
@@ -71,6 +86,23 @@ public class AuctionController extends ModuleListener {
         getScheduler().executeInMyCircle(new InternalTask(() ->
                 auctionsTable.query()
                         .all()
+                        .forEach((auction, i) -> auctions.add(auction))
+                        .onFinished(() -> ret.set(auctions))
+                        .execute(false))
+        );
+
+        return ret;
+    }
+
+    public SettableFuture<ArrayList<Auction>> loadBidAuctions() {
+        SettableFuture<ArrayList<Auction>> ret = SettableFuture.create();
+        ArrayList<Auction> auctions = new ArrayList<>();
+
+        getScheduler().executeInMyCircle(new InternalTask(() ->
+                auctionsTable.query()
+                        .select()
+                        .where("is_bid_offer", true)
+                        .build()
                         .forEach((auction, i) -> auctions.add(auction))
                         .onFinished(() -> ret.set(auctions))
                         .execute(false))
@@ -103,6 +135,7 @@ public class AuctionController extends ModuleListener {
 
     /**
      * Query for security reason, to make sure, that the item did not get bought by another player
+     *
      * @param auction
      * @return
      */
@@ -128,8 +161,42 @@ public class AuctionController extends ModuleListener {
         return ret;
     }
 
+    public ListenableFuture<ArrayList<BidHistoryEntry>> getBidHistory(Auction auction) {
+        SettableFuture<ArrayList<BidHistoryEntry>> ret = SettableFuture.create();
+        ArrayList<BidHistoryEntry> entries = new ArrayList<>();
+
+        getScheduler().executeInMyCircle(new InternalTask(() ->
+                auctionBidHistoryTable.query()
+                        .select()
+                        .where("auction_id", auction.getId())
+                        .build()
+                        .forEach((entry, i) -> entries.add(entry))
+                        .onFinished(() -> ret.set(entries))
+                        .execute(false))
+        );
+
+        return ret;
+    }
+
+    /**
+     * adds a bid entry to the table
+     *
+     * @param entry
+     */
+    public void addBidEntry(BidHistoryEntry entry) {
+        getScheduler().executeInMyCircle(new InternalTask(() ->
+                auctionBidHistoryTable.query().insert().values(
+                        "auction_id", entry.getAuctionId(),
+                        "character_id", entry.getCharacterId(),
+                        "bid_number", entry.getBidNumber(),
+                        "bid_price", entry.getPrice()
+                ).build().execute(true))
+        );
+    }
+
     /**
      * Starts an auction chat prompt to (buy / sell / bid) an item
+     *
      * @param p
      * @param itemData
      */
@@ -137,18 +204,46 @@ public class AuctionController extends ModuleListener {
         this.startPrompt(p, new Auction(Characters.getPlayerCharacter(p).getUniqueCharacterId(), itemData), type);
     }
 
+    /**
+     * Starts an AuctionChatPrompt and guides the user through the process
+     *
+     * @param p
+     * @param auction
+     * @param type
+     */
     public void startPrompt(Player p, Auction auction, AuctionChatPrompt.AuctionPromptType type) {
         p.closeInventory();
         if (Characters.isPlayerCharacterLoaded(p)) {
             PlayerCharacter playerCharacter = Characters.getPlayerCharacter(p);
             CharacterId characterId = playerCharacter.getUniqueCharacterId();
             if (auctionPrompts.containsKey(characterId)) {
-                //TODO check if this goes shorter
+                //TODO make pretty like a princess
                 p.sendMessage("You are already " + auctionPrompts.get(characterId).getPrompt().getChatString() + " an item.");
                 return;
             }
             auctionPrompts.put(characterId, new AuctionChatPrompt(playerCharacter, auction, type));
         }
+    }
+
+    /**
+     * Handles the end of an bid auction
+     *
+     * @param auction
+     */
+    private void handleBidEnd(Auction auction) {
+        BidHistoryEntry entry = auction.getLastBidEntry();
+        //TODO make pretty
+        Mail mail = new Mail(entry.getCharacterId(), "You won the auction", false);
+        mail.setItem(auction.getItem());
+
+        MailboxController.getInstance().saveMail(entry.getCharacterId(), mail);
+
+        removeAuction(auction);
+        auction.notifyOwner("Your bid auction has ended. " + ChatColor.BOLD + ChatColor.UNDERLINE + ChatColor.WHITE +
+                auction.getItem().toInstance().gear.getName() + ChatColor.RESET + " was sold for " + ChatColor.BOLD + ChatColor.UNDERLINE + ChatColor.WHITE +
+                auction.getPriceFormatted(), true
+        );
+
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -164,6 +259,7 @@ public class AuctionController extends ModuleListener {
 
     /**
      * Executes the last step of the AuctionChatPrompt
+     *
      * @param characterId
      */
     public void confirmBuyPrompt(CharacterId characterId) {
@@ -187,7 +283,6 @@ public class AuctionController extends ModuleListener {
                     return;
                 }
 
-                auctionPrompts.remove(characterId);
                 removeAuction(prompt.getAuction());
                 p.getInventory().addItem(prompt.getAuction().getItem().toStack());
             }
@@ -214,15 +309,13 @@ public class AuctionController extends ModuleListener {
     }
 
     /**
-     * Returns true if a playerCharacter is in an auctionprompt
+     * Returns true if a playerCharacter is in an AuctionChatPrompt
+     *
      * @param p
      * @return
      */
     public boolean isPrompted(Player p) {
         PlayerCharacter playerCharacter = Characters.getPlayerCharacter(p);
-        if (playerCharacter.isCurrent()) {
-            return auctionPrompts.containsKey(playerCharacter.getUniqueCharacterId());
-        }
-        return false;
+        return playerCharacter.isCurrent() && auctionPrompts.containsKey(playerCharacter.getUniqueCharacterId());
     }
 }

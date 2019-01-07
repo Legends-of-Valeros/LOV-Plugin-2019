@@ -3,6 +3,10 @@ package com.legendsofvaleros.modules.auction;
 import com.legendsofvaleros.modules.bank.Money;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 /**
  * Respresents an auction chat prompt instance
  * Created by Crystall on 12/11/2018
@@ -139,6 +143,15 @@ public class AuctionChatPrompt {
                 playerCharacter.getPlayer().sendMessage("Do you want to sell or auction the item?");
                 break;
             case 2:
+                if (decision.equalsIgnoreCase("auction")) {
+                    auction.setBidOffer(true);
+                    //set the auction to run out in 48h
+                    Date d = new Date(System.currentTimeMillis());
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(d);
+                    c.add(Calendar.DATE, 2);
+                    auction.setValidUntil(TimeUnit.MILLISECONDS.toSeconds(c.getTimeInMillis()));
+                }
                 auction.setBidOffer(decision.equalsIgnoreCase("auction"));
                 return true;
             case 3:

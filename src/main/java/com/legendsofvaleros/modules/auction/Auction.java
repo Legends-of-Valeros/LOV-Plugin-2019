@@ -10,10 +10,10 @@ import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.mailbox.Mail;
 import com.legendsofvaleros.modules.mailbox.MailboxController;
 import com.legendsofvaleros.util.MessageUtil;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
 
 /**
  * Created by Crystall on 10/10/2018
@@ -33,12 +33,13 @@ public class Auction {
     private int price;
 
     @Column(name = "valid_until")
-    private int validUntil;
+    private long validUntil;
 
     @Column(name = "is_bid_offer")
     private boolean isBidOffer = false;
 
-    private Dictionary<String, Integer> bidHistory;
+    @Column(name = "highest_bidder")
+    private CharacterId highestBidder;
 
     public Auction(CharacterId ownerId, Gear.Data item) {
         this.ownerId = ownerId;
@@ -54,6 +55,7 @@ public class Auction {
 
     /**
      * Returns if a player owns the auction
+     *
      * @param player
      * @return
      */
@@ -63,6 +65,7 @@ public class Auction {
 
     /**
      * Returns the lore
+     *
      * @return
      */
     public ArrayList<String> getDescription() {
@@ -75,6 +78,7 @@ public class Auction {
 
     /**
      * Bids on an auction, sets the new price, and adds the bidding person to the bid history
+     *
      * @param value
      * @return
      */
@@ -87,17 +91,29 @@ public class Auction {
         }
         PlayerCharacter playerCharacter = Characters.getPlayerCharacter(characterId);
         if (value <= price) {
-            playerCharacter.getPlayer().sendMessage("Your bid price " + Money.Format.format(value) + " is below the current bid price of " + getPriceFormatted());
+            playerCharacter.getPlayer().sendMessage("Your bid price " + Money.Format.format(value) + " is not higher than the current bid price of " + getPriceFormatted());
             return false;
         }
         if (Money.sub(playerCharacter, value)) {
+            //re-add the money to the previous bidder - auction fee
+            PlayerCharacter previousBidder = Characters.getPlayerCharacter(highestBidder);
+            Money.add(previousBidder, (long) (price * (1 - AuctionController.AUCTION_FEE)));
+            if (previousBidder.isCurrent()) {
+                //TODO fix english please?
+                Mail mail = new Mail(previousBidder.getUniqueCharacterId(), "Your bid on the auction " + ChatColor.UNDERLINE + ChatColor.WHITE + ChatColor.BOLD +
+                        getItem().toInstance().gear.getName() + ChatColor.RESET + " got overbidden", false);
+                MailboxController.getInstance().getMailbox(playerCharacter.getUniqueCharacterId()).addMail(mail);
+            }
+
+            //set the values of the current bidder and also save
             this.price = value;
-            this.bidHistory.put(playerCharacter.getUniqueCharacterId().toString(), value);
+            this.highestBidder = playerCharacter.getUniqueCharacterId();
+            BidHistoryEntry entry = new BidHistoryEntry(this.id, playerCharacter.getUniqueCharacterId(), this.price);
+            AuctionController.getInstance().addBidEntry(entry);
             notifyOwner(playerCharacter.getPlayer().getDisplayName() + " bid " + Money.Format.format(value) + " on " + getItem().toInstance().gear.getName(), false);
             return true;
-        } else {
-            playerCharacter.getPlayer().sendMessage("You don't have enough money to bid on " + getItem().toInstance().gear.getName());
         }
+        playerCharacter.getPlayer().sendMessage("You don't have enough money to bid on " + getItem().toInstance().gear.getName());
         return false;
     }
 
@@ -112,8 +128,6 @@ public class Auction {
         PlayerCharacter playerCharacter = Characters.getPlayerCharacter(characterId);
 
         if (Money.sub(playerCharacter, value)) {
-            this.price = value;
-            this.bidHistory.put(playerCharacter.getUniqueCharacterId().toString(), value);
             notifyOwner(playerCharacter.getPlayer().getDisplayName() + " bought " + getItem().toInstance().gear.getName() + "for " + Money.Format.format(value), false);
             return true;
         }
@@ -124,6 +138,7 @@ public class Auction {
 
     /**
      * Notifies the owner of the auction
+     *
      * @param contentLines
      */
     public void notifyOwner(ArrayList<String> contentLines, boolean sendMail) {
@@ -131,10 +146,12 @@ public class Auction {
         StringBuilder contentBuilder = new StringBuilder();
         contentLines.forEach(contentBuilder::append);
 
-        if (sendMail)
-            MailboxController.getInstance().addMail(getOwnerId(), new Mail(getOwnerId(), contentBuilder.toString(), false));
+        if (sendMail) {
+            MailboxController.getInstance().saveMail(getOwnerId(), new Mail(getOwnerId(), contentBuilder.toString(), false));
+            return;
+        }
 
-        if (p.isOnline() && Characters.isPlayerCharacterLoaded(p)) {
+        if (Characters.isPlayerCharacterLoaded(p)) {
             // TODO make pretty like a princess
             MessageUtil.sendInfo(p, contentBuilder.toString());
         }
@@ -142,6 +159,7 @@ public class Auction {
 
     /**
      * Notifies the owner of the auction
+     *
      * @param message
      */
     public void notifyOwner(String message, boolean sendMail) {
@@ -170,7 +188,7 @@ public class Auction {
         return this.item;
     }
 
-    public int getValidUntil() {
+    public long getValidUntil() {
         return this.validUntil;
     }
 
@@ -194,7 +212,7 @@ public class Auction {
         this.item = item;
     }
 
-    public void setValidUntil(int validUntil) {
+    public void setValidUntil(long validUntil) {
         this.validUntil = validUntil;
     }
 
@@ -202,7 +220,19 @@ public class Auction {
         this.isBidOffer = isBidOffer;
     }
 
-    public Dictionary<String, Integer> getBidHistory() {
-        return bidHistory;
+    public ArrayList<BidHistoryEntry> getBidHistory() {
+        //TODO prevent freeze of thread with callback
+        ArrayList<BidHistoryEntry> entries = new ArrayList<>();
+        try {
+            entries = AuctionController.getInstance().getBidHistory(this).get();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return entries;
+    }
+
+    public BidHistoryEntry getLastBidEntry() {
+        ArrayList<BidHistoryEntry> entries = getBidHistory();
+        return entries.get(entries.size() - 1);
     }
 }
