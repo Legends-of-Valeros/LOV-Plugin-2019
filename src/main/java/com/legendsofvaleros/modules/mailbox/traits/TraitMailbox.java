@@ -24,7 +24,6 @@ public class TraitMailbox extends LOVTrait {
         }
 
         PlayerCharacter playerCharacter = Characters.getPlayerCharacter(player);
-
         slot.set(new Slot(new ItemBuilder(Material.PAPER).setName("Mailbox").create(), (gui, p, event) -> {
             gui.close(p);
             new MailboxGui(MailboxController.getInstance().getMailbox(playerCharacter.getUniqueCharacterId()).getMails()).open(p);

@@ -35,7 +35,6 @@ public class AuctionGui extends GUI implements Listener {
     public AuctionGui(ArrayList<Auction> auctions) {
         super("Auctioneer");
         type(6);
-        System.out.println(auctions);
         this.auctions = auctions;
         this.totalPages = (int) Math.ceil(auctions.size() / ITEM_COUNT_PER_PAGE);
         AuctionController.getInstance().registerEvents(this);
@@ -172,7 +171,6 @@ public class AuctionGui extends GUI implements Listener {
         Auction auction = null;
         try {
             auction = auctions.get(slot + (currentPage - 1) * ITEM_COUNT_PER_PAGE);
-            System.out.println(auction);
         } catch (Exception ex) { //silent catch to prevent OutOfBoundsException
         }
         return auction;

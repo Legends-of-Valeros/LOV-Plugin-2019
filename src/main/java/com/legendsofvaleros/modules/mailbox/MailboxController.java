@@ -139,6 +139,15 @@ public class MailboxController extends ModuleListener {
                 }, MailboxController.getInstance().getScheduler()::async);
     }
 
+    /**
+     * Opens a book with the content of the mail
+     *
+     * @param mail
+     */
+    public void openMail(Mail mail) {
+        //TODO open a book with the content of the mail
+    }
+
     @EventHandler
     public void onCharacterRemoved(PlayerCharacterRemoveEvent event) {
         mailBoxMails.query().remove(event.getPlayerCharacter().getUniqueCharacterId().toString()).execute(true);
