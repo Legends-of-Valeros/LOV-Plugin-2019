@@ -142,7 +142,6 @@ public class MailboxController extends ModuleListener {
     @EventHandler
     public void onCharacterRemoved(PlayerCharacterRemoveEvent event) {
         mailBoxMails.query().remove(event.getPlayerCharacter().getUniqueCharacterId().toString()).execute(true);
-
     }
 
 }

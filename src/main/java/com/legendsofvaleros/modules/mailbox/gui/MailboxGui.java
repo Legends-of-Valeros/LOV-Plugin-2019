@@ -1,7 +1,8 @@
-package com.legendsofvaleros.modules.mailbox;
+package com.legendsofvaleros.modules.mailbox.gui;
 
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.slot.SlotUsable;
+import com.legendsofvaleros.modules.mailbox.Mail;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
