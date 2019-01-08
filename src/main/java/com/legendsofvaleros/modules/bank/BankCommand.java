@@ -21,16 +21,18 @@ public class BankCommand extends BaseCommand {
 	@Subcommand("show")
 	@Description("Show bank info for player.")
 	@CommandPermission("bank.show")
-	public void cmdShow(CommandSender sender, Player player) {
-		PlayerBank pb = Bank.getBank(Characters.getPlayerCharacter(player));
-		player.sendMessage(player.getDisplayName() + "'s Bank");
+	public void cmdShow(CommandSender sender, OnlinePlayer player) {
+		Player p = player.getPlayer();
+
+		PlayerBank pb = Bank.getBank(Characters.getPlayerCharacter(p));
+		sender.sendMessage(p.getDisplayName() + "'s Bank");
 
 		for(PlayerBank.Currency c : pb.getCurrencies())
-			player.sendMessage(" " + c.getCurrencyId() + " = " + Bank.getInstance().getCurrency(c.getCurrencyId()).getDisplay(c.amount));
+			sender.sendMessage(" " + c.getCurrencyId() + " = " + Bank.getInstance().getCurrency(c.getCurrencyId()).getDisplay(c.amount));
 	}
 
 	@Default
 	public void cmdShowSelf(Player player) {
-		cmdShow(player, player);
+		cmdShow(player, new OnlinePlayer(player));
 	}
 }

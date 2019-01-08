@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.parties;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
+import co.aikar.commands.contexts.OnlinePlayer;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -28,14 +29,14 @@ public class PartyCommands extends BaseCommand {
 
 	@Subcommand("join")
 	@Description("Join an existing party that you have been invited to.")
-	public static void cmdPartyJoin(Player player, Player join) {
+	public static void cmdPartyJoin(Player player, OnlinePlayer join) {
 		PlayerCharacter pc = getPlayerCharacter(player);
 		if(getCurrentParty(pc) != null) {
 			MessageUtil.sendError(player, "You are already in a party. If you'd like to leave, use /party leave");
 			return;
 		}
 
-		PlayerCharacter tpc = getPlayerCharacter(join);
+		PlayerCharacter tpc = getPlayerCharacter(join.getPlayer());
 		PlayerParty pp = getCurrentParty(tpc);
 		if(pp == null) {
 			MessageUtil.sendError(player, "That player is not in a party.");
@@ -61,14 +62,14 @@ public class PartyCommands extends BaseCommand {
 	
 	@Subcommand("invite")
 	@Description("Invite a player to your party.")
-	public static void cmdPartyInvite(Player player, Player invite) {
+	public static void cmdPartyInvite(Player player, OnlinePlayer invite) {
 		PlayerCharacter pc = getPlayerCharacter(player);
 		if(getCurrentParty(pc) == null) {
 			MessageUtil.sendError(player, "You are not in a party. If you'd like to create one, use /party create");
 			return;
 		}
 		
-		PlayerCharacter tpc = getPlayerCharacter(invite);
+		PlayerCharacter tpc = getPlayerCharacter(invite.getPlayer());
 		PlayerParty pp = getCurrentParty(pc);
 		if(!pp.invitations.contains(tpc.getUniqueCharacterId())) {
 			pp.invitations.add(tpc.getUniqueCharacterId());
