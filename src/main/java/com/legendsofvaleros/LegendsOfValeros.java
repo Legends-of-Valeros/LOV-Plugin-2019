@@ -25,7 +25,6 @@ import com.legendsofvaleros.modules.loot.LootManager;
 import com.legendsofvaleros.modules.mailbox.MailboxController;
 import com.legendsofvaleros.modules.mobs.Mobs;
 import com.legendsofvaleros.modules.mount.Mounts;
-import com.legendsofvaleros.modules.nanny.Nanny;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.parties.Parties;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
@@ -89,6 +88,7 @@ public class LegendsOfValeros extends JavaPlugin {
         getLogger().info("Server mode is set to: " + mode.name());
         if (mode.isVerbose()) getLogger().info("  - Verbosity enabled");
         if (mode.doLogSaving()) getLogger().info("  - Log saving enabled");
+        if (mode.allowEditing()) getLogger().warning("  - Editing enabled: THIS SHOULD NOT BE ENABLED ON A LIVE SERVER");
         if (mode.isLenient()) getLogger().warning("  - Leniency enabled: THIS SHOULD NOT BE ENABLED ON A LIVE SERVER");
 
         manager = new PaperCommandManager(LegendsOfValeros.getInstance());
@@ -154,7 +154,6 @@ public class LegendsOfValeros extends JavaPlugin {
         Modules.registerModule(LootManager.class);
         Modules.registerModule(Mobs.class);
         Modules.registerModule(Mounts.class);
-        Modules.registerModule(Nanny.class);
         Modules.registerModule(NPCs.class);
         Modules.registerModule(Parties.class);
         Modules.registerModule(PlayerMenu.class);
