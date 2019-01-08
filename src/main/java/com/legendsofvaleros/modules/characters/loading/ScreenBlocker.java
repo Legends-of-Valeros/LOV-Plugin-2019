@@ -52,6 +52,9 @@ public class ScreenBlocker {
   private static Collection<Block> surroundPlayer(Player player, Material mat, byte data) {
     List<Block> ret = new LinkedList<>();
 
+    // TODO: Remove this. Removing the screen blocker for now in an attempt to fix the login flicker glitch
+    player = null;
+
     if (player == null || mat == null) {
       return ret;
     }
