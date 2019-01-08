@@ -1,5 +1,6 @@
 package com.legendsofvaleros.modules.parties;
 
+import co.aikar.commands.contexts.OnlinePlayer;
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.LegendsOfValeros;
@@ -17,7 +18,9 @@ import com.legendsofvaleros.modules.playermenu.PlayerMenuOpenEvent;
 import com.legendsofvaleros.modules.pvp.PvPCheckEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import net.md_5.bungee.api.chat.BaseComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -78,7 +81,7 @@ public class Parties extends ModuleListener {
 
             if (clickedParty == null) {
                 partyUI.slot(2, new ItemBuilder(Material.APPLE).setName("Invite to party!").create(), (gui14, p14, event14) -> {
-                    PartyCommands.cmdPartyInvite(p14, clickedPc.getPlayer());
+                    PartyCommands.cmdPartyInvite(p14, new OnlinePlayer(clickedPc.getPlayer()));
                     gui14.close(p14);
                 });
             } else {
@@ -89,7 +92,7 @@ public class Parties extends ModuleListener {
                             MessageUtil.sendError(p, "You are not the party leader.");
                         } else {
                             partyUI.slot(2, new ItemBuilder(Material.APPLE).setName("Kick Player").create(), (gui13, p13, event13) -> {
-                                PartyCommands.cmdPartyKick(p13, clickedPc.getPlayer());
+                                PartyCommands.cmdPartyKick(p13, Bukkit.getOfflinePlayer(clickedPc.getPlayer().getUniqueId()));
                                 gui13.close(p13);
                             });
                         }
@@ -100,7 +103,7 @@ public class Parties extends ModuleListener {
                 } else {
                     if (clickedParty.invitations.contains(Characters.getPlayerCharacter(p).getUniqueCharacterId())) {
                         partyUI.slot(2, new ItemBuilder(Material.APPLE).setName("Join their party!").create(), (gui12, p12, event12) -> {
-                            PartyCommands.cmdPartyJoin(p12, clickedPc.getPlayer());
+                            PartyCommands.cmdPartyJoin(p12, new OnlinePlayer(clickedPc.getPlayer()));
                             gui12.close(p12);
                         });
                     } else {

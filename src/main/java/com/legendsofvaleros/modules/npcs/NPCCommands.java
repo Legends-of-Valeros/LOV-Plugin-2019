@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.npcs;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.npcs.trait.TraitHelper;
 import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
 import com.legendsofvaleros.util.MessageUtil;
@@ -40,6 +41,8 @@ public class NPCCommands extends BaseCommand {
 	@Description("Activate an NPC remotely.")
 	@CommandPermission("npcs.activate")
 	public void cmdActivateNPC(Player player, String npcId, String side) {
+		if(!LegendsOfValeros.getMode().allowEditing()) return;
+
 		NPCData npc = NPCs.manager().npcs.get(npcId);
 
 		if(side.equalsIgnoreCase("left"))
@@ -54,6 +57,8 @@ public class NPCCommands extends BaseCommand {
 	@Description("Bind an LOV NPC to a citizens NPC.")
 	@CommandPermission("npcs.bind")
 	public void cmdBindNPC(Player player, String npcId) {
+		if(!LegendsOfValeros.getMode().allowEditing()) return;
+
 		NPCData npcData = NPCs.manager().npcs.get(npcId);
 		if(npcData == null) {
 			MessageUtil.sendError(player, "NPC with that ID does not exist.");
@@ -97,6 +102,8 @@ public class NPCCommands extends BaseCommand {
 	@Description("Teleport to an NPC.")
 	@CommandPermission("npcs.tp")
 	public void cmdNPCTeleport(Player player, String id) {
+		if(!LegendsOfValeros.getMode().allowEditing()) return;
+
 		for(TraitLOV trait : TraitLOV.all) {
 			if(trait.npcId != null && trait.npcId.equals(id)) {
 				if(trait.getNPC().getStoredLocation() != null) {

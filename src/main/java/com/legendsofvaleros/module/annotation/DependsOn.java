@@ -4,7 +4,6 @@ import com.legendsofvaleros.module.Module;
 
 import java.lang.annotation.*;
 
-
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Repeatable(Dependencies.class)

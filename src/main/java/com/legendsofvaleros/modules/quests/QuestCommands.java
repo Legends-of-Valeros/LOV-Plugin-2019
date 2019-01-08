@@ -6,6 +6,7 @@ import co.aikar.commands.annotation.*;
 import com.codingforcookies.robert.core.StringUtil;
 import com.codingforcookies.robert.item.Book;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.quests.objective.stf.IQuestObjective;
@@ -60,6 +61,8 @@ public class QuestCommands extends BaseCommand {
     @Description("Remove a completed quest. Using * will target all quests.")
     @CommandPermission("quests.uncomplete")
     public void cmdUncomplete(Player player, String questId) {
+        if(!LegendsOfValeros.getMode().allowEditing()) return;
+
         PlayerCharacter pc = Characters.getPlayerCharacter(player);
 
         QuestManager.removeQuestProgress(questId, pc);

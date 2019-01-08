@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.gear;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
@@ -26,6 +27,8 @@ public class ItemCommands extends BaseCommand {
     @Description("Spawn an item.")
     @CommandPermission("gear.spawn")
     public void cmdSpawn(Player player, String itemId, @Optional Integer amount) {
+        if(!LegendsOfValeros.getMode().allowEditing()) return;
+
         Gear gear = Gear.fromID(itemId);
 
         if (gear == null) {

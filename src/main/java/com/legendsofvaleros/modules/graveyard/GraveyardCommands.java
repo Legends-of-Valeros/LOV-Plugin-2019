@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.graveyard;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.zones.Zone;
 import com.legendsofvaleros.modules.zones.Zones;
 import com.legendsofvaleros.util.MessageUtil;
@@ -16,6 +17,8 @@ public class GraveyardCommands extends BaseCommand {
 	@Description("Create a new graveyard.")
 	@CommandPermission("graveyards.create")
 	public void cmdCreate(Player player, int radius) {
+		if(!LegendsOfValeros.getMode().allowEditing()) return;
+
 		Zone zone = Zones.manager().getZone(player);
 		if(zone == null) {
 			MessageUtil.sendError(player, "You are not within a zone.");

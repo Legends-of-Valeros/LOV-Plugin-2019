@@ -1,4 +1,4 @@
-package com.legendsofvaleros;
+package com.legendsofvaleros.aspect;
 
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.Modules;

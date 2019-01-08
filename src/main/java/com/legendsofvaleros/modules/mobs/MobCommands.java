@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.mobs;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.mobs.core.SpawnArea;
 import com.legendsofvaleros.util.MessageUtil;
@@ -24,6 +25,8 @@ public class MobCommands extends BaseCommand {
 	@CommandPermission("mobs.spawn.create")
 	@Syntax("<mob id> <radius> <padding> <level min-max> [spawn count] [spawn interval] [spawn chance]")
 	public void cmdCreate(Player player, String mobId, int radius, int padding, String level, @Optional Integer count, @Optional Integer interval, @Optional Integer chance) {
+		if(!LegendsOfValeros.getMode().allowEditing()) return;
+
 		Mob mobData = MobManager.getEntity(mobId);
 		if(mobData == null) {
 			MessageUtil.sendError(player, "Unknown mob with that ID.");

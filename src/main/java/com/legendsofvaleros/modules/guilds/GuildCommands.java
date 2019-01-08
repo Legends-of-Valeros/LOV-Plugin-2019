@@ -25,6 +25,8 @@ public class GuildCommands extends BaseCommand {
     @Subcommand("create")
     @Description("Create a new guild")
     public void cmdCreate(Player player, String name) {
+        if(LegendsOfValeros.getMode() != ServerMode.DEV) return;
+
         if(!Characters.isPlayerCharacterLoaded(player)) return;
 
         if(Guild.getGuildByMember(player.getUniqueId()) != null) {

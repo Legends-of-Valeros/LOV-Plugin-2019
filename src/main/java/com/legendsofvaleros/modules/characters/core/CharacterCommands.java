@@ -5,6 +5,7 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import co.aikar.commands.contexts.OnlinePlayer;
 import com.codingforcookies.robert.item.Book;
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLevelChangeEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerInformationBookEvent;
@@ -21,6 +22,8 @@ public class CharacterCommands extends BaseCommand {
 	@Description("Set a character's level.")
 	@CommandPermission("character.level.set")
 	public void cmdSetLevel(CommandSender sender, @Optional OnlinePlayer player, int level) {
+		if(!LegendsOfValeros.getMode().allowEditing()) return;
+
 		Player p;
 		if(player == null) {
 			if(!(sender instanceof Player)) return;
@@ -52,6 +55,8 @@ public class CharacterCommands extends BaseCommand {
 	@Description("Up a character's level.")
 	@CommandPermission("character.level.up")
 	public void cmdLevelup(CommandSender sender, @Optional OnlinePlayer player) {
+		if(!LegendsOfValeros.getMode().allowEditing()) return;
+
 		Player p;
 
 		if(player == null) {
