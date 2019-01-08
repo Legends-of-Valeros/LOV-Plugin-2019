@@ -284,7 +284,8 @@ public class Mob {
 
             npc.getNavigator().getLocalParameters().updatePathRate(20)
                     .useNewPathfinder(false)
-                    .stuckAction(AIStuckAction.INSTANCE);
+                    .stuckAction(AIStuckAction.INSTANCE)
+                    .avoidWater(false);
 
             npc.data().setPersistent(NPC.DEFAULT_PROTECTED_METADATA, false);
             npc.data().setPersistent(NPC.DAMAGE_OTHERS_METADATA, true);

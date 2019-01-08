@@ -7,6 +7,8 @@ import com.legendsofvaleros.modules.mobs.behavior.test.ITest;
 import com.legendsofvaleros.modules.mobs.trait.MobTrait;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import net.citizensnpcs.api.npc.NPC;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -51,7 +53,17 @@ public class ThreatBehavior {
 		@Override
 		public NodeStatus onStep(CombatEntity ce, long ticks) {
 			NPC npc = NPCs.manager().registry.getNPC(ce.getLivingEntity());
-			
+
+			Block standingOn = ce.getLivingEntity().getWorld().getBlockAt(ce.getLivingEntity().getLocation());
+
+			// If an NPC is in water, they need to use the citizens pathfinder,
+			// otherwise they get stuck. This is not default, because they look
+			// significantly more robotic.
+			if(standingOn.getType() == Material.WATER || standingOn.getType() == Material.STATIONARY_WATER)
+				npc.getNavigator().getLocalParameters().useNewPathfinder(true);
+			else
+				npc.getNavigator().getLocalParameters().useNewPathfinder(false);
+
 			npc.getNavigator().setTarget(ce.getThreat().getTarget().getLivingEntity(), false);
 
 			return NodeStatus.SUCCESS;
