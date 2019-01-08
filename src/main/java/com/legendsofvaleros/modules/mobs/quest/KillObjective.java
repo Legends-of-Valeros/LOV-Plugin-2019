@@ -27,7 +27,7 @@ public class KillObjective extends AbstractQuestObjective<QuestObjectiveProgress
         ListenableFuture<Mob> future = MobManager.loadEntity(id);
         future.addListener(() -> {
             try {
-                Mob mob = future.get();
+                mob = future.get();
 
                 if (mob == null)
                     MessageUtil.sendException(Mobs.getInstance(), "No instance with that ID in quest. Offender: " + id + " in " + getQuest().getId(), false);
