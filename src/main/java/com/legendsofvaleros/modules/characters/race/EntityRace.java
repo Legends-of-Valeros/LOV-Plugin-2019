@@ -7,7 +7,7 @@ public enum EntityRace {
 
   NORD("Nordan"),
   WOOD_ELF("Sylfen"),
-  HIGH_ELF("FayFen"),
+  HIGH_ELF("Fayfen"),
   DWARF("Dwarfen"),
   HUMAN("Arkaska"),
   ORC("Orcfen");
