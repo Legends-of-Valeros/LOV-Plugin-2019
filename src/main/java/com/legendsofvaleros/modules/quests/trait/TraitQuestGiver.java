@@ -15,6 +15,7 @@ import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.Quests;
 import com.legendsofvaleros.modules.quests.event.QuestCompletedEvent;
+import com.legendsofvaleros.modules.quests.event.QuestObjectivesCompletedEvent;
 import com.legendsofvaleros.modules.quests.event.QuestStartedEvent;
 import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
 import com.legendsofvaleros.modules.quests.quest.stf.QuestStatus;
@@ -81,7 +82,9 @@ public class TraitQuestGiver extends LOVTrait {
         private static Set<TraitQuestGiver> working = new HashSet<>();
 
         private static void update(TraitQuestGiver trait, PlayerCharacter pc) {
-            if (working.contains(trait)) return;
+            // Since this includes async components, we should prevent updating
+            // the same trait a second time while it's already being updated.
+            if(working.contains(trait)) return;
             working.add(trait);
 
             List<ListenableFuture<IQuest>> futures = new ArrayList<>();
@@ -100,17 +103,23 @@ public class TraitQuestGiver extends LOVTrait {
                             IQuest quest = future.get();
                             QuestStatus status = QuestManager.getStatus(pc, quest);
 
-                            if (status.canAccept()) {
+                            // If the quest can be accepted, the marker should be active.
+                            if(status.canAccept()) {
+                                working.remove(trait);
                                 trait.available.getVisibilityManager().showTo(pc.getPlayer());
                                 futures.forEach(f -> f.cancel(true));
                                 return;
                             }
+
+                            // TODO: Add a marker for NPCs that you need to talk to in a quest (?)
                         } catch (ExecutionException e) {
                             e.printStackTrace();
                         }
 
-                        if (left.decrementAndGet() == 0)
+                        if(left.decrementAndGet() == 0) {
+                            working.remove(trait);
                             trait.available.getVisibilityManager().hideTo(pc.getPlayer());
+                        }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
