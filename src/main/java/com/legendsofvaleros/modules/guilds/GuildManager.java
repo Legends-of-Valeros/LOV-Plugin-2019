@@ -52,51 +52,57 @@ public class GuildManager {
     public static ListenableFuture<Guild> load(UUID guildId) {
         SettableFuture<Guild> ret = SettableFuture.create();
 
-        guildTable.query().first(guildId)
-                .forEach((guild, i) -> {
-                    List<GuildRole> roles = new ArrayList<>();
-                    List<GuildRolePermission> rolePermissions = new ArrayList<>();
-                    List<GuildMember> members = new ArrayList<>();
+        Guild g;
+        if((g = Guild.getIfLoaded(guildId)) != null)
+            ret.set(g);
+        else{
+            guildTable.query().first(guildId)
+                    .forEach((guild, i) -> {
+                        List<GuildRole> roles = new ArrayList<>();
+                        List<GuildRolePermission> rolePermissions = new ArrayList<>();
+                        // List<GuildMember> members = new ArrayList<>();
 
-                    AtomicInteger remaining = new AtomicInteger(3);
-                    Runnable finished = () -> {
-                        if(remaining.decrementAndGet() == 0) {
-                            for(GuildRole role : roles) guild.putRole(role);
+                        AtomicInteger remaining = new AtomicInteger(2);
+                        Runnable finished = () -> {
+                            if(remaining.decrementAndGet() == 0) {
+                                for(GuildRole role : roles) guild.putRole(role);
 
-                            // Add the permission nodes to the roles in the guild
-                            for(GuildRolePermission rolePerm : rolePermissions)
-                                guild.getRole(rolePerm.getId()).putPermission(rolePerm);
+                                // Add the permission nodes to the roles in the guild
+                                for(GuildRolePermission rolePerm : rolePermissions)
+                                    guild.getRole(rolePerm.getId()).putPermission(rolePerm);
 
-                            for(GuildMember member : members) {
-                                guild.putMember(member);
+                                // No need to load all guild members immediately
+                                /*for(GuildMember member : members) {
+                                    guild.putMember(member);
 
-                                // Set the member's role object
-                                member.setRole(guild.getRole(member.getRoleId()));
-                            }
+                                    // Set the member's role object
+                                    member.setRole(guild.getRole(member.getRoleId()));
+                                }*/
 
-                            Guild.track(guild);
+                                    Guild.track(guild);
 
-                            ret.set(guild);
-                        }
-                    };
+                                    ret.set(guild);
+                                }
+                            };
 
-                    guildRoleTable.query().select(guildId).build()
-                            .forEach((r, j) -> roles.add(r))
-                            .onFinished(finished)
-                            .execute(true);
+                            guildRoleTable.query().select(guildId).build()
+                                    .forEach((r, j) -> roles.add(r))
+                                    .onFinished(finished)
+                                    .execute(true);
 
-                    guildRolePermissionTable.query().select(guildId).build()
-                            .forEach((rp, j) -> rolePermissions.add(rp))
-                            .onFinished(finished)
-                            .execute(true);
+                            guildRolePermissionTable.query().select(guildId).build()
+                                    .forEach((rp, j) -> rolePermissions.add(rp))
+                                    .onFinished(finished)
+                                    .execute(true);
 
-                    guildMemberTable.query().select(guildId).build()
-                            .forEach((m, j) -> members.add(m))
-                            .onFinished(finished)
-                            .execute(true);
-                })
-            .onEmpty(() -> ret.set(null))
-            .execute(true);
+                            /*guildMemberTable.query().select(guildId).build()
+                                    .forEach((m, j) -> members.add(m))
+                                    .onFinished(finished)
+                                    .execute(true);*/
+                        })
+                    .onEmpty(() -> ret.set(null))
+                    .execute(true);
+        }
 
         return ret;
     }
@@ -107,34 +113,30 @@ public class GuildManager {
             // Only load a guild when the player first logs in.
             if(!event.isFirstInSession()) return;
 
-            Guild g;
-            if((g = Guild.getGuildByMember(event.getPlayer().getUniqueId())) == null) {
-                PhaseLock lock = event.getLock("guild");
+            PhaseLock lock = event.getLock("Guild");
 
-                guildMemberTable.query().select()
-                            .where("player_id", event.getPlayer().getUniqueId().toString())
-                            .limit(1)
-                        .build()
-                        .forEach((guildMember, i) -> {
-                            ListenableFuture<Guild> future = load(guildMember.getGuildId());
-                            future.addListener(() -> {
-                                try {
-                                    future.get().onLogin(event.getPlayer().getUniqueId());
-                                } catch(Exception e) { e.printStackTrace(); }
+            guildMemberTable.query().select()
+                        .where("player_id", event.getPlayer().getUniqueId().toString())
+                        .limit(1)
+                    .build()
+                    .forEach((guildMember, i) -> {
+                        ListenableFuture<Guild> future = load(guildMember.getGuildId());
+                        future.addListener(() -> {
+                            try {
+                                future.get().onLogin(guildMember);
+                            } catch(Exception e) { e.printStackTrace(); }
 
-                                lock.release();
-                            }, GuildController.getInstance().getScheduler()::async);
-                        }).onEmpty(() -> lock.release())
-                        .execute(true);
-            }else
-                g.onLogin(event.getPlayer().getUniqueId());
+                            lock.release();
+                        }, GuildController.getInstance().getScheduler()::async);
+                    }).onEmpty(() -> lock.release())
+                    .execute(true);
         }
 
         @EventHandler
         public void onPlayerQuit(PlayerQuitEvent event) {
             Guild guild;
             if((guild = Guild.getGuildByMember(event.getPlayer().getUniqueId())) != null)
-                guild.onLogout(event.getPlayer().getUniqueId());
+                guild.onLogout(event.getPlayer());
         }
     }
 }

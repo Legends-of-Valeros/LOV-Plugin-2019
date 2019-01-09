@@ -319,17 +319,23 @@ public class Chat extends ModuleListener {
         {
             tb.append(data.channel + " ").color(ch.getTagColor()).bold(true).hover(ch.getName());
 
-            Guild g = Guild.getGuildByMember(e.getPlayer().getUniqueId());
-            if(g != null && g.getTag() != null) {
-                tb.append(g.getTag()).bold(true).hover(g.getName());
-                tb.append(" ");
-            }
-
+            // Add permission prefix
             if (data.prefix != null) {
                 tb.append(ChatColor.translateAlternateColorCodes('&', data.prefix));
                 if (data.title != null)
                     tb.hover(data.title);
             }
+
+            // Guild tag goes after permission prefix
+            Guild g = Guild.getGuildByMember(e.getPlayer().getUniqueId());
+            if(g != null && g.getTag() != null) {
+                tb.append(g.getTag()).bold(true)
+                        .hover(g.getName(),
+                                ChatColor.GRAY + g.getMember(e.getPlayer().getUniqueId()).getRole().getName());
+                tb.append(" ");
+            }
+
+            // Player titles go here
 
             tb.append(e.getPlayer().getName());
 

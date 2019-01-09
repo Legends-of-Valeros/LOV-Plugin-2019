@@ -19,7 +19,6 @@ public class GuildController extends ModuleListener {
 
         GuildManager.onEnable();
 
-        if(LegendsOfValeros.getMode() == ServerMode.DEV)
-            LegendsOfValeros.getInstance().getCommandManager().registerCommand(new GuildCommands());
+        LegendsOfValeros.getInstance().getCommandManager().registerCommand(new GuildCommands());
     }
 }

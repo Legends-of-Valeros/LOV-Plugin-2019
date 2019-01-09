@@ -44,10 +44,6 @@ public class GuildMember {
         return role.hasPermission(perm);
     }
 
-    public boolean isPlayerOnline() {
-        return Bukkit.getOfflinePlayer(playerId).isOnline();
-    }
-
     public Player getPlayer() {
         return Bukkit.getPlayer(playerId);
     }

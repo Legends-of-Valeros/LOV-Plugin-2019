@@ -2,6 +2,7 @@ package com.legendsofvaleros.modules.guilds.guild;
 
 public enum GuildPermission {
     GUILD_ADMIN,
+
     GUILD_UPGRADE,
     GUILD_REMOVE,
     GUILD_RENAME,

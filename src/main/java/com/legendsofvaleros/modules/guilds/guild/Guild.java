@@ -40,6 +40,10 @@ public class Guild {
     public Collection<GuildRole> getRoles() { return roles.values(); }
     public GuildRole getRole(String id) { return roles.get(id); }
 
+    // We should have a default role system that users get set to if they
+    // have no role or their role gets deleted.
+
+    // NOTICE: This only holds a map of ONLINE GUILD MEMBERS.
     private transient Map<UUID, GuildMember> members;
     public Collection<GuildMember> getMembers() { return members.values(); }
     public GuildMember getMember(UUID id) { return members.get(id); }
@@ -73,54 +77,55 @@ public class Guild {
                 .remove();
     }
 
-    public void putMember(GuildMember member) {
-        members.put(member.getId(), member);
-
-        playerGuild.put(member.getId(), guildId);
-        guildMembers.put(guildId, member.getId());
-    }
-
-    public GuildMember addMember(Player player) {
-        if(playerGuild.get(player.getUniqueId()) != null)
+    public GuildMember addMember(Player player, GuildRole role) {
+        if(playerGuilds.get(player.getUniqueId()) != null)
             throw new IllegalStateException("That player is already a member of a guild!");
 
-        GuildMember gm = new GuildMember(guildId, player.getUniqueId(), null);
+        GuildMember gm = new GuildMember(guildId, player.getUniqueId(), role.getId());
         members.put(gm.getId(), gm);
         gm.save();
 
-        playerGuild.put(player.getUniqueId(), guildId);
-        guildMembers.put(guildId, player.getUniqueId());
-        onlineMembers.remove(this, player.getUniqueId());
+        onLogin(gm);
 
         return gm;
     }
 
-    public void removeMember(UUID playerId) {
-        members.remove(playerId)
+    public void removeMember(Player member) {
+        members.remove(member.getUniqueId())
                 .remove();
 
-        playerGuild.remove(playerId);
-        guildMembers.remove(guildId, playerId);
-        onlineMembers.remove(this, playerId);
+        onLogout(member);
     }
 
     public ListenableFuture<Boolean> save() { return GuildManager.getGuildTable().save(this, true); }
     public ListenableFuture<Boolean> remove() {
-        onlineMembers.removeAll(this);
+        // Invalidating the guild in the map will automatically clear the player guild trackers
+        guilds.invalidate(guildId);
 
         return GuildManager.getGuildTable().delete(this, true);
     }
 
-    public void onLogin(UUID playerId) { onlineMembers.put(this, playerId); }
-    public void onLogout(UUID playerId) { onlineMembers.remove(this, playerId); }
+    public void onLogin(GuildMember member) {
+        if(member.getRole() == null)
+            member.setRole(roles.get(member.getRoleId()));
+
+        members.put(member.getId(), member);
+
+        playerGuilds.put(member.getId(), this);
+        guildMembers.remove(this, member.getId());
+    }
+
+    public void onLogout(Player member) {
+        members.remove(member.getUniqueId());
+
+        playerGuilds.remove(member.getUniqueId());
+        guildMembers.remove(guildId, member.getUniqueId());
+    }
 
     // State management
-    // TODO: I don't think guilds are getting removed from the cache correctly.
 
-    private static Map<UUID, UUID> playerGuild = new HashMap<>(); // <Player UUID, Guild UUID>
+    private static Map<UUID, Guild> playerGuilds = new HashMap<>(); // <Player UUID, Guild>
     private static Multimap<UUID, UUID> guildMembers = HashMultimap.create(); // <Guild UUID, Player UUID>
-
-    private static Multimap<Guild, UUID> onlineMembers = HashMultimap.create();
 
     /**
      * Guilds are in this map as long as a single player in the guild is online.
@@ -133,10 +138,10 @@ public class Guild {
                                                         // Ignore replacements
                                                         if(entry.getCause() == RemovalCause.REPLACED) return;
 
-                                                        GuildController.getInstance().getLogger().warning("Entity '" + entry.getKey() + "' removed from the cache: " + entry.getCause());
+                                                        GuildController.getInstance().getLogger().warning("Guild '" + entry.getKey() + "' removed from the cache: " + entry.getCause());
 
                                                         for(UUID playerId : guildMembers.get((UUID)entry.getKey()))
-                                                            playerGuild.remove(playerId);
+                                                            playerGuilds.remove(playerId);
 
                                                         guildMembers.removeAll(entry.getKey());
                                                     })
@@ -146,7 +151,7 @@ public class Guild {
     public static Guild getIfLoaded(UUID guildId) { return guilds.getIfPresent(guildId); }
 
     public static Guild getGuildByMember(UUID uuid) {
-        if(!playerGuild.containsKey(uuid)) return null;
-        return guilds.getIfPresent(playerGuild.get(uuid));
+        if(!playerGuilds.containsKey(uuid)) return null;
+        return playerGuilds.get(uuid);
     }
 }

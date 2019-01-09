@@ -56,7 +56,7 @@ public class GuildRole {
     }
 
     public boolean hasPermission(GuildPermission perm) {
-        return permissions.containsKey(perm);
+        return permissions.containsKey(perm) || permissions.containsKey(GuildPermission.GUILD_ADMIN);
     }
 
     public void removePermission(GuildPermission permission) {
