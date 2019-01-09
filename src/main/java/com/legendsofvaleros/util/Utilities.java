@@ -145,8 +145,6 @@ public class Utilities extends ModuleListener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onInteract(PlayerInteractEvent event) {
-        if (LegendsOfValeros.getMode().allowEditing()) return;
-
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             switch (event.getClickedBlock().getType()) {
                 case CHEST:
