@@ -9,10 +9,7 @@ import com.legendsofvaleros.util.commands.LOVCommands;
 import com.legendsofvaleros.util.commands.TemporaryCommand;
 import com.legendsofvaleros.util.item.Model;
 import com.legendsofvaleros.util.title.TitleUtil;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Painting;
@@ -25,7 +22,10 @@ import org.bukkit.event.server.ServerCommandEvent;
 
 public class Utilities extends ModuleListener {
     private static Utilities instance;
-    public static Utilities getInstance() { return instance; }
+
+    public static Utilities getInstance() {
+        return instance;
+    }
 
     private boolean isShutdown = false;
 
@@ -37,7 +37,7 @@ public class Utilities extends ModuleListener {
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new TemporaryCommand());
 
-        if(LegendsOfValeros.getMode().isLenient()) {
+        if (LegendsOfValeros.getMode().isLenient()) {
             LegendsOfValeros.getInstance().getCommandManager().registerCommand(new LOVCommands());
             LegendsOfValeros.getInstance().getCommandManager().registerCommand(new DebugFlags());
         }
@@ -61,7 +61,7 @@ public class Utilities extends ModuleListener {
             e.setCancelled(true);
 
             MessageUtil.sendError(e.getPlayer(), "*smacks you with a newspaper* Don't do that.");
-        }else if (e.getMessage().startsWith("/stop")) {
+        } else if (e.getMessage().startsWith("/stop")) {
             e.setCancelled(true);
 
             shutdown(e.getPlayer());
@@ -74,7 +74,7 @@ public class Utilities extends ModuleListener {
             e.setCancelled(true);
 
             MessageUtil.sendError(e.getSender(), "*smacks you with a newspaper* Don't do that.");
-        }else if (e.getCommand().startsWith("stop")) {
+        } else if (e.getCommand().startsWith("stop")) {
             e.setCancelled(true);
 
             shutdown(e.getSender());
@@ -82,7 +82,7 @@ public class Utilities extends ModuleListener {
     }
 
     private void shutdown(CommandSender sender) {
-        if(isShutdown) {
+        if (isShutdown) {
             MessageUtil.sendError(sender, "The server is already shutting down!");
             return;
         }
@@ -92,7 +92,7 @@ public class Utilities extends ModuleListener {
         for (Player p : Bukkit.getOnlinePlayers())
             try {
                 p.kickPlayer("Server shutting down...");
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
 
@@ -102,12 +102,12 @@ public class Utilities extends ModuleListener {
         getScheduler().executeInMyCircleTimer(() -> {
             // Wait for async tasks to complete. Unless a task hits the database
             // every second, this should pass eventually every time.
-            if(Doris.inst().waitingAsync.get() > 0) {
+            if (Doris.inst().waitingAsync.get() > 0) {
                 return;
             }
 
-            for(InternalScheduler scheduler : InternalScheduler.getAllSchedulers()) {
-                if(scheduler == getScheduler()) continue;
+            for (InternalScheduler scheduler : InternalScheduler.getAllSchedulers()) {
+                if (scheduler == getScheduler()) continue;
 
                 scheduler.shutdown();
 
@@ -118,14 +118,14 @@ public class Utilities extends ModuleListener {
             // Once all other schedulers have shut down, start the shutdown of my scheduler
             getScheduler().shutdown();
 
-            if(getScheduler().getTasksRemaining() == 0)
+            if (getScheduler().getTasksRemaining() == 0)
                 Bukkit.shutdown();
         }, 20L, 20L);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onLoginServer(PlayerLoginEvent event) {
-        if(isShutdown)
+        if (isShutdown)
             event.setKickMessage("Server is shutting down...");
     }
 
@@ -145,7 +145,7 @@ public class Utilities extends ModuleListener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onInteract(PlayerInteractEvent event) {
-        if(LegendsOfValeros.getMode().allowEditing()) return;
+        if (LegendsOfValeros.getMode().allowEditing()) return;
 
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             switch (event.getClickedBlock().getType()) {
@@ -167,6 +167,11 @@ public class Utilities extends ModuleListener {
                         event.setCancelled(true);
                     break;
             }
+        }
+
+        //prevent farmland from being trampled
+        if (event.getAction() == Action.PHYSICAL && event.getClickedBlock().getType() == Material.SOIL) {
+            event.setCancelled(true);
         }
     }
 
