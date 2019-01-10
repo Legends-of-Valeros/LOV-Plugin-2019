@@ -8,6 +8,7 @@ import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.Modules;
 import com.legendsofvaleros.modules.auction.AuctionController;
 import com.legendsofvaleros.modules.bank.Bank;
+import com.legendsofvaleros.modules.bigbrother.BigBrother;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.chat.Chat;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
@@ -138,6 +139,7 @@ public class LegendsOfValeros extends JavaPlugin {
         Modules.loadModuleBypass(Utilities.class);
 
         Modules.registerModule(Bank.class);
+        Modules.registerModule(BigBrother.class);
         Modules.registerModule(Characters.class);
         Modules.registerModule(Chat.class);
         Modules.registerModule(CombatEngine.class);
@@ -154,6 +156,7 @@ public class LegendsOfValeros extends JavaPlugin {
         Modules.registerModule(LootManager.class);
         Modules.registerModule(Mobs.class);
         Modules.registerModule(Mounts.class);
+        // Modules.registerModule(Nanny.class);
         Modules.registerModule(NPCs.class);
         Modules.registerModule(Parties.class);
         Modules.registerModule(PlayerMenu.class);
