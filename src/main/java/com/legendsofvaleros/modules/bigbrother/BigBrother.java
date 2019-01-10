@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.bigbrother;
 
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.ServerMode;
 import com.legendsofvaleros.module.Module;
 
 /**
@@ -12,7 +13,7 @@ public class BigBrother extends Module {
     public void onLoad() {
         super.onLoad();
 
-        if(!LegendsOfValeros.getMode().doLogSaving())
-            getLogger().info("Log saving not enabled. No data will be added to the big brother database.");
+        if(LegendsOfValeros.getMode() != ServerMode.LIVE)
+            getLogger().info("Disabled outside of a LIVE server. No data will be added to the big brother database.");
     }
 }

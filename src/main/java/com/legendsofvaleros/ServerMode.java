@@ -2,7 +2,7 @@ package com.legendsofvaleros;
 
 public enum ServerMode {
     DEV(true, false, true, true),
-    TESTING(true, false, true, true),
+    TESTING(true, true, true, true),
     LIVE(false, true, false, false);
 
     boolean verbose;
