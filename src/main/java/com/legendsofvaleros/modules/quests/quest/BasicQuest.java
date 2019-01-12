@@ -17,9 +17,7 @@ public class BasicQuest extends AbstractQuest {
     }
 
     @Override
-    public void onTalk(PlayerCharacter pc, QuestStatus status) {
-        if (!status.canAccept()) return;
-
+    public void onStart(PlayerCharacter pc) {
         List<String> list = new ArrayList<>();
         list.add(QuestUtil.moustache(pc.getPlayer(), getDescription()));
         displayBook("New Quest", list, pc.getPlayer(), isForced());

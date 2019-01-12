@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.quests;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
@@ -34,6 +35,7 @@ import com.legendsofvaleros.modules.quests.trait.TraitQuestGiver;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.title.Title;
 import com.legendsofvaleros.util.title.TitleUtil;
+import com.sun.xml.internal.ws.api.message.Message;
 import io.chazza.advancementapi.AdvancementAPI;
 import io.chazza.advancementapi.FrameType;
 import io.chazza.advancementapi.Trigger;
@@ -45,6 +47,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerInteractEvent;
+
+import java.util.concurrent.ExecutionException;
 
 @DependsOn(NPCs.class)
 @DependsOn(CombatEngine.class)
@@ -148,27 +152,37 @@ public class Quests extends ModuleListener {
         }
     }
 
-    public static void attemptGiveQuest(PlayerCharacter pc, String questId) {
+    public static ListenableFuture<Boolean> attemptGiveQuest(PlayerCharacter pc, String questId) {
+        SettableFuture<Boolean> ret = SettableFuture.create();
+
         ListenableFuture<IQuest> future = QuestManager.getQuest(questId);
         future.addListener(() -> {
             try {
                 IQuest quest = future.get();
 
-                if (quest == null)
-                    return;
+                if (quest != null) {
+                    QuestStatus status = QuestManager.getStatus(pc, quest);
 
-                QuestStatus status = QuestManager.getStatus(pc, quest);
+                    if (status.canAccept()) {
+                        QuestManager.removeQuestProgress(quest.getId(), pc);
 
-                if (status.canAccept())
-                    QuestManager.removeQuestProgress(quest.getId(), pc);
+                        QuestManager.addPlayerQuest(pc, quest);
 
-                QuestManager.addPlayerQuest(pc, quest);
+                        quest.onStart(pc);
 
-                quest.onTalk(pc, status);
+                        ret.set(true);
+
+                        return;
+                    }
+                }
             } catch (Exception e) {
                 MessageUtil.sendException(Quests.getInstance(), pc.getPlayer(), e, true);
             }
+
+            ret.set(false);
         }, Quests.getInstance().getScheduler()::async);
+
+        return ret;
     }
 
     @EventHandler
@@ -192,7 +206,17 @@ public class Quests extends ModuleListener {
 
     @EventHandler
     public void onCharacterCreated(PlayerCharacterCreateEvent event) {
-        attemptGiveQuest(event.getPlayerCharacter(), introQuestId);
+        ListenableFuture<Boolean> future = attemptGiveQuest(event.getPlayerCharacter(), introQuestId);
+
+        future.addListener(() -> {
+            try {
+                if(future.get()) {
+                    MessageUtil.sendError(event.getPlayer(), "Failed to give the intro quest! This means you're likely stuck! D:");
+                }
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }, getScheduler()::sync);
     }
 
 

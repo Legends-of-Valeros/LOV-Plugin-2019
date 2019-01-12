@@ -57,9 +57,9 @@ public interface IQuest {
 	IQuestObjective<?>[] getCurrentGroup(PlayerCharacter pc);
 
 	/**
-	 * Called when a player talks to a quest NPC.
+	 * Called when a player starts a quest.
 	 */
-	void onTalk(PlayerCharacter pc, QuestStatus value);
+	void onStart(PlayerCharacter pc);
 	
 	/**
 	 * Called when the quest is declined.
