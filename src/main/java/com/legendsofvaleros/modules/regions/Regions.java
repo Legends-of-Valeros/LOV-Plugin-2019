@@ -56,13 +56,13 @@ public class Regions extends ModuleListener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onEnterRetion(RegionEnterEvent event) {
+    public void onEnterRegion(RegionEnterEvent event) {
         if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
         QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onLeaveRetion(RegionLeaveEvent event) {
+    public void onLeaveRegion(RegionLeaveEvent event) {
         if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
         QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
     }
