@@ -64,11 +64,22 @@ public class AuctionController extends ModuleListener {
         getScheduler().executeInMyCircleTimer(new InternalTask(() -> {
             try {
                 //TODO remove freeze of the thread with callback
-                this.loadBidAuctions().get().forEach(auction -> {
-                    if (auction.getValidUntil() <= System.currentTimeMillis()) {
-                        this.handleBidEnd(auction);
+                SettableFuture<ArrayList<Auction>> future = this.loadBidAuctions();
+
+                future.addListener(() -> {
+                    try {
+                        ArrayList<Auction> auctions = future.get();
+                        if(auctions == null) return;
+
+                        auctions.forEach(auction -> {
+                            if (auction.getValidUntil() <= System.currentTimeMillis()) {
+                                this.handleBidEnd(auction);
+                            }
+                        });
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
                     }
-                });
+                }, getScheduler()::async);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

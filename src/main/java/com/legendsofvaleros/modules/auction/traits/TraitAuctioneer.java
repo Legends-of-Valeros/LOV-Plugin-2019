@@ -2,6 +2,7 @@ package com.legendsofvaleros.modules.auction.traits;
 
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.codingforcookies.robert.slot.Slot;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.modules.auction.Auction;
 import com.legendsofvaleros.modules.auction.AuctionController;
@@ -12,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -28,16 +30,18 @@ public class TraitAuctioneer extends LOVTrait {
 
         slot.set(new Slot(new ItemBuilder(Material.BOOK).setName("Auction House").create(), (gui, p, event) -> {
             gui.close(p);
-            ArrayList<Auction> auctions = null;
 
-            //TODO prevent freeze of main thread with callback
-            try {
-                auctions = AuctionController.getInstance().loadEntries().get();
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
+            ListenableFuture<ArrayList<Auction>> future = AuctionController.getInstance().loadEntries();
 
-            new AuctionGui(auctions).open(p);
+            future.addListener(() -> {
+                try {
+                    ArrayList<Auction> auctions = future.get();
+
+                    new AuctionGui(auctions).open(p);
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }, AuctionController.getInstance().getScheduler()::sync);
         }));
     }
 }
