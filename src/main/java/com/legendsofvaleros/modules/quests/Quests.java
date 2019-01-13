@@ -171,8 +171,13 @@ public class Quests extends ModuleListener {
 
                         ret.set(true);
 
+                        MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' given successfully!");
+
                         return;
-                    }
+                    }else
+                        MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' cannot be given! Status: " + status.name());
+                }else{
+                    MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' doesn't exist!");
                 }
             } catch (Exception e) {
                 MessageUtil.sendException(Quests.getInstance(), pc.getPlayer(), e, true);
@@ -205,17 +210,7 @@ public class Quests extends ModuleListener {
 
     @EventHandler
     public void onCharacterCreated(PlayerCharacterCreateEvent event) {
-        ListenableFuture<Boolean> future = attemptGiveQuest(event.getPlayerCharacter(), introQuestId);
-
-        future.addListener(() -> {
-            try {
-                if(future.get()) {
-                    MessageUtil.sendError(event.getPlayer(), "Failed to give the intro quest! This means you're likely stuck! D:");
-                }
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
-            }
-        }, getScheduler()::sync);
+        attemptGiveQuest(event.getPlayerCharacter(), introQuestId);
     }
 
 

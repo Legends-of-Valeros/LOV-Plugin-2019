@@ -65,7 +65,7 @@ public class MessageUtil {
 	}
 
 	public static void sendDebug(CommandSender sender, String message) {
-		sender.sendMessage(ChatColor.GOLD + "[d] " + resetColor(ChatColor.GOLD, message));
+		sender.sendMessage(ChatColor.GOLD + "[v] " + resetColor(ChatColor.GOLD, message));
 	}
 
 	public static void sendDebug(CommandSender sender, BaseComponent[] message) {
