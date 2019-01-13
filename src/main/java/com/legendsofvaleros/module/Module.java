@@ -19,11 +19,11 @@ public abstract class Module {
     private File dataFolder;
     private YamlConfigAccessor configAccessor;
 
-    private ModuleTimings timings;
-    public ModuleTimings getTimings() { return timings; }
+    private ModuleEventTimings timings;
+    public ModuleEventTimings getTimings() { return timings; }
 
     public void onLoad() {
-        timings = new ModuleTimings(this);
+        timings = new ModuleEventTimings(this);
     }
 
     public void onUnload() {

@@ -5,7 +5,7 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.Module;
-import com.legendsofvaleros.module.ModuleTimings;
+import com.legendsofvaleros.module.ModuleEventTimings;
 import com.legendsofvaleros.module.Modules;
 import com.legendsofvaleros.scheduler.InternalScheduler;
 import com.legendsofvaleros.util.Lag;
@@ -69,7 +69,7 @@ public class LOVCommands extends BaseCommand {
                     continue;
             }
 
-            ModuleTimings timings = module.getTimings();
+            ModuleEventTimings timings = module.getTimings();
             if(timings == null) {
                 sender.sendMessage(ChatColor.RED + module.getName() + ": Error");
                 continue;

@@ -9,7 +9,7 @@ import org.bukkit.event.Event;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ModuleTimings {
+public class ModuleEventTimings {
     private Map<Class<? extends Event>, Long> calls = new ConcurrentHashMap<>();
     public Collection<Class<? extends Event>> getTracked() { return calls.keySet(); }
     public Long getCalls(Class<? extends Event> ec) { return calls.get(ec); }
@@ -19,7 +19,7 @@ public class ModuleTimings {
 
     private InternalTask cleanupTask;
 
-    public ModuleTimings(Module module) {
+    public ModuleEventTimings(Module module) {
         // Clean up the timings list every 10 seconds.
         // Run this under the Utilities module so we don't pollute
         // execution counters with it.

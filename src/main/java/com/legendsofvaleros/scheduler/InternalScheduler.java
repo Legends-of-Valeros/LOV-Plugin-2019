@@ -25,7 +25,10 @@ public class InternalScheduler extends Thread {
     public static Collection<InternalScheduler> getAllSchedulers() { return all.values(); }
 
     private String name;
+
     private boolean shutdown = false;
+    public void shutdown() { this.shutdown = true; }
+    public boolean isShuttingDown() { return shutdown; }
 
     private Queue<InternalTask> list = new ConcurrentLinkedQueue<>();
     public int getTasksRemaining() { return list.size(); }
@@ -41,16 +44,16 @@ public class InternalScheduler extends Thread {
     private long tick = 0;
     public long getCurrentTick() { return tick; }
 
+    private long lastTickTime = 0L;
+    public long getLastTickTime() { return lastTickTime; }
+
     public List<Long> timings = new ArrayList<>();
 
-    /*private long[] last_ticks = new long[] { 1, 1, 1, 1, 1 };
-    private double tps = 20;
-    private long tick_duration = 0;
-    private long tick = 0;
-    private int prev_task_amount = 0;*/
+    private final InternalSchedulerWatchdog watchdog;
 
     public InternalScheduler(String name) {
         this.name = name;
+        this.watchdog = new InternalSchedulerWatchdog(this);
     }
 
     @Override
@@ -72,7 +75,7 @@ public class InternalScheduler extends Thread {
                 if (shutdown && tick % SHUTDOWN_NOTIFY == 0) {
                     LegendsOfValeros.getInstance().getLogger().warning("'" + name + "' is waiting for " + list.size() + " tasks to complete...");
                     for(InternalTask task : list) {
-                        if(!task.getName().contains("ModuleTimings"))
+                        if(!task.getName().contains("com.legendsofvaleros"))
                             LegendsOfValeros.getInstance().getLogger().warning("  - " + task.getName());
                     }
                 }
@@ -82,6 +85,7 @@ public class InternalScheduler extends Thread {
                 fired.clear();
 
                 tick++;
+                lastTickTime = System.currentTimeMillis();
 
                 while (!list.isEmpty()) {
                     curr = list.poll();
@@ -313,11 +317,11 @@ public class InternalScheduler extends Thread {
     }
 
     public InternalScheduler startup() {
-        if (!this.isAlive()) start();
-        return this;
-    }
+        if (!this.isAlive()) {
+            start();
+            this.watchdog.startup();
+        }
 
-    public void shutdown() {
-        this.shutdown = true;
+        return this;
     }
 }
