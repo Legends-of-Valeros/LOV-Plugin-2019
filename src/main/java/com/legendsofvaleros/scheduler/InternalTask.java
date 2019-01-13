@@ -81,4 +81,9 @@ public class InternalTask {
     public void cancel() {
         setRepeating(false);
     }
+
+    @Override
+    public String toString() {
+        return "InternalTask{name=" + name + ",sync=" + sync + ",repeat=" + repeat + ",ri=" + ri + ",tick=" + net + ",executed=" + executed +"}";
+    }
 }

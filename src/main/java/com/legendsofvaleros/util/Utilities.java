@@ -4,6 +4,7 @@ import com.codingforcookies.doris.Doris;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.scheduler.InternalScheduler;
+import com.legendsofvaleros.scheduler.InternalTask;
 import com.legendsofvaleros.util.MessageUtil.ExceptionManager;
 import com.legendsofvaleros.util.commands.LOVCommands;
 import com.legendsofvaleros.util.commands.TemporaryCommand;
@@ -103,6 +104,7 @@ public class Utilities extends ModuleListener {
             // Wait for async tasks to complete. Unless a task hits the database
             // every second, this should pass eventually every time.
             if (Doris.inst().waitingAsync.get() > 0) {
+                getLogger().info("Waiting for " + Doris.inst().waitingAsync.get() + " async queries to complete...");
                 return;
             }
 
@@ -111,14 +113,20 @@ public class Utilities extends ModuleListener {
 
                 scheduler.shutdown();
 
-                if (scheduler.getTasksRemaining() > 0)
+                if (scheduler.getTasksRemaining() > 0) {
+                    getLogger().info("Waiting for " + scheduler.getTasksRemaining() + " tasks to complete in " + scheduler.getName() + " (" + scheduler.getCurrentTick() + ")...");
+                    for(InternalTask task : scheduler.getTasksQueued())
+                        getLogger().info(" -" + task.toString());
                     return;
+                }
             }
 
             // Once all other schedulers have shut down, start the shutdown of my scheduler
             getScheduler().shutdown();
 
-            if (getScheduler().getTasksRemaining() == 0)
+            if (getScheduler().getTasksRemaining() > 0)
+                getLogger().info("Waiting for " + getScheduler().getTasksRemaining() + " tasks to complete...");
+            else
                 Bukkit.shutdown();
         }, 20L, 20L);
     }

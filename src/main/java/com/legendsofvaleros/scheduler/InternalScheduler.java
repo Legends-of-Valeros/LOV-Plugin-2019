@@ -29,6 +29,7 @@ public class InternalScheduler extends Thread {
 
     private Queue<InternalTask> list = new ConcurrentLinkedQueue<>();
     public int getTasksRemaining() { return list.size(); }
+    public InternalTask[] getTasksQueued() { return list.toArray(new InternalTask[0]); }
 
     int totalS = 0, totalA = 0;
     public int getSyncTasksFired() { return totalS; }
@@ -38,7 +39,7 @@ public class InternalScheduler extends Thread {
     public long getTotalBehind() { return totalBehind; }
 
     private long tick = 0;
-    public long getTotalTicks() { return tick; }
+    public long getCurrentTick() { return tick; }
 
     public List<Long> timings = new ArrayList<>();
 
@@ -167,6 +168,7 @@ public class InternalScheduler extends Thread {
             e.printStackTrace();
         }
 
+        shutdown = true;
         all.remove(name);
     }
 

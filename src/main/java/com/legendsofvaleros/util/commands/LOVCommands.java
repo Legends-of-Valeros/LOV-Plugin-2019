@@ -47,7 +47,7 @@ public class LOVCommands extends BaseCommand {
 
         for (InternalScheduler scheduler : Modules.getSchedulers()) {
             double tps = scheduler.getAverageTPS();
-            sender.sendMessage(ChatColor.DARK_GRAY + scheduler.getName() + ": " + ChatColor.GRAY + tps + "/20.0 (A: " + scheduler.getAsyncTasksFired() + " | S: " + scheduler.getSyncTasksFired() + " | +" + scheduler.getTotalBehind() + "ms)");
+            sender.sendMessage((scheduler.isAlive() ? ChatColor.DARK_GRAY : ChatColor.RED) + scheduler.getName() + ": " + ChatColor.GRAY + tps + "/20.0 (A: " + scheduler.getAsyncTasksFired() + " | S: " + scheduler.getSyncTasksFired() + " | +" + scheduler.getTotalBehind() + "ms)");
             sender.sendMessage("  " + LegendsOfValeros.getInstance().createTPSBar(tps));
         }
 
