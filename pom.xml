@@ -64,7 +64,6 @@
                     <weaveDirectories>
                         <weaveDirectory>${project.build.directory}/classes</weaveDirectory>
                     </weaveDirectories>
-                    <aspectLibraries></aspectLibraries>
                     <complianceLevel>${java.version}</complianceLevel>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
