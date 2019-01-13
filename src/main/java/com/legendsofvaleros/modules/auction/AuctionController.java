@@ -63,7 +63,6 @@ public class AuctionController extends ModuleListener {
 
         getScheduler().executeInMyCircleTimer(new InternalTask(() -> {
             try {
-                //TODO remove freeze of the thread with callback
                 SettableFuture<ArrayList<Auction>> future = this.loadBidAuctions();
 
                 future.addListener(() -> {
