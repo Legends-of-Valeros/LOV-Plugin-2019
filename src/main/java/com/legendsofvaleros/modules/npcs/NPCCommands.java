@@ -84,6 +84,7 @@ public class NPCCommands extends BaseCommand {
 	@CommandPermission("npcs.bind.view")
 	public void cmdNPCID(Player player) {
 		player.performCommand("npc select");
+
 		NPC npc = CitizensAPI.getDefaultNPCSelector().getSelected(player);
 		if(npc == null) {
 			MessageUtil.sendError(player, "You must have an NPC selected to do that.");

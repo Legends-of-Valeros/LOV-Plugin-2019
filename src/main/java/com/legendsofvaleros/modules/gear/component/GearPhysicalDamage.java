@@ -10,7 +10,7 @@ import com.legendsofvaleros.modules.gear.util.ItemUtil;
 import com.legendsofvaleros.util.field.RangedValue;
 import org.bukkit.ChatColor;
 
-public class GearDamage {
+public class GearPhysicalDamage {
 	public static class Persist {
 		public int min = 0;
 		public int max = 1;

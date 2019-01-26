@@ -59,7 +59,7 @@ public class GearController extends ModuleListener {
         GearRegistry.registerComponent("bind", SoulbindComponent.class);
 
         GearRegistry.registerComponent("require", RequireComponent.class);
-        GearRegistry.registerComponent("damage", GearDamage.Component.class);
+        GearRegistry.registerComponent("damage", GearPhysicalDamage.Component.class);
         GearRegistry.registerComponent("durability", GearDurability.Component.class);
         GearRegistry.registerComponent("usable", GearUsable.Component.class);
         GearRegistry.registerComponent("use_speed", GearUseSpeed.Component.class);

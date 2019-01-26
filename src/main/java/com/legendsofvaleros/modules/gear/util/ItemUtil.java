@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.gear.util;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.gear.component.GearDamage;
+import com.legendsofvaleros.modules.gear.component.GearPhysicalDamage;
 import com.legendsofvaleros.modules.gear.component.GearUseSpeed;
 import com.legendsofvaleros.modules.gear.component.trigger.PickupTrigger;
 import com.legendsofvaleros.modules.gear.event.GearPickupEvent;
@@ -149,7 +149,7 @@ public class ItemUtil {
 	}
 
 	public static double getAverageDPS(Gear.Instance item) {
-		GearDamage.Persist pdc = item.getPersist(GearDamage.Component.class);
+		GearPhysicalDamage.Persist pdc = item.getPersist(GearPhysicalDamage.Component.class);
 		if(pdc == null) return 0;
 		
 		double avg = (pdc.max - pdc.min) / 2D + pdc.min;

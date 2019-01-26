@@ -363,9 +363,9 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
         }
 
         // Cannot let the user be a character while making a new one.
-        logoutCharacter(player, false);
-
-        Characters.getInstance().getUiManager().startCharacterCreation(player, number, creationListener);
+        logoutCharacter(player, false).addListener(() -> {
+            Characters.getInstance().getUiManager().startCharacterCreation(player, number, creationListener);
+        }, Characters.getInstance().getScheduler()::sync);
     }
 
     /**

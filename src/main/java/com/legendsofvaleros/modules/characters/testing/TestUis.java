@@ -47,10 +47,7 @@ public class TestUis implements CharactersUiManager, CombatEngineUiManager {
 
 		player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 1), true);
 
-		// Delay teleport 1 tick to prevent GUI issues.
-		Characters.getInstance().getScheduler().executeInSpigotCircleLater(() -> {
-			player.teleport(Characters.getInstance().getCharacterConfig().getCreateLocation());
-		}, 1L);
+		player.teleport(Characters.getInstance().getCharacterConfig().getCreateLocation());
 		
 		ShitUtil.doShit(player, Characters.getInstance().getCharacterConfig().getCreationStartText(), null);
 

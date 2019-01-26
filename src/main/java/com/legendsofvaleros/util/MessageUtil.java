@@ -181,23 +181,28 @@ public class MessageUtil {
 		th.printStackTrace();
 
 		if(LegendsOfValeros.getMode().doLogSaving()) {
-			ExceptionManager.add(module, sender, trace);
+			try {
+				ExceptionManager.add(module, sender, trace);
 
-			if (Discord.SERVER != null) {
-				// Make this channel configurable
-				Channel channel = Discord.SERVER.getChannelById("358612310731915264");
+				if (Discord.SERVER != null) {
 
-				if (channel != null) {
-					Utilities.getInstance().getScheduler().executeInMyCircle(() -> {
-						try {
-							channel.sendMessage("`[" + Discord.TAG + (module != null ? ":" + module : "") + "]` **"
-									+ (sender != null ? " **__" + sender.getName() + "__ triggered an exception:" : "Triggered an exception:")
-									+ "** ```" + trace + "```").get();
-						} catch (InterruptedException | ExecutionException _e) {
-							_e.printStackTrace();
-						}
-					});
+					// Make this channel configurable
+					Channel channel = Discord.SERVER.getChannelById("358612310731915264");
+
+					if (channel != null) {
+						Utilities.getInstance().getScheduler().executeInMyCircle(() -> {
+							try {
+								channel.sendMessage("`[" + Discord.TAG + (module != null ? ":" + module : "") + "]` **"
+										+ (sender != null ? " **__" + sender.getName() + "__ triggered an exception:" : "Triggered an exception:")
+										+ "** ```" + trace + "```").get();
+							} catch (InterruptedException | ExecutionException _e) {
+								_e.printStackTrace();
+							}
+						});
+					}
 				}
+			} catch(Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}

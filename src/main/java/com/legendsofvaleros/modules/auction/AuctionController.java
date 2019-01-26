@@ -325,6 +325,8 @@ public class AuctionController extends ModuleListener {
      * @return
      */
     public boolean isPrompted(Player p) {
+        if(!Characters.isPlayerCharacterLoaded(p)) return false;
+
         PlayerCharacter playerCharacter = Characters.getPlayerCharacter(p);
         return playerCharacter.isCurrent() && auctionPrompts.containsKey(playerCharacter.getUniqueCharacterId());
     }

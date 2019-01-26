@@ -132,9 +132,10 @@ public class Utilities extends ModuleListener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onLoginServer(PlayerLoginEvent event) {
-        if (isShutdown)
-            event.setKickMessage("Server is shutting down...");
+    public void onLoginServer(AsyncPlayerPreLoginEvent event) {
+        if (isShutdown) {
+            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "Server is shutting down...");
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
