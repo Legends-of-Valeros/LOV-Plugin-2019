@@ -287,11 +287,13 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
     }
 
     private ListenableFuture<Void> logoutCharacter(Player player, boolean serverLogout) {
-        Characters.getInstance().getLogger().info(player.getDisplayName() + " is logging out of his character...");
-
         SettableFuture<Void> ret = SettableFuture.create();
 
-        if (Characters.isPlayerCharacterLoaded(player)) {
+        if (!Characters.isPlayerCharacterLoaded(player)) {
+            ret.set(null);
+        }else{
+            Characters.getInstance().getLogger().info(player.getDisplayName() + " is logging out of his character...");
+
             PlayerCharacter character = Characters.getPlayerCharacter(player);
 
             TaskPhase<CharacterId> tp =
