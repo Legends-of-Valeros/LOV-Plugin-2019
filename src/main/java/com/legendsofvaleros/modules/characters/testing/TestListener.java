@@ -127,11 +127,14 @@ public class TestListener implements Listener {
 		event.setCancelled(false);
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onValerosExperienceChange(PlayerCharacterExperienceChangeEvent event) {
 		Player player = event.getPlayer();
 		ActionBar.set(player, ChatColor.AQUA + "+" + event.getChange() + "xp");
-		player.setExp((float)event.getPlayerCharacter().getExperience().getPercentageTowardsNextLevel());
+
+		Characters.getInstance().getScheduler().executeInSpigotCircle(() -> {
+			player.setExp((float)event.getPlayerCharacter().getExperience().getPercentageTowardsNextLevel());
+		});
 	}
 
 	@EventHandler
