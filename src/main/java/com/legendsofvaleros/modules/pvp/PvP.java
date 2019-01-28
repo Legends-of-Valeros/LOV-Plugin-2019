@@ -76,6 +76,8 @@ public class PvP extends ModuleListener {
     public void onPlayerDamagePlayer(CombatEngineDamageEvent event) {
         if(event.isCancelled()) return;
 
+        if(event.getAttacker() == null) return;
+
         if (!event.getAttacker().isPlayer() || !event.getDamaged().isPlayer()) return;
 
         if (!Characters.isPlayerCharacterLoaded((Player)event.getDamaged().getLivingEntity())) return;

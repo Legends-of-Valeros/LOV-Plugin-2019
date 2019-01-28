@@ -25,8 +25,11 @@ public class GraveyardCommands extends BaseCommand {
 			return;
 		}
 		
-		Graveyard data = GraveyardManager.create(zone, player.getLocation().getWorld(), player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ());
-		data.radius = radius;
+		Graveyard data = GraveyardManager.create(zone, player.getLocation().getWorld(),
+														player.getLocation().getBlockX(),
+														player.getLocation().getBlockY(),
+														player.getLocation().getBlockZ(),
+														radius);
 
 		MessageUtil.sendUpdate(player, ChatColor.YELLOW + "Created graveyards with radius " + data.radius + " blocks in zone '" + zone.name + "'.");
 	}

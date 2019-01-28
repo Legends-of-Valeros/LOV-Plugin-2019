@@ -4,9 +4,12 @@ import com.codingforcookies.doris.sql.TableManager;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.mobs.Mobs;
 import com.legendsofvaleros.modules.zones.Zone;
 import com.legendsofvaleros.modules.zones.Zones;
 import com.legendsofvaleros.util.MessageUtil;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 
 import java.sql.ResultSet;
@@ -37,41 +40,43 @@ public class GraveyardManager {
                     ResultSet result = statement.getResultSet();
 
                     while (result != null && result.next()) {
-                        Graveyard sd = new Graveyard();
-
-                        sd.zone = result.getString(GRAVEYARD_ZONE);
-
-                        sd.world = result.getString(GRAVEYARD_WORLD);
-
                         String[] pos = result.getString(GRAVEYARD_POSITION).split(",");
-                        sd.position = new int[]{Integer.valueOf(pos[0]), Integer.valueOf(pos[1]), Integer.valueOf(pos[2])};
 
-                        sd.radius = result.getShort(GRAVEYARD_RADIUS);
-
-                        Zone z = Zones.manager().getZone(sd.zone);
+                        Zone z = Zones.manager().getZone(result.getString(GRAVEYARD_ZONE));
                         if (z == null) {
-                            MessageUtil.sendException(Graveyards.getInstance(), "Graveyard in an unknown zone! Offender: " + sd.position[0] + ", " + sd.position[1] + ", " + sd.position[2] + " in " + sd.zone, false);
+                            MessageUtil.sendException(Graveyards.getInstance(), "Graveyard in an unknown zone! Offender: " + pos[0] + ", " + pos[1] + ", " + pos[2], false);
                             return;
                         }
 
-                        graveyards.put(z.channel, sd);
+                        create(z, Bukkit.getWorld(result.getString(GRAVEYARD_WORLD)),
+                                Integer.valueOf(pos[0]),
+                                Integer.valueOf(pos[1]),
+                                Integer.valueOf(pos[2]),
+                                result.getShort(GRAVEYARD_RADIUS));
                     }
                 })
                 .execute(true);
     }
 
-    public static Graveyard create(Zone zone, World world, int x, int y, int z) {
+    public static Graveyard create(Zone zone, World world, int x, int y, int z, int radius) {
         Graveyard data = new Graveyard();
         data.zone = zone.id;
-        data.world = world.getName();
-        data.position = new int[]{x, y, z};
+        data.worldName = world.getName();
+        data.x = x;
+        data.y = y;
+        data.z = z;
+        data.radius = radius;
 
         graveyards.put(zone.channel, data);
+
+        // If editing is enabled, generate the hologram right away.
+        if(LegendsOfValeros.getMode().allowEditing())
+            Graveyards.getInstance().getScheduler().sync(data::getHologram);
 
         return data;
     }
 
-    public static Graveyard getNearestGraveyard(Zone zone, int x, int z) {
+    public static Graveyard getNearestGraveyard(Zone zone, Location loc) {
         if (graveyards == null || graveyards.size() == 0 || zone == null)
             return null;
 
@@ -84,9 +89,7 @@ public class GraveyardManager {
         Graveyard closest = null;
         double distance = Double.MAX_VALUE;
         for (Graveyard data : yards) {
-            double d = Math.sqrt(Math.pow(x - data.position[0], 2)
-                    + Math.pow(z - data.position[2], 2));
-            if (d < distance)
+            if (loc.distance(data.getLocation()) < distance)
                 closest = data;
         }
 
@@ -97,23 +100,23 @@ public class GraveyardManager {
         manager.query()
                 .insert()
                 .values(GRAVEYARD_ZONE, graveyard.zone,
-                        GRAVEYARD_WORLD, graveyard.world,
-                        GRAVEYARD_POSITION, graveyard.position[0] + "," + graveyard.position[1] + "," + graveyard.position[2],
+                        GRAVEYARD_WORLD, graveyard.worldName,
+                        GRAVEYARD_POSITION, graveyard.x + "," + graveyard.y + "," + graveyard.z,
                         GRAVEYARD_RADIUS, graveyard.radius)
                 .onDuplicateUpdate(GRAVEYARD_RADIUS)
                 .build()
                 .execute(true);
     }
 
-    public static void remove(Zone zone, final Graveyard graveyard) {
+    public static void remove(final Graveyard graveyard) {
         if (graveyard == null)
             return;
 
         manager.query()
                 .remove()
                 .where(GRAVEYARD_ZONE, graveyard.zone,
-                        GRAVEYARD_WORLD, graveyard.world,
-                        GRAVEYARD_POSITION, graveyard.position[0] + "," + graveyard.position[1])
+                        GRAVEYARD_WORLD, graveyard.worldName,
+                        GRAVEYARD_POSITION, graveyard.x + "," + graveyard.y + "," + graveyard.z)
                 .limit(1)
                 .build()
                 .execute(true);

@@ -31,6 +31,8 @@ public class Graveyards extends ModuleListener {
         instance = this;
 
         LegendsOfValeros.getInstance().getCommand("suicide").setExecutor((sender, arg1, arg2, arg3) -> {
+            if(CombatEngine.getEntity((Player)sender) == null) return false;
+
             CombatEngine.getInstance().causeTrueDamage((Player) sender, null, CombatEngine.getEntity((Player) sender).getStats().getStat(Stat.MAX_HEALTH), ((Player) sender).getLocation());
             return true;
         });
@@ -42,11 +44,11 @@ public class Graveyards extends ModuleListener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDeath(PlayerRespawnEvent event) {
-        Graveyard data = GraveyardManager.getNearestGraveyard(Zones.manager().getZone(event.getPlayer()), event.getPlayer().getLocation().getBlockX(), event.getPlayer().getLocation().getBlockZ());
+        Graveyard data = GraveyardManager.getNearestGraveyard(Zones.manager().getZone(event.getPlayer()), event.getPlayer().getLocation());
         if (data == null)
             event.setRespawnLocation(event.getPlayer().getWorld().getSpawnLocation());
         else {
-            Location loc = new Location(Bukkit.getWorld(data.world), data.position[0] + (Math.random() * (data.radius * 2) - data.radius), data.position[1], data.position[2] + (Math.random() * (data.radius * 2) - data.radius));
+            Location loc = new Location(data.getWorld(), data.x + (Math.random() * (data.radius * 2) - data.radius), data.y, data.z + (Math.random() * (data.radius * 2) - data.radius));
             while (loc.getBlock().getType() != Material.AIR)
                 loc.add(0, 1, 0);
             event.setRespawnLocation(loc);
