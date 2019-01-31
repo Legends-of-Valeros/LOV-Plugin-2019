@@ -306,6 +306,8 @@ public class ItemListener implements Listener {
                 MessageUtil.sendError(event.getPlayer(), "A mysterious force prevents you from equipping that.");
 
                 event.setCancelled(true);
+
+                return;
             }
         }
 
