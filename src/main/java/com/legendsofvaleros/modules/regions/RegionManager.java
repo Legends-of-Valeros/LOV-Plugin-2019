@@ -223,7 +223,8 @@ public class RegionManager implements Listener {
         List<Region> discrepancies = findRegions(event.getFrom());
 
         for (Region region : toRegions) {
-            discrepancies.remove(region);
+            if(discrepancies.size() > 0)
+                discrepancies.remove(region);
 
             if (playerRegions.containsEntry(event.getPlayer(), region.id))
                 continue;
