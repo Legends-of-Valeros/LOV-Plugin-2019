@@ -18,7 +18,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Crystall on 11/24/2018
@@ -52,44 +51,19 @@ public class AuctionGui extends GUI implements Listener {
 
     private void addUIElements() {
         if (currentPage > 1) {
-            slot(45, Material.PAPER, new SlotUsable() { //previous page
-                @Override
-                public void onPickup(GUI gui, Player p, ItemStack stack, InventoryClickEvent e) {
-                    e.setCancelled(true);
-                    currentPage--;
-                    init();
-                }
-
-                @Override
-                public void onPlace(GUI gui, Player p, ItemStack stack, InventoryClickEvent e) {
-                    e.setCancelled(true);
-                }
+            slot(45, Material.PAPER, (gui, p, e) -> { //previous page
+                e.setCancelled(true);
+                currentPage--;
+                init();
             });
         }
 
-        slot(47, Material.GREEN_RECORD, new SlotUsable() { //refresh
-            @Override
-            public void onPickup(GUI gui, Player p, ItemStack stack, InventoryClickEvent e) {
-                e.setCancelled(true);
-            }
-
-            @Override
-            public void onPlace(GUI gui, Player p, ItemStack stack, InventoryClickEvent e) {
-                e.setCancelled(true);
-            }
+        slot(47, Material.GREEN_RECORD, (gui, p, e) -> { //refresh
+            e.setCancelled(true);
         });
 
-        slot(48, filterType.getGuiMaterial(), new SlotUsable() { //change filter type
-            @Override
-            public void onPickup(GUI gui, Player p, ItemStack stack, InventoryClickEvent e) {
-                e.setCancelled(true);
-                //TODO
-            }
-
-            @Override
-            public void onPlace(GUI gui, Player p, ItemStack stack, InventoryClickEvent e) {
-                e.setCancelled(true);
-            }
+        slot(48, filterType.getGuiMaterial(), (gui, p, e) -> { //change filter type
+            //TODO
         });
 
         slot(48, filterDirection.getGuiMaterial(), new SlotUsable() { //change filter type
@@ -105,20 +79,12 @@ public class AuctionGui extends GUI implements Listener {
         });
 
         if (currentPage < totalPages) {
-            slot(54, Material.PAPER, new SlotUsable() { //next page
-                @Override
-                public void onPickup(GUI gui, Player p, ItemStack stack, InventoryClickEvent e) {
-                    e.setCancelled(true);
-                    currentPage++;
-                    init();
-                }
-
-                @Override
-                public void onPlace(GUI gui, Player p, ItemStack stack, InventoryClickEvent e) {
-                    e.setCancelled(true);
-                }
+            slot(54, Material.PAPER, (gui, p, e) -> {
+                currentPage++;
+                init();
             });
         }
+
     }
 
     /**
@@ -142,22 +108,12 @@ public class AuctionGui extends GUI implements Listener {
                 slotItem.setItemMeta(im);
             }
 
-            slot(i, slotItem != null ? slotItem : new ItemStack(Material.AIR), new SlotUsable() {
-                @Override
-                public void onPickup(GUI gui, Player p, ItemStack stack, InventoryClickEvent e) {
-                    e.setCancelled(true);
+            slot(i, slotItem != null ? slotItem : new ItemStack(Material.AIR), (gui, p, e) -> {
+                Auction clickedAuction = getAuctionFromSlot(e.getSlot());
+                if (clickedAuction == null) return;
 
-                    Auction auction = getAuctionFromSlot(e.getSlot());
-                    if (auction == null) return;
-
-                    AuctionPromptType promptType = auction.isBidOffer() ? AuctionPromptType.BID : AuctionPromptType.BUY;
-                    AuctionController.getInstance().startPrompt(p, auction, promptType);
-                }
-
-                @Override
-                public void onPlace(GUI gui, Player p, ItemStack stack, InventoryClickEvent e) {
-                    e.setCancelled(true);
-                }
+                AuctionPromptType promptType = clickedAuction.isBidOffer() ? AuctionPromptType.BID : AuctionPromptType.BUY;
+                AuctionController.getInstance().startPrompt(p, clickedAuction, promptType);
             });
         }
         addUIElements();
