@@ -1,29 +1,29 @@
 package com.legendsofvaleros.modules.quests.action;
 
+import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.QuestUtil;
 import com.legendsofvaleros.modules.quests.action.stf.AbstractQuestAction;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 
 public class ActionText extends AbstractQuestAction {
 	String format;
 	String text;
 	
 	@Override
-	public void play(Player player, Next next) {
+	public void play(PlayerCharacter pc, Next next) {
 		switch (format) {
 			case "TEXT":
-				player.sendMessage(ChatColor.translateAlternateColorCodes('&', QuestUtil.moustache(player, text)));
+				pc.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', QuestUtil.moustache(pc, text)));
 				break;
 			case "INFO":
-				MessageUtil.sendInfo(player, ChatColor.translateAlternateColorCodes('&', QuestUtil.moustache(player, text)));
+				MessageUtil.sendInfo(pc.getPlayer(), ChatColor.translateAlternateColorCodes('&', QuestUtil.moustache(pc, text)));
 				break;
 			case "UPDATE":
-				MessageUtil.sendUpdate(player, ChatColor.translateAlternateColorCodes('&', QuestUtil.moustache(player, text)));
+				MessageUtil.sendUpdate(pc.getPlayer(), ChatColor.translateAlternateColorCodes('&', QuestUtil.moustache(pc, text)));
 				break;
 			case "ERROR":
-				MessageUtil.sendError(player, ChatColor.translateAlternateColorCodes('&', QuestUtil.moustache(player, text)));
+				MessageUtil.sendError(pc.getPlayer(), ChatColor.translateAlternateColorCodes('&', QuestUtil.moustache(pc, text)));
 				break;
 		}
 		

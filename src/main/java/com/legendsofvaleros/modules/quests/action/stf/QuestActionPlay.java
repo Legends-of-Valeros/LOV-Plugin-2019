@@ -11,15 +11,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public abstract class QuestActionPlay {
-    public static ListenableFuture<Boolean> start(Player player, AbstractQuestAction[] questActions) {
+    public static ListenableFuture<Boolean> start(Player player, IQuestAction[] questActions) {
         return start(Characters.getPlayerCharacter(player), new QuestProgressPack(0, 0), questActions);
     }
 
-    public static ListenableFuture<Boolean> start(Player player, QuestProgressPack progress, AbstractQuestAction[] questActions) {
+    public static ListenableFuture<Boolean> start(Player player, QuestProgressPack progress, IQuestAction[] questActions) {
         return start(Characters.getPlayerCharacter(player), progress, questActions);
     }
 
-    public static ListenableFuture<Boolean> start(PlayerCharacter pc, QuestProgressPack progress, AbstractQuestAction[] questActions) {
+    public static ListenableFuture<Boolean> start(PlayerCharacter pc, QuestProgressPack progress, IQuestAction[] questActions) {
         SettableFuture<Boolean> ret = SettableFuture.create();
 
         next(pc, progress, questActions, ret);
@@ -27,7 +27,7 @@ public abstract class QuestActionPlay {
         return ret;
     }
 
-    private static void next(PlayerCharacter pc, QuestProgressPack progress, AbstractQuestAction[] questActions, SettableFuture<Boolean> future) {
+    private static void next(PlayerCharacter pc, QuestProgressPack progress, IQuestAction[] questActions, SettableFuture<Boolean> future) {
         // If the player logs out or switches characters we should STOP processing actions ASAP.
         if (!pc.isCurrent() || !pc.getPlayer().isOnline()) return;
 
@@ -44,8 +44,8 @@ public abstract class QuestActionPlay {
             return;
         }
 
-        if (questActions[progress.actionI].classLock != null) {
-            if (questActions[progress.actionI].classLock != pc.getPlayerClass()) {
+        if (questActions[progress.actionI].getClassLock() != null) {
+            if (questActions[progress.actionI].getClassLock() != pc.getPlayerClass()) {
                 progress.actionI++;
 
                 next(pc, progress, questActions, future);
@@ -53,7 +53,7 @@ public abstract class QuestActionPlay {
             }
         }
 
-        questActions[progress.actionI].play(pc.getPlayer(), new IQuestAction.Next() {
+        questActions[progress.actionI].play(pc, new IQuestAction.Next() {
             @Override
             public void run(Integer actionI) {
                 Quests.getInstance().getScheduler().executeInSpigotCircle(() -> {

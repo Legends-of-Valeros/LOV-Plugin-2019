@@ -14,11 +14,11 @@ public class DummyObjective extends AbstractQuestObjective<QuestObjectiveProgres
 	@Override
 	public boolean isCompleted(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
 		if(objective == null) {
-			for (IQuestObjective<?> obj : getQuest().getCurrentGroup(pc))
+			for (IQuestObjective<?> obj : getQuest().getObjectiveGroup(pc))
 				if (!(obj instanceof DummyObjective) && !obj.isCompleted(pc))
 					return false;
 		}else
-			return getQuest().getCurrentGroup(pc)[objective].isCompleted(pc);
+			return getQuest().getObjectiveGroup(pc)[objective].isCompleted(pc);
 		return true;
 	}
 

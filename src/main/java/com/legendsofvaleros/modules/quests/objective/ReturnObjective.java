@@ -63,7 +63,7 @@ public class ReturnObjective extends AbstractQuestObjective<QuestObjectiveProgre
 
         TraitLOV lov = e.getNPC().getTrait(TraitLOV.class);
         if (lov.npcId != null && lov.npcId.equals(id)) {
-            for (IQuestObjective<?> obj : getQuest().getCurrentGroup(pc))
+            for (IQuestObjective<?> obj : getQuest().getObjectiveGroup(pc))
                 if (obj != this && !obj.isCompleted(pc))
                     return;
 

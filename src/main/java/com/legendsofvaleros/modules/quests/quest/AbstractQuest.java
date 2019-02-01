@@ -8,6 +8,7 @@ import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.Quests;
 import com.legendsofvaleros.modules.quests.action.stf.AbstractQuestAction;
+import com.legendsofvaleros.modules.quests.action.stf.IQuestAction;
 import com.legendsofvaleros.modules.quests.action.stf.QuestActionPlay;
 import com.legendsofvaleros.modules.quests.action.stf.QuestActions;
 import com.legendsofvaleros.modules.quests.event.QuestCompletedEvent;
@@ -89,6 +90,18 @@ public abstract class AbstractQuest implements IQuest {
 
     @Override public void setActions(QuestActions actions) {
         this.actions = actions;
+
+        WeakReference<IQuest> ref = new WeakReference<>(this);
+
+        for (int i = 0; i < actions.accept.length; i++)
+            actions.accept[i].init(ref, null, i);
+
+        for (int i = 0; i < actions.decline.length; i++)
+            actions.decline[i].init(ref, null, i);
+
+        for (int group = 0; group < actions.groups.length; group++)
+            for (int i = 0; i < actions.groups[group].length; i++)
+                actions.groups[group][i].init(ref, group, i);
     }
 
     @Override
@@ -161,7 +174,7 @@ public abstract class AbstractQuest implements IQuest {
 
     @Override
     public void onAccept(PlayerCharacter pc) {
-        startGroup(pc, -1);
+        startGroup(pc, null);
     }
 
     @Override
@@ -170,27 +183,45 @@ public abstract class AbstractQuest implements IQuest {
     }
 
     @Override
-    public int getCurrentGroupI(PlayerCharacter pc) {
+    public Integer getActionGroupI(PlayerCharacter pc) {
         QuestProgressPack pack = progress.get(pc.getUniqueCharacterId());
-        if (pack == null) return -1;
+        if (pack == null) return null;
+        if (pack.group == null) return -1;
+        return pack.actionI;
+    }
+
+    @Override
+    public IQuestAction[] getActionGroup(PlayerCharacter pc) {
+        Integer i = getActionGroupI(pc);
+        if(i == null) return null;
+        if(i == -1) return actions.accept;
+        return actions.groups[i];
+    }
+
+    @Override
+    public Integer getObjectiveGroupI(PlayerCharacter pc) {
+        QuestProgressPack pack = progress.get(pc.getUniqueCharacterId());
+        if (pack == null) return null;
         return pack.group;
     }
 
     @Override
-    public IQuestObjective<?>[] getCurrentGroup(PlayerCharacter pc) {
-        return objectives.getGroup(getCurrentGroupI(pc));
+    public IQuestObjective<?>[] getObjectiveGroup(PlayerCharacter pc) {
+        Integer i = getObjectiveGroupI(pc);
+        if(i == null) return null;
+        return objectives.groups[i];
     }
 
-    public void startGroup(PlayerCharacter pc, int group) {
+    public void startGroup(PlayerCharacter pc, Integer group) {
         // Run the task later. This is done to be sure objective events finish firing before starting the next objective group.
         Quests.getInstance().getScheduler().executeInSpigotCircle(() -> {
-            int currentGroup = getCurrentGroupI(pc);
+            Integer currentGroup = getObjectiveGroupI(pc);
 
-            if(currentGroup == -1 && group != -1)
+            if(currentGroup == null && group != null)
                 throw new IllegalStateException(pc.getPlayer().getName() + "(" + pc.getUniqueCharacterId() + ") attempted to go to group " + group + " from " + currentGroup + " in quest '" + getId() + "'! This should never happen!");
 
             // If the player is just now starting the quest
-            if (group == -1) {
+            if (group == null) {
                 loadProgress(pc, new QuestProgressPack(group, 0));
 
                 Bukkit.getPluginManager().callEvent(new QuestStartedEvent(pc, this));
@@ -212,16 +243,16 @@ public abstract class AbstractQuest implements IQuest {
         });
     }
 
-    private void startActions(PlayerCharacter pc, int currentGroup) {
-        AbstractQuestAction[] acts = null;
-        if (currentGroup == -1)
+    private void startActions(PlayerCharacter pc, Integer currentGroup) {
+        IQuestAction[] acts = null;
+        if (currentGroup == null)
             acts = actions.accept;
         else if (currentGroup < actions.groups.length)
             acts = actions.groups[currentGroup];
 
         ListenableFuture<Boolean> future = QuestActionPlay.start(pc, getProgress(pc), acts);
 
-        future.addListener(() -> continueToNextGroup(pc, currentGroup + 1),
+        future.addListener(() -> continueToNextGroup(pc, (currentGroup == null ? 0 : currentGroup + 1)),
                 Quests.getInstance().getScheduler()::async);
     }
 

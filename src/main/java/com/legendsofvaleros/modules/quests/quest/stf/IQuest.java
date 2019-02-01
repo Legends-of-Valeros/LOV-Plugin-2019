@@ -2,6 +2,7 @@ package com.legendsofvaleros.modules.quests.quest.stf;
 
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
+import com.legendsofvaleros.modules.quests.action.stf.IQuestAction;
 import com.legendsofvaleros.modules.quests.action.stf.QuestActions;
 import com.legendsofvaleros.modules.quests.objective.stf.IQuestObjective;
 import com.legendsofvaleros.modules.quests.prerequisite.stf.IQuestPrerequisite;
@@ -45,16 +46,22 @@ public interface IQuest {
 	
 	boolean isRepeatable();
 	void setRepeatable(boolean repeatable);
-	
+
+
 	QuestActions getActions();
 	void setActions(QuestActions actions);
 	void testResumeActions(PlayerCharacter pc);
-	
+
+	Integer getActionGroupI(PlayerCharacter pc);
+	IQuestAction[] getActionGroup(PlayerCharacter pc);
+
+
 	QuestObjectives getObjectives();
 	void setObjectives(QuestObjectives objectives);
 	
-	int getCurrentGroupI(PlayerCharacter pc);
-	IQuestObjective<?>[] getCurrentGroup(PlayerCharacter pc);
+	Integer getObjectiveGroupI(PlayerCharacter pc);
+	IQuestObjective<?>[] getObjectiveGroup(PlayerCharacter pc);
+
 
 	/**
 	 * Called when a player starts a quest.

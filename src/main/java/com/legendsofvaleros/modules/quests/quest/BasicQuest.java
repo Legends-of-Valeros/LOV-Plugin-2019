@@ -3,7 +3,6 @@ package com.legendsofvaleros.modules.quests.quest;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.QuestUtil;
 import com.legendsofvaleros.modules.quests.objective.stf.IQuestObjective;
-import com.legendsofvaleros.modules.quests.quest.stf.QuestStatus;
 import com.legendsofvaleros.util.title.Title;
 import com.legendsofvaleros.util.title.TitleUtil;
 import org.bukkit.ChatColor;
@@ -40,7 +39,7 @@ public class BasicQuest extends AbstractQuest {
         if (getProgress(pc).actionI != null)
             return false;
 
-        IQuestObjective<?>[] group = getCurrentGroup(pc);
+        IQuestObjective<?>[] group = getObjectiveGroup(pc);
         if (group != null)
             for (IQuestObjective<?> obj : group)
                 if (!obj.isCompleted(pc))
@@ -54,12 +53,13 @@ public class BasicQuest extends AbstractQuest {
         if (getProgress(pc).actionI != null)
             return;
 
-        IQuestObjective<?>[] group = getCurrentGroup(pc);
+        IQuestObjective<?>[] group = getObjectiveGroup(pc);
         if (group != null)
             for (IQuestObjective<?> obj : group)
                 if (!obj.isCompleted(pc))
                     return;
 
-        startGroup(pc, getCurrentGroupI(pc) + 1);
+        Integer i = getObjectiveGroupI(pc);
+        startGroup(pc,  (i == null ? 0 : i + 1));
     }
 }

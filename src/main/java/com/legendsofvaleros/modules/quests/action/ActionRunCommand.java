@@ -1,16 +1,16 @@
 package com.legendsofvaleros.modules.quests.action;
 
+import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.action.stf.AbstractQuestAction;
 import com.legendsofvaleros.util.Moustache;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 public class ActionRunCommand extends AbstractQuestAction {
     String command;
 
     @Override
-    public void play(Player player, Next next) {
-        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), Moustache.translate(player, command));
+    public void play(PlayerCharacter pc, Next next) {
+        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), Moustache.translate(pc.getPlayer(), command));
 
         next.go();
     }

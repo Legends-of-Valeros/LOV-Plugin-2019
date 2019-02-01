@@ -182,12 +182,12 @@ public class QuestCommands extends BaseCommand {
 
             tb.append("\nObjectives:\n").color(ChatColor.DARK_GRAY);
 
-            int currentI = quest.getCurrentGroupI(pc);
-            if (currentI == -1) {
+            Integer currentI = quest.getObjectiveGroupI(pc);
+            if (currentI == null) {
                 tb.append("*No objectives, yet\n").color(ChatColor.DARK_RED);
             } else
                 for (int i = currentI; i >= 0; i--) {
-                    IQuestObjective<?>[] objs = quest.getObjectives().getGroup(i);
+                    IQuestObjective<?>[] objs = quest.getObjectives().groups[i];
                     if (objs.length == 0)
                         tb.append("*An error occurred\n").color(ChatColor.DARK_RED);
                     else

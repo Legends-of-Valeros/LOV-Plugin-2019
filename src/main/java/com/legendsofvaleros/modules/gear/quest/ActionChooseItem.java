@@ -2,6 +2,7 @@ package com.legendsofvaleros.modules.gear.quest;
 
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.slot.ISlotAction;
+import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.gear.item.Gear;
@@ -41,7 +42,7 @@ public class ActionChooseItem extends AbstractQuestAction {
 	}
 	
 	@Override
-	public void play(Player player, Next next) {
+	public void play(PlayerCharacter pc, Next next) {
 		Gear[] items = new Gear[itemIds.length];
 
 		for(int i = 0; i < itemIds.length; i++)
@@ -64,11 +65,11 @@ public class ActionChooseItem extends AbstractQuestAction {
 				ISlotAction action = (ui, p, event) -> {
 					ui.close(p);
 
-					MessageUtil.sendUpdate(player, new TextBuilder("You received " + (instance.amount == 1 ? "a " : instance.amount + "x") + "[").color(ChatColor.AQUA)
+					MessageUtil.sendUpdate(pc.getPlayer(), new TextBuilder("You received " + (instance.amount == 1 ? "a " : instance.amount + "x") + "[").color(ChatColor.AQUA)
 							.append(instance.getName()).color(ChatColor.GREEN)
 							.append("]!").color(ChatColor.AQUA).create());
 
-					ItemUtil.giveItem(Characters.getPlayerCharacter(player), instance);
+					ItemUtil.giveItem(pc, instance);
 
 					next.go();
 				};
@@ -85,9 +86,9 @@ public class ActionChooseItem extends AbstractQuestAction {
 					gui.slot(2 + i, 1, instance.toStack(), action);
 			}
 
-			gui.open(player);
+			gui.open(pc.getPlayer());
 		} catch(Exception e) {
-			MessageUtil.sendException(GearController.getInstance(), player, e, false);
+			MessageUtil.sendException(GearController.getInstance(), pc.getPlayer(), e, false);
 		}
 	}
 }

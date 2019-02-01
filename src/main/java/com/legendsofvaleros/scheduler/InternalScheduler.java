@@ -108,8 +108,6 @@ public class InternalScheduler extends Thread {
                             MessageUtil.sendSevereException(name, e);
                         }
 
-                        curr.setExecuted(true);
-
                         if (curr.getRepeating()) {
                             requeue.add(curr);
                             curr.setNextExecuteTick(tick + curr.getRepeatingInterval());
@@ -246,7 +244,6 @@ public class InternalScheduler extends Thread {
             @Override
             public void run() {
                 task.run();
-                task.setExecuted(true);
             }
         }.runTask(LegendsOfValeros.getInstance());
     }
@@ -266,7 +263,6 @@ public class InternalScheduler extends Thread {
             @Override
             public void run() {
                 task.run();
-                task.setExecuted(true);
             }
         }.runTaskLater(LegendsOfValeros.getInstance(), delay);
     }
@@ -286,7 +282,6 @@ public class InternalScheduler extends Thread {
             @Override
             public void run() {
                 task.run();
-                task.setExecuted(true);
             }
         }.runTaskTimer(LegendsOfValeros.getInstance(), delay, interval);
     }

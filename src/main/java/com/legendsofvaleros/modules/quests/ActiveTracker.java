@@ -11,8 +11,6 @@ import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
 import com.legendsofvaleros.modules.quests.quest.stf.QuestStatus;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.block.Biome;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
@@ -115,7 +113,7 @@ public class ActiveTracker {
                         try {
                             IQuest active = future.get();
                             if(active != null) {
-                                IQuestObjective<?>[] group = active.getCurrentGroup(pc);
+                                IQuestObjective<?>[] group = active.getObjectiveGroup(pc);
                                 if (group != null)
                                     for (IQuestObjective<?> obj : group) {
                                         if (!obj.isCompleted(pc)) {

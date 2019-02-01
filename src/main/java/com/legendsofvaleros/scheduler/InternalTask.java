@@ -40,9 +40,6 @@ public class InternalTask {
     public boolean wasExecuted() {
         return executed;
     }
-    public void setExecuted(boolean executed) {
-        this.executed = executed;
-    }
 
     private boolean repeat = false;
     public boolean getRepeating() {
@@ -68,6 +65,9 @@ public class InternalTask {
         if(command == null)
             throw new RuntimeException("Attempted to run() an empty InternalTask.");
 
+        // Don't run a non-repeating task additional times
+        if(!repeat && executed) return;
+
         if(executor != null) {
             if(sync)
                 executor.totalS++;
@@ -75,6 +75,7 @@ public class InternalTask {
                 executor.totalA++;
         }
 
+        executed = true;
         command.run();
     }
 

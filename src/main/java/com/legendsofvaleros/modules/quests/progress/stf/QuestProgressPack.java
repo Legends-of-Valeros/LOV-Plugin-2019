@@ -1,11 +1,11 @@
 package com.legendsofvaleros.modules.quests.progress.stf;
 
 public class QuestProgressPack {
-	public final int group;
+	public final Integer group;
 	public final ObjectiveProgressPack[] data;
 	public Integer actionI;
 	
-	public QuestProgressPack(int group, int objectivesSize) {
+	public QuestProgressPack(Integer group, int objectivesSize) {
 		this.group = group;
 		this.data = new ObjectiveProgressPack[objectivesSize];
 	}

@@ -1,9 +1,22 @@
 package com.legendsofvaleros.modules.quests.action.stf;
 
+import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
+import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
+import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
 import org.bukkit.entity.Player;
 
+import java.lang.ref.WeakReference;
+
 public interface IQuestAction {
-	void play(Player player, Next next);
+	void init(WeakReference<IQuest> quest, Integer groupI, int objectiveI);
+
+	IQuest getQuest();
+	Integer getGroupIndex();
+	int getActionIndex();
+
+	EntityClass getClassLock();
+
+	void play(PlayerCharacter pc, Next next);
 
 	abstract class Next {
 		public void go() {

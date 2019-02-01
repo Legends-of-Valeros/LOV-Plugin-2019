@@ -1,8 +1,8 @@
 package com.legendsofvaleros.modules.quests.action;
 
+import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.action.stf.AbstractQuestAction;
 import org.bukkit.SoundCategory;
-import org.bukkit.entity.Player;
 
 public class ActionSound extends AbstractQuestAction {
 	String soundId;
@@ -10,8 +10,8 @@ public class ActionSound extends AbstractQuestAction {
 	float pitch;
 	
 	@Override
-	public void play(Player player, Next next) {
-		player.playSound(player.getLocation(), soundId, SoundCategory.NEUTRAL, volume, pitch);
+	public void play(PlayerCharacter pc, Next next) {
+		pc.getPlayer().playSound(pc.getLocation(), soundId, SoundCategory.NEUTRAL, volume, pitch);
 
 		next.go();
 	}

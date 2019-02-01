@@ -12,13 +12,13 @@ import java.lang.ref.WeakReference;
 
 public abstract class AbstractQuestObjective<T extends IQuestObjectiveProgress> implements IQuestObjective<T> {
 	private WeakReference<IQuest> quest;
-	public IQuest getQuest() { return quest.get(); }
+	@Override public IQuest getQuest() { return quest.get(); }
 
 	private int groupI;
-	public int getGroupIndex() { return groupI; }
+	@Override public int getGroupIndex() { return groupI; }
 
 	private int objectiveI;
-	public int getObjectiveIndex() { return objectiveI; }
+	@Override public int getObjectiveIndex() { return objectiveI; }
 
 	private boolean visible = true;
 

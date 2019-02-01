@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.quests.objective.stf;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.progress.stf.IQuestObjectiveProgress;
 import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
+import com.legendsofvaleros.modules.quests.quest.stf.IQuestEventReceiver;
 import org.bukkit.Location;
 import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
@@ -13,7 +14,7 @@ import java.lang.ref.WeakReference;
  * Warning! Objectives are registered as listeners <i>once.</i> Not for each objective instance.
  * @author Stumblinbear
  */
-public interface IQuestObjective<T extends IQuestObjectiveProgress> extends Listener {
+public interface IQuestObjective<T extends IQuestObjectiveProgress> extends Listener, IQuestEventReceiver {
 	void init(WeakReference<IQuest> quest, int groupI, int objectiveI);
 
 	IQuest getQuest();
@@ -44,13 +45,6 @@ public interface IQuestObjective<T extends IQuestObjectiveProgress> extends List
 	boolean isCompleted(PlayerCharacter pc);
 
 	void onEnd(PlayerCharacter pc);
-
-	/**
-	 * @return The bukkit events to receive in onEvent
-	 */
-	Class<? extends Event>[] getRequestedEvents();
-
-	void onEvent(Event event, PlayerCharacter pc);
 
 	/**
 	 * How often the update function should be fired in ticks per second.

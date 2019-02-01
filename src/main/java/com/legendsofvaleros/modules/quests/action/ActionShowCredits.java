@@ -5,11 +5,11 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.action.stf.AbstractQuestAction;
 import net.minecraft.server.v1_12_R1.EntityPlayer;
 import net.minecraft.server.v1_12_R1.PacketPlayOutGameStateChange;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
-import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,11 +40,11 @@ public class ActionShowCredits extends AbstractQuestAction {
     }
 
     @Override
-    public void play(Player player, Next next) {
-        EntityPlayer nms = ((CraftPlayer) player).getHandle();
+    public void play(PlayerCharacter pc, Next next) {
+        EntityPlayer nms = ((CraftPlayer) pc).getHandle();
         nms.viewingCredits = true;
         nms.playerConnection.sendPacket(new PacketPlayOutGameStateChange(4, 1F));
 
-        listener.waiting.put(player.getUniqueId(), next);
+        listener.waiting.put(pc.getPlayerId(), next);
     }
 }

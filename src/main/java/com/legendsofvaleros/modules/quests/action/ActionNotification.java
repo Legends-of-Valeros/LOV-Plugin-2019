@@ -1,13 +1,13 @@
 package com.legendsofvaleros.modules.quests.action;
 
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.Quests;
 import com.legendsofvaleros.modules.quests.action.stf.AbstractQuestAction;
 import io.chazza.advancementapi.AdvancementAPI;
 import io.chazza.advancementapi.FrameType;
 import io.chazza.advancementapi.Trigger;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
@@ -18,7 +18,7 @@ public class ActionNotification extends AbstractQuestAction {
     private transient AdvancementAPI advancement;
 
     @Override
-    public void play(Player player, Next next) {
+    public void play(PlayerCharacter pc, Next next) {
         if (advancement == null) {
             advancement = AdvancementAPI.builder(new NamespacedKey(LegendsOfValeros.getInstance(), "quests/" + UUID.randomUUID().toString()))
                         .title(text)
@@ -33,7 +33,7 @@ public class ActionNotification extends AbstractQuestAction {
             advancement.add();
         }
 
-        advancement.show(player);
+        advancement.show(pc.getPlayer());
 
         Quests.getInstance().getScheduler().executeInSpigotCircleLater(next::go, 20L);
     }
