@@ -50,7 +50,7 @@ public abstract class AbstractQuest implements IQuest {
     }
 
     @Override public boolean hasProgress(PlayerCharacter pc) {
-        return progress.containsKey(pc.getUniqueCharacterId()) && getProgress(pc) != null;
+        return progress.containsKey(pc.getUniqueCharacterId());
     }
 
     @Override public void clearProgress(PlayerCharacter pc) {

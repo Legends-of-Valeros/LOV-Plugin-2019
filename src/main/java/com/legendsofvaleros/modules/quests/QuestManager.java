@@ -271,15 +271,18 @@ public class QuestManager {
             IQuest quest = quests.getIfPresent(entry.getKey());
             if (quest == null) continue;
 
-            if (!quest.hasProgress(pc)) continue;
             QuestProgressPack progress = quest.getProgress(pc);
+            if(progress == null) continue;
 
             for (IQuestEventReceiver receiver : entry.getValue()) {
                 if(receiver instanceof IQuestObjective)
-                    if(((IQuestObjective)receiver).getGroupIndex() != progress.group) continue;
+                    if(progress.group == null || ((IQuestObjective)receiver).getGroupIndex() != progress.group)
+                        continue;
                 else if(receiver instanceof IQuestAction) {
-                        if(((IQuestAction) receiver).getGroupIndex() != progress.group) continue;
-                        if(((IQuestAction) receiver).getActionIndex() != progress.actionI) continue;
+                    if(progress.group == null || ((IQuestAction) receiver).getGroupIndex() != progress.group)
+                        continue;
+                    if(progress.actionI == null || ((IQuestAction) receiver).getActionIndex() != progress.actionI)
+                        continue;
                 }
 
                 receiver.onEvent(event, pc);
