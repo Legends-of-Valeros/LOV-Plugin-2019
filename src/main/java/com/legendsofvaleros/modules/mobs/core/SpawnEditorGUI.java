@@ -10,6 +10,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 import java.text.DecimalFormat;
+import java.time.Instant;
 
 public class SpawnEditorGUI extends GUI {
 	private static final DecimalFormat DF = new DecimalFormat("#.00");
@@ -33,6 +34,11 @@ public class SpawnEditorGUI extends GUI {
 							.addLore(" Interval: " + spawn.getSpawnInterval() + " ticks")
 							.addLore(" Chance : " + spawn.getSpawnChance() + "%")
 							.addLore(" Count   : " + spawn.getSpawnCount())
+
+							.addLore("")
+							.addLore(" Current : " + spawn.getEntities().size())
+							.addLore(" Unpops  : " + spawn.getDespawnedEnemies())
+							.addLore(" Last    : " + Instant.ofEpochMilli(spawn.getLastSpawn()).toString())
 							.create(), null);
 
 		slot(8, 2, Model.stack("menu-decline-button").setName("Delete Spawn").create(), (gui, p, event) -> {

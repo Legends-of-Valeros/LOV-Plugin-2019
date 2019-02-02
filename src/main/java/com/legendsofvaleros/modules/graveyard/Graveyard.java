@@ -52,7 +52,7 @@ public class Graveyard {
 			textRadius = hologram.appendTextLine("Radius: " + getRadius());
 			hologram.getVisibilityManager().setVisibleByDefault(LegendsOfValeros.getMode().allowEditing());
 
-			ItemLine touchLine = hologram.appendItemLine(new ItemStack(Material.EYE_OF_ENDER));
+			ItemLine touchLine = hologram.appendItemLine(new ItemStack(Material.CLAY_BRICK));
 			touchLine.setPickupHandler((p) -> {
 				if (p.isSneaking())
 					new GraveyardEditorGUI(this).open(p, GUI.Flag.NO_PARENTS);

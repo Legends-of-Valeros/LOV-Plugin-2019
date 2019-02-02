@@ -15,6 +15,7 @@ import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.*;
 import org.bukkit.inventory.ItemStack;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -27,14 +28,13 @@ public class SpawnArea {
      * Used for debugging.
      */
     private Hologram hologram;
-    private TextLine textEntityId, textLevel, textRadius, textPadding;
+    private TextLine textEntityId, textLevel, textRadius, textPadding, textEntities, textInterval;
 
     @Column(primary = true, name = "spawn_id")
     private int id;
 
     @Column(name = "spawn_world", length = 64)
     private String worldName;
-
     public World getWorld() {
         return Bukkit.getWorld(worldName);
     }
@@ -62,7 +62,6 @@ public class SpawnArea {
      */
     @Column(name = "spawn_radius")
     private int radius;
-
     public int getRadius() {
         return radius;
     }
@@ -73,7 +72,6 @@ public class SpawnArea {
      */
     @Column(name = "spawn_padding")
     private int padding;
-
     public int getPadding() {
         return padding;
     }
@@ -83,7 +81,6 @@ public class SpawnArea {
      */
     @Column(name = "spawn_entity_id", length = 64)
     private String entityId;
-
     public String getEntityId() {
         return entityId;
     }
@@ -119,41 +116,34 @@ public class SpawnArea {
 
     @Column(name = "spawn_count")
     public short spawnCount = 1;
-
     public int getSpawnCount() {
         return spawnCount;
     }
 
     @Column(name = "spawn_time")
     public int spawnInterval = 60;
-
     public int getSpawnInterval() {
         return spawnInterval;
     }
 
     @Column(name = "spawn_chance")
     public byte spawnChance = 100;
-
     public byte getSpawnChance() {
         return spawnChance;
     }
 
     private long lastInterval = 0;
-
     public long getLastSpawn() {
         return lastInterval;
     }
-
     public void markInterval() {
         lastInterval = System.currentTimeMillis();
     }
 
     private int despawnedEnemies = 0;
-
     public int getDespawnedEnemies() {
         return despawnedEnemies;
     }
-
     public void repopulated() {
         despawnedEnemies = 0;
     }
@@ -192,6 +182,13 @@ public class SpawnArea {
         this.location = new Location(getWorld(), x, y, z);
     }
 
+    public void updateStats() {
+        if(hologram != null) {
+            textEntities.setText(getEntities().size() + " / " + despawnedEnemies);
+            textInterval.setText(Instant.ofEpochMilli(lastInterval).toString());
+        }
+    }
+
     public Hologram getHologram() {
         if(hologram == null) {
             hologram = HologramsAPI.createHologram(LegendsOfValeros.getInstance(), getLocation());
@@ -199,6 +196,11 @@ public class SpawnArea {
             textLevel = hologram.appendTextLine("[" + getLevelRange()[0] + " - " + getLevelRange()[1] + "]");
             textRadius = hologram.appendTextLine("Radius: " + getRadius());
             textPadding = hologram.appendTextLine("Padding: " + getPadding());
+            textEntities = hologram.appendTextLine("");
+            textInterval = hologram.appendTextLine("");
+
+            updateStats();
+
             hologram.getVisibilityManager().setVisibleByDefault(LegendsOfValeros.getMode().allowEditing());
 
             ItemLine touchLine = hologram.appendItemLine(new ItemStack(Material.EYE_OF_ENDER));

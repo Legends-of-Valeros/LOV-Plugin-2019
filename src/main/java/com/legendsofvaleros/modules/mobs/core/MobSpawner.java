@@ -80,35 +80,35 @@ public class MobSpawner {
 
                             spawn.clear();
                         }
+                    }else{
+                        Mob mob = spawn.getMob();
+                        if (mob == null) {
+                            Bukkit.broadcastMessage(ChatColor.RED + "[!] Unknown instance ID. Offender: " + spawn.getEntityId() + " at " + spawn.getLocation());
+                            return;
+                        }
 
-                        return;
-                    }
+                        if (spawn.getDespawnedEnemies() > 0) {
+                            repopulated++;
 
-                    Mob mob = spawn.getMob();
-                    if (mob == null) {
-                        Bukkit.broadcastMessage(ChatColor.RED + "[!] Unknown instance ID. Offender: " + spawn.getEntityId() + " at " + spawn.getLocation());
-                        return;
-                    }
+                            spawn.repopulated();
 
-                    if (spawn.getDespawnedEnemies() > 0) {
-                        repopulated++;
+                            int entityCount = spawn.getDespawnedEnemies();
+                            while (entityCount-- > 0)
+                                spawn.spawn(mob);
+                        }
 
-                        spawn.repopulated();
+                        // Make sure enough time has passed before the spawn is updated
+                        if (System.currentTimeMillis() - spawn.getLastSpawn() < spawn.getSpawnInterval() * 1000) return;
 
-                        int entityCount = spawn.getDespawnedEnemies();
-                        while (entityCount-- > 0)
+                        // Spawn the mobs, so we reset the spawn counter.
+                        spawn.markInterval();
+
+                        int entityCount = spawn.getSpawnCount() - spawn.getEntities().size();
+                        while (entityCount-- > 0 && rand.nextInt(100) < spawn.getSpawnChance())
                             spawn.spawn(mob);
                     }
 
-                    // Make sure enough time has passed before the spawn is updated
-                    if (System.currentTimeMillis() - spawn.getLastSpawn() < spawn.getSpawnInterval() * 1000) return;
-
-                    // Spawn the mobs, so we reset the spawn counter.
-                    spawn.markInterval();
-
-                    int entityCount = spawn.getSpawnCount() - spawn.getEntities().size();
-                    while (entityCount-- > 0 && rand.nextInt(100) < spawn.getSpawnChance())
-                        spawn.spawn(mob);
+                    spawn.updateStats();
                 });
 
         if (block == 0) {

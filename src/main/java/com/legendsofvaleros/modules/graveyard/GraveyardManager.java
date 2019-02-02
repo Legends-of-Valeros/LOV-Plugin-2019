@@ -77,14 +77,11 @@ public class GraveyardManager {
     }
 
     public static Graveyard getNearestGraveyard(Zone zone, Location loc) {
-        if (graveyards == null || graveyards.size() == 0 || zone == null)
+        if (graveyards == null || graveyards.size() == 0
+                || zone == null || !graveyards.containsKey(zone.channel))
             return null;
 
-        Collection<Graveyard> yards;
-        if (graveyards.containsKey(zone.channel))
-            yards = graveyards.get(zone.channel);
-        else
-            yards = graveyards.values();
+        Collection<Graveyard> yards = graveyards.get(zone.channel);
 
         Graveyard closest = null;
         double distance = Double.MAX_VALUE;
