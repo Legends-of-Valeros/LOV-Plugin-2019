@@ -123,6 +123,10 @@ public class ItemUtil {
 				MessageUtil.sendError(pc.getPlayer(), "No more space in inventory! It disappeared!");
 		}
 	}
+
+	public static boolean removeItem(Player p, Gear.Instance inst) {
+		return removeItem(p, inst.gear, inst.amount);
+	}
 	
 	public static boolean removeItem(Player p, Gear gear, int amount) {
 		if(gear == null) return false;

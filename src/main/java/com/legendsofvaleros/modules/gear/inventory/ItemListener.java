@@ -2,6 +2,8 @@ package com.legendsofvaleros.modules.gear.inventory;
 
 import com.codingforcookies.armorequip.ArmorEquipEvent;
 import com.codingforcookies.robert.core.GUI;
+import com.codingforcookies.robert.core.Robert;
+import com.codingforcookies.robert.core.RobertStack;
 import com.codingforcookies.robert.window.WindowYesNo;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -63,30 +65,32 @@ public class ItemListener implements Listener {
     public void onDropItem(PlayerDropItemEvent event) {
         Gear.Instance instance = Gear.Instance.fromStack(event.getItemDrop().getItemStack());
 
-        event.getItemDrop().setItemStack(null);
-        event.getItemDrop().remove();
+        // We should never drop items on the ground.
+        event.setCancelled(true);
 
         if (instance == null) return;
 
-        if (!instance.getType().isTradable()) {
-            ItemUtil.giveItem(Characters.getPlayerCharacter(event.getPlayer()), instance);
-        } else {
+        if (instance.getType().isTradable()) {
             GearController.getInstance().getScheduler().executeInSpigotCircle(() -> new WindowYesNo("Destroy Item") {
-                @Override
-                public void onOpen(Player p, InventoryView view) {
-                    view.setCursor(null);
-                }
-
                 @Override
                 public void onAccept(GUI gui, Player p) {
                     gui.close(p);
+
+                    ItemUtil.removeItem(event.getPlayer(), instance);
                 }
 
                 @Override
                 public void onDecline(GUI gui, Player p) {
                     gui.close(p);
+                }
 
-                    ItemUtil.giveItem(Characters.getPlayerCharacter(event.getPlayer()), instance);
+                @Override
+                public void onClickPlayerInventory(GUI gui, Player p, InventoryClickEvent event) {
+                    // Disallow all selections in the inventory for this UI.
+                    // This will prevent edge cases where the item gets used
+                    // up while this UI is open.
+
+                    event.setCancelled(true);
                 }
             }.open(event.getPlayer()));
         }
