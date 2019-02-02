@@ -66,9 +66,12 @@ public class ItemListener implements Listener {
         Gear.Instance instance = Gear.Instance.fromStack(event.getItemDrop().getItemStack());
 
         // We should never drop items on the ground.
-        event.setCancelled(true);
+        event.getItemDrop().setItemStack(null);
+        event.getItemDrop().remove();
 
         if (instance == null) return;
+
+        ItemUtil.giveItem(Characters.getPlayerCharacter(event.getPlayer()), instance);
 
         if (instance.getType().isTradable()) {
             GearController.getInstance().getScheduler().executeInSpigotCircle(() -> new WindowYesNo("Destroy Item") {
