@@ -41,7 +41,7 @@ public class ActionShowCredits extends AbstractQuestAction {
 
     @Override
     public void play(PlayerCharacter pc, Next next) {
-        EntityPlayer nms = ((CraftPlayer) pc).getHandle();
+        EntityPlayer nms = ((CraftPlayer) pc.getPlayer()).getHandle();
         nms.viewingCredits = true;
         nms.playerConnection.sendPacket(new PacketPlayOutGameStateChange(4, 1F));
 
