@@ -1,5 +1,6 @@
 package com.legendsofvaleros.modules.quests.quest.stf;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.action.stf.IQuestAction;

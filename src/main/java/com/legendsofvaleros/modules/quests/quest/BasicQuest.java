@@ -1,8 +1,10 @@
 package com.legendsofvaleros.modules.quests.quest;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.QuestUtil;
 import com.legendsofvaleros.modules.quests.objective.stf.IQuestObjective;
+import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.title.Title;
 import com.legendsofvaleros.util.title.TitleUtil;
 import org.bukkit.ChatColor;
@@ -23,6 +25,8 @@ public class BasicQuest extends AbstractQuest {
 
         if (isForced()) {
             onAccept(pc);
+
+            MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + getId() + "' force accepted!");
         }
     }
 

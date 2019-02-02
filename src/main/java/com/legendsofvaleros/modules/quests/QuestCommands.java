@@ -95,6 +95,8 @@ public class QuestCommands extends BaseCommand {
                 QuestManager.addPlayerQuest(pc, quest);
 
                 quest.onAccept(pc);
+
+                MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' accepted!");
             } catch (Exception e) {
                 MessageUtil.sendException(Quests.getInstance(), player, e, false);
             }
@@ -112,6 +114,8 @@ public class QuestCommands extends BaseCommand {
         future.addListener(() -> {
             try {
                 future.get().onDecline(pc);
+
+                MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' declined!");
             } catch (Exception e) {
                 MessageUtil.sendException(Quests.getInstance(), player, e, false);
             }

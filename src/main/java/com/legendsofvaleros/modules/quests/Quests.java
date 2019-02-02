@@ -163,19 +163,13 @@ public class Quests extends ModuleListener {
                     QuestStatus status = QuestManager.getStatus(pc, quest);
 
                     if (status.canAccept()) {
-                        QuestManager.removeQuestProgress(quest.getId(), pc);
-
-                        QuestManager.addPlayerQuest(pc, quest);
-
                         quest.onStart(pc);
 
-                        ret.set(true);
-
-                        MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' given successfully!");
+                        MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' can be accepted!");
 
                         return;
                     }else
-                        MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' cannot be given! Status: " + status.name());
+                        MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' cannot be accepted! Status: " + status.name());
                 }else{
                     MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' doesn't exist!");
                 }
