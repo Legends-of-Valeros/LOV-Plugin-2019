@@ -45,7 +45,7 @@ public class GraveyardManager {
                         Zone z = Zones.manager().getZone(result.getString(GRAVEYARD_ZONE));
                         if (z == null) {
                             MessageUtil.sendException(Graveyards.getInstance(), "Graveyard in an unknown zone! Offender: " + pos[0] + ", " + pos[1] + ", " + pos[2], false);
-                            return;
+                            continue;
                         }
 
                         create(z, Bukkit.getWorld(result.getString(GRAVEYARD_WORLD)),

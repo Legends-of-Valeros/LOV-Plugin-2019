@@ -8,6 +8,7 @@ import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.zones.Zones;
+import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -45,16 +46,18 @@ public class Graveyards extends ModuleListener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDeath(PlayerRespawnEvent event) {
         Graveyard data = GraveyardManager.getNearestGraveyard(Zones.manager().getZone(event.getPlayer()), event.getPlayer().getLocation());
-        if (data == null)
-            event.setRespawnLocation(event.getPlayer().getWorld().getSpawnLocation());
-        else {
+        if (data == null) {
+            Location loc = event.getPlayer().getLocation();
+            MessageUtil.sendException(this, event.getPlayer(), "Failed to locate graveyard at " + loc.getBlockX() + ", " + loc.getBlockZ() + "!", true);
+            event.setRespawnLocation(event.getPlayer().getLocation());
+        }else{
             Location loc = new Location(data.getWorld(), data.x + (Math.random() * (data.radius * 2) - data.radius), data.y, data.z + (Math.random() * (data.radius * 2) - data.radius));
             while (loc.getBlock().getType() != Material.AIR)
                 loc.add(0, 1, 0);
             event.setRespawnLocation(loc);
         }
 
-        Graveyards.getInstance().getScheduler().executeInSpigotCircle(() -> event.getPlayer().playSound(event.getRespawnLocation(), "misc.resurrect", 1F, 1F));
+        getScheduler().executeInSpigotCircle(() -> event.getPlayer().playSound(event.getRespawnLocation(), "misc.resurrect", 1F, 1F));
 
         // TODO: On death break items
 		/*ItemStack[] armors = p.getEquipment().getArmorContents();
