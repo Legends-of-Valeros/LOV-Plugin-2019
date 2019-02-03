@@ -119,7 +119,6 @@ public class TaskPhase<V> implements Callback<PhaseLock> {
           completePhase(callback);
 
         } else {
-
           try {
             Thread.sleep(UPDATE_INTERVAL);
           } catch (Exception e) { }

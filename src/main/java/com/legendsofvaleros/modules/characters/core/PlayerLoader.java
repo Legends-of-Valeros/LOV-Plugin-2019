@@ -387,12 +387,17 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
             // If a lock is still active, then processing is still being done for an old
             // player character. We don't want them to join, right now.
             if(locks.containsKey(event.getPlayer().getUniqueId()))
-                event.setKickMessage("Logging in too quickly! Try again in a moment.");
+                event.getPlayer().kickPlayer("Logging in too quickly! Try again in a moment.");
         }
 
         @EventHandler
         public void onPlayerJoin(PlayerJoinEvent event) {
-            locks.put(event.getPlayer().getUniqueId(), PlayerLock.lockPlayer(event.getPlayer()));
+            PlayerLock lock = locks.put(event.getPlayer().getUniqueId(), PlayerLock.lockPlayer(event.getPlayer()));
+            if(lock != null) {
+                lock.release();
+
+                MessageUtil.sendError(event.getPlayer(), "Removed an existing player lock. This shouldn't happen.");
+            }
 
             final ListenableFuture<PlayerCharacters> fut =
                     PlayerCharacterData.onLogin(event.getPlayer().getUniqueId());
@@ -429,16 +434,13 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
         public void onPlayerQuit(final PlayerQuitEvent event) {
             haveAlreadyLoaded.remove(event.getPlayer().getUniqueId());
 
-            // Removes the login phaselock if it exists.
-            PlayerLock lock = locks.remove(event.getPlayer().getUniqueId());
-            if (lock != null) {
-                lock.release();
-            }
-
             logoutCharacter(event.getPlayer(), true).addListener(() -> {
-                PlayerCharacterData.onLogout(event.getPlayer().getUniqueId());
-
-                locks.remove(event.getPlayer().getUniqueId());
+                PlayerCharacterData.onLogout(event.getPlayer().getUniqueId()).addListener(() -> {
+                    PlayerLock lock = locks.remove(event.getPlayer().getUniqueId());
+                    if(lock != null) {
+                        lock.release();
+                    }
+                }, Characters.getInstance().getScheduler()::async);
             }, Characters.getInstance().getScheduler()::async);
         }
 
