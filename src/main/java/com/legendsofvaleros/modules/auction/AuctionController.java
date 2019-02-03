@@ -259,7 +259,6 @@ public class AuctionController extends ModuleListener {
                 auction.getItem().toInstance().gear.getName() + ChatColor.RESET + " was sold for " + ChatColor.BOLD + ChatColor.UNDERLINE + ChatColor.WHITE +
                 auction.getPriceFormatted(), true
         );
-
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -309,6 +308,33 @@ public class AuctionController extends ModuleListener {
                 }
 
                 removeAuction(prompt.getAuction());
+            }
+        }
+    }
+
+    /**
+     * Executes the last step of the AuctionChatPrompt
+     * @param characterId
+     */
+    public void confirmBidPrompt(CharacterId characterId) {
+        if (Characters.isPlayerCharacterLoaded(characterId)) {
+            Player p = Characters.getPlayerCharacter(characterId).getPlayer();
+            if (auctionPrompts.containsKey(characterId)) {
+                AuctionChatPrompt prompt = auctionPrompts.get(characterId);
+
+                boolean result = false;
+                try {
+                    //TODO add callback, remove freeze of mainthread
+                    result = checkIfAuctionStillExists(prompt.getAuction()).get();
+                } catch (InterruptedException | ExecutionException ee) {
+                    ee.printStackTrace();
+                }
+
+                if (!result) {
+                    p.sendMessage("The auction is already over");
+                    return;
+                }
+                updateAuction(prompt.getAuction());
             }
         }
     }
