@@ -14,11 +14,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Event;
 
-@CommandAlias("lov")
+@CommandAlias("performance|pf|lov performance|lov pf")
 public class LOVCommands extends BaseCommand {
-    @Subcommand("tps")
-    @Description("Shows the current load of all modules.")
-    @CommandPermission("lov.tps")
+    @Subcommand("schedulers|sched")
+    @Description("Shows the current load of all schedulers.")
+    @CommandPermission("performance.tps")
     public void cmdTps(CommandSender sender) {
         double mainTPS = (int)(Lag.getTPS() * 10D) / 10D;
         long memory = Runtime.getRuntime().totalMemory();
@@ -54,9 +54,9 @@ public class LOVCommands extends BaseCommand {
         sender.sendMessage(ChatColor.GRAY + line);
     }
 
-    @Subcommand("tps events")
-    @Description("Shows the current load of all events.")
-    @CommandPermission("lov.tps.events")
+    @Subcommand("events")
+    @Description("Shows the current load of all event handlers.")
+    @CommandPermission("performance.events")
     public void cmdTpsEvents(CommandSender sender, @Optional String moduleName) {
         String line = "------------------------------------------------";
 
