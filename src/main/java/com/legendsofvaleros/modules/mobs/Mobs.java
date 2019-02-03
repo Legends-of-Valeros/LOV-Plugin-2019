@@ -2,7 +2,9 @@ package com.legendsofvaleros.modules.mobs;
 
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ModuleListener;
+import com.legendsofvaleros.module.Modules;
 import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
@@ -20,6 +22,8 @@ import com.legendsofvaleros.modules.mobs.quest.KillObjective;
 import com.legendsofvaleros.modules.mobs.trait.TraitTitle;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.parties.Parties;
+import com.legendsofvaleros.modules.parties.PartyManager;
+import com.legendsofvaleros.modules.parties.PlayerParty;
 import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.Quests;
 import com.legendsofvaleros.modules.quests.objective.stf.QuestObjectiveFactory;
@@ -102,6 +106,21 @@ public class Mobs extends ModuleListener {
         Player p = (Player) event.getKiller().getLivingEntity();
 
         if (!Characters.isPlayerCharacterLoaded(p)) return;
-        QuestManager.callEvent(event, Characters.getPlayerCharacter(p));
+
+        PlayerCharacter pc = Characters.getPlayerCharacter(p);
+
+        // Update for each player in the party
+        if(!Modules.isLoaded(Parties.class)) {
+            QuestManager.callEvent(event, pc);
+        }else{
+            PlayerParty party = (PlayerParty) PartyManager.getPartyByMember(pc.getUniqueCharacterId());
+            for(Player pp : party.getOnlineMembers()) {
+                if(!Characters.isPlayerCharacterLoaded(pp))
+                    continue;
+
+                PlayerCharacter ppc = Characters.getPlayerCharacter(pp);
+                QuestManager.callEvent(event, ppc);
+            }
+        }
     }
 }
