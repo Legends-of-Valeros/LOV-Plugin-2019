@@ -383,15 +383,14 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
         }
 
         @EventHandler
-        public void onPlayerLogin(PlayerLoginEvent event) {
+        public void onPlayerJoin(PlayerJoinEvent event) {
             // If a lock is still active, then processing is still being done for an old
             // player character. We don't want them to join, right now.
-            if(locks.containsKey(event.getPlayer().getUniqueId()))
+            if(locks.containsKey(event.getPlayer().getUniqueId())) {
                 event.getPlayer().kickPlayer("Logging in too quickly! Try again in a moment.");
-        }
+                return;
+            }
 
-        @EventHandler
-        public void onPlayerJoin(PlayerJoinEvent event) {
             PlayerLock lock = locks.put(event.getPlayer().getUniqueId(), PlayerLock.lockPlayer(event.getPlayer()));
             if(lock != null) {
                 lock.release();
