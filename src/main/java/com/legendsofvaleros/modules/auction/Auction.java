@@ -26,6 +26,10 @@ public class Auction {
     @Column(name = "owner_id")
     private CharacterId ownerId;
 
+    //to support offline players and multiple server
+    @Column(name = "owner_name")
+    private String ownerName;
+
     @Column(name = "auction_item")
     private Gear.Data item;
 
@@ -38,16 +42,22 @@ public class Auction {
     @Column(name = "is_bid_offer")
     private boolean isBidOffer = false;
 
-    @Column(name = "highest_bidder")
-    private CharacterId highestBidder;
+    @Column(name = "highest_bidder_id")
+    private CharacterId highestBidderId;
 
-    public Auction(CharacterId ownerId, Gear.Data item) {
+    //to support offline players and multiple server
+    @Column(name = "highest_bidder_name")
+    private String highestBidderName;
+
+    public Auction(CharacterId ownerId, String ownerName, Gear.Data item) {
         this.ownerId = ownerId;
+        this.ownerName = ownerName;
         this.item = item;
     }
 
-    public Auction(CharacterId ownerId, int price, Gear.Data item, boolean isBidOffer) {
+    public Auction(CharacterId ownerId, String ownerName, int price, Gear.Data item, boolean isBidOffer) {
         this.ownerId = ownerId;
+        this.ownerName = ownerName;
         this.price = price;
         this.item = item;
         this.isBidOffer = isBidOffer;
@@ -55,30 +65,30 @@ public class Auction {
 
     /**
      * Returns if a player owns the auction
-     *
      * @param player
      * @return
      */
     public boolean isOwner(Player player) {
-        return player.getUniqueId().equals(ownerId);
+        return player.getUniqueId().equals(ownerId.getPlayerId());
     }
 
     /**
      * Returns the lore
-     *
      * @return
      */
     public ArrayList<String> getDescription() {
         ArrayList<String> lore = new ArrayList<>();
-        lore.add("Owner: " + Characters.getPlayerCharacter(getOwnerId()).getPlayer().getDisplayName());
+        lore.add("Owner: " + getOwnerName());
         lore.add("Type: " + (isBidOffer ? "Bid" : "Sell"));
+        if (isBidOffer) {
+            lore.add("Highest Bidder: " + highestBidderName);
+        }
         lore.add((isBidOffer ? "Current bid: " : "Price: ") + getPriceFormatted());
         return lore;
     }
 
     /**
      * Bids on an auction, sets the new price, and adds the bidding person to the bid history
-     *
      * @param value
      * @return
      */
@@ -96,10 +106,9 @@ public class Auction {
         }
         if (Money.sub(playerCharacter, value)) {
             //re-add the money to the previous bidder - auction fee
-            PlayerCharacter previousBidder = Characters.getPlayerCharacter(highestBidder);
-            Money.add(previousBidder, (long) (price * (1 - AuctionController.AUCTION_FEE)));
-            if (previousBidder.isCurrent()) {
-                //TODO fix english please?
+            PlayerCharacter previousBidder = Characters.getPlayerCharacter(highestBidderId);
+            if (previousBidder != null) {
+                Money.add(previousBidder, (long) (price * (1 - AuctionController.AUCTION_FEE)));
                 Mail mail = new Mail(previousBidder.getUniqueCharacterId(), "Your bid on the auction " + ChatColor.UNDERLINE + ChatColor.WHITE + ChatColor.BOLD +
                         getItem().toInstance().gear.getName() + ChatColor.RESET + " got overbidden", false);
                 MailboxController.getInstance().getMailbox(playerCharacter.getUniqueCharacterId()).addMail(mail);
@@ -107,7 +116,8 @@ public class Auction {
 
             //set the values of the current bidder and also save
             this.price = value;
-            this.highestBidder = playerCharacter.getUniqueCharacterId();
+            this.highestBidderId = playerCharacter.getUniqueCharacterId();
+            this.highestBidderName = playerCharacter.getPlayer().getDisplayName();
             BidHistoryEntry entry = new BidHistoryEntry(this.id, playerCharacter.getUniqueCharacterId(), this.price);
             AuctionController.getInstance().addBidEntry(entry);
             notifyOwner(playerCharacter.getPlayer().getDisplayName() + " bid " + Money.Format.format(value) + " on " + getItem().toInstance().gear.getName(), false);
@@ -128,7 +138,7 @@ public class Auction {
         PlayerCharacter playerCharacter = Characters.getPlayerCharacter(characterId);
 
         if (Money.sub(playerCharacter, value)) {
-            notifyOwner(playerCharacter.getPlayer().getDisplayName() + " bought " + getItem().toInstance().gear.getName() + "for " + Money.Format.format(value), false);
+            notifyOwner(playerCharacter.getPlayer().getDisplayName() + " bought " + getItem().toInstance().gear.getName() + " for " + Money.Format.format(value), false);
             return true;
         }
 
@@ -138,7 +148,6 @@ public class Auction {
 
     /**
      * Notifies the owner of the auction
-     *
      * @param contentLines
      */
     public void notifyOwner(ArrayList<String> contentLines, boolean sendMail) {
@@ -159,7 +168,6 @@ public class Auction {
 
     /**
      * Notifies the owner of the auction
-     *
      * @param message
      */
     public void notifyOwner(String message, boolean sendMail) {
@@ -218,6 +226,30 @@ public class Auction {
 
     public void setBidOffer(boolean isBidOffer) {
         this.isBidOffer = isBidOffer;
+    }
+
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
+
+    public CharacterId getHighestBidderId() {
+        return highestBidderId;
+    }
+
+    public String getHighestBidderName() {
+        return highestBidderName;
+    }
+
+    public void setHighestBidderId(CharacterId highestBidderId) {
+        this.highestBidderId = highestBidderId;
+    }
+
+    public void setHighestBidderName(String highestBidderName) {
+        this.highestBidderName = highestBidderName;
     }
 
     public ArrayList<BidHistoryEntry> getBidHistory() {

@@ -12,7 +12,6 @@ import com.legendsofvaleros.modules.skills.SkillUtil;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
-import org.bukkit.entity.LivingEntity;
 
 public class SkillFrostbolt extends Skill {
     public static final String ID = "frostbolt";

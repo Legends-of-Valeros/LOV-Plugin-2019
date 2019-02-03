@@ -27,7 +27,7 @@ public class AuctionChatPrompt {
         //TODO MessageUtil.sendInfo
         playerCharacter.getPlayer().sendMessage(divider);
         playerCharacter.getPlayer().sendMessage("You started " + prompt.getChatString() + " " + auction.getItem().toInstance().gear.getName());
-        handleDecision();
+        this.handleDecision("");
     }
 
     public void finish() {
@@ -46,10 +46,6 @@ public class AuctionChatPrompt {
 
         playerCharacter.getPlayer().sendMessage("You Stopped " + prompt.getChatString() + " " + auction.getItem().toInstance().gear.getName());
         getPlayerCharacter().getPlayer().sendMessage(divider);
-    }
-
-    private void handleDecision() {
-        this.handleDecision("");
     }
 
     public void handleDecision(String decision) {
@@ -75,7 +71,7 @@ public class AuctionChatPrompt {
             this.finish();
         }
         if (rerun) {
-            handleDecision();
+            this.handleDecision("");
         }
     }
 
@@ -103,7 +99,9 @@ public class AuctionChatPrompt {
             if (auction.getItem().amount > 1) {
                 playerCharacter.getPlayer().sendMessage("How many " + auction.getItem().toInstance().gear.getName() + " do you want to buy?");
             } else {
-                playerCharacter.getPlayer().sendMessage("Do you really want to buy " + auction.getItem().toInstance().gear.getName() + " ?");
+                playerCharacter.getPlayer().sendMessage(
+                        "Do you really want to buy " + auction.getItem().toInstance().gear.getName() + " for " + auction.getPriceFormatted() + " ?"
+                );
             }
         } else if (currentStep == 2) {
             if (auction.getItem().amount > 1) {
@@ -119,6 +117,7 @@ public class AuctionChatPrompt {
                         cancelPrompt();
                         return false;
                     }
+                    AuctionController.getInstance().confirmBuyPrompt(playerCharacter.getUniqueCharacterId(), amount);
                     playerCharacter.getPlayer().sendMessage("You successfully bought " + amount + "x of " + auction.getItem().toInstance().gear.getName());
                 } catch (NumberFormatException e) {
                     playerCharacter.getPlayer().sendMessage("Please enter a valid number");
@@ -127,7 +126,11 @@ public class AuctionChatPrompt {
                 }
             } else {
                 if (decision.equalsIgnoreCase("yes") || decision.equalsIgnoreCase("y")) {
-                    AuctionController.getInstance().confirmBuyPrompt(playerCharacter.getUniqueCharacterId());
+                    if (!auction.buy(playerCharacter.getUniqueCharacterId(), 1)) {
+                        cancelPrompt();
+                        return false;
+                    }
+                    AuctionController.getInstance().confirmBuyPrompt(playerCharacter.getUniqueCharacterId(), 1);
                     playerCharacter.getPlayer().sendMessage("You successfuly bought " + auction.getItem().toInstance().gear.getName());
                 } else {
                     cancelPrompt();
@@ -167,6 +170,9 @@ public class AuctionChatPrompt {
                 try {
                     int price = Integer.parseInt(decision);
                     auction.setPrice(price);
+                    playerCharacter.getPlayer().sendMessage(
+                            "You successfully started selling " + auction.getItem().toInstance().gear.getName() + " for " + auction.getPriceFormatted()
+                    );
                     return true;
                 } catch (NumberFormatException e) {
                     playerCharacter.getPlayer().sendMessage("Please enter a valid number");

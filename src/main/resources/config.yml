@@ -6,4 +6,4 @@ dbpools-database: "mysql1"
 # DEV = Verbose logging. Doesn't log exceptions.
 # TESTING = Verbose logging.
 # LIVE = Normal logging. Only moderation commands enabled.
-server-mode: true
+server-mode: DEV

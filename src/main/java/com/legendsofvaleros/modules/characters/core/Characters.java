@@ -42,6 +42,7 @@ import java.util.UUID;
 @DependsOn(PlayerMenu.class)
 public class Characters extends ModuleListener implements CharactersAPI {
     private static Characters instance;
+
     public static Characters getInstance() throws IllegalStateException {
         return instance;
     }
@@ -153,6 +154,9 @@ public class Characters extends ModuleListener implements CharactersAPI {
     }
 
     public static boolean isPlayerCharacterLoaded(CharacterId id) {
+        if (instance.getCharacter(id) == null) {
+            return false;
+        }
         return instance.isCharacterLoaded(instance.getCharacter(id).getPlayer());
     }
 
