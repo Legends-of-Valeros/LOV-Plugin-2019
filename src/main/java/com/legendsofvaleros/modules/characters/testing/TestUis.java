@@ -16,6 +16,7 @@ import com.legendsofvaleros.modules.combatengine.ui.PlayerCombatInterface;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.entity.Player;
@@ -30,6 +31,9 @@ public class TestUis implements CharactersUiManager, CombatEngineUiManager {
 
 	@Override
 	public void forceCharacterSelection(PlayerCharacters characters, CharacterSelectionListener listener) {
+		characters.getPlayer().setGameMode(GameMode.SPECTATOR);
+		characters.getPlayer().setFlying(true);
+
 		new WindowCharacterSelect(0, characters, listener, true).open(characters.getPlayer());
 	}
 

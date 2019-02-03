@@ -13,7 +13,9 @@ import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.item.Model;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -79,6 +81,9 @@ public class TestListener implements Listener {
 
 	@EventHandler
 	public void onPlayerCharacterFinishLoading(final PlayerCharacterFinishLoadingEvent event) {
+		event.getPlayer().setFlying(false);
+		event.getPlayer().setGameMode(Bukkit.getDefaultGameMode());
+
 		event.getPlayer().setLevel(event.getPlayerCharacter().getExperience().getLevel());
 		event.getPlayer().setExp((float)event.getPlayerCharacter().getExperience().getPercentageTowardsNextLevel());
 	}

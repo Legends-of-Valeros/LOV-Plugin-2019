@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -47,6 +48,8 @@ public class MobSpawner {
         SpawnManager.getSpawns().stream()
                 .skip(block * blockSize).limit(blockSize)
                 .forEach(spawn -> {
+                    spawn.updateStats();
+
                     World world = spawn.getWorld();
                     Location spawnLocation = spawn.getLocation();
 
@@ -58,16 +61,22 @@ public class MobSpawner {
                             spawn.clear();
                         }
 
+                        spawn.setDebugInfo("Unloaded");
+
                         return;
                     }
 
                     boolean playerNearby = false;
 
-                    List<org.bukkit.entity.Entity> entities = new ArrayList<>(world.getNearbyEntities(spawnLocation, spawn.getRadius() + 25, spawn.getRadius() + 20, spawn.getRadius() + 25));
+                    List<org.bukkit.entity.Entity> entities = new ArrayList<>(
+                            world.getNearbyEntities(spawnLocation,
+                                                    spawn.getRadius() + 25,
+                                                    spawn.getRadius() + 20,
+                                                    spawn.getRadius() + 25));
                     CombatEntity ce;
                     for (org.bukkit.entity.Entity e : entities) {
-                        if (!(e instanceof LivingEntity)) continue;
-                        ce = CombatEngine.getEntity((LivingEntity) e);
+                        if(!(e instanceof Player)) continue;
+                        ce = CombatEngine.getEntity((Player) e);
                         if (ce != null && ce.isPlayer()) {
                             playerNearby = true;
                             break;
@@ -80,6 +89,8 @@ public class MobSpawner {
 
                             spawn.clear();
                         }
+
+                        spawn.setDebugInfo("No players nearby");
                     }else{
                         Mob mob = spawn.getMob();
                         if (mob == null) {
@@ -98,7 +109,10 @@ public class MobSpawner {
                         }
 
                         // Make sure enough time has passed before the spawn is updated
-                        if (System.currentTimeMillis() - spawn.getLastSpawn() < spawn.getSpawnInterval() * 1000) return;
+                        if (System.currentTimeMillis() - spawn.getLastSpawn() < spawn.getSpawnInterval() * 1000) {
+                            spawn.setDebugInfo("Waiting for timeout");
+                            return;
+                        }
 
                         // Spawn the mobs, so we reset the spawn counter.
                         spawn.markInterval();
@@ -106,6 +120,8 @@ public class MobSpawner {
                         int entityCount = spawn.getSpawnCount() - spawn.getEntities().size();
                         while (entityCount-- > 0 && rand.nextInt(100) < spawn.getSpawnChance())
                             spawn.spawn(mob);
+
+                        spawn.setDebugInfo("No problems");
                     }
 
                     spawn.updateStats();

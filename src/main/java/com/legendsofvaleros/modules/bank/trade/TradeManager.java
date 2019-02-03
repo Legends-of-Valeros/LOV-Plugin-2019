@@ -8,6 +8,8 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.util.ItemUtil;
+import com.legendsofvaleros.modules.hotswitch.Hotswitch;
+import com.legendsofvaleros.modules.playermenu.InventoryManager;
 import com.legendsofvaleros.modules.playermenu.PlayerMenuOpenEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.item.Model;
@@ -191,7 +193,7 @@ class TradeGUI extends GUI {
 
     @Override
     public void onClickPlayerInventory(GUI gui, Player p, InventoryClickEvent event) {
-        /*if (InventoryManager.hasFixedItem(event.getSlot()) || event.getSlot() <= Hotswitch.SWITCHER_SLOT)
+        if (InventoryManager.hasFixedItem(event.getSlot()) || event.getSlot() <= Hotswitch.SWITCHER_SLOT)
             return;
 
         Gear.Instance instance = Gear.Instance.fromStack(event.getClickedInventory().getItem(event.getSlot()));
@@ -199,7 +201,7 @@ class TradeGUI extends GUI {
         if (!instance.gear.getType().isTradable())
             return;
 
-        // Get an available slot
+        /*// Get an available slot
         available = -1;
         ItemStack stack = p.getInventory().getItem(event.getSlot());
         for (int i = 0; i < 7; i++) {

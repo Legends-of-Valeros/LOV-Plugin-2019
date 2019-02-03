@@ -28,7 +28,7 @@ public class SpawnArea {
      * Used for debugging.
      */
     private Hologram hologram;
-    private TextLine textEntityId, textLevel, textRadius, textPadding, textEntities, textInterval;
+    private TextLine textEntityId, textLevel, textRadius, textPadding, textEntities, textInfo, textInterval;
 
     @Column(primary = true, name = "spawn_id")
     private int id;
@@ -185,8 +185,13 @@ public class SpawnArea {
     public void updateStats() {
         if(hologram != null) {
             textEntities.setText(getEntities().size() + " / " + despawnedEnemies);
-            textInterval.setText(Instant.ofEpochMilli(lastInterval).toString());
+            textInterval.setText(Instant.ofEpochMilli(System.currentTimeMillis()).toString());
         }
+    }
+
+    public void setDebugInfo(String info) {
+        if(hologram != null)
+            textInfo.setText(info);
     }
 
     public Hologram getHologram() {
@@ -197,6 +202,7 @@ public class SpawnArea {
             textRadius = hologram.appendTextLine("Radius: " + getRadius());
             textPadding = hologram.appendTextLine("Padding: " + getPadding());
             textEntities = hologram.appendTextLine("");
+            textInfo = hologram.appendTextLine("");
             textInterval = hologram.appendTextLine("");
 
             updateStats();
@@ -251,9 +257,9 @@ public class SpawnArea {
         }
 
         Location loc = new Location(world,
-                ground.getBlockX() - (radius == 0 ? 0 : radius + rand.nextInt(radius * 2)),
+                ground.getBlockX() - (radius == 0 ? 0 : rand.nextInt(radius * 2) - radius),
                 ground.getBlockY(),
-                ground.getBlockZ() - (radius == 0 ? 0 : radius + rand.nextInt(radius * 2))
+                ground.getBlockZ() - (radius == 0 ? 0 : rand.nextInt(radius * 2) - radius)
         );
 
         // Move up until loc is a transparent block
