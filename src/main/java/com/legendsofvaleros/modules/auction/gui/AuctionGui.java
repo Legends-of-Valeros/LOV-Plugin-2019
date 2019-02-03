@@ -91,7 +91,6 @@ public class AuctionGui extends GUI implements Listener {
      * Adds all items to the current page
      */
     private void loadItemsForPage() {
-        //TODO check if replacing or recreating the ui is more effecient (recreating should be)
         for (int i = 0; i < AuctionGui.ITEM_COUNT_PER_PAGE; i++) {
             ItemStack slotItem = null;
             Auction auction = getAuctionFromSlot(i);

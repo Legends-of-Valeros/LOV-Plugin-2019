@@ -26,6 +26,7 @@
 .DS_Store
 
 # intellij
+.idea/*
 *.iml
 *.ipr
 *.iws
