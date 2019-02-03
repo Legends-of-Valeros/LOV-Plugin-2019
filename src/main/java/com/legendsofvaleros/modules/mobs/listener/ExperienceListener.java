@@ -1,10 +1,12 @@
 package com.legendsofvaleros.modules.mobs.listener;
 
+import com.legendsofvaleros.module.Modules;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.mobs.ExperienceHelper;
 import com.legendsofvaleros.modules.mobs.core.Mob;
+import com.legendsofvaleros.modules.parties.Parties;
 import com.legendsofvaleros.modules.parties.PartyManager;
 import com.legendsofvaleros.modules.parties.PlayerParty;
 import org.bukkit.Bukkit;
@@ -27,7 +29,7 @@ public class ExperienceListener implements Listener {
         PlayerCharacter pc = Characters.getPlayerCharacter((Player)event.getKiller().getLivingEntity());
 
         // Parties is optional. If the parties plugin doesn't exist, just give xp to the murderer.
-        if(Bukkit.getPluginManager().getPlugin("Parties") == null) {
+        if(!Modules.isLoaded(Parties.class)) {
             int xp = ExperienceHelper.getExperience(pc, entity);
             pc.getExperience().addExperience(xp, false);
         }else{
