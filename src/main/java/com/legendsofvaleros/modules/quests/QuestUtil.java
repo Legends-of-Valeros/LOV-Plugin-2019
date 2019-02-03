@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.quests;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.npcs.NPCData;
 import com.legendsofvaleros.modules.npcs.NPCs;
@@ -61,7 +62,7 @@ public class QuestUtil {
 					Gear data = Gear.fromID(gears.group(1));
 
 					String name = gears.group(1);
-					if(data != null)
+					if(data != null && data != GearController.ERROR_ITEM)
 						name = data.getName();
 
 					gears.appendReplacement(sb, ChatColor.AQUA + name + ChatColor.RESET);
