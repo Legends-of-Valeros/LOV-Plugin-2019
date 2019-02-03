@@ -83,9 +83,13 @@ public class AuctionChatPrompt {
         } else if (currentStep == 2) {
             try {
                 int price = Integer.parseInt(decision);
-                if (auction.bid(playerCharacter.getUniqueCharacterId(), price)) {
-                    playerCharacter.getPlayer().sendMessage("You successfully bid " + Money.Format.format(price) + " on " + auction.getItem().toInstance().gear.getName());
+                if (!auction.bid(playerCharacter.getUniqueCharacterId(), price)) {
+                    cancelPrompt();
+                    return false;
                 }
+
+                AuctionController.getInstance().confirmBidPrompt(playerCharacter.getUniqueCharacterId());
+                playerCharacter.getPlayer().sendMessage("You successfully bid " + Money.Format.format(price) + " on " + auction.getItem().toInstance().gear.getName());
             } catch (NumberFormatException e) {
                 playerCharacter.getPlayer().sendMessage("Please enter a valid number");
                 cancelPrompt();
