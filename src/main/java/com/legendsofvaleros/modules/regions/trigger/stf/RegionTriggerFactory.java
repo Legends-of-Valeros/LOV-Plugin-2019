@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.regions.trigger.stf;
 
-import com.legendsofvaleros.modules.quests.Quests;
+import com.legendsofvaleros.modules.quests.QuestController;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +26,7 @@ public class RegionTriggerFactory {
     }
 
     public static void registerType(String type, Class<? extends IRegionTrigger> objClass) {
-        Quests.getInstance().getLogger().finest("Registered trigger: " + type);
+        QuestController.getInstance().getLogger().finest("Registered trigger: " + type);
         triggerTypes.put(type, objClass);
     }
 }

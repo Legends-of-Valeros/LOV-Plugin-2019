@@ -18,19 +18,19 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
-import com.legendsofvaleros.modules.quests.action.stf.AbstractQuestAction;
-import com.legendsofvaleros.modules.quests.action.stf.IQuestAction;
-import com.legendsofvaleros.modules.quests.action.stf.QuestActionFactory;
-import com.legendsofvaleros.modules.quests.action.stf.QuestActions;
-import com.legendsofvaleros.modules.quests.objective.stf.IQuestObjective;
-import com.legendsofvaleros.modules.quests.objective.stf.QuestObjectiveFactory;
-import com.legendsofvaleros.modules.quests.prerequisite.stf.IQuestPrerequisite;
-import com.legendsofvaleros.modules.quests.prerequisite.stf.PrerequisiteFactory;
-import com.legendsofvaleros.modules.quests.progress.stf.IQuestObjectiveProgress;
-import com.legendsofvaleros.modules.quests.progress.stf.ObjectiveProgressPack;
-import com.legendsofvaleros.modules.quests.progress.stf.ProgressFactory;
-import com.legendsofvaleros.modules.quests.progress.stf.QuestProgressPack;
-import com.legendsofvaleros.modules.quests.quest.stf.*;
+import com.legendsofvaleros.modules.quests.action.AbstractQuestAction;
+import com.legendsofvaleros.modules.quests.action.IQuestAction;
+import com.legendsofvaleros.modules.quests.action.QuestActionFactory;
+import com.legendsofvaleros.modules.quests.action.QuestActions;
+import com.legendsofvaleros.modules.quests.objective.IQuestObjective;
+import com.legendsofvaleros.modules.quests.objective.QuestObjectiveFactory;
+import com.legendsofvaleros.modules.quests.prerequisite.IQuestPrerequisite;
+import com.legendsofvaleros.modules.quests.prerequisite.PrerequisiteFactory;
+import com.legendsofvaleros.modules.quests.progress.IQuestObjectiveProgress;
+import com.legendsofvaleros.modules.quests.progress.ObjectiveProgressPack;
+import com.legendsofvaleros.modules.quests.progress.ProgressFactory;
+import com.legendsofvaleros.modules.quests.progress.QuestProgressPack;
+import com.legendsofvaleros.modules.quests.quest.*;
 import com.legendsofvaleros.scheduler.InternalTask;
 import com.legendsofvaleros.util.FutureCache;
 import com.legendsofvaleros.util.MessageUtil;
@@ -87,13 +87,13 @@ public class QuestManager {
         return quests.get(quest_id);
     }
 
-    // Event class, quest ID, objective list
+    // Event class, gear ID, objective list
     private static HashBasedTable<Class<? extends Event>, String, Set<IQuestEventReceiver>> questEvents = HashBasedTable.create();
     private static Multimap<String, InternalTask> questUpdates = HashMultimap.create();
 
     /**
      * A map containing each user to a list of all their accepted quests. This
-     * keeps the quest in memory for as long as they remain on the server.
+     * keeps the gear in memory for as long as they remain on the server.
      */
     private static Multimap<CharacterId, IQuest> playerQuests = HashMultimap.create();
 
@@ -105,7 +105,7 @@ public class QuestManager {
 
     /**
      * Stores a list of completed quests, along with a LocalDateTime representation
-     * of the exact time they completed the quest.
+     * of the exact time they completed the gear.
      */
     public static HashBasedTable<CharacterId, String, LocalDateTime> completedQuests = HashBasedTable.create();
 
@@ -120,7 +120,7 @@ public class QuestManager {
 
                 field.set(obj, gson.getAdapter(field.getType()).fromJsonTree(entry.getValue()));
             } catch (Exception e) {
-                MessageUtil.sendException(Quests.getInstance(), "Failed to apply fields! Offender: " + (obj == null ? "null" : obj.getClass().getSimpleName()) + ":" + act, true);
+                MessageUtil.sendException(QuestController.getInstance(), "Failed to apply fields! Offender: " + (obj == null ? "null" : obj.getClass().getSimpleName()) + ":" + act, true);
             }
         }
     }
@@ -226,13 +226,13 @@ public class QuestManager {
                 .column(QUEST_ACTIONS, "TEXT")
                 .column(QUEST_OBJECTIVES, "TEXT").create();
 
-        Quests.getInstance().registerEvents(new PlayerListener());
+        QuestController.getInstance().registerEvents(new PlayerListener());
 
         quests = new FutureCache<>(CacheBuilder.newBuilder()
                 .concurrencyLevel(4)
                 .weakValues()
                 .removalListener(entry -> {
-                    Quests.getInstance().getLogger().warning("Quest '" + entry.getKey() + "' removed from the cache: " + entry.getCause());
+                    QuestController.getInstance().getLogger().warning("Quest '" + entry.getKey() + "' removed from the cache: " + entry.getCause());
 
                     questEvents.column(String.valueOf(entry.getKey())).clear();
 
@@ -242,7 +242,7 @@ public class QuestManager {
                 })
                 .build(), QuestManager::loadQuest);
 
-        Quests.getInstance().getScheduler().executeInMyCircleTimer(() -> {
+        QuestController.getInstance().getScheduler().executeInMyCircleTimer(() -> {
             // This is done so we get almost-live updates on GC'd listeners.
             quests.cleanUp();
         }, 0L, 20L);
@@ -258,7 +258,7 @@ public class QuestManager {
         quests.cleanUp();
 
         if (quests.size() > 0)
-            MessageUtil.sendException(Quests.getInstance(), quests.size() + " quests did not get cleared from the cache.", false);
+            MessageUtil.sendException(QuestController.getInstance(), quests.size() + " quests did not get cleared from the cache.", false);
 
         for (Player p : Bukkit.getOnlinePlayers()) {
             if(!Characters.isPlayerCharacterLoaded(p)) continue;
@@ -288,7 +288,7 @@ public class QuestManager {
                 receiver.onEvent(event, pc);
             }
 
-            // Check if the quest has been completed.
+            // Check if the gear has been completed.
             quest.checkCompleted(pc);
         }
     }
@@ -324,8 +324,8 @@ public class QuestManager {
                                         playerQuests.put(pc.getUniqueCharacterId(), quest);
                                     }
                                 } catch (Exception e) {
-                                    Quests.getInstance().getLogger().warning("Player attempt to load progress for quest, but something went wrong. Offender: " + pc.getPlayer().getName() + " in quest " + questId);
-                                    MessageUtil.sendException(Quests.getInstance(), pc.getPlayer(), e, true);
+                                    QuestController.getInstance().getLogger().warning("Player attempt to load progress for gear, but something went wrong. Offender: " + pc.getPlayer().getName() + " in gear " + questId);
+                                    MessageUtil.sendException(QuestController.getInstance(), pc.getPlayer(), e, true);
                                 }
 
                                 int i = questsToLoad.decrementAndGet();
@@ -334,7 +334,7 @@ public class QuestManager {
                                     if (lock != null)
                                         lock.release();
                                 }
-                            }, Quests.getInstance().getScheduler()::async);
+                            }, QuestController.getInstance().getScheduler()::async);
                         }
                     }
 
@@ -352,9 +352,9 @@ public class QuestManager {
     }
 
     /**
-     * Completely remove quest progress. Both from memory, and from the database. The player will be able to redo the quest
+     * Completely remove gear progress. Both from memory, and from the database. The player will be able to redo the gear
      * as if they hadn't done it in the first place.
-     * @param quest_id The quest ID to remove.
+     * @param quest_id The gear ID to remove.
      * @param pc       The player.
      */
     public static void removeQuestProgress(String quest_id, PlayerCharacter pc) {
@@ -391,7 +391,7 @@ public class QuestManager {
     }
 
     /**
-     * Save player quest progress to database.
+     * Save player gear progress to database.
      * @param pc The player.
      */
     public static void saveQuestProgress(PlayerCharacter pc, IQuest q) {
@@ -407,8 +407,8 @@ public class QuestManager {
     }
 
     /**
-     * Set a player's quest to finished in the database.
-     * @param quest The quest object.
+     * Set a player's gear to finished in the database.
+     * @param quest The gear object.
      * @param pc    The player.
      */
     public static void finishQuest(IQuest quest, PlayerCharacter pc) {
@@ -528,7 +528,7 @@ public class QuestManager {
 
                                     AtomicInteger i = new AtomicInteger();
 
-                                    questUpdates.put(quest_id, Quests.getInstance().getScheduler().executeInSpigotCircleTimer(() -> {
+                                    questUpdates.put(quest_id, QuestController.getInstance().getScheduler().executeInSpigotCircleTimer(() -> {
                                         for(Map.Entry<CharacterId, QuestProgressPack> prog : quest.getProgressions()) {
                                             if(Characters.isPlayerCharacterLoaded(prog.getKey())) {
                                                 PlayerCharacter pc = Characters.getPlayerCharacter(prog.getKey());
@@ -545,8 +545,8 @@ public class QuestManager {
 
                         ret.set(quest);
                     } catch (Exception e) {
-                        Quests.getInstance().getLogger().severe("Failed to load quest. Offender: " + id);
-                        MessageUtil.sendException(Quests.getInstance(), null, e, false);
+                        QuestController.getInstance().getLogger().severe("Failed to load gear. Offender: " + id);
+                        MessageUtil.sendException(QuestController.getInstance(), null, e, false);
                         ret.set(null);
                     }
                 })

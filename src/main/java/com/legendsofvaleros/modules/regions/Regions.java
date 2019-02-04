@@ -9,10 +9,10 @@ import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.hearthstones.HearthstoneCastEvent;
 import com.legendsofvaleros.modules.hearthstones.Hearthstones;
 import com.legendsofvaleros.modules.quests.QuestManager;
-import com.legendsofvaleros.modules.quests.Quests;
+import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.regions.event.RegionEnterEvent;
 import com.legendsofvaleros.modules.regions.event.RegionLeaveEvent;
-import com.legendsofvaleros.modules.regions.quest.QuestIntegration;
+import com.legendsofvaleros.modules.quests.integration.RegionIntegration;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -28,7 +28,6 @@ import java.util.HashMap;
 @DependsOn(CombatEngine.class)
 @DependsOn(Characters.class)
 @DependsOn(Hearthstones.class)
-@IntegratesWith(module = Quests.class, integration = QuestIntegration.class)
 public class Regions extends ModuleListener {
     private static Regions instance;
     public static Regions getInstance() { return instance; }
@@ -53,18 +52,6 @@ public class Regions extends ModuleListener {
         regionManager = new RegionManager();
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new RegionCommands());
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onEnterRegion(RegionEnterEvent event) {
-        if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
-        QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onLeaveRegion(RegionLeaveEvent event) {
-        if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
-        QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
     }
 
     @EventHandler
@@ -92,12 +79,12 @@ public class Regions extends ModuleListener {
                     if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
                         if (selection.get(event.getPlayer())[0] != event.getClickedBlock().getLocation()) {
                             selection.get(event.getPlayer())[0] = event.getClickedBlock().getLocation();
-                            event.getPlayer().sendMessage("Set region location 1.");
+                            event.getPlayer().sendMessage("Set regions location 1.");
                         }
                     } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                         if (selection.get(event.getPlayer())[1] != event.getClickedBlock().getLocation()) {
                             selection.get(event.getPlayer())[1] = event.getClickedBlock().getLocation();
-                            event.getPlayer().sendMessage("Set region location 2.");
+                            event.getPlayer().sendMessage("Set regions location 2.");
                         }
                     }
 

@@ -1,8 +1,6 @@
 package com.legendsofvaleros.modules.guilds;
 
 import com.codingforcookies.doris.orm.ORMTable;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
@@ -12,11 +10,8 @@ import com.legendsofvaleros.modules.guilds.guild.Guild;
 import com.legendsofvaleros.modules.guilds.guild.GuildMember;
 import com.legendsofvaleros.modules.guilds.guild.GuildRole;
 import com.legendsofvaleros.modules.guilds.guild.GuildRolePermission;
-import com.legendsofvaleros.modules.quests.Quests;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.*;

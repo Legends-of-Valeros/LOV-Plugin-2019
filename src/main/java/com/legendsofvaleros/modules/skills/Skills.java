@@ -19,8 +19,7 @@ import com.legendsofvaleros.modules.mobs.Mobs;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.playermenu.options.PlayerOptionsOpenEvent;
-import com.legendsofvaleros.modules.quests.Quests;
-import com.legendsofvaleros.modules.quests.objective.stf.QuestObjectiveFactory;
+import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.skills.event.*;
 import com.legendsofvaleros.modules.skills.gear.GearCharge;
 import com.legendsofvaleros.modules.skills.gear.SkillComponent;
@@ -29,8 +28,6 @@ import com.legendsofvaleros.modules.skills.gui.GUISkillsCore;
 import com.legendsofvaleros.modules.skills.gui.recharge.TraitRecharger;
 import com.legendsofvaleros.modules.skills.mage.TreeMage;
 import com.legendsofvaleros.modules.skills.priest.TreePriest;
-import com.legendsofvaleros.modules.skills.quest.SkillBindObjective;
-import com.legendsofvaleros.modules.skills.quest.SkillUseObjective;
 import com.legendsofvaleros.modules.skills.rogue.TreeRogue;
 import com.legendsofvaleros.modules.skills.warrior.TreeWarrior;
 import com.legendsofvaleros.util.MessageUtil;
@@ -45,7 +42,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 @DependsOn(PlayerMenu.class)
-@DependsOn(Quests.class)
+@DependsOn(QuestController.class)
 @DependsOn(Bank.class)
 @DependsOn(CombatEngine.class)
 @DependsOn(Characters.class)
@@ -85,13 +82,6 @@ public class Skills extends ModuleListener {
             NPCs.registerTrait("recharger", TraitRecharger.class);
         else
             Skills.getInstance().getLogger().info("NPC integration not enabled.");
-
-        if(Modules.isLoaded(Quests.class)) {
-            QuestObjectiveFactory.registerType("skill_bind", SkillBindObjective.class);
-            QuestObjectiveFactory.registerType("skill_use", SkillUseObjective.class);
-        }else
-            Skills.getInstance().getLogger().info("Quest integration not enabled.");
-
 
         new HotbarListener();
 

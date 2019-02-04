@@ -12,13 +12,12 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterFinishLoadingEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
+import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.quests.QuestManager;
-import com.legendsofvaleros.modules.quests.Quests;
 import com.legendsofvaleros.modules.quests.event.QuestCompletedEvent;
-import com.legendsofvaleros.modules.quests.event.QuestObjectivesCompletedEvent;
 import com.legendsofvaleros.modules.quests.event.QuestStartedEvent;
-import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
-import com.legendsofvaleros.modules.quests.quest.stf.QuestStatus;
+import com.legendsofvaleros.modules.quests.quest.IQuest;
+import com.legendsofvaleros.modules.quests.quest.QuestStatus;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
 import com.legendsofvaleros.util.item.Model;
@@ -35,7 +34,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TraitQuestGiver extends LOVTrait {
-    private static final String MARKER = "quest";
+    private static final String MARKER = "gear";
 
     public static class Marker implements Listener {
         @EventHandler
@@ -103,7 +102,7 @@ public class TraitQuestGiver extends LOVTrait {
                             IQuest quest = future.get();
                             QuestStatus status = QuestManager.getStatus(pc, quest);
 
-                            // If the quest can be accepted, the marker should be active.
+                            // If the gear can be accepted, the marker should be active.
                             if(status.canAccept()) {
                                 working.remove(trait);
                                 trait.available.getVisibilityManager().showTo(pc.getPlayer());
@@ -111,7 +110,7 @@ public class TraitQuestGiver extends LOVTrait {
                                 return;
                             }
 
-                            // TODO: Add a marker for NPCs that you need to talk to in a quest (?)
+                            // TODO: Add a marker for NPCs that you need to talk to in a gear (?)
                         } catch (ExecutionException e) {
                             e.printStackTrace();
                         }
@@ -123,7 +122,7 @@ public class TraitQuestGiver extends LOVTrait {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                }, Quests.getInstance().getScheduler()::sync);
+                }, QuestController.getInstance().getScheduler()::sync);
             }
         }
     }
@@ -135,7 +134,7 @@ public class TraitQuestGiver extends LOVTrait {
         all.add(this);
 
         available = trait.nameplates.getOrAdd(MARKER);
-        available.appendItemLine(Model.stack("marker-quest-available").create());
+        available.appendItemLine(Model.stack("marker-gear-available").create());
         available.getVisibilityManager().setVisibleByDefault(false);
 
         Marker.update(this);
@@ -172,7 +171,7 @@ public class TraitQuestGiver extends LOVTrait {
                         playerQuests.put(quest, status);
                 }
             } catch (Exception e) {
-                MessageUtil.sendException(Quests.getInstance(), player, e, true);
+                MessageUtil.sendException(QuestController.getInstance(), player, e, true);
                 return;
             }
 
@@ -191,7 +190,7 @@ public class TraitQuestGiver extends LOVTrait {
                     openGUI(player, playerQuests);
                 }));
             }
-        }, Quests.getInstance().getScheduler()::async);
+        }, QuestController.getInstance().getScheduler()::async);
 
         List<IQuest> quests = new ArrayList<>();
         AtomicInteger left = new AtomicInteger(questIDs.length);
@@ -204,14 +203,14 @@ public class TraitQuestGiver extends LOVTrait {
                     if (quest != null)
                         quests.add(quest);
                     else
-                        throw new Exception("Failed to load quest on NPC! Offender: " + questId + " on " + trait.npcId);
+                        throw new Exception("Failed to load gear on NPC! Offender: " + questId + " on " + trait.npcId);
                 } catch (Exception e) {
-                    MessageUtil.sendException(Quests.getInstance(), e, false);
+                    MessageUtil.sendException(QuestController.getInstance(), e, false);
                 }
 
                 if (left.decrementAndGet() == 0)
                     future.set(quests);
-            }, Quests.getInstance().getScheduler()::async);
+            }, QuestController.getInstance().getScheduler()::async);
         }
     }
 
@@ -231,7 +230,7 @@ public class TraitQuestGiver extends LOVTrait {
             else
                 tb.append(StringUtil.center(Book.WIDTH, "[" + quest.getKey().getName() + "]") + "\n\n");
 
-            // TODO: Switch to using "temporary" commands, as anyone who knows the secret command can accept any quest.
+            // TODO: Switch to using "temporary" commands, as anyone who knows the secret command can accept any gear.
             tb.color(quest.getValue() == QuestStatus.NEITHER ? ChatColor.DARK_PURPLE : ChatColor.DARK_RED)
                     .command("/quests talk " + quest.getKey().getId());
         }

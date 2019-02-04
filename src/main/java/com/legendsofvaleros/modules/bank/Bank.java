@@ -4,11 +4,7 @@ import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
-import com.legendsofvaleros.module.annotation.IntegratesWith;
-import com.legendsofvaleros.modules.bank.integration.QuestIntegration;
 import com.legendsofvaleros.modules.bank.item.WorthComponent;
-import com.legendsofvaleros.modules.bank.quest.ActionAddCurrency;
-import com.legendsofvaleros.modules.bank.quest.RepairObjective;
 import com.legendsofvaleros.modules.bank.repair.RepairItemEvent;
 import com.legendsofvaleros.modules.bank.repair.TraitBlacksmith;
 import com.legendsofvaleros.modules.bank.trade.TradeManager;
@@ -20,9 +16,6 @@ import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.gear.GearRegistry;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.quests.QuestManager;
-import com.legendsofvaleros.modules.quests.Quests;
-import com.legendsofvaleros.modules.quests.action.stf.QuestActionFactory;
-import com.legendsofvaleros.modules.quests.objective.stf.QuestObjectiveFactory;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -35,7 +28,6 @@ import java.util.Map;
 @DependsOn(NPCs.class)
 @DependsOn(Characters.class)
 @DependsOn(GearController.class)
-@IntegratesWith(module = Quests.class, integration = QuestIntegration.class)
 public class Bank extends ModuleListener {
     private static Bank instance;
     public static Bank getInstance() { return instance; }
@@ -77,14 +69,6 @@ public class Bank extends ModuleListener {
         super.onUnload();
 
         BankManager.onDisable();
-    }
-
-    @IntegratesWith(module = Quests.class)
-    private void onQuests() {
-        getLogger().info("Quests integration function!");
-
-        QuestObjectiveFactory.registerType("repair", RepairObjective.class);
-        QuestActionFactory.registerType("currency_give", ActionAddCurrency.class);
     }
 
     @EventHandler

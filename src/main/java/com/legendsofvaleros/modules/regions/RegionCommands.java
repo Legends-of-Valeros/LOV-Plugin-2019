@@ -14,16 +14,16 @@ import org.bukkit.entity.Player;
 @CommandAlias("regions|lov regions")
 public class RegionCommands extends BaseCommand {
 	@Subcommand("notify")
-	@Description("Notify when entering and exiting a region.")
-	@CommandPermission("region.notify")
+	@Description("Notify when entering and exiting a regions.")
+	@CommandPermission("regions.notify")
 	public void cmdDebug(CommandSender sender) {
 		Regions.REGION_DEBUG = !Regions.REGION_DEBUG;
 		MessageUtil.sendUpdate(sender, "Region debugging is now " + (Regions.REGION_DEBUG ? "enabled" : "disabled") + ".");
 	}
 
 	@Subcommand("wand")
-	@Description("Fetch the region wand.")
-	@CommandPermission("region.wand")
+	@Description("Fetch the regions wand.")
+	@CommandPermission("regions.wand")
 	public void cmdWand(Player player) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
@@ -32,15 +32,15 @@ public class RegionCommands extends BaseCommand {
 	}
 
 	@Subcommand("create")
-	@Description("Create a new region. Default access denied.")
-	@CommandPermission("region.create")
+	@Description("Create a new regions. Default access denied.")
+	@CommandPermission("regions.create")
 	public void cmdCreate(Player player, String id, @Optional Boolean access) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
 		if(access == null) access = false;
 
 		if(Regions.manager().getRegion(id) != null) {
-			MessageUtil.sendError(player, "A region with that ID already exists.");
+			MessageUtil.sendError(player, "A regions with that ID already exists.");
 			return;
 		}
 		
@@ -53,13 +53,13 @@ public class RegionCommands extends BaseCommand {
 	}
 
 	@Subcommand("remove")
-	@Description("Remove a region.")
-	@CommandPermission("region.remove")
+	@Description("Remove a regions.")
+	@CommandPermission("regions.remove")
 	public void cmdRemove(CommandSender sender, String regionId) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
 		if(Regions.manager().getRegion(regionId) == null) {
-			MessageUtil.sendError(sender, "A region with that ID doesn't exist.");
+			MessageUtil.sendError(sender, "A regions with that ID doesn't exist.");
 			return;
 		}
 		
@@ -68,14 +68,14 @@ public class RegionCommands extends BaseCommand {
 	}
 
 	@Subcommand("hearthstone")
-	@Description("Toggle if a region allows hearthstones.")
-	@CommandPermission("region.set.hearthstone")
+	@Description("Toggle if a regions allows hearthstones.")
+	@CommandPermission("regions.set.hearthstone")
 	public void cmdToggleHearthstone(CommandSender sender, String regionId) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
 		Region region = Regions.manager().getRegion(regionId);
 		if(region == null) {
-			MessageUtil.sendError(sender, "A region with that name doesn't exist.");
+			MessageUtil.sendError(sender, "A regions with that name doesn't exist.");
 			return;
 		}
 
@@ -86,14 +86,14 @@ public class RegionCommands extends BaseCommand {
 	}
 
 	@Subcommand("quests")
-	@Description("List the quest triggers in the region.")
-	@CommandPermission("region.quest.list")
+	@Description("List the gear triggers in the regions.")
+	@CommandPermission("regions.gear.list")
 	public void cmdQuestList(CommandSender sender, String regionId) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
 		Region region = Regions.manager().getRegion(regionId);
 		if(region == null) {
-			MessageUtil.sendError(sender, "A region with that name doesn't exist.");
+			MessageUtil.sendError(sender, "A regions with that name doesn't exist.");
 			return;
 		}
 
@@ -101,60 +101,60 @@ public class RegionCommands extends BaseCommand {
 	}
 
 	@Subcommand("quests add")
-	@Description("Add a quest trigger to the region.")
-	@CommandPermission("region.quest.modify")
+	@Description("Add a gear trigger to the regions.")
+	@CommandPermission("regions.gear.modify")
 	public void cmdQuestAdd(CommandSender sender, String regionId, String questId) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
 		Region region = Regions.manager().getRegion(regionId);
 		if(region == null) {
-			MessageUtil.sendError(sender, "A region with that name doesn't exist.");
+			MessageUtil.sendError(sender, "A regions with that name doesn't exist.");
 			return;
 		}
 
 		if(region.quests.contains(questId)) {
-			MessageUtil.sendError(sender, "Quest already attached to that region.");
+			MessageUtil.sendError(sender, "Quest already attached to that regions.");
 			return;
 		}
 
 		region.quests.add(questId);
 
 		Regions.manager().updateRegion(region);
-		MessageUtil.sendUpdate(sender, "Region updated. Now triggers quest: " + questId);
+		MessageUtil.sendUpdate(sender, "Region updated. Now triggers gear: " + questId);
 	}
 
 	@Subcommand("quests del")
-	@Description("Delete a quest trigger from the region.")
-	@CommandPermission("region.quest.modify")
+	@Description("Delete a gear trigger from the regions.")
+	@CommandPermission("regions.gear.modify")
 	public void cmdQuestDel(CommandSender sender, String regionId, String questId) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
 		Region region = Regions.manager().getRegion(regionId);
 		if(region == null) {
-			MessageUtil.sendError(sender, "A region with that name doesn't exist.");
+			MessageUtil.sendError(sender, "A regions with that name doesn't exist.");
 			return;
 		}
 
 		if(!region.quests.contains(questId)) {
-			MessageUtil.sendError(sender, "Quest is not attached to that region.");
+			MessageUtil.sendError(sender, "Quest is not attached to that regions.");
 			return;
 		}
 
 		region.quests.remove(questId);
 
 		Regions.manager().updateRegion(region);
-		MessageUtil.sendUpdate(sender, "Region updated. No longer triggers quest: " + questId);
+		MessageUtil.sendUpdate(sender, "Region updated. No longer triggers gear: " + questId);
 	}
 
 	@Subcommand("enter")
-	@Description("Set a region enter message.")
-	@CommandPermission("region.set.enter")
+	@Description("Set a regions enter message.")
+	@CommandPermission("regions.set.enter")
 	public void cmdSetEnter(CommandSender sender, String regionId, String message) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
 		Region region = Regions.manager().getRegion(regionId);
 		if(region == null) {
-			MessageUtil.sendError(sender, "A region with that name doesn't exist.");
+			MessageUtil.sendError(sender, "A regions with that name doesn't exist.");
 			return;
 		}
 		
@@ -165,14 +165,14 @@ public class RegionCommands extends BaseCommand {
 	}
 
 	@Subcommand("exit")
-	@Description("Set a region exit message.")
-	@CommandPermission("region.set.exit")
+	@Description("Set a regions exit message.")
+	@CommandPermission("regions.set.exit")
 	public void cmdSetExit(CommandSender sender, String regionId, String message) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
 		Region region = Regions.manager().getRegion(regionId);
 		if(region == null) {
-			MessageUtil.sendError(sender, "A region with that name doesn't exist.");
+			MessageUtil.sendError(sender, "A regions with that name doesn't exist.");
 			return;
 		}
 
@@ -183,14 +183,14 @@ public class RegionCommands extends BaseCommand {
 	}
 
 	@Subcommand("failure")
-	@Description("Set a region enter failure message.")
-	@CommandPermission("region.")
+	@Description("Set a regions enter failure message.")
+	@CommandPermission("regions.")
 	public void cmdSetFailure(CommandSender sender, String regionId, String message) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
 		Region region = Regions.manager().getRegion(regionId);
 		if(region == null) {
-			MessageUtil.sendError(sender, "A region with that name doesn't exist.");
+			MessageUtil.sendError(sender, "A regions with that name doesn't exist.");
 			return;
 		}
 

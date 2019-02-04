@@ -30,7 +30,7 @@ import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.parties.Parties;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.pvp.PvP;
-import com.legendsofvaleros.modules.quests.Quests;
+import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.regions.Regions;
 import com.legendsofvaleros.modules.skills.Skills;
 import com.legendsofvaleros.modules.zones.Zones;
@@ -161,7 +161,7 @@ public class LegendsOfValeros extends JavaPlugin {
         Modules.registerModule(Parties.class);
         Modules.registerModule(PlayerMenu.class);
         Modules.registerModule(PvP.class);
-        Modules.registerModule(Quests.class);
+        Modules.registerModule(QuestController.class);
         Modules.registerModule(Regions.class);
         Modules.registerModule(Skills.class);
         Modules.registerModule(Zones.class);

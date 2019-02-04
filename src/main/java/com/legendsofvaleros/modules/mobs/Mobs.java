@@ -18,15 +18,12 @@ import com.legendsofvaleros.modules.mobs.listener.ExperienceListener;
 import com.legendsofvaleros.modules.mobs.listener.LootListener;
 import com.legendsofvaleros.modules.mobs.listener.MobListener;
 import com.legendsofvaleros.modules.mobs.pl8.MobHealthbarManager;
-import com.legendsofvaleros.modules.mobs.quest.KillObjective;
 import com.legendsofvaleros.modules.mobs.trait.TraitTitle;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.parties.Parties;
 import com.legendsofvaleros.modules.parties.PartyManager;
 import com.legendsofvaleros.modules.parties.PlayerParty;
 import com.legendsofvaleros.modules.quests.QuestManager;
-import com.legendsofvaleros.modules.quests.Quests;
-import com.legendsofvaleros.modules.quests.objective.stf.QuestObjectiveFactory;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -40,7 +37,6 @@ import org.bukkit.event.EventPriority;
 @DependsOn(Characters.class)
 @DependsOn(LevelArchetypes.class)
 @DependsOn(GearController.class)
-@DependsOn(Quests.class)
 @DependsOn(NPCs.class)
 @DependsOn(LootManager.class)
 @DependsOn(Parties.class)
@@ -74,8 +70,6 @@ public class Mobs extends ModuleListener {
         Mobs.getInstance().registerEvents(new LootListener());
         Mobs.getInstance().registerEvents(new MobListener());
         Mobs.getInstance().registerEvents(new MobHealthbarManager());
-
-        QuestObjectiveFactory.registerType("kill", KillObjective.class);
 
         for (EntityType type : EntityType.values()) {
             if (type == EntityType.PLAYER || type.getEntityClass() == null)

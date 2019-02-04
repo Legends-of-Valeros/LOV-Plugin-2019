@@ -9,17 +9,12 @@ import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.chat.Chat;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
-import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.pvp.PvP;
 import com.legendsofvaleros.modules.pvp.PvPCheckEvent;
 import com.legendsofvaleros.modules.quests.QuestManager;
-import com.legendsofvaleros.modules.quests.Quests;
-import com.legendsofvaleros.modules.quests.objective.stf.QuestObjectiveFactory;
 import com.legendsofvaleros.modules.zones.event.ZoneEnterEvent;
 import com.legendsofvaleros.modules.zones.event.ZoneLeaveEvent;
-import com.legendsofvaleros.modules.zones.quest.EnterZoneObjective;
-import com.legendsofvaleros.modules.zones.quest.ExitZoneObjective;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.title.Title;
 import com.legendsofvaleros.util.title.TitleUtil;
@@ -38,7 +33,6 @@ import java.util.UUID;
 @DependsOn(Chat.class)
 @DependsOn(CombatEngine.class)
 @DependsOn(Characters.class)
-@DependsOn(Quests.class)
 public class Zones extends ModuleListener {
     private static Zones instance;
     public static Zones getInstance() { return instance; }
@@ -58,9 +52,6 @@ public class Zones extends ModuleListener {
         manager = new ZoneManager();
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new ZoneCommands());
-
-        QuestObjectiveFactory.registerType("zone_enter", EnterZoneObjective.class);
-        QuestObjectiveFactory.registerType("zone_exit", ExitZoneObjective.class);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

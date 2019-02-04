@@ -8,16 +8,13 @@ import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
-import com.legendsofvaleros.module.annotation.IntegratesWith;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
 import com.legendsofvaleros.modules.factions.event.FactionReputationChangeEvent;
-import com.legendsofvaleros.modules.factions.integration.QuestIntegration;
 import com.legendsofvaleros.modules.factions.listener.ReputationListener;
-import com.legendsofvaleros.modules.quests.Quests;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,7 +24,6 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @DependsOn(Characters.class)
-@IntegratesWith(module = Quests.class, integration = QuestIntegration.class)
 public class FactionModule extends ModuleListener {
     private static FactionModule instance;
     public static FactionModule getInstance() { return instance; }

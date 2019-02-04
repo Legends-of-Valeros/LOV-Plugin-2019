@@ -12,8 +12,8 @@ import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger;
 import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
+import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.quests.QuestManager;
-import com.legendsofvaleros.modules.quests.Quests;
 import com.legendsofvaleros.modules.skills.event.BindSkillEvent;
 import com.legendsofvaleros.modules.skills.event.SkillPreUseEvent;
 import com.legendsofvaleros.modules.skills.event.SkillUsedEvent;
@@ -32,9 +32,6 @@ import java.util.Map;
 
 public class SkillListener implements Listener {
     public SkillListener() {
-        if(Modules.isLoaded(Quests.class))
-            Skills.getInstance().registerEvents(new QuestListener());
-
         if(Modules.isLoaded(GearController.class))
             Skills.getInstance().registerEvents(new GearListener());
     }
@@ -120,28 +117,6 @@ public class SkillListener implements Listener {
                         pc.getPlayer().getInventory().setItem(Hotswitch.HELD_SLOT, instance.toStack());
                 }
             }
-        }
-    }
-
-    /**
-     * Only activated if Quests is installed. It typically will be, but keeping things in
-     * one place will assist testing.
-     */
-    private class QuestListener implements Listener {
-        @EventHandler(priority = EventPriority.MONITOR)
-        public void onPlayerSkillUsed(SkillUsedEvent event) {
-            if (!event.getCombatEntity().isPlayer()) return;
-
-            Player p = (Player) event.getLivingEntity();
-
-            if (!Characters.isPlayerCharacterLoaded(p)) return;
-            QuestManager.callEvent(event, Characters.getPlayerCharacter(p));
-        }
-
-        @EventHandler(priority = EventPriority.MONITOR)
-        public void onPlayerBound(BindSkillEvent event) {
-            if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
-            QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
         }
     }
 }

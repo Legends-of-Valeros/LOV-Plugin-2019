@@ -6,22 +6,19 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.QuestManager;
-import com.legendsofvaleros.modules.quests.Quests;
-import com.legendsofvaleros.modules.quests.action.stf.AbstractQuestAction;
-import com.legendsofvaleros.modules.quests.action.stf.IQuestAction;
-import com.legendsofvaleros.modules.quests.action.stf.QuestActionPlay;
-import com.legendsofvaleros.modules.quests.action.stf.QuestActions;
+import com.legendsofvaleros.modules.quests.QuestController;
+import com.legendsofvaleros.modules.quests.action.IQuestAction;
+import com.legendsofvaleros.modules.quests.action.QuestActionPlay;
+import com.legendsofvaleros.modules.quests.action.QuestActions;
 import com.legendsofvaleros.modules.quests.event.QuestCompletedEvent;
 import com.legendsofvaleros.modules.quests.event.QuestObjectivesCompletedEvent;
 import com.legendsofvaleros.modules.quests.event.QuestObjectivesStartedEvent;
 import com.legendsofvaleros.modules.quests.event.QuestStartedEvent;
-import com.legendsofvaleros.modules.quests.objective.stf.IQuestObjective;
-import com.legendsofvaleros.modules.quests.prerequisite.stf.IQuestPrerequisite;
-import com.legendsofvaleros.modules.quests.progress.stf.IQuestObjectiveProgress;
-import com.legendsofvaleros.modules.quests.progress.stf.ObjectiveProgressPack;
-import com.legendsofvaleros.modules.quests.progress.stf.QuestProgressPack;
-import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
-import com.legendsofvaleros.modules.quests.quest.stf.QuestObjectives;
+import com.legendsofvaleros.modules.quests.objective.IQuestObjective;
+import com.legendsofvaleros.modules.quests.prerequisite.IQuestPrerequisite;
+import com.legendsofvaleros.modules.quests.progress.IQuestObjectiveProgress;
+import com.legendsofvaleros.modules.quests.progress.ObjectiveProgressPack;
+import com.legendsofvaleros.modules.quests.progress.QuestProgressPack;
 import com.legendsofvaleros.util.TextBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -214,13 +211,13 @@ public abstract class AbstractQuest implements IQuest {
 
     public void startGroup(PlayerCharacter pc, Integer group) {
         // Run the task later. This is done to be sure objective events finish firing before starting the next objective group.
-        Quests.getInstance().getScheduler().executeInSpigotCircle(() -> {
+        QuestController.getInstance().getScheduler().executeInSpigotCircle(() -> {
             Integer currentGroup = getObjectiveGroupI(pc);
 
             if(currentGroup == null && group != null)
-                throw new IllegalStateException(pc.getPlayer().getName() + "(" + pc.getUniqueCharacterId() + ") attempted to go to group " + group + " from " + currentGroup + " in quest '" + getId() + "'! This should never happen!");
+                throw new IllegalStateException(pc.getPlayer().getName() + "(" + pc.getUniqueCharacterId() + ") attempted to go to group " + group + " from " + currentGroup + " in gear '" + getId() + "'! This should never happen!");
 
-            // If the player is just now starting the quest
+            // If the player is just now starting the gear
             if (group == null) {
                 loadProgress(pc, new QuestProgressPack(group, 0));
 
@@ -253,11 +250,11 @@ public abstract class AbstractQuest implements IQuest {
         ListenableFuture<Boolean> future = QuestActionPlay.start(pc, getProgress(pc), acts);
 
         future.addListener(() -> continueToNextGroup(pc, (currentGroup == null ? 0 : currentGroup + 1)),
-                Quests.getInstance().getScheduler()::async);
+                QuestController.getInstance().getScheduler()::async);
     }
 
     private void continueToNextGroup(PlayerCharacter pc, int nextGroup) {
-        // If there are no more objective groups, end the quest
+        // If there are no more objective groups, end the gear
         if (nextGroup >= objectives.groups.length) {
             QuestManager.finishQuest(this, pc);
             clearProgress(pc);

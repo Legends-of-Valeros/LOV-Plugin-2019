@@ -9,21 +9,16 @@ import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.core.PlayerInventoryData;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
-import com.legendsofvaleros.modules.gear.component.*;
 import com.legendsofvaleros.modules.gear.event.GearPickupEvent;
 import com.legendsofvaleros.modules.gear.event.ItemEquipEvent;
 import com.legendsofvaleros.modules.gear.event.ItemUnEquipEvent;
 import com.legendsofvaleros.modules.gear.inventory.InventoryListener;
 import com.legendsofvaleros.modules.gear.inventory.ItemListener;
 import com.legendsofvaleros.modules.gear.item.Gear;
-import com.legendsofvaleros.modules.gear.quest.*;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.quests.QuestManager;
-import com.legendsofvaleros.modules.quests.Quests;
-import com.legendsofvaleros.modules.quests.action.stf.QuestActionFactory;
-import com.legendsofvaleros.modules.quests.objective.stf.QuestObjectiveFactory;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
@@ -35,7 +30,6 @@ import java.sql.SQLException;
 @DependsOn(PlayerMenu.class)
 @DependsOn(Characters.class)
 @DependsOn(Hotswitch.class)
-@DependsOn(Quests.class)
 public class GearController extends ModuleListener {
     private static GearController instance;
     public static GearController getInstance() { return instance; }
@@ -54,25 +48,6 @@ public class GearController extends ModuleListener {
         registerEvents(new InventoryListener());
 
         ItemManager.onEnable();
-
-        GearRegistry.registerComponent("lore", LoreComponent.class);
-        GearRegistry.registerComponent("bind", SoulbindComponent.class);
-
-        GearRegistry.registerComponent("require", RequireComponent.class);
-        GearRegistry.registerComponent("damage", GearPhysicalDamage.Component.class);
-        GearRegistry.registerComponent("durability", GearDurability.Component.class);
-        GearRegistry.registerComponent("usable", GearUsable.Component.class);
-        GearRegistry.registerComponent("use_speed", GearUseSpeed.Component.class);
-
-        GearRegistry.registerComponent("stats", GearStats.Component.class);
-
-        QuestObjectiveFactory.registerType("equip", EquipObjective.class);
-        QuestObjectiveFactory.registerType("fetch", FetchObjective.class);
-        QuestObjectiveFactory.registerType("fetch_for", FetchForNPCObjective.class);
-
-        QuestActionFactory.registerType("item_give", ActionGiveItem.class);
-        QuestActionFactory.registerType("item_remove", ActionRemoveItem.class);
-        QuestActionFactory.registerType("item_choose", ActionChooseItem.class);
 
         ORMRegistry.addMutator(Gear.Data.class, new ORMRegistry.SQLMutator<Gear.Data>() {
             @Override

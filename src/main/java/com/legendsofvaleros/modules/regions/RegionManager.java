@@ -64,7 +64,7 @@ public class RegionManager implements Listener {
     }
 
     /**
-     * A map who's key is a chunk x,y pair and the regions inside it. Allows for extremely fast region searching.
+     * A map who's key is a chunk x,y pair and the regions inside it. Allows for extremely fast regions searching.
      */
     private Multimap<String, String> regionChunks = HashMultimap.create();
 
@@ -230,7 +230,7 @@ public class RegionManager implements Listener {
                 continue;
 
             if (Regions.REGION_DEBUG)
-                event.getPlayer().sendMessage("Entered region: " + region.id);
+                event.getPlayer().sendMessage("Entered regions: " + region.id);
 
             if (region.msgEnter != null && region.msgEnter.length() > 0)
                 MessageUtil.sendInfo(event.getPlayer(), region.msgEnter);
@@ -239,10 +239,10 @@ public class RegionManager implements Listener {
             Bukkit.getServer().getPluginManager().callEvent(new RegionEnterEvent(event.getPlayer(), region));
         }
 
-        // Lessens checks for users in no region
+        // Lessens checks for users in no regions
         for (Region region : discrepancies) {
             if (Regions.REGION_DEBUG)
-                event.getPlayer().sendMessage("Left region: " + region.id);
+                event.getPlayer().sendMessage("Left regions: " + region.id);
 
             if (region.msgExit != null && region.msgExit.length() > 0)
                 MessageUtil.sendInfo(event.getPlayer(), region.msgExit);
