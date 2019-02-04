@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.regions;
+package com.legendsofvaleros.modules.regions.core;
 
 import org.bukkit.Location;
 import org.bukkit.World;

@@ -1,10 +1,13 @@
-package com.legendsofvaleros.modules.regions;
+package com.legendsofvaleros.modules.regions.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.regions.RegionController;
+import com.legendsofvaleros.modules.regions.core.Region;
+import com.legendsofvaleros.modules.regions.core.RegionBounds;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;

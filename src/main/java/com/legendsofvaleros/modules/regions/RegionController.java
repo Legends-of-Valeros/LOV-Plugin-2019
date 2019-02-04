@@ -7,6 +7,7 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.hearthstones.event.HearthstoneCastEvent;
 import com.legendsofvaleros.modules.hearthstones.HearthstoneController;
+import com.legendsofvaleros.modules.regions.commands.RegionCommands;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
