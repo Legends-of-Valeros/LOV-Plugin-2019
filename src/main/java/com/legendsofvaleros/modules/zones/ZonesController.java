@@ -1,8 +1,5 @@
 package com.legendsofvaleros.modules.zones;
 
-import com.codingforcookies.ambience.Ambience;
-import com.codingforcookies.ambience.PlayerAmbience;
-import com.codingforcookies.ambience.Sound;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.annotation.DependsOn;
@@ -12,20 +9,14 @@ import com.legendsofvaleros.modules.chat.ChatController;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.pvp.PvPController;
-import com.legendsofvaleros.modules.pvp.event.PvPCheckEvent;
 import com.legendsofvaleros.modules.zones.commands.ZoneCommands;
-import com.legendsofvaleros.modules.zones.event.ZoneEnterEvent;
+import com.legendsofvaleros.modules.zones.core.Zone;
 import com.legendsofvaleros.modules.zones.integration.PvPIntegration;
 import com.legendsofvaleros.modules.zones.listener.ZoneListener;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.title.Title;
-import com.legendsofvaleros.util.title.TitleUtil;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 
 import java.util.Map.Entry;
 import java.util.UUID;

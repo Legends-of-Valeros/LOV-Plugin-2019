@@ -4,7 +4,7 @@ import com.codingforcookies.doris.sql.TableManager;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.zones.Zone;
+import com.legendsofvaleros.modules.zones.core.Zone;
 import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;

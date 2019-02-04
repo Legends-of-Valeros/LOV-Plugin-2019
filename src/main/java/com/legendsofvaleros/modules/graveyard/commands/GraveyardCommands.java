@@ -6,7 +6,7 @@ import co.aikar.commands.annotation.*;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.graveyard.Graveyard;
 import com.legendsofvaleros.modules.graveyard.GraveyardManager;
-import com.legendsofvaleros.modules.zones.Zone;
+import com.legendsofvaleros.modules.zones.core.Zone;
 import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.ChatColor;

@@ -3,7 +3,7 @@ package com.legendsofvaleros.modules.quests.objective.zones;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.objective.AbstractQuestObjective;
 import com.legendsofvaleros.modules.quests.progress.core.QuestObjectiveProgressBoolean;
-import com.legendsofvaleros.modules.zones.Zone;
+import com.legendsofvaleros.modules.zones.core.Zone;
 import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.modules.zones.event.ZoneEnterEvent;
 import com.legendsofvaleros.modules.zones.event.ZoneLeaveEvent;

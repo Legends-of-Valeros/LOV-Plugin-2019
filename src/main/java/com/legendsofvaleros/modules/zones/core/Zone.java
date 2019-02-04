@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.zones;
+package com.legendsofvaleros.modules.zones.core;
 
 import com.codingforcookies.ambience.Sound;
 import org.bukkit.Location;
