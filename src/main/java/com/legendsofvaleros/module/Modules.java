@@ -291,7 +291,7 @@ public class Modules {
                     : integrationClasses.entrySet()) {
 
                 // If the integration is satisfied, load the class
-                if (modules.containsKey(integratesWith.getKey())) {
+                if (modules.get(integratesWith.getKey()).isLoaded()) {
                     Class<? extends Integration> integrate = integratesWith.getValue();
 
                     // Verify that the integration class is inside of the module's package.
@@ -315,7 +315,7 @@ public class Modules {
                     : integrationMethods.entrySet()) {
 
                 // If the integration is satisfied, invoke the function
-                if (modules.containsKey(integratesWith.getKey())) {
+                if (modules.get(integratesWith.getKey()).isLoaded()) {
                     Method method = integratesWith.getValue();
 
                     try {
