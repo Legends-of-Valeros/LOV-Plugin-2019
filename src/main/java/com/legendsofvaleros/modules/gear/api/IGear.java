@@ -1,5 +1,7 @@
-package com.legendsofvaleros.modules.gear.item;
+package com.legendsofvaleros.modules.gear.api;
 
+import com.legendsofvaleros.modules.gear.item.GearRarity;
+import com.legendsofvaleros.modules.gear.item.GearType;
 import com.legendsofvaleros.util.item.Model;
 
 public interface IGear {

@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.hotswitch;
+package com.legendsofvaleros.modules.hotswitch.api;
 
 import org.bukkit.entity.Player;
 
