@@ -6,7 +6,7 @@ import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
-import com.legendsofvaleros.modules.npcs.util.NPCEmulator;
+import com.legendsofvaleros.modules.npcs.NPCEmulator;
 import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.quests.QuestUtil;
 import com.legendsofvaleros.modules.quests.action.AbstractQuestAction;

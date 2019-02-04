@@ -29,8 +29,6 @@ public class Hearthstones extends ModuleListener {
         HearthstonesManager.onEnable();
         teleporter = new HomeTeleporter(getConfig().getLong("warmup-seconds"));
 
-        NPCs.registerTrait("innkeeper", TraitInnkeeper.class);
-
     }
 
     @EventHandler

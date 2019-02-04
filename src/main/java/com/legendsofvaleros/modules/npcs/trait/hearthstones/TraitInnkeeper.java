@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.hearthstones;
+package com.legendsofvaleros.modules.npcs.trait.hearthstones;
 
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.item.ItemBuilder;
@@ -7,8 +7,10 @@ import com.codingforcookies.robert.window.WindowYesNo;
 import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.hearthstones.HearthstonesManager;
+import com.legendsofvaleros.modules.hearthstones.HomePoint;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
-import com.legendsofvaleros.modules.npcs.util.NPCEmulator;
+import com.legendsofvaleros.modules.npcs.NPCEmulator;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;

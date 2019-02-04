@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.characters.util;
 
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.npcs.util.NPCEmulator;
+import com.legendsofvaleros.modules.npcs.NPCEmulator;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

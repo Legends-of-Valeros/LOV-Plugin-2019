@@ -36,7 +36,7 @@ import com.legendsofvaleros.modules.quests.quest.BasicQuest;
 import com.legendsofvaleros.modules.quests.quest.IQuest;
 import com.legendsofvaleros.modules.quests.quest.QuestFactory;
 import com.legendsofvaleros.modules.quests.quest.QuestStatus;
-import com.legendsofvaleros.modules.quests.trait.TraitQuestGiver;
+import com.legendsofvaleros.modules.npcs.trait.quests.TraitQuestGiver;
 import com.legendsofvaleros.modules.regions.Regions;
 import com.legendsofvaleros.modules.skills.Skills;
 import com.legendsofvaleros.modules.zones.Zones;
@@ -83,7 +83,6 @@ public class QuestController extends ModuleListener {
 
         QuestManager.onEnable();
         ActiveTracker.onEnable();
-        NPCs.registerTrait("questgiver", TraitQuestGiver.class);
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new QuestCommands());
 

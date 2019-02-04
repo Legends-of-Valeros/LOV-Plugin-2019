@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.npcs.util;
+package com.legendsofvaleros.modules.npcs;
 
 import com.legendsofvaleros.modules.npcs.NPCs;
 import net.citizensnpcs.api.npc.NPC;

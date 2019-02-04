@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.bank.gui;
+package com.legendsofvaleros.modules.bank;
 
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.core.StringUtil;

@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.bank.trade;
+package com.legendsofvaleros.modules.npcs.trait.bank.trade;
 
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.item.ItemBuilder;

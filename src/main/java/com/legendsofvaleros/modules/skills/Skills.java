@@ -42,7 +42,6 @@ import java.util.List;
 import java.util.Map.Entry;
 
 @DependsOn(PlayerMenu.class)
-@DependsOn(QuestController.class)
 @DependsOn(Bank.class)
 @DependsOn(CombatEngine.class)
 @DependsOn(Characters.class)
@@ -69,11 +68,6 @@ public class Skills extends ModuleListener {
         instance = this;
 
         hotbarManager = new SkillBarManager();
-
-        if(Modules.isLoaded(NPCs.class))
-            NPCs.registerTrait("recharger", TraitRecharger.class);
-        else
-            Skills.getInstance().getLogger().info("NPC integration not enabled.");
 
         new HotbarListener();
 

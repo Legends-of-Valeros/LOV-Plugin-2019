@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.auction.traits;
+package com.legendsofvaleros.modules.npcs.trait.auctions;
 
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.codingforcookies.robert.slot.Slot;
@@ -13,7 +13,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**

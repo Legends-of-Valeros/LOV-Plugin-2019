@@ -1,10 +1,12 @@
-package com.legendsofvaleros.modules.bank;
+package com.legendsofvaleros.modules.npcs.trait.bank;
 
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.codingforcookies.robert.slot.Slot;
 import com.codingforcookies.robert.slot.SlotUsable;
 import com.google.common.util.concurrent.SettableFuture;
+import com.legendsofvaleros.modules.bank.Bank;
+import com.legendsofvaleros.modules.bank.PlayerBank;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;

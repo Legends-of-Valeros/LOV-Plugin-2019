@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.quests.objective.bank;
 
 import com.legendsofvaleros.modules.bank.Bank;
-import com.legendsofvaleros.modules.bank.repair.RepairItemEvent;
+import com.legendsofvaleros.modules.npcs.trait.bank.repair.RepairItemEvent;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.quests.objective.AbstractQuestObjective;

@@ -12,7 +12,7 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
-import com.legendsofvaleros.modules.mailbox.traits.TraitMailbox;
+import com.legendsofvaleros.modules.npcs.trait.mailbox.TraitMailbox;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import org.bukkit.event.EventHandler;
 
@@ -42,8 +42,6 @@ public class MailboxController extends ModuleListener {
         String dbPoolId = LegendsOfValeros.getInstance().getConfig().getString("dbpools-database");
 
         mailBoxMails = ORMTable.bind(dbPoolId, Mail.class);
-
-        NPCs.registerTrait("mailman", TraitMailbox.class);
     }
 
     @Override

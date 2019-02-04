@@ -1,11 +1,9 @@
 package com.legendsofvaleros.modules.pvp;
 
 import com.legendsofvaleros.module.ModuleListener;
-import com.legendsofvaleros.module.Modules;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.bank.Bank;
 import com.legendsofvaleros.modules.bank.Currency;
-import com.legendsofvaleros.modules.bank.Money;
 import com.legendsofvaleros.modules.characters.api.Cooldowns;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -16,11 +14,8 @@ import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
-import com.legendsofvaleros.modules.dueling.Dueling;
 import com.legendsofvaleros.modules.npcs.NPCs;
-import com.legendsofvaleros.modules.parties.Parties;
-import com.legendsofvaleros.modules.pvp.traits.TraitHonorTrader;
-import com.legendsofvaleros.modules.zones.Zones;
+import com.legendsofvaleros.modules.npcs.trait.pvp.TraitHonorTrader;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -68,8 +63,6 @@ public class PvP extends ModuleListener {
         this.honorMaxLevelDifference = honor.getInt("max-level-difference", 5);
 
         Bank.registerCurrency(HONOR_ID, HONOR);
-
-        NPCs.registerTrait("honor-trader", TraitHonorTrader.class);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)

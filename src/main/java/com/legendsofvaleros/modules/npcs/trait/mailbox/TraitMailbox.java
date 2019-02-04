@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.mailbox.traits;
+package com.legendsofvaleros.modules.npcs.trait.mailbox;
 
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.codingforcookies.robert.slot.Slot;

@@ -23,8 +23,6 @@ public class FastTravel extends Module {
         instance = this;
 
         DiscoveredFastTravels.onEnable();
-
-        NPCs.registerTrait("fasttravel", TraitFastTravel.class);
     }
 
     public void onUnload() {

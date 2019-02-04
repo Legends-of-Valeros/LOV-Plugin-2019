@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.mobs.trait;
+package com.legendsofvaleros.modules.npcs.trait.core;
 
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.legendsofvaleros.modules.npcs.nameplate.Nameplates;

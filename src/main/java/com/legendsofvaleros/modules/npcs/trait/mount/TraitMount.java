@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.mount;
+package com.legendsofvaleros.modules.npcs.trait.mount;
 
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.item.ItemBuilder;
@@ -10,6 +10,8 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.bank.Money;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.mount.Mount;
+import com.legendsofvaleros.modules.mount.Mounts;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

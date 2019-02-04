@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.fast_travel;
+package com.legendsofvaleros.modules.npcs.trait.fast_travel;
 
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.item.ItemBuilder;
@@ -6,10 +6,11 @@ import com.codingforcookies.robert.slot.Slot;
 import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.modules.bank.Money;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.fast_travel.DiscoveredFastTravels;
 import com.legendsofvaleros.modules.npcs.NPCData;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
-import com.legendsofvaleros.modules.npcs.util.NPCEmulator;
+import com.legendsofvaleros.modules.npcs.NPCEmulator;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.title.Title;
 import com.legendsofvaleros.util.title.TitleUtil;

@@ -4,17 +4,15 @@ import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
-import com.legendsofvaleros.modules.gear.component.bank.WorthComponent;
-import com.legendsofvaleros.modules.bank.repair.RepairItemEvent;
-import com.legendsofvaleros.modules.bank.repair.TraitBlacksmith;
-import com.legendsofvaleros.modules.bank.trade.TradeManager;
-import com.legendsofvaleros.modules.bank.trade.TraitTrader;
+import com.legendsofvaleros.modules.npcs.trait.bank.repair.RepairItemEvent;
+import com.legendsofvaleros.modules.npcs.trait.bank.repair.TraitBlacksmith;
+import com.legendsofvaleros.modules.npcs.trait.bank.trade.TradeManager;
+import com.legendsofvaleros.modules.npcs.trait.bank.trade.TraitTrader;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterFinishLoadingEvent;
-import com.legendsofvaleros.modules.gear.GearController;
-import com.legendsofvaleros.modules.gear.GearRegistry;
 import com.legendsofvaleros.modules.npcs.NPCs;
+import com.legendsofvaleros.modules.npcs.trait.bank.TraitBanker;
 import com.legendsofvaleros.modules.quests.QuestManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -55,10 +53,6 @@ public class Bank extends ModuleListener {
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new BankCommand());
 
         new TradeManager();
-
-        NPCs.registerTrait("banker", TraitBanker.class);
-        NPCs.registerTrait("trader", TraitTrader.class);
-        NPCs.registerTrait("blacksmith", TraitBlacksmith.class);
     }
 
     @Override

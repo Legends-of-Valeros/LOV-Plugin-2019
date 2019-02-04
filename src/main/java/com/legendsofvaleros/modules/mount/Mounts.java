@@ -10,6 +10,7 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.npcs.NPCs;
+import com.legendsofvaleros.modules.npcs.trait.mount.TraitMount;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.playermenu.options.PlayerOptionsOpenEvent;
 import com.legendsofvaleros.util.MessageUtil;
@@ -47,9 +48,6 @@ public class Mounts extends ModuleListener {
         instance = this;
 
         manager = new MountManager();
-
-        NPCs.registerTrait("stablemaster", TraitMount.class);
-
     }
 
     @Override

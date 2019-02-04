@@ -18,7 +18,7 @@ import com.legendsofvaleros.modules.mobs.listener.ExperienceListener;
 import com.legendsofvaleros.modules.mobs.listener.LootListener;
 import com.legendsofvaleros.modules.mobs.listener.MobListener;
 import com.legendsofvaleros.modules.mobs.pl8.MobHealthbarManager;
-import com.legendsofvaleros.modules.mobs.trait.TraitTitle;
+import com.legendsofvaleros.modules.npcs.trait.core.TraitTitle;
 import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.parties.Parties;
 import com.legendsofvaleros.modules.parties.PartyManager;
@@ -61,8 +61,6 @@ public class Mobs extends ModuleListener {
 
         SpawnManager.onEnable();
         MobManager.onEnable();
-
-        NPCs.registerTrait("title", TraitTitle.class);
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new MobCommands());
 
