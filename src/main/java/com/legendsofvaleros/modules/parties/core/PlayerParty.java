@@ -114,10 +114,13 @@ public class PlayerParty implements IParty {
 
     @Override
     public void onMemberExit(CharacterId identifier) {
-        Characters.getInstance().getCharacter(identifier).getPlayer().setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
-        if (getOnlineMembers().size() == 0) {
-            objective.unregister();
-            objective = null;
+        PlayerCharacter pc = Characters.getInstance().getCharacter(identifier);
+        if (pc != null && pc.isCurrent()) {
+            pc.getPlayer().setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
+            if (getOnlineMembers().size() == 0) {
+                objective.unregister();
+                objective = null;
+            }
         }
     }
 
