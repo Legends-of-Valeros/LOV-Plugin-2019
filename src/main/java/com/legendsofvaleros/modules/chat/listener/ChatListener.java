@@ -9,9 +9,12 @@ import com.legendsofvaleros.modules.chat.ChatController;
 import com.legendsofvaleros.modules.chat.PlayerChat;
 import com.legendsofvaleros.modules.guilds.GuildController;
 import com.legendsofvaleros.modules.guilds.guild.Guild;
-import com.legendsofvaleros.modules.parties.PartiesController;
+import com.legendsofvaleros.modules.parties.PartyManager;
+import com.legendsofvaleros.modules.parties.core.PlayerParty;
 import com.legendsofvaleros.modules.zones.ZonesController;
+import com.legendsofvaleros.modules.zones.core.Zone;
 import com.legendsofvaleros.util.Discord;
+import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.PlayerData;
 import com.legendsofvaleros.util.TextBuilder;
 import de.btobastian.javacord.DiscordAPI;
@@ -28,6 +31,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 public class ChatListener implements Listener {
@@ -152,32 +157,71 @@ public class ChatListener implements Listener {
         switch (sendTo) {
             case TRADE:
                 for (Player pl : Bukkit.getOnlinePlayers()) {
-                    if (chat.isChannelOn(pl, 'T')) {
+                    if (ChatController.getInstance().isChannelOn(pl, 'T')) {
+                        if (AuctionController.getInstance().isPrompted(pl)) {
+                            continue;
+                        }
                         pl.spigot().sendMessage(bc);
                     }
                 }
                 break;
             case LOCAL:
                 for (Player pl : Bukkit.getOnlinePlayers()) {
-                    if (pl.getLocation().distance(p.getLocation()) < 25) {
+                    if (pl.getLocation().distance(p.getLocation()) < 50) {
+                        if (AuctionController.getInstance().isPrompted(pl)) {
+                            continue;
+                        }
                         pl.spigot().sendMessage(bc);
                     }
                 }
                 break;
             case WORLD:
                 for (Player pl : Bukkit.getOnlinePlayers()) {
-                    if (chat.isChannelOn(pl, 'W')) {
+                    if (ChatController.getInstance().isChannelOn(pl, 'W')) {
+                        if (AuctionController.getInstance().isPrompted(pl)) {
+                            continue;
+                        }
                         pl.spigot().sendMessage(bc);
                     }
                 }
                 break;
             case ZONE:
-                ZonesController.getInstance().onChat(p, bc);
+                Zone zone = ZonesController.getManager().getZone(p);
+                if (zone == null) {
+                    MessageUtil.sendError(p, "Unable to send message. You are not in a zone!");
+                    return;
+                }
+
+                Player pl;
+                for (Map.Entry<UUID, String> entry : ZonesController.getManager().getPlayerZones()) {
+                    Zone zz = ZonesController.getManager().getZone(entry.getValue());
+                    if (zz.channel.equals(zone.channel)) {
+                        pl = Bukkit.getPlayer(entry.getKey());
+                        if (ChatController.getInstance().isChannelOn(pl, 'Z')) {
+                            if (AuctionController.getInstance().isPrompted(pl)) {
+                                continue;
+                            }
+                            pl.spigot().sendMessage(bc);
+                        }
+                    }
+                }
                 break;
             case PARTY:
-                PartiesController.getInstance().onChat(p, bc);
+                PlayerParty party = (PlayerParty) PartyManager.getPartyByMember(Characters.getPlayerCharacter(p).getUniqueCharacterId());
+                if (party == null) {
+                    MessageUtil.sendError(p, "You are not in a party.");
+                    return;
+                }
+
+                for (Player partyPlayer : party.getOnlineMembers()) {
+                    if (AuctionController.getInstance().isPrompted(partyPlayer)) {
+                        continue;
+                    }
+                    partyPlayer.spigot().sendMessage(bc);
+                }
                 break;
         }
+
     }
 
     private void sendDiscordMessage(AsyncPlayerChatEvent e, PlayerChat data) {

@@ -34,7 +34,10 @@ public class ZonesController extends Module {
     }
 
     private static ZoneManager manager;
-    public static ZoneManager getManager() { return manager; }
+
+    public static ZoneManager getManager() {
+        return manager;
+    }
 
     @Override
     public void onLoad() {
@@ -49,21 +52,4 @@ public class ZonesController extends Module {
         registerEvents(new ZoneListener());
     }
 
-    public void onChat(Player p, BaseComponent[] bc) {
-        Zone zone = ZonesController.manager().getZone(p);
-        if (zone == null) {
-            MessageUtil.sendError(p, "Unable to send message. You are not in a zone!");
-            return;
-        }
-
-        Player pl;
-        for (Entry<UUID, String> entry : ZonesController.manager().getPlayerZones()) {
-            Zone zz = ZonesController.manager().getZone(entry.getValue());
-            if (zz.channel.equals(zone.channel)) {
-                pl = Bukkit.getPlayer(entry.getKey());
-                if (ChatController.getInstance().isChannelOn(pl, 'Z'))
-                    pl.spigot().sendMessage(bc);
-            }
-        }
-    }
 }
