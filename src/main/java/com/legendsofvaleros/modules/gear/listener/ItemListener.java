@@ -58,8 +58,10 @@ public class ItemListener implements Listener {
             event.getPlayer().playSound(event.getPlayer().getLocation(), "ui.accessory.equip", 1F, 1F);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onDropItem(PlayerDropItemEvent event) {
+        if(event.isCancelled()) return;
+
         Gear.Instance instance = Gear.Instance.fromStack(event.getItemDrop().getItemStack());
 
         // We should never drop items on the ground.
@@ -71,28 +73,33 @@ public class ItemListener implements Listener {
         ItemUtil.giveItem(Characters.getPlayerCharacter(event.getPlayer()), instance);
 
         if (instance.getType().isTradable()) {
-            GearController.getInstance().getScheduler().executeInSpigotCircle(() -> new WindowYesNo("Destroy Item") {
-                @Override
-                public void onAccept(GUI gui, Player p) {
-                    gui.close(p);
+            GearController.getInstance().getScheduler().executeInSpigotCircle(() -> {
+                new WindowYesNo("Destroy Item") {
+                    @Override
+                    public void onAccept(GUI gui, Player p) {
+                        gui.close(p);
 
-                    ItemUtil.removeItem(event.getPlayer(), instance);
-                }
+                        if(!ItemUtil.removeItem(event.getPlayer(), instance))
+                            MessageUtil.sendError(event.getPlayer(), "Unable to remove that, for some reason...");
+                        else
+                            MessageUtil.sendUpdate(event.getPlayer(), instance.getName() + " has been destroyed.");
+                    }
 
-                @Override
-                public void onDecline(GUI gui, Player p) {
-                    gui.close(p);
-                }
+                    @Override
+                    public void onDecline(GUI gui, Player p) {
+                        gui.close(p);
+                    }
 
-                @Override
-                public void onClickPlayerInventory(GUI gui, Player p, InventoryClickEvent event) {
-                    // Disallow all selections in the inventory for this UI.
-                    // This will prevent edge cases where the item gets used
-                    // up while this UI is open.
+                    @Override
+                    public void onClickPlayerInventory(GUI gui, Player p, InventoryClickEvent event) {
+                        // Disallow all selections in the inventory for this UI.
+                        // This will prevent edge cases where the item gets used
+                        // up while this UI is open.
 
-                    event.setCancelled(true);
-                }
-            }.open(event.getPlayer()));
+                        event.setCancelled(true);
+                    }
+                }.open(event.getPlayer());
+            });
         }
     }
 
