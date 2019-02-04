@@ -20,7 +20,7 @@ public class BasicQuest extends AbstractQuest {
     public void onStart(PlayerCharacter pc) {
         List<String> list = new ArrayList<>();
         list.add(QuestUtil.moustache(pc.getPlayer(), getDescription()));
-        displayBook("New Quest", list, pc.getPlayer(), isForced());
+        displayBook("New Quest", list, pc.getPlayer());
 
         if (isForced()) {
             onAccept(pc);

@@ -95,7 +95,7 @@ public class QuestManager {
 
     /**
      * A map containing each user to a list of all their accepted quests. This
-     * keeps the gear in memory for as long as they remain on the server.
+     * keeps the quest in memory for as long as they remain on the server.
      */
     private static Multimap<CharacterId, IQuest> playerQuests = HashMultimap.create();
 
@@ -107,7 +107,7 @@ public class QuestManager {
 
     /**
      * Stores a list of completed quests, along with a LocalDateTime representation
-     * of the exact time they completed the gear.
+     * of the exact time they completed the quest.
      */
     public static HashBasedTable<CharacterId, String, LocalDateTime> completedQuests = HashBasedTable.create();
 
@@ -286,7 +286,7 @@ public class QuestManager {
                 receiver.onEvent(event, pc);
             }
 
-            // Check if the gear has been completed.
+            // Check if the quest has been completed.
             quest.checkCompleted(pc);
         }
     }
@@ -322,7 +322,7 @@ public class QuestManager {
                                         playerQuests.put(pc.getUniqueCharacterId(), quest);
                                     }
                                 } catch (Exception e) {
-                                    QuestController.getInstance().getLogger().warning("Player attempt to load progress for gear, but something went wrong. Offender: " + pc.getPlayer().getName() + " in gear " + questId);
+                                    QuestController.getInstance().getLogger().warning("Player attempt to load progress for quest, but something went wrong. Offender: " + pc.getPlayer().getName() + " in quest " + questId);
                                     MessageUtil.sendException(QuestController.getInstance(), pc.getPlayer(), e, true);
                                 }
 
@@ -350,9 +350,9 @@ public class QuestManager {
     }
 
     /**
-     * Completely remove gear progress. Both from memory, and from the database. The player will be able to redo the gear
+     * Completely remove quest progress. Both from memory, and from the database. The player will be able to redo the quest
      * as if they hadn't done it in the first place.
-     * @param quest_id The gear ID to remove.
+     * @param quest_id The quest ID to remove.
      * @param pc       The player.
      */
     public static void removeQuestProgress(String quest_id, PlayerCharacter pc) {
@@ -389,7 +389,7 @@ public class QuestManager {
     }
 
     /**
-     * Save player gear progress to database.
+     * Save player quest progress to database.
      * @param pc The player.
      */
     public static void saveQuestProgress(PlayerCharacter pc, IQuest q) {
@@ -405,8 +405,8 @@ public class QuestManager {
     }
 
     /**
-     * Set a player's gear to finished in the database.
-     * @param quest The gear object.
+     * Set a player's quest to finished in the database.
+     * @param quest The quest object.
      * @param pc    The player.
      */
     public static void finishQuest(IQuest quest, PlayerCharacter pc) {

@@ -143,7 +143,7 @@ public class QuestController extends ModuleListener {
         getLogger().info("is registering advancements.");
         NEW_OBJECTIVES = AdvancementAPI.builder(new NamespacedKey(LegendsOfValeros.getInstance(), "quests/new_objectives"))
                     .title("New Objectives")
-                    .description("See gear book for details.")
+                    .description("See quest book for details.")
                     .icon("minecraft:paper")
                     .trigger(Trigger.builder(Trigger.TriggerType.IMPOSSIBLE, "impossible"))
                     .hidden(true)
@@ -180,6 +180,8 @@ public class QuestController extends ModuleListener {
 
                     if (status.canAccept()) {
                         quest.onStart(pc);
+
+                        ret.set(true);
 
                         MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' can be accepted!");
 

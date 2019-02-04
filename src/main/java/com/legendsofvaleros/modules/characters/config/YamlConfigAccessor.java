@@ -1,5 +1,6 @@
 package com.legendsofvaleros.modules.characters.config;
 
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -84,6 +85,7 @@ public class YamlConfigAccessor {
 
     // Looks for defaults in the jar
     File f = new File("modules", getFileName());
+
     if (f.exists()) {
       YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(f);
       fileConfiguration.setDefaults(defConfig);

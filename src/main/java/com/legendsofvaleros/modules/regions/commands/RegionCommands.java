@@ -90,7 +90,7 @@ public class RegionCommands extends BaseCommand {
 	}
 
 	@Subcommand("quests")
-	@Description("List the gear triggers in the regions.")
+	@Description("List the quest triggers in the regions.")
 	@CommandPermission("regions.gear.list")
 	public void cmdQuestList(CommandSender sender, String regionId) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
@@ -105,7 +105,7 @@ public class RegionCommands extends BaseCommand {
 	}
 
 	@Subcommand("quests add")
-	@Description("Add a gear trigger to the regions.")
+	@Description("Add a quest trigger to the regions.")
 	@CommandPermission("regions.gear.modify")
 	public void cmdQuestAdd(CommandSender sender, String regionId, String questId) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
@@ -128,7 +128,7 @@ public class RegionCommands extends BaseCommand {
 	}
 
 	@Subcommand("quests del")
-	@Description("Delete a gear trigger from the regions.")
+	@Description("Delete a quest trigger from the regions.")
 	@CommandPermission("regions.gear.modify")
 	public void cmdQuestDel(CommandSender sender, String regionId, String questId) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;

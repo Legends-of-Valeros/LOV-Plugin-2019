@@ -20,7 +20,7 @@ public interface IQuestObjective<T extends IQuestObjectiveProgress> extends List
 	T getProgress(PlayerCharacter pc);
 
 	/**
-	 * @return If the objective should be shown in the gear log.
+	 * @return If the objective should be shown in the quest log.
 	 */
 	boolean isVisible();
 
@@ -49,7 +49,7 @@ public interface IQuestObjective<T extends IQuestObjectiveProgress> extends List
 	int getUpdateTimer();
 
 	/**
-	 * Fires each tick while the player has the gear accepted.
+	 * Fires each tick while the player has the quest accepted.
 	 * @param ticks is the number of ticks since the objective was started.
 	 */
 	void onUpdate(PlayerCharacter pc, int ticks);

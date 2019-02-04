@@ -145,7 +145,7 @@ public class QuestCommands extends BaseCommand {
     }
 
     @Subcommand("gui")
-    @Description("Show the gear book.")
+    @Description("Show the quest book.")
     public void cmdListQuestGUI(Player player) {
         if (!Characters.isPlayerCharacterLoaded(player)) return;
 

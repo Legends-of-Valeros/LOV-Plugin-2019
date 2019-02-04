@@ -17,7 +17,7 @@ public interface IQuest {
 	String getId();
 	
 	/**
-	 * @return Get the gear type.
+	 * @return Get the quest type.
 	 */
 	String getType();
 	
@@ -34,7 +34,7 @@ public interface IQuest {
 	void setName(String name);
 
 	/**
-	 * @return A description to show for the gear in the gear book.
+	 * @return A description to show for the quest in the quest book.
 	 */
 	String getDescription();
 	void setDescription(String description);
@@ -67,17 +67,17 @@ public interface IQuest {
 	void onStart(PlayerCharacter pc);
 	
 	/**
-	 * Called when the gear is declined.
+	 * Called when the quest is declined.
 	 */
 	void onDecline(PlayerCharacter pc);
 	
 	/**
-	 * Called when the gear is began.
+	 * Called when the quest is began.
 	 */
 	void onAccept(PlayerCharacter pc);
 	
 	/**
-	 * Called when the gear is completed.
+	 * Called when the quest is completed.
 	 */
 	void onCompleted(PlayerCharacter pc);
 

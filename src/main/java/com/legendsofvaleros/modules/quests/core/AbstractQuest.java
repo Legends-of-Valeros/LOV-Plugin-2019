@@ -220,9 +220,9 @@ public abstract class AbstractQuest implements IQuest {
             Integer currentGroup = getObjectiveGroupI(pc);
 
             if(currentGroup == null && group != null)
-                throw new IllegalStateException(pc.getPlayer().getName() + "(" + pc.getUniqueCharacterId() + ") attempted to go to group " + group + " from " + currentGroup + " in gear '" + getId() + "'! This should never happen!");
+                throw new IllegalStateException(pc.getPlayer().getName() + "(" + pc.getUniqueCharacterId() + ") attempted to go to group " + group + " from " + currentGroup + " in quest '" + getId() + "'! This should never happen!");
 
-            // If the player is just now starting the gear
+            // If the player is just now starting the quest
             if (group == null) {
                 loadProgress(pc, new QuestProgressPack(group, 0));
 
@@ -259,7 +259,7 @@ public abstract class AbstractQuest implements IQuest {
     }
 
     private void continueToNextGroup(PlayerCharacter pc, int nextGroup) {
-        // If there are no more objective groups, end the gear
+        // If there are no more objective groups, end the quest
         if (nextGroup >= objectives.groups.length) {
             QuestManager.finishQuest(this, pc);
             clearProgress(pc);
@@ -301,8 +301,8 @@ public abstract class AbstractQuest implements IQuest {
         checkCompleted(pc);
     }
 
-    protected void displayBook(String title, List<String> pages, Player player, boolean ok) {
-        if (ok && (pages.size() == 0 || pages.get(0).length() == 0)) return;
+    protected void displayBook(String title, List<String> pages, Player player) {
+        if (forced && (pages.size() == 0 || pages.get(0).length() == 0)) return;
 
         Book book = new Book(title, "Acolyte");
 
@@ -318,7 +318,7 @@ public abstract class AbstractQuest implements IQuest {
             }
 
             if (i == pages.size() - 1) {
-                if (ok)
+                if (forced)
                     tb.append(StringUtil.center(Book.WIDTH, "[Ok]")).color(ChatColor.DARK_GREEN)
                             .command("/quests close");
                 else {

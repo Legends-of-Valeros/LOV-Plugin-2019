@@ -102,7 +102,7 @@ public class TraitQuestGiver extends LOVTrait {
                             IQuest quest = future.get();
                             QuestStatus status = QuestManager.getStatus(pc, quest);
 
-                            // If the gear can be accepted, the marker should be active.
+                            // If the quest can be accepted, the marker should be active.
                             if(status.canAccept()) {
                                 working.remove(trait);
                                 trait.available.getVisibilityManager().showTo(pc.getPlayer());
@@ -110,7 +110,7 @@ public class TraitQuestGiver extends LOVTrait {
                                 return;
                             }
 
-                            // TODO: Add a marker for NPCs that you need to talk to in a gear (?)
+                            // TODO: Add a marker for NPCs that you need to talk to in a quest (?)
                         } catch (ExecutionException e) {
                             e.printStackTrace();
                         }
@@ -203,7 +203,7 @@ public class TraitQuestGiver extends LOVTrait {
                     if (quest != null)
                         quests.add(quest);
                     else
-                        throw new Exception("Failed to load gear on NPC! Offender: " + questId + " on " + trait.npcId);
+                        throw new Exception("Failed to load quest on NPC! Offender: " + questId + " on " + trait.npcId);
                 } catch (Exception e) {
                     MessageUtil.sendException(QuestController.getInstance(), e, false);
                 }
