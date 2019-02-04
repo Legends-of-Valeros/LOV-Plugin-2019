@@ -8,7 +8,7 @@ import com.legendsofvaleros.modules.mobs.ExperienceHelper;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.parties.PartiesController;
 import com.legendsofvaleros.modules.parties.PartyManager;
-import com.legendsofvaleros.modules.parties.PlayerParty;
+import com.legendsofvaleros.modules.parties.core.PlayerParty;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.quests.core;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.QuestUtil;
-import com.legendsofvaleros.modules.quests.objective.IQuestObjective;
+import com.legendsofvaleros.modules.quests.api.IQuestObjective;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.title.Title;
 import com.legendsofvaleros.util.title.TitleUtil;

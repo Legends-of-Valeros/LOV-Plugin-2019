@@ -2,8 +2,9 @@ package com.legendsofvaleros.modules.quests.objective;
 
 import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.quests.progress.IQuestObjectiveProgress;
-import com.legendsofvaleros.modules.quests.core.IQuest;
+import com.legendsofvaleros.modules.quests.api.IQuestObjective;
+import com.legendsofvaleros.modules.quests.api.IQuestObjectiveProgress;
+import com.legendsofvaleros.modules.quests.api.IQuest;
 import org.bukkit.Location;
 import org.bukkit.event.Event;
 

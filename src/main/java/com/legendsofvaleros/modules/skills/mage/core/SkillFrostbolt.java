@@ -8,7 +8,7 @@ import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.damage.spell.SpellType;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
-import com.legendsofvaleros.modules.skills.SkillUtil;
+import com.legendsofvaleros.modules.skills.core.SkillUtil;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;

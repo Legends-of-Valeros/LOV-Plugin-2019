@@ -4,6 +4,7 @@ import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.modules.bank.commands.BankCommands;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterFinishLoadingEvent;
@@ -42,7 +43,7 @@ public class BankController extends ModuleListener {
         BankManager.onEnable();
         Money.onEnable();
 
-        LegendsOfValeros.getInstance().getCommandManager().registerCommand(new BankCommand());
+        LegendsOfValeros.getInstance().getCommandManager().registerCommand(new BankCommands());
 
         new TradeManager();
     }

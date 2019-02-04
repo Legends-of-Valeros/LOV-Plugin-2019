@@ -5,7 +5,7 @@ import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.action.AbstractQuestAction;
-import com.legendsofvaleros.modules.quests.core.IQuest;
+import com.legendsofvaleros.modules.quests.api.IQuest;
 import com.legendsofvaleros.util.MessageUtil;
 
 public class ActionNewQuest extends AbstractQuestAction {

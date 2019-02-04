@@ -5,7 +5,7 @@ import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
-import com.legendsofvaleros.modules.hearthstones.HearthstoneCastEvent;
+import com.legendsofvaleros.modules.hearthstones.event.HearthstoneCastEvent;
 import com.legendsofvaleros.modules.hearthstones.HearthstoneController;
 import org.bukkit.Location;
 import org.bukkit.Material;

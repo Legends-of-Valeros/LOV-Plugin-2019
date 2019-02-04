@@ -9,6 +9,8 @@ import com.legendsofvaleros.modules.fast_travel.FastTravelController;
 import com.legendsofvaleros.modules.hearthstones.HearthstoneController;
 import com.legendsofvaleros.modules.mailbox.MailboxController;
 import com.legendsofvaleros.modules.mount.MountsController;
+import com.legendsofvaleros.modules.npcs.commands.NPCCommands;
+import com.legendsofvaleros.modules.npcs.core.NPCData;
 import com.legendsofvaleros.modules.npcs.integration.*;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import com.legendsofvaleros.modules.npcs.trait.core.TraitTitle;

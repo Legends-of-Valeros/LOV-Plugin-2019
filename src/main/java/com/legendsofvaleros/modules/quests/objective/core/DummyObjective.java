@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.quests.objective.core;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.objective.AbstractQuestObjective;
-import com.legendsofvaleros.modules.quests.objective.IQuestObjective;
+import com.legendsofvaleros.modules.quests.api.IQuestObjective;
 import com.legendsofvaleros.modules.quests.progress.core.QuestObjectiveProgressBoolean;
 import org.bukkit.event.Event;
 

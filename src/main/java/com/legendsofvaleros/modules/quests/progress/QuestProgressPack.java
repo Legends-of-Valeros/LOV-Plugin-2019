@@ -1,5 +1,7 @@
 package com.legendsofvaleros.modules.quests.progress;
 
+import com.legendsofvaleros.modules.quests.api.IQuestObjectiveProgress;
+
 public class QuestProgressPack {
 	public final Integer group;
 	public final ObjectiveProgressPack[] data;

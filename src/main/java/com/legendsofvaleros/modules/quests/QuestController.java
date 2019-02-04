@@ -33,7 +33,7 @@ import com.legendsofvaleros.modules.quests.progress.core.QuestObjectiveProgressB
 import com.legendsofvaleros.modules.quests.progress.core.QuestObjectiveProgressInteger;
 import com.legendsofvaleros.modules.quests.progress.ProgressFactory;
 import com.legendsofvaleros.modules.quests.core.BasicQuest;
-import com.legendsofvaleros.modules.quests.core.IQuest;
+import com.legendsofvaleros.modules.quests.api.IQuest;
 import com.legendsofvaleros.modules.quests.core.QuestFactory;
 import com.legendsofvaleros.modules.quests.core.QuestStatus;
 import com.legendsofvaleros.modules.npcs.trait.quests.TraitQuestGiver;

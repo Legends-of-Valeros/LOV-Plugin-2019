@@ -1,7 +1,8 @@
 package com.legendsofvaleros.modules.quests.action;
 
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.quests.core.IQuest;
+import com.legendsofvaleros.modules.quests.api.IQuestAction;
+import com.legendsofvaleros.modules.quests.api.IQuest;
 
 import java.lang.ref.WeakReference;
 

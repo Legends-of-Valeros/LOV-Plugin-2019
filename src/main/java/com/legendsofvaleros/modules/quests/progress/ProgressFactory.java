@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.quests.progress;
 
 import com.legendsofvaleros.modules.quests.QuestController;
+import com.legendsofvaleros.modules.quests.api.IQuestObjectiveProgress;
 
 import java.util.HashMap;
 import java.util.Map.Entry;

@@ -1,5 +1,7 @@
 package com.legendsofvaleros.modules.quests.action;
 
+import com.legendsofvaleros.modules.quests.api.IQuestAction;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

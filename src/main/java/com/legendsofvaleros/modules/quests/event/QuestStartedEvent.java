@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.quests.event;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterEvent;
-import com.legendsofvaleros.modules.quests.core.IQuest;
+import com.legendsofvaleros.modules.quests.api.IQuest;
 import org.bukkit.event.HandlerList;
 
 public class QuestStartedEvent extends PlayerCharacterEvent {

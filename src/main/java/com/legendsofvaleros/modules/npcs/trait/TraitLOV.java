@@ -2,10 +2,10 @@ package com.legendsofvaleros.modules.npcs.trait;
 
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.legendsofvaleros.modules.npcs.NPCData;
+import com.legendsofvaleros.modules.npcs.core.NPCData;
 import com.legendsofvaleros.modules.npcs.NPCsController;
-import com.legendsofvaleros.modules.npcs.Skins;
-import com.legendsofvaleros.modules.npcs.Skins.Skin;
+import com.legendsofvaleros.modules.npcs.core.Skins;
+import com.legendsofvaleros.modules.npcs.core.Skins.Skin;
 import com.legendsofvaleros.modules.npcs.nameplate.Nameplates;
 import com.legendsofvaleros.util.MessageUtil;
 import net.citizensnpcs.api.command.CommandConfigurable;

@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.quests.objective;
 
 import com.legendsofvaleros.modules.quests.QuestController;
+import com.legendsofvaleros.modules.quests.api.IQuestObjective;
 
 import java.util.HashMap;
 import java.util.Set;

@@ -3,6 +3,8 @@ package com.legendsofvaleros.modules.npcs;
 import com.codingforcookies.doris.sql.TableManager;
 import com.google.gson.*;
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.npcs.core.NPCData;
+import com.legendsofvaleros.modules.npcs.core.Skins;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
 import com.legendsofvaleros.util.MessageUtil;
@@ -43,9 +45,9 @@ public class NPCManager implements Listener {
 
     public NPCRegistry registry;
 
-    protected HashMap<String, NPCData> npcs = new HashMap<>();
+    public HashMap<String, NPCData> npcs = new HashMap<>();
 
-    protected HashMap<String, Class<? extends LOVTrait>> traitTypes = new HashMap<>();
+    public HashMap<String, Class<? extends LOVTrait>> traitTypes = new HashMap<>();
 
     public Set<String> getTraitIDs() {
         return traitTypes.keySet();

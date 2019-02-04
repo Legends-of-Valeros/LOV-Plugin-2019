@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.skills.priest;
 
-import com.legendsofvaleros.modules.skills.SkillTree;
+import com.legendsofvaleros.modules.skills.core.SkillTree;
 import com.legendsofvaleros.modules.skills.mage.core.*;
 import com.legendsofvaleros.modules.skills.mage.cryomancer.*;
 import com.legendsofvaleros.modules.skills.mage.pyromancer.*;

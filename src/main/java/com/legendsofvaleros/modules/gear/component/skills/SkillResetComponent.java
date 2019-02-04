@@ -10,7 +10,7 @@ import com.legendsofvaleros.modules.gear.trigger.GearTrigger;
 import com.legendsofvaleros.modules.gear.trigger.UseTrigger;
 import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.item.NoPersist;
-import com.legendsofvaleros.modules.skills.SkillTree.SpecializedTree;
+import com.legendsofvaleros.modules.skills.core.SkillTree.SpecializedTree;
 import com.legendsofvaleros.modules.skills.SkillsController;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.ChatColor;
