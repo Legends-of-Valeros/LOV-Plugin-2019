@@ -91,7 +91,7 @@ public class Modules {
             items = remaining;
         }
 
-        getLogger().info("Loaded " + modules.size() + " modules");
+        getLogger().info("Loaded " + modules.values().stream().filter(InternalModule::isLoaded).count() + " modules");
 
         if (enabled > modules.size())
             getLogger().severe("Failed to load " + (enabled - modules.size()) + " modules!");
