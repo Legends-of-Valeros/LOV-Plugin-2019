@@ -34,6 +34,15 @@ import org.bukkit.event.EventPriority;
 public class PvPController extends Module {
     public static final float DAMAGE_MULTIPLIER = 0.6f;
 
+    public static String HONOR_ID = "honor";
+    public static Currency HONOR = new Currency() {
+        @Override public String getName() { return "Honor"; }
+        @Override
+        public String getDisplay(long amount) {
+            return (amount == 0 ? null : ChatColor.BOLD + "" + ChatColor.BLUE + "✝ " + amount);
+        }
+    };
+
     private static PvPController instance;
     public static PvPController getInstance() { return instance; }
 

@@ -1,18 +1,12 @@
 package com.legendsofvaleros.modules.pvp.listener;
 
-import com.legendsofvaleros.modules.bank.BankController;
-import com.legendsofvaleros.modules.characters.api.Cooldowns;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.characters.skill.SkillTargetEvent;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
-import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
 import com.legendsofvaleros.modules.pvp.PvPController;
 import com.legendsofvaleros.modules.pvp.event.PvPCheckEvent;
-import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
