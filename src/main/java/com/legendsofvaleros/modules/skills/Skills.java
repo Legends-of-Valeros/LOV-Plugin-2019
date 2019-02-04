@@ -21,9 +21,9 @@ import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.playermenu.options.PlayerOptionsOpenEvent;
 import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.skills.event.*;
-import com.legendsofvaleros.modules.skills.gear.GearCharge;
-import com.legendsofvaleros.modules.skills.gear.SkillComponent;
-import com.legendsofvaleros.modules.skills.gear.SkillResetComponent;
+import com.legendsofvaleros.modules.gear.component.skills.GearCharge;
+import com.legendsofvaleros.modules.gear.component.skills.SkillComponent;
+import com.legendsofvaleros.modules.gear.component.skills.SkillResetComponent;
 import com.legendsofvaleros.modules.skills.gui.GUISkillsCore;
 import com.legendsofvaleros.modules.skills.gui.recharge.TraitRecharger;
 import com.legendsofvaleros.modules.skills.mage.TreeMage;
@@ -49,7 +49,6 @@ import java.util.Map.Entry;
 @DependsOn(NPCs.class)
 @DependsOn(Mobs.class)
 @DependsOn(Hotswitch.class)
-@DependsOn(GearController.class)
 public class Skills extends ModuleListener {
     public static final SkillTree[] skillTrees = new SkillTree[] {
             new TreeWarrior(),
@@ -70,13 +69,6 @@ public class Skills extends ModuleListener {
         instance = this;
 
         hotbarManager = new SkillBarManager();
-
-        if(Modules.isLoaded(GearController.class)) {
-            GearRegistry.registerComponent("charge", GearCharge.Component.class);
-            GearRegistry.registerComponent("skill", SkillComponent.class);
-            GearRegistry.registerComponent("skills_reset", SkillResetComponent.class);
-        }else
-            Skills.getInstance().getLogger().info("GearController integration not enabled.");
 
         if(Modules.isLoaded(NPCs.class))
             NPCs.registerTrait("recharger", TraitRecharger.class);

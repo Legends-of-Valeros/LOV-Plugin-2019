@@ -7,7 +7,7 @@ import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.damage.physical.PhysicalType;
-import com.legendsofvaleros.modules.gear.component.GearUseSpeed;
+import com.legendsofvaleros.modules.gear.component.core.GearUseSpeed;
 import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.mobs.behavior.BehaviorAction;
 import com.legendsofvaleros.modules.mobs.behavior.NodeStatus;

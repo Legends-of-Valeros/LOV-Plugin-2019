@@ -9,15 +9,12 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadin
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import com.legendsofvaleros.modules.gear.GearController;
-import com.legendsofvaleros.modules.gear.component.trigger.GearTrigger;
+import com.legendsofvaleros.modules.gear.trigger.GearTrigger;
 import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
-import com.legendsofvaleros.modules.quests.QuestController;
-import com.legendsofvaleros.modules.quests.QuestManager;
-import com.legendsofvaleros.modules.skills.event.BindSkillEvent;
 import com.legendsofvaleros.modules.skills.event.SkillPreUseEvent;
 import com.legendsofvaleros.modules.skills.event.SkillUsedEvent;
-import com.legendsofvaleros.modules.skills.gear.CastTrigger;
+import com.legendsofvaleros.modules.gear.component.skills.CastTrigger;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
 import org.bukkit.ChatColor;
@@ -31,11 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 public class SkillListener implements Listener {
-    public SkillListener() {
-        if(Modules.isLoaded(GearController.class))
-            Skills.getInstance().registerEvents(new GearListener());
-    }
-
     @EventHandler
     public void onCharacterLogin(PlayerCharacterStartLoadingEvent e) {
         int level = e.getPlayerCharacter().getExperience().getLevel();
@@ -81,42 +73,5 @@ public class SkillListener implements Listener {
         e.getCombatEntity().getStats().editRegeneratingStat(pc.getPlayerClass().getSkillCostType(), -e.getSkill().getSkillCost(e.getLevel()));
 
         cooldowns.offerCooldown("skill-" + e.getSkill().getId(), Cooldowns.CooldownType.CHARACTER_PLAY_TIME, e.getSkill().getSkillCooldownTime(pc, e.getLevel()));
-    }
-
-    /**
-     * Only activated if GearController is installed. It typically will be, but keeping things in
-     * one place will assist testing.
-     */
-    private class GearListener implements Listener {
-        @EventHandler(priority = EventPriority.LOWEST)
-        public void onSkillUse(SkillPreUseEvent e) {
-            if(!e.getCombatEntity().isPlayer()) return;
-
-            PlayerCharacter pc = Characters.getPlayerCharacter((Player)e.getLivingEntity());
-
-            if(e.getSkill().doesRequireFocus()) {
-                Gear.Instance instance = Gear.Instance.fromStack(pc.getPlayer().getInventory().getItem(Hotswitch.HELD_SLOT));
-                if(instance != null && Boolean.TRUE.equals(instance.doTest(new CastTrigger(e.getCombatEntity(), e.getSkill(), e.getLevel()))))
-                    return;
-
-                MessageUtil.sendError(pc.getPlayer(), "You are unable to focus " + e.getSkill().getStatUsed().getUserFriendlyName() + " for that skill.");
-                e.setCancelled(true);
-            }
-        }
-
-        @EventHandler(priority = EventPriority.MONITOR)
-        public void onSkillUsed(SkillUsedEvent e) {
-            if(!e.getCombatEntity().isPlayer()) return;
-
-            PlayerCharacter pc = Characters.getPlayerCharacter((Player)e.getLivingEntity());
-
-            if(pc.getPlayerClass().getSkillCostType() == RegeneratingStat.MANA) {
-                Gear.Instance instance = Gear.Instance.fromStack(pc.getPlayer().getInventory().getItem(Hotswitch.HELD_SLOT));
-                if(instance != null) {
-                    if(instance.doFire(new CastTrigger(e.getCombatEntity(), e.getSkill(), e.getLevel())) == GearTrigger.TriggerEvent.REFRESH_STACK)
-                        pc.getPlayer().getInventory().setItem(Hotswitch.HELD_SLOT, instance.toStack());
-                }
-            }
-        }
     }
 }

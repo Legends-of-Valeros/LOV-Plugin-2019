@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.quests.objective.gear;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.gear.item.Gear;
-import com.legendsofvaleros.modules.gear.util.ItemUtil;
+import com.legendsofvaleros.modules.gear.ItemUtil;
 import com.legendsofvaleros.modules.quests.action.AbstractQuestAction;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;

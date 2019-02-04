@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.gear;
 
-import com.legendsofvaleros.modules.gear.component.impl.GearComponent;
+import com.legendsofvaleros.modules.gear.component.GearComponent;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

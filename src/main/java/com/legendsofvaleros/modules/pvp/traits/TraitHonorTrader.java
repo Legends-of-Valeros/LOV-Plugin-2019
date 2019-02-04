@@ -7,7 +7,7 @@ import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.modules.bank.Bank;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.item.Gear;
-import com.legendsofvaleros.modules.gear.util.ItemUtil;
+import com.legendsofvaleros.modules.gear.ItemUtil;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import com.legendsofvaleros.modules.pvp.PvP;
 import org.bukkit.ChatColor;
