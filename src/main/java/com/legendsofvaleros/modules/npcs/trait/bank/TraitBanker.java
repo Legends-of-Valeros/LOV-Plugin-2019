@@ -6,7 +6,7 @@ import com.codingforcookies.robert.slot.Slot;
 import com.codingforcookies.robert.slot.SlotUsable;
 import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.modules.bank.BankController;
-import com.legendsofvaleros.modules.bank.Bank;
+import com.legendsofvaleros.modules.bank.core.Bank;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;

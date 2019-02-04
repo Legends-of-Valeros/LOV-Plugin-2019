@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.auction;
 
-import com.legendsofvaleros.modules.bank.Money;
+import com.legendsofvaleros.modules.bank.core.Money;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 
 import java.util.Calendar;

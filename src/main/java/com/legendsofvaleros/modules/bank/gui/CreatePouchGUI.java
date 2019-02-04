@@ -3,7 +3,7 @@ package com.legendsofvaleros.modules.bank.gui;
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.modules.bank.BankController;
-import com.legendsofvaleros.modules.bank.Money;
+import com.legendsofvaleros.modules.bank.core.Money;
 import com.legendsofvaleros.modules.gear.component.bank.WorthComponent;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;

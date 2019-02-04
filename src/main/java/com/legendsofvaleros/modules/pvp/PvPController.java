@@ -3,7 +3,7 @@ package com.legendsofvaleros.modules.pvp;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.bank.BankController;
-import com.legendsofvaleros.modules.bank.Currency;
+import com.legendsofvaleros.modules.bank.core.Currency;
 import com.legendsofvaleros.modules.characters.api.Cooldowns;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;

@@ -4,7 +4,9 @@ import com.codingforcookies.doris.orm.ORMTable;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.bank.core.Bank;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
+import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
@@ -46,26 +48,26 @@ public class BankManager {
         }
     }
 
-    private static ListenableFuture<Void> loadBank(CharacterId characterId) {
+    private static ListenableFuture<Void> loadBank(PlayerCharacter pc) {
         SettableFuture<Void> ret = SettableFuture.create();
 
-        Bank bank = new Bank(characterId);
+        Bank bank = new Bank(pc);
         AtomicInteger done = new AtomicInteger(2);
         Runnable finished = () -> {
             if (done.decrementAndGet() == 0) {
-                banks.put(characterId, bank);
+                banks.put(pc.getUniqueCharacterId(), bank);
                 ret.set(null);
             }
         };
 
         bankCurrencyTable.query()
-                .get(characterId)
+                .get(pc.getUniqueCharacterId())
                 .forEach((currency, i) -> bank.setCurrency(currency.getCurrencyId(), currency.amount))
                 .onFinished(finished)
                 .execute(true);
 
         bankContentTable.query()
-                .get(characterId)
+                .get(pc.getUniqueCharacterId())
                 .forEach((entry, i) -> bank.content.put(entry.index, entry))
                 .onFinished(finished)
                 .execute(true);
@@ -117,7 +119,7 @@ public class BankManager {
         public void onCharacterStartLoading(PlayerCharacterStartLoadingEvent event) {
             PhaseLock lock = event.getLock("Bank");
 
-            loadBank(event.getPlayerCharacter().getUniqueCharacterId())
+            loadBank(event.getPlayerCharacter())
                     .addListener(lock::release, BankController.getInstance().getScheduler()::async);
         }
 

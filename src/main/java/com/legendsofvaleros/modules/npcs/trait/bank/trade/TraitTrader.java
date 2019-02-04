@@ -4,7 +4,7 @@ import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.codingforcookies.robert.slot.Slot;
 import com.google.common.util.concurrent.SettableFuture;
-import com.legendsofvaleros.modules.bank.Money;
+import com.legendsofvaleros.modules.bank.core.Money;
 import com.legendsofvaleros.modules.bank.gui.ItemMorphGUI;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;

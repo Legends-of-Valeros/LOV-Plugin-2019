@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.auction;
 
 import com.codingforcookies.doris.orm.annotation.Column;
 import com.codingforcookies.doris.orm.annotation.Table;
-import com.legendsofvaleros.modules.bank.Money;
+import com.legendsofvaleros.modules.bank.core.Money;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;

@@ -1,18 +1,20 @@
-package com.legendsofvaleros.modules.bank;
+package com.legendsofvaleros.modules.bank.core;
 
 import com.codingforcookies.doris.orm.ORM;
 import com.codingforcookies.doris.orm.annotation.Column;
 import com.codingforcookies.doris.orm.annotation.Table;
+import com.legendsofvaleros.modules.bank.event.PlayerCurrencyChangeEvent;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
-import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.gear.item.Gear;
+import org.bukkit.Bukkit;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Bank extends ORM {
-    private final CharacterId characterId;
+    private final PlayerCharacter pc;
 
     private Map<String, Currency> currencies = new HashMap<>();
 
@@ -22,22 +24,25 @@ public class Bank extends ORM {
 
     public Map<Integer, Bank.Entry> content = new HashMap<>();
 
-    public Bank(CharacterId characterId) {
-        this.characterId = characterId;
+    public Bank(PlayerCharacter pc) {
+        this.pc = pc;
     }
 
     public long getCurrency(String currencyId) {
         if (!currencies.containsKey(currencyId))
-            currencies.put(currencyId, new Currency(characterId, currencyId));
+            currencies.put(currencyId, new Currency(pc.getUniqueCharacterId(), currencyId));
         return currencies.get(currencyId).amount;
     }
 
     public void setCurrency(String currencyId, long amount) {
-        if (!currencies.containsKey(currencyId))
-            currencies.put(currencyId, new Currency(characterId, currencyId));
-        currencies.get(currencyId).amount = amount;
+        PlayerCurrencyChangeEvent bcce = new PlayerCurrencyChangeEvent(pc, currencyId, amount);
+        Bukkit.getPluginManager().callEvent(bcce);
 
-        BankController.updateInv(Characters.getInstance().getCharacter(characterId));
+        if(bcce.isCancelled()) return;
+
+        if (!currencies.containsKey(currencyId))
+            currencies.put(currencyId, new Currency(pc.getUniqueCharacterId(), currencyId));
+        currencies.get(currencyId).amount = amount;
     }
 
     public void addCurrency(String currencyId, long amount) {
@@ -63,7 +68,7 @@ public class Bank extends ORM {
     }
 
     public void setItem(int index, Gear.Data item) {
-        content.put(index, new Entry(characterId, index, item));
+        content.put(index, new Entry(pc.getUniqueCharacterId(), index, item));
     }
 
     public void removeItem(int i) {
@@ -76,7 +81,7 @@ public class Bank extends ORM {
         currencies.forEach((key, value) -> str.append(key).append("=").append(value.amount).append(","));
         str.setLength(str.length() - 1);
         str.append("}");
-        return "Bank{character_id=" + characterId + ", currencies=" + str.toString() + "}";
+        return "Bank{character_id=" + pc.getUniqueCharacterId() + ", currencies=" + str.toString() + "}";
     }
 
     @Table(name = "player_bank")
