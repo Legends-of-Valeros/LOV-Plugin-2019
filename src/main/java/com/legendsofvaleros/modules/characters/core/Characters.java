@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.characters.core;
 import com.codingforcookies.doris.orm.ORMField;
 import com.codingforcookies.doris.orm.ORMRegistry;
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
@@ -40,8 +41,7 @@ import java.util.UUID;
 @DependsOn(CombatEngine.class)
 @DependsOn(LevelArchetypes.class)
 @DependsOn(PlayerMenu.class)
-// TODO: Create subclass for listeners?
-public class Characters extends ModuleListener implements CharactersAPI {
+public class Characters extends Module implements CharactersAPI {
     private static Characters instance;
 
     public static Characters getInstance() throws IllegalStateException {

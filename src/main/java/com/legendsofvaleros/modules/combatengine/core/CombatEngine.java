@@ -1,5 +1,6 @@
 package com.legendsofvaleros.modules.combatengine.core;
 
+import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.modules.combatengine.api.CombatEngineAPI;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
@@ -21,8 +22,7 @@ import org.bukkit.entity.Player;
  * CombatEngine creates an MMO-style combat system on a Minecraft server by overriding and hiding
  * Bukkit's normal combat system.
  */
-// TODO: Create subclass for listeners?
-public class CombatEngine extends ModuleListener implements CombatEngineAPI {
+public class CombatEngine extends Module implements CombatEngineAPI {
     private static CombatEngine instance;
     public static CombatEngine getInstance() { return instance; }
 

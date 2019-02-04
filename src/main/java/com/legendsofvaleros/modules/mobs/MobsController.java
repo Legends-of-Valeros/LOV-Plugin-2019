@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.mobs;
 
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.Modules;
 import com.legendsofvaleros.module.annotation.DependsOn;
@@ -40,8 +41,7 @@ import org.bukkit.event.EventPriority;
 @DependsOn(LootManager.class)
 @DependsOn(PartiesController.class)
 @DependsOn(NPCsController.class)
-// TODO: Create subclass for listeners?
-public class MobsController extends ModuleListener {
+public class MobsController extends Module {
     private static MobsController instance;
     public static MobsController getInstance() { return instance; }
 
