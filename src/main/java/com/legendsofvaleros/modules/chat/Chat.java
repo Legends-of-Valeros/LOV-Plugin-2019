@@ -83,7 +83,7 @@ public class Chat extends ModuleListener {
                 break;
             case LOCAL:
                 for (Player pl : Bukkit.getOnlinePlayers()) {
-                    if (pl.getLocation().distance(p.getLocation()) < 25) {
+                    if (pl.getLocation().distance(p.getLocation()) < 50) {
                         pl.spigot().sendMessage(bc);
                     }
                 }
