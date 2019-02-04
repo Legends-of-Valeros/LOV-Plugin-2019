@@ -3,8 +3,8 @@ package com.legendsofvaleros.modules.skills.event;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
-import com.legendsofvaleros.modules.skills.EntitiesListener;
-import com.legendsofvaleros.modules.skills.Skills;
+import com.legendsofvaleros.modules.skills.api.IEntitiesListener;
+import com.legendsofvaleros.modules.skills.SkillsController;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -21,23 +21,23 @@ import java.util.List;
 import java.util.UUID;
 
 public class OnProjectile implements Listener {
-    private static final HashMap<UUID, EntitiesListener> onProjectile = new HashMap<>();
+    private static final HashMap<UUID, IEntitiesListener> onProjectile = new HashMap<>();
 
-    public static <T extends Projectile> T shoot(CombatEntity spawner, double speed, int maxDistance, Class<T> projectile, EntitiesListener listener) {
+    public static <T extends Projectile> T shoot(CombatEntity spawner, double speed, int maxDistance, Class<T> projectile, IEntitiesListener listener) {
         final T p = spawner.getLivingEntity().launchProjectile(projectile);
         p.setVelocity(spawner.getLivingEntity().getEyeLocation().getDirection().multiply(speed));
         return shoot(p, maxDistance, listener);
     }
 
-    public static <T extends Projectile> T shoot(CombatEntity spawner, Location loc, int maxDistance, Class<T> projectile, EntitiesListener listener) {
+    public static <T extends Projectile> T shoot(CombatEntity spawner, Location loc, int maxDistance, Class<T> projectile, IEntitiesListener listener) {
         return shoot(spawner, loc, null, maxDistance, projectile, listener);
     }
 
-    public static <T extends Projectile> T shoot(CombatEntity spawner, Location loc, double speed, int maxDistance, Class<T> projectile, EntitiesListener listener) {
+    public static <T extends Projectile> T shoot(CombatEntity spawner, Location loc, double speed, int maxDistance, Class<T> projectile, IEntitiesListener listener) {
         return shoot(spawner, loc, loc.getDirection().multiply(speed), maxDistance, projectile, listener);
     }
 
-    public static <T extends Projectile> T shoot(CombatEntity spawner, Location loc, Vector velocity, int maxDistance, Class<T> projectile, EntitiesListener listener) {
+    public static <T extends Projectile> T shoot(CombatEntity spawner, Location loc, Vector velocity, int maxDistance, Class<T> projectile, IEntitiesListener listener) {
         final T p = loc.getWorld().spawn(loc, projectile);
         p.setShooter(spawner.getLivingEntity());
         if (velocity != null)
@@ -45,7 +45,7 @@ public class OnProjectile implements Listener {
         return shoot(p, maxDistance, listener);
     }
 
-    private static <T extends Projectile> T shoot(T p, int maxDistance, EntitiesListener listener) {
+    private static <T extends Projectile> T shoot(T p, int maxDistance, IEntitiesListener listener) {
         onProjectile.put(p.getUniqueId(), listener);
 
         p.setSilent(true);
@@ -72,7 +72,7 @@ public class OnProjectile implements Listener {
     }
 
     public OnProjectile() {
-        Skills.getInstance().registerEvents(this);
+        SkillsController.getInstance().registerEvents(this);
     }
 
     @EventHandler
@@ -88,7 +88,7 @@ public class OnProjectile implements Listener {
             entities.add((LivingEntity) e);
         }
 
-        EntitiesListener list = onProjectile.get(entity.getUniqueId());
+        IEntitiesListener list = onProjectile.get(entity.getUniqueId());
         if (list != null)
             list.run(CombatEngine.getEntity((LivingEntity) entity.getShooter()), entities);
         onProjectile.remove(entity.getUniqueId());

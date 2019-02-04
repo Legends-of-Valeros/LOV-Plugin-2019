@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.mobs.behavior;
 
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.mobs.Mobs;
+import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.modules.mobs.behavior.nodes.Node;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -59,7 +59,7 @@ public class BehaviorEngine {
             try {
                 data.tree.onStep(data.ce, time);
             } catch (Exception e) {
-                MessageUtil.sendSevereException(Mobs.getInstance(), null, e);
+                MessageUtil.sendSevereException(MobsController.getInstance(), null, e);
             }
         }
     }

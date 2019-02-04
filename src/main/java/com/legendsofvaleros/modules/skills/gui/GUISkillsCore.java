@@ -5,9 +5,9 @@ import com.codingforcookies.robert.item.ItemBuilder;
 import com.codingforcookies.robert.slot.ISlotAction;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.skills.SkillTree;
-import com.legendsofvaleros.modules.skills.SkillTree.SpecializedTree;
-import com.legendsofvaleros.modules.skills.Skills;
+import com.legendsofvaleros.modules.skills.core.SkillTree;
+import com.legendsofvaleros.modules.skills.core.SkillTree.SpecializedTree;
+import com.legendsofvaleros.modules.skills.SkillsController;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.item.Model;
 import org.bukkit.ChatColor;
@@ -25,13 +25,13 @@ public class GUISkillsCore extends GUI {
 	@Override public void onClose(Player p, InventoryView view) { p.getInventory().setItem(17, stack); }
 	
 	public GUISkillsCore(PlayerCharacter pc) {
-		this(pc, Skills.getPointCount(pc.getPlayer()));
+		this(pc, SkillsController.getPointCount(pc.getPlayer()));
 	}
 	
 	private GUISkillsCore(final PlayerCharacter pc, final int pointCount) {
 		super("Core Skills");
 
-		final SkillTree tree = Skills.skillTrees[pc.getPlayerClass().ordinal()];
+		final SkillTree tree = SkillsController.skillTrees[pc.getPlayerClass().ordinal()];
 		final SpecializedTree[] treeSkills = tree.getSpecializedTrees();
 
 		boolean hasSkill1 = treeSkills[0].hasSkill(pc);

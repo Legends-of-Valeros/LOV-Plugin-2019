@@ -3,6 +3,8 @@ package com.legendsofvaleros.modules.npcs;
 import com.codingforcookies.doris.sql.TableManager;
 import com.google.gson.*;
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.npcs.core.NPCData;
+import com.legendsofvaleros.modules.npcs.core.Skins;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
 import com.legendsofvaleros.util.MessageUtil;
@@ -27,6 +29,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+// TODO: Create subclass for listener
 public class NPCManager implements Listener {
     private static final String NPC_TABLE = "npcs";
     private static final String NPC_ID = "npc_id";
@@ -43,9 +46,9 @@ public class NPCManager implements Listener {
 
     public NPCRegistry registry;
 
-    protected HashMap<String, NPCData> npcs = new HashMap<>();
+    public HashMap<String, NPCData> npcs = new HashMap<>();
 
-    protected HashMap<String, Class<? extends LOVTrait>> traitTypes = new HashMap<>();
+    public HashMap<String, Class<? extends LOVTrait>> traitTypes = new HashMap<>();
 
     public Set<String> getTraitIDs() {
         return traitTypes.keySet();
@@ -56,7 +59,7 @@ public class NPCManager implements Listener {
 
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TraitLOV.class).withName(TraitLOV.TRAIT_NAME));
 
-        NPCs.getInstance().registerEvents(this);
+        NPCsController.getInstance().registerEvents(this);
 
         gson = new GsonBuilder().registerTypeAdapter(LOVTrait[].class, new JsonDeserializer<LOVTrait[]>() {
             @Override
@@ -70,7 +73,7 @@ public class NPCManager implements Listener {
                     try {
                         traits.add(gson.fromJson(elem.getValue(), traitTypes.get(elem.getKey())));
                     } catch (Exception e) {
-                        MessageUtil.sendException(NPCs.getInstance(), "Failed to load trait. Offender: " + elem.getKey() + " (" + elem.getValue().toString() + ")", false);
+                        MessageUtil.sendException(NPCsController.getInstance(), "Failed to load trait. Offender: " + elem.getKey() + " (" + elem.getValue().toString() + ")", false);
                         throw e;
                     }
                 }
@@ -93,7 +96,7 @@ public class NPCManager implements Listener {
         // Tasks are run after the server is successfully loaded.
         // This gives plugins time to register traits before the
         // NPCs are actually loaded.
-        NPCs.getInstance().getScheduler().executeInSpigotCircleLater(this::reload, 0);
+        NPCsController.getInstance().getScheduler().executeInSpigotCircleLater(this::reload, 0);
     }
 
     public void reload() {
@@ -118,7 +121,7 @@ public class NPCManager implements Listener {
                             npcs.put(result.getString(NPC_ID), data);
                         } catch (Exception e) {
                             MessageUtil.sendError(Bukkit.getConsoleSender(), "Error while loading NPC: " + result.getString(NPC_ID));
-                            MessageUtil.sendException(NPCs.getInstance(), e, false);
+                            MessageUtil.sendException(NPCsController.getInstance(), e, false);
                         }
                     }
                 })

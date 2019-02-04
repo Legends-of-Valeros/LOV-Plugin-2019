@@ -9,7 +9,7 @@ import com.legendsofvaleros.modules.bank.Money;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.item.Gear;
-import com.legendsofvaleros.modules.gear.util.ItemUtil;
+import com.legendsofvaleros.modules.gear.ItemUtil;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.item.Model;
 import org.bukkit.ChatColor;

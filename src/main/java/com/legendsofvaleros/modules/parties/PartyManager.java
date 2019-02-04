@@ -11,6 +11,8 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
+import com.legendsofvaleros.modules.parties.core.IParty;
+import com.legendsofvaleros.modules.parties.core.PlayerParty;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -53,7 +55,7 @@ public class PartyManager {
     public static void onEnable() {
         partyTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), Pair.class);
 
-        Parties.getInstance().registerEvents(new PlayerListener());
+        PartiesController.getInstance().registerEvents(new PlayerListener());
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(LegendsOfValeros.getInstance(), () -> {
             for (IParty party : parties.values())
@@ -153,7 +155,7 @@ public class PartyManager {
                 }
 
                 lock.release();
-            }, Parties.getInstance().getScheduler()::sync);
+            }, PartiesController.getInstance().getScheduler()::sync);
         }
 
         @EventHandler

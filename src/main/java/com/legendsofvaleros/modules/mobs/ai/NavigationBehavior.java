@@ -5,7 +5,7 @@ import com.legendsofvaleros.modules.mobs.behavior.BehaviorAction;
 import com.legendsofvaleros.modules.mobs.behavior.NodeStatus;
 import com.legendsofvaleros.modules.mobs.behavior.test.ITest;
 import com.legendsofvaleros.modules.mobs.trait.MobTrait;
-import com.legendsofvaleros.modules.npcs.NPCs;
+import com.legendsofvaleros.modules.npcs.NPCsController;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Location;
 
@@ -15,19 +15,19 @@ public class NavigationBehavior {
 	static Random rand = new Random();
 	
 	public static final ITest HAS_TARGET = (ce) -> {
-		NPC npc = NPCs.manager().registry.getNPC(ce.getLivingEntity());
+		NPC npc = NPCsController.manager().registry.getNPC(ce.getLivingEntity());
 		return npc.getNavigator().getTargetAsLocation() != null;
 	};
 	
 	public static final ITest NEAR_TARGET = (ce) -> {
-		NPC npc = NPCs.manager().registry.getNPC(ce.getLivingEntity());
+		NPC npc = NPCsController.manager().registry.getNPC(ce.getLivingEntity());
 		return ce.getLivingEntity().getLocation().distance(npc.getNavigator().getTargetAsLocation()) < 2D;
 	};
 
 	public static final BehaviorAction WANDER = new BehaviorAction() {
 		@Override
 		public NodeStatus onStep(CombatEntity ce, long ticks) {
-			NPC npc = NPCs.manager().registry.getNPC(ce.getLivingEntity());
+			NPC npc = NPCsController.manager().registry.getNPC(ce.getLivingEntity());
 			MobTrait trait = npc.getTrait(MobTrait.class);
 			Location spawn = trait.instance.home.getLocation();
 			
@@ -45,7 +45,7 @@ public class NavigationBehavior {
 	public static final BehaviorAction LOOK_RANDOM = new BehaviorAction() {
 		@Override
 		public NodeStatus onStep(CombatEntity ce, long ticks) {
-			NPC npc = NPCs.manager().registry.getNPC(ce.getLivingEntity());
+			NPC npc = NPCsController.manager().registry.getNPC(ce.getLivingEntity());
 			Location loc = npc.getEntity().getLocation().clone();
 			loc.add(rand.nextInt(10) - 5, rand.nextInt(3) - 1.5D, rand.nextInt(10) - 5);
 			npc.faceLocation(loc);

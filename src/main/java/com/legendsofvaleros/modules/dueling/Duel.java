@@ -135,7 +135,7 @@ public class Duel extends BukkitRunnable {
 
 		hideBorder();
 
-		Dueling.getInstance().duels.remove(player1, player2);
+		DuelingController.getInstance().duels.remove(player1, player2);
 	}
 	
 	public void showBorder() {
@@ -172,7 +172,7 @@ public class Duel extends BukkitRunnable {
 			e.printStackTrace();
 		}
 
-		Dueling.getInstance().getScheduler().executeInSpigotCircleLater(this::destroyBorder, 20L);
+		DuelingController.getInstance().getScheduler().executeInSpigotCircleLater(this::destroyBorder, 20L);
 	}
 
 	private void destroyBorder() {

@@ -10,12 +10,12 @@ import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import com.legendsofvaleros.modules.gear.item.Gear;
-import com.legendsofvaleros.modules.mobs.Mobs;
+import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.modules.mobs.ai.AIStuckAction;
 import com.legendsofvaleros.modules.mobs.behavior.StaticAI;
 import com.legendsofvaleros.modules.mobs.trait.MobTrait;
-import com.legendsofvaleros.modules.npcs.NPCs;
-import com.legendsofvaleros.modules.npcs.Skins;
+import com.legendsofvaleros.modules.npcs.NPCsController;
+import com.legendsofvaleros.modules.npcs.core.Skins;
 import com.legendsofvaleros.util.MessageUtil;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.Equipment;
@@ -237,7 +237,7 @@ public class Mob {
                 itemStack.setAmount(this.amount);
                 return itemStack;
             } else
-                Mobs.getInstance().getLogger().severe("Item does not exist. Offender: " + id);
+                MobsController.getInstance().getLogger().severe("Item does not exist. Offender: " + id);
             return null;
         }
 
@@ -280,7 +280,7 @@ public class Mob {
                 throw new IllegalStateException("Mob instance already destroyed.");
             active = true;
 
-            npc = NPCs.manager().registry.createNPC(mob.type, "");
+            npc = NPCsController.manager().registry.createNPC(mob.type, "");
 
             npc.getNavigator().getLocalParameters().updatePathRate(20)
                     .useNewPathfinder(false)
@@ -312,7 +312,7 @@ public class Mob {
                         npc.data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA, skin.data);
                         npc.data().setPersistent(NPC.PLAYER_SKIN_USE_LATEST, false);
                     } catch (Exception e) {
-                        MessageUtil.sendException(Mobs.getInstance(), e, false);
+                        MessageUtil.sendException(MobsController.getInstance(), e, false);
                     }
                 }
             }
@@ -333,7 +333,7 @@ public class Mob {
 
             ce = CombatEngine.getEntity((LivingEntity) npc.getEntity());
 
-            Mobs.ai().bind(ce, StaticAI.AGGRESSIVE);
+            MobsController.ai().bind(ce, StaticAI.AGGRESSIVE);
 
             home.getEntities().add(this);
         }

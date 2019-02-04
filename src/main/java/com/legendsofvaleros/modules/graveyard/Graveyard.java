@@ -1,15 +1,13 @@
 package com.legendsofvaleros.modules.graveyard;
 
-import com.codingforcookies.doris.orm.annotation.Column;
 import com.codingforcookies.robert.core.GUI;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.ItemLine;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.mobs.core.SpawnEditorGUI;
 import com.legendsofvaleros.modules.zones.Zone;
-import com.legendsofvaleros.modules.zones.Zones;
+import com.legendsofvaleros.modules.zones.ZonesController;
 import org.bukkit.*;
 import org.bukkit.inventory.ItemStack;
 
@@ -21,7 +19,7 @@ public class Graveyard {
 	private TextLine textZone, textRadius;
 
 	public String zone;
-	public Zone getZone() { return Zones.manager().getZone(zone); }
+	public Zone getZone() { return ZonesController.manager().getZone(zone); }
 	
 	public String worldName;
 	public World getWorld() {

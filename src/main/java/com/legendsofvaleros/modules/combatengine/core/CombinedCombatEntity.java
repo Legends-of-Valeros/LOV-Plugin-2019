@@ -19,7 +19,7 @@ import com.legendsofvaleros.modules.combatengine.stat.StatValue;
 import com.legendsofvaleros.modules.combatengine.ui.PlayerCombatInterface;
 import com.legendsofvaleros.modules.combatengine.ui.RegeneratingStatChangeListener;
 import com.legendsofvaleros.modules.combatengine.ui.StatChangeListener;
-import com.legendsofvaleros.modules.npcs.NPCs;
+import com.legendsofvaleros.modules.npcs.NPCsController;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -74,7 +74,7 @@ public class CombinedCombatEntity implements CombatEntity, EntityStats, EntitySt
         }
         this.uid = entity.getUniqueId();
         this.entity = new WeakReference<>(entity);
-        this.isPlayer = entity.getType() == EntityType.PLAYER && !NPCs.isNPC(entity);
+        this.isPlayer = entity.getType() == EntityType.PLAYER && !NPCsController.isNPC(entity);
 
         this.listener = new ChangeListener(this);
         this.healthHandler = CombatEngine.getInstance().getMinecraftHealthHandler();

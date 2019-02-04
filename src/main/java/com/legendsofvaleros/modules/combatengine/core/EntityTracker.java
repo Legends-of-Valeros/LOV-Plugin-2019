@@ -10,7 +10,7 @@ import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEntityCreateEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEntityInvalidatedEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEntityPreCreateEvent;
-import com.legendsofvaleros.modules.npcs.NPCs;
+import com.legendsofvaleros.modules.npcs.NPCsController;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -64,13 +64,13 @@ public class EntityTracker implements UnsafePlayerInitializer {
     }
 
     public CombinedCombatEntity getCombatEntity(LivingEntity entity) {
-        if (NPCs.isStaticNPC(entity)) return null;
+        if (NPCsController.isStaticNPC(entity)) return null;
 
         UUID uid = entity.getUniqueId();
         CombinedCombatEntity ce = combatEntities.getIfPresent(uid);
 
         // creates on access, unless using a manual player initializer and the entity is a player
-        if (ce == null && (!usePlayerInitializer || entity.getType() != EntityType.PLAYER || NPCs.isNPC(entity))) {
+        if (ce == null && (!usePlayerInitializer || entity.getType() != EntityType.PLAYER || NPCsController.isNPC(entity))) {
             ce = create(entity);
 
         } else if (ce != null) {

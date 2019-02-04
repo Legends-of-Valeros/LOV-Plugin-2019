@@ -13,6 +13,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
+// TODO: Create subclass for listeners?
 public class PlayerMenu extends ModuleListener {
 
     @Override

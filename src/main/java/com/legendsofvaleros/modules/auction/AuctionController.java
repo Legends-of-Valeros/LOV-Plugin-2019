@@ -6,7 +6,6 @@ import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
-import com.legendsofvaleros.modules.auction.traits.TraitAuctioneer;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -15,7 +14,7 @@ import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.mailbox.Mail;
 import com.legendsofvaleros.modules.mailbox.MailboxController;
-import com.legendsofvaleros.modules.npcs.NPCs;
+import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.scheduler.InternalTask;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -31,9 +30,9 @@ import java.util.concurrent.ExecutionException;
 /**
  * Created by Crystall on 10/10/2018
  */
-@DependsOn(NPCs.class)
 @DependsOn(GearController.class)
 @DependsOn(Characters.class)
+// TODO: Create subclass for listeners?
 public class AuctionController extends ModuleListener {
     private static AuctionController instance;
     //auction fee in percentage
@@ -60,7 +59,6 @@ public class AuctionController extends ModuleListener {
 
         auctionsTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), Auction.class);
         auctionBidHistoryTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), BidHistoryEntry.class);
-        NPCs.registerTrait("auctioneer", TraitAuctioneer.class);
 
 //        getScheduler().executeInMyCircleTimer(new InternalTask(() -> {
 //            try {

@@ -6,11 +6,10 @@ import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.damage.spell.SpellType;
-import com.legendsofvaleros.modules.skills.SkillUtil;
+import com.legendsofvaleros.modules.skills.core.SkillUtil;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
-import org.bukkit.entity.LivingEntity;
 
 public class SkillFlamingStreak extends Skill {
     public static final String ID = "flamingstreak";

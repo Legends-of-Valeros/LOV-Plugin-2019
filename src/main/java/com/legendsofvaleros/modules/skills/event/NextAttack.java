@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.skills.event;
 
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEnginePhysicalDamageEvent;
-import com.legendsofvaleros.modules.skills.Skills;
+import com.legendsofvaleros.modules.skills.SkillsController;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -16,11 +16,11 @@ public class NextAttack implements Listener {
     public static void on(final UUID uuid, long maxLife, final NextAttackListener listener) {
         nextAttack.put(uuid, listener);
 
-        Skills.getInstance().getScheduler().executeInSpigotCircleLater(() -> nextAttack.remove(uuid, listener), maxLife);
+        SkillsController.getInstance().getScheduler().executeInSpigotCircleLater(() -> nextAttack.remove(uuid, listener), maxLife);
     }
 
     public NextAttack() {
-        Skills.getInstance().registerEvents(this);
+        SkillsController.getInstance().registerEvents(this);
     }
 
     @EventHandler

@@ -5,7 +5,7 @@ import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.ui.SkillEffectListener;
-import com.legendsofvaleros.modules.npcs.NPCs;
+import com.legendsofvaleros.modules.npcs.NPCsController;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -46,7 +46,7 @@ public class MetaEffectInstance<T> implements SkillEffectInstance {
 			this.affectedId = affected.getUniqueId();
 			this.affected = new WeakReference<>(affected);
 
-			if (affected.getType() == EntityType.PLAYER && !NPCs.isNPC(affected)) {
+			if (affected.getType() == EntityType.PLAYER && !NPCsController.isNPC(affected)) {
 				PlayerCharacter pc = Characters.getPlayerCharacter((Player) affected);
 				ui = Characters.getInstance().getUiManager().getCharacterEffectInterface(pc);
 			}
@@ -55,7 +55,7 @@ public class MetaEffectInstance<T> implements SkillEffectInstance {
 		if (appliedBy != null) {
 			this.appliedById = appliedBy.getUniqueId();
 			PlayerCharacter pc;
-			if (appliedBy.getType() == EntityType.PLAYER && !NPCs.isNPC(affected)
+			if (appliedBy.getType() == EntityType.PLAYER && !NPCsController.isNPC(affected)
 					&& (pc = Characters.getPlayerCharacter((Player) appliedBy)) != null) {
 				appliedByCharacterId = pc.getUniqueCharacterId();
 			} else {

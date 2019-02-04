@@ -4,9 +4,8 @@ import com.codingforcookies.doris.sql.TableManager;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.mobs.Mobs;
 import com.legendsofvaleros.modules.zones.Zone;
-import com.legendsofvaleros.modules.zones.Zones;
+import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -42,9 +41,9 @@ public class GraveyardManager {
                     while (result != null && result.next()) {
                         String[] pos = result.getString(GRAVEYARD_POSITION).split(",");
 
-                        Zone z = Zones.manager().getZone(result.getString(GRAVEYARD_ZONE));
+                        Zone z = ZonesController.manager().getZone(result.getString(GRAVEYARD_ZONE));
                         if (z == null) {
-                            MessageUtil.sendException(Graveyards.getInstance(), "Graveyard in an unknown zone! Offender: " + pos[0] + ", " + pos[1] + ", " + pos[2], false);
+                            MessageUtil.sendException(GraveyardController.getInstance(), "Graveyard in an unknown zone! Offender: " + pos[0] + ", " + pos[1] + ", " + pos[2], false);
                             continue;
                         }
 
@@ -71,7 +70,7 @@ public class GraveyardManager {
 
         // If editing is enabled, generate the hologram right away.
         if(LegendsOfValeros.getMode().allowEditing())
-            Graveyards.getInstance().getScheduler().sync(data::getHologram);
+            GraveyardController.getInstance().getScheduler().sync(data::getHologram);
 
         return data;
     }

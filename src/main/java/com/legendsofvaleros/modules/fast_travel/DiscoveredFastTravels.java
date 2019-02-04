@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+// TODO: Create subclass for listener
 public class DiscoveredFastTravels implements Listener {
 	@Table(name = "player_fast_travel_found")
 	public static class Pair {
@@ -44,7 +45,7 @@ public class DiscoveredFastTravels implements Listener {
 	public static void onEnable() {
 		manager = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), Pair.class);
 
-		FastTravel.getInstance().registerEvents(new PlayerCharacterListener());
+		FastTravelController.getInstance().registerEvents(new PlayerCharacterListener());
 	}
 
 	public static void add(PlayerCharacter pc, String travel_id) {
@@ -78,7 +79,7 @@ public class DiscoveredFastTravels implements Listener {
 						fastTravels.removeAll(characterId);
 
 						ret.set(null);
-					}, FastTravel.getInstance().getScheduler()::async);
+					}, FastTravelController.getInstance().getScheduler()::async);
 		}
 
 		return ret;
@@ -95,14 +96,14 @@ public class DiscoveredFastTravels implements Listener {
 		public void onCharacterLoading(PlayerCharacterStartLoadingEvent event) {
 			PhaseLock lock = event.getLock("Fast Travel");
 			loadFoundTravels(event.getPlayerCharacter())
-				.addListener(lock::release, FastTravel.getInstance().getScheduler()::async);
+				.addListener(lock::release, FastTravelController.getInstance().getScheduler()::async);
 		}
 
 		@EventHandler
 		public void onCharacterLogout(PlayerCharacterLogoutEvent event) {
 			PhaseLock lock = event.getLock("Fast Travel");
 
-			onLogout(event.getPlayerCharacter().getUniqueCharacterId()).addListener(lock::release, FastTravel.getInstance().getScheduler()::async);
+			onLogout(event.getPlayerCharacter().getUniqueCharacterId()).addListener(lock::release, FastTravelController.getInstance().getScheduler()::async);
 		}
 
 		@EventHandler

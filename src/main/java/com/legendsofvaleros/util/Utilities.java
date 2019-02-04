@@ -21,6 +21,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerCommandEvent;
 
+// TODO: Create subclass for listeners?
 public class Utilities extends ModuleListener {
     private static Utilities instance;
 

@@ -12,8 +12,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.mobs.core.SpawnArea;
-import com.legendsofvaleros.modules.quests.Quests;
-import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -53,25 +51,25 @@ public class SpawnManager {
             .build();
 
     public static void onEnable() {
-        Mobs.getInstance().registerEvents(new SpawnsListener());
+        MobsController.getInstance().registerEvents(new SpawnsListener());
 
         spawnsTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), SpawnArea.class);
 
-        Mobs.getInstance().getScheduler().executeInMyCircleTimer(() -> {
+        MobsController.getInstance().getScheduler().executeInMyCircleTimer(() -> {
             // This is done so we get almost-live updates on GC'd listeners.
             cachedSpawns.cleanUp();
         }, 0L, 20L);
 
-        Mobs.getInstance().getScheduler().executeInMyCircleTimer(() -> {
+        MobsController.getInstance().getScheduler().executeInMyCircleTimer(() -> {
             if (misses.get() > 0) {
-                Mobs.getInstance().getLogger().info(misses + " chunk misses.");
+                MobsController.getInstance().getLogger().info(misses + " chunk misses.");
             }
 
             if (loaded.get() > 0) {
-                Mobs.getInstance().getLogger().info("Loaded " + loaded + " spawns.");
+                MobsController.getInstance().getLogger().info("Loaded " + loaded + " spawns.");
             }
             if (unloaded.get() > 0) {
-                Mobs.getInstance().getLogger().info("Unloaded " + unloaded + " spawns.");
+                MobsController.getInstance().getLogger().info("Unloaded " + unloaded + " spawns.");
             }
 
             misses.set(0);
@@ -87,7 +85,7 @@ public class SpawnManager {
 
         // If editing is enabled, generate the hologram right away.
         if(LegendsOfValeros.getMode().allowEditing())
-            Mobs.getInstance().getScheduler().sync(spawn::getHologram);
+            MobsController.getInstance().getScheduler().sync(spawn::getHologram);
 
         ListenableFuture<Mob> future = MobManager.loadEntity(spawn.getEntityId());
         future.addListener(() -> {
@@ -101,7 +99,7 @@ public class SpawnManager {
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
-        }, Mobs.getInstance().getScheduler()::async);
+        }, MobsController.getInstance().getScheduler()::async);
     }
 
     public static void updateSpawn(final SpawnArea spawn) {

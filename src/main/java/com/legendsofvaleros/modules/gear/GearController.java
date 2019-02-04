@@ -6,36 +6,38 @@ import com.codingforcookies.doris.orm.ORMRegistry;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.module.annotation.IntegratesWith;
+import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.core.PlayerInventoryData;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
-import com.legendsofvaleros.modules.gear.component.*;
+import com.legendsofvaleros.modules.gear.commands.ItemCommands;
+import com.legendsofvaleros.modules.gear.component.core.*;
 import com.legendsofvaleros.modules.gear.event.GearPickupEvent;
 import com.legendsofvaleros.modules.gear.event.ItemEquipEvent;
 import com.legendsofvaleros.modules.gear.event.ItemUnEquipEvent;
-import com.legendsofvaleros.modules.gear.inventory.InventoryListener;
-import com.legendsofvaleros.modules.gear.inventory.ItemListener;
+import com.legendsofvaleros.modules.gear.integration.BankIntegration;
+import com.legendsofvaleros.modules.gear.integration.SkillsIntegration;
 import com.legendsofvaleros.modules.gear.item.Gear;
-import com.legendsofvaleros.modules.gear.quest.*;
+import com.legendsofvaleros.modules.gear.listener.InventoryListener;
+import com.legendsofvaleros.modules.gear.listener.ItemListener;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
-import com.legendsofvaleros.modules.npcs.NPCs;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.quests.QuestManager;
-import com.legendsofvaleros.modules.quests.Quests;
-import com.legendsofvaleros.modules.quests.action.stf.QuestActionFactory;
-import com.legendsofvaleros.modules.quests.objective.stf.QuestObjectiveFactory;
+import com.legendsofvaleros.modules.skills.SkillsController;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-@DependsOn(NPCs.class)
 @DependsOn(CombatEngine.class)
 @DependsOn(PlayerMenu.class)
 @DependsOn(Characters.class)
 @DependsOn(Hotswitch.class)
-@DependsOn(Quests.class)
+@IntegratesWith(module = BankController.class, integration = BankIntegration.class)
+@IntegratesWith(module = SkillsController.class, integration = SkillsIntegration.class)
+// TODO: Create subclass for listeners?
 public class GearController extends ModuleListener {
     private static GearController instance;
     public static GearController getInstance() { return instance; }
@@ -65,14 +67,6 @@ public class GearController extends ModuleListener {
         GearRegistry.registerComponent("use_speed", GearUseSpeed.Component.class);
 
         GearRegistry.registerComponent("stats", GearStats.Component.class);
-
-        QuestObjectiveFactory.registerType("equip", EquipObjective.class);
-        QuestObjectiveFactory.registerType("fetch", FetchObjective.class);
-        QuestObjectiveFactory.registerType("fetch_for", FetchForNPCObjective.class);
-
-        QuestActionFactory.registerType("item_give", ActionGiveItem.class);
-        QuestActionFactory.registerType("item_remove", ActionRemoveItem.class);
-        QuestActionFactory.registerType("item_choose", ActionChooseItem.class);
 
         ORMRegistry.addMutator(Gear.Data.class, new ORMRegistry.SQLMutator<Gear.Data>() {
             @Override

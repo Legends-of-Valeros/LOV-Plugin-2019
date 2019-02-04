@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.skills.rogue;
 
-import com.legendsofvaleros.modules.skills.SkillTree;
+import com.legendsofvaleros.modules.skills.core.SkillTree;
 import com.legendsofvaleros.modules.skills.rogue.assassin.*;
 import com.legendsofvaleros.modules.skills.rogue.core.*;
 import com.legendsofvaleros.modules.skills.rogue.thief.*;

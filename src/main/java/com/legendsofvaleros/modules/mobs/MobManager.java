@@ -34,7 +34,7 @@ public class MobManager {
                 // Ignore replacements
                 if(entry.getCause() == RemovalCause.REPLACED) return;
 
-                Mobs.getInstance().getLogger().warning("Entity '" + entry.getKey() + "' removed from the cache: " + entry.getCause());
+                MobsController.getInstance().getLogger().warning("Entity '" + entry.getKey() + "' removed from the cache: " + entry.getCause());
             })
             .build();
 
@@ -89,7 +89,7 @@ public class MobManager {
 
         entitiesTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), Mob.class, gson);
 
-        Mobs.getInstance().getScheduler().executeInMyCircleTimer(() -> {
+        MobsController.getInstance().getScheduler().executeInMyCircleTimer(() -> {
             // This is done so we get almost-live updates on GC'd listeners.
             entities.cleanUp();
         }, 0L, 20L);

@@ -12,8 +12,6 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
-import com.legendsofvaleros.modules.mailbox.traits.TraitMailbox;
-import com.legendsofvaleros.modules.npcs.NPCs;
 import org.bukkit.event.EventHandler;
 
 import java.util.HashMap;
@@ -23,6 +21,7 @@ import java.util.Map;
  * Created by Crystall on 11/24/2018
  */
 @DependsOn(Characters.class)
+// TODO: Create subclass for listeners?
 public class MailboxController extends ModuleListener {
     private static MailboxController instance;
 
@@ -42,8 +41,6 @@ public class MailboxController extends ModuleListener {
         String dbPoolId = LegendsOfValeros.getInstance().getConfig().getString("dbpools-database");
 
         mailBoxMails = ORMTable.bind(dbPoolId, Mail.class);
-
-        NPCs.registerTrait("mailman", TraitMailbox.class);
     }
 
     @Override

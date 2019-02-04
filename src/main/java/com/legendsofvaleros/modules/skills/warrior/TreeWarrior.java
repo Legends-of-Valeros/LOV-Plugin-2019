@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.skills.warrior;
 
-import com.legendsofvaleros.modules.skills.SkillTree;
+import com.legendsofvaleros.modules.skills.core.SkillTree;
 import com.legendsofvaleros.modules.skills.warrior.berserker.*;
 import com.legendsofvaleros.modules.skills.warrior.core.*;
 import com.legendsofvaleros.modules.skills.warrior.guardian.*;

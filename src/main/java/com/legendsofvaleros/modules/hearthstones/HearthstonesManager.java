@@ -9,6 +9,7 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
+import com.legendsofvaleros.modules.hearthstones.core.HomePoint;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -31,11 +32,11 @@ public class HearthstonesManager {
     private static long cooldownDuration;
 
     public static void onEnable() {
-        cooldownDuration = Hearthstones.getInstance().getConfig().getLong("cooldown-seconds") * 1000;
+        cooldownDuration = HearthstoneController.getInstance().getConfig().getLong("cooldown-seconds") * 1000;
 
         homeTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), HomePoint.class);
 
-        Hearthstones.getInstance().registerEvents(new PlayerListener());
+        HearthstoneController.getInstance().registerEvents(new PlayerListener());
     }
 
     public static HomePoint getHome(PlayerCharacter pc) {
@@ -101,7 +102,7 @@ public class HearthstonesManager {
                     World world = Bukkit.getWorld(home.world);
 
                     if (world == null) {
-                        Hearthstones.getInstance().getLogger().warning(
+                        HearthstoneController.getInstance().getLogger().warning(
                                 "Player '" + pc.getUniqueCharacterId() + "' has a home in the world '" + home.world
                                         + "', but that world was not found on this server. "
                                         + "Their home was not successfully loaded as a result.");

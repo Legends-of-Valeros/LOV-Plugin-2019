@@ -1,7 +1,6 @@
 package com.legendsofvaleros.modules.combatengine.core;
 
 import com.legendsofvaleros.module.ModuleListener;
-import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.combatengine.api.CombatEngineAPI;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.api.UnsafePlayerInitializer;
@@ -13,7 +12,6 @@ import com.legendsofvaleros.modules.combatengine.damage.physical.PhysicalType;
 import com.legendsofvaleros.modules.combatengine.damage.spell.SpellType;
 import com.legendsofvaleros.modules.combatengine.ui.CombatEngineUiManager;
 import com.legendsofvaleros.modules.combatengine.ui.PlayerCombatInterface;
-import com.legendsofvaleros.modules.npcs.NPCs;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
@@ -23,7 +21,7 @@ import org.bukkit.entity.Player;
  * CombatEngine creates an MMO-style combat system on a Minecraft server by overriding and hiding
  * Bukkit's normal combat system.
  */
-@DependsOn(NPCs.class)
+// TODO: Create subclass for listeners?
 public class CombatEngine extends ModuleListener implements CombatEngineAPI {
     private static CombatEngine instance;
     public static CombatEngine getInstance() { return instance; }

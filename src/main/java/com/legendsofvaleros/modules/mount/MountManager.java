@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
+// TODO: Create subclass for listener
 public class MountManager implements Listener {
     private static final String MOUNT_TABLE = "mounts";
     private static final String MOUNT_ID = "mount_id";
@@ -66,7 +67,7 @@ public class MountManager implements Listener {
         managerCharacters.primary(CHARACTER_ID, "VARCHAR(38)")
                 .primary(CHARACTER_MOUNT, "VARCHAR(64)").create();
 
-        Mounts.getInstance().registerEvents(this);
+        MountsController.getInstance().registerEvents(this);
 
         loadMounts();
     }

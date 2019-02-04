@@ -9,8 +9,8 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.quests.objective.stf.IQuestObjective;
-import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
+import com.legendsofvaleros.modules.quests.api.IQuestObjective;
+import com.legendsofvaleros.modules.quests.api.IQuest;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -33,7 +33,7 @@ public class QuestCommands extends BaseCommand {
     }
 
     @Subcommand("complete")
-    @Description("Complete a quest. Using * will target all quests.")
+    @Description("Complete a gear. Using * will target all quests.")
     @CommandPermission("quests.complete")
     public void cmdComplete(Player player, String questId) {
         PlayerCharacter pc = Characters.getPlayerCharacter(player);
@@ -43,7 +43,7 @@ public class QuestCommands extends BaseCommand {
             try {
                 IQuest quest = future.get();
                 if(quest == null) {
-                    MessageUtil.sendUpdate(player, "Unknown quest.");
+                    MessageUtil.sendUpdate(player, "Unknown gear.");
                     return;
                 }
 
@@ -54,11 +54,11 @@ public class QuestCommands extends BaseCommand {
             } catch (ExecutionException e) {
                 e.printStackTrace();
             }
-        }, Quests.getInstance().getScheduler()::async);
+        }, QuestController.getInstance().getScheduler()::async);
     }
 
     @Subcommand("uncomplete")
-    @Description("Remove a completed quest. Using * will target all quests.")
+    @Description("Remove a completed gear. Using * will target all quests.")
     @CommandPermission("quests.uncomplete")
     public void cmdUncomplete(Player player, String questId) {
         if(!LegendsOfValeros.getMode().allowEditing()) return;
@@ -75,7 +75,7 @@ public class QuestCommands extends BaseCommand {
         PlayerCharacter pc = Characters.getPlayerCharacter(player);
 
         player.closeInventory();
-        Quests.attemptGiveQuest(pc, questId);
+        QuestController.attemptGiveQuest(pc, questId);
     }
 
     @Subcommand("accept")
@@ -98,9 +98,9 @@ public class QuestCommands extends BaseCommand {
 
                 MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' accepted!");
             } catch (Exception e) {
-                MessageUtil.sendException(Quests.getInstance(), player, e, false);
+                MessageUtil.sendException(QuestController.getInstance(), player, e, false);
             }
-        }, Quests.getInstance().getScheduler()::async);
+        }, QuestController.getInstance().getScheduler()::async);
     }
 
     @Subcommand("decline")
@@ -117,9 +117,9 @@ public class QuestCommands extends BaseCommand {
 
                 MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' declined!");
             } catch (Exception e) {
-                MessageUtil.sendException(Quests.getInstance(), player, e, false);
+                MessageUtil.sendException(QuestController.getInstance(), player, e, false);
             }
-        }, Quests.getInstance().getScheduler()::async);
+        }, QuestController.getInstance().getScheduler()::async);
     }
 
     @Subcommand("close")
@@ -139,17 +139,17 @@ public class QuestCommands extends BaseCommand {
             try {
                 IQuest active = future.get();
                 if (active == null)
-                    MessageUtil.sendUpdate(pc.getPlayer(), "You are no longer tracking a quest.");
+                    MessageUtil.sendUpdate(pc.getPlayer(), "You are no longer tracking a gear.");
                 else
                     MessageUtil.sendUpdate(pc.getPlayer(), "You are now tracking '" + active.getName() + "'.");
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
-        }, Quests.getInstance().getScheduler()::async);
+        }, QuestController.getInstance().getScheduler()::async);
     }
 
     @Subcommand("gui")
-    @Description("Show the quest book.")
+    @Description("Show the gear book.")
     public void cmdListQuestGUI(Player player) {
         if (!Characters.isPlayerCharacterLoaded(player)) return;
 
@@ -203,7 +203,7 @@ public class QuestCommands extends BaseCommand {
                                     if (completed) tb.strikethrough(true);
                                 }
                             } catch (Exception e) {
-                                MessageUtil.sendException(Quests.getInstance(), player, e, false);
+                                MessageUtil.sendException(QuestController.getInstance(), player, e, false);
                                 tb.append("*Plugin error\n").color(ChatColor.DARK_RED);
                             }
                         }

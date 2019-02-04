@@ -25,6 +25,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
+// TODO: Create subclass for listener
 public class ZoneManager implements Listener {
     private static final String ZONE_TABLE = "zones";
     private static final String ZONE_ID = "zone_id";
@@ -76,15 +77,15 @@ public class ZoneManager implements Listener {
 
         loadZones();
 
-        Zones.getInstance().registerEvents(this);
+        ZonesController.getInstance().registerEvents(this);
 
-        Zones.getInstance().getScheduler().executeInMyCircleTimer(() -> {
+        ZonesController.getInstance().getScheduler().executeInMyCircleTimer(() -> {
             for (Player p : Bukkit.getOnlinePlayers()) {
                 if (!Characters.isPlayerCharacterLoaded(p)) continue;
                 try {
                     updateZone(p);
                 } catch (Exception e) {
-                    MessageUtil.sendException(Zones.getInstance(), p, e, true);
+                    MessageUtil.sendException(ZonesController.getInstance(), p, e, true);
                 }
             }
         }, 20L, 20L);

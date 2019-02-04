@@ -30,6 +30,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import java.text.DecimalFormat;
 import java.util.*;
 
+// TODO: Create subclass for listener
 public class PlayerCreation implements Listener {
 	private static final DecimalFormat DF = new DecimalFormat("#.00");
 	

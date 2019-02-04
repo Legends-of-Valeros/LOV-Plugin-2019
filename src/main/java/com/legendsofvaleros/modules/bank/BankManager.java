@@ -21,22 +21,22 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class BankManager {
-    private static ORMTable<PlayerBank.Currency> bankCurrencyTable;
-    private static ORMTable<PlayerBank.Entry> bankContentTable;
+    private static ORMTable<Bank.Currency> bankCurrencyTable;
+    private static ORMTable<Bank.Entry> bankContentTable;
 
-    private static final Map<CharacterId, PlayerBank> banks = new HashMap<>();
+    private static final Map<CharacterId, Bank> banks = new HashMap<>();
 
-    public static PlayerBank getBank(CharacterId characterId) {
+    public static Bank getBank(CharacterId characterId) {
         return banks.get(characterId);
     }
 
     public static void onEnable() {
         String dbPoolId = LegendsOfValeros.getInstance().getConfig().getString("dbpools-database");
 
-        bankCurrencyTable = ORMTable.bind(dbPoolId, PlayerBank.Currency.class);
-        bankContentTable = ORMTable.bind(dbPoolId, PlayerBank.Entry.class, ItemManager.gson);
+        bankCurrencyTable = ORMTable.bind(dbPoolId, Bank.Currency.class);
+        bankContentTable = ORMTable.bind(dbPoolId, Bank.Entry.class, ItemManager.gson);
 
-        Bank.getInstance().registerEvents(new PlayerCharacterListener());
+        BankController.getInstance().registerEvents(new PlayerCharacterListener());
     }
 
     public static void onDisable() {
@@ -49,7 +49,7 @@ public class BankManager {
     private static ListenableFuture<Void> loadBank(CharacterId characterId) {
         SettableFuture<Void> ret = SettableFuture.create();
 
-        PlayerBank bank = new PlayerBank(characterId);
+        Bank bank = new Bank(characterId);
         AtomicInteger done = new AtomicInteger(2);
         Runnable finished = () -> {
             if (done.decrementAndGet() == 0) {
@@ -76,7 +76,7 @@ public class BankManager {
     private static ListenableFuture<Void> onLogout(final CharacterId characterId) {
         SettableFuture<Void> ret = SettableFuture.create();
 
-        PlayerBank bank = banks.remove(characterId);
+        Bank bank = banks.remove(characterId);
         if (bank == null)
             ret.set(null);
         else {
@@ -87,7 +87,7 @@ public class BankManager {
             };
 
             bankCurrencyTable.saveAll(bank.getCurrencies(), true)
-                    .addListener(finished, Bank.getInstance().getScheduler()::async);
+                    .addListener(finished, BankController.getInstance().getScheduler()::async);
 
             bankContentTable.query()
                     .remove(characterId)
@@ -98,7 +98,7 @@ public class BankManager {
                         }
 
                         bankContentTable.saveAll(bank.content.values(), true)
-                                .addListener(finished, Bank.getInstance().getScheduler()::async);
+                                .addListener(finished, BankController.getInstance().getScheduler()::async);
                     })
                     .execute(true);
         }
@@ -118,7 +118,7 @@ public class BankManager {
             PhaseLock lock = event.getLock("Bank");
 
             loadBank(event.getPlayerCharacter().getUniqueCharacterId())
-                    .addListener(lock::release, Bank.getInstance().getScheduler()::async);
+                    .addListener(lock::release, BankController.getInstance().getScheduler()::async);
         }
 
         @EventHandler
@@ -128,7 +128,7 @@ public class BankManager {
                     .addListener(() -> {
                         banks.remove(event.getPlayerCharacter().getUniqueCharacterId());
                         lock.release();
-                    }, Bank.getInstance().getScheduler()::async);
+                    }, BankController.getInstance().getScheduler()::async);
         }
 
         @EventHandler

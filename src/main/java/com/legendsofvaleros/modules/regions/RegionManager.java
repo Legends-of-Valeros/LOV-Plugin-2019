@@ -10,6 +10,7 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
+import com.legendsofvaleros.modules.regions.api.IRegionType;
 import com.legendsofvaleros.modules.regions.event.RegionEnterEvent;
 import com.legendsofvaleros.modules.regions.event.RegionLeaveEvent;
 import com.legendsofvaleros.util.MessageUtil;
@@ -25,6 +26,7 @@ import java.sql.ResultSet;
 import java.util.*;
 import java.util.Map.Entry;
 
+// TODO: Create subclass for listener
 public class RegionManager implements Listener {
     private static String REGION_ID = "region_id";
 
@@ -64,7 +66,7 @@ public class RegionManager implements Listener {
     }
 
     /**
-     * A map who's key is a chunk x,y pair and the regions inside it. Allows for extremely fast region searching.
+     * A map who's key is a chunk x,y pair and the regions inside it. Allows for extremely fast regions searching.
      */
     private Multimap<String, String> regionChunks = HashMultimap.create();
 
@@ -127,7 +129,7 @@ public class RegionManager implements Listener {
                 .primary(REGION_ID, "VARCHAR(64)")
                 .column(ACCESS_LEVEL, "BOOLEAN").create();
 
-        Regions.getInstance().registerEvents(this);
+        RegionController.getInstance().registerEvents(this);
 
         loadRegions();
     }
@@ -189,7 +191,7 @@ public class RegionManager implements Listener {
     @EventHandler
     public void onPlayerLogout(PlayerCharacterLogoutEvent event) {
         playerRegions.removeAll(event.getPlayer());
-        Regions.selection.remove(event.getPlayer());
+        RegionController.selection.remove(event.getPlayer());
 
         playerAccess.row(event.getPlayerCharacter().getUniqueCharacterId()).clear();
     }
@@ -229,8 +231,8 @@ public class RegionManager implements Listener {
             if (playerRegions.containsEntry(event.getPlayer(), region.id))
                 continue;
 
-            if (Regions.REGION_DEBUG)
-                event.getPlayer().sendMessage("Entered region: " + region.id);
+            if (RegionController.REGION_DEBUG)
+                event.getPlayer().sendMessage("Entered regions: " + region.id);
 
             if (region.msgEnter != null && region.msgEnter.length() > 0)
                 MessageUtil.sendInfo(event.getPlayer(), region.msgEnter);
@@ -239,10 +241,10 @@ public class RegionManager implements Listener {
             Bukkit.getServer().getPluginManager().callEvent(new RegionEnterEvent(event.getPlayer(), region));
         }
 
-        // Lessens checks for users in no region
+        // Lessens checks for users in no regions
         for (Region region : discrepancies) {
-            if (Regions.REGION_DEBUG)
-                event.getPlayer().sendMessage("Left region: " + region.id);
+            if (RegionController.REGION_DEBUG)
+                event.getPlayer().sendMessage("Left regions: " + region.id);
 
             if (region.msgExit != null && region.msgExit.length() > 0)
                 MessageUtil.sendInfo(event.getPlayer(), region.msgExit);
@@ -335,7 +337,7 @@ public class RegionManager implements Listener {
             return;
 
         if (region.world == null) {
-            MessageUtil.sendException(Regions.getInstance(), "Region has a null world. Offender: " + region.id, false);
+            MessageUtil.sendException(RegionController.getInstance(), "Region has a null world. Offender: " + region.id, false);
             return;
         }
 

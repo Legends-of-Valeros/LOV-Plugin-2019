@@ -22,8 +22,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+// TODO: This is... bad.
 public class PlayerSettings extends HashMap<String, String> {
 	private static final long serialVersionUID = 1L;
+
 	public static class Manager implements Listener {
 		private static final String SETTINGS_TABLE = "player_settings";
 		private static final String PLAYER_ID = "player_id";

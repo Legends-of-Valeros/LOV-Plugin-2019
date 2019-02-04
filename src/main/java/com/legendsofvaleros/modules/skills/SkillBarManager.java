@@ -15,6 +15,7 @@ import org.bukkit.event.Listener;
 
 import java.sql.ResultSet;
 
+// TODO: Create subclass for listener
 public class SkillBarManager implements Listener {
     private static final String SKILLBAR_TABLE = "player_skillbar";
     private static final String CHARACTER_ID = "character_id";
@@ -36,7 +37,7 @@ public class SkillBarManager implements Listener {
                 .primary(SLOT_ID, "INT(5)")
                 .column(SLOT_SKILL, "TEXT").create();
 
-        Skills.getInstance().registerEvents(this);
+        SkillsController.getInstance().registerEvents(this);
     }
 
     @EventHandler

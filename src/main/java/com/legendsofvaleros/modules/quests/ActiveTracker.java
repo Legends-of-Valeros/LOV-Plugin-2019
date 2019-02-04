@@ -6,9 +6,9 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.quests.objective.stf.IQuestObjective;
-import com.legendsofvaleros.modules.quests.quest.stf.IQuest;
-import com.legendsofvaleros.modules.quests.quest.stf.QuestStatus;
+import com.legendsofvaleros.modules.quests.api.IQuestObjective;
+import com.legendsofvaleros.modules.quests.api.IQuest;
+import com.legendsofvaleros.modules.quests.core.QuestStatus;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -24,9 +24,9 @@ public class ActiveTracker {
     private static final Map<CharacterId, String> active = new HashMap<>();
 
     public static void onEnable() {
-        allUpdateInterval = Quests.getInstance().getConfig().getInt("compass-tracker-update-smear", 20 * 5);
+        allUpdateInterval = QuestController.getInstance().getConfig().getInt("compass-tracker-update-smear", 20 * 5);
 
-        Quests.getInstance().getLogger().info("Smearing compass tracker updates across " + allUpdateInterval + " ticks.");
+        QuestController.getInstance().getLogger().info("Smearing compass tracker updates across " + allUpdateInterval + " ticks.");
 
         new BukkitRunnable() {
             private long time = 0;
@@ -88,8 +88,8 @@ public class ActiveTracker {
                     }
 
                     ret.set(null);
-                }, Quests.getInstance().getScheduler()::async);
-            }, Quests.getInstance().getScheduler()::async);
+                }, QuestController.getInstance().getScheduler()::async);
+            }, QuestController.getInstance().getScheduler()::async);
         }
 
         return ret;
@@ -136,7 +136,7 @@ public class ActiveTracker {
                                     0,
                                     pc.getPlayer().getLocation().getZ() + RAND.nextInt(100) - 50));
                         }
-                    }, Quests.getInstance().getScheduler()::async);
+                    }, QuestController.getInstance().getScheduler()::async);
                 });
     }
 }

@@ -2,8 +2,8 @@ package com.legendsofvaleros.modules.bank;
 
 import com.codingforcookies.robert.core.RobertStack;
 import com.codingforcookies.robert.item.ItemBuilder;
-import com.legendsofvaleros.modules.bank.item.WorthComponent;
-import com.legendsofvaleros.modules.bank.pouch.CreatePouchGUI;
+import com.legendsofvaleros.modules.bank.gui.CreatePouchGUI;
+import com.legendsofvaleros.modules.gear.component.bank.WorthComponent;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.event.InventoryFullEvent;
@@ -17,23 +17,23 @@ public class Money {
     public static final String ID = "copper";
 
     public static long get(PlayerCharacter pc) {
-        return Bank.getBank(pc).getCurrency(ID);
+        return BankController.getBank(pc).getCurrency(ID);
     }
 
     public static void add(PlayerCharacter pc, long c) {
         pc.getPlayer().playSound(pc.getLocation(), "ui.coins.accquire", 1F, 1F);
 
-        Bank.getBank(pc).addCurrency(ID, c);
+        BankController.getBank(pc).addCurrency(ID, c);
     }
 
     public static boolean sub(PlayerCharacter pc, long c) {
         pc.getPlayer().playSound(pc.getLocation(), "ui.coins.accquire", 1F, 1F);
 
-        return Bank.getBank(pc).subCurrency(ID, c);
+        return BankController.getBank(pc).subCurrency(ID, c);
     }
 
     public static void onEnable() {
-        Bank.registerCurrency(ID, new Currency() {
+        BankController.registerCurrency(ID, new Currency() {
             @Override
             public String getName() {
                 return "Crowns";

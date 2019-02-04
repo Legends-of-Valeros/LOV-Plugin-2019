@@ -6,11 +6,10 @@ import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.damage.spell.SpellType;
-import com.legendsofvaleros.modules.skills.SkillUtil;
+import com.legendsofvaleros.modules.skills.core.SkillUtil;
 import com.legendsofvaleros.modules.skills.event.ParticleFollow;
 import org.bukkit.Particle;
 import org.bukkit.World;
-import org.bukkit.entity.LivingEntity;
 
 public class SkillFireSurge extends Skill {
     public static final String ID = "firesurge";
