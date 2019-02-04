@@ -41,6 +41,7 @@ import java.util.Map.Entry;
 @DependsOn(Characters.class)
 @DependsOn(MobsController.class)
 @DependsOn(Hotswitch.class)
+// TODO: Create subclass for listeners?
 public class SkillsController extends ModuleListener {
     public static final SkillTree[] skillTrees = new SkillTree[] {
             new TreeWarrior(),

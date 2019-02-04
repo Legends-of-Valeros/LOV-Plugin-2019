@@ -43,6 +43,7 @@ import java.util.concurrent.ExecutionException;
 
 @DependsOn(PlayerMenu.class)
 @DependsOn(Characters.class)
+// TODO: Create subclass for listeners?
 public class ChatController extends ModuleListener {
     private static ChatController instance;
     public static ChatController getInstance() { return instance; }

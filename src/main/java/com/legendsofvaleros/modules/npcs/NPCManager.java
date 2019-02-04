@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+// TODO: Create subclass for listener
 public class NPCManager implements Listener {
     private static final String NPC_TABLE = "npcs";
     private static final String NPC_ID = "npc_id";

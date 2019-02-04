@@ -28,6 +28,7 @@ import java.util.Map.Entry;
 @DependsOn(Characters.class)
 @DependsOn(BankController.class)
 @DependsOn(NPCsController.class)
+// TODO: Create subclass for listeners?
 public class MountsController extends ModuleListener {
     private static MountsController instance;
     public static MountsController getInstance() { return instance; }

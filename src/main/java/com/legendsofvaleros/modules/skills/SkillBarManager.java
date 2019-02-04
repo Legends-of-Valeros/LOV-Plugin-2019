@@ -15,6 +15,7 @@ import org.bukkit.event.Listener;
 
 import java.sql.ResultSet;
 
+// TODO: Create subclass for listener
 public class SkillBarManager implements Listener {
     private static final String SKILLBAR_TABLE = "player_skillbar";
     private static final String CHARACTER_ID = "character_id";

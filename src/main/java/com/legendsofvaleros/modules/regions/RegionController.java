@@ -21,6 +21,7 @@ import java.util.HashMap;
 @DependsOn(CombatEngine.class)
 @DependsOn(Characters.class)
 @DependsOn(HearthstoneController.class)
+// TODO: Create subclass for listeners?
 public class RegionController extends ModuleListener {
     private static RegionController instance;
     public static RegionController getInstance() { return instance; }

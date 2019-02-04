@@ -21,6 +21,7 @@ import java.util.Map;
  * Created by Crystall on 11/24/2018
  */
 @DependsOn(Characters.class)
+// TODO: Create subclass for listeners?
 public class MailboxController extends ModuleListener {
     private static MailboxController instance;
 

@@ -21,6 +21,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 @DependsOn(Characters.class)
 @DependsOn(GearController.class)
 @DependsOn(ZonesController.class)
+// TODO: Create subclass for listeners?
 public class GraveyardController extends ModuleListener {
     private static GraveyardController instance;
     public static GraveyardController getInstance() { return instance; }

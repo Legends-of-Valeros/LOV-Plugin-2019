@@ -23,7 +23,8 @@ import org.bukkit.event.Listener;
 
 import java.util.HashMap;
 
-public class DuelingController extends ModuleListener implements Listener {
+// TODO: Create subclass for listeners?
+public class DuelingController extends ModuleListener {
     private static DuelingController instance;
     public static DuelingController getInstance() { return instance; }
 

@@ -14,6 +14,7 @@ import org.bukkit.event.EventHandler;
 @DependsOn(CombatEngine.class)
 @DependsOn(PlayerMenu.class)
 @DependsOn(Characters.class)
+// TODO: Create subclass for listeners?
 public class HearthstoneController extends ModuleListener {
     private static HearthstoneController instance;
     public static HearthstoneController getInstance() { return instance; }

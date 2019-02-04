@@ -32,6 +32,7 @@ import java.util.concurrent.ExecutionException;
  */
 @DependsOn(GearController.class)
 @DependsOn(Characters.class)
+// TODO: Create subclass for listeners?
 public class AuctionController extends ModuleListener {
     private static AuctionController instance;
     //auction fee in percentage

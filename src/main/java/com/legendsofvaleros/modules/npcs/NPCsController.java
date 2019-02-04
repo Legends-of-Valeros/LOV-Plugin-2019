@@ -30,6 +30,7 @@ import org.bukkit.entity.LivingEntity;
 @IntegratesWith(module = PvPController.class, integration = PvPIntegration.class)
 @IntegratesWith(module = QuestController.class, integration = QuestsIntegration.class)
 @IntegratesWith(module = SkillsController.class, integration = SkillsIntegration.class)
+// TODO: Create subclass for listeners?
 public class NPCsController extends ModuleListener {
     private static NPCsController instance;
     public static NPCsController getInstance() { return instance; }

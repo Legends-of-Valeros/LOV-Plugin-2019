@@ -26,6 +26,7 @@ import java.sql.ResultSet;
 import java.util.*;
 import java.util.Map.Entry;
 
+// TODO: Create subclass for listener
 public class RegionManager implements Listener {
     private static String REGION_ID = "region_id";
 

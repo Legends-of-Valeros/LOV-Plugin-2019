@@ -37,6 +37,7 @@ import java.sql.SQLException;
 @DependsOn(Hotswitch.class)
 @IntegratesWith(module = BankController.class, integration = BankIntegration.class)
 @IntegratesWith(module = SkillsController.class, integration = SkillsIntegration.class)
+// TODO: Create subclass for listeners?
 public class GearController extends ModuleListener {
     private static GearController instance;
     public static GearController getInstance() { return instance; }

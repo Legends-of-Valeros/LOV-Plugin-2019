@@ -40,6 +40,7 @@ import java.util.UUID;
 @DependsOn(CombatEngine.class)
 @DependsOn(LevelArchetypes.class)
 @DependsOn(PlayerMenu.class)
+// TODO: Create subclass for listeners?
 public class Characters extends ModuleListener implements CharactersAPI {
     private static Characters instance;
 

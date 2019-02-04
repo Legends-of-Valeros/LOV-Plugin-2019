@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @DependsOn(Characters.class)
+// TODO: Create subclass for listeners?
 public class BankController extends ModuleListener {
     private static BankController instance;
     public static BankController getInstance() { return instance; }

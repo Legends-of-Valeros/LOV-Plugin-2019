@@ -33,6 +33,7 @@ import java.util.UUID;
 @DependsOn(ChatController.class)
 @DependsOn(CombatEngine.class)
 @DependsOn(Characters.class)
+// TODO: Create subclass for listeners?
 public class ZonesController extends ModuleListener {
     private static ZonesController instance;
     public static ZonesController getInstance() { return instance; }

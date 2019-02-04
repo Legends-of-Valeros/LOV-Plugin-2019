@@ -25,6 +25,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
+// TODO: Create subclass for listener
 public class ZoneManager implements Listener {
     private static final String ZONE_TABLE = "zones";
     private static final String ZONE_ID = "zone_id";

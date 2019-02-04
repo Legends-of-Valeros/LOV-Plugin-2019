@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+// TODO: Create subclass for listener
 public class DiscoveredFastTravels implements Listener {
 	@Table(name = "player_fast_travel_found")
 	public static class Pair {

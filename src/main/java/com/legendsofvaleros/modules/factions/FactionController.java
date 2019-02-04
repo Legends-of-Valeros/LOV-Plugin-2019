@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @DependsOn(Characters.class)
+// TODO: Create subclass for listeners?
 public class FactionController extends ModuleListener {
     private static FactionController instance;
     public static FactionController getInstance() { return instance; }

@@ -40,6 +40,7 @@ import org.bukkit.event.EventPriority;
 @DependsOn(LootManager.class)
 @DependsOn(PartiesController.class)
 @DependsOn(NPCsController.class)
+// TODO: Create subclass for listeners?
 public class MobsController extends ModuleListener {
     private static MobsController instance;
     public static MobsController getInstance() { return instance; }

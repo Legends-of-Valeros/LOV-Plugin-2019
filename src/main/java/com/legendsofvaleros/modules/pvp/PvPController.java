@@ -26,6 +26,7 @@ import org.bukkit.event.EventPriority;
 @DependsOn(CombatEngine.class)
 @DependsOn(Characters.class)
 @DependsOn(BankController.class)
+// TODO: Create subclass for listeners?
 public class PvPController extends ModuleListener {
     public static String HONOR_ID = "honor";
     public static Currency HONOR = new Currency() {

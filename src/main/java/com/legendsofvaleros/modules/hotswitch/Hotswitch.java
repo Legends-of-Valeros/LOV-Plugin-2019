@@ -21,6 +21,7 @@ import java.util.UUID;
 
 @DependsOn(CombatEngine.class)
 @DependsOn(Characters.class)
+// TODO: Create subclass for listeners?
 public class Hotswitch extends ModuleListener {
     private static Hotswitch instance;
     public static Hotswitch getInstance() { return instance; }

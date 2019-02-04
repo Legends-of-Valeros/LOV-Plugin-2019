@@ -29,6 +29,7 @@ import org.bukkit.event.inventory.InventoryType;
 @DependsOn(PlayerMenu.class)
 @DependsOn(Characters.class)
 @DependsOn(ChatController.class)
+// TODO: Create subclass for listeners?
 public class PartiesController extends ModuleListener {
     private static PartiesController instance;
     public static PartiesController getInstance() { return instance; }

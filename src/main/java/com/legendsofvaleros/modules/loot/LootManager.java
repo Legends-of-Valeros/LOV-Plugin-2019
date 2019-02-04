@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @DependsOn(GearController.class)
+// TODO: Create subclass for listeners?
 public class LootManager extends ModuleListener {
     private static final String LOOT_TABLE = "loot";
     private static final String LOOT_ID = "loot_id";

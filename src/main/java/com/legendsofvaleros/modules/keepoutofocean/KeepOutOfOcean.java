@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @DependsOn(CombatEngine.class)
+// TODO: Create subclass for listeners?
 public class KeepOutOfOcean extends ModuleListener {
 
     private long checkTicks;
