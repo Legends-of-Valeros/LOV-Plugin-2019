@@ -149,7 +149,6 @@ public class QuestManager {
                                 throw new RuntimeException("Unknown prerequisite type! Offender: " + entry.getKey());
                             loader.put(entry.getKey(), gson.fromJson(entry.getValue(), prereq));
                         } catch (Exception e) {
-                            if (e instanceof RuntimeException) throw e;
                             throw new RuntimeException("Failed to decode prerequisite! " + (e.getMessage() != null ? e.getMessage() : e.getCause().toString()) + " Offender: " + entry.getKey() + " (" + entry.getValue() + ")");
                         }
                     }
@@ -166,8 +165,7 @@ public class QuestManager {
                         applyFields(obj.get("type").getAsString(), act, obj.get("fields").getAsJsonObject());
                         return act;
                     } catch (Exception e) {
-                        if (e instanceof RuntimeException) throw e;
-                        throw new RuntimeException("Failed to decode action! " + (e.getMessage() != null ? e.getMessage() : e.getCause().toString()) + " (" + json.toString() + ")");
+                        throw new RuntimeException("Failed to decode action! " + (e.getMessage() != null ? e.getMessage() : (e.getCause() != null ? e.getCause() : e)) + " (" + json.toString() + ")");
                     }
                 })
                 .registerTypeAdapter(IQuestObjective.class, (JsonDeserializer<IQuestObjective<?>>) (json, typeOfT, context) -> {
@@ -181,7 +179,6 @@ public class QuestManager {
                         applyFields(obj.get("type").getAsString(), objective, obj.get("fields").getAsJsonObject());
                         return objective;
                     } catch (Exception e) {
-                        if (e instanceof RuntimeException) throw e;
                         throw new RuntimeException("Failed to decode objective! " + (e.getMessage() != null ? e.getMessage() : e.getCause().toString()) + " (" + json.toString() + ")");
                     }
                 })
@@ -196,7 +193,6 @@ public class QuestManager {
                         applyFields(obj.get("type").getAsString(), progress, obj.get("progress").getAsJsonObject());
                         return new ObjectiveProgressPack(progress);
                     } catch (Exception e) {
-                        if (e instanceof RuntimeException) throw e;
                         throw new RuntimeException("Failed to decode player progress! " + (e.getMessage() != null ? e.getMessage() : e.getCause().toString()) + " (" + json.toString() + ")");
                     }
                 })
@@ -547,7 +543,7 @@ public class QuestManager {
 
                         ret.set(quest);
                     } catch (Exception e) {
-                        QuestController.getInstance().getLogger().severe("Failed to load gear. Offender: " + id);
+                        QuestController.getInstance().getLogger().severe("Failed to load quest. Offender: " + id);
                         MessageUtil.sendException(QuestController.getInstance(), null, e, false);
                         ret.set(null);
                     }

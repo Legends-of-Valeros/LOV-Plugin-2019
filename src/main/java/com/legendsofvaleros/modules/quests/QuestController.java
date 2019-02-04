@@ -13,6 +13,7 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterCreateEvent;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.factions.FactionController;
+import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.playermenu.InventoryManager;
@@ -62,6 +63,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 @DependsOn(Characters.class)
 @IntegratesWith(module = BankController.class, integration = BankIntegration.class)
 @IntegratesWith(module = FactionController.class, integration = FactionIntegration.class)
+@IntegratesWith(module = GearController.class, integration = GearIntegration.class)
 @IntegratesWith(module = MobsController.class, integration = MobsIntegration.class)
 @IntegratesWith(module = RegionController.class, integration = RegionIntegration.class)
 @IntegratesWith(module = SkillsController.class, integration = SkillsIntegration.class)
