@@ -34,7 +34,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TraitQuestGiver extends LOVTrait {
-    private static final String MARKER = "gear";
+    private static final String MARKER = "quest";
 
     public static class Marker implements Listener {
         @EventHandler

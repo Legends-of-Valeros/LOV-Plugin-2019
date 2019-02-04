@@ -84,7 +84,7 @@ public class QuestController extends ModuleListener {
 
         instance = this;
 
-        introQuestId = getConfig().getString("intro-gear", "intro");
+        introQuestId = getConfig().getString("intro-quest", "intro");
 
         QuestManager.onEnable();
         ActiveTracker.onEnable();
