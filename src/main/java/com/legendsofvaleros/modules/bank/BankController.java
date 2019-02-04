@@ -1,9 +1,7 @@
 package com.legendsofvaleros.modules.bank;
 
-import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.Module;
-import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.bank.commands.BankCommands;
 import com.legendsofvaleros.modules.bank.core.Bank;
@@ -12,14 +10,8 @@ import com.legendsofvaleros.modules.bank.core.Money;
 import com.legendsofvaleros.modules.bank.listener.InventoryListener;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.events.PlayerCharacterFinishLoadingEvent;
 import com.legendsofvaleros.modules.npcs.trait.bank.trade.TradeManager;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.event.EventHandler;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
