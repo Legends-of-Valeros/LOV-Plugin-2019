@@ -9,7 +9,7 @@ public class ActionRegionDeny extends AbstractQuestAction {
 	
 	@Override
 	public void play(PlayerCharacter pc, Next next) {
-		RegionController.manager().setRegionAccessibility(pc, regionId, false);
+		RegionController.getManager().setRegionAccessibility(pc, regionId, false);
 		
 		next.go();
 	}

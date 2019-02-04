@@ -33,7 +33,7 @@ public class RegionController extends Module {
 
     private static RegionManager regionManager;
 
-    public static RegionManager manager() {
+    public static RegionManager getManager() {
         return regionManager;
     }
 

@@ -19,7 +19,7 @@ public class Graveyard {
 	private TextLine textZone, textRadius;
 
 	public String zone;
-	public Zone getZone() { return ZonesController.manager().getZone(zone); }
+	public Zone getZone() { return ZonesController.getManager().getZone(zone); }
 	
 	public String worldName;
 	public World getWorld() {

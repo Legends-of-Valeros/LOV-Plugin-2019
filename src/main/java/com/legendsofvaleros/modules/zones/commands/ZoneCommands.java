@@ -13,7 +13,7 @@ public class ZoneCommands extends BaseCommand {
 	@Description("Reload the zone cache.")
 	@CommandPermission("zones.reload")
 	public void cmdReload(CommandSender sender) {
-		ZonesController.manager().loadZones();
+		ZonesController.getManager().loadZones();
 		MessageUtil.sendUpdate(sender, "Zones reloaded.");
 	}
 

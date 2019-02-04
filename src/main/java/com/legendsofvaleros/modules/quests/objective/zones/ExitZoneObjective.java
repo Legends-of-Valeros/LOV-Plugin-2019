@@ -17,7 +17,7 @@ public class ExitZoneObjective extends AbstractQuestObjective<QuestObjectiveProg
 
     @Override
     protected void onInit() {
-        zone = ZonesController.manager().getZone(id);
+        zone = ZonesController.getManager().getZone(id);
 
         if (zone == null) {
             MessageUtil.sendException(ZonesController.getInstance(), "No zone with that ID in gear. Offender: " + id + " in " + getQuest().getId(), false);
