@@ -9,21 +9,15 @@ import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.characters.skill.SkillTargetEvent;
 import com.legendsofvaleros.modules.chat.Chat;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
-import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.playermenu.PlayerMenuOpenEvent;
 import com.legendsofvaleros.modules.pvp.PvPCheckEvent;
 import com.legendsofvaleros.util.MessageUtil;
-import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.InventoryType;
 
 @DependsOn(CombatEngine.class)
@@ -32,7 +26,10 @@ import org.bukkit.event.inventory.InventoryType;
 @DependsOn(Chat.class)
 public class Parties extends ModuleListener {
     private static Parties instance;
-    public static Parties getInstance() { return instance; }
+
+    public static Parties getInstance() {
+        return instance;
+    }
 
     @Override
     public void onLoad() {
@@ -48,11 +45,11 @@ public class Parties extends ModuleListener {
     @EventHandler
     public void isPvPAllowed(PvPCheckEvent event) {
         // If PvP is already disabled, parties certainly don't need to enable them!
-        if(event.isCancelled()) return;
+        if (event.isCancelled()) return;
 
-        if(event.getSkill() != null) {
+        if (event.getSkill() != null) {
             // Only disable targetting of bad effects in parties.
-            if(event.getSkill().getType() != Skill.Type.HARMFUL) return;
+            if (event.getSkill().getType() != Skill.Type.HARMFUL) return;
         }
 
         IParty party = PartyManager.getPartyByMember(Characters.getPlayerCharacter(event.getAttacker()).getUniqueCharacterId());
@@ -118,18 +115,6 @@ public class Parties extends ModuleListener {
             if (openUI)
                 partyUI.open(p);
         });
-    }
-
-    public void onChat(Player p, BaseComponent[] bc) {
-        PlayerParty party = (PlayerParty) PartyManager.getPartyByMember(Characters.getPlayerCharacter(p).getUniqueCharacterId());
-        if (party == null) {
-            MessageUtil.sendError(p, "You are not in a party.");
-            return;
-        }
-
-        for (Player pl : party.getOnlineMembers()) {
-            pl.spigot().sendMessage(bc);
-        }
     }
 
 }

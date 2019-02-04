@@ -7,10 +7,12 @@ import com.legendsofvaleros.modules.auction.AuctionController;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.guilds.guild.Guild;
-import com.legendsofvaleros.modules.parties.Parties;
+import com.legendsofvaleros.modules.parties.PartyManager;
+import com.legendsofvaleros.modules.parties.PlayerParty;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.playermenu.settings.PlayerSettings;
 import com.legendsofvaleros.modules.playermenu.settings.PlayerSettingsOpenEvent;
+import com.legendsofvaleros.modules.zones.Zone;
 import com.legendsofvaleros.modules.zones.Zones;
 import com.legendsofvaleros.util.Discord;
 import com.legendsofvaleros.util.MessageUtil;
@@ -45,7 +47,10 @@ import java.util.concurrent.ExecutionException;
 @DependsOn(Characters.class)
 public class Chat extends ModuleListener {
     private static Chat instance;
-    public static Chat getInstance() { return instance; }
+
+    public static Chat getInstance() {
+        return instance;
+    }
 
     private static Map<Character, String> chanToDiscord = new HashMap<>();
     private static Map<String, Character> discordToChan = new HashMap<>();
@@ -77,6 +82,9 @@ public class Chat extends ModuleListener {
             case TRADE:
                 for (Player pl : Bukkit.getOnlinePlayers()) {
                     if (isChannelOn(pl, 'T')) {
+                        if (AuctionController.getInstance().isPrompted(pl)) {
+                            continue;
+                        }
                         pl.spigot().sendMessage(bc);
                     }
                 }
@@ -84,6 +92,9 @@ public class Chat extends ModuleListener {
             case LOCAL:
                 for (Player pl : Bukkit.getOnlinePlayers()) {
                     if (pl.getLocation().distance(p.getLocation()) < 50) {
+                        if (AuctionController.getInstance().isPrompted(pl)) {
+                            continue;
+                        }
                         pl.spigot().sendMessage(bc);
                     }
                 }
@@ -91,15 +102,47 @@ public class Chat extends ModuleListener {
             case WORLD:
                 for (Player pl : Bukkit.getOnlinePlayers()) {
                     if (isChannelOn(pl, 'W')) {
+                        if (AuctionController.getInstance().isPrompted(pl)) {
+                            continue;
+                        }
                         pl.spigot().sendMessage(bc);
                     }
                 }
                 break;
             case ZONE:
-                Zones.getInstance().onChat(p, bc);
+                Zone zone = Zones.manager().getZone(p);
+                if (zone == null) {
+                    MessageUtil.sendError(p, "Unable to send message. You are not in a zone!");
+                    return;
+                }
+
+                Player pl;
+                for (Map.Entry<UUID, String> entry : Zones.manager().getPlayerZones()) {
+                    Zone zz = Zones.manager().getZone(entry.getValue());
+                    if (zz.channel.equals(zone.channel)) {
+                        pl = Bukkit.getPlayer(entry.getKey());
+                        if (Chat.getInstance().isChannelOn(pl, 'Z')) {
+                            if (AuctionController.getInstance().isPrompted(pl)) {
+                                continue;
+                            }
+                            pl.spigot().sendMessage(bc);
+                        }
+                    }
+                }
                 break;
             case PARTY:
-                Parties.getInstance().onChat(p, bc);
+                PlayerParty party = (PlayerParty) PartyManager.getPartyByMember(Characters.getPlayerCharacter(p).getUniqueCharacterId());
+                if (party == null) {
+                    MessageUtil.sendError(p, "You are not in a party.");
+                    return;
+                }
+
+                for (Player partyPlayer : party.getOnlineMembers()) {
+                    if (AuctionController.getInstance().isPrompted(partyPlayer)) {
+                        continue;
+                    }
+                    partyPlayer.spigot().sendMessage(bc);
+                }
                 break;
         }
 
@@ -328,7 +371,7 @@ public class Chat extends ModuleListener {
 
             // Guild tag goes after permission prefix
             Guild g = Guild.getGuildByMember(e.getPlayer().getUniqueId());
-            if(g != null && g.getTag() != null) {
+            if (g != null && g.getTag() != null) {
                 tb.append(g.getTag()).bold(true)
                         .hover(g.getName(),
                                 ChatColor.GRAY + g.getMember(e.getPlayer().getUniqueId()).getRole().getName());
