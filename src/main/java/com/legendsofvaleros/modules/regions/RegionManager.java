@@ -11,6 +11,9 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
 import com.legendsofvaleros.modules.regions.api.IRegionType;
+import com.legendsofvaleros.modules.regions.core.Region;
+import com.legendsofvaleros.modules.regions.core.RegionBounds;
+import com.legendsofvaleros.modules.regions.core.RegionSelector;
 import com.legendsofvaleros.modules.regions.event.RegionEnterEvent;
 import com.legendsofvaleros.modules.regions.event.RegionLeaveEvent;
 import com.legendsofvaleros.util.MessageUtil;
@@ -191,7 +194,7 @@ public class RegionManager implements Listener {
     @EventHandler
     public void onPlayerLogout(PlayerCharacterLogoutEvent event) {
         playerRegions.removeAll(event.getPlayer());
-        RegionController.selection.remove(event.getPlayer());
+        RegionSelector.selection.remove(event.getPlayer());
 
         playerAccess.row(event.getPlayerCharacter().getUniqueCharacterId()).clear();
     }

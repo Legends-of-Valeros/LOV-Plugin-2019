@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.quests.objective.bank;
 
-import com.legendsofvaleros.modules.bank.Money;
+import com.legendsofvaleros.modules.bank.core.Money;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.action.AbstractQuestAction;
 import com.legendsofvaleros.util.MessageUtil;

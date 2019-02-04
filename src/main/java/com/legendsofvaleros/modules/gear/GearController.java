@@ -4,9 +4,11 @@ import com.codingforcookies.armorequip.ArmorEquipEvent;
 import com.codingforcookies.doris.orm.ORMField;
 import com.codingforcookies.doris.orm.ORMRegistry;
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.IntegratesWith;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.core.PlayerInventoryData;
@@ -37,8 +39,8 @@ import java.sql.SQLException;
 @DependsOn(Hotswitch.class)
 @IntegratesWith(module = BankController.class, integration = BankIntegration.class)
 @IntegratesWith(module = SkillsController.class, integration = SkillsIntegration.class)
-// TODO: Create subclass for listeners?
-public class GearController extends ModuleListener {
+@ModuleInfo(name = "Gear", info = "")
+public class GearController extends Module {
     private static GearController instance;
     public static GearController getInstance() { return instance; }
 
@@ -87,29 +89,4 @@ public class GearController extends ModuleListener {
 
         PlayerInventoryData.method = new GearInventoryLoader();
     }
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onPickupItem(GearPickupEvent event) {
-        if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
-        QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onArmorEquip(ArmorEquipEvent event) {
-        if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
-        QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onItemEquip(ItemEquipEvent event) {
-        if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
-        QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onItemUnEquip(ItemUnEquipEvent event) {
-        if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
-        QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
-    }
-
 }

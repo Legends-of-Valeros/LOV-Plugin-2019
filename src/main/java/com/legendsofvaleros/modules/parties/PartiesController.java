@@ -4,8 +4,10 @@ import co.aikar.commands.contexts.OnlinePlayer;
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.module.ModuleListener;
+import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.module.annotation.IntegratesWith;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.skill.Skill;
@@ -14,8 +16,10 @@ import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.parties.commands.PartyCommands;
 import com.legendsofvaleros.modules.parties.core.IParty;
 import com.legendsofvaleros.modules.parties.core.PlayerParty;
+import com.legendsofvaleros.modules.parties.integration.PvPIntegration;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.playermenu.PlayerMenuOpenEvent;
+import com.legendsofvaleros.modules.pvp.PvPController;
 import com.legendsofvaleros.modules.pvp.event.PvPCheckEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
@@ -25,11 +29,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryType;
 
 @DependsOn(CombatEngine.class)
-@DependsOn(PlayerMenu.class)
 @DependsOn(Characters.class)
 @DependsOn(ChatController.class)
-// TODO: Create subclass for listeners?
-public class PartiesController extends ModuleListener {
+@IntegratesWith(module = PlayerMenu.class, integration = PvPIntegration.class)
+@IntegratesWith(module = PvPController.class, integration = PvPIntegration.class)
+@ModuleInfo(name = "Parties", info = "")
+public class PartiesController extends Module {
     private static PartiesController instance;
 
     public static PartiesController getInstance() {
@@ -50,11 +55,11 @@ public class PartiesController extends ModuleListener {
     @EventHandler
     public void isPvPAllowed(PvPCheckEvent event) {
         // If PvP is already disabled, parties certainly don't need to enable them!
-        if (event.isCancelled()) return;
+        if(event.isCancelled()) return;
 
-        if (event.getSkill() != null) {
+        if(event.getSkill() != null) {
             // Only disable targetting of bad effects in parties.
-            if (event.getSkill().getType() != Skill.Type.HARMFUL) return;
+            if(event.getSkill().getType() != Skill.Type.HARMFUL) return;
         }
 
         IParty party = PartyManager.getPartyByMember(Characters.getPlayerCharacter(event.getAttacker()).getUniqueCharacterId());
@@ -120,6 +125,18 @@ public class PartiesController extends ModuleListener {
             if (openUI)
                 partyUI.open(p);
         });
+    }
+
+    public void onChat(Player p, BaseComponent[] bc) {
+        PlayerParty party = (PlayerParty) PartyManager.getPartyByMember(Characters.getPlayerCharacter(p).getUniqueCharacterId());
+        if (party == null) {
+            MessageUtil.sendError(p, "You are not in a party.");
+            return;
+        }
+
+        for (Player pl : party.getOnlineMembers()) {
+            pl.spigot().sendMessage(bc);
+        }
     }
 
 }

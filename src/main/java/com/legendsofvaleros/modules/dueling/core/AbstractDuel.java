@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.dueling;
+package com.legendsofvaleros.modules.dueling.core;
 
 public abstract class AbstractDuel {
 	public abstract boolean shouldEnd();

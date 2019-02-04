@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.bank;
+package com.legendsofvaleros.modules.bank.core;
 
 public abstract class Currency {
     public abstract String getDisplay(long amount);

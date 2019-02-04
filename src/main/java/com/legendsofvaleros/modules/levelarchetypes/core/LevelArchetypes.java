@@ -1,8 +1,10 @@
 package com.legendsofvaleros.modules.levelarchetypes.core;
 
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.levelarchetypes.api.Archetype;
 import com.legendsofvaleros.modules.levelarchetypes.api.LevelArchetypesAPI;
@@ -28,7 +30,8 @@ import java.util.Map;
  * but provides a logical centralized API through which to access this information.
  */
 @DependsOn(CombatEngine.class)
-public class LevelArchetypes extends ModuleListener implements LevelArchetypesAPI {
+@ModuleInfo(name = "LevelArchetypes", info = "")
+public class LevelArchetypes extends Module implements LevelArchetypesAPI {
 
     public static final int MIN_LEVEL = 0;
 

@@ -5,8 +5,10 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import com.google.gson.Gson;
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.gear.GearController;
 
 import java.sql.ResultSet;
@@ -14,8 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @DependsOn(GearController.class)
-// TODO: Create subclass for listeners?
-public class LootManager extends ModuleListener {
+@ModuleInfo(name = "Loot", info = "")
+public class LootManager extends Module {
     private static final String LOOT_TABLE = "loot";
     private static final String LOOT_ID = "loot_id";
     private static final String LOOT_GROUP = "loot_group";

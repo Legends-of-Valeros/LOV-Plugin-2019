@@ -1,8 +1,9 @@
-package com.legendsofvaleros.modules.zones;
+package com.legendsofvaleros.modules.zones.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
+import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.command.CommandSender;
 
@@ -12,7 +13,7 @@ public class ZoneCommands extends BaseCommand {
 	@Description("Reload the zone cache.")
 	@CommandPermission("zones.reload")
 	public void cmdReload(CommandSender sender) {
-		ZonesController.manager().loadZones();
+		ZonesController.getManager().loadZones();
 		MessageUtil.sendUpdate(sender, "Zones reloaded.");
 	}
 

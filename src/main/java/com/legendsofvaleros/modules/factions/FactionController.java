@@ -8,6 +8,7 @@ import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -25,6 +26,7 @@ import java.util.concurrent.ExecutionException;
 
 @DependsOn(Characters.class)
 // TODO: Create subclass for listeners?
+@ModuleInfo(name = "Factions", info = "")
 public class FactionController extends ModuleListener {
     private static FactionController instance;
     public static FactionController getInstance() { return instance; }

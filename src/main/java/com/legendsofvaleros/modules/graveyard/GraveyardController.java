@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.graveyard;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
@@ -22,6 +23,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 @DependsOn(GearController.class)
 @DependsOn(ZonesController.class)
 // TODO: Create subclass for listeners?
+@ModuleInfo(name = "Graveyards", info = "")
 public class GraveyardController extends ModuleListener {
     private static GraveyardController instance;
     public static GraveyardController getInstance() { return instance; }
@@ -46,7 +48,7 @@ public class GraveyardController extends ModuleListener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDeath(PlayerRespawnEvent event) {
-        Graveyard data = GraveyardManager.getNearestGraveyard(ZonesController.manager().getZone(event.getPlayer()), event.getPlayer().getLocation());
+        Graveyard data = GraveyardManager.getNearestGraveyard(ZonesController.getManager().getZone(event.getPlayer()), event.getPlayer().getLocation());
         if (data == null) {
             Location loc = event.getPlayer().getLocation();
             MessageUtil.sendException(this, event.getPlayer(), "Failed to locate graveyard at " + loc.getBlockX() + ", " + loc.getBlockZ() + "!", true);

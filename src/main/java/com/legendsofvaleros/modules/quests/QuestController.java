@@ -6,6 +6,7 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.IntegratesWith;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -66,6 +67,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 @IntegratesWith(module = SkillsController.class, integration = SkillsIntegration.class)
 @IntegratesWith(module = ZonesController.class, integration = ZonesIntegration.class)
 // TODO: Create subclass for listeners?
+@ModuleInfo(name = "Quests", info = "")
 public class QuestController extends ModuleListener {
     public static AdvancementAPI NEW_OBJECTIVES;
 

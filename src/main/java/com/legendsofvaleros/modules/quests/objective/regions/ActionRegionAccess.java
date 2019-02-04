@@ -9,7 +9,7 @@ public class ActionRegionAccess extends AbstractQuestAction {
 	
 	@Override
 	public void play(PlayerCharacter pc, Next next) {
-		RegionController.manager().setRegionAccessibility(pc, regionId, true);
+		RegionController.getManager().setRegionAccessibility(pc, regionId, true);
 		
 		next.go();
 	}

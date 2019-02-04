@@ -4,6 +4,7 @@ import com.codingforcookies.robert.core.RomanNumeral;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.characters.api.Cooldowns;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
@@ -42,6 +43,7 @@ import java.util.Map.Entry;
 @DependsOn(MobsController.class)
 @DependsOn(Hotswitch.class)
 // TODO: Create subclass for listeners?
+@ModuleInfo(name = "Skills", info = "")
 public class SkillsController extends ModuleListener {
     public static final SkillTree[] skillTrees = new SkillTree[] {
             new TreeWarrior(),

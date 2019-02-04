@@ -3,6 +3,7 @@ package com.legendsofvaleros.module;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.IntegratesWith;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.scheduler.InternalScheduler;
 
 import java.lang.reflect.Method;
@@ -91,7 +92,7 @@ public class Modules {
             items = remaining;
         }
 
-        getLogger().info("Loaded " + modules.size() + " modules");
+        getLogger().info("Loaded " + modules.values().stream().filter(InternalModule::isLoaded).count() + " modules");
 
         if (enabled > modules.size())
             getLogger().severe("Failed to load " + (enabled - modules.size()) + " modules!");
@@ -197,6 +198,8 @@ public class Modules {
     private static class InternalModule {
         Class<? extends Module> moduleClass;
 
+        ModuleInfo info;
+
         boolean isEnabled = true; // If the module should be loaded
         boolean isLoaded = false; // If the module was successfully loaded
         Map<Class<? extends Module>, Boolean> dependencies = new HashMap<>();
@@ -207,6 +210,8 @@ public class Modules {
 
         private InternalModule(Class<? extends Module> clazz) {
             this.moduleClass = clazz;
+
+            this.info = clazz.getAnnotation(ModuleInfo.class);
 
             DependsOn[] depends = clazz.getAnnotationsByType(DependsOn.class);
             for (DependsOn dep : depends)
@@ -237,7 +242,7 @@ public class Modules {
         }
 
         public String getName() {
-            return moduleClass.getSimpleName();
+            return this.info != null ? this.info.name() : moduleClass.getSimpleName();
         }
 
         /**
@@ -257,6 +262,7 @@ public class Modules {
                 throw new IllegalStateException("Attempt to load a module that is already loaded!");
 
             this.instance = moduleClass.newInstance();
+            this.instance.moduleName = this.getName();
             this.scheduler = new InternalScheduler(getName()).startup();
             this.instance.onLoad();
 
@@ -291,7 +297,7 @@ public class Modules {
                     : integrationClasses.entrySet()) {
 
                 // If the integration is satisfied, load the class
-                if (modules.containsKey(integratesWith.getKey())) {
+                if (modules.get(integratesWith.getKey()).isLoaded()) {
                     Class<? extends Integration> integrate = integratesWith.getValue();
 
                     // Verify that the integration class is inside of the module's package.
@@ -315,7 +321,7 @@ public class Modules {
                     : integrationMethods.entrySet()) {
 
                 // If the integration is satisfied, invoke the function
-                if (modules.containsKey(integratesWith.getKey())) {
+                if (modules.get(integratesWith.getKey()).isLoaded()) {
                     Method method = integratesWith.getValue();
 
                     try {

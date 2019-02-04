@@ -10,8 +10,9 @@ import java.io.File;
 import java.util.logging.Logger;
 
 public abstract class Module {
+    public String moduleName;
     public String getName() {
-        return this.getClass().getSimpleName();
+        return moduleName;
     }
 
     private Logger logger;

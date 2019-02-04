@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.keepoutofocean;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineRegenEvent;
@@ -28,6 +29,7 @@ import java.util.UUID;
 
 @DependsOn(CombatEngine.class)
 // TODO: Create subclass for listeners?
+@ModuleInfo(name = "KeepOutOfOcean", info = "")
 public class KeepOutOfOcean extends ModuleListener {
 
     private long checkTicks;

@@ -2,6 +2,7 @@ package com.legendsofvaleros.modules.playermenu;
 
 import com.codingforcookies.robert.window.ExpandingGUI;
 import com.legendsofvaleros.module.ModuleListener;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.playermenu.settings.PlayerSettings;
 import com.legendsofvaleros.util.item.Model;
 import org.bukkit.Bukkit;
@@ -14,6 +15,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 // TODO: Create subclass for listeners?
+@ModuleInfo(name = "PlayerMenu", info = "")
 public class PlayerMenu extends ModuleListener {
 
     @Override

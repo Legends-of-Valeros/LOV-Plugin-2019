@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.regions.event;
 
-import com.legendsofvaleros.modules.regions.Region;
+import com.legendsofvaleros.modules.regions.core.Region;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

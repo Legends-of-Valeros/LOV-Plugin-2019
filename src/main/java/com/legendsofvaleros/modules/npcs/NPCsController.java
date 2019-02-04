@@ -1,8 +1,10 @@
 package com.legendsofvaleros.modules.npcs;
 
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.IntegratesWith;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.auction.AuctionController;
 import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.fast_travel.FastTravelController;
@@ -30,8 +32,8 @@ import org.bukkit.entity.LivingEntity;
 @IntegratesWith(module = PvPController.class, integration = PvPIntegration.class)
 @IntegratesWith(module = QuestController.class, integration = QuestsIntegration.class)
 @IntegratesWith(module = SkillsController.class, integration = SkillsIntegration.class)
-// TODO: Create subclass for listeners?
-public class NPCsController extends ModuleListener {
+@ModuleInfo(name = "NPCs", info = "")
+public class NPCsController extends Module {
     private static NPCsController instance;
     public static NPCsController getInstance() { return instance; }
 
