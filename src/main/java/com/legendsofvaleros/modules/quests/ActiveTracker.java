@@ -100,7 +100,7 @@ public class ActiveTracker {
         int blockSize = (int)Math.ceil((double)Bukkit.getOnlinePlayers().size() / allUpdateInterval);
 
         Bukkit.getOnlinePlayers().stream()
-                    .limit(blockSize).skip(block * blockSize)
+                .skip(block * blockSize).limit(blockSize)
                 .forEach(p -> {
                     if(!Characters.isPlayerCharacterLoaded(p)) return;
 

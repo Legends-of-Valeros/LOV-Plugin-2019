@@ -7,6 +7,7 @@ import com.codingforcookies.robert.item.ItemBuilder;
 import com.codingforcookies.robert.item.NBTEditor;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.gear.ItemManager;
 import com.legendsofvaleros.modules.gear.api.IGear;
@@ -322,8 +323,10 @@ public class Gear implements IGear {
 
                     builder.trimLore();
 
-                    builder.addLore("");
-                    builder.addLore(ChatColor.GOLD + "" + ChatColor.ITALIC + this.getValue() + " V");
+                    if(LegendsOfValeros.getMode().isVerbose()) {
+                        builder.addLore("");
+                        builder.addLore(ChatColor.GOLD + "" + ChatColor.ITALIC + this.getValue() + " V");
+                    }
                 }
 
                 //lore.add(String.format(ChatColor.GOLD + "%siP", (int)(statItem.getItemPower() * 100) / 100D));
