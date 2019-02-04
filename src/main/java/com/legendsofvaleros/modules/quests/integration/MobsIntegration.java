@@ -34,17 +34,19 @@ public class MobsIntegration extends Integration implements Listener {
 
         PlayerCharacter pc = Characters.getPlayerCharacter(p);
 
-        // Update for each player in the party
-        if(!Modules.isLoaded(PartiesController.class)) {
-            QuestManager.callEvent(event, pc);
-        }else{
-            PlayerParty party = (PlayerParty) PartyManager.getPartyByMember(pc.getUniqueCharacterId());
-            for(Player pp : party.getOnlineMembers()) {
-                if(!Characters.isPlayerCharacterLoaded(pp))
-                    continue;
+        QuestManager.callEvent(event, pc);
 
-                PlayerCharacter ppc = Characters.getPlayerCharacter(pp);
-                QuestManager.callEvent(event, ppc);
+        // Update for each player in the party
+        if(Modules.isLoaded(PartiesController.class)) {
+            PlayerParty party = (PlayerParty) PartyManager.getPartyByMember(pc.getUniqueCharacterId());
+            if(party != null) {
+                for (Player pp : party.getOnlineMembers()) {
+                    if(p == pp || !Characters.isPlayerCharacterLoaded(pp))
+                        continue;
+
+                    PlayerCharacter ppc = Characters.getPlayerCharacter(pp);
+                    QuestManager.callEvent(event, ppc);
+                }
             }
         }
     }
