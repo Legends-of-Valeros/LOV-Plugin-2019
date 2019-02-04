@@ -79,6 +79,7 @@ public class ItemUtil {
 		instance.doFire(trigger);
 		
 		ItemStack stack = instance.toStack();
+
 		if(stack == null) return;
 		
 		ItemStack[] contents = pc.getPlayer().getInventory().getContents();
@@ -102,6 +103,7 @@ public class ItemUtil {
 					break;
 			}
 		}
+
 		for(int i = 9; i < contents.length; i++) {
 			if(InventoryManager.hasFixedItem(i)) continue;
 			
