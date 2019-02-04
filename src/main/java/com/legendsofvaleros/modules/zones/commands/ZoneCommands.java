@@ -1,8 +1,9 @@
-package com.legendsofvaleros.modules.zones;
+package com.legendsofvaleros.modules.zones.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
+import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.command.CommandSender;
 

@@ -89,31 +89,5 @@ public class MobsController extends ModuleListener {
             for (Entity e : world.getEntities())
                 if (e instanceof LivingEntity && !(e instanceof Player))
                     e.remove();
-
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onEntityDeath(CombatEngineDeathEvent event) {
-        if (event.getKiller() == null || !event.getKiller().isPlayer()) return;
-
-        Player p = (Player) event.getKiller().getLivingEntity();
-
-        if (!Characters.isPlayerCharacterLoaded(p)) return;
-
-        PlayerCharacter pc = Characters.getPlayerCharacter(p);
-
-        // Update for each player in the party
-        if(!Modules.isLoaded(PartiesController.class)) {
-            QuestManager.callEvent(event, pc);
-        }else{
-            PlayerParty party = (PlayerParty) PartyManager.getPartyByMember(pc.getUniqueCharacterId());
-            for(Player pp : party.getOnlineMembers()) {
-                if(!Characters.isPlayerCharacterLoaded(pp))
-                    continue;
-
-                PlayerCharacter ppc = Characters.getPlayerCharacter(pp);
-                QuestManager.callEvent(event, ppc);
-            }
-        }
     }
 }

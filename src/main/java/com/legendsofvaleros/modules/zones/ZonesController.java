@@ -4,6 +4,7 @@ import com.codingforcookies.ambience.Ambience;
 import com.codingforcookies.ambience.PlayerAmbience;
 import com.codingforcookies.ambience.Sound;
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -13,6 +14,7 @@ import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.pvp.PvPController;
 import com.legendsofvaleros.modules.pvp.event.PvPCheckEvent;
 import com.legendsofvaleros.modules.quests.QuestManager;
+import com.legendsofvaleros.modules.zones.commands.ZoneCommands;
 import com.legendsofvaleros.modules.zones.event.ZoneEnterEvent;
 import com.legendsofvaleros.modules.zones.event.ZoneLeaveEvent;
 import com.legendsofvaleros.util.MessageUtil;
@@ -34,7 +36,7 @@ import java.util.UUID;
 @DependsOn(CombatEngine.class)
 @DependsOn(Characters.class)
 // TODO: Create subclass for listeners?
-public class ZonesController extends ModuleListener {
+public class ZonesController extends Module {
     private static ZonesController instance;
     public static ZonesController getInstance() { return instance; }
 
@@ -53,13 +55,13 @@ public class ZonesController extends ModuleListener {
         manager = new ZoneManager();
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new ZoneCommands());
+
+        //registerEvents(new);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerEnterZone(ZoneEnterEvent event) {
         if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
-
-        QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
 
         boolean pvp = PvPController.getInstance().isPvPEnabled() && event.getZone().pvp;
 
@@ -74,13 +76,6 @@ public class ZonesController extends ModuleListener {
         if (event.getZone().ambience != null)
             for (Sound s : event.getZone().ambience)
                 a.queueSound(s);
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerLeaveZone(ZoneLeaveEvent event) {
-        if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
-
-        QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
     }
 
     @EventHandler
