@@ -39,7 +39,7 @@ public class HomeTeleporter implements Listener {
 		movementTask = new MovementCheckTask();
 		movementTask.runTaskTimer(LegendsOfValeros.getInstance(), 40, 5);
 
-		Hearthstones.getInstance().registerEvents(this);
+		HearthstoneController.getInstance().registerEvents(this);
 	}
 
 	/**

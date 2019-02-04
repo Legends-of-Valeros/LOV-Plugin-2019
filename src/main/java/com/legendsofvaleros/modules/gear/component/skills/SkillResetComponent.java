@@ -11,7 +11,7 @@ import com.legendsofvaleros.modules.gear.trigger.UseTrigger;
 import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.item.NoPersist;
 import com.legendsofvaleros.modules.skills.SkillTree.SpecializedTree;
-import com.legendsofvaleros.modules.skills.Skills;
+import com.legendsofvaleros.modules.skills.SkillsController;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -39,7 +39,7 @@ public class SkillResetComponent extends GearComponent<NoPersist> {
 			if(t.getEntity().isPlayer()) {
 				PlayerCharacter pc = Characters.getPlayerCharacter((Player)t.getEntity().getLivingEntity());
 				
-				for(SpecializedTree tree : Skills.skillTrees[pc.getPlayerClass().ordinal()].getSpecializedTrees())
+				for(SpecializedTree tree : SkillsController.skillTrees[pc.getPlayerClass().ordinal()].getSpecializedTrees())
 					for(String skill : tree.skills)
 						if(pc.getSkillSet().getCharacterSkill(skill) != null)
 							return true;
@@ -57,14 +57,14 @@ public class SkillResetComponent extends GearComponent<NoPersist> {
 				PlayerCharacter pc = Characters.getPlayerCharacter((Player)t.getEntity().getLivingEntity());
 				
 				Entry<Skill, Integer> skillObj;
-				for(String skill : Skills.skillTrees[pc.getPlayerClass().ordinal()].getCoreSkills()) {
+				for(String skill : SkillsController.skillTrees[pc.getPlayerClass().ordinal()].getCoreSkills()) {
 					if((skillObj = pc.getSkillSet().removeCharacterSkill(skill)) != null) {
 						pc.getSkillSet().addCharacterSkill(skill);
 						MessageUtil.sendUpdate(pc.getPlayer(), "You've suddenly forgotten your training for " + skillObj.getKey().getUserFriendlyName(skillObj.getValue()) + ".");
 					}
 				}
 				
-				for(SpecializedTree tree : Skills.skillTrees[pc.getPlayerClass().ordinal()].getSpecializedTrees())
+				for(SpecializedTree tree : SkillsController.skillTrees[pc.getPlayerClass().ordinal()].getSpecializedTrees())
 					for(String skill : tree.skills) {
 						if((skillObj = pc.getSkillSet().removeCharacterSkill(skill)) != null)
 							MessageUtil.sendUpdate(pc.getPlayer(), "You have forgotten how to use " + skillObj.getKey().getUserFriendlyName(skillObj.getValue()));

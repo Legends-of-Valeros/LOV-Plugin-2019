@@ -56,7 +56,7 @@ public class NPCManager implements Listener {
 
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TraitLOV.class).withName(TraitLOV.TRAIT_NAME));
 
-        NPCs.getInstance().registerEvents(this);
+        NPCsController.getInstance().registerEvents(this);
 
         gson = new GsonBuilder().registerTypeAdapter(LOVTrait[].class, new JsonDeserializer<LOVTrait[]>() {
             @Override
@@ -70,7 +70,7 @@ public class NPCManager implements Listener {
                     try {
                         traits.add(gson.fromJson(elem.getValue(), traitTypes.get(elem.getKey())));
                     } catch (Exception e) {
-                        MessageUtil.sendException(NPCs.getInstance(), "Failed to load trait. Offender: " + elem.getKey() + " (" + elem.getValue().toString() + ")", false);
+                        MessageUtil.sendException(NPCsController.getInstance(), "Failed to load trait. Offender: " + elem.getKey() + " (" + elem.getValue().toString() + ")", false);
                         throw e;
                     }
                 }
@@ -93,7 +93,7 @@ public class NPCManager implements Listener {
         // Tasks are run after the server is successfully loaded.
         // This gives plugins time to register traits before the
         // NPCs are actually loaded.
-        NPCs.getInstance().getScheduler().executeInSpigotCircleLater(this::reload, 0);
+        NPCsController.getInstance().getScheduler().executeInSpigotCircleLater(this::reload, 0);
     }
 
     public void reload() {
@@ -118,7 +118,7 @@ public class NPCManager implements Listener {
                             npcs.put(result.getString(NPC_ID), data);
                         } catch (Exception e) {
                             MessageUtil.sendError(Bukkit.getConsoleSender(), "Error while loading NPC: " + result.getString(NPC_ID));
-                            MessageUtil.sendException(NPCs.getInstance(), e, false);
+                            MessageUtil.sendException(NPCsController.getInstance(), e, false);
                         }
                     }
                 })

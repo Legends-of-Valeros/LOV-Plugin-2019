@@ -36,7 +36,7 @@ public class SkillBarManager implements Listener {
                 .primary(SLOT_ID, "INT(5)")
                 .column(SLOT_SKILL, "TEXT").create();
 
-        Skills.getInstance().registerEvents(this);
+        SkillsController.getInstance().registerEvents(this);
     }
 
     @EventHandler

@@ -7,11 +7,11 @@ import com.legendsofvaleros.modules.auction.AuctionController;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.guilds.guild.Guild;
-import com.legendsofvaleros.modules.parties.Parties;
+import com.legendsofvaleros.modules.parties.PartiesController;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.playermenu.settings.PlayerSettings;
 import com.legendsofvaleros.modules.playermenu.settings.PlayerSettingsOpenEvent;
-import com.legendsofvaleros.modules.zones.Zones;
+import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.util.Discord;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.PlayerData;
@@ -43,9 +43,9 @@ import java.util.concurrent.ExecutionException;
 
 @DependsOn(PlayerMenu.class)
 @DependsOn(Characters.class)
-public class Chat extends ModuleListener {
-    private static Chat instance;
-    public static Chat getInstance() { return instance; }
+public class ChatController extends ModuleListener {
+    private static ChatController instance;
+    public static ChatController getInstance() { return instance; }
 
     private static Map<Character, String> chanToDiscord = new HashMap<>();
     private static Map<String, Character> discordToChan = new HashMap<>();
@@ -96,10 +96,10 @@ public class Chat extends ModuleListener {
                 }
                 break;
             case ZONE:
-                Zones.getInstance().onChat(p, bc);
+                ZonesController.getInstance().onChat(p, bc);
                 break;
             case PARTY:
-                Parties.getInstance().onChat(p, bc);
+                PartiesController.getInstance().onChat(p, bc);
                 break;
         }
 
@@ -134,7 +134,7 @@ public class Chat extends ModuleListener {
             }
 
             char channelId = discordToChan.get(message.getChannelReceiver().getId());
-            ChatChannel ch = Chat.getInstance().channels.get(channelId);
+            ChatChannel ch = ChatController.getInstance().channels.get(channelId);
 
             PlayerData data = null;
             try {

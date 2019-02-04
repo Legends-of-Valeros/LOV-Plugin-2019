@@ -22,7 +22,7 @@ public class NPCCommands extends BaseCommand {
 	@Description("Reload the NPC cache and citizens.")
 	@CommandPermission("npcs.reload")
 	public void cmdListNPCReload(CommandSender sender) {
-		NPCs.manager().reload();
+		NPCsController.manager().reload();
 
 		Bukkit.dispatchCommand(sender, "citizens save");
 		Bukkit.dispatchCommand(sender, "citizens reload");
@@ -33,7 +33,7 @@ public class NPCCommands extends BaseCommand {
 	@CommandPermission("npcs.traits.list")
 	public void cmdListTraits(CommandSender sender) {
 		sender.sendMessage(ChatColor.YELLOW + "Enabled Traits:");
-		for(String str : NPCs.manager().traitTypes.keySet())
+		for(String str : NPCsController.manager().traitTypes.keySet())
 			sender.sendMessage(ChatColor.YELLOW + " " + str);
 	}
 
@@ -43,7 +43,7 @@ public class NPCCommands extends BaseCommand {
 	public void cmdActivateNPC(Player player, String npcId, String side) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		NPCData npc = NPCs.manager().npcs.get(npcId);
+		NPCData npc = NPCsController.manager().npcs.get(npcId);
 
 		if(side.equalsIgnoreCase("left"))
 			TraitHelper.onLeftClick(npc.name, player, npc.traits);
@@ -59,7 +59,7 @@ public class NPCCommands extends BaseCommand {
 	public void cmdBindNPC(Player player, String npcId) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		NPCData npcData = NPCs.manager().npcs.get(npcId);
+		NPCData npcData = NPCsController.manager().npcs.get(npcId);
 		if(npcData == null) {
 			MessageUtil.sendError(player, "NPC with that ID does not exist.");
 			return;

@@ -6,14 +6,14 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.IntegratesWith;
-import com.legendsofvaleros.modules.bank.Bank;
+import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterCreateEvent;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
-import com.legendsofvaleros.modules.factions.FactionModule;
-import com.legendsofvaleros.modules.mobs.Mobs;
-import com.legendsofvaleros.modules.npcs.NPCs;
+import com.legendsofvaleros.modules.factions.FactionController;
+import com.legendsofvaleros.modules.mobs.MobsController;
+import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.playermenu.InventoryManager;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.quests.action.core.*;
@@ -32,14 +32,14 @@ import com.legendsofvaleros.modules.quests.prerequisite.PrerequisiteFactory;
 import com.legendsofvaleros.modules.quests.progress.core.QuestObjectiveProgressBoolean;
 import com.legendsofvaleros.modules.quests.progress.core.QuestObjectiveProgressInteger;
 import com.legendsofvaleros.modules.quests.progress.ProgressFactory;
-import com.legendsofvaleros.modules.quests.quest.BasicQuest;
-import com.legendsofvaleros.modules.quests.quest.IQuest;
-import com.legendsofvaleros.modules.quests.quest.QuestFactory;
-import com.legendsofvaleros.modules.quests.quest.QuestStatus;
+import com.legendsofvaleros.modules.quests.core.BasicQuest;
+import com.legendsofvaleros.modules.quests.core.IQuest;
+import com.legendsofvaleros.modules.quests.core.QuestFactory;
+import com.legendsofvaleros.modules.quests.core.QuestStatus;
 import com.legendsofvaleros.modules.npcs.trait.quests.TraitQuestGiver;
-import com.legendsofvaleros.modules.regions.Regions;
-import com.legendsofvaleros.modules.skills.Skills;
-import com.legendsofvaleros.modules.zones.Zones;
+import com.legendsofvaleros.modules.regions.RegionController;
+import com.legendsofvaleros.modules.skills.SkillsController;
+import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.title.Title;
 import com.legendsofvaleros.util.title.TitleUtil;
@@ -55,16 +55,16 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-@DependsOn(NPCs.class)
+@DependsOn(NPCsController.class)
 @DependsOn(CombatEngine.class)
 @DependsOn(PlayerMenu.class)
 @DependsOn(Characters.class)
-@IntegratesWith(module = Bank.class, integration = BankIntegration.class)
-@IntegratesWith(module = FactionModule.class, integration = FactionIntegration.class)
-@IntegratesWith(module = Mobs.class, integration = MobsIntegration.class)
-@IntegratesWith(module = Regions.class, integration = RegionIntegration.class)
-@IntegratesWith(module = Skills.class, integration = SkillsIntegration.class)
-@IntegratesWith(module = Zones.class, integration = ZonesIntegration.class)
+@IntegratesWith(module = BankController.class, integration = BankIntegration.class)
+@IntegratesWith(module = FactionController.class, integration = FactionIntegration.class)
+@IntegratesWith(module = MobsController.class, integration = MobsIntegration.class)
+@IntegratesWith(module = RegionController.class, integration = RegionIntegration.class)
+@IntegratesWith(module = SkillsController.class, integration = SkillsIntegration.class)
+@IntegratesWith(module = ZonesController.class, integration = ZonesIntegration.class)
 public class QuestController extends ModuleListener {
     public static AdvancementAPI NEW_OBJECTIVES;
 

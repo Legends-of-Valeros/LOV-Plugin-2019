@@ -5,7 +5,7 @@ import com.legendsofvaleros.modules.mobs.behavior.BehaviorAction;
 import com.legendsofvaleros.modules.mobs.behavior.NodeStatus;
 import com.legendsofvaleros.modules.mobs.behavior.test.ITest;
 import com.legendsofvaleros.modules.mobs.trait.MobTrait;
-import com.legendsofvaleros.modules.npcs.NPCs;
+import com.legendsofvaleros.modules.npcs.NPCsController;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -23,11 +23,11 @@ public class ThreatBehavior {
 	public static final BehaviorAction FIND = new BehaviorAction() {
 		@Override
 		public NodeStatus onStep(CombatEntity ce, long ticks) {
-			NPC npc = NPCs.manager().registry.getNPC(ce.getLivingEntity());
+			NPC npc = NPCsController.manager().registry.getNPC(ce.getLivingEntity());
 			MobTrait trait = npc.getTrait(MobTrait.class);
 			List<Entity> entities = ce.getLivingEntity().getNearbyEntities(trait.instance.mob.getOptions().distance.detection, trait.instance.mob.getOptions().distance.detection, trait.instance.mob.getOptions().distance.detection);
 			for(Entity entity : entities)
-				if(entity instanceof LivingEntity && !NPCs.manager().registry.isNPC(entity)) {
+				if(entity instanceof LivingEntity && !NPCsController.manager().registry.isNPC(entity)) {
 					if(entity.getLocation().getBlockY() - npc.getEntity().getLocation().getBlockY() >= 2)
 						continue;
 					if(entity instanceof Player) {
@@ -52,7 +52,7 @@ public class ThreatBehavior {
 	public static final BehaviorAction NAVIGATE = new BehaviorAction() {
 		@Override
 		public NodeStatus onStep(CombatEntity ce, long ticks) {
-			NPC npc = NPCs.manager().registry.getNPC(ce.getLivingEntity());
+			NPC npc = NPCsController.manager().registry.getNPC(ce.getLivingEntity());
 
 			Block standingOn = ce.getLivingEntity().getWorld().getBlockAt(ce.getLivingEntity().getLocation());
 

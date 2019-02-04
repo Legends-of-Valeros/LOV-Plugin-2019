@@ -23,9 +23,9 @@ import org.bukkit.event.Listener;
 
 import java.util.HashMap;
 
-public class Dueling extends ModuleListener implements Listener {
-    private static Dueling instance;
-    public static Dueling getInstance() { return instance; }
+public class DuelingController extends ModuleListener implements Listener {
+    private static DuelingController instance;
+    public static DuelingController getInstance() { return instance; }
 
     public static HashMap<Player, Player> duelRequests = new HashMap<>();
 

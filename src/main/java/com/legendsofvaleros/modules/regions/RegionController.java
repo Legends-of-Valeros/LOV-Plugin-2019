@@ -3,21 +3,14 @@ package com.legendsofvaleros.modules.regions;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
-import com.legendsofvaleros.module.annotation.IntegratesWith;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.hearthstones.HearthstoneCastEvent;
-import com.legendsofvaleros.modules.hearthstones.Hearthstones;
-import com.legendsofvaleros.modules.quests.QuestManager;
-import com.legendsofvaleros.modules.quests.QuestController;
-import com.legendsofvaleros.modules.regions.event.RegionEnterEvent;
-import com.legendsofvaleros.modules.regions.event.RegionLeaveEvent;
-import com.legendsofvaleros.modules.quests.integration.RegionIntegration;
+import com.legendsofvaleros.modules.hearthstones.HearthstoneController;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -27,10 +20,10 @@ import java.util.HashMap;
 
 @DependsOn(CombatEngine.class)
 @DependsOn(Characters.class)
-@DependsOn(Hearthstones.class)
-public class Regions extends ModuleListener {
-    private static Regions instance;
-    public static Regions getInstance() { return instance; }
+@DependsOn(HearthstoneController.class)
+public class RegionController extends ModuleListener {
+    private static RegionController instance;
+    public static RegionController getInstance() { return instance; }
 
     public static boolean REGION_DEBUG = false;
 

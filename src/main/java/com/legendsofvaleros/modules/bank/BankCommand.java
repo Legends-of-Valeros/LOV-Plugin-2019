@@ -17,7 +17,7 @@ public class BankCommand extends BaseCommand {
 	public void cmdEdit(CommandSender sender, OnlinePlayer player, String currency, int amount) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		Bank.getBank(Characters.getPlayerCharacter(player.getPlayer())).addCurrency(currency, amount);
+		BankController.getBank(Characters.getPlayerCharacter(player.getPlayer())).addCurrency(currency, amount);
 	}
 
 	@Subcommand("show")
@@ -26,11 +26,11 @@ public class BankCommand extends BaseCommand {
 	public void cmdShow(CommandSender sender, OnlinePlayer player) {
 		Player p = player.getPlayer();
 
-		PlayerBank pb = Bank.getBank(Characters.getPlayerCharacter(p));
+		Bank pb = BankController.getBank(Characters.getPlayerCharacter(p));
 		sender.sendMessage(p.getDisplayName() + "'s Bank");
 
-		for(PlayerBank.Currency c : pb.getCurrencies())
-			sender.sendMessage(" " + c.getCurrencyId() + " = " + Bank.getInstance().getCurrency(c.getCurrencyId()).getDisplay(c.amount));
+		for(Bank.Currency c : pb.getCurrencies())
+			sender.sendMessage(" " + c.getCurrencyId() + " = " + BankController.getInstance().getCurrency(c.getCurrencyId()).getDisplay(c.amount));
 	}
 
 	@Default

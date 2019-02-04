@@ -12,7 +12,7 @@ import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.mobs.behavior.BehaviorAction;
 import com.legendsofvaleros.modules.mobs.behavior.NodeStatus;
 import com.legendsofvaleros.modules.mobs.trait.MobTrait;
-import com.legendsofvaleros.modules.npcs.NPCs;
+import com.legendsofvaleros.modules.npcs.NPCsController;
 import net.citizensnpcs.api.npc.NPC;
 import net.minecraft.server.v1_12_R1.EntityPlayer;
 import net.minecraft.server.v1_12_R1.PacketPlayOutAnimation;
@@ -52,7 +52,7 @@ public class AttackBehavior {
 
                 LivingEntity target = ce.getThreat().getTarget().getLivingEntity();
 
-                NPC npc = NPCs.manager().registry.getNPC(ce.getLivingEntity());
+                NPC npc = NPCsController.manager().registry.getNPC(ce.getLivingEntity());
                 npc.faceLocation(target.getEyeLocation());
                 MobTrait trait = npc.getTrait(MobTrait.class);
 

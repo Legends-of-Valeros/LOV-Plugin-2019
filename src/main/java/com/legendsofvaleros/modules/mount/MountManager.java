@@ -66,7 +66,7 @@ public class MountManager implements Listener {
         managerCharacters.primary(CHARACTER_ID, "VARCHAR(38)")
                 .primary(CHARACTER_MOUNT, "VARCHAR(64)").create();
 
-        Mounts.getInstance().registerEvents(this);
+        MountsController.getInstance().registerEvents(this);
 
         loadMounts();
     }

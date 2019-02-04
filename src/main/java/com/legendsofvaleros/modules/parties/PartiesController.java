@@ -9,10 +9,8 @@ import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.characters.skill.SkillTargetEvent;
-import com.legendsofvaleros.modules.chat.Chat;
+import com.legendsofvaleros.modules.chat.ChatController;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
-import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.playermenu.PlayerMenuOpenEvent;
 import com.legendsofvaleros.modules.pvp.PvPCheckEvent;
@@ -20,19 +18,17 @@ import com.legendsofvaleros.util.MessageUtil;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.InventoryType;
 
 @DependsOn(CombatEngine.class)
 @DependsOn(PlayerMenu.class)
 @DependsOn(Characters.class)
-@DependsOn(Chat.class)
-public class Parties extends ModuleListener {
-    private static Parties instance;
-    public static Parties getInstance() { return instance; }
+@DependsOn(ChatController.class)
+public class PartiesController extends ModuleListener {
+    private static PartiesController instance;
+    public static PartiesController getInstance() { return instance; }
 
     @Override
     public void onLoad() {

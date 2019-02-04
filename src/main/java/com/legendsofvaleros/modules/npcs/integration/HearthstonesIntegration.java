@@ -2,10 +2,10 @@ package com.legendsofvaleros.modules.npcs.integration;
 
 import com.legendsofvaleros.module.Integration;
 import com.legendsofvaleros.modules.npcs.trait.hearthstones.TraitInnkeeper;
-import com.legendsofvaleros.modules.npcs.NPCs;
+import com.legendsofvaleros.modules.npcs.NPCsController;
 
 public class HearthstonesIntegration extends Integration {
     public HearthstonesIntegration() {
-        NPCs.registerTrait("innkeeper", TraitInnkeeper.class);
+        NPCsController.registerTrait("innkeeper", TraitInnkeeper.class);
     }
 }

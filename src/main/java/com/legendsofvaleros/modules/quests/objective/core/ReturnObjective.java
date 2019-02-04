@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.quests.objective.core;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.npcs.NPCData;
-import com.legendsofvaleros.modules.npcs.NPCs;
+import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
 import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.quests.objective.AbstractQuestObjective;
@@ -20,12 +20,12 @@ public class ReturnObjective extends AbstractQuestObjective<QuestObjectiveProgre
 
     @Override
     protected void onInit() {
-        if (!NPCs.isNPC(id)) {
+        if (!NPCsController.isNPC(id)) {
             MessageUtil.sendException(QuestController.getInstance(), "No NPC with that ID in gear. Offender: " + id + " in " + getQuest().getId(), false);
             return;
         }
 
-        npc = NPCs.getNPC(id);
+        npc = NPCsController.getNPC(id);
     }
 
     @Override

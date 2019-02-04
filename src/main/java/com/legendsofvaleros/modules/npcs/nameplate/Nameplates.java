@@ -3,7 +3,7 @@ package com.legendsofvaleros.modules.npcs.nameplate;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.mobs.Mobs;
+import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.util.MessageUtil;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.entity.Entity;
@@ -86,7 +86,7 @@ public class Nameplates {
                     }
                 } catch(IllegalArgumentException e) {
                     // Something happened. Log it and destroy the hologram.
-                    MessageUtil.sendException(Mobs.getInstance(), "Nameplate error. Offender: " + uuid + " or " + entity.getName(), false);
+                    MessageUtil.sendException(MobsController.getInstance(), "Nameplate error. Offender: " + uuid + " or " + entity.getName(), false);
 
                     e.printStackTrace();
 

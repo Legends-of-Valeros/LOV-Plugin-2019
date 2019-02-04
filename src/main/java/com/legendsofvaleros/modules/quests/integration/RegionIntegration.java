@@ -10,7 +10,7 @@ import com.legendsofvaleros.modules.quests.objective.regions.ActionRegionDeny;
 import com.legendsofvaleros.modules.quests.objective.regions.EnterRegionObjective;
 import com.legendsofvaleros.modules.quests.objective.regions.ExitRegionObjective;
 import com.legendsofvaleros.modules.quests.objective.QuestObjectiveFactory;
-import com.legendsofvaleros.modules.regions.Regions;
+import com.legendsofvaleros.modules.regions.RegionController;
 import com.legendsofvaleros.modules.regions.event.RegionEnterEvent;
 import com.legendsofvaleros.modules.regions.event.RegionLeaveEvent;
 import org.bukkit.event.EventHandler;
@@ -19,7 +19,7 @@ import org.bukkit.event.Listener;
 
 public class RegionIntegration extends Integration implements Listener {
     public RegionIntegration() {
-        Regions.getInstance().registerEvents(this);
+        RegionController.getInstance().registerEvents(this);
 
         QuestObjectiveFactory.registerType("region_enter", EnterRegionObjective.class);
         QuestObjectiveFactory.registerType("region_exit", ExitRegionObjective.class);

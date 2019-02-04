@@ -5,8 +5,8 @@ import com.codingforcookies.robert.item.ItemBuilder;
 import com.codingforcookies.robert.slot.Slot;
 import com.codingforcookies.robert.slot.SlotUsable;
 import com.google.common.util.concurrent.SettableFuture;
+import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.bank.Bank;
-import com.legendsofvaleros.modules.bank.PlayerBank;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
@@ -26,14 +26,14 @@ public class TraitBanker extends LOVTrait {
 		slot.set(new Slot(new ItemBuilder(Material.IRON_FENCE).setName("Banking").create(), (gui, p, event) -> {
 			gui.close(p);
 
-			new BankView(Bank.getBank(Characters.getPlayerCharacter(p))).open(p);
+			new BankView(BankController.getBank(Characters.getPlayerCharacter(p))).open(p);
 		}));
 	}
 	
 	private class BankView extends GUI {
-		PlayerBank bank;
+		Bank bank;
 		
-		BankView(PlayerBank bank) {
+		BankView(Bank bank) {
 			super("Bank");
 			
 			this.bank = bank;
@@ -41,7 +41,7 @@ public class TraitBanker extends LOVTrait {
 			type(6);
 
 			for(int i = 0; i < 6 * 9; i++) {
-				PlayerBank.Entry entry = bank.content.get(i);
+				Bank.Entry entry = bank.content.get(i);
 				Gear.Data item = entry != null ? entry.item : null;
 
 				int j = i;

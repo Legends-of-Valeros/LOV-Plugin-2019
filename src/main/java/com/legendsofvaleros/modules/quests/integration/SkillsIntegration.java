@@ -6,7 +6,7 @@ import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.objective.skills.SkillBindObjective;
 import com.legendsofvaleros.modules.quests.objective.skills.SkillUseObjective;
 import com.legendsofvaleros.modules.quests.objective.QuestObjectiveFactory;
-import com.legendsofvaleros.modules.regions.Regions;
+import com.legendsofvaleros.modules.regions.RegionController;
 import com.legendsofvaleros.modules.skills.event.BindSkillEvent;
 import com.legendsofvaleros.modules.skills.event.SkillUsedEvent;
 import org.bukkit.entity.Player;
@@ -16,7 +16,7 @@ import org.bukkit.event.Listener;
 
 public class SkillsIntegration extends Integration implements Listener {
     public SkillsIntegration() {
-        Regions.getInstance().registerEvents(this);
+        RegionController.getInstance().registerEvents(this);
 
         QuestObjectiveFactory.registerType("skill_bind", SkillBindObjective.class);
         QuestObjectiveFactory.registerType("skill_use", SkillUseObjective.class);

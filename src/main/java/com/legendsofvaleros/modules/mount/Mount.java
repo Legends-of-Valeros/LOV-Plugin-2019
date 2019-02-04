@@ -107,13 +107,13 @@ public class Mount {
 
         entity.addPassenger(p);
 
-        Mounts.getInstance().riders.put(p.getUniqueId(), this);
+        MountsController.getInstance().riders.put(p.getUniqueId(), this);
     }
 
     public void kickOff(UUID id, Entity vehicle) {
         if (vehicle.getType() == type)
             vehicle.remove();
 
-        Mounts.getInstance().riders.remove(id);
+        MountsController.getInstance().riders.remove(id);
     }
 }

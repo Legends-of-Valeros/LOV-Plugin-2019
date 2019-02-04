@@ -4,7 +4,7 @@ import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.objective.AbstractQuestObjective;
 import com.legendsofvaleros.modules.quests.progress.core.QuestObjectiveProgressBoolean;
 import com.legendsofvaleros.modules.regions.Region;
-import com.legendsofvaleros.modules.regions.Regions;
+import com.legendsofvaleros.modules.regions.RegionController;
 import com.legendsofvaleros.modules.regions.event.RegionEnterEvent;
 import com.legendsofvaleros.modules.regions.event.RegionLeaveEvent;
 import com.legendsofvaleros.util.MessageUtil;
@@ -19,10 +19,10 @@ public class EnterRegionObjective extends AbstractQuestObjective<QuestObjectiveP
 
     @Override
     protected void onInit() {
-        region = Regions.manager().getRegion(id);
+        region = RegionController.manager().getRegion(id);
 
         if (region == null)
-            MessageUtil.sendException(Regions.getInstance(), "No regions with that ID in gear. Offender: " + id + " in " + getQuest().getId(), false);
+            MessageUtil.sendException(RegionController.getInstance(), "No regions with that ID in gear. Offender: " + id + " in " + getQuest().getId(), false);
     }
 
     @Override

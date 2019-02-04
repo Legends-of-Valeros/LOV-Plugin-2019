@@ -7,9 +7,8 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import com.legendsofvaleros.modules.gear.GearController;
-import com.legendsofvaleros.modules.zones.Zones;
+import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.util.MessageUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -20,10 +19,10 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 @DependsOn(CombatEngine.class)
 @DependsOn(Characters.class)
 @DependsOn(GearController.class)
-@DependsOn(Zones.class)
-public class Graveyards extends ModuleListener {
-    private static Graveyards instance;
-    public static Graveyards getInstance() { return instance; }
+@DependsOn(ZonesController.class)
+public class GraveyardController extends ModuleListener {
+    private static GraveyardController instance;
+    public static GraveyardController getInstance() { return instance; }
 
     @Override
     public void onLoad() {
@@ -45,7 +44,7 @@ public class Graveyards extends ModuleListener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDeath(PlayerRespawnEvent event) {
-        Graveyard data = GraveyardManager.getNearestGraveyard(Zones.manager().getZone(event.getPlayer()), event.getPlayer().getLocation());
+        Graveyard data = GraveyardManager.getNearestGraveyard(ZonesController.manager().getZone(event.getPlayer()), event.getPlayer().getLocation());
         if (data == null) {
             Location loc = event.getPlayer().getLocation();
             MessageUtil.sendException(this, event.getPlayer(), "Failed to locate graveyard at " + loc.getBlockX() + ", " + loc.getBlockZ() + "!", true);

@@ -7,7 +7,7 @@ import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.skills.SkillTree;
 import com.legendsofvaleros.modules.skills.SkillTree.SpecializedTree;
-import com.legendsofvaleros.modules.skills.Skills;
+import com.legendsofvaleros.modules.skills.SkillsController;
 import com.legendsofvaleros.util.item.Model;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -36,7 +36,7 @@ public class GUISkillsSpecialized extends GUI {
 	public GUISkillsSpecialized(final PlayerCharacter pc, boolean startLeft, SpecializedTree tree) {
 		super(tree.name);
 		
-		int pointCount = Skills.getPointCount(pc.getPlayer());
+		int pointCount = SkillsController.getPointCount(pc.getPlayer());
 
 		type(5);
 		

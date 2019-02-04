@@ -24,9 +24,9 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @DependsOn(Characters.class)
-public class FactionModule extends ModuleListener {
-    private static FactionModule instance;
-    public static FactionModule getInstance() { return instance; }
+public class FactionController extends ModuleListener {
+    private static FactionController instance;
+    public static FactionController getInstance() { return instance; }
 
     private static ORMTable<Faction> factionTable;
     private static ORMTable<Reputation> reputationTable;
@@ -46,7 +46,7 @@ public class FactionModule extends ModuleListener {
         factionTable = ORMTable.bind(dbPoolId, Faction.class);
         reputationTable = ORMTable.bind(dbPoolId, Reputation.class);
 
-        FactionModule.getInstance().registerEvents(new PlayerListener());
+        FactionController.getInstance().registerEvents(new PlayerListener());
 
 		/*NOTIFICATION_UP = AdvancementAPI.builder(new NamespacedKey(this, "factions/up"))
 				                .title("Faction Rep+")
@@ -132,7 +132,7 @@ public class FactionModule extends ModuleListener {
                 e.printStackTrace();
                 ret.set(false);
             }
-        }, FactionModule.getInstance().getScheduler()::async);
+        }, FactionController.getInstance().getScheduler()::async);
         return ret;
     }
 

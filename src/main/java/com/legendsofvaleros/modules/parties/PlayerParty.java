@@ -197,7 +197,7 @@ class ScoreHolder {
                     name = data.username;
                 } catch (Exception e) {
                 }
-            }, Parties.getInstance().getScheduler()::async);
+            }, PartiesController.getInstance().getScheduler()::async);
         }
 
         update();

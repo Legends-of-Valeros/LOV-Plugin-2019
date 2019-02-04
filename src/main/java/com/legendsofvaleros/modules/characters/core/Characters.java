@@ -22,7 +22,7 @@ import com.legendsofvaleros.modules.characters.ui.*;
 import com.legendsofvaleros.modules.characters.ui.loading.ProgressView;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.levelarchetypes.core.LevelArchetypes;
-import com.legendsofvaleros.modules.npcs.NPCs;
+import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
@@ -36,7 +36,7 @@ import java.util.UUID;
  * Characters allows players to make multiple playable characters, each with their own race, class,
  * and progression.
  */
-@DependsOn(NPCs.class)
+@DependsOn(NPCsController.class)
 @DependsOn(CombatEngine.class)
 @DependsOn(LevelArchetypes.class)
 @DependsOn(PlayerMenu.class)

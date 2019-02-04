@@ -11,7 +11,7 @@ import com.legendsofvaleros.modules.bank.Money;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.mount.Mount;
-import com.legendsofvaleros.modules.mount.Mounts;
+import com.legendsofvaleros.modules.mount.MountsController;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -43,14 +43,14 @@ public class TraitMount extends LOVTrait {
         gui.type(InventoryType.DISPENSER);
 
         final PlayerCharacter pc = Characters.getPlayerCharacter(p);
-        ListenableFuture<Collection<Mount>> future = Mounts.getInstance().getMountManager().getMounts(pc.getUniqueCharacterId());
+        ListenableFuture<Collection<Mount>> future = MountsController.getInstance().getMountManager().getMounts(pc.getUniqueCharacterId());
         future.addListener(() -> {
             try {
                 Collection<Mount> playerMounts = future.get();
                 if (playerMounts.size() == 0) return;
 
                 for (int i = 0; i < mounts.length; i++) {
-                    final Mount m = Mounts.getInstance().getMountManager().getMount(mounts[i]);
+                    final Mount m = MountsController.getInstance().getMountManager().getMount(mounts[i]);
                     boolean owned = playerMounts.contains(m);
                     boolean levelTooLow;
 
@@ -65,7 +65,7 @@ public class TraitMount extends LOVTrait {
 
                     gui.slot(i, ib.create(), owned || levelTooLow ? null : (ISlotAction) (gui1, p1, event) -> {
                         if (Money.sub(Characters.getPlayerCharacter(p1), m.getCost())) {
-                            Mounts.getInstance().getMountManager().addMount(pc.getUniqueCharacterId(), m);
+                            MountsController.getInstance().getMountManager().addMount(pc.getUniqueCharacterId(), m);
                             gui1.close(p1);
                         }
                     });
@@ -79,6 +79,6 @@ public class TraitMount extends LOVTrait {
                     gui.open(p);
                 }
             }.runTask(LegendsOfValeros.getInstance());
-        }, Mounts.getInstance().getScheduler()::async);
+        }, MountsController.getInstance().getScheduler()::async);
     }
 }

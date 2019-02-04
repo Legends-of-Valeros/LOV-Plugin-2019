@@ -5,7 +5,7 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.zones.Zone;
-import com.legendsofvaleros.modules.zones.Zones;
+import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -19,7 +19,7 @@ public class GraveyardCommands extends BaseCommand {
 	public void cmdCreate(Player player, int radius) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		Zone zone = Zones.manager().getZone(player);
+		Zone zone = ZonesController.manager().getZone(player);
 		if(zone == null) {
 			MessageUtil.sendError(player, "You are not within a zone.");
 			return;

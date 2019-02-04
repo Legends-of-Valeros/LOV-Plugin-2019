@@ -4,7 +4,7 @@ import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.slot.Slot;
 import com.codingforcookies.robert.window.ExpandingGUI;
 import com.google.common.util.concurrent.SettableFuture;
-import com.legendsofvaleros.modules.npcs.NPCs;
+import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.entity.Player;
 
@@ -25,7 +25,7 @@ public class TraitHelper {
             } else {
                 showSeparated(title, player, slots);
             }
-        }, NPCs.getInstance().getScheduler()::sync);
+        }, NPCsController.getInstance().getScheduler()::sync);
 
 
         AtomicInteger futuresLeft = new AtomicInteger(traits.length);
@@ -40,7 +40,7 @@ public class TraitHelper {
 
                 if (futuresLeft.decrementAndGet() == 0)
                     future.set(true);
-            }, NPCs.getInstance().getScheduler()::async);
+            }, NPCsController.getInstance().getScheduler()::async);
         }
     }
 
@@ -50,7 +50,7 @@ public class TraitHelper {
             if (slot != null)
                 slots.add(slot);
         } catch (Exception e) {
-            MessageUtil.sendException(NPCs.getInstance(), player, e, true);
+            MessageUtil.sendException(NPCsController.getInstance(), player, e, true);
         }
     }
 
@@ -65,7 +65,7 @@ public class TraitHelper {
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
-        }, NPCs.getInstance().getScheduler()::sync);
+        }, NPCsController.getInstance().getScheduler()::sync);
 
         List<Slot> slots = new ArrayList<>();
         AtomicInteger futuresLeft = new AtomicInteger(traits.length);
@@ -80,7 +80,7 @@ public class TraitHelper {
 
                 if (futuresLeft.decrementAndGet() == 0)
                     future.set(slots);
-            }, NPCs.getInstance().getScheduler()::async);
+            }, NPCsController.getInstance().getScheduler()::async);
         }
     }
 
@@ -91,7 +91,7 @@ public class TraitHelper {
             slots.get(0).action.doAction(gui, player, null);
         } else {
             // Resync with the main thread.
-            NPCs.getInstance().getScheduler().executeInSpigotCircle(() -> gui.open(player));
+            NPCsController.getInstance().getScheduler().executeInSpigotCircle(() -> gui.open(player));
         }
     }
 }

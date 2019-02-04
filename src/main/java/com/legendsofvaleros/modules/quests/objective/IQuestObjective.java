@@ -2,8 +2,8 @@ package com.legendsofvaleros.modules.quests.objective;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.progress.IQuestObjectiveProgress;
-import com.legendsofvaleros.modules.quests.quest.IQuest;
-import com.legendsofvaleros.modules.quests.quest.IQuestEventReceiver;
+import com.legendsofvaleros.modules.quests.core.IQuest;
+import com.legendsofvaleros.modules.quests.core.IQuestEventReceiver;
 import org.bukkit.Location;
 import org.bukkit.event.Listener;
 

@@ -7,10 +7,10 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.chat.Chat;
+import com.legendsofvaleros.modules.chat.ChatController;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
-import com.legendsofvaleros.modules.pvp.PvP;
+import com.legendsofvaleros.modules.pvp.PvPController;
 import com.legendsofvaleros.modules.pvp.PvPCheckEvent;
 import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.zones.event.ZoneEnterEvent;
@@ -28,14 +28,14 @@ import org.bukkit.event.EventPriority;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-@DependsOn(PvP.class)
+@DependsOn(PvPController.class)
 @DependsOn(PlayerMenu.class)
-@DependsOn(Chat.class)
+@DependsOn(ChatController.class)
 @DependsOn(CombatEngine.class)
 @DependsOn(Characters.class)
-public class Zones extends ModuleListener {
-    private static Zones instance;
-    public static Zones getInstance() { return instance; }
+public class ZonesController extends ModuleListener {
+    private static ZonesController instance;
+    public static ZonesController getInstance() { return instance; }
 
     private static ZoneManager manager;
 
@@ -60,7 +60,7 @@ public class Zones extends ModuleListener {
 
         QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
 
-        boolean pvp = PvP.getInstance().isPvPEnabled() && event.getZone().pvp;
+        boolean pvp = PvPController.getInstance().isPvPEnabled() && event.getZone().pvp;
 
         Title title = new Title(event.getZone().name, event.getZone().subname + (pvp ? ChatColor.RED + "(pvp enabled)" : ""));
         title.setTitleColor(org.bukkit.ChatColor.GOLD);
@@ -94,18 +94,18 @@ public class Zones extends ModuleListener {
     }
 
     public void onChat(Player p, BaseComponent[] bc) {
-        Zone zone = Zones.manager().getZone(p);
+        Zone zone = ZonesController.manager().getZone(p);
         if (zone == null) {
             MessageUtil.sendError(p, "Unable to send message. You are not in a zone!");
             return;
         }
 
         Player pl;
-        for (Entry<UUID, String> entry : Zones.manager().getPlayerZones()) {
-            Zone zz = Zones.manager().getZone(entry.getValue());
+        for (Entry<UUID, String> entry : ZonesController.manager().getPlayerZones()) {
+            Zone zz = ZonesController.manager().getZone(entry.getValue());
             if (zz.channel.equals(zone.channel)) {
                 pl = Bukkit.getPlayer(entry.getKey());
-                if (Chat.getInstance().isChannelOn(pl, 'Z'))
+                if (ChatController.getInstance().isChannelOn(pl, 'Z'))
                     pl.spigot().sendMessage(bc);
             }
         }

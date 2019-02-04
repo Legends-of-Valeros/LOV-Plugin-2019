@@ -4,7 +4,7 @@ import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.objective.AbstractQuestObjective;
 import com.legendsofvaleros.modules.quests.progress.core.QuestObjectiveProgressBoolean;
 import com.legendsofvaleros.modules.zones.Zone;
-import com.legendsofvaleros.modules.zones.Zones;
+import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.modules.zones.event.ZoneEnterEvent;
 import com.legendsofvaleros.modules.zones.event.ZoneLeaveEvent;
 import com.legendsofvaleros.util.MessageUtil;
@@ -17,10 +17,10 @@ public class EnterZoneObjective extends AbstractQuestObjective<QuestObjectivePro
 
     @Override
     protected void onInit() {
-        zone = Zones.manager().getZone(id);
+        zone = ZonesController.manager().getZone(id);
 
         if (zone == null) {
-            MessageUtil.sendException(Zones.getInstance(), "No zone with that ID in gear. Offender: " + id + " in " + getQuest().getId(), false);
+            MessageUtil.sendException(ZonesController.getInstance(), "No zone with that ID in gear. Offender: " + id + " in " + getQuest().getId(), false);
         }
     }
 

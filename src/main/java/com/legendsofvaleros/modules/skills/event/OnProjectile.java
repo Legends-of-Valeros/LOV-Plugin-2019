@@ -4,7 +4,7 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.skills.EntitiesListener;
-import com.legendsofvaleros.modules.skills.Skills;
+import com.legendsofvaleros.modules.skills.SkillsController;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -72,7 +72,7 @@ public class OnProjectile implements Listener {
     }
 
     public OnProjectile() {
-        Skills.getInstance().registerEvents(this);
+        SkillsController.getInstance().registerEvents(this);
     }
 
     @EventHandler

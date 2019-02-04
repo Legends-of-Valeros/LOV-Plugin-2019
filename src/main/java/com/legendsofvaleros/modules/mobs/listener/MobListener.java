@@ -11,7 +11,7 @@ import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import com.legendsofvaleros.modules.levelarchetypes.api.Archetype;
 import com.legendsofvaleros.modules.levelarchetypes.core.LevelArchetypes;
 import com.legendsofvaleros.modules.mobs.core.Mob;
-import com.legendsofvaleros.modules.npcs.NPCs;
+import com.legendsofvaleros.modules.npcs.NPCsController;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -39,7 +39,7 @@ public class MobListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onEntitySpawn(CreatureSpawnEvent event) {
         if (event.getEntity() instanceof Player)
-            if (!NPCs.manager().registry.isNPC(event.getEntity()))
+            if (!NPCsController.manager().registry.isNPC(event.getEntity()))
                 return;
 
         switch (event.getSpawnReason()) {

@@ -4,7 +4,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.mobs.MobManager;
-import com.legendsofvaleros.modules.mobs.Mobs;
+import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.mobs.core.SpawnArea;
 import com.legendsofvaleros.modules.quests.objective.AbstractQuestObjective;
@@ -30,11 +30,11 @@ public class KillObjective extends AbstractQuestObjective<QuestObjectiveProgress
                 mob = future.get();
 
                 if (mob == null)
-                    MessageUtil.sendException(Mobs.getInstance(), "No instance with that ID in gear. Offender: " + id + " in " + getQuest().getId(), false);
+                    MessageUtil.sendException(MobsController.getInstance(), "No instance with that ID in gear. Offender: " + id + " in " + getQuest().getId(), false);
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
-        }, Mobs.getInstance().getScheduler()::async);
+        }, MobsController.getInstance().getScheduler()::async);
     }
 
     @Override

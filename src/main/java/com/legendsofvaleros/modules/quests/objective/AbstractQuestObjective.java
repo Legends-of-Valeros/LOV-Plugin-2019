@@ -3,7 +3,7 @@ package com.legendsofvaleros.modules.quests.objective;
 import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.progress.IQuestObjectiveProgress;
-import com.legendsofvaleros.modules.quests.quest.IQuest;
+import com.legendsofvaleros.modules.quests.core.IQuest;
 import org.bukkit.Location;
 import org.bukkit.event.Event;
 

@@ -14,7 +14,7 @@ import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.mailbox.Mail;
 import com.legendsofvaleros.modules.mailbox.MailboxController;
-import com.legendsofvaleros.modules.npcs.NPCs;
+import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.scheduler.InternalTask;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -30,7 +30,6 @@ import java.util.concurrent.ExecutionException;
 /**
  * Created by Crystall on 10/10/2018
  */
-@DependsOn(NPCs.class)
 @DependsOn(GearController.class)
 @DependsOn(Characters.class)
 public class AuctionController extends ModuleListener {

@@ -13,7 +13,7 @@ import com.legendsofvaleros.modules.gear.component.skills.SkillResetComponent;
 import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.trigger.GearTrigger;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
-import com.legendsofvaleros.modules.skills.Skills;
+import com.legendsofvaleros.modules.skills.SkillsController;
 import com.legendsofvaleros.modules.skills.event.SkillPreUseEvent;
 import com.legendsofvaleros.modules.skills.event.SkillUsedEvent;
 import com.legendsofvaleros.util.MessageUtil;
@@ -28,7 +28,7 @@ public class SkillsIntegration extends Integration implements Listener {
         GearRegistry.registerComponent("skill", SkillComponent.class);
         GearRegistry.registerComponent("skills_reset", SkillResetComponent.class);
 
-        Skills.getInstance().registerEvents(this);
+        SkillsController.getInstance().registerEvents(this);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)

@@ -53,7 +53,7 @@ public class PartyManager {
     public static void onEnable() {
         partyTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), Pair.class);
 
-        Parties.getInstance().registerEvents(new PlayerListener());
+        PartiesController.getInstance().registerEvents(new PlayerListener());
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(LegendsOfValeros.getInstance(), () -> {
             for (IParty party : parties.values())
@@ -153,7 +153,7 @@ public class PartyManager {
                 }
 
                 lock.release();
-            }, Parties.getInstance().getScheduler()::sync);
+            }, PartiesController.getInstance().getScheduler()::sync);
         }
 
         @EventHandler

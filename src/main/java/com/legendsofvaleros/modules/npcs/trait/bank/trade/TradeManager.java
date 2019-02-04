@@ -3,7 +3,7 @@ package com.legendsofvaleros.modules.npcs.trait.bank.trade;
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.codingforcookies.robert.slot.SlotUsable;
-import com.legendsofvaleros.modules.bank.Bank;
+import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.gear.item.Gear;
@@ -28,7 +28,7 @@ public class TradeManager implements Listener {
     private HashMap<UUID, UUID> pendingRequests = new HashMap<>();
 
     public TradeManager() {
-        Bank.getInstance().registerEvents(this);
+        BankController.getInstance().registerEvents(this);
     }
 
     public void startTrade(Player p1, Player p2) {
@@ -164,7 +164,7 @@ class TradeGUI extends GUI {
                         // Should we delay upateSlots by 1 tick instead of setting this?
                         // gui.getInventory().setItem(event.getSlot(), new ItemStack(Material.AIR));
 
-                        Bank.getInstance().getScheduler().executeInSpigotCircleLater(() -> state.updateSlots(true), 1L);
+                        BankController.getInstance().getScheduler().executeInSpigotCircleLater(() -> state.updateSlots(true), 1L);
                     }
 
                     @Override
@@ -172,7 +172,7 @@ class TradeGUI extends GUI {
                         // Should we delay upateSlots by 1 tick instead of setting this?
                         // gui.getInventory().setItem(event.getSlot(), stack);
 
-                        Bank.getInstance().getScheduler().executeInSpigotCircleLater(() -> state.updateSlots(true), 1L);
+                        BankController.getInstance().getScheduler().executeInSpigotCircleLater(() -> state.updateSlots(true), 1L);
                     }
                 });
 

@@ -18,9 +18,8 @@ import com.legendsofvaleros.modules.mobs.listener.ExperienceListener;
 import com.legendsofvaleros.modules.mobs.listener.LootListener;
 import com.legendsofvaleros.modules.mobs.listener.MobListener;
 import com.legendsofvaleros.modules.mobs.pl8.MobHealthbarManager;
-import com.legendsofvaleros.modules.npcs.trait.core.TraitTitle;
-import com.legendsofvaleros.modules.npcs.NPCs;
-import com.legendsofvaleros.modules.parties.Parties;
+import com.legendsofvaleros.modules.npcs.NPCsController;
+import com.legendsofvaleros.modules.parties.PartiesController;
 import com.legendsofvaleros.modules.parties.PartyManager;
 import com.legendsofvaleros.modules.parties.PlayerParty;
 import com.legendsofvaleros.modules.quests.QuestManager;
@@ -37,12 +36,12 @@ import org.bukkit.event.EventPriority;
 @DependsOn(Characters.class)
 @DependsOn(LevelArchetypes.class)
 @DependsOn(GearController.class)
-@DependsOn(NPCs.class)
 @DependsOn(LootManager.class)
-@DependsOn(Parties.class)
-public class Mobs extends ModuleListener {
-    private static Mobs instance;
-    public static Mobs getInstance() { return instance; }
+@DependsOn(PartiesController.class)
+@DependsOn(NPCsController.class)
+public class MobsController extends ModuleListener {
+    private static MobsController instance;
+    public static MobsController getInstance() { return instance; }
 
     private BehaviorEngine ai;
 
@@ -64,10 +63,10 @@ public class Mobs extends ModuleListener {
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new MobCommands());
 
-        Mobs.getInstance().registerEvents(new ExperienceListener());
-        Mobs.getInstance().registerEvents(new LootListener());
-        Mobs.getInstance().registerEvents(new MobListener());
-        Mobs.getInstance().registerEvents(new MobHealthbarManager());
+        MobsController.getInstance().registerEvents(new ExperienceListener());
+        MobsController.getInstance().registerEvents(new LootListener());
+        MobsController.getInstance().registerEvents(new MobListener());
+        MobsController.getInstance().registerEvents(new MobHealthbarManager());
 
         for (EntityType type : EntityType.values()) {
             if (type == EntityType.PLAYER || type.getEntityClass() == null)
@@ -102,7 +101,7 @@ public class Mobs extends ModuleListener {
         PlayerCharacter pc = Characters.getPlayerCharacter(p);
 
         // Update for each player in the party
-        if(!Modules.isLoaded(Parties.class)) {
+        if(!Modules.isLoaded(PartiesController.class)) {
             QuestManager.callEvent(event, pc);
         }else{
             PlayerParty party = (PlayerParty) PartyManager.getPartyByMember(pc.getUniqueCharacterId());

@@ -36,7 +36,7 @@ public class HotbarListener implements Runnable, Listener {
 
             PlayerCharacter pc = Characters.getPlayerCharacter(e.getPlayer());
             Entry<Skill, Integer> skillPair = pc.getSkillSet().getCharacterSkill(reader.nbt.getString("skill"));
-            Skills.castSkill(CombatEngine.getEntity(e.getPlayer()), skillPair.getKey(), skillPair.getValue());
+            SkillsController.castSkill(CombatEngine.getEntity(e.getPlayer()), skillPair.getKey(), skillPair.getValue());
         }
     }
 
@@ -51,7 +51,7 @@ public class HotbarListener implements Runnable, Listener {
             return;
 
         if (e.isRightClick() && e.getSlot() < Hotswitch.SWITCHER_SLOT) {
-            Skills.getInstance().hotbarManager.updateSlot(Characters.getPlayerCharacter((Player) e.getWhoClicked()), Hotswitch.getInstance().getCurrentHotbar(e.getWhoClicked().getUniqueId()) * Hotswitch.SWITCHER_SLOT + e.getSlot(), null);
+            SkillsController.getInstance().hotbarManager.updateSlot(Characters.getPlayerCharacter((Player) e.getWhoClicked()), Hotswitch.getInstance().getCurrentHotbar(e.getWhoClicked().getUniqueId()) * Hotswitch.SWITCHER_SLOT + e.getSlot(), null);
             e.getClickedInventory().setItem(e.getSlot(), Model.EMPTY_SLOT);
         }
     }
@@ -87,11 +87,11 @@ public class HotbarListener implements Runnable, Listener {
         for (int i = 0; i < Hotswitch.SWITCHER_SLOT; i++) {
             invStack = pc.getPlayer().getInventory().getItem(i);
 
-            String skill = Skills.getInstance().hotbarManager.getSlot(pc, bar * Hotswitch.SWITCHER_SLOT + i);
+            String skill = SkillsController.getInstance().hotbarManager.getSlot(pc, bar * Hotswitch.SWITCHER_SLOT + i);
             if (skill == null && invStack == null)
                 stack = Model.EMPTY_SLOT;
             else
-                stack = Skills.getStackForSkillCooldown(pc, pc.getSkillSet().getCharacterSkill(skill));
+                stack = SkillsController.getStackForSkillCooldown(pc, pc.getSkillSet().getCharacterSkill(skill));
 
             if (invStack == null || stack.getAmount() != invStack.getAmount() || !stack.isSimilar(invStack))
                 pc.getPlayer().getInventory().setItem(i, stack);

@@ -10,7 +10,7 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.quests.objective.IQuestObjective;
-import com.legendsofvaleros.modules.quests.quest.IQuest;
+import com.legendsofvaleros.modules.quests.core.IQuest;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;

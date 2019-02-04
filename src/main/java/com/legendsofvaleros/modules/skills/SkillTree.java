@@ -82,7 +82,7 @@ public abstract class SkillTree {
             desc.add(ChatColor.DARK_GRAY + "[" + ChatColor.GRAY + "Press [1-5]" + ChatColor.DARK_GRAY + " to Equip to Hotbar]");
         }
 
-        ItemStack skillStack = Skills.getItemRepresentation(skill.getKey())
+        ItemStack skillStack = SkillsController.getItemRepresentation(skill.getKey())
                 .setAmount(skill.getValue() == 0 ? 1 : skill.getValue())
                 .setName(ChatColor.WHITE + "" + ChatColor.BOLD + skill.getKey().getUserFriendlyName(skill.getValue()) + " " + RomanNumeral.convertToRoman(skill.getValue()))
                 .addLore(desc.toArray(new String[0]))
@@ -95,7 +95,7 @@ public abstract class SkillTree {
             if (event.getHotbarButton() >= 0) {
                 if (event.getHotbarButton() < Hotswitch.SWITCHER_SLOT) {
                     if (skill.getValue() > 0) {
-                        Skills.getInstance().hotbarManager.updateSlot(pc, Hotswitch.getInstance().getCurrentHotbar(p.getUniqueId()) * Hotswitch.SWITCHER_SLOT + event.getHotbarButton(), skill.getKey().getId());
+                        SkillsController.getInstance().hotbarManager.updateSlot(pc, Hotswitch.getInstance().getCurrentHotbar(p.getUniqueId()) * Hotswitch.SWITCHER_SLOT + event.getHotbarButton(), skill.getKey().getId());
                         p.getInventory().setItem(event.getHotbarButton(), skillStack);
 
                         Bukkit.getPluginManager().callEvent(new BindSkillEvent(p, Hotswitch.getInstance().getCurrentHotbar(p.getUniqueId()), event.getHotbarButton(), skill.getKey().getId()));

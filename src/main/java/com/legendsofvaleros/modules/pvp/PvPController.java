@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.pvp;
 
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
-import com.legendsofvaleros.modules.bank.Bank;
+import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.bank.Currency;
 import com.legendsofvaleros.modules.characters.api.Cooldowns;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
@@ -14,8 +14,6 @@ import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
-import com.legendsofvaleros.modules.npcs.NPCs;
-import com.legendsofvaleros.modules.npcs.trait.pvp.TraitHonorTrader;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -26,8 +24,8 @@ import org.bukkit.event.EventPriority;
 
 @DependsOn(CombatEngine.class)
 @DependsOn(Characters.class)
-@DependsOn(Bank.class)
-public class PvP extends ModuleListener {
+@DependsOn(BankController.class)
+public class PvPController extends ModuleListener {
     public static String HONOR_ID = "honor";
     public static Currency HONOR = new Currency() {
         @Override public String getName() { return "Honor"; }
@@ -39,8 +37,8 @@ public class PvP extends ModuleListener {
 
     public static final float DAMAGE_MULTIPLIER = 0.6f;
 
-    private static PvP instance;
-    public static PvP getInstance() { return instance; }
+    private static PvPController instance;
+    public static PvPController getInstance() { return instance; }
 
     private boolean enabled;
     public boolean isPvPEnabled() { return enabled; }
@@ -62,7 +60,7 @@ public class PvP extends ModuleListener {
         this.honorCooldown = honor.getInt("cooldown", 3 * 60);
         this.honorMaxLevelDifference = honor.getInt("max-level-difference", 5);
 
-        Bank.registerCurrency(HONOR_ID, HONOR);
+        BankController.registerCurrency(HONOR_ID, HONOR);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -89,7 +87,7 @@ public class PvP extends ModuleListener {
             // If the damage event is not cancelled, add the PvP modifier.
             event.newDamageModifierBuilder("PvP")
                     .setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
-                    .setValue(PvP.DAMAGE_MULTIPLIER)
+                    .setValue(PvPController.DAMAGE_MULTIPLIER)
                     .build();
         }
 
@@ -138,7 +136,7 @@ public class PvP extends ModuleListener {
             if(killerPC.getCooldowns().offerCooldown("honor:" + target.getUniqueId(), Cooldowns.CooldownType.CALENDAR_TIME, honorCooldown * 1000) != null) {
                 MessageUtil.sendUpdate(killerPC.getPlayer(), "You received " + HONOR.getDisplay(honorReward));
 
-                Bank.getBank(killerPC).addCurrency(HONOR_ID, honorReward);
+                BankController.getBank(killerPC).addCurrency(HONOR_ID, honorReward);
             }
         }
     }

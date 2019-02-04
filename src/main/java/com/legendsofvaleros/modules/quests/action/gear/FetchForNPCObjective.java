@@ -5,7 +5,7 @@ import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.ItemUtil;
 import com.legendsofvaleros.modules.npcs.NPCData;
-import com.legendsofvaleros.modules.npcs.NPCs;
+import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
 import com.legendsofvaleros.modules.quests.objective.AbstractQuestObjective;
 import com.legendsofvaleros.modules.quests.progress.core.QuestObjectiveProgressBoolean;
@@ -30,12 +30,12 @@ public class FetchForNPCObjective extends AbstractQuestObjective<QuestObjectiveP
         if (item == null)
             MessageUtil.sendException(GearController.getInstance(), "No item with that ID in gear. Offender: " + id + " in " + getQuest().getId(), false);
 
-        if (!NPCs.isNPC(npcId)) {
+        if (!NPCsController.isNPC(npcId)) {
             MessageUtil.sendException(GearController.getInstance(), "No NPC with that ID in gear. Offender: " + id + " in " + getQuest().getId(), false);
             return;
         }
 
-        npc = NPCs.getNPC(npcId);
+        npc = NPCsController.getNPC(npcId);
     }
 
     @Override

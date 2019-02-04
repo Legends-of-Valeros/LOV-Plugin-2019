@@ -4,12 +4,12 @@ import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.codingforcookies.robert.slot.Slot;
 import com.google.common.util.concurrent.SettableFuture;
-import com.legendsofvaleros.modules.bank.Bank;
+import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.ItemUtil;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
-import com.legendsofvaleros.modules.pvp.PvP;
+import com.legendsofvaleros.modules.pvp.PvPController;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -36,7 +36,7 @@ public class TraitHonorTrader extends LOVTrait {
                 ItemMeta meta = item.getItemMeta();
                 List<String> lore = (meta.getLore() == null ? new ArrayList<>() : meta.getLore());
                 lore.add("");
-                lore.add(PvP.HONOR.getDisplay(costs[i]));
+                lore.add(PvPController.HONOR.getDisplay(costs[i]));
                 lore.add(ChatColor.DARK_GRAY + "[" + ChatColor.GRAY + "Left Click " + ChatColor.DARK_GRAY + "to buy]");
                 meta.setLore(lore);
 
@@ -44,7 +44,7 @@ public class TraitHonorTrader extends LOVTrait {
 
                 final int slotItem = i;
                 slot(i, item, (gui, p1, event) -> {
-                    if (Bank.getBank(Characters.getPlayerCharacter(p)).subCurrency("honor", costs[slotItem])) {
+                    if (BankController.getBank(Characters.getPlayerCharacter(p)).subCurrency("honor", costs[slotItem])) {
                         p.playSound(p.getLocation(), "ui.transaction", 1F, 1F);
                         ItemUtil.giveItem(Characters.getPlayerCharacter(p), instance);
                     }

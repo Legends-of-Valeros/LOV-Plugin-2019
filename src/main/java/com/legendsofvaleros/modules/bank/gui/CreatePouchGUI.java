@@ -1,8 +1,8 @@
-package com.legendsofvaleros.modules.bank;
+package com.legendsofvaleros.modules.bank.gui;
 
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.item.ItemBuilder;
-import com.legendsofvaleros.modules.bank.Bank;
+import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.bank.Money;
 import com.legendsofvaleros.modules.gear.component.bank.WorthComponent;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
@@ -129,7 +129,7 @@ public class CreatePouchGUI extends GUI {
 			instance.putPersist(WorthComponent.class, amount);
 			return instance.toStack();
 		} catch (Exception e) {
-			MessageUtil.sendException(Bank.getInstance(), p, e, true);
+			MessageUtil.sendException(BankController.getInstance(), p, e, true);
 		}
 		
 		return null;

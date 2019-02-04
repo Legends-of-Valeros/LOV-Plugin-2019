@@ -9,7 +9,7 @@ import com.legendsofvaleros.module.Module;
  * logging for generating graphs and recreating player actions for
  * moderation.
  */
-public class BigBrother extends Module {
+public class BigBrotherController extends Module {
     public void onLoad() {
         super.onLoad();
 

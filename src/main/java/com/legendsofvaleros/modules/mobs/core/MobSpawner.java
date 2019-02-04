@@ -3,13 +3,12 @@ package com.legendsofvaleros.modules.mobs.core;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
-import com.legendsofvaleros.modules.mobs.Mobs;
+import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.modules.mobs.SpawnManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -27,9 +26,9 @@ public class MobSpawner {
     private int distance = 0;
 
     public MobSpawner() {
-        this.allUpdateInterval = Mobs.getInstance().getConfig().getInt("spawn-area-update-smear", 20 * 10);
+        this.allUpdateInterval = MobsController.getInstance().getConfig().getInt("spawn-area-update-smear", 20 * 10);
 
-        Mobs.getInstance().getLogger().info("Smearing spawn updates across " + allUpdateInterval + " ticks.");
+        MobsController.getInstance().getLogger().info("Smearing spawn updates across " + allUpdateInterval + " ticks.");
 
         new BukkitRunnable() {
             private long time = 0;
@@ -55,7 +54,7 @@ public class MobSpawner {
 
                     if (!spawnLocation.getChunk().isLoaded()) {
                         if (spawn.getEntities().size() > 0) {
-                            Mobs.getInstance().getLogger().info("Clearing spawn due to unloaded chunk.");
+                            MobsController.getInstance().getLogger().info("Clearing spawn due to unloaded chunk.");
                             unloaded++;
 
                             spawn.clear();
@@ -129,17 +128,17 @@ public class MobSpawner {
 
         if (block == 0) {
             if (repopulated > 0) {
-                Mobs.getInstance().getLogger().info("Repopulated " + repopulated + " spawns.");
+                MobsController.getInstance().getLogger().info("Repopulated " + repopulated + " spawns.");
                 repopulated = 0;
             }
 
             if (unloaded > 0) {
-                Mobs.getInstance().getLogger().info("Cleared " + unloaded + " spawns due to unloaded chunks.");
+                MobsController.getInstance().getLogger().info("Cleared " + unloaded + " spawns due to unloaded chunks.");
                 unloaded = 0;
             }
 
             if (distance > 0) {
-                Mobs.getInstance().getLogger().info("Cleared " + distance + " spawns due to player distance.");
+                MobsController.getInstance().getLogger().info("Cleared " + distance + " spawns due to player distance.");
                 distance = 0;
             }
         }

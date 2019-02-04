@@ -3,29 +3,20 @@ package com.legendsofvaleros.modules.skills;
 import com.codingforcookies.robert.core.RomanNumeral;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.module.ModuleListener;
-import com.legendsofvaleros.module.Modules;
 import com.legendsofvaleros.module.annotation.DependsOn;
-import com.legendsofvaleros.modules.bank.Bank;
+import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.characters.api.Cooldowns;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
-import com.legendsofvaleros.modules.gear.GearController;
-import com.legendsofvaleros.modules.gear.GearRegistry;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
-import com.legendsofvaleros.modules.mobs.Mobs;
-import com.legendsofvaleros.modules.npcs.NPCs;
+import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.playermenu.options.PlayerOptionsOpenEvent;
-import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.skills.event.*;
-import com.legendsofvaleros.modules.gear.component.skills.GearCharge;
-import com.legendsofvaleros.modules.gear.component.skills.SkillComponent;
-import com.legendsofvaleros.modules.gear.component.skills.SkillResetComponent;
 import com.legendsofvaleros.modules.skills.gui.GUISkillsCore;
-import com.legendsofvaleros.modules.skills.gui.recharge.TraitRecharger;
 import com.legendsofvaleros.modules.skills.mage.TreeMage;
 import com.legendsofvaleros.modules.skills.priest.TreePriest;
 import com.legendsofvaleros.modules.skills.rogue.TreeRogue;
@@ -42,13 +33,12 @@ import java.util.List;
 import java.util.Map.Entry;
 
 @DependsOn(PlayerMenu.class)
-@DependsOn(Bank.class)
+@DependsOn(BankController.class)
 @DependsOn(CombatEngine.class)
 @DependsOn(Characters.class)
-@DependsOn(NPCs.class)
-@DependsOn(Mobs.class)
+@DependsOn(MobsController.class)
 @DependsOn(Hotswitch.class)
-public class Skills extends ModuleListener {
+public class SkillsController extends ModuleListener {
     public static final SkillTree[] skillTrees = new SkillTree[] {
             new TreeWarrior(),
             new TreeRogue(),
@@ -56,8 +46,8 @@ public class Skills extends ModuleListener {
             new TreePriest()
     };
 
-    private static Skills instance;
-    public static Skills getInstance() { return instance; }
+    private static SkillsController instance;
+    public static SkillsController getInstance() { return instance; }
 
     public SkillBarManager hotbarManager;
 
@@ -80,7 +70,7 @@ public class Skills extends ModuleListener {
             tree.initSkills();
         }
 
-        Skills.getInstance().registerEvents(new SkillListener());
+        SkillsController.getInstance().registerEvents(new SkillListener());
     }
 
     @EventHandler

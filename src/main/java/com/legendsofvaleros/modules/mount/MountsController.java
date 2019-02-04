@@ -5,12 +5,11 @@ import com.codingforcookies.robert.item.ItemBuilder;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
-import com.legendsofvaleros.modules.bank.Bank;
+import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
-import com.legendsofvaleros.modules.npcs.NPCs;
-import com.legendsofvaleros.modules.npcs.trait.mount.TraitMount;
+import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.playermenu.options.PlayerOptionsOpenEvent;
 import com.legendsofvaleros.util.MessageUtil;
@@ -27,11 +26,11 @@ import java.util.Map.Entry;
 @DependsOn(CombatEngine.class)
 @DependsOn(PlayerMenu.class)
 @DependsOn(Characters.class)
-@DependsOn(Bank.class)
-@DependsOn(NPCs.class)
-public class Mounts extends ModuleListener {
-    private static Mounts instance;
-    public static Mounts getInstance() { return instance; }
+@DependsOn(BankController.class)
+@DependsOn(NPCsController.class)
+public class MountsController extends ModuleListener {
+    private static MountsController instance;
+    public static MountsController getInstance() { return instance; }
 
     private MountManager manager;
 
@@ -93,7 +92,7 @@ public class Mounts extends ModuleListener {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }, Mounts.getInstance().getScheduler()::async);
+            }, MountsController.getInstance().getScheduler()::async);
         });
     }
 

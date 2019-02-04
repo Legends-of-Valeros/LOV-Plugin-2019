@@ -30,7 +30,7 @@ import com.legendsofvaleros.modules.quests.progress.IQuestObjectiveProgress;
 import com.legendsofvaleros.modules.quests.progress.ObjectiveProgressPack;
 import com.legendsofvaleros.modules.quests.progress.ProgressFactory;
 import com.legendsofvaleros.modules.quests.progress.QuestProgressPack;
-import com.legendsofvaleros.modules.quests.quest.*;
+import com.legendsofvaleros.modules.quests.core.*;
 import com.legendsofvaleros.scheduler.InternalTask;
 import com.legendsofvaleros.util.FutureCache;
 import com.legendsofvaleros.util.MessageUtil;

@@ -8,7 +8,7 @@ import com.legendsofvaleros.modules.bank.Money;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.fast_travel.DiscoveredFastTravels;
 import com.legendsofvaleros.modules.npcs.NPCData;
-import com.legendsofvaleros.modules.npcs.NPCs;
+import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import com.legendsofvaleros.modules.npcs.NPCEmulator;
 import com.legendsofvaleros.util.MessageUtil;
@@ -76,7 +76,7 @@ public class TraitFastTravel extends LOVTrait {
 		for(String id : available) {
 			TraitFastTravel.Data data = connections.get(id);
 			
-			NPCData npcData = NPCs.getNPC(id);
+			NPCData npcData = NPCsController.getNPC(id);
 			if(npc == null) {
 				MessageUtil.sendError(p, "Unable to find NPC with that ID: " + id);
 				continue;

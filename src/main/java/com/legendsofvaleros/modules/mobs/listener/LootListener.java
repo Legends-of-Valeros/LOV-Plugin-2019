@@ -7,7 +7,7 @@ import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.gear.ItemUtil;
 import com.legendsofvaleros.modules.loot.LootManager;
 import com.legendsofvaleros.modules.loot.LootTable;
-import com.legendsofvaleros.modules.mobs.Mobs;
+import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Location;
@@ -79,7 +79,7 @@ public class LootListener implements Listener {
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
-            }, Mobs.getInstance().getScheduler()::sync);
+            }, MobsController.getInstance().getScheduler()::sync);
         }
     }
 }

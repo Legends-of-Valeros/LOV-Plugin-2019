@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.quests.quest;
+package com.legendsofvaleros.modules.quests.core;
 
 import com.codingforcookies.robert.core.StringUtil;
 import com.codingforcookies.robert.item.Book;

@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.quests.quest;
+package com.legendsofvaleros.modules.quests.core;
 
 public enum QuestStatus {
 	/**

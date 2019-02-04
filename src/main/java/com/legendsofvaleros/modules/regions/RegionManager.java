@@ -127,7 +127,7 @@ public class RegionManager implements Listener {
                 .primary(REGION_ID, "VARCHAR(64)")
                 .column(ACCESS_LEVEL, "BOOLEAN").create();
 
-        Regions.getInstance().registerEvents(this);
+        RegionController.getInstance().registerEvents(this);
 
         loadRegions();
     }
@@ -189,7 +189,7 @@ public class RegionManager implements Listener {
     @EventHandler
     public void onPlayerLogout(PlayerCharacterLogoutEvent event) {
         playerRegions.removeAll(event.getPlayer());
-        Regions.selection.remove(event.getPlayer());
+        RegionController.selection.remove(event.getPlayer());
 
         playerAccess.row(event.getPlayerCharacter().getUniqueCharacterId()).clear();
     }
@@ -229,7 +229,7 @@ public class RegionManager implements Listener {
             if (playerRegions.containsEntry(event.getPlayer(), region.id))
                 continue;
 
-            if (Regions.REGION_DEBUG)
+            if (RegionController.REGION_DEBUG)
                 event.getPlayer().sendMessage("Entered regions: " + region.id);
 
             if (region.msgEnter != null && region.msgEnter.length() > 0)
@@ -241,7 +241,7 @@ public class RegionManager implements Listener {
 
         // Lessens checks for users in no regions
         for (Region region : discrepancies) {
-            if (Regions.REGION_DEBUG)
+            if (RegionController.REGION_DEBUG)
                 event.getPlayer().sendMessage("Left regions: " + region.id);
 
             if (region.msgExit != null && region.msgExit.length() > 0)
@@ -335,7 +335,7 @@ public class RegionManager implements Listener {
             return;
 
         if (region.world == null) {
-            MessageUtil.sendException(Regions.getInstance(), "Region has a null world. Offender: " + region.id, false);
+            MessageUtil.sendException(RegionController.getInstance(), "Region has a null world. Offender: " + region.id, false);
             return;
         }
 
