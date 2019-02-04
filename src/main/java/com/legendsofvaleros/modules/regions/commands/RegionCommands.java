@@ -8,6 +8,7 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.regions.RegionController;
 import com.legendsofvaleros.modules.regions.core.Region;
 import com.legendsofvaleros.modules.regions.core.RegionBounds;
+import com.legendsofvaleros.modules.regions.core.RegionSelector;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -30,7 +31,7 @@ public class RegionCommands extends BaseCommand {
 	public void cmdWand(Player player) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		player.getInventory().addItem(new ItemBuilder(Material.ARROW).setName(RegionController.ITEM_NAME).create());
+		player.getInventory().addItem(new ItemBuilder(Material.ARROW).setName(RegionSelector.ITEM_NAME).create());
 		MessageUtil.sendUpdate(player, "There you go.");
 	}
 
@@ -47,7 +48,7 @@ public class RegionCommands extends BaseCommand {
 			return;
 		}
 		
-		Location[] locations = RegionController.selection.get(player);
+		Location[] locations = RegionSelector.selection.get(player);
 		
 		Region region = new Region(id, locations[0].getWorld(), new RegionBounds().setBounds(locations[0], locations[1]));
 		region.allowAccess = access;
