@@ -242,7 +242,7 @@ public class Modules {
         }
 
         public String getName() {
-            return moduleClass.getSimpleName();
+            return this.info != null ? this.info.name() : moduleClass.getSimpleName();
         }
 
         /**
@@ -262,7 +262,7 @@ public class Modules {
                 throw new IllegalStateException("Attempt to load a module that is already loaded!");
 
             this.instance = moduleClass.newInstance();
-            this.instance.moduleName = info != null ? info.name() : moduleClass.getSimpleName();
+            this.instance.moduleName = this.getName();
             this.scheduler = new InternalScheduler(getName()).startup();
             this.instance.onLoad();
 
