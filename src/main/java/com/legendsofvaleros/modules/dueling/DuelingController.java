@@ -17,7 +17,6 @@ import com.legendsofvaleros.util.title.TitleUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-// TODO: Create subclass for listeners?
 @DependsOn(PlayerMenu.class)
 @IntegratesWith(module = PvPController.class, integration = PvPIntegration.class)
 public class DuelingController extends Module {
