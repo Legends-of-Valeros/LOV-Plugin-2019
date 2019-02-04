@@ -172,6 +172,10 @@ public abstract class AbstractQuest implements IQuest {
 
     @Override
     public void onAccept(PlayerCharacter pc) {
+        QuestManager.removeQuestProgress(this.id, pc);
+
+        QuestManager.addPlayerQuest(pc, this);
+
         startGroup(pc, null);
     }
 

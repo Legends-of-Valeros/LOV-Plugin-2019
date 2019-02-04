@@ -90,10 +90,6 @@ public class QuestCommands extends BaseCommand {
             try {
                 IQuest quest = future.get();
 
-                QuestManager.removeQuestProgress(quest.getId(), pc);
-
-                QuestManager.addPlayerQuest(pc, quest);
-
                 quest.onAccept(pc);
 
                 MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' accepted!");
