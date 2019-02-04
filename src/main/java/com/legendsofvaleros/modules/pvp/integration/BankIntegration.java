@@ -20,6 +20,9 @@ public class BankIntegration extends Integration {
 
     public BankIntegration() {
         ConfigurationSection honor = PvPController.getInstance().getConfig().getConfigurationSection("honor");
+
+        PvPController.getInstance().getLogger().info("" + PvPController.getInstance().getConfig().getKeys(false));
+
         this.honorReward = honor.getInt("reward", 25);
         this.honorCooldown = honor.getInt("cooldown", 3 * 60);
         this.honorMaxLevelDifference = honor.getInt("max-level-difference", 5);

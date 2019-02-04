@@ -8,6 +8,7 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.gear.GearController;
 
 import java.sql.ResultSet;
@@ -15,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @DependsOn(GearController.class)
+@ModuleInfo(name = "Loot", info = "")
 public class LootManager extends Module {
     private static final String LOOT_TABLE = "loot";
     private static final String LOOT_ID = "loot_id";

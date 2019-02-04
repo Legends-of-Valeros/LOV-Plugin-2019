@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.bank;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.bank.commands.BankCommands;
 import com.legendsofvaleros.modules.bank.core.Bank;
 import com.legendsofvaleros.modules.bank.core.Currency;
@@ -17,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 @DependsOn(Characters.class)
+@ModuleInfo(name = "Banks", info = "")
 public class BankController extends Module {
     private static BankController instance;
     public static BankController getInstance() { return instance; }

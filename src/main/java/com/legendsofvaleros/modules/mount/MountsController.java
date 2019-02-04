@@ -5,6 +5,7 @@ import com.codingforcookies.robert.item.ItemBuilder;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
@@ -29,6 +30,7 @@ import java.util.Map.Entry;
 @DependsOn(BankController.class)
 @DependsOn(NPCsController.class)
 // TODO: Create subclass for listeners?
+@ModuleInfo(name = "Mounts", info = "")
 public class MountsController extends ModuleListener {
     private static MountsController instance;
     public static MountsController getInstance() { return instance; }

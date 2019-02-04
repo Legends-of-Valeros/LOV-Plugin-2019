@@ -4,6 +4,7 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.IntegratesWith;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.chat.ChatController;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
@@ -26,6 +27,7 @@ import java.util.UUID;
 @DependsOn(ChatController.class)
 @DependsOn(CombatEngine.class)
 @DependsOn(Characters.class)
+@ModuleInfo(name = "Zones", info = "")
 @IntegratesWith(module = PvPController.class, integration = PvPIntegration.class)
 public class ZonesController extends Module {
     private static ZonesController instance;

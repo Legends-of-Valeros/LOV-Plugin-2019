@@ -3,6 +3,7 @@ package com.legendsofvaleros.module;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.IntegratesWith;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.scheduler.InternalScheduler;
 
 import java.lang.reflect.Method;
@@ -197,6 +198,8 @@ public class Modules {
     private static class InternalModule {
         Class<? extends Module> moduleClass;
 
+        ModuleInfo info;
+
         boolean isEnabled = true; // If the module should be loaded
         boolean isLoaded = false; // If the module was successfully loaded
         Map<Class<? extends Module>, Boolean> dependencies = new HashMap<>();
@@ -207,6 +210,8 @@ public class Modules {
 
         private InternalModule(Class<? extends Module> clazz) {
             this.moduleClass = clazz;
+
+            this.info = clazz.getAnnotation(ModuleInfo.class);
 
             DependsOn[] depends = clazz.getAnnotationsByType(DependsOn.class);
             for (DependsOn dep : depends)
@@ -257,6 +262,7 @@ public class Modules {
                 throw new IllegalStateException("Attempt to load a module that is already loaded!");
 
             this.instance = moduleClass.newInstance();
+            this.instance.moduleName = info != null ? info.name() : moduleClass.getSimpleName();
             this.scheduler = new InternalScheduler(getName()).startup();
             this.instance.onLoad();
 

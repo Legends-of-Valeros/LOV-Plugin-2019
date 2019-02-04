@@ -6,6 +6,7 @@ import com.google.common.collect.Table.Cell;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.IntegratesWith;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.dueling.core.Duel;
 import com.legendsofvaleros.modules.dueling.integration.PvPIntegration;
 import com.legendsofvaleros.modules.dueling.listener.DuelListener;
@@ -19,6 +20,7 @@ import org.bukkit.entity.Player;
 
 @DependsOn(PlayerMenu.class)
 @IntegratesWith(module = PvPController.class, integration = PvPIntegration.class)
+@ModuleInfo(name = "Dueling", info = "")
 public class DuelingController extends Module {
     private static DuelingController instance;
     public static DuelingController getInstance() { return instance; }

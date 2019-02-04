@@ -8,6 +8,7 @@ import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.IntegratesWith;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.skill.Skill;
@@ -34,6 +35,7 @@ import org.bukkit.event.inventory.InventoryType;
 @DependsOn(ChatController.class)
 @IntegratesWith(module = PlayerMenu.class, integration = PvPIntegration.class)
 @IntegratesWith(module = PvPController.class, integration = PvPIntegration.class)
+@ModuleInfo(name = "Parties", info = "")
 public class PartiesController extends Module {
     private static PartiesController instance;
     public static PartiesController getInstance() { return instance; }

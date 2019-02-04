@@ -8,6 +8,7 @@ import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.IntegratesWith;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.core.PlayerInventoryData;
@@ -38,6 +39,7 @@ import java.sql.SQLException;
 @DependsOn(Hotswitch.class)
 @IntegratesWith(module = BankController.class, integration = BankIntegration.class)
 @IntegratesWith(module = SkillsController.class, integration = SkillsIntegration.class)
+@ModuleInfo(name = "Gear", info = "")
 public class GearController extends Module {
     private static GearController instance;
     public static GearController getInstance() { return instance; }

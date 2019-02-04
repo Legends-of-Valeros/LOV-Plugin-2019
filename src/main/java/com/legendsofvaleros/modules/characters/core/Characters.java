@@ -6,6 +6,7 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.CharactersAPI;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
@@ -41,6 +42,7 @@ import java.util.UUID;
 @DependsOn(CombatEngine.class)
 @DependsOn(LevelArchetypes.class)
 @DependsOn(PlayerMenu.class)
+@ModuleInfo(name = "Characters", info = "")
 public class Characters extends Module implements CharactersAPI {
     private static Characters instance;
 

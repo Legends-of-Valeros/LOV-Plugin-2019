@@ -6,6 +6,7 @@ import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -33,6 +34,7 @@ import java.util.concurrent.ExecutionException;
 @DependsOn(GearController.class)
 @DependsOn(Characters.class)
 // TODO: Create subclass for listeners?
+@ModuleInfo(name = "Auctions", info = "")
 public class AuctionController extends ModuleListener {
     private static AuctionController instance;
     //auction fee in percentage

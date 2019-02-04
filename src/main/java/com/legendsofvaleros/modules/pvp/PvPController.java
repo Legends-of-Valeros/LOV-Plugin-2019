@@ -4,6 +4,7 @@ import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.IntegratesWith;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.bank.core.Currency;
 import com.legendsofvaleros.modules.characters.api.Cooldowns;
@@ -31,6 +32,7 @@ import org.bukkit.event.EventPriority;
 @DependsOn(Characters.class)
 @DependsOn(BankController.class)
 @IntegratesWith(module = BankController.class, integration = BankIntegration.class)
+@ModuleInfo(name = "PvP", info = "")
 public class PvPController extends Module {
     public static final float DAMAGE_MULTIPLIER = 0.6f;
 

@@ -2,6 +2,7 @@ package com.legendsofvaleros.modules.hearthstones;
 
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.hearthstones.core.HomePoint;
@@ -15,6 +16,7 @@ import org.bukkit.event.EventHandler;
 @DependsOn(PlayerMenu.class)
 @DependsOn(Characters.class)
 // TODO: Create subclass for listeners?
+@ModuleInfo(name = "Hearthstones", info = "")
 public class HearthstoneController extends ModuleListener {
     private static HearthstoneController instance;
     public static HearthstoneController getInstance() { return instance; }

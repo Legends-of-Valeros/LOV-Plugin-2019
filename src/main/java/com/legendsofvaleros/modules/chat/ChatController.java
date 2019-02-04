@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.auction.AuctionController;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -46,6 +47,7 @@ import java.util.concurrent.ExecutionException;
 
 @DependsOn(PlayerMenu.class)
 @DependsOn(Characters.class)
+@ModuleInfo(name = "Chat", info = "")
 public class ChatController extends ModuleListener {
     private static ChatController instance;
     public static ChatController getInstance() { return instance; }

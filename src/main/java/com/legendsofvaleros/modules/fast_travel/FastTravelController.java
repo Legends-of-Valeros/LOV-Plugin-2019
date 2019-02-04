@@ -2,6 +2,7 @@ package com.legendsofvaleros.modules.fast_travel;
 
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
@@ -13,6 +14,7 @@ import org.bukkit.entity.Player;
 @DependsOn(BankController.class)
 @DependsOn(Characters.class)
 @DependsOn(NPCsController.class)
+@ModuleInfo(name = "FastTravel", info = "")
 public class FastTravelController extends Module {
     private static FastTravelController instance;
     public static FastTravelController getInstance() { return instance; }

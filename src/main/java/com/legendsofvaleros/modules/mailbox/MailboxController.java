@@ -6,6 +6,7 @@ import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
@@ -22,6 +23,7 @@ import java.util.Map;
  */
 @DependsOn(Characters.class)
 // TODO: Create subclass for listeners?
+@ModuleInfo(name = "Mailbox", info = "")
 public class MailboxController extends ModuleListener {
     private static MailboxController instance;
 

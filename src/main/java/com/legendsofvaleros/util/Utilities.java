@@ -3,6 +3,7 @@ package com.legendsofvaleros.util;
 import com.codingforcookies.doris.Doris;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ModuleListener;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.scheduler.InternalScheduler;
 import com.legendsofvaleros.scheduler.InternalTask;
 import com.legendsofvaleros.util.MessageUtil.ExceptionManager;
@@ -22,6 +23,7 @@ import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerCommandEvent;
 
 // TODO: Create subclass for listeners?
+@ModuleInfo(name = "Utilities", info = "")
 public class Utilities extends ModuleListener {
     private static Utilities instance;
 

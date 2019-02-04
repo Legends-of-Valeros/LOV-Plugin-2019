@@ -5,6 +5,7 @@ import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.Modules;
 import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
@@ -41,6 +42,7 @@ import org.bukkit.event.EventPriority;
 @DependsOn(LootManager.class)
 @DependsOn(PartiesController.class)
 @DependsOn(NPCsController.class)
+@ModuleInfo(name = "Mobs", info = "")
 public class MobsController extends Module {
     private static MobsController instance;
     public static MobsController getInstance() { return instance; }

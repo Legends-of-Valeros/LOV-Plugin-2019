@@ -5,6 +5,7 @@ import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.IntegratesWith;
+import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.hearthstones.event.HearthstoneCastEvent;
@@ -25,6 +26,7 @@ import java.util.HashMap;
 @DependsOn(CombatEngine.class)
 @DependsOn(Characters.class)
 @IntegratesWith(module = HearthstoneController.class, integration = HearthstonesIntegration.class)
+@ModuleInfo(name = "Regions", info = "")
 public class RegionController extends Module {
     private static RegionController instance;
     public static RegionController getInstance() { return instance; }
