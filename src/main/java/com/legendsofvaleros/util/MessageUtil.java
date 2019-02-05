@@ -159,6 +159,9 @@ public class MessageUtil {
 
         if (log || LegendsOfValeros.getMode().isVerbose()) {
             th.printStackTrace();
+        }
+
+        if(log || LegendsOfValeros.getMode().doLogSaving()){
             sendExceptionToDiscord(module, sender, trace);
         }
 
