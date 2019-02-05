@@ -73,18 +73,20 @@ public class MessageUtil {
     }
 
     public static void sendDebugVerbose(CommandSender sender, String message) {
-        if (sender == null) return;
-        if (!(sender instanceof Player)) return;
-        if (!DebugFlags.is((Player) sender)) return;
-        if (!DebugFlags.get((Player) sender).verbose) return;
+        if (sender == null || !(sender instanceof Player)
+                || !DebugFlags.is((Player) sender)
+                || !DebugFlags.get((Player) sender).verbose) {
+            return;
+        }
         sendDebug(sender, message);
     }
 
-    public static void sendDebugVerbose(CommandSender sender, BaseComponent[] message) {
-        if (sender == null) return;
-        if (!(sender instanceof Player)) return;
-        if (!DebugFlags.is((Player) sender)) return;
-        if (!DebugFlags.get((Player) sender).verbose) return;
+    public static void sendDebugVerboseComponent(CommandSender sender, BaseComponent[] message) {
+        if (sender == null || !(sender instanceof Player)
+                || !DebugFlags.is((Player) sender)
+                || !DebugFlags.get((Player) sender).verbose) {
+            return;
+        }
         sendDebug(sender, message);
     }
 
