@@ -1,11 +1,10 @@
 package com.legendsofvaleros.modules.auction.gui;
 
 import com.codingforcookies.robert.core.GUI;
-import com.codingforcookies.robert.slot.SlotUsable;
 import com.legendsofvaleros.modules.auction.Auction;
 import com.legendsofvaleros.modules.auction.AuctionChatPrompt;
-import com.legendsofvaleros.modules.auction.AuctionController;
 import com.legendsofvaleros.modules.auction.AuctionChatPrompt.AuctionPromptType;
+import com.legendsofvaleros.modules.auction.AuctionController;
 import com.legendsofvaleros.modules.auction.filter.FilterDirection;
 import com.legendsofvaleros.modules.auction.filter.FilterType;
 import com.legendsofvaleros.modules.gear.item.Gear;
@@ -51,14 +50,14 @@ public class AuctionGui extends GUI implements Listener {
 
     private void addUIElements() {
         if (currentPage > 1) {
-            slot(45, Material.PAPER, (gui, p, e) -> { //previous page
+            slot(45, AuctionGuiItem.PREVIOUS_PAGE.toItemStack(), (gui, p, e) -> { //previous page
                 e.setCancelled(true);
                 currentPage--;
                 init();
             });
         }
 
-        slot(47, Material.GREEN_RECORD, (gui, p, e) -> { //refresh
+        slot(47, AuctionGuiItem.REFRESH.toItemStack(), (gui, p, e) -> { //refresh
             e.setCancelled(true);
         });
 
@@ -66,20 +65,11 @@ public class AuctionGui extends GUI implements Listener {
             //TODO
         });
 
-        slot(48, filterDirection.getGuiMaterial(), new SlotUsable() { //change filter type
-            @Override
-            public void onPickup(GUI gui, Player p, ItemStack stack, InventoryClickEvent e) {
-                e.setCancelled(true);
-            }
-
-            @Override
-            public void onPlace(GUI gui, Player p, ItemStack stack, InventoryClickEvent e) {
-                e.setCancelled(true);
-            }
+        slot(48, filterDirection.getGuiMaterial(), (gui, p, e) -> { //change filter type
         });
 
         if (currentPage < totalPages) {
-            slot(54, Material.PAPER, (gui, p, e) -> {
+            slot(54, AuctionGuiItem.NEXT_PAGE.toItemStack(), (gui, p, e) -> {
                 currentPage++;
                 init();
             });
