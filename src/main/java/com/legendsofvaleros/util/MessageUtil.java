@@ -240,6 +240,30 @@ public class MessageUtil {
         return sw.getBuffer().toString();
     }
 
+    public static String pruneStackTrace(String trace) {
+        StringBuilder str = new StringBuilder();
+
+        int i = -1;
+        for(String line : trace.split("\n")) {
+            if(i == -1) {
+                // Ignore non-LOV packages
+                if (!line.contains("com.legendsofvaleros")) continue;
+                // Ignore scheduler package
+                if (line.contains("com.legendsofvaleros.scheduler")) continue;
+            }
+
+            i++;
+
+            LegendsOfValeros.getInstance().getLogger().warning(line);
+            str.append(line + "\n");
+
+            // Don't print too many lines. After an amount, it's just spam.
+            if(i > 6 && !line.contains("legendsofvaleros")) break;
+        }
+
+        return str.toString();
+    }
+
     public static void onEnable() {
         Thread.setDefaultUncaughtExceptionHandler((thread, th) -> {
             th.printStackTrace();
