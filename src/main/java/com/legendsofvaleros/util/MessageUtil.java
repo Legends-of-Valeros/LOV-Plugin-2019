@@ -157,8 +157,10 @@ public class MessageUtil {
                 }
         }
 
-        if (log || LegendsOfValeros.getMode().isVerbose())
+        if (log || LegendsOfValeros.getMode().isVerbose()) {
             th.printStackTrace();
+            sendExceptionToDiscord(module, sender, trace);
+        }
 
         return trace;
     }
@@ -195,26 +197,35 @@ public class MessageUtil {
         if (LegendsOfValeros.getMode().doLogSaving()) {
             try {
                 ExceptionManager.add(module, sender, trace);
-
-                if (Discord.SERVER != null) {
-
-                    // Make this channel configurable
-                    Channel channel = Discord.SERVER.getChannelById("358612310731915264");
-
-                    if (channel != null) {
-                        Utilities.getInstance().getScheduler().executeInMyCircle(() -> {
-                            try {
-                                channel.sendMessage("`[" + Discord.TAG + (module != null ? ":" + module : "") + "]` **"
-                                        + (sender != null ? " **__" + sender.getName() + "__ triggered an exception:" : "Triggered an exception:")
-                                        + "** ```" + trace + "```").get();
-                            } catch (InterruptedException | ExecutionException _e) {
-                                _e.printStackTrace();
-                            }
-                        });
-                    }
-                }
+                sendExceptionToDiscord(module, sender, trace);
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Sends an exception to discord into the logs channel
+     * @param module
+     * @param sender
+     * @param trace
+     */
+    public static void sendExceptionToDiscord(String module, CommandSender sender, String trace) {
+        if (Discord.SERVER != null) {
+
+            // Make this channel configurable
+            Channel channel = Discord.SERVER.getChannelById("358612310731915264");
+
+            if (channel != null) {
+                Utilities.getInstance().getScheduler().executeInMyCircle(() -> {
+                    try {
+                        channel.sendMessage("`[" + Discord.TAG + (module != null ? ":" + module : "") + "]` **"
+                                + (sender != null ? " **__" + sender.getName() + "__ triggered an exception:" : "Triggered an exception:")
+                                + "** ```" + trace + "```").get();
+                    } catch (InterruptedException | ExecutionException _e) {
+                        _e.printStackTrace();
+                    }
+                });
             }
         }
     }
