@@ -101,6 +101,11 @@
 
     <repositories>
         <repository>
+            <id>jcenter</id>
+            <url>https://jcenter.bintray.com/</url>
+        </repository>
+
+        <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/groups/snapshots/</url>
         </repository>
@@ -135,6 +140,11 @@
         </dependency>
 
         <!-- Shaded dependencies -->
+        <dependency>
+            <groupId>io.deepstream</groupId>
+            <artifactId>deepstream.io-client-java</artifactId>
+            <version>2.2.2</version>
+        </dependency>
         <dependency>
             <groupId>de.btobastian.javacord</groupId>
             <artifactId>javacord</artifactId>
