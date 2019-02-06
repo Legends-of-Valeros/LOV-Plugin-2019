@@ -63,6 +63,14 @@ public class APIController extends Module {
     }
 
     private static <T> T create(Class<T> clazz) {
+        return create((Executor)null, clazz);
+    }
+
+    private static <T> T create(Module module, Class<T> clazz) {
+        return create(module.getScheduler()::async, clazz);
+    }
+
+    private static <T> T create(Executor executor, Class<T> clazz) {
         String prefix = RPCFunction.getPrefix(clazz);
 
         Map<String, RPCFunction> methods = new HashMap<>();
@@ -70,7 +78,7 @@ public class APIController extends Module {
         for(Method m : clazz.getDeclaredMethods()) {
             if(m.getParameterTypes().length > 1)
                 throw new IllegalArgumentException("RPC interfaces can only a maximum of one argument.");
-            methods.put(m.getName(), new RPCFunction<>(prefix + m.getName()));
+            methods.put(m.getName(), new RPCFunction<>(executor, prefix + m.getName()));
         }
 
         return (T)Proxy.newProxyInstance(clazz.getClassLoader(), new java.lang.Class[] { clazz },

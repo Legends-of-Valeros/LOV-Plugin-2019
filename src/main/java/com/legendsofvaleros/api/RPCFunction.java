@@ -10,6 +10,7 @@ import org.apache.http.concurrent.FutureCallback;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.concurrent.Executor;
 
 public class RPCFunction<T> {
     public interface RPCCallback<T> {
@@ -39,11 +40,18 @@ public class RPCFunction<T> {
         return name;
     }
 
+    private final Executor executor;
+
     private final DeepstreamClient client;
     private final String func;
 
-    public RPCFunction(Method m) { this(getMethodName(m)); }
-    public RPCFunction(String func) {
+    public RPCFunction(Method m) { this(null, getMethodName(m)); }
+    public RPCFunction(String func) { this(null, func); }
+
+    public RPCFunction(Executor executor, Method m) { this(executor, getMethodName(m)); }
+    public RPCFunction(Executor executor, String func) {
+        this.executor = executor != null ? executor : APIController.getInstance().getPool();
+
         this.client = APIController.getInstance().getClient();
         this.func = func;
     }
@@ -65,7 +73,7 @@ public class RPCFunction<T> {
     public void call(FutureCallback<T> callback) { call(null, callback); }
 
     public void call(Object arg, FutureCallback<T> callback) {
-        APIController.getInstance().getPool().execute(() -> {
+        executor.execute(() -> {
             try {
                 callback.completed(callSync(arg));
             } catch(Exception e) {
