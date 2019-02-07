@@ -7,6 +7,7 @@ import com.legendsofvaleros.modules.mobs.behavior.test.ITest;
 import com.legendsofvaleros.modules.mobs.trait.MobTrait;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import net.citizensnpcs.api.npc.NPC;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -54,17 +55,29 @@ public class ThreatBehavior {
 		public NodeStatus onStep(CombatEntity ce, long ticks) {
 			NPC npc = NPCsController.manager().registry.getNPC(ce.getLivingEntity());
 
-			Block standingOn = ce.getLivingEntity().getWorld().getBlockAt(ce.getLivingEntity().getLocation());
+			npc.getNavigator().setTarget(ce.getThreat().getTarget().getLivingEntity(), false);
+
+			/*boolean inWater = false;
 
 			// If an NPC is in water, they need to use the citizens pathfinder,
 			// otherwise they get stuck. This is not default, because they look
 			// significantly more robotic.
-			if(standingOn.getType() == Material.WATER || standingOn.getType() == Material.STATIONARY_WATER)
-				npc.getNavigator().getLocalParameters().useNewPathfinder(true);
-			else
-				npc.getNavigator().getLocalParameters().useNewPathfinder(false);
+			Block standingOn;
+			for(int i = -1; i < 2; i++) {
+				standingOn = ce.getLivingEntity().getWorld().getBlockAt(ce.getLivingEntity().getLocation().subtract(0, i, 0));
+				if(standingOn.getType() == Material.WATER || standingOn.getType() == Material.STATIONARY_WATER) {
+                    inWater = true;
+                    break;
+                }
+			}
 
-			npc.getNavigator().setTarget(ce.getThreat().getTarget().getLivingEntity(), false);
+			if(inWater) {
+                npc.getNavigator().getLocalParameters().useNewPathfinder(true);
+                npc.getNavigator().setTarget(ce.getThreat().getTarget().getLivingEntity().getLocation());
+            }else{
+                npc.getNavigator().getLocalParameters().useNewPathfinder(false);
+                npc.getNavigator().setTarget(ce.getThreat().getTarget().getLivingEntity(), false);
+            }*/
 
 			return NodeStatus.SUCCESS;
 		}

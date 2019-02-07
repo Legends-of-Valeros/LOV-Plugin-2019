@@ -284,7 +284,7 @@ public class Mob {
             npc = NPCsController.manager().registry.createNPC(mob.type, "");
 
             npc.getNavigator().getLocalParameters().updatePathRate(20)
-                    .useNewPathfinder(false)
+                    .useNewPathfinder(true)
                     .stuckAction(AIStuckAction.INSTANCE)
                     .avoidWater(false);
 
