@@ -45,18 +45,30 @@ public class APIController extends Module {
 
             api = APIController.create(APITest.class);
 
-            ListenableFuture<Object> future = api.ping();
-            future.addListener(() -> {
+
+            api.ping().on((err, val) -> {
+                if(err != null) {
+                    err.printStackTrace();
+                    return;
+                }
+
                 System.out.println("async ping");
-            }, MoreExecutors.directExecutor());
+            });
 
             System.out.println("sync ping");
-            api.pingSync();
+            System.out.println(api.pingSync());
             System.out.println("sync pong");
 
-            new RPCFunction("ping").call((o) -> {
+            new RPCFunction(getScheduler()::async, "ping").call()
+                .on((err, val) -> {
+                if(err != null) {
+                    err.printStackTrace();
+                    return;
+                }
+
                 System.out.println("manual pong");
             });
+
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -71,14 +83,12 @@ public class APIController extends Module {
     }
 
     private static <T> T create(Executor executor, Class<T> clazz) {
-        String prefix = RPCFunction.getPrefix(clazz);
-
         Map<String, RPCFunction> methods = new HashMap<>();
 
         for(Method m : clazz.getDeclaredMethods()) {
             if(m.getParameterTypes().length > 1)
                 throw new IllegalArgumentException("RPC interfaces can only a maximum of one argument.");
-            methods.put(m.getName(), new RPCFunction<>(executor, prefix + m.getName()));
+            methods.put(m.getName(), new RPCFunction<>(executor, m));
         }
 
         return (T)Proxy.newProxyInstance(clazz.getClassLoader(), new java.lang.Class[] { clazz },
