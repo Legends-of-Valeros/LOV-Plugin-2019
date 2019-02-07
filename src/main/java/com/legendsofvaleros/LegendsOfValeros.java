@@ -120,9 +120,6 @@ public class LegendsOfValeros extends JavaPlugin {
             e.printStackTrace();
             System.exit(1);
         }
-
-        MessageUtil.sendException(Utilities.getInstance(), "Test error with no trace");
-        MessageUtil.sendSevereException(Utilities.getInstance(), "Test error with trace");
     }
 
     @Override
