@@ -70,6 +70,7 @@ public class ItemListener implements Listener {
 
         if (instance == null) return;
 
+        int amount = instance.amount;
         ItemUtil.giveItem(Characters.getPlayerCharacter(event.getPlayer()), instance);
 
         if (instance.getType().isTradable()) {
@@ -79,7 +80,7 @@ public class ItemListener implements Listener {
                     public void onAccept(GUI gui, Player p) {
                         gui.close(p);
 
-                        if(!ItemUtil.removeItem(event.getPlayer(), instance))
+                        if(!ItemUtil.removeItem(event.getPlayer(), instance.gear, amount))
                             MessageUtil.sendError(event.getPlayer(), "Unable to remove that, for some reason...");
                         else
                             MessageUtil.sendUpdate(event.getPlayer(), instance.getName() + " has been destroyed.");

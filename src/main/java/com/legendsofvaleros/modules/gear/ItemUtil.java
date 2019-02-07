@@ -71,7 +71,13 @@ public class ItemUtil {
 		item.setGlowing(true);
 		instance.getRarityLevel().getTeam().addEntry(item.getUniqueId().toString());
 	}
-	
+
+	/**
+	 * Gives the gear to the player. This function directly alters the amount field
+	 * in the passed instance object, so if you want to know how much COULDN'T be
+	 * put into the user's inventory, just read the instance amount after calling
+	 * this function.
+	 */
 	public static void giveItem(PlayerCharacter pc, Gear.Instance instance) {
 		if(instance == null) return;
 
@@ -132,7 +138,7 @@ public class ItemUtil {
 	}
 	
 	public static boolean removeItem(Player p, Gear gear, int amount) {
-		if(gear == null) return false;
+		if(gear == null || amount <= 0) return false;
 
 		ItemStack[] contents = p.getInventory().getContents();
 		Gear.Instance item;
