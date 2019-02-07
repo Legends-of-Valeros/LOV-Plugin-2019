@@ -286,7 +286,7 @@ public class Gear implements IGear {
         }
 
         public ItemStack toStack() {
-            if (amount == 0) return null;
+            if (amount <= 0) return new ItemStack(Material.AIR);
 
             try {
                 ItemBuilder builder = gear.model.toStack();
