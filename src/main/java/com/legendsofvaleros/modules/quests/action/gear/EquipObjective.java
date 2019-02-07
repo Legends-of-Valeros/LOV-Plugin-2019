@@ -24,7 +24,7 @@ public class EquipObjective extends AbstractQuestObjective<QuestObjectiveProgres
 		item = Gear.fromID(id);
 
 		if(item == null)
-			MessageUtil.sendException(GearController.getInstance(), "No item with that ID in gear. Offender: " + id + " in " + getQuest().getId(), false);
+			MessageUtil.sendException(GearController.getInstance(), "No item with that ID in gear. Offender: " + id + " in " + getQuest().getId());
 	}
 
 	@Override

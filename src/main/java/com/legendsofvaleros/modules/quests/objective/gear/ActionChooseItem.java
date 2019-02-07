@@ -87,7 +87,7 @@ public class ActionChooseItem extends AbstractQuestAction {
 
 			gui.open(pc.getPlayer());
 		} catch(Exception e) {
-			MessageUtil.sendException(GearController.getInstance(), pc.getPlayer(), e, false);
+			MessageUtil.sendException(GearController.getInstance(), pc.getPlayer(), e);
 		}
 	}
 }

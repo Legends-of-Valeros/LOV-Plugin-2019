@@ -61,7 +61,7 @@ public class GuildCommands extends BaseCommand {
 
                     MessageUtil.sendUpdate(player, "Guild created successfully!");
                 } catch(Exception e) {
-                    MessageUtil.sendException(GuildController.getInstance(), e, true);
+                    MessageUtil.sendSevereException(GuildController.getInstance(), e);
                 }
             }, GuildController.getInstance().getScheduler()::async);
 

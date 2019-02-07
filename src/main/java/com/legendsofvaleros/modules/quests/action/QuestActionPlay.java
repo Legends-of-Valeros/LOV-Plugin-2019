@@ -58,7 +58,7 @@ public abstract class QuestActionPlay {
             public void run(Integer actionI) {
                 QuestController.getInstance().getScheduler().executeInSpigotCircle(() -> {
                     if (progress.actionI == null) {
-                        MessageUtil.sendException(QuestController.getInstance(), "A weird thing happened", false);
+                        MessageUtil.sendException(QuestController.getInstance(), "A weird thing happened");
                         return;
                     }
 

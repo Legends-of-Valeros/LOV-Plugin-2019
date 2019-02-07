@@ -28,10 +28,10 @@ public class FetchForNPCObjective extends AbstractQuestObjective<QuestObjectiveP
         item = Gear.fromID(id);
 
         if (item == null)
-            MessageUtil.sendException(GearController.getInstance(), "No item with that ID in gear. Offender: " + id + " in " + getQuest().getId(), false);
+            MessageUtil.sendException(GearController.getInstance(), "No item with that ID in gear. Offender: " + id + " in " + getQuest().getId());
 
         if (!NPCsController.isNPC(npcId)) {
-            MessageUtil.sendException(GearController.getInstance(), "No NPC with that ID in gear. Offender: " + id + " in " + getQuest().getId(), false);
+            MessageUtil.sendException(GearController.getInstance(), "No NPC with that ID in gear. Offender: " + id + " in " + getQuest().getId());
             return;
         }
 

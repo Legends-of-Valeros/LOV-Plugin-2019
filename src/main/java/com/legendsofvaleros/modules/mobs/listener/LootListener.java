@@ -57,7 +57,7 @@ public class LootListener implements Listener {
                 try {
                     LootTable table = future.get();
                     if (table == null) {
-                        MessageUtil.sendException(LootManager.getInstance(), event.getKiller().getLivingEntity(), new Exception("Mob has an unknown loot table. Offender: " + data.id + " on " + entity.mob.getId()), true);
+                        MessageUtil.sendSevereException(LootManager.getInstance(), event.getKiller().getLivingEntity(), "Mob has an unknown loot table. Offender: " + data.id + " on " + entity.mob.getId());
                         return;
                     }
 

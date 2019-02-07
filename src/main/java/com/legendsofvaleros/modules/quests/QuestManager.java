@@ -122,7 +122,8 @@ public class QuestManager {
 
                 field.set(obj, gson.getAdapter(field.getType()).fromJsonTree(entry.getValue()));
             } catch (Exception e) {
-                MessageUtil.sendException(QuestController.getInstance(), "Failed to apply fields! Offender: " + (obj == null ? "null" : obj.getClass().getSimpleName()) + ":" + act, true);
+                QuestController.getInstance().getLogger().severe("Failed to apply fields! Offender: " + (obj == null ? "null" : obj.getClass().getSimpleName()) + ":" + act);
+                MessageUtil.sendSevereException(QuestController.getInstance(), e);
             }
         }
     }
@@ -256,7 +257,7 @@ public class QuestManager {
         quests.cleanUp();
 
         if (quests.size() > 0)
-            MessageUtil.sendException(QuestController.getInstance(), quests.size() + " quests did not get cleared from the cache.", false);
+            MessageUtil.sendException(QuestController.getInstance(), quests.size() + " quests did not get cleared from the cache.");
 
         for (Player p : Bukkit.getOnlinePlayers()) {
             if(!Characters.isPlayerCharacterLoaded(p)) continue;
@@ -323,7 +324,7 @@ public class QuestManager {
                                     }
                                 } catch (Exception e) {
                                     QuestController.getInstance().getLogger().warning("Player attempt to load progress for quest, but something went wrong. Offender: " + pc.getPlayer().getName() + " in quest " + questId);
-                                    MessageUtil.sendException(QuestController.getInstance(), pc.getPlayer(), e, true);
+                                    MessageUtil.sendSevereException(QuestController.getInstance(), pc.getPlayer(), e);
                                 }
 
                                 int i = questsToLoad.decrementAndGet();
@@ -544,7 +545,7 @@ public class QuestManager {
                         ret.set(quest);
                     } catch (Exception e) {
                         QuestController.getInstance().getLogger().severe("Failed to load quest. Offender: " + id);
-                        MessageUtil.sendException(QuestController.getInstance(), null, e, false);
+                        MessageUtil.sendException(QuestController.getInstance(), null, e);
                         ret.set(null);
                     }
                 })

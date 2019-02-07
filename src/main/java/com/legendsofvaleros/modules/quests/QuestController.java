@@ -192,7 +192,7 @@ public class QuestController extends ModuleListener {
                     MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' doesn't exist!");
                 }
             } catch (Exception e) {
-                MessageUtil.sendException(QuestController.getInstance(), pc.getPlayer(), e, true);
+                MessageUtil.sendSevereException(QuestController.getInstance(), pc.getPlayer(), e);
             }
 
             ret.set(false);

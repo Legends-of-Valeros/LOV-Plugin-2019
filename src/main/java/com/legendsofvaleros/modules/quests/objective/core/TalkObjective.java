@@ -20,7 +20,7 @@ public class TalkObjective extends AbstractQuestObjective<QuestObjectiveProgress
     @Override
     protected void onInit() {
         if (!NPCsController.isNPC(id)) {
-            MessageUtil.sendException(QuestController.getInstance(), "No NPC with that ID in gear. Offender: " + id + " in " + getQuest().getId(), false);
+            MessageUtil.sendException(QuestController.getInstance(), "No NPC with that ID in gear. Offender: " + id + " in " + getQuest().getId());
             return;
         }
 

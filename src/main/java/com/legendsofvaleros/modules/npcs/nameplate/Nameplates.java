@@ -86,7 +86,7 @@ public class Nameplates {
                     }
                 } catch(IllegalArgumentException e) {
                     // Something happened. Log it and destroy the hologram.
-                    MessageUtil.sendException(MobsController.getInstance(), "Nameplate error. Offender: " + uuid + " or " + entity.getName(), false);
+                    MessageUtil.sendException(MobsController.getInstance(), "Nameplate error. Offender: " + uuid + " or " + entity.getName());
 
                     e.printStackTrace();
 

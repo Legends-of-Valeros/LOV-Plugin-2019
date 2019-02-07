@@ -171,7 +171,7 @@ public class TraitQuestGiver extends LOVTrait {
                         playerQuests.put(quest, status);
                 }
             } catch (Exception e) {
-                MessageUtil.sendException(QuestController.getInstance(), player, e, true);
+                MessageUtil.sendSevereException(QuestController.getInstance(), player, e);
                 return;
             }
 
@@ -205,7 +205,7 @@ public class TraitQuestGiver extends LOVTrait {
                     else
                         throw new Exception("Failed to load quest on NPC! Offender: " + questId + " on " + trait.npcId);
                 } catch (Exception e) {
-                    MessageUtil.sendException(QuestController.getInstance(), e, false);
+                    MessageUtil.sendException(QuestController.getInstance(), e);
                 }
 
                 if (left.decrementAndGet() == 0)

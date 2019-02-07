@@ -66,7 +66,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
     private Callback<CharacterId> loadingCallback = (value, error) -> {
         if (error != null) {
             Characters.getInstance().getLogger().severe("Error while loading a player's character data");
-            MessageUtil.sendSevereException(Characters.getInstance(), null, error);
+            MessageUtil.sendSevereException(Characters.getInstance(), error);
         } else if (value != null) {
             Characters.getInstance().getScheduler().executeInSpigotCircle(() -> onDoneLoading(value));
         }
@@ -75,7 +75,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
     private Callback<CharacterId> logoutCallback = (value, error) -> {
         if (error != null) {
             Characters.getInstance().getLogger().severe("Error while logging out a player's character data");
-            MessageUtil.sendSevereException(Characters.getInstance(), null, error);
+            MessageUtil.sendSevereException(Characters.getInstance(), error);
         } else if (value != null) {
             Characters.getInstance().getScheduler().executeInSpigotCircle(() -> onDoneLoggingOut(value));
         }
@@ -317,7 +317,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
                         } catch (EventException e) {
                             Logger lg = Characters.getInstance().getLogger();
                             lg.severe("Encountered an issue while manually informing listeners of a player-characters logout on-disable.");
-                            MessageUtil.sendException(Characters.getInstance(), player, e, true);
+                            MessageUtil.sendSevereException(Characters.getInstance(), player, e);
                         }
                     }
                 }
@@ -423,7 +423,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
 
                     } catch (Exception e) {
                         Characters.getInstance().getLogger().warning("Could not get base character data.");
-                        MessageUtil.sendException(Characters.getInstance(), player, e, true);
+                        MessageUtil.sendSevereException(Characters.getInstance(), player, e);
                     }
                 }, SELECT_DELAY);
             }, Characters.getInstance().getScheduler()::async);

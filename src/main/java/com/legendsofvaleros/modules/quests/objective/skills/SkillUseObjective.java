@@ -17,7 +17,7 @@ public class SkillUseObjective extends AbstractQuestObjective<QuestObjectiveProg
 	@Override
 	protected void onInit() {
 		if ((skill = Skill.getSkillById(id)) == null) {
-			MessageUtil.sendException(QuestController.getInstance(), "No skill with that ID in gear. Offender: " + id + " in " + getQuest().getId(), false);
+			MessageUtil.sendException(QuestController.getInstance(), "No skill with that ID in gear. Offender: " + id + " in " + getQuest().getId());
 			return;
 		}
 	}

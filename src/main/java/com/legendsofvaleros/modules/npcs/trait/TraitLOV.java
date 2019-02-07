@@ -65,14 +65,14 @@ public class TraitLOV extends Trait implements CommandConfigurable {
                 p = foundP;
             }
         } catch (CommandException e) {
-            MessageUtil.sendException(NPCsController.getInstance(), p, e, false);
+            MessageUtil.sendException(NPCsController.getInstance(), p, e);
             return;
         }
 
         String npcId = ctx.getString(1).toLowerCase();
 
         if (!NPCsController.isNPC(npcId)) {
-            MessageUtil.sendException(NPCsController.getInstance(), p, new Exception("No NPC with that ID exists in the cache. Offender: " + npcId), false);
+            MessageUtil.sendException(NPCsController.getInstance(), p, new Exception("No NPC with that ID exists in the cache. Offender: " + npcId));
             return;
         }
 
@@ -106,7 +106,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
         if (npcData == null) {
             getNPC().data().setPersistent(NPC.NAMEPLATE_VISIBLE_METADATA, true);
             getNPC().getEntity().setCustomNameVisible(true);
-            MessageUtil.sendException(NPCsController.getInstance(), "No NPC with that ID exists in the cache. Offender: " + npcId + " on " + getNPC().getId(), false);
+            MessageUtil.sendException(NPCsController.getInstance(), "No NPC with that ID exists in the cache. Offender: " + npcId + " on " + getNPC().getId());
             return;
         }
 
@@ -126,7 +126,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
                 return;
             }
         } else {
-            MessageUtil.sendException(NPCsController.getInstance(), "NPC has a null name. Offender: " + npcId + " on " + getNPC().getId(), false);
+            MessageUtil.sendException(NPCsController.getInstance(), "NPC has a null name. Offender: " + npcId + " on " + getNPC().getId());
         }
 
         nameplates = Nameplates.get(getNPC());
@@ -156,7 +156,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
 
                 return;
             } catch (Exception e) {
-                MessageUtil.sendException(NPCsController.getInstance(), null, e, false);
+                MessageUtil.sendException(NPCsController.getInstance(), null, e);
             }
         }
 

@@ -40,8 +40,7 @@ public class ItemManager {
                                 throw new RuntimeException("Unknown component on item: Offender: " + entry.getKey());
                             components.put(entry.getKey(), gson.fromJson(entry.getValue(), comp));
                         } catch (Exception e) {
-                            Exception ex = new Exception(e + ". Offender: " + entry.getKey() + " " + entry.getValue().toString());
-                            MessageUtil.sendException(GearController.getInstance(), ex, false);
+                            MessageUtil.sendException(GearController.getInstance(), new Exception(e + ". Offender: " + entry.getKey() + " " + entry.getValue().toString()));
                         }
                     }
                     return components;

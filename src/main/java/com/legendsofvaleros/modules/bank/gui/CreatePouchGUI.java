@@ -129,7 +129,7 @@ public class CreatePouchGUI extends GUI {
 			instance.putPersist(WorthComponent.class, amount);
 			return instance.toStack();
 		} catch (Exception e) {
-			MessageUtil.sendException(BankController.getInstance(), p, e, true);
+			MessageUtil.sendSevereException(BankController.getInstance(), p, e);
 		}
 		
 		return null;

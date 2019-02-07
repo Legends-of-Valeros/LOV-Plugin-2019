@@ -43,7 +43,7 @@ public class GraveyardManager {
 
                         Zone z = ZonesController.getManager().getZone(result.getString(GRAVEYARD_ZONE));
                         if (z == null) {
-                            MessageUtil.sendException(GraveyardController.getInstance(), "Graveyard in an unknown zone! Offender: " + pos[0] + ", " + pos[1] + ", " + pos[2], false);
+                            MessageUtil.sendException(GraveyardController.getInstance(), "Graveyard in an unknown zone! Offender: " + pos[0] + ", " + pos[1] + ", " + pos[2]);
                             continue;
                         }
 

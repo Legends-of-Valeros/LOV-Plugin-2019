@@ -94,7 +94,7 @@ public class QuestCommands extends BaseCommand {
 
                 MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' accepted!");
             } catch (Exception e) {
-                MessageUtil.sendException(QuestController.getInstance(), player, e, false);
+                MessageUtil.sendException(QuestController.getInstance(), player, e);
             }
         }, QuestController.getInstance().getScheduler()::async);
     }
@@ -113,7 +113,7 @@ public class QuestCommands extends BaseCommand {
 
                 MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' declined!");
             } catch (Exception e) {
-                MessageUtil.sendException(QuestController.getInstance(), player, e, false);
+                MessageUtil.sendException(QuestController.getInstance(), player, e);
             }
         }, QuestController.getInstance().getScheduler()::async);
     }
@@ -199,7 +199,7 @@ public class QuestCommands extends BaseCommand {
                                     if (completed) tb.strikethrough(true);
                                 }
                             } catch (Exception e) {
-                                MessageUtil.sendException(QuestController.getInstance(), player, e, false);
+                                MessageUtil.sendException(QuestController.getInstance(), player, e);
                                 tb.append("*Plugin error\n").color(ChatColor.DARK_RED);
                             }
                         }

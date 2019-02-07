@@ -45,7 +45,7 @@ public class AbilityStatApplicator implements AbilityStatChangeListener {
         try {
           set.addModifier((EditableValueModifier) builder.build(), model.getValue());
         } catch (ClassCastException ex) {
-			MessageUtil.sendException(Characters.getInstance(), entity.getLivingEntity() instanceof Player ? (Player)entity.getLivingEntity() : null, ex, true);
+			MessageUtil.sendSevereException(Characters.getInstance(), entity.getLivingEntity() instanceof Player ? (Player)entity.getLivingEntity() : null, ex);
           System.out
               .println("Class Stat modifiers rely on EditableValueModifiers! A modifier that could not be cast to that type had to be ignored and was not used!");
         }

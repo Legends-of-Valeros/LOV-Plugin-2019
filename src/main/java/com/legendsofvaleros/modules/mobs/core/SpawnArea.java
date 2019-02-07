@@ -9,6 +9,7 @@ import com.gmail.filoghost.holographicdisplays.api.line.ItemLine;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.mobs.MobManager;
+import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.*;
 import org.bukkit.inventory.ItemStack;
@@ -251,7 +252,7 @@ public class SpawnArea {
         if(radius < 0) {
             radius = 0;
 
-            MessageUtil.sendException(null, "Spawn '" + id + "' has a radius of < 0, setting it to 0.", false);
+            MessageUtil.sendException(MobsController.getInstance(), "Spawn '" + id + "' has a radius of < 0, setting it to 0.");
         }
 
         Location loc = new Location(world,

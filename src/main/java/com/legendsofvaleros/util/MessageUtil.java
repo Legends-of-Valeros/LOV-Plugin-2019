@@ -90,117 +90,52 @@ public class MessageUtil {
         sendDebug(sender, message);
     }
 
-    /**
-     * @param module The module that generated the exception.
-     * @param err    The error that occured.
-     * @param log    If the stack trace should be logged to console.
-     */
-    public static String sendException(Module module, String err, boolean log) {
-        return sendException(module, null, new Exception(err), log);
-    }
+    public static void sendException(Module module, String err) { sendException(module, null, new Exception(err)); }
+    public static void sendException(Module module, Throwable th) { sendException(module, null, th); }
+    public static void sendException(Module module, CommandSender sender, String err) { sendException(module, sender, new Exception(err)); }
+    public static void sendException(Module module, CommandSender sender, Throwable th) { sendException(module.getName(), sender, th, true); }
 
-    /**
-     * @param module The module that generated the exception.
-     * @param sender Who to send the error to/who caused the error.
-     * @param err    The error that occured.
-     * @param log    If the stack trace should be logged to console.
-     */
-    public static String sendException(Module module, CommandSender sender, String err, boolean log) {
-        return sendException(module, sender, new Exception(err), log);
-    }
+    public static void sendException(String module, String err) { sendException(module, null, new Exception(err)); }
+    public static void sendException(String module, Throwable th) { sendException(module, null, th); }
+    public static void sendException(String module, CommandSender sender, String err) { sendException(module, sender, new Exception(err)); }
+    public static void sendException(String module, CommandSender sender, Throwable th) { sendException(module, sender, th, true); }
 
-    /**
-     * @param module The module that generated the exception.
-     * @param th     The error object that occured.
-     * @param log    If the stack trace should be logged to console.
-     */
-    public static String sendException(Module module, Throwable th, boolean log) {
-        return sendException(module, null, th, log);
-    }
+    private static void sendException(String module, CommandSender sender, Throwable th, boolean log) {
+        String message = getThrowableMessage(th);
 
-    /**
-     * @param module The module that generated the exception.
-     * @param sender Who to send the error to/who caused the error.
-     * @param th     The error object that occured.
-     * @param log    If the stack trace should be logged to console.
-     */
-    public static String sendException(Module module, CommandSender sender, Throwable th, boolean log) {
-        return sendException(module.getName(), sender, th, log);
-    }
+        for(String line : pruneStackTrace(getStackTrace(th)).split("\n"))
+            LegendsOfValeros.getInstance().getLogger().severe(line);
 
-    /**
-     * @param module The module that generated the exception.
-     * @param sender Who to send the error to/who caused the error.
-     * @param th     The error object that occured.
-     * @param log    If the stack trace should be logged to console.
-     */
-    public static String sendException(String module, CommandSender sender, Throwable th, boolean log) {
-        String trace = getStackTrace(th);
+        BaseComponent[] bc = new TextBuilder("[X" + (module != null ? ":" + module : "") + "] " + message).color(ChatColor.DARK_RED).create();
 
-        String message;
-        if (th.getMessage() != null) {
-            message = th.getMessage().substring(0, Math.min(th.getMessage().length(), 500));
-        } else {
-            message = "Something went wrong!";
-        }
-
-        BaseComponent[] bc = new TextBuilder("[X" + (module != null ? ":" + module : "") + "] " + message).color(ChatColor.DARK_RED)
-                .hover(trace.replace("\t", "  ").replace("at ", ""))
-                .color(ChatColor.GRAY).create();
-
-        if (sender != null)
+        if(sender != null)
             sender.spigot().sendMessage(bc);
-        else {
+        else{
             for (Player p : Bukkit.getOnlinePlayers())
                 if (p.isOp()) {
                     p.spigot().sendMessage(bc);
                 }
         }
 
-        if (log || LegendsOfValeros.getMode().isVerbose()) {
-            th.printStackTrace();
-        }
-
-        if(log || LegendsOfValeros.getMode().doLogSaving()){
-            sendExceptionToDiscord(module, sender, trace);
-        }
-
-        return trace;
+        if(log && LegendsOfValeros.getMode().doLogSaving())
+            sendExceptionToDiscord(module, sender, th, false);
     }
 
-    /**
-     * A sever exception is logged to console and sent to #logs in Discord if in a production server.
-     */
-    public static void sendSevereException(Module module, Throwable th) {
-        sendSevereException(module, null, th);
-    }
+    public static void sendSevereException(Module module, String err) { sendSevereException(module, null, new Exception(err)); }
+    public static void sendSevereException(Module module, Throwable th) { sendSevereException(module, null, th); }
+    public static void sendSevereException(Module module, CommandSender sender, String err) { sendSevereException(module, sender, new Exception(err)); }
+    public static void sendSevereException(Module module, CommandSender sender, Throwable th) { sendSevereException(module.getName(), sender, th); }
 
-    /**
-     * A sever exception is logged to console and sent to #logs in Discord if in a production server.
-     */
-    public static void sendSevereException(Module module, CommandSender sender, Throwable th) {
-        sendSevereException(module.getName(), sender, th);
-    }
-
-    /**
-     * A sever exception is logged to console and sent to #logs in Discord if in a production server.
-     */
-    public static void sendSevereException(String module, Throwable th) {
-        sendSevereException(module, null, th);
-    }
-
-    /**
-     * A sever exception is logged to console and sent to #logs in Discord if in a production server.
-     */
+    public static void sendSevereException(String module, String err) { sendSevereException(module, null, new Exception(err)); }
+    public static void sendSevereException(String module, Throwable th) { sendSevereException(module, null, th); }
+    public static void sendSevereException(String module, CommandSender sender, String err) { sendSevereException(module, sender, new Exception(err)); }
     public static void sendSevereException(String module, CommandSender sender, Throwable th) {
-        String trace = sendException(module, sender, th, true);
-
-        th.printStackTrace();
+        sendException(module, sender, th, false);
 
         if (LegendsOfValeros.getMode().doLogSaving()) {
             try {
-                ExceptionManager.add(module, sender, trace);
-                sendExceptionToDiscord(module, sender, trace);
+                ExceptionManager.add(module, sender, th);
+                sendExceptionToDiscord(module, sender, th, true);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -211,26 +146,32 @@ public class MessageUtil {
      * Sends an exception to discord into the logs channel
      * @param module
      * @param sender
-     * @param trace
      */
-    public static void sendExceptionToDiscord(String module, CommandSender sender, String trace) {
+    private static void sendExceptionToDiscord(String module, CommandSender sender, Throwable th, boolean includeTrace) {
         if (Discord.SERVER != null) {
-
-            // Make this channel configurable
+            // TODO: Make this channel configurable
             Channel channel = Discord.SERVER.getChannelById("358612310731915264");
 
             if (channel != null) {
+                String message = getThrowableMessage(th);
+                String trace = includeTrace ? pruneStackTrace(getStackTrace(th)) : null;
+
                 Utilities.getInstance().getScheduler().executeInMyCircle(() -> {
                     try {
                         channel.sendMessage("`[" + Discord.TAG + (module != null ? ":" + module : "") + "]` **"
-                                + (sender != null ? " **__" + sender.getName() + "__ triggered an exception:" : "Triggered an exception:")
-                                + "** ```" + trace + "```").get();
+                                + (sender != null ? " **__" + sender.getName() + "__ triggered an exception: " : "")
+                                + message + "**"
+                                + (trace != null ? "```" + trace + "```" : "")).get();
                     } catch (InterruptedException | ExecutionException _e) {
                         _e.printStackTrace();
                     }
                 });
             }
         }
+    }
+
+    private static String getThrowableMessage(Throwable th) {
+        return (th.getMessage() != null ? th.getMessage() : "Something went wrong!");
     }
 
     public static String getStackTrace(final Throwable throwable) {
@@ -243,18 +184,23 @@ public class MessageUtil {
     public static String pruneStackTrace(String trace) {
         StringBuilder str = new StringBuilder();
 
-        int i = -1;
+        int i = -2;
         for(String line : trace.split("\n")) {
-            if(i == -1) {
+            if(i <= -1) {
+                if(i++ == -2)
+                    str.append(line + "\n");
+
                 // Ignore non-LOV packages
                 if (!line.contains("com.legendsofvaleros")) continue;
                 // Ignore scheduler package
                 if (line.contains("com.legendsofvaleros.scheduler")) continue;
+                // Ignore this class
+                if (line.contains("com.legendsofvaleros.util.MessageUtil")) continue;
             }
 
             i++;
 
-            LegendsOfValeros.getInstance().getLogger().warning(line);
+            // LegendsOfValeros.getInstance().getLogger().warning(line);
             str.append(line + "\n");
 
             // Don't print too many lines. After an amount, it's just spam.
@@ -268,8 +214,7 @@ public class MessageUtil {
         Thread.setDefaultUncaughtExceptionHandler((thread, th) -> {
             th.printStackTrace();
 
-            String trace = getStackTrace(th);
-            ExceptionManager.add(null, null, trace);
+            ExceptionManager.add(null, null, th);
         });
     }
 
@@ -294,7 +239,9 @@ public class MessageUtil {
                     .column(TRACE, "TEXT").create();
         }
 
-        public static void add(String module, CommandSender sender, String trace) {
+        public static void add(String module, CommandSender sender, Throwable th) {
+            String trace = pruneStackTrace(getStackTrace(th));
+
             manager.query()
                     .insert()
                     .values(PLUGIN_FIELD, module == null ? "Unknown" : module,

@@ -20,7 +20,7 @@ public class EnterZoneObjective extends AbstractQuestObjective<QuestObjectivePro
         zone = ZonesController.getManager().getZone(id);
 
         if (zone == null) {
-            MessageUtil.sendException(ZonesController.getInstance(), "No zone with that ID in gear. Offender: " + id + " in " + getQuest().getId(), false);
+            MessageUtil.sendException(ZonesController.getInstance(), "No zone with that ID in gear. Offender: " + id + " in " + getQuest().getId());
         }
     }
 

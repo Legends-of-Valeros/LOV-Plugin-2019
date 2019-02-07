@@ -21,7 +21,7 @@ public class ExitRegionObjective extends AbstractQuestObjective<QuestObjectivePr
         region = RegionController.getManager().getRegion(id);
 
         if (region == null)
-            MessageUtil.sendException(RegionController.getInstance(), "No regions with that ID in gear. Offender: " + id + " in " + getQuest().getId(), false);
+            MessageUtil.sendException(RegionController.getInstance(), "No regions with that ID in gear. Offender: " + id + " in " + getQuest().getId());
     }
 
     @Override

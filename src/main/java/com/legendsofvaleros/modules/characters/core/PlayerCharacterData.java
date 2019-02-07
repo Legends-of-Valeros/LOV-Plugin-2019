@@ -165,10 +165,8 @@ public class PlayerCharacterData {
                         try {
                             datum.playerRace = EntityRace.valueOf(raceName);
                         } catch (IllegalArgumentException | NullPointerException ex) {
-                            Characters.getInstance().getLogger().severe(
-                                    "A race name '" + raceName + "' was found in the database, "
-                                            + "but no race with that name exists on this server.");
-                            MessageUtil.sendException(Characters.getInstance(), null, ex, false);
+                            MessageUtil.sendException(Characters.getInstance(), null, "A race name '" + raceName + "' was found in the database, "
+                                    + "but no race with that name exists on this server.");
                             continue;
                         }
 
@@ -176,10 +174,8 @@ public class PlayerCharacterData {
                         try {
                             datum.playerClass = EntityClass.valueOf(className);
                         } catch (IllegalArgumentException | NullPointerException ex) {
-                            Characters.getInstance().getLogger().severe(
-                                    "A race name '" + raceName + "' was found in the database, "
-                                            + "but no race with that name exists on this server.");
-                            MessageUtil.sendException(Characters.getInstance(), null, ex, false);
+                            MessageUtil.sendException(Characters.getInstance(), null, "A race name '" + raceName + "' was found in the database, "
+                                    + "but no race with that name exists on this server.");
                             continue;
                         }
 
@@ -219,7 +215,7 @@ public class PlayerCharacterData {
                                     characters.add(character);
                                 } catch (Exception e) {
                                     Characters.getInstance().getLogger().severe("could not load character " + datum.charNum + " for player " + player.getName());
-                                    MessageUtil.sendException(Characters.getInstance(), player, e, true);
+                                    MessageUtil.sendSevereException(Characters.getInstance(), player, e);
                                 }
                             }
 

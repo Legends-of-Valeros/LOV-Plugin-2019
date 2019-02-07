@@ -30,7 +30,7 @@ public class KillObjective extends AbstractQuestObjective<QuestObjectiveProgress
                 mob = future.get();
 
                 if (mob == null)
-                    MessageUtil.sendException(MobsController.getInstance(), "No instance with that ID in gear. Offender: " + id + " in " + getQuest().getId(), false);
+                    MessageUtil.sendException(MobsController.getInstance(), "No instance with that ID in gear. Offender: " + id + " in " + getQuest().getId());
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }

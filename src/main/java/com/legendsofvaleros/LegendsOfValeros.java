@@ -35,6 +35,7 @@ import com.legendsofvaleros.modules.regions.RegionController;
 import com.legendsofvaleros.modules.skills.SkillsController;
 import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.scheduler.InternalScheduler;
+import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.ProgressBar;
 import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
@@ -119,6 +120,9 @@ public class LegendsOfValeros extends JavaPlugin {
             e.printStackTrace();
             System.exit(1);
         }
+
+        MessageUtil.sendException(Utilities.getInstance(), "Test error with no trace");
+        MessageUtil.sendSevereException(Utilities.getInstance(), "Test error with trace");
     }
 
     @Override

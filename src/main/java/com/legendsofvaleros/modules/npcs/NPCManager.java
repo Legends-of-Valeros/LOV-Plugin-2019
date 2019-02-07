@@ -73,7 +73,7 @@ public class NPCManager implements Listener {
                     try {
                         traits.add(gson.fromJson(elem.getValue(), traitTypes.get(elem.getKey())));
                     } catch (Exception e) {
-                        MessageUtil.sendException(NPCsController.getInstance(), "Failed to load trait. Offender: " + elem.getKey() + " (" + elem.getValue().toString() + ")", false);
+                        MessageUtil.sendException(NPCsController.getInstance(), "Failed to load trait. Offender: " + elem.getKey() + " (" + elem.getValue().toString() + ")");
                         throw e;
                     }
                 }
@@ -120,8 +120,8 @@ public class NPCManager implements Listener {
 
                             npcs.put(result.getString(NPC_ID), data);
                         } catch (Exception e) {
-                            MessageUtil.sendError(Bukkit.getConsoleSender(), "Error while loading NPC: " + result.getString(NPC_ID));
-                            MessageUtil.sendException(NPCsController.getInstance(), e, false);
+                            MessageUtil.sendException(NPCsController.getInstance(), "Error while loading NPC: " + result.getString(NPC_ID));
+                            e.printStackTrace();
                         }
                     }
                 })
