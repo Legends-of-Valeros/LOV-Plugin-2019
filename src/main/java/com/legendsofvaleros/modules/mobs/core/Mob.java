@@ -20,6 +20,7 @@ import com.legendsofvaleros.util.MessageUtil;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.Equipment;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -233,7 +234,7 @@ public class Mob {
 
         public ItemStack getStack() {
             ItemStack itemStack = Gear.fromID(id).newInstance().toStack();
-            if (itemStack != null) {
+            if (itemStack.getType() != Material.AIR) {
                 itemStack.setAmount(this.amount);
                 return itemStack;
             } else

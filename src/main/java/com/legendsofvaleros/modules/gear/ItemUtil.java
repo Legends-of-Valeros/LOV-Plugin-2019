@@ -13,6 +13,7 @@ import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -80,7 +81,7 @@ public class ItemUtil {
 		
 		ItemStack stack = instance.toStack();
 
-		if(stack == null) return;
+		if(stack.getType() == Material.AIR) return;
 		
 		ItemStack[] contents = pc.getPlayer().getInventory().getContents();
 		Gear.Instance item;
@@ -150,7 +151,7 @@ public class ItemUtil {
 					break;
 			}
 		}
-		
+
 		return amount <= 0;
 	}
 
