@@ -141,6 +141,7 @@ public class PlayerBookListener implements Listener {
 
                 tooltip.setLength(0);
             }
+
             event.getPages().add(tb.create());
         }
 		
