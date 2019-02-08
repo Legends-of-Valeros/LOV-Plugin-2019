@@ -1,8 +1,6 @@
 package com.legendsofvaleros.api;
 
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.MoreExecutors;
-import com.legendsofvaleros.api.annotation.ModuleRPC;
+import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import io.deepstream.DeepstreamClient;
@@ -45,8 +43,7 @@ public class APIController extends Module {
 
             api = APIController.create(APITest.class);
 
-
-            api.ping().on((err, val) -> {
+            Promise promise = api.ping().on((err, val) -> {
                 if(err != null) {
                     err.printStackTrace();
                     return;
@@ -55,20 +52,32 @@ public class APIController extends Module {
                 System.out.println("async ping");
             });
 
-            System.out.println("sync ping");
-            System.out.println(api.pingSync());
-            System.out.println("sync pong");
+            promise = promise.then(() -> false)
+                    .onSuccess((val) -> System.out.println("1: " + val))
+                    .onFailure((err) -> ((Throwable)err).printStackTrace());
 
-            new RPCFunction(getScheduler()::async, "ping").call()
-                .on((err, val) -> {
-                if(err != null) {
-                    err.printStackTrace();
-                    return;
-                }
-
-                System.out.println("manual pong");
+            promise = promise.then(() -> {
+                System.out.println("ping fired");
+                return api.ping()
+                        .onSuccess((val) -> System.out.println("2: " + val))
+                        .onFailure((err) -> err.printStackTrace());
             });
 
+            promise = promise.next(api::ping)
+                    .onSuccess((val) -> System.out.println("3: " + val))
+                    .onFailure((err) -> ((Throwable)err).printStackTrace());
+
+            try {
+                System.out.println("4: " + Promise.collect(Promise.make(() -> 0), Promise.make(() -> 1)).get());
+            } catch (Throwable th) {
+                th.printStackTrace();
+            }
+
+            Promise.collect(Promise.make(() -> 0), Promise.make(() -> {
+                throw new Exception("test");
+            })).onFailure((err) -> {
+                err.printStackTrace();
+            });
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -91,13 +100,13 @@ public class APIController extends Module {
             methods.put(m.getName(), new RPCFunction<>(executor, m));
         }
 
-        return (T)Proxy.newProxyInstance(clazz.getClassLoader(), new java.lang.Class[] { clazz },
+        return clazz.cast(Proxy.newProxyInstance(clazz.getClassLoader(), new java.lang.Class[] { clazz },
             (proxy, m, args) -> {
                 if(args != null && args.length > 1)
                     throw new IllegalArgumentException("Too many arguments!");
 
                 return methods.get(m.getName()).callInternal(m, (args != null && args.length == 1 ? args[0] : null));
             }
-        );
+        ));
     }
 }

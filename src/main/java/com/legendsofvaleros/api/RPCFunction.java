@@ -53,17 +53,7 @@ public class RPCFunction<T> {
     public Promise<T> call() { return call(null); }
 
     public Promise<T> call(Object arg) {
-        Promise<T> promise = new Promise<>(executor);
-
-        executor.execute(() -> {
-            try {
-                promise.resolve(callSync(arg));
-            } catch(Exception e) {
-                promise.reject(e);
-            }
-        });
-
-        return promise;
+        return Promise.make(() -> callSync(arg), executor);
     }
 
     public T callSync() {
