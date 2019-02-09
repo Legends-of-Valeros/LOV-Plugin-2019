@@ -57,7 +57,6 @@ public class APIController extends Module {
                     .onFailure((err) -> ((Throwable)err).printStackTrace());
 
             promise = promise.then(() -> {
-                System.out.println("ping fired");
                 return api.ping()
                         .onSuccess((val) -> System.out.println("2: " + val))
                         .onFailure((err) -> err.printStackTrace());
