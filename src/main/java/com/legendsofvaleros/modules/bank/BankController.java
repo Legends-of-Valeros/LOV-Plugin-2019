@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.bank;
 
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
@@ -23,6 +24,8 @@ public class BankController extends Module {
     private static BankController instance;
     public static BankController getInstance() { return instance; }
 
+    private BankAPI api;
+
     private static final Map<String, Currency> currencies = new HashMap<>();
     public Currency getCurrency(String id) {
         return currencies.get(id);
@@ -38,7 +41,9 @@ public class BankController extends Module {
     public void onLoad() {
         super.onLoad();
 
-        instance = this;
+        this.instance = this;
+
+        this.api = new BankAPI();
 
         registerEvents(new InventoryListener());
 
