@@ -4,8 +4,8 @@ import com.legendsofvaleros.api.annotation.ModuleRPC;
 
 public interface APITest {
     Promise<Object> testRPC();
-    Promise<Object> ping();
+    Promise<Float> ping();
 
     @ModuleRPC("ping")
-    Object pingSync();
+    Float pingSync();
 }

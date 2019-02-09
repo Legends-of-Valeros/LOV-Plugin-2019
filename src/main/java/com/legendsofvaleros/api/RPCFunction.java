@@ -4,6 +4,7 @@ import com.legendsofvaleros.api.annotation.ModuleRPC;
 import io.deepstream.RpcResult;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.util.concurrent.Executor;
 
 public class RPCFunction<T> {
@@ -18,7 +19,7 @@ public class RPCFunction<T> {
     }
 
     public static RPCFunction create(Executor exec, Method m) {
-        return new RPCFunction(exec, getMethodName(m), m.getReturnType());
+        return new RPCFunction(exec, getMethodName(m), getMethodResultType(m));
     }
 
     public Promise<T> call(Object... args) {
@@ -46,15 +47,14 @@ public class RPCFunction<T> {
     }
 
     public static Object callMethod(Executor ifAsync, Method m, Object... args) {
-        Class<?> returnType = m.getReturnType();
-
-        if(Promise.class.isAssignableFrom(returnType)) {
-            return oneShotAsync(ifAsync, getMethodName(m), returnType, args);
-        }
-
-        return oneShotSync(getMethodName(m), returnType, args);
+        if(Promise.class.isAssignableFrom(m.getReturnType()))
+            return oneShotAsync(ifAsync, getMethodName(m), getMethodResultType(m), args);
+        return oneShotSync(getMethodName(m), m.getReturnType(), args);
     }
 
+    /**
+     * Gets the real RPC method to call from the method name and containing class.
+     */
     public static String getMethodName(Method m) {
         StringBuilder name = new StringBuilder();
 
@@ -71,5 +71,17 @@ public class RPCFunction<T> {
             name.append(m.getName());
 
         return name.toString();
+    }
+
+    /**
+     * Get the current decode class type from the method.
+     *
+     * For example: Float from Promise<Float>
+     */
+    public static Class<?> getMethodResultType(Method m) {
+        Class<?> resultType = m.getReturnType();
+        if(Promise.class.isAssignableFrom(resultType))
+            resultType = (Class<?>)((ParameterizedType)m.getGenericReturnType()).getActualTypeArguments()[0];
+        return resultType;
     }
 }

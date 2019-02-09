@@ -6,6 +6,7 @@ import com.legendsofvaleros.module.annotation.ModuleInfo;
 import io.deepstream.DeepstreamClient;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.net.URISyntaxException;
 import java.util.HashMap;
