@@ -19,9 +19,9 @@ import java.util.Map;
 public class BankAPI {
     @ModuleRPC("banks")
     public interface RPC {
-        Promise<Bank> get(String characterId);
+        Promise<Bank> get(CharacterId characterId);
         Promise<Boolean> save(Bank bank);
-        Promise<Boolean> delete(String characterId);
+        Promise<Boolean> delete(CharacterId characterId);
     }
 
     private final RPC rpc;
@@ -39,11 +39,11 @@ public class BankAPI {
     }
 
     private Promise<Boolean> removeBank(CharacterId characterId) {
-        return rpc.delete(characterId.toString());
+        return rpc.delete(characterId);
     }
 
     private Promise<Bank> onLogin(CharacterId characterId) {
-        Promise<Bank> promise = rpc.get(characterId.toString());
+        Promise<Bank> promise = rpc.get(characterId);
 
         promise.onSuccess((bank) -> banks.put(characterId, bank));
 

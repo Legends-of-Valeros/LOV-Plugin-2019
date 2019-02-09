@@ -195,6 +195,9 @@ public class Promise<T> {
     public void reject(Throwable th) {
         if(isDone()) return;
 
+        // Always show rejected promises in the console
+        new Exception("Promise rejected!", th).printStackTrace();
+
         this.value = th;
         this.state = State.REJECTED;
 

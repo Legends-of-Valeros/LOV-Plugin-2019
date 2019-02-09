@@ -4,9 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.legendsofvaleros.api.annotation.ModuleRPC;
 import io.deepstream.RpcResult;
+import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.concurrent.Executor;
 
 public class RPCFunction<T> {
@@ -49,8 +51,12 @@ public class RPCFunction<T> {
         // This is a hack so we can use our own Gson parser.
         // TODO: Fix when deepstream supports passing our own data.
         Gson gson = APIController.getInstance().getGson();
+        if(gson == null)
+            throw new IllegalStateException("Must wait until postLoad() before using RPC functions!");
+
         RpcResult res = APIController.getInstance().getClient().rpc.make(func,
-                    gson.fromJson(gson.toJson(arg), JsonElement.class));
+                arg != null ? gson.fromJson(gson.toJson(arg), JsonElement.class) : null);
+
         if(res.success()) {
             // Decode result into T using Gson
             if(res.getData() instanceof JsonElement)
@@ -99,8 +105,13 @@ public class RPCFunction<T> {
      */
     public static Class<?> getMethodResultType(Method m) {
         Class<?> resultType = m.getReturnType();
-        if(Promise.class.isAssignableFrom(resultType))
-            resultType = (Class<?>)((ParameterizedType)m.getGenericReturnType()).getActualTypeArguments()[0];
+        if(Promise.class.isAssignableFrom(resultType)) {
+            Type type = ((ParameterizedType)m.getGenericReturnType()).getActualTypeArguments()[0];
+            if(type instanceof ParameterizedTypeImpl)
+                resultType = (Class<?>)((ParameterizedTypeImpl) type).getActualTypeArguments()[0];
+            else
+                resultType = (Class<?>)type;
+        }
         return resultType;
     }
 }
