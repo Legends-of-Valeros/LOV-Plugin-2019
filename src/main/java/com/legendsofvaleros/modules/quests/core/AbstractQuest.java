@@ -279,10 +279,7 @@ public abstract class AbstractQuest implements IQuest {
             // Build the objective object and initialize it
             for (int i = 0; i < objectiveGroup.length; i++) {
                 try {
-                    IQuestObjective<?> obj = objectiveGroup[i];
-                    pack.data[i] = obj.getProgressClass().newInstance();
-
-                    obj.onBegin(pc);
+                    objectiveGroup[i].onBegin(pc);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }

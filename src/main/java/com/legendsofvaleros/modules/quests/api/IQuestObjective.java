@@ -37,6 +37,9 @@ public interface IQuestObjective<T> extends Listener, IQuestEventReceiver {
 	 */
 	Location getLocation(PlayerCharacter pc);
 
+	/**
+	 * The objective should instantiate the default progress value here if needed.
+	 */
 	void onBegin(PlayerCharacter pc);
 
 	boolean isCompleted(PlayerCharacter pc);
