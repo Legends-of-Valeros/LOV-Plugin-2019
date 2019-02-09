@@ -288,7 +288,8 @@ public class QuestManager {
                     final AtomicInteger questsToLoad = new AtomicInteger(0);
 
                     while (result.next()) {
-                        if (result.getString(QUEST_PROGRESS) == null) {
+                        if (result.getString(QUEST_PROGRESS) == null
+                            || result.getString(QUEST_PROGRESS).equals("null")) {
                             removeQuestProgress(result.getString(QUEST_ID), pc);
                         }else if (result.getString(QUEST_PROGRESS).equals("done")) {
                             String time = result.getString(QUEST_DATE);
