@@ -7,38 +7,18 @@ import java.lang.reflect.Method;
 import java.util.concurrent.Executor;
 
 public class RPCFunction<T> {
-    public static String getMethodName(Method m) {
-        StringBuilder name = new StringBuilder();
-
-        Class<?> c = m.getDeclaringClass();
-
-        if(c.getAnnotation(ModuleRPC.class) != null) {
-            name.append(c.getAnnotation(ModuleRPC.class).value());
-            if (name.length() > 0) name.append(":");
-        }
-
-        if(m.getAnnotation(ModuleRPC.class) != null)
-            name.append(m.getAnnotation(ModuleRPC.class).value());
-        else
-            name.append(m.getName());
-
-        return name.toString();
-    }
-
-    public static RPCFunction create(Executor exec, Method m) {
-        return new RPCFunction(exec, getMethodName(m), m.getReturnType());
-    }
-
     private final Executor executor;
-
     private final String func;
-
     private final Class<T> result;
 
     public RPCFunction(Executor executor, String func, Class<T> result) {
         this.executor = executor != null ? executor : APIController.getInstance().getPool();
         this.func = func;
         this.result = result;
+    }
+
+    public static RPCFunction create(Executor exec, Method m) {
+        return new RPCFunction(exec, getMethodName(m), m.getReturnType());
     }
 
     public Promise<T> call(Object... args) {
@@ -73,5 +53,23 @@ public class RPCFunction<T> {
         }
 
         return oneShotSync(getMethodName(m), returnType, args);
+    }
+
+    public static String getMethodName(Method m) {
+        StringBuilder name = new StringBuilder();
+
+        Class<?> c = m.getDeclaringClass();
+
+        if(c.getAnnotation(ModuleRPC.class) != null) {
+            name.append(c.getAnnotation(ModuleRPC.class).value());
+            if (name.length() > 0) name.append(":");
+        }
+
+        if(m.getAnnotation(ModuleRPC.class) != null)
+            name.append(m.getAnnotation(ModuleRPC.class).value());
+        else
+            name.append(m.getName());
+
+        return name.toString();
     }
 }
