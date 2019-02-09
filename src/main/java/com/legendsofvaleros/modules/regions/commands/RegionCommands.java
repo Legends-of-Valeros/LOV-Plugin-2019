@@ -49,6 +49,10 @@ public class RegionCommands extends BaseCommand {
 		}
 		
 		Location[] locations = RegionSelector.selection.get(player);
+		if(locations == null || locations[0] == null || locations[1] == null) {
+			MessageUtil.sendError(player, "You must make a selection before doing that.");
+			return;
+		}
 		
 		Region region = new Region(id, locations[0].getWorld(), new RegionBounds().setBounds(locations[0], locations[1]));
 		region.allowAccess = access;
