@@ -11,13 +11,13 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 public class Promise<T> {
     public interface Function<T> { T run() throws Throwable; }
     public interface Listener<T> { void run(Throwable th, T t); }
-    public interface Callback<T> { void run(T t); }
 
-    enum State { WAITING, FIRED, RESOLVED, REJECTED }
+    enum State {PENDING, FIRED, RESOLVED, REJECTED }
 
     /**
      * Unsafe is used to park and unpark threads that directly call get()
@@ -66,7 +66,7 @@ public class Promise<T> {
     /**
      * The current state of the promise.
      */
-    private State state = State.WAITING;
+    private State state = State.PENDING;
 
     private Promise() { this(null); }
 
@@ -79,7 +79,7 @@ public class Promise<T> {
         this.executor = executor != null ? executor : APIController.getInstance().getPool();
     }
 
-    public boolean isDone() { return this.state != State.WAITING; }
+    public boolean isDone() { return this.state != State.PENDING; }
     public boolean wasSuccess() { return this.state == State.RESOLVED; }
     public boolean wasRejected() { return this.state == State.REJECTED; }
 
@@ -105,19 +105,19 @@ public class Promise<T> {
     public Promise<T> on(Listener<T> cb) { return on(cb, null); }
     public Promise<T> on(Listener<T> cb, Executor ex) { return addListener(cb, ex); }
 
-    public Promise<T> onSuccess(Callback<T> cb) { return onSuccess(cb, null); }
-    public Promise<T> onSuccess(Callback<T> cb, Executor ex) {
+    public Promise<T> onSuccess(Consumer<T> cb) { return onSuccess(cb, null); }
+    public Promise<T> onSuccess(Consumer<T> cb, Executor ex) {
         return addListener((err, val) -> {
             if(err != null) return;
-            cb.run(val);
+            cb.accept(val);
         }, ex);
     }
 
-    public Promise<T> onFailure(Callback<Throwable> cb) { return onFailure(cb, null); }
-    public Promise<T> onFailure(Callback<Throwable> cb, Executor ex) {
+    public Promise<T> onFailure(Consumer<Throwable> cb) { return onFailure(cb, null); }
+    public Promise<T> onFailure(Consumer<Throwable> cb, Executor ex) {
         return addListener((err, val) -> {
             if(val != null) return;
-            cb.run(err);
+            cb.accept(err);
         }, ex);
     }
 
@@ -206,10 +206,10 @@ public class Promise<T> {
      * and it gives us more flexibility if they don't.
      */
     private Promise<T> fire(Function<T> func) {
-        if(this.state != State.WAITING)
+        if(this.state != State.PENDING)
             throw new IllegalStateException("Promise has already been made! You cannot fire it again!");
 
-        this.state = State.WAITING;
+        this.state = State.PENDING;
 
         if(func != null) {
             this.executor.execute(() -> {
