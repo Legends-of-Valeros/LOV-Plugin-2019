@@ -1,6 +1,5 @@
 package com.legendsofvaleros.api;
 
-import com.google.common.util.concurrent.SettableFuture;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.legendsofvaleros.module.Module;
@@ -8,12 +7,10 @@ import com.legendsofvaleros.module.annotation.ModuleInfo;
 import io.deepstream.DeepstreamClient;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -65,7 +62,7 @@ public class APIController extends Module {
         // decoders for the API system.
         this.gson = this.gsonBuilder.create();
 
-        Promise<?> promise = api.ping().on((err, val) -> {
+        /*Promise<?> promise = api.ping().on((err, val) -> {
             if(err != null) {
                 err.printStackTrace();
                 return;
@@ -102,7 +99,7 @@ public class APIController extends Module {
             throw new Exception("test");
         })).onFailure((err) -> {
             err.printStackTrace();
-        });
+        });*/
     }
 
     public static <T> T create(Class<T> clazz) {
