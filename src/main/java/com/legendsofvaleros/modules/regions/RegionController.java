@@ -9,6 +9,7 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.hearthstones.HearthstoneController;
 import com.legendsofvaleros.modules.regions.commands.RegionCommands;
+import com.legendsofvaleros.modules.regions.core.RegionSelector;
 import com.legendsofvaleros.modules.regions.integration.HearthstonesIntegration;
 
 @DependsOn(CombatEngine.class)
@@ -34,6 +35,8 @@ public class RegionController extends Module {
         instance = this;
 
         regionManager = new RegionManager();
+
+        registerEvents(new RegionSelector());
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new RegionCommands());
     }
