@@ -9,9 +9,9 @@ import com.legendsofvaleros.modules.characters.api.CharacterId;
 public class BankAPI {
     @ModuleRPC("banks")
     public interface RPC {
-        Promise<Bank> getBank(CharacterId characterId);
-        Promise<Boolean> saveBank(CharacterId characterId, Bank bank);
-        Promise<Boolean> deleteBank(CharacterId characterId);
+        Promise<Bank> find(CharacterId characterId);
+        Promise<Boolean> save(CharacterId characterId, Bank bank);
+        Promise<Boolean> delete(CharacterId characterId);
     }
 
     private final RPC rpc;
@@ -22,7 +22,7 @@ public class BankAPI {
 
     public Bank getBank(CharacterId characterId) {
         try {
-            return rpc.getBank(characterId).get();
+            return rpc.find(characterId).get();
         } catch (Throwable throwable) {
             return null;
         }
