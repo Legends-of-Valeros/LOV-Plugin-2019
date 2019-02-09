@@ -1,7 +1,8 @@
 package com.legendsofvaleros.api;
 
-import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.legendsofvaleros.api.annotation.ModuleRPC;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import io.deepstream.RpcResult;
 
 import java.lang.reflect.Method;
@@ -41,10 +42,18 @@ public class RPCFunction<T> {
     }
 
     public static <T> T oneShotSync(String func, Class<T> result, Object... args) {
-        RpcResult res = APIController.getInstance().getClient().rpc.make(func, args);
-        if(res.success())
+        RpcResult res = APIController.getInstance().getClient().rpc.make(func, args.length == 0 ? null : (args.length == 1 ? args[0] : args));
+        if(res.success()) {
             // Decode result into T using Gson
+            if(res.getData() instanceof JsonElement)
+                return APIController.getInstance().getGson().fromJson((JsonElement)res.getData(), result);
+
+            if(res.getData() instanceof String)
+                return APIController.getInstance().getGson().fromJson((String)res.getData(), result);
+
             return (T)res.getData();
+        }
+
         throw new RuntimeException(func + "() failed: " + res.getData());
     }
 

@@ -1,6 +1,8 @@
 package com.legendsofvaleros.api;
 
 import com.google.common.util.concurrent.SettableFuture;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import io.deepstream.DeepstreamClient;
@@ -11,6 +13,7 @@ import java.lang.reflect.Proxy;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -23,6 +26,9 @@ public class APIController extends Module {
 
     private Executor pool;
     public Executor getPool() { return pool; }
+
+    private Gson gson = new GsonBuilder().create();
+    public Gson getGson() { return gson; }
 
     private DeepstreamClient client;
     public DeepstreamClient getClient() { return client; }
@@ -66,6 +72,10 @@ public class APIController extends Module {
             promise = promise.next(api::ping)
                     .onSuccess((val) -> System.out.println("3: " + val))
                     .onFailure((err) -> ((Throwable)err).printStackTrace());
+
+            api.find(UUID.randomUUID())
+                    .onSuccess((val) -> System.out.println("UUID: " + val))
+                    .onFailure((err) -> err.printStackTrace());
 
             try {
                 System.out.println("4: " + Promise.collect(Promise.make(() -> 0), Promise.make(() -> 1)).get());
