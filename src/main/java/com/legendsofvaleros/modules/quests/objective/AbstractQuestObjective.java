@@ -87,8 +87,8 @@ public abstract class AbstractQuestObjective<T> implements IQuestObjective<T> {
 	public abstract boolean isCompleted(PlayerCharacter pc, T progress);
 
 	@Override
-	public final void onBegin(PlayerCharacter pc) { setProgress(pc, onBegin(pc, getProgress(pc))); }
-	public T onBegin(PlayerCharacter pc, T progress) { return progress; }
+	public final void onBegin(PlayerCharacter pc) { setProgress(pc, onStart(pc)); }
+	public T onStart(PlayerCharacter pc) { return null; }
 
 	@Override
 	public final void onEnd(PlayerCharacter pc) { setProgress(pc, onEnd(pc, getProgress(pc))); }

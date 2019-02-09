@@ -53,9 +53,9 @@ public class InteractBlockWithObjective extends AbstractQuestObjective<InteractB
     }
 
     @Override
-    public InteractBlockWithObjective.State onBegin(PlayerCharacter pc, InteractBlockWithObjective.State state) {
+    public InteractBlockWithObjective.State onStart(PlayerCharacter pc) {
         Gear.Instance instance = Gear.Instance.fromStack(pc.getPlayer().getInventory().getItemInMainHand());
-        if(instance == null || !item.isSimilar(instance)) return state;
+        if(instance == null || !item.isSimilar(instance)) return null;
 
         return State.HELD;
     }
@@ -65,7 +65,7 @@ public class InteractBlockWithObjective extends AbstractQuestObjective<InteractB
         if(state == State.DONE) return state;
 
         if(event instanceof PlayerItemHeldEvent) {
-            Gear.Instance instance = Gear.Instance.fromStack(pc.getPlayer().getInventory().getItemInMainHand());
+            Gear.Instance instance = Gear.Instance.fromStack(pc.getPlayer().getInventory().getItem(((PlayerItemHeldEvent)event).getNewSlot()));
             return item != null && item.isSimilar(instance) ? State.HELD : null;
         }else if(event instanceof PlayerInteractEvent) {
             PlayerInteractEvent e = (PlayerInteractEvent) event;
@@ -116,13 +116,8 @@ public class InteractBlockWithObjective extends AbstractQuestObjective<InteractB
 
     @Override
     public InteractBlockWithObjective.State onUpdate(PlayerCharacter pc, InteractBlockWithObjective.State state, int ticks) {
-        pc.getPlayer().sendMessage("v: " + state);
-
-        if(state == State.HELD) {
+        if(state == State.HELD)
             pc.getPlayer().spawnParticle(Particle.VILLAGER_HAPPY, loc.clone().add(RAND.nextDouble(), RAND.nextDouble(), RAND.nextDouble()), 1);
-        }else
-            pc.getPlayer().spawnParticle(Particle.VILLAGER_ANGRY, loc.clone().add(RAND.nextDouble(), RAND.nextDouble(), RAND.nextDouble()), 1);
-
         return state;
     }
 }

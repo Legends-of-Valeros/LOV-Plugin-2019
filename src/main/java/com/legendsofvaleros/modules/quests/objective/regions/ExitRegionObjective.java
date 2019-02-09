@@ -24,7 +24,7 @@ public class ExitRegionObjective extends AbstractQuestObjective<Boolean> {
     }
 
     @Override
-    public Boolean onBegin(PlayerCharacter pc, Boolean progress) {
+    public Boolean onStart(PlayerCharacter pc) {
         if (region == null) return false;
 
         return !region.isInside(pc.getLocation());

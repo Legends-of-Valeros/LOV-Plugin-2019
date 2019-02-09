@@ -22,7 +22,7 @@ public class SkillUseObjective extends AbstractQuestObjective<Boolean> {
 	}
 
 	@Override
-	public Boolean onBegin(PlayerCharacter pc, Boolean progress) {
+	public Boolean onStart(PlayerCharacter pc) {
 		return false;
 	}
 

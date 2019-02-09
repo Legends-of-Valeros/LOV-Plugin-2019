@@ -24,7 +24,7 @@ public class EnterZoneObjective extends AbstractQuestObjective<Boolean> {
     }
 
     @Override
-    public Boolean onBegin(PlayerCharacter pc, Boolean progress) {
+    public Boolean onStart(PlayerCharacter pc) {
         if (id == null || zone == null) return false;
 
         return zone.isInZone(pc.getLocation());

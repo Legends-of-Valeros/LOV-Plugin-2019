@@ -55,7 +55,7 @@ public class KillObjective extends AbstractQuestObjective<Integer> {
     }
 
     @Override
-    public Integer onBegin(PlayerCharacter pc, Integer progress) {
+    public Integer onStart(PlayerCharacter pc) {
         return 0;
     }
 

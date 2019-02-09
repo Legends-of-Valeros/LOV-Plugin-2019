@@ -222,7 +222,7 @@ public class QuestManager {
 
                     questEvents.column(String.valueOf(entry.getKey())).clear();
 
-                    for(InternalTask task : questUpdates.values())
+                    for(InternalTask task : questUpdates.get(String.valueOf(entry.getKey())))
                         task.cancel();
                     questUpdates.removeAll(String.valueOf(entry.getKey()));
                 })
@@ -541,6 +541,8 @@ public class QuestManager {
                                     AtomicInteger i = new AtomicInteger();
 
                                     questUpdates.put(quest_id, QuestController.getInstance().getScheduler().executeInSpigotCircleTimer(() -> {
+                                        System.out.println(obj + ": " + timer);
+
                                         for(Map.Entry<CharacterId, QuestProgressPack> prog : quest.getProgressions()) {
                                             if(Characters.isPlayerCharacterLoaded(prog.getKey())) {
                                                 PlayerCharacter pc = Characters.getPlayerCharacter(prog.getKey());

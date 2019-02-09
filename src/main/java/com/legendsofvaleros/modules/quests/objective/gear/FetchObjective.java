@@ -25,13 +25,13 @@ public class FetchObjective extends AbstractQuestObjective<Integer> {
     }
 
     @Override
-    public Integer onBegin(PlayerCharacter pc, Integer progress) {
-        progress = 0;
+    public Integer onStart(PlayerCharacter pc) {
+        int progress = 0;
 
         for (ItemStack stack : pc.getPlayer().getInventory().getContents()) {
             if (!item.isSimilar(stack))
                 continue;
-            return progress + 1;
+            progress += stack.getAmount();
         }
 
         return progress;
