@@ -310,7 +310,11 @@ public class QuestManager {
                                         throw new Exception("Quest didn't load. Does it still exist?");
                                     }else{
                                         JsonArray progresses = progressObj.get("data").getAsJsonArray();
-                                        QuestProgressPack progressPack = new QuestProgressPack(progressObj.get("group").getAsInt(), progresses.size());
+                                        QuestProgressPack progressPack = new QuestProgressPack(
+                                                progressObj.has("group") ? progressObj.get("group").getAsInt() : null,
+                                                progresses.size());
+
+                                        progressPack.actionI = progressObj.has("actionI") ? progressObj.get("actionI").getAsInt() : null;
 
                                         IQuestObjective<?>[] objectiveGroup = quest.getObjectives().groups[progressPack.group];
 
