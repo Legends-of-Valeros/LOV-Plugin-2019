@@ -541,8 +541,6 @@ public class QuestManager {
                                     AtomicInteger i = new AtomicInteger();
 
                                     questUpdates.put(quest_id, QuestController.getInstance().getScheduler().executeInSpigotCircleTimer(() -> {
-                                        System.out.println(obj + ": " + timer);
-
                                         for(Map.Entry<CharacterId, QuestProgressPack> prog : quest.getProgressions()) {
                                             if(Characters.isPlayerCharacterLoaded(prog.getKey())) {
                                                 PlayerCharacter pc = Characters.getPlayerCharacter(prog.getKey());
