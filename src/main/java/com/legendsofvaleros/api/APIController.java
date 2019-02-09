@@ -27,7 +27,10 @@ public class APIController extends Module {
     private Executor pool;
     public Executor getPool() { return pool; }
 
-    private Gson gson = new GsonBuilder().create();
+    private GsonBuilder gsonBuilder = new GsonBuilder();
+    public GsonBuilder getGsonBuilder() { return gsonBuilder; }
+
+    private Gson gson;
     public Gson getGson() { return gson; }
 
     private DeepstreamClient client;
@@ -39,58 +42,67 @@ public class APIController extends Module {
     public void onLoad() {
         super.onLoad();
 
-        instance = this;
+        this.instance = this;
 
         this.pool = Executors.newFixedThreadPool(8);
 
         try {
-            client = new DeepstreamClient("localhost:6020");
+            this.client = new DeepstreamClient("localhost:6020");
 
-            client.login();
+            this.client.login();
 
-            api = APIController.create(APITest.class);
-
-            Promise promise = api.ping().on((err, val) -> {
-                if(err != null) {
-                    err.printStackTrace();
-                    return;
-                }
-
-                System.out.println("async ping");
-            });
-
-            promise = promise.then(() -> false)
-                    .onSuccess((val) -> System.out.println("1: " + val))
-                    .onFailure((err) -> ((Throwable)err).printStackTrace());
-
-            promise = promise.then(() -> {
-                return api.ping()
-                        .onSuccess((val) -> System.out.println("2: " + val))
-                        .onFailure((err) -> err.printStackTrace());
-            });
-
-            promise = promise.next(api::ping)
-                    .onSuccess((val) -> System.out.println("3: " + val))
-                    .onFailure((err) -> ((Throwable)err).printStackTrace());
-
-            api.find(UUID.randomUUID())
-                    .onSuccess((val) -> System.out.println("UUID: " + val))
-                    .onFailure((err) -> err.printStackTrace());
-
-            try {
-                System.out.println("4: " + Promise.collect(Promise.make(() -> 0), Promise.make(() -> 1)).get());
-            } catch (Throwable th) {
-                th.printStackTrace();
-            }
-
-            Promise.collect(Promise.make(() -> 0), Promise.make(() -> {
-                throw new Exception("test");
-            })).onFailure((err) -> {
-                err.printStackTrace();
-            });
+            this.api = APIController.create(APITest.class);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void postLoad() {
+        super.postLoad();
+
+        // Doing this in postLoad allows other modules to register
+        // decoders for the API system.
+        this.gson = this.gsonBuilder.create();
+
+        Promise promise = api.ping().on((err, val) -> {
+            if(err != null) {
+                err.printStackTrace();
+                return;
+            }
+
+            System.out.println("async ping");
+        });
+
+        promise = promise.then(() -> false)
+                .onSuccess((val) -> System.out.println("1: " + val))
+                .onFailure((err) -> ((Throwable)err).printStackTrace());
+
+        promise = promise.then(() -> {
+            return api.ping()
+                    .onSuccess((val) -> System.out.println("2: " + val))
+                    .onFailure((err) -> err.printStackTrace());
+        });
+
+        promise = promise.next(api::ping)
+                .onSuccess((val) -> System.out.println("3: " + val))
+                .onFailure((err) -> ((Throwable)err).printStackTrace());
+
+        promise = promise.next(() -> this.api.find(UUID.randomUUID()))
+                    .onSuccess((val) -> System.out.println("UUID: " + val))
+                    .onFailure((err) -> ((Throwable)err).printStackTrace());
+
+        try {
+            System.out.println("4: " + Promise.collect(Promise.make(() -> 0), Promise.make(() -> 1)).get());
+        } catch (Throwable th) {
+            th.printStackTrace();
+        }
+
+        Promise.collect(Promise.make(() -> 0), Promise.make(() -> {
+            throw new Exception("test");
+        })).onFailure((err) -> {
+            err.printStackTrace();
+        });
     }
 
     public static <T> T create(Class<T> clazz) {
