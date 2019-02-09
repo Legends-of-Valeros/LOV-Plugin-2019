@@ -1,21 +1,12 @@
 package com.legendsofvaleros.api;
 
 import com.legendsofvaleros.api.annotation.ModuleRPC;
-import io.deepstream.DeepstreamClient;
 import io.deepstream.RpcResult;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.Executor;
 
 public class RPCFunction<T> {
-    public interface RPCCallback<T> {
-        void run(Exception e, T t);
-    }
-
-    public static RPCFunction create(String func) {
-        return new RPCFunction(func);
-    }
-
     public static String getMethodName(Method m) {
         StringBuilder name = new StringBuilder();
 
@@ -34,45 +25,53 @@ public class RPCFunction<T> {
         return name.toString();
     }
 
+    public static RPCFunction create(Executor exec, Method m) {
+        return new RPCFunction(exec, getMethodName(m), m.getReturnType());
+    }
+
     private final Executor executor;
 
-    private final DeepstreamClient client;
     private final String func;
 
-    public RPCFunction(Method m) { this(null, getMethodName(m)); }
-    public RPCFunction(String func) { this(null, func); }
+    private final Class<T> result;
 
-    public RPCFunction(Executor executor, Method m) { this(executor, getMethodName(m)); }
-    public RPCFunction(Executor executor, String func) {
+    public RPCFunction(Executor executor, String func, Class<T> result) {
         this.executor = executor != null ? executor : APIController.getInstance().getPool();
-
-        this.client = APIController.getInstance().getClient();
         this.func = func;
+        this.result = result;
     }
 
-    public Promise<T> call() { return call(null); }
-
-    public Promise<T> call(Object arg) {
-        return Promise.make(() -> callSync(arg), executor);
+    public Promise<T> call(Object... args) {
+        return this.oneShotAsync(this.executor, this.func, this.result, args);
     }
 
-    public T callSync() {
-        return callSync(null);
+    public T callSync(Object... args) {
+        return this.oneShotSync(this.func, this.result, args);
     }
 
-    public T callSync(Object arg) {
-        RpcResult result = client.rpc.make(func, arg);
-        if(result.success())
-            return (T)result.getData();
-        throw new RuntimeException(func + "() failed: " + result.getData());
+    /*
+    * For RPC methods proxied or created on demand, there's no point to create an object.
+    * These static functions are used if you have no way to store the RPCFunction object.
+    * */
+
+    public static <T> Promise<T> oneShotAsync(Executor exec, String func, Class<T> result, Object... args) {
+        return Promise.make(() -> oneShotSync(func, result, args), exec);
     }
 
-    public Object callInternal(Method m, T arg) {
-        Class<?> retType = m.getReturnType();
+    public static <T> T oneShotSync(String func, Class<T> result, Object... args) {
+        RpcResult res = APIController.getInstance().getClient().rpc.make(func, args);
+        if(res.success())
+            return (T)res.getData();
+        throw new RuntimeException(func + "() failed: " + res.getData());
+    }
 
-        if(Promise.class.isAssignableFrom(retType))
-            return call(arg);
+    public static Object callMethod(Executor ifAsync, Method m, Object... args) {
+        Class<?> returnType = m.getReturnType();
 
-        return callSync(arg);
+        if(Promise.class.isAssignableFrom(returnType)) {
+            return oneShotAsync(ifAsync, getMethodName(m), returnType, args);
+        }
+
+        return oneShotSync(getMethodName(m), returnType, args);
     }
 }

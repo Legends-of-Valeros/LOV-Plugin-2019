@@ -83,30 +83,22 @@ public class APIController extends Module {
         }
     }
 
-    private static <T> T create(Class<T> clazz) {
+    public static <T> T create(Class<T> clazz) {
         return create((Executor)null, clazz);
     }
 
-    private static <T> T create(Module module, Class<T> clazz) {
+    public static <T> T create(Module module, Class<T> clazz) {
         return create(module.getScheduler()::async, clazz);
     }
 
-    private static <T> T create(Executor executor, Class<T> clazz) {
+    public static <T> T create(Executor executor, Class<T> clazz) {
         Map<String, RPCFunction> methods = new HashMap<>();
 
-        for(Method m : clazz.getDeclaredMethods()) {
-            if(m.getParameterTypes().length > 1)
-                throw new IllegalArgumentException("RPC interfaces can only a maximum of one argument.");
-            methods.put(m.getName(), new RPCFunction<>(executor, m));
-        }
+        for(Method m : clazz.getDeclaredMethods())
+            methods.put(m.getName(), RPCFunction.create(executor, m));
 
         return clazz.cast(Proxy.newProxyInstance(clazz.getClassLoader(), new java.lang.Class[] { clazz },
-            (proxy, m, args) -> {
-                if(args != null && args.length > 1)
-                    throw new IllegalArgumentException("Too many arguments!");
-
-                return methods.get(m.getName()).callInternal(m, (args != null && args.length == 1 ? args[0] : null));
-            }
+            (proxy, m, args) -> methods.get(m.getName()).call((args != null ? args : new Object[0]))
         ));
     }
 }
