@@ -288,7 +288,9 @@ public class QuestManager {
                     final AtomicInteger questsToLoad = new AtomicInteger(0);
 
                     while (result.next()) {
-                        if (result.getString(QUEST_PROGRESS).equals("done")) {
+                        if (result.getString(QUEST_PROGRESS) == null) {
+                            removeQuestProgress(result.getString(QUEST_ID), pc);
+                        }else if (result.getString(QUEST_PROGRESS).equals("done")) {
                             String time = result.getString(QUEST_DATE);
                             time = time.split("\\.")[0];
                             completedQuests.put(pc.getUniqueCharacterId(), result.getString(QUEST_ID), LocalDateTime.parse(time, DATE_FORMAT));
