@@ -120,6 +120,7 @@ public class QuestController extends ModuleListener {
         QuestActionFactory.registerType("quest_new", ActionNewQuest.class);
 
         QuestActionFactory.registerType("notify", ActionNotification.class);
+        QuestActionFactory.registerType("title", ActionTitle.class);
 
         QuestActionFactory.registerType("text", ActionText.class);
 

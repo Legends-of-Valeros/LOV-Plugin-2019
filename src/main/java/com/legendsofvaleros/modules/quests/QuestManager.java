@@ -36,12 +36,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.sql.ResultSet;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -301,8 +298,6 @@ public class QuestManager {
                             String questId = result.getString(QUEST_ID);
 
                             JsonObject progressObj = gson.fromJson(result.getString(QUEST_PROGRESS), JsonElement.class).getAsJsonObject();
-
-                            // {"group":1,"data":[{"type":"bool","progress":{"value":false}}]}
 
                             ListenableFuture<IQuest> future = getQuest(questId);
                             future.addListener(() -> {
@@ -610,6 +605,9 @@ public class QuestManager {
                 if(Characters.isPlayerCharacterLoaded(prog.getKey())) {
                     PlayerCharacter pc = Characters.getPlayerCharacter(prog.getKey());
                     if(!quest.hasProgress(pc)) continue;
+
+                    Integer i = quest.getObjectiveGroupI(pc);
+                    if(i == null) continue;
 
                     if(obj.getGroupIndex() != quest.getObjectiveGroupI(pc)) continue;
 

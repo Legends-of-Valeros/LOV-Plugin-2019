@@ -21,9 +21,9 @@ public class ActionNotification extends AbstractQuestAction {
     public void play(PlayerCharacter pc, Next next) {
         if (advancement == null) {
             advancement = AdvancementAPI.builder(new NamespacedKey(LegendsOfValeros.getInstance(), "quests/" + UUID.randomUUID().toString()))
+                        .icon(icon)
                         .title(text)
                         .description("A notification")
-                        .icon(icon)
                         .trigger(Trigger.builder(Trigger.TriggerType.IMPOSSIBLE, "impossible"))
                         .hidden(true)
                         .toast(true)
