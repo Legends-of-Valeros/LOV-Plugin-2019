@@ -55,7 +55,7 @@ public class NPCManager implements Listener {
     }
 
     public NPCManager() {
-        new Skins();
+        Skins.onEnable();
 
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TraitLOV.class).withName(TraitLOV.TRAIT_NAME));
 

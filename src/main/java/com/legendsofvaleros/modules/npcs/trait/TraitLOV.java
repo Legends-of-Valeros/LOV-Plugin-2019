@@ -1,7 +1,6 @@
 package com.legendsofvaleros.modules.npcs.trait;
 
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.npcs.core.NPCData;
 import com.legendsofvaleros.modules.npcs.core.Skins;
@@ -136,10 +135,8 @@ public class TraitLOV extends Trait implements CommandConfigurable {
         if (npcData.skin != null && npcData.skin.trim().length() > 0 && !updatedSkin && getNPC().getEntity() instanceof SkinnableEntity) {
             updatedSkin = true;
 
-            ListenableFuture<Skin> future = Skins.inst().getSkin(npcData.skin);
-            Skin skin;
             try {
-                skin = future.get();
+                Skin skin = Skins.getSkin(npcData.skin);
 
                 if (skin == null)
                     throw new Exception("No skin with that ID. Offender: " + npcData.skin + " on " + npcData.npcId);
