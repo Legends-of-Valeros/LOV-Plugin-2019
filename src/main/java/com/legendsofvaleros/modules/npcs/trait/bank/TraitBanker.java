@@ -41,8 +41,7 @@ public class TraitBanker extends LOVTrait {
 			type(6);
 
 			for(int i = 0; i < 6 * 9; i++) {
-				Bank.Entry entry = bank.content.get(i);
-				Gear.Data item = entry != null ? entry.item : null;
+				Gear.Data item = bank.getContent().get(i);
 
 				int j = i;
 				slot(i, item != null ? item.toStack() : null, new SlotUsable() {

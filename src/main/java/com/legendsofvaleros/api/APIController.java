@@ -2,15 +2,22 @@ package com.legendsofvaleros.api;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
+import com.legendsofvaleros.modules.bank.core.Bank;
+import com.legendsofvaleros.modules.characters.api.CharacterId;
 import io.deepstream.DeepstreamClient;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -43,8 +50,20 @@ public class APIController extends Module {
 
         this.pool = Executors.newFixedThreadPool(8);
 
+        this.gsonBuilder.registerTypeAdapter(CharacterId.class, new TypeAdapter<CharacterId>() {
+            @Override
+            public void write(JsonWriter jsonWriter, CharacterId characterId) throws IOException {
+                jsonWriter.value(characterId.toString());
+            }
+
+            @Override
+            public CharacterId read(JsonReader jsonReader) throws IOException {
+                return CharacterId.fromString(jsonReader.nextString());
+            }
+        });
+
         try {
-            this.client = new DeepstreamClient("localhost:6020");
+            this.client = new DeepstreamClient("192.99.0.101:6020");
 
             this.client.login();
 
@@ -61,6 +80,9 @@ public class APIController extends Module {
         // Doing this in postLoad allows other modules to register
         // decoders for the API system.
         this.gson = this.gsonBuilder.create();
+
+        Bank b = new Bank();
+        b.characterId = new CharacterId(UUID.randomUUID(), 0);
 
         /*Promise<?> promise = api.ping().on((err, val) -> {
             if(err != null) {

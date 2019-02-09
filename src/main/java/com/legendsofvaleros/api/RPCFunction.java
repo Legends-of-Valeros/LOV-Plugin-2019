@@ -1,8 +1,8 @@
 package com.legendsofvaleros.api;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.legendsofvaleros.api.annotation.ModuleRPC;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import io.deepstream.RpcResult;
 
 import java.lang.reflect.Method;
@@ -42,7 +42,15 @@ public class RPCFunction<T> {
     }
 
     public static <T> T oneShotSync(String func, Class<T> result, Object... args) {
-        RpcResult res = APIController.getInstance().getClient().rpc.make(func, args.length == 0 ? null : (args.length == 1 ? args[0] : args));
+        Object arg = null;
+        if(args.length == 1) arg = args[0];
+        else if(args.length > 1) arg = args;
+
+        // This is a hack so we can use our own Gson parser.
+        // TODO: Fix when deepstream supports passing our own data.
+        Gson gson = APIController.getInstance().getGson();
+        RpcResult res = APIController.getInstance().getClient().rpc.make(func,
+                    gson.fromJson(gson.toJson(arg), JsonElement.class));
         if(res.success()) {
             // Decode result into T using Gson
             if(res.getData() instanceof JsonElement)

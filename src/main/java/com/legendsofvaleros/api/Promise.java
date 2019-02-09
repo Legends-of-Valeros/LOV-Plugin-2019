@@ -68,14 +68,14 @@ public class Promise<T> {
      */
     private State state = State.PENDING;
 
-    private Promise() { this(null); }
+    public Promise() { this(null); }
 
     /**
      * Executors are passed to then() and listener functions if new
      * executors are not supplied. Technically we don't need these,
      * it just allows some better syntactic sugar.
      */
-    private Promise(Executor executor) {
+    public Promise(Executor executor) {
         this.executor = executor != null ? executor : APIController.getInstance().getPool();
     }
 
@@ -83,6 +83,7 @@ public class Promise<T> {
     public boolean wasSuccess() { return this.state == State.RESOLVED; }
     public boolean wasRejected() { return this.state == State.REJECTED; }
 
+    public Promise<T> addListener(Runnable cb) { return addListener((err, val) -> cb.run(), null); }
     public Promise<T> addListener(Listener<T> cb) { return addListener(cb, null); }
     public Promise<T> addListener(Listener<T> cb, Executor ex) {
         if(ex == null) ex = this.executor;
@@ -102,9 +103,11 @@ public class Promise<T> {
         return this;
     }
 
+    public Promise<T> on(Runnable cb) { return on((err, val) -> cb.run(), null); }
     public Promise<T> on(Listener<T> cb) { return on(cb, null); }
     public Promise<T> on(Listener<T> cb, Executor ex) { return addListener(cb, ex); }
 
+    public Promise<T> onSuccess(Runnable cb) { return onSuccess((val) -> cb.run(), null); }
     public Promise<T> onSuccess(Consumer<T> cb) { return onSuccess(cb, null); }
     public Promise<T> onSuccess(Consumer<T> cb, Executor ex) {
         return addListener((err, val) -> {
@@ -113,6 +116,7 @@ public class Promise<T> {
         }, ex);
     }
 
+    public Promise<T> onFailure(Runnable cb) { return onFailure((err) -> cb.run(), null); }
     public Promise<T> onFailure(Consumer<Throwable> cb) { return onFailure(cb, null); }
     public Promise<T> onFailure(Consumer<Throwable> cb, Executor ex) {
         return addListener((err, val) -> {

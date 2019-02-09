@@ -1,48 +1,44 @@
 package com.legendsofvaleros.modules.bank.core;
 
-import com.codingforcookies.doris.orm.ORM;
-import com.codingforcookies.doris.orm.annotation.Column;
-import com.codingforcookies.doris.orm.annotation.Table;
 import com.legendsofvaleros.modules.bank.event.PlayerCurrencyChangeEvent;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
+import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.item.Gear;
 import org.bukkit.Bukkit;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Bank extends ORM {
-    private final PlayerCharacter pc;
+public class Bank {
+    public CharacterId characterId;
 
-    private Map<String, Currency> currencies = new HashMap<>();
-
-    public Collection<Currency> getCurrencies() {
-        return currencies.values();
+    private Map<String, Long> currencies = new HashMap<>();
+    public Map<String, Long> getCurrencies() {
+        return currencies;
     }
 
-    public Map<Integer, Bank.Entry> content = new HashMap<>();
-
-    public Bank(PlayerCharacter pc) {
-        this.pc = pc;
+    private Map<Integer, Gear.Data> content = new HashMap<>();
+    public Map<Integer, Gear.Data> getContent() {
+        return content;
     }
 
     public long getCurrency(String currencyId) {
         if (!currencies.containsKey(currencyId))
-            currencies.put(currencyId, new Currency(pc.getUniqueCharacterId(), currencyId));
-        return currencies.get(currencyId).amount;
+            currencies.put(currencyId, 0L);
+        return currencies.get(currencyId);
     }
 
     public void setCurrency(String currencyId, long amount) {
-        PlayerCurrencyChangeEvent bcce = new PlayerCurrencyChangeEvent(pc, currencyId, amount);
-        Bukkit.getPluginManager().callEvent(bcce);
+        if(Characters.isPlayerCharacterLoaded(characterId)) {
+            PlayerCurrencyChangeEvent bcce = new PlayerCurrencyChangeEvent(Characters.getPlayerCharacter(characterId), currencyId, amount);
+            Bukkit.getPluginManager().callEvent(bcce);
 
-        if(bcce.isCancelled()) return;
+            if(bcce.isCancelled()) return;
+        }
 
         if (!currencies.containsKey(currencyId))
-            currencies.put(currencyId, new Currency(pc.getUniqueCharacterId(), currencyId));
-        currencies.get(currencyId).amount = amount;
+            currencies.put(currencyId, 0L);
+        currencies.put(currencyId, amount);
     }
 
     public void addCurrency(String currencyId, long amount) {
@@ -68,7 +64,7 @@ public class Bank extends ORM {
     }
 
     public void setItem(int index, Gear.Data item) {
-        content.put(index, new Entry(pc.getUniqueCharacterId(), index, item));
+        content.put(index, item);
     }
 
     public void removeItem(int i) {
@@ -78,50 +74,9 @@ public class Bank extends ORM {
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder("{");
-        currencies.forEach((key, value) -> str.append(key).append("=").append(value.amount).append(","));
+        currencies.forEach((key, value) -> str.append(key).append("=").append(value).append(","));
         str.setLength(str.length() - 1);
         str.append("}");
-        return "Bank{character_id=" + pc.getUniqueCharacterId() + ", currencies=" + str.toString() + "}";
-    }
-
-    @Table(name = "player_bank")
-    public static class Currency {
-        // @ForeignKey(table = PlayerCharacterData.class, name = "character_id", onUpdate = ForeignKey.Trigger.CASCADE, onDelete = ForeignKey.Trigger.CASCADE)
-        @Column(name = "character_id", length = 39)
-        private final CharacterId characterId;
-
-        @Column(name = "currency_id", length = 16)
-        private final String currencyId;
-
-        public String getCurrencyId() {
-            return currencyId;
-        }
-
-        @Column(name = "amount")
-        public long amount = 0;
-
-        public Currency(CharacterId characterId, String currencyId) {
-            this.characterId = characterId;
-            this.currencyId = currencyId;
-        }
-    }
-
-    @Table(name = "player_bank_content")
-    public static class Entry {
-        // @ForeignKey(table = PlayerCharacterData.class, name = "character_id", onUpdate = ForeignKey.Trigger.CASCADE, onDelete = ForeignKey.Trigger.CASCADE)
-        @Column(primary = true, index = true, name = "character_id", length = 39)
-        private final String characterId;
-
-        @Column(name = "bank_index")
-        public final int index;
-
-        @Column(name = "bank_item")
-        public final Gear.Data item;
-
-        protected Entry(CharacterId characterId, int index, Gear.Data item) {
-            this.characterId = characterId.toString();
-            this.index = index;
-            this.item = item;
-        }
+        return "Bank{character_id=" + characterId + ", currencies=" + str.toString() + "}";
     }
 }
