@@ -65,7 +65,7 @@ public class APIController extends Module {
         // decoders for the API system.
         this.gson = this.gsonBuilder.create();
 
-        Promise promise = api.ping().on((err, val) -> {
+        Promise<?> promise = api.ping().on((err, val) -> {
             if(err != null) {
                 err.printStackTrace();
                 return;
@@ -76,7 +76,7 @@ public class APIController extends Module {
 
         promise = promise.then(() -> false)
                 .onSuccess((val) -> System.out.println("1: " + val))
-                .onFailure((err) -> ((Throwable)err).printStackTrace());
+                .onFailure((err) -> err.printStackTrace());
 
         promise = promise.then(() -> {
             return api.ping()
@@ -86,11 +86,11 @@ public class APIController extends Module {
 
         promise = promise.next(api::ping)
                 .onSuccess((val) -> System.out.println("3: " + val))
-                .onFailure((err) -> ((Throwable)err).printStackTrace());
+                .onFailure((err) -> err.printStackTrace());
 
         promise = promise.next(() -> this.api.find(UUID.randomUUID()))
                     .onSuccess((val) -> System.out.println("UUID: " + val))
-                    .onFailure((err) -> ((Throwable)err).printStackTrace());
+                    .onFailure((err) -> err.printStackTrace());
 
         try {
             System.out.println("4: " + Promise.collect(Promise.make(() -> 0), Promise.make(() -> 1)).get());
