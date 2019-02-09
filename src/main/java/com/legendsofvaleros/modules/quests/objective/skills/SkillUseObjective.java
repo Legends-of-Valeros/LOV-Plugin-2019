@@ -4,12 +4,11 @@ import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.quests.objective.AbstractQuestObjective;
-import com.legendsofvaleros.modules.quests.progress.core.QuestObjectiveProgressBoolean;
 import com.legendsofvaleros.modules.skills.event.SkillUsedEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.event.Event;
 
-public class SkillUseObjective extends AbstractQuestObjective<QuestObjectiveProgressBoolean> {
+public class SkillUseObjective extends AbstractQuestObjective<Boolean> {
 	private String id;
 
 	private transient Skill skill;
@@ -17,18 +16,23 @@ public class SkillUseObjective extends AbstractQuestObjective<QuestObjectiveProg
 	@Override
 	protected void onInit() {
 		if ((skill = Skill.getSkillById(id)) == null) {
-			MessageUtil.sendException(QuestController.getInstance(), "No skill with that ID in gear. Offender: " + id + " in " + getQuest().getId(), false);
+			MessageUtil.sendException(QuestController.getInstance(), "No skill with that ID in quest. Offender: " + id + " in " + getQuest().getId());
 			return;
 		}
 	}
 
 	@Override
-	public boolean isCompleted(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
-		return progress.value;
+	public Boolean onStart(PlayerCharacter pc) {
+		return false;
 	}
 
 	@Override
-	public String getProgressText(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
+	public boolean isCompleted(PlayerCharacter pc, Boolean progress) {
+		return progress;
+	}
+
+	@Override
+	public String getProgressText(PlayerCharacter pc, Boolean progress) {
 		return "Use " + (skill == null ? "UNKNOWN" : skill.getUserFriendlyName(1));
 	}
 
@@ -43,10 +47,11 @@ public class SkillUseObjective extends AbstractQuestObjective<QuestObjectiveProg
 	}
 
 	@Override
-	public void onEvent(Event event, PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
+	public Boolean onEvent(Event event, PlayerCharacter pc, Boolean progress) {
 		SkillUsedEvent e = (SkillUsedEvent)event;
 
 		if(e.getSkill().getId().equals(id))
-			progress.value = true;
+			return true;
+		return false;
 	}
 }

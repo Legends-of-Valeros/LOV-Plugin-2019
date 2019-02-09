@@ -5,9 +5,11 @@ import com.codingforcookies.doris.orm.annotation.ForeignKey;
 import com.codingforcookies.doris.orm.annotation.Table;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.guilds.GuildManager;
-import com.legendsofvaleros.modules.guilds.guild.Guild;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 @Table(name = "guild_roles")
 public class GuildRole {

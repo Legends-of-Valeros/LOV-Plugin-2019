@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.loot;
 
 import com.legendsofvaleros.modules.gear.item.Gear;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class LootTable {
@@ -19,7 +20,7 @@ public class LootTable {
 
         public ItemStack getStack() {
             ItemStack stack = Gear.fromID(id).newInstance().toStack();
-            if (stack != null)
+            if (stack.getType() != Material.AIR)
                 return stack;
             else
                 LootManager.getInstance().getLogger().severe("Attempt to use loot table item with unknown item name. Offender: " + id);

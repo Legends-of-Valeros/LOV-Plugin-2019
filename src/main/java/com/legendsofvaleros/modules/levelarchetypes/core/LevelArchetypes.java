@@ -2,7 +2,6 @@ package com.legendsofvaleros.modules.levelarchetypes.core;
 
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.Module;
-import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
@@ -60,7 +59,7 @@ public class LevelArchetypes extends Module implements LevelArchetypesAPI {
 
                 } catch (Exception e) {
                     getLogger().severe("There was an issue while loading the archetype '" + key + "'");
-                    MessageUtil.sendException(LevelArchetypes.getInstance(), e, false);
+                    MessageUtil.sendException(LevelArchetypes.getInstance(), e);
                 }
             }
         }
@@ -121,7 +120,7 @@ public class LevelArchetypes extends Module implements LevelArchetypesAPI {
         } catch (Exception e) {
             LevelArchetypes.getInstance().getLogger().severe(
                     "Encountered an error while requesting a level for a " + entity.getType().name());
-            MessageUtil.sendException(LevelArchetypes.getInstance(), entity instanceof Player ? (Player) entity : null, e, true);
+            MessageUtil.sendSevereException(LevelArchetypes.getInstance(), entity instanceof Player ? (Player) entity : null, e);
             return MIN_LEVEL;
         }
     }

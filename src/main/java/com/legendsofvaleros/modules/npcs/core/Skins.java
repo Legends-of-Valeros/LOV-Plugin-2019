@@ -1,14 +1,12 @@
 package com.legendsofvaleros.modules.npcs.core;
 
 import com.codingforcookies.doris.sql.TableManager;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.npcs.NPCsController;
 
 import java.sql.ResultSet;
-import java.util.concurrent.TimeUnit;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Skins {
     private static Skins instance;
@@ -26,16 +24,12 @@ public class Skins {
     private static final String SKIN_SIGNATURE = "skin_signature";
     private static final String SKIN_DATA = "skin_data";
 
-    private final TableManager manager;
+    private static TableManager manager;
 
-    public final Cache<String, Skin> cache = CacheBuilder.newBuilder()
-            .concurrencyLevel(4)
-            .expireAfterAccess(1, TimeUnit.HOURS)
-            .build();
+    private static Map<String, Skin> skins = new HashMap<>();
+    public static Skin getSkin(String id) { return skins.get(id); }
 
-    public Skins() {
-        instance = this;
-
+    public static void onEnable() {
         manager = new TableManager(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), SKIN_TABLE);
 
         manager.primary(SKIN_ID, "VARCHAR(64)")
@@ -45,46 +39,22 @@ public class Skins {
                 .column(SKIN_USERNAME, "VARCHAR(32)")
                 .column(SKIN_SIGNATURE, "TEXT")
                 .column(SKIN_DATA, "TEXT").create();
-    }
 
-    public ListenableFuture<Skin> getSkin(String id) {
-        return loadSkin(id);
-    }
+        manager.query().all().callback((statement, count) -> {
+            ResultSet result = statement.getResultSet();
 
-    private ListenableFuture<Skin> loadSkin(String id) {
-        SettableFuture<Skin> ret = SettableFuture.create();
+            while(result.next()) {
+                Skin s = new Skin();
+                s.uuid = result.getString(SKIN_UUID);
+                s.username = result.getString(SKIN_USERNAME);
+                s.signature = result.getString(SKIN_SIGNATURE);
+                s.data = result.getString(SKIN_DATA);
 
-        Skin skin = cache.getIfPresent(id);
-        if (skin != null) {
-            ret.set(skin);
-        } else {
-            manager.query()
-                    .select()
-                    .where(SKIN_ID, id)
-                    .limit(1)
-                    .build()
-                    .callback((statement, count) -> {
-                        ResultSet result = statement.getResultSet();
-
-                        if (!result.next()) {
-                            ret.set(null);
-                            return;
-                        }
-
-                        Skin s = new Skin();
-                        s.uuid = result.getString(SKIN_UUID);
-                        s.username = result.getString(SKIN_USERNAME);
-                        s.signature = result.getString(SKIN_SIGNATURE);
-                        s.data = result.getString(SKIN_DATA);
-
-                        cache.put(result.getString(SKIN_ID), s);
-
-                        ret.set(s);
-                    })
-                    .execute(true);
-        }
-
-        return ret;
+                skins.put(result.getString(SKIN_ID), s);
+            }
+        }).onFinished(() -> {
+            NPCsController.getInstance().getLogger().info("Loaded " + skins.size() + " skins.");
+        }).execute(true);
     }
 
     public static class Skin {

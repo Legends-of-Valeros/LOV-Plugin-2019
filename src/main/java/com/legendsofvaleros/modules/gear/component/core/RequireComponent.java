@@ -8,10 +8,10 @@ import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.race.EntityRace;
 import com.legendsofvaleros.modules.gear.component.GearComponent;
 import com.legendsofvaleros.modules.gear.component.GearComponentOrder;
-import com.legendsofvaleros.modules.gear.trigger.EquipTrigger;
-import com.legendsofvaleros.modules.gear.trigger.GearTrigger;
 import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.item.NoPersist;
+import com.legendsofvaleros.modules.gear.trigger.EquipTrigger;
+import com.legendsofvaleros.modules.gear.trigger.GearTrigger;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 

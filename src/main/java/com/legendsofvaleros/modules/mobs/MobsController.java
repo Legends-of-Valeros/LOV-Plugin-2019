@@ -2,14 +2,10 @@ package com.legendsofvaleros.modules.mobs;
 
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.Module;
-import com.legendsofvaleros.module.ModuleListener;
-import com.legendsofvaleros.module.Modules;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
-import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.levelarchetypes.core.LevelArchetypes;
 import com.legendsofvaleros.modules.loot.LootManager;
@@ -23,17 +19,12 @@ import com.legendsofvaleros.modules.mobs.listener.MobListener;
 import com.legendsofvaleros.modules.mobs.pl8.MobHealthbarManager;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.parties.PartiesController;
-import com.legendsofvaleros.modules.parties.PartyManager;
-import com.legendsofvaleros.modules.parties.core.PlayerParty;
-import com.legendsofvaleros.modules.quests.QuestManager;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 
 @DependsOn(CombatEngine.class)
 @DependsOn(Characters.class)

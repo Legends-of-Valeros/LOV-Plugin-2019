@@ -96,7 +96,7 @@ public class PlayerBookListener implements Listener {
                 hasMods = false;
 
             tb.append(as.getUserFriendlyName() + ":").color(ChatColor.BLACK).bold(true)
-                    .hover(as.getUserFriendlyName(), "\n"  + tooltip.toString().trim());
+                    .hover(as.getUserFriendlyName(), "", tooltip.toString().trim());
 
             tb.append(StringUtil.right(Book.WIDTH, ChatColor.BOLD + as.getUserFriendlyName() + ":", as.formatForUserInterface(pc.getAbilityStats().getAbilityStat(as))) + "\n").color(ChatColor.DARK_GRAY);
 
@@ -136,12 +136,12 @@ public class PlayerBookListener implements Listener {
 
 
                 tb.append(s.getShortName() + ":").color(ChatColor.BLACK)
-                        .hover(s.getUserFriendlyName())
-                        .append("\n"  + tooltip.toString().trim())
+                        .hover(s.getUserFriendlyName(), "", tooltip.toString().trim())
                         .append(StringUtil.right(Book.WIDTH, s.getShortName(), s.formatForUserInterface(ce.getStats().getStat(s))) + "\n").color(ChatColor.DARK_GRAY);
 
                 tooltip.setLength(0);
             }
+
             event.getPages().add(tb.create());
         }
 		

@@ -1,19 +1,18 @@
 package com.legendsofvaleros.modules.quests.objective.core;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.npcs.core.NPCData;
 import com.legendsofvaleros.modules.npcs.NPCsController;
+import com.legendsofvaleros.modules.npcs.core.NPCData;
 import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
 import com.legendsofvaleros.modules.quests.QuestController;
-import com.legendsofvaleros.modules.quests.objective.AbstractQuestObjective;
 import com.legendsofvaleros.modules.quests.api.IQuestObjective;
-import com.legendsofvaleros.modules.quests.progress.core.QuestObjectiveProgressBoolean;
+import com.legendsofvaleros.modules.quests.objective.AbstractQuestObjective;
 import com.legendsofvaleros.util.MessageUtil;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import org.bukkit.Location;
 import org.bukkit.event.Event;
 
-public class ReturnObjective extends AbstractQuestObjective<QuestObjectiveProgressBoolean> {
+public class ReturnObjective extends AbstractQuestObjective<Boolean> {
     public String id;
 
     private transient NPCData npc;
@@ -21,7 +20,7 @@ public class ReturnObjective extends AbstractQuestObjective<QuestObjectiveProgre
     @Override
     protected void onInit() {
         if (!NPCsController.isNPC(id)) {
-            MessageUtil.sendException(QuestController.getInstance(), "No NPC with that ID in gear. Offender: " + id + " in " + getQuest().getId(), false);
+            MessageUtil.sendException(QuestController.getInstance(), "No NPC with that ID in quest. Offender: " + id + " in " + getQuest().getId());
             return;
         }
 
@@ -34,12 +33,17 @@ public class ReturnObjective extends AbstractQuestObjective<QuestObjectiveProgre
     }
 
     @Override
-    public boolean isCompleted(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
-        return progress.value;
+    public Boolean onStart(PlayerCharacter pc) {
+        return false;
     }
 
     @Override
-    public String getProgressText(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
+    public boolean isCompleted(PlayerCharacter pc, Boolean progress) {
+        return progress;
+    }
+
+    @Override
+    public String getProgressText(PlayerCharacter pc, Boolean progress) {
         return "Return to " + (npc == null ? "UNKNOWN" : npc.name);
     }
 
@@ -54,22 +58,24 @@ public class ReturnObjective extends AbstractQuestObjective<QuestObjectiveProgre
     }
 
     @Override
-    public void onEvent(Event event, PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
-        if (id == null) return;
+    public Boolean onEvent(Event event, PlayerCharacter pc, Boolean progress) {
+        if (id == null) return progress;
 
         NPCRightClickEvent e = (NPCRightClickEvent) event;
 
-        if (progress.value && !e.getNPC().hasTrait(TraitLOV.class)) return;
+        if (progress && !e.getNPC().hasTrait(TraitLOV.class)) return progress;
 
         TraitLOV lov = e.getNPC().getTrait(TraitLOV.class);
         if (lov.npcId != null && lov.npcId.equals(id)) {
             for (IQuestObjective<?> obj : getQuest().getObjectiveGroup(pc))
                 if (obj != this && !obj.isCompleted(pc))
-                    return;
-
-            progress.value = true;
+                    return progress;
 
             e.setCancelled(true);
+
+            return true;
         }
+
+        return progress;
     }
 }

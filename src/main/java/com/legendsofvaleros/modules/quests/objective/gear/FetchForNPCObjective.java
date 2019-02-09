@@ -1,20 +1,20 @@
-package com.legendsofvaleros.modules.quests.action.gear;
+package com.legendsofvaleros.modules.quests.objective.gear;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.gear.GearController;
-import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.ItemUtil;
-import com.legendsofvaleros.modules.npcs.core.NPCData;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.npcs.NPCsController;
+import com.legendsofvaleros.modules.npcs.core.NPCData;
 import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
 import com.legendsofvaleros.modules.quests.objective.AbstractQuestObjective;
-import com.legendsofvaleros.modules.quests.progress.core.QuestObjectiveProgressBoolean;
 import com.legendsofvaleros.util.MessageUtil;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import org.bukkit.Location;
 import org.bukkit.event.Event;
 
-public class FetchForNPCObjective extends AbstractQuestObjective<QuestObjectiveProgressBoolean> {
+public class FetchForNPCObjective extends AbstractQuestObjective<Boolean> {
     private String id;
     private int amount;
 
@@ -28,10 +28,10 @@ public class FetchForNPCObjective extends AbstractQuestObjective<QuestObjectiveP
         item = Gear.fromID(id);
 
         if (item == null)
-            MessageUtil.sendException(GearController.getInstance(), "No item with that ID in gear. Offender: " + id + " in " + getQuest().getId(), false);
+            MessageUtil.sendException(GearController.getInstance(), "No item with that ID in quest. Offender: " + id + " in " + getQuest().getId());
 
         if (!NPCsController.isNPC(npcId)) {
-            MessageUtil.sendException(GearController.getInstance(), "No NPC with that ID in gear. Offender: " + id + " in " + getQuest().getId(), false);
+            MessageUtil.sendException(GearController.getInstance(), "No NPC with that ID in quest. Offender: " + id + " in " + getQuest().getId());
             return;
         }
 
@@ -44,12 +44,17 @@ public class FetchForNPCObjective extends AbstractQuestObjective<QuestObjectiveP
     }
 
     @Override
-    public boolean isCompleted(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
-        return progress.value;
+    public Boolean onStart(PlayerCharacter pc) {
+        return false;
     }
 
     @Override
-    public String getProgressText(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
+    public boolean isCompleted(PlayerCharacter pc, Boolean progress) {
+        return progress;
+    }
+
+    @Override
+    public String getProgressText(PlayerCharacter pc, Boolean progress) {
         return "Bring " + npc.name + " " + (amount > 1 ? "x" + amount + " " : "") + (item == null ? "UNKNOWN" : item.getName());
     }
 
@@ -64,24 +69,26 @@ public class FetchForNPCObjective extends AbstractQuestObjective<QuestObjectiveP
     }
 
     @Override
-    public void onEvent(Event event, PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
-        if (id == null || item == null) return;
+    public Boolean onEvent(Event event, PlayerCharacter pc, Boolean progress) {
+        if (id == null || item == null) return progress;
 
-        if (npcId == null || npc.name == null) return;
+        if (npcId == null || npc.name == null) return progress;
 
-        if (progress.value) return;
+        if (progress) return progress;
 
         NPCRightClickEvent e = (NPCRightClickEvent) event;
 
-        if (!e.getNPC().hasTrait(TraitLOV.class)) return;
+        if (!e.getNPC().hasTrait(TraitLOV.class)) return progress;
 
         TraitLOV lov = e.getNPC().getTrait(TraitLOV.class);
         if (lov.npcId != null && lov.npcId.equals(npcId)) {
-            if (!ItemUtil.hasItem(pc.getPlayer(), item, amount)) return;
+            if (!ItemUtil.hasItem(pc.getPlayer(), item, amount)) return progress;
 
             ItemUtil.removeItem(pc.getPlayer(), item, amount);
 
-            progress.value = true;
+            return true;
         }
+
+        return progress;
     }
 }

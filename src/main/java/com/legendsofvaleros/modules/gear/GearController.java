@@ -1,11 +1,9 @@
 package com.legendsofvaleros.modules.gear;
 
-import com.codingforcookies.armorequip.ArmorEquipEvent;
 import com.codingforcookies.doris.orm.ORMField;
 import com.codingforcookies.doris.orm.ORMRegistry;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.Module;
-import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.IntegratesWith;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
@@ -15,9 +13,6 @@ import com.legendsofvaleros.modules.characters.core.PlayerInventoryData;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.gear.commands.ItemCommands;
 import com.legendsofvaleros.modules.gear.component.core.*;
-import com.legendsofvaleros.modules.gear.event.GearPickupEvent;
-import com.legendsofvaleros.modules.gear.event.ItemEquipEvent;
-import com.legendsofvaleros.modules.gear.event.ItemUnEquipEvent;
 import com.legendsofvaleros.modules.gear.integration.BankIntegration;
 import com.legendsofvaleros.modules.gear.integration.SkillsIntegration;
 import com.legendsofvaleros.modules.gear.item.Gear;
@@ -25,10 +20,7 @@ import com.legendsofvaleros.modules.gear.listener.InventoryListener;
 import com.legendsofvaleros.modules.gear.listener.ItemListener;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
-import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.skills.SkillsController;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

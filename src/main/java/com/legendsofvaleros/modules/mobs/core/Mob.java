@@ -2,7 +2,6 @@ package com.legendsofvaleros.modules.mobs.core;
 
 import com.codingforcookies.doris.orm.annotation.Column;
 import com.codingforcookies.doris.orm.annotation.Table;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
@@ -20,6 +19,7 @@ import com.legendsofvaleros.util.MessageUtil;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.Equipment;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -233,7 +233,7 @@ public class Mob {
 
         public ItemStack getStack() {
             ItemStack itemStack = Gear.fromID(id).newInstance().toStack();
-            if (itemStack != null) {
+            if (itemStack.getType() != Material.AIR) {
                 itemStack.setAmount(this.amount);
                 return itemStack;
             } else
@@ -283,7 +283,7 @@ public class Mob {
             npc = NPCsController.manager().registry.createNPC(mob.type, "");
 
             npc.getNavigator().getLocalParameters().updatePathRate(20)
-                    .useNewPathfinder(false)
+                    .useNewPathfinder(true)
                     .stuckAction(AIStuckAction.INSTANCE)
                     .avoidWater(false);
 
@@ -297,10 +297,8 @@ public class Mob {
 
             if (mob.type == EntityType.PLAYER) {
                 if (mob.getOptions().skin != null) {
-                    ListenableFuture<Skins.Skin> future = Skins.inst().getSkin(mob.getOptions().skin);
-                    Skins.Skin skin;
                     try {
-                        skin = future.get();
+                        Skins.Skin skin = Skins.getSkin(mob.getOptions().skin);
 
                         if (skin == null)
                             throw new Exception("No skin with that ID. Offender: " + mob.getOptions().skin + " on " + mob.id);
@@ -312,7 +310,7 @@ public class Mob {
                         npc.data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA, skin.data);
                         npc.data().setPersistent(NPC.PLAYER_SKIN_USE_LATEST, false);
                     } catch (Exception e) {
-                        MessageUtil.sendException(MobsController.getInstance(), e, false);
+                        MessageUtil.sendException(MobsController.getInstance(), e);
                     }
                 }
             }

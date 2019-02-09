@@ -22,7 +22,7 @@ public class ActionNewQuest extends AbstractQuestAction {
                 else
                     QuestController.attemptGiveQuest(pc, questId);
             } catch (Exception e) {
-                MessageUtil.sendException(QuestController.getInstance(), pc.getPlayer(), e, false);
+                MessageUtil.sendException(QuestController.getInstance(), pc.getPlayer(), e);
             }
 
             next.go();

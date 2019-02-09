@@ -1,16 +1,10 @@
 package com.legendsofvaleros.modules.graveyard;
 
 import com.codingforcookies.robert.core.GUI;
-import com.codingforcookies.robert.item.ItemBuilder;
-import com.legendsofvaleros.modules.mobs.SpawnManager;
-import com.legendsofvaleros.modules.mobs.core.SpawnArea;
 import com.legendsofvaleros.util.item.Model;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-
-import java.text.DecimalFormat;
 
 public class GraveyardEditorGUI extends GUI {
 	private ItemStack stack;

@@ -1,5 +1,6 @@
 package com.legendsofvaleros.modules.regions.core;
 
+import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -31,12 +32,12 @@ public class RegionSelector implements Listener {
                     if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
                         if (selection.get(event.getPlayer())[0] != event.getClickedBlock().getLocation()) {
                             selection.get(event.getPlayer())[0] = event.getClickedBlock().getLocation();
-                            event.getPlayer().sendMessage("Set regions location 1.");
+                            MessageUtil.sendUpdate(event.getPlayer(), "Set regions location 1.");
                         }
                     } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                         if (selection.get(event.getPlayer())[1] != event.getClickedBlock().getLocation()) {
                             selection.get(event.getPlayer())[1] = event.getClickedBlock().getLocation();
-                            event.getPlayer().sendMessage("Set regions location 2.");
+                            MessageUtil.sendUpdate(event.getPlayer(), "Set regions location 2.");
                         }
                     }
 

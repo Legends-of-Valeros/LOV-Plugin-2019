@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.quests.objective.regions;
+package com.legendsofvaleros.modules.quests.action.regions;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.action.AbstractQuestAction;

@@ -1,9 +1,8 @@
 package com.legendsofvaleros.modules.npcs.trait;
 
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.legendsofvaleros.modules.npcs.core.NPCData;
 import com.legendsofvaleros.modules.npcs.NPCsController;
+import com.legendsofvaleros.modules.npcs.core.NPCData;
 import com.legendsofvaleros.modules.npcs.core.Skins;
 import com.legendsofvaleros.modules.npcs.core.Skins.Skin;
 import com.legendsofvaleros.modules.npcs.nameplate.Nameplates;
@@ -65,14 +64,14 @@ public class TraitLOV extends Trait implements CommandConfigurable {
                 p = foundP;
             }
         } catch (CommandException e) {
-            MessageUtil.sendException(NPCsController.getInstance(), p, e, false);
+            MessageUtil.sendException(NPCsController.getInstance(), p, e);
             return;
         }
 
         String npcId = ctx.getString(1).toLowerCase();
 
         if (!NPCsController.isNPC(npcId)) {
-            MessageUtil.sendException(NPCsController.getInstance(), p, new Exception("No NPC with that ID exists in the cache. Offender: " + npcId), false);
+            MessageUtil.sendException(NPCsController.getInstance(), p, new Exception("No NPC with that ID exists in the cache. Offender: " + npcId));
             return;
         }
 
@@ -106,7 +105,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
         if (npcData == null) {
             getNPC().data().setPersistent(NPC.NAMEPLATE_VISIBLE_METADATA, true);
             getNPC().getEntity().setCustomNameVisible(true);
-            MessageUtil.sendException(NPCsController.getInstance(), "No NPC with that ID exists in the cache. Offender: " + npcId + " on " + getNPC().getId(), false);
+            MessageUtil.sendException(NPCsController.getInstance(), "No NPC with that ID exists in the cache. Offender: " + npcId + " on " + getNPC().getId());
             return;
         }
 
@@ -126,7 +125,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
                 return;
             }
         } else {
-            MessageUtil.sendException(NPCsController.getInstance(), "NPC has a null name. Offender: " + npcId + " on " + getNPC().getId(), false);
+            MessageUtil.sendException(NPCsController.getInstance(), "NPC has a null name. Offender: " + npcId + " on " + getNPC().getId());
         }
 
         nameplates = Nameplates.get(getNPC());
@@ -136,10 +135,8 @@ public class TraitLOV extends Trait implements CommandConfigurable {
         if (npcData.skin != null && npcData.skin.trim().length() > 0 && !updatedSkin && getNPC().getEntity() instanceof SkinnableEntity) {
             updatedSkin = true;
 
-            ListenableFuture<Skin> future = Skins.inst().getSkin(npcData.skin);
-            Skin skin;
             try {
-                skin = future.get();
+                Skin skin = Skins.getSkin(npcData.skin);
 
                 if (skin == null)
                     throw new Exception("No skin with that ID. Offender: " + npcData.skin + " on " + npcData.npcId);
@@ -156,7 +153,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
 
                 return;
             } catch (Exception e) {
-                MessageUtil.sendException(NPCsController.getInstance(), null, e, false);
+                MessageUtil.sendException(NPCsController.getInstance(), null, e);
             }
         }
 

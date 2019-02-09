@@ -55,7 +55,7 @@ public class BukkitConfig implements CharactersConfig {
 				statDescriptions.put(AbilityStat.valueOf(key), descSec.getString(key));
 			} catch (Exception ex) {
 				Characters.getInstance().getLogger().severe("Could not load ability stat description. '" + key + "' is not a recognized stat");
-				MessageUtil.sendException(Characters.getInstance(), ex, false);
+				MessageUtil.sendException(Characters.getInstance(), ex);
 			}
 		}
 
@@ -88,7 +88,7 @@ public class BukkitConfig implements CharactersConfig {
 				classConfigs.put(playerClass, new BukkitClassConfig(playerClass));
 			} catch (Exception e) {
 				Characters.getInstance().getLogger().severe("Encountered an issue while loading the configuration for the class '" + playerClass.name() + "'");
-				MessageUtil.sendException(Characters.getInstance(), e, false);
+				MessageUtil.sendException(Characters.getInstance(), e);
 			}
 		}
 
@@ -98,7 +98,7 @@ public class BukkitConfig implements CharactersConfig {
 				raceConfigs.put(playerRace, new BukkitRaceConfig(playerRace));
 			} catch (Exception e) {
 				Characters.getInstance().getLogger().severe("Encountered an issue while loading the configuration for the race '" + playerRace.name() + "'");
-				MessageUtil.sendException(Characters.getInstance(), e, false);
+				MessageUtil.sendException(Characters.getInstance(), e);
 			}
 		}
 	}

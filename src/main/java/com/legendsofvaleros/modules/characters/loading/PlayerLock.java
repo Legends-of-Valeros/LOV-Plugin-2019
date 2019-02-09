@@ -6,6 +6,7 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.*;
@@ -97,6 +98,9 @@ public class PlayerLock {
 			screenBlockers.put(uid, ScreenBlocker.blockScreen(player, BLOCK_SCREEN_DELAY));
 
 			hidePlayer(player);
+
+			player.setGameMode(GameMode.SPECTATOR);
+			player.setFlying(true);
 		}
 
 		locks.put(uid, this);
@@ -124,6 +128,9 @@ public class PlayerLock {
 			Player player = Bukkit.getPlayer(uid);
 			if (player != null) {
 				showPlayer(player);
+
+				player.setGameMode(Bukkit.getDefaultGameMode());
+				player.setFlying(false);
 			}
 		}
 	}

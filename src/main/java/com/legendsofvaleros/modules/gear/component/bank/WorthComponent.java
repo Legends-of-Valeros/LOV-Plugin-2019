@@ -5,10 +5,10 @@ import com.legendsofvaleros.modules.bank.core.Money;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.gear.component.GearComponent;
 import com.legendsofvaleros.modules.gear.component.GearComponentOrder;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.trigger.CombineTrigger;
 import com.legendsofvaleros.modules.gear.trigger.GearTrigger;
 import com.legendsofvaleros.modules.gear.trigger.PickupTrigger;
-import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.field.RangedValue;
 

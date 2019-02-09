@@ -7,7 +7,6 @@ import com.legendsofvaleros.modules.chat.PlayerChat;
 import com.legendsofvaleros.modules.playermenu.settings.PlayerSettings;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
-import net.citizensnpcs.npc.ai.speech.Chat;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

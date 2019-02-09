@@ -278,10 +278,16 @@ public class InternalScheduler extends Thread {
 
         task.setExecutor(this);
         task.setSync(true);
+        task.setRepeating(true);
+        task.setRepeatingInterval(interval);
         new BukkitRunnable() {
             @Override
             public void run() {
-                task.run();
+                try {
+                    task.run();
+                } catch (IllegalStateException e) {
+                    cancel();
+                }
             }
         }.runTaskTimer(LegendsOfValeros.getInstance(), delay, interval);
     }

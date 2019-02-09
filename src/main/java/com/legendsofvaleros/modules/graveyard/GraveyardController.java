@@ -51,7 +51,7 @@ public class GraveyardController extends ModuleListener {
         Graveyard data = GraveyardManager.getNearestGraveyard(ZonesController.getManager().getZone(event.getPlayer()), event.getPlayer().getLocation());
         if (data == null) {
             Location loc = event.getPlayer().getLocation();
-            MessageUtil.sendException(this, event.getPlayer(), "Failed to locate graveyard at " + loc.getBlockX() + ", " + loc.getBlockZ() + "!", true);
+            MessageUtil.sendException(this, event.getPlayer(), "Failed to locate graveyard at " + loc.getBlockX() + ", " + loc.getBlockZ() + "!");
             event.setRespawnLocation(event.getPlayer().getLocation());
         }else{
             Location loc = new Location(data.getWorld(), data.x + (Math.random() * (data.radius * 2) - data.radius), data.y, data.z + (Math.random() * (data.radius * 2) - data.radius));

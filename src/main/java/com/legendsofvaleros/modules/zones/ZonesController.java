@@ -11,13 +11,8 @@ import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.pvp.PvPController;
 import com.legendsofvaleros.modules.zones.commands.ZoneCommands;
-import com.legendsofvaleros.modules.zones.core.Zone;
 import com.legendsofvaleros.modules.zones.integration.PvPIntegration;
 import com.legendsofvaleros.modules.zones.listener.ZoneListener;
-import com.legendsofvaleros.util.MessageUtil;
-import net.md_5.bungee.api.chat.BaseComponent;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 @DependsOn(PvPController.class)
 @DependsOn(PlayerMenu.class)

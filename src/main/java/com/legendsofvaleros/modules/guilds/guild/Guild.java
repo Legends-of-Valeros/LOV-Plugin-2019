@@ -13,7 +13,10 @@ import com.legendsofvaleros.modules.guilds.GuildController;
 import com.legendsofvaleros.modules.guilds.GuildManager;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @Table(name = "guilds")
 public class Guild {

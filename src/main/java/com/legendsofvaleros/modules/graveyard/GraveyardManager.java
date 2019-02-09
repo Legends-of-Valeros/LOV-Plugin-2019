@@ -4,8 +4,8 @@ import com.codingforcookies.doris.sql.TableManager;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.zones.core.Zone;
 import com.legendsofvaleros.modules.zones.ZonesController;
+import com.legendsofvaleros.modules.zones.core.Zone;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -43,7 +43,7 @@ public class GraveyardManager {
 
                         Zone z = ZonesController.getManager().getZone(result.getString(GRAVEYARD_ZONE));
                         if (z == null) {
-                            MessageUtil.sendException(GraveyardController.getInstance(), "Graveyard in an unknown zone! Offender: " + pos[0] + ", " + pos[1] + ", " + pos[2], false);
+                            MessageUtil.sendException(GraveyardController.getInstance(), "Graveyard in an unknown zone! Offender: " + pos[0] + ", " + pos[1] + ", " + pos[2]);
                             continue;
                         }
 

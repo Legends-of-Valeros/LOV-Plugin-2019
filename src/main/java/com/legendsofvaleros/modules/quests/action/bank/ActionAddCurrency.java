@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.quests.objective.bank;
+package com.legendsofvaleros.modules.quests.action.bank;
 
 import com.legendsofvaleros.modules.bank.core.Money;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;

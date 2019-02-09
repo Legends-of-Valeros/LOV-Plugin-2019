@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.bank.event;
 
-import com.legendsofvaleros.modules.bank.core.Currency;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterEvent;
 import org.bukkit.event.Cancellable;

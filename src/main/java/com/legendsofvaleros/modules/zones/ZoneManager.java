@@ -86,7 +86,7 @@ public class ZoneManager implements Listener {
                 try {
                     updateZone(p);
                 } catch (Exception e) {
-                    MessageUtil.sendException(ZonesController.getInstance(), p, e, true);
+                    MessageUtil.sendSevereException(ZonesController.getInstance(), p, e);
                 }
             }
         }, 20L, 20L);

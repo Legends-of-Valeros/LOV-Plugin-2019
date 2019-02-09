@@ -3,16 +3,17 @@ package com.legendsofvaleros.modules.gear;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.gear.component.core.GearPhysicalDamage;
 import com.legendsofvaleros.modules.gear.component.core.GearUseSpeed;
-import com.legendsofvaleros.modules.gear.trigger.PickupTrigger;
 import com.legendsofvaleros.modules.gear.event.GearPickupEvent;
 import com.legendsofvaleros.modules.gear.event.InventoryFullEvent;
-import com.legendsofvaleros.modules.gear.listener.ItemListener;
 import com.legendsofvaleros.modules.gear.item.Gear;
+import com.legendsofvaleros.modules.gear.listener.ItemListener;
+import com.legendsofvaleros.modules.gear.trigger.PickupTrigger;
 import com.legendsofvaleros.modules.playermenu.InventoryManager;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -70,7 +71,13 @@ public class ItemUtil {
 		item.setGlowing(true);
 		instance.getRarityLevel().getTeam().addEntry(item.getUniqueId().toString());
 	}
-	
+
+	/**
+	 * Gives the gear to the player. This function directly alters the amount field
+	 * in the passed instance object, so if you want to know how much COULDN'T be
+	 * put into the user's inventory, just read the instance amount after calling
+	 * this function.
+	 */
 	public static void giveItem(PlayerCharacter pc, Gear.Instance instance) {
 		if(instance == null) return;
 
@@ -80,7 +87,7 @@ public class ItemUtil {
 		
 		ItemStack stack = instance.toStack();
 
-		if(stack == null) return;
+		if(stack.getType() == Material.AIR) return;
 		
 		ItemStack[] contents = pc.getPlayer().getInventory().getContents();
 		Gear.Instance item;
@@ -131,7 +138,7 @@ public class ItemUtil {
 	}
 	
 	public static boolean removeItem(Player p, Gear gear, int amount) {
-		if(gear == null) return false;
+		if(gear == null || amount <= 0) return false;
 
 		ItemStack[] contents = p.getInventory().getContents();
 		Gear.Instance item;
@@ -150,7 +157,7 @@ public class ItemUtil {
 					break;
 			}
 		}
-		
+
 		return amount <= 0;
 	}
 

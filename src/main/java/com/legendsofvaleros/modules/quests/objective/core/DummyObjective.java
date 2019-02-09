@@ -1,18 +1,17 @@
 package com.legendsofvaleros.modules.quests.objective.core;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.quests.objective.AbstractQuestObjective;
 import com.legendsofvaleros.modules.quests.api.IQuestObjective;
-import com.legendsofvaleros.modules.quests.progress.core.QuestObjectiveProgressBoolean;
+import com.legendsofvaleros.modules.quests.objective.AbstractQuestObjective;
 import org.bukkit.event.Event;
 
-public class DummyObjective extends AbstractQuestObjective<QuestObjectiveProgressBoolean> {
+public class DummyObjective extends AbstractQuestObjective<Boolean> {
 	public String uncomplete;
 	public String completed;
 	public Integer objective;
 
 	@Override
-	public boolean isCompleted(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
+	public boolean isCompleted(PlayerCharacter pc, Boolean progress) {
 		if(objective == null) {
 			for (IQuestObjective<?> obj : getQuest().getObjectiveGroup(pc))
 				if (!(obj instanceof DummyObjective) && !obj.isCompleted(pc))
@@ -23,7 +22,7 @@ public class DummyObjective extends AbstractQuestObjective<QuestObjectiveProgres
 	}
 
 	@Override
-	public String getProgressText(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) { return uncomplete; }
+	public String getProgressText(PlayerCharacter pc, Boolean progress) { return uncomplete; }
 
 	@Override
 	public String getCompletedText(PlayerCharacter pc) {
@@ -36,7 +35,7 @@ public class DummyObjective extends AbstractQuestObjective<QuestObjectiveProgres
 	}
 
 	@Override
-	public void onEvent(Event event, PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
-
+	public Boolean onEvent(Event event, PlayerCharacter pc, Boolean progress) {
+		return progress;
 	}
 }

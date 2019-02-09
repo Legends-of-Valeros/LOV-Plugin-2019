@@ -22,7 +22,7 @@ public class EventsAspect {
         try {
             returnObject = joinPoint.proceed();
         } catch(Throwable th) {
-            MessageUtil.sendSevereException(module, null, th);
+            MessageUtil.sendSevereException(module, th);
             throw th;
         } finally {
             long tookTime = System.currentTimeMillis() - startTime;

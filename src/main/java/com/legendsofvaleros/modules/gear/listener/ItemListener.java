@@ -16,13 +16,13 @@ import com.legendsofvaleros.modules.combatengine.events.CombatEntityCreateEvent;
 import com.legendsofvaleros.modules.combatengine.events.VanillaDamageCancelledEvent;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
 import com.legendsofvaleros.modules.gear.GearController;
-import com.legendsofvaleros.modules.gear.trigger.*;
-import com.legendsofvaleros.modules.gear.trigger.GearTrigger.TriggerEvent;
+import com.legendsofvaleros.modules.gear.ItemUtil;
 import com.legendsofvaleros.modules.gear.event.ItemEquipEvent;
 import com.legendsofvaleros.modules.gear.event.ItemUnEquipEvent;
 import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.item.GearType;
-import com.legendsofvaleros.modules.gear.ItemUtil;
+import com.legendsofvaleros.modules.gear.trigger.*;
+import com.legendsofvaleros.modules.gear.trigger.GearTrigger.TriggerEvent;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
@@ -70,6 +70,7 @@ public class ItemListener implements Listener {
 
         if (instance == null) return;
 
+        int amount = instance.amount;
         ItemUtil.giveItem(Characters.getPlayerCharacter(event.getPlayer()), instance);
 
         if (instance.getType().isTradable()) {
@@ -79,7 +80,7 @@ public class ItemListener implements Listener {
                     public void onAccept(GUI gui, Player p) {
                         gui.close(p);
 
-                        if(!ItemUtil.removeItem(event.getPlayer(), instance))
+                        if(!ItemUtil.removeItem(event.getPlayer(), instance.gear, amount))
                             MessageUtil.sendError(event.getPlayer(), "Unable to remove that, for some reason...");
                         else
                             MessageUtil.sendUpdate(event.getPlayer(), instance.getName() + " has been destroyed.");
@@ -225,7 +226,7 @@ public class ItemListener implements Listener {
                 return;
             }
 
-            Bukkit.getPluginManager().callEvent(new ItemUnEquipEvent(Characters.getPlayerCharacter((Player) e.getWhoClicked()), gear));
+            Bukkit.getPluginManager().callEvent(new ItemUnEquipEvent(Characters.getPlayerCharacter((Player) e.getWhoClicked()), gear, !offhand ? EquipmentSlot.HAND : EquipmentSlot.OFF_HAND));
         }
     }
 
@@ -324,7 +325,7 @@ public class ItemListener implements Listener {
 
         gear = Gear.Instance.fromStack(event.getOldArmorPiece());
         if (gear != null)
-            Bukkit.getPluginManager().callEvent(new ItemUnEquipEvent(Characters.getPlayerCharacter(event.getPlayer()), gear));
+            Bukkit.getPluginManager().callEvent(new ItemUnEquipEvent(Characters.getPlayerCharacter(event.getPlayer()), gear, null));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

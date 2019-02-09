@@ -50,7 +50,7 @@ public class TraitHelper {
             if (slot != null)
                 slots.add(slot);
         } catch (Exception e) {
-            MessageUtil.sendException(NPCsController.getInstance(), player, e, true);
+            MessageUtil.sendSevereException(NPCsController.getInstance(), player, e);
         }
     }
 

@@ -1,17 +1,16 @@
-package com.legendsofvaleros.modules.quests.action.gear;
+package com.legendsofvaleros.modules.quests.objective.gear;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.gear.event.GearPickupEvent;
 import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.quests.objective.AbstractQuestObjective;
-import com.legendsofvaleros.modules.quests.progress.core.QuestObjectiveProgressInteger;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class FetchObjective extends AbstractQuestObjective<QuestObjectiveProgressInteger> {
+public class FetchObjective extends AbstractQuestObjective<Integer> {
     private String id;
     private int amount;
 
@@ -22,25 +21,29 @@ public class FetchObjective extends AbstractQuestObjective<QuestObjectiveProgres
         item = Gear.fromID(id);
 
         if (item == null)
-            MessageUtil.sendException(GearController.getInstance(), "No item with that ID in gear. Offender: " + id + " in " + getQuest().getId(), false);
+            MessageUtil.sendException(GearController.getInstance(), "No item with that ID in quest. Offender: " + id + " in " + getQuest().getId());
     }
 
     @Override
-    public void onBegin(PlayerCharacter pc, QuestObjectiveProgressInteger progress) {
+    public Integer onStart(PlayerCharacter pc) {
+        int progress = 0;
+
         for (ItemStack stack : pc.getPlayer().getInventory().getContents()) {
             if (!item.isSimilar(stack))
                 continue;
-            progress.value++;
+            progress += stack.getAmount();
         }
+
+        return progress;
     }
 
     @Override
-    public boolean isCompleted(PlayerCharacter pc, QuestObjectiveProgressInteger progress) {
-        return progress.value >= amount;
+    public boolean isCompleted(PlayerCharacter pc, Integer progress) {
+        return progress >= amount;
     }
 
     @Override
-    public String getProgressText(PlayerCharacter pc, QuestObjectiveProgressInteger progress) {
+    public String getProgressText(PlayerCharacter pc, Integer progress) {
         return "Find " + (amount > 1 ? "x" + amount + " " : "") + (item == null ? "UNKNOWN" : item.getName());
     }
 
@@ -55,18 +58,20 @@ public class FetchObjective extends AbstractQuestObjective<QuestObjectiveProgres
     }
 
     @Override
-    public void onEvent(Event event, PlayerCharacter pc, QuestObjectiveProgressInteger progress) {
-        if (id == null || item == null) return;
+    public Integer onEvent(Event event, PlayerCharacter pc, Integer progress) {
+        if (id == null || item == null) return progress;
 
         if (event.getClass() == GearPickupEvent.class) {
-            if (!item.isSimilar(((GearPickupEvent) event).getItem())) return;
+            if (!item.isSimilar(((GearPickupEvent) event).getItem())) return progress;
 
-            progress.value++;
+            return progress + 1;
 
         } else if (event.getClass() == PlayerDropItemEvent.class) {
-            if (!item.isSimilar(((PlayerDropItemEvent) event).getItemDrop().getItemStack())) return;
+            if (!item.isSimilar(((PlayerDropItemEvent) event).getItemDrop().getItemStack())) return progress;
 
-            progress.value--;
+            return progress - 1;
         }
+
+        return progress;
     }
 }

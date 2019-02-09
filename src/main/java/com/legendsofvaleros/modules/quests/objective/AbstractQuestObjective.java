@@ -2,15 +2,15 @@ package com.legendsofvaleros.modules.quests.objective;
 
 import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.quests.api.IQuestObjective;
-import com.legendsofvaleros.modules.quests.api.IQuestObjectiveProgress;
 import com.legendsofvaleros.modules.quests.api.IQuest;
+import com.legendsofvaleros.modules.quests.api.IQuestObjective;
 import org.bukkit.Location;
 import org.bukkit.event.Event;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.ParameterizedType;
 
-public abstract class AbstractQuestObjective<T extends IQuestObjectiveProgress> implements IQuestObjective<T> {
+public abstract class AbstractQuestObjective<T> implements IQuestObjective<T> {
 	private WeakReference<IQuest> quest;
 	@Override public IQuest getQuest() { return quest.get(); }
 
@@ -19,6 +19,11 @@ public abstract class AbstractQuestObjective<T extends IQuestObjectiveProgress> 
 
 	private int objectiveI;
 	@Override public int getObjectiveIndex() { return objectiveI; }
+
+	@Override
+	public Class<T> getProgressClass() {
+        return (Class<T>)((ParameterizedType)getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+    }
 
 	private boolean visible = true;
 
@@ -49,6 +54,10 @@ public abstract class AbstractQuestObjective<T extends IQuestObjectiveProgress> 
 		return (T)getQuest().getProgress(pc).getForObjective(getObjectiveIndex());
 	}
 
+	private final void setProgress(PlayerCharacter pc, T obj) {
+        getQuest().getProgress(pc).setForObjective(getObjectiveIndex(), obj);
+    }
+
 	@Override
 	public final boolean isVisible() { return visible; }
 
@@ -78,20 +87,20 @@ public abstract class AbstractQuestObjective<T extends IQuestObjectiveProgress> 
 	public abstract boolean isCompleted(PlayerCharacter pc, T progress);
 
 	@Override
-	public final void onBegin(PlayerCharacter pc) { onBegin(pc, getProgress(pc)); }
-	public void onBegin(PlayerCharacter pc, T progress) { }
+	public final void onBegin(PlayerCharacter pc) { setProgress(pc, onStart(pc)); }
+	public T onStart(PlayerCharacter pc) { return null; }
 
 	@Override
-	public final void onEnd(PlayerCharacter pc) { onEnd(pc, getProgress(pc)); }
-	public void onEnd(PlayerCharacter pc, T progress) { }
+	public final void onEnd(PlayerCharacter pc) { setProgress(pc, onEnd(pc, getProgress(pc))); }
+	public T onEnd(PlayerCharacter pc, T progress) { return progress; }
 
 	@Override
-	public final void onEvent(Event event, PlayerCharacter pc) { onEvent(event, pc, getProgress(pc)); }
-	public abstract void onEvent(Event event, PlayerCharacter pc, T progress);
+	public final void onEvent(Event event, PlayerCharacter pc) { setProgress(pc, onEvent(event, pc, getProgress(pc))); }
+	public abstract T onEvent(Event event, PlayerCharacter pc, T progress);
 
 	@Override
 	public int getUpdateTimer() { return 0; }
 	@Override
-	public final void onUpdate(PlayerCharacter pc, int ticks) { onUpdate(pc, getProgress(pc), ticks); }
-	public void onUpdate(PlayerCharacter pc, T progress, int ticks) { }
+	public final void onUpdate(PlayerCharacter pc, int ticks) { setProgress(pc, onUpdate(pc, getProgress(pc), ticks)); }
+	public T onUpdate(PlayerCharacter pc, T progress, int ticks) { return progress; }
 }

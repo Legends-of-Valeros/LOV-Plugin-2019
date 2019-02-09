@@ -4,12 +4,11 @@ import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.quests.objective.AbstractQuestObjective;
-import com.legendsofvaleros.modules.quests.progress.core.QuestObjectiveProgressBoolean;
 import com.legendsofvaleros.modules.skills.event.BindSkillEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.event.Event;
 
-public class SkillBindObjective extends AbstractQuestObjective<QuestObjectiveProgressBoolean> {
+public class SkillBindObjective extends AbstractQuestObjective<Boolean> {
 	private String id;
 	private int slot;
 
@@ -18,18 +17,23 @@ public class SkillBindObjective extends AbstractQuestObjective<QuestObjectivePro
 	@Override
 	protected void onInit() {
 		if ((skill = Skill.getSkillById(id)) == null) {
-			MessageUtil.sendException(QuestController.getInstance(), "No skill with that ID in gear. Offender: " + id + " in " + getQuest().getId(), false);
+			MessageUtil.sendException(QuestController.getInstance(), "No skill with that ID in quest. Offender: " + id + " in " + getQuest().getId());
 			return;
 		}
 	}
 
 	@Override
-	public boolean isCompleted(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
-		return progress.value;
+	public Boolean onStart(PlayerCharacter pc) {
+		return false;
+	}
+
+	@Override
+	public boolean isCompleted(PlayerCharacter pc, Boolean progress) {
+		return progress;
 	}
 	
 	@Override
-	public String getProgressText(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
+	public String getProgressText(PlayerCharacter pc, Boolean progress) {
 		return "Bind " + (skill == null ? "UNKNOWN" : skill.getUserFriendlyName(1)) + (slot >= 0 ? " to slot " + (slot + 1) : "");
 	}
 	
@@ -44,10 +48,11 @@ public class SkillBindObjective extends AbstractQuestObjective<QuestObjectivePro
 	}
 
 	@Override
-	public void onEvent(Event event, PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
+	public Boolean onEvent(Event event, PlayerCharacter pc, Boolean progress) {
 		BindSkillEvent e = (BindSkillEvent)event;
 
 		if((slot == -1 || e.getSlot() == slot) && e.getSkillId().equals(id))
-			progress.value = true;
+			return true;
+		return progress;
 	}
 }

@@ -9,8 +9,8 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.quests.api.IQuestObjective;
 import com.legendsofvaleros.modules.quests.api.IQuest;
+import com.legendsofvaleros.modules.quests.api.IQuestObjective;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -94,7 +94,7 @@ public class QuestCommands extends BaseCommand {
 
                 MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' accepted!");
             } catch (Exception e) {
-                MessageUtil.sendException(QuestController.getInstance(), player, e, false);
+                MessageUtil.sendException(QuestController.getInstance(), player, e);
             }
         }, QuestController.getInstance().getScheduler()::async);
     }
@@ -113,7 +113,7 @@ public class QuestCommands extends BaseCommand {
 
                 MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' declined!");
             } catch (Exception e) {
-                MessageUtil.sendException(QuestController.getInstance(), player, e, false);
+                MessageUtil.sendException(QuestController.getInstance(), player, e);
             }
         }, QuestController.getInstance().getScheduler()::async);
     }
@@ -199,7 +199,7 @@ public class QuestCommands extends BaseCommand {
                                     if (completed) tb.strikethrough(true);
                                 }
                             } catch (Exception e) {
-                                MessageUtil.sendException(QuestController.getInstance(), player, e, false);
+                                MessageUtil.sendException(QuestController.getInstance(), player, e);
                                 tb.append("*Plugin error\n").color(ChatColor.DARK_RED);
                             }
                         }

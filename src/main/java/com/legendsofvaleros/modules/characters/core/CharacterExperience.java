@@ -106,12 +106,12 @@ public class CharacterExperience implements Experience {
                     try {
                         levelFromDb = levelRequest.get();
                     } catch (Exception e) {
-                        MessageUtil.sendException(Characters.getInstance(), playerCharacter.getPlayer(), e, false);
+                        MessageUtil.sendException(Characters.getInstance(), playerCharacter.getPlayer(), e);
                     }
                     try {
                         xpFromDb = xpRequest.get();
                     } catch (Exception e) {
-                        MessageUtil.sendException(Characters.getInstance(), playerCharacter.getPlayer(), e, false);
+                        MessageUtil.sendException(Characters.getInstance(), playerCharacter.getPlayer(), e);
                     }
 
                     refreshXpToLevel();

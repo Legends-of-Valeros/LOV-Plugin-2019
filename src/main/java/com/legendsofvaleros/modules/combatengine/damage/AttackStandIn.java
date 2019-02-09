@@ -130,7 +130,7 @@ public class AttackStandIn {
 
     } catch (Exception e) {
       CombatEngine.getInstance().getLogger().warning("Could not set a fake entity's location through reflection");
-      MessageUtil.sendException(CombatEngine.getInstance(), entity instanceof Player ? (Player)entity : null, e, true);
+      MessageUtil.sendSevereException(CombatEngine.getInstance(), entity instanceof Player ? (Player)entity : null, e);
     }
   }
 

@@ -340,7 +340,7 @@ public class RegionManager implements Listener {
             return;
 
         if (region.world == null) {
-            MessageUtil.sendException(RegionController.getInstance(), "Region has a null world. Offender: " + region.id, false);
+            MessageUtil.sendException(RegionController.getInstance(), "Region has a null world. Offender: " + region.id);
             return;
         }
 

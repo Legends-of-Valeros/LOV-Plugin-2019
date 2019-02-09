@@ -16,29 +16,26 @@ import com.legendsofvaleros.modules.factions.FactionController;
 import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.modules.npcs.NPCsController;
+import com.legendsofvaleros.modules.npcs.trait.quests.TraitQuestGiver;
 import com.legendsofvaleros.modules.playermenu.InventoryManager;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
-import com.legendsofvaleros.modules.quests.action.core.*;
-import com.legendsofvaleros.modules.quests.integration.*;
 import com.legendsofvaleros.modules.quests.action.QuestActionFactory;
+import com.legendsofvaleros.modules.quests.action.core.*;
+import com.legendsofvaleros.modules.quests.api.IQuest;
+import com.legendsofvaleros.modules.quests.core.BasicQuest;
+import com.legendsofvaleros.modules.quests.core.QuestFactory;
+import com.legendsofvaleros.modules.quests.core.QuestStatus;
 import com.legendsofvaleros.modules.quests.event.QuestCompletedEvent;
 import com.legendsofvaleros.modules.quests.event.QuestObjectivesStartedEvent;
 import com.legendsofvaleros.modules.quests.event.QuestStartedEvent;
+import com.legendsofvaleros.modules.quests.integration.*;
+import com.legendsofvaleros.modules.quests.objective.QuestObjectiveFactory;
 import com.legendsofvaleros.modules.quests.objective.core.DummyObjective;
 import com.legendsofvaleros.modules.quests.objective.core.InteractBlockObjective;
 import com.legendsofvaleros.modules.quests.objective.core.ReturnObjective;
 import com.legendsofvaleros.modules.quests.objective.core.TalkObjective;
-import com.legendsofvaleros.modules.quests.objective.QuestObjectiveFactory;
-import com.legendsofvaleros.modules.quests.prerequisite.core.*;
 import com.legendsofvaleros.modules.quests.prerequisite.PrerequisiteFactory;
-import com.legendsofvaleros.modules.quests.progress.core.QuestObjectiveProgressBoolean;
-import com.legendsofvaleros.modules.quests.progress.core.QuestObjectiveProgressInteger;
-import com.legendsofvaleros.modules.quests.progress.ProgressFactory;
-import com.legendsofvaleros.modules.quests.core.BasicQuest;
-import com.legendsofvaleros.modules.quests.api.IQuest;
-import com.legendsofvaleros.modules.quests.core.QuestFactory;
-import com.legendsofvaleros.modules.quests.core.QuestStatus;
-import com.legendsofvaleros.modules.npcs.trait.quests.TraitQuestGiver;
+import com.legendsofvaleros.modules.quests.prerequisite.core.*;
 import com.legendsofvaleros.modules.regions.RegionController;
 import com.legendsofvaleros.modules.skills.SkillsController;
 import com.legendsofvaleros.modules.zones.ZonesController;
@@ -56,6 +53,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 
 @DependsOn(NPCsController.class)
 @DependsOn(CombatEngine.class)
@@ -105,10 +103,6 @@ public class QuestController extends ModuleListener {
         PrerequisiteFactory.registerType("quests", QuestsPrerequisite.class);
         PrerequisiteFactory.registerType("time", TimePrerequisite.class);
 
-        getLogger().info("is registering progress loaders");
-        ProgressFactory.registerType("int", QuestObjectiveProgressInteger.class);
-        ProgressFactory.registerType("bool", QuestObjectiveProgressBoolean.class);
-
         getLogger().info("is registering objectives");
         QuestObjectiveFactory.registerType("dummy", DummyObjective.class);
         QuestObjectiveFactory.registerType("talk", TalkObjective.class);
@@ -126,6 +120,7 @@ public class QuestController extends ModuleListener {
         QuestActionFactory.registerType("quest_new", ActionNewQuest.class);
 
         QuestActionFactory.registerType("notify", ActionNotification.class);
+        QuestActionFactory.registerType("title", ActionTitle.class);
 
         QuestActionFactory.registerType("text", ActionText.class);
 
@@ -192,7 +187,7 @@ public class QuestController extends ModuleListener {
                     MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' doesn't exist!");
                 }
             } catch (Exception e) {
-                MessageUtil.sendException(QuestController.getInstance(), pc.getPlayer(), e, true);
+                MessageUtil.sendSevereException(QuestController.getInstance(), pc.getPlayer(), e);
             }
 
             ret.set(false);
@@ -228,6 +223,8 @@ public class QuestController extends ModuleListener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onNPCRightClick(NPCRightClickEvent event) {
+        if(event.isCancelled()) return;
+
         if (!Characters.isPlayerCharacterLoaded(event.getClicker())) return;
 
         QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getClicker()));
@@ -235,6 +232,15 @@ public class QuestController extends ModuleListener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onInteractBock(PlayerInteractEvent event) {
+        if(event.isCancelled()) return;
+
+        if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
+
+        QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerItemHeldEvent(PlayerItemHeldEvent event) {
         if(event.isCancelled()) return;
 
         if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;

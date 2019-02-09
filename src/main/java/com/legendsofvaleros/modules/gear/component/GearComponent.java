@@ -1,8 +1,8 @@
 package com.legendsofvaleros.modules.gear.component;
 
 import com.codingforcookies.robert.item.ItemBuilder;
-import com.legendsofvaleros.modules.gear.trigger.GearTrigger;
 import com.legendsofvaleros.modules.gear.item.Gear;
+import com.legendsofvaleros.modules.gear.trigger.GearTrigger;
 
 public abstract class GearComponent<T> {
 	public final double doGetValue(Gear.Instance item, Object persist) {
@@ -41,7 +41,7 @@ public abstract class GearComponent<T> {
 	
 	/**
 	 * Fire the component. This is called after all components have returned true in their test()
-	 * methods. Return the updated persistent variable if it changed; If it didn't change, return null.
+	 * methods. Return the persistent variable if it changed; If it didn't change, return null.
 	 */
 	protected T fire(Gear.Instance item, T persist, GearTrigger trigger) { return null; }
 }

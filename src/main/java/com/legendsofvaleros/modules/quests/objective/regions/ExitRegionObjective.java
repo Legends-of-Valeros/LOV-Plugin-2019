@@ -2,15 +2,14 @@ package com.legendsofvaleros.modules.quests.objective.regions;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.objective.AbstractQuestObjective;
-import com.legendsofvaleros.modules.quests.progress.core.QuestObjectiveProgressBoolean;
-import com.legendsofvaleros.modules.regions.core.Region;
 import com.legendsofvaleros.modules.regions.RegionController;
+import com.legendsofvaleros.modules.regions.core.Region;
 import com.legendsofvaleros.modules.regions.event.RegionEnterEvent;
 import com.legendsofvaleros.modules.regions.event.RegionLeaveEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.event.Event;
 
-public class ExitRegionObjective extends AbstractQuestObjective<QuestObjectiveProgressBoolean> {
+public class ExitRegionObjective extends AbstractQuestObjective<Boolean> {
     private String id;
     private String name;
 
@@ -21,23 +20,23 @@ public class ExitRegionObjective extends AbstractQuestObjective<QuestObjectivePr
         region = RegionController.getManager().getRegion(id);
 
         if (region == null)
-            MessageUtil.sendException(RegionController.getInstance(), "No regions with that ID in gear. Offender: " + id + " in " + getQuest().getId(), false);
+            MessageUtil.sendException(RegionController.getInstance(), "No regions with that ID in quest. Offender: " + id + " in " + getQuest().getId());
     }
 
     @Override
-    public void onBegin(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
-        if (region == null) return;
+    public Boolean onStart(PlayerCharacter pc) {
+        if (region == null) return false;
 
-        progress.value = !region.isInside(pc.getLocation());
+        return !region.isInside(pc.getLocation());
     }
 
     @Override
-    public boolean isCompleted(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
-        return progress.value;
+    public boolean isCompleted(PlayerCharacter pc, Boolean progress) {
+        return progress;
     }
 
     @Override
-    public String getProgressText(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
+    public String getProgressText(PlayerCharacter pc, Boolean progress) {
         return "Leave " + name;
     }
 
@@ -52,13 +51,15 @@ public class ExitRegionObjective extends AbstractQuestObjective<QuestObjectivePr
     }
 
     @Override
-    public void onEvent(Event event, PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
+    public Boolean onEvent(Event event, PlayerCharacter pc, Boolean progress) {
         if (event.getClass() == RegionEnterEvent.class) {
-            progress.value = false;
+            return false;
 
         } else if (event.getClass() == RegionLeaveEvent.class) {
-            progress.value = true;
+            return true;
 
         }
+
+        return progress;
     }
 }

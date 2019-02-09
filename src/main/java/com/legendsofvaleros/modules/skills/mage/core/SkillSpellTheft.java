@@ -6,10 +6,8 @@ import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.characters.skilleffect.SkillEffect;
 import com.legendsofvaleros.modules.characters.skilleffect.SkillEffectInstance;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import org.bukkit.Sound;
 import org.bukkit.World;
-import org.bukkit.entity.LivingEntity;
 
 public class SkillSpellTheft extends Skill {
 	public static final String ID = "spelltheft";

@@ -8,7 +8,6 @@ import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.mobs.core.SpawnArea;
 import com.legendsofvaleros.modules.quests.objective.AbstractQuestObjective;
-import com.legendsofvaleros.modules.quests.progress.core.QuestObjectiveProgressInteger;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -16,7 +15,7 @@ import org.bukkit.event.Event;
 
 import java.util.concurrent.ExecutionException;
 
-public class KillObjective extends AbstractQuestObjective<QuestObjectiveProgressInteger> {
+public class KillObjective extends AbstractQuestObjective<Integer> {
     private String id;
     private int amount;
 
@@ -30,7 +29,7 @@ public class KillObjective extends AbstractQuestObjective<QuestObjectiveProgress
                 mob = future.get();
 
                 if (mob == null)
-                    MessageUtil.sendException(MobsController.getInstance(), "No instance with that ID in gear. Offender: " + id + " in " + getQuest().getId(), false);
+                    MessageUtil.sendException(MobsController.getInstance(), "No instance with that ID in quest. Offender: " + id + " in " + getQuest().getId());
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
@@ -56,14 +55,19 @@ public class KillObjective extends AbstractQuestObjective<QuestObjectiveProgress
     }
 
     @Override
-    public boolean isCompleted(PlayerCharacter pc, QuestObjectiveProgressInteger progress) {
-        return progress.value >= amount;
+    public Integer onStart(PlayerCharacter pc) {
+        return 0;
     }
 
     @Override
-    public String getProgressText(PlayerCharacter pc, QuestObjectiveProgressInteger progress) {
+    public boolean isCompleted(PlayerCharacter pc, Integer progress) {
+        return progress >= amount;
+    }
+
+    @Override
+    public String getProgressText(PlayerCharacter pc, Integer progress) {
         if (amount == 1) return "Kill " + (mob == null ? "UNKNOWN" : mob.getName());
-        return progress.value + "/" + amount + " " + (mob == null ? "UNKNOWN" : mob.getName()) + " killed";
+        return progress + "/" + amount + " " + (mob == null ? "UNKNOWN" : mob.getName()) + " killed";
     }
 
     @Override
@@ -78,17 +82,19 @@ public class KillObjective extends AbstractQuestObjective<QuestObjectiveProgress
     }
 
     @Override
-    public void onEvent(Event event, PlayerCharacter pc, QuestObjectiveProgressInteger progress) {
-        if (mob == null) return;
+    public Integer onEvent(Event event, PlayerCharacter pc, Integer progress) {
+        if (mob == null) return progress;
 
         CombatEngineDeathEvent e = (CombatEngineDeathEvent) event;
 
-        if (e.getKiller() == null || !(e.getKiller().getLivingEntity() instanceof Player)) return;
+        if (e.getKiller() == null || !(e.getKiller().getLivingEntity() instanceof Player)) return progress;
 
-        if (progress.value >= amount) return;
+        if (progress >= amount) return progress;
 
         Mob.Instance instance = Mob.Instance.get(e.getDied().getLivingEntity());
         if (mob.equals(instance.mob))
-            progress.value++;
+            return progress + 1;
+
+        return progress;
     }
 }
