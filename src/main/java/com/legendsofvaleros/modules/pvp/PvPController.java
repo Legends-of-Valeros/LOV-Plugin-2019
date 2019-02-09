@@ -1,32 +1,16 @@
 package com.legendsofvaleros.modules.pvp;
 
 import com.legendsofvaleros.module.Module;
-import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.IntegratesWith;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.bank.core.Currency;
-import com.legendsofvaleros.modules.characters.api.Cooldowns;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.characters.skill.SkillTargetEvent;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
-import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
-import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
-import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
-import com.legendsofvaleros.modules.pvp.event.PvPCheckEvent;
 import com.legendsofvaleros.modules.pvp.integration.BankIntegration;
 import com.legendsofvaleros.modules.pvp.listener.PvPListener;
-import com.legendsofvaleros.util.MessageUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 
 @DependsOn(CombatEngine.class)
 @DependsOn(Characters.class)

@@ -5,28 +5,24 @@ import com.codingforcookies.robert.item.Book;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.QuestController;
-import com.legendsofvaleros.modules.quests.api.IQuest;
-import com.legendsofvaleros.modules.quests.api.IQuestAction;
+import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.action.QuestActionPlay;
 import com.legendsofvaleros.modules.quests.action.QuestActions;
+import com.legendsofvaleros.modules.quests.api.*;
 import com.legendsofvaleros.modules.quests.event.QuestCompletedEvent;
 import com.legendsofvaleros.modules.quests.event.QuestObjectivesCompletedEvent;
 import com.legendsofvaleros.modules.quests.event.QuestObjectivesStartedEvent;
 import com.legendsofvaleros.modules.quests.event.QuestStartedEvent;
-import com.legendsofvaleros.modules.quests.api.IQuestObjective;
-import com.legendsofvaleros.modules.quests.api.IQuestPrerequisite;
-import com.legendsofvaleros.modules.quests.api.IQuestObjectiveProgress;
-import com.legendsofvaleros.modules.quests.progress.ObjectiveProgressPack;
-import com.legendsofvaleros.modules.quests.progress.QuestProgressPack;
 import com.legendsofvaleros.util.TextBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.*;
 
 public abstract class AbstractQuest implements IQuest {
@@ -39,11 +35,13 @@ public abstract class AbstractQuest implements IQuest {
         return progress.entrySet();
     }
 
-    @Override public QuestProgressPack getProgress(PlayerCharacter pc) {
+    @Override
+    public QuestProgressPack getProgress(PlayerCharacter pc) {
         return progress.get(pc.getUniqueCharacterId());
     }
 
-    @Override public void loadProgress(PlayerCharacter pc, QuestProgressPack pack) {
+    @Override
+    public void loadProgress(PlayerCharacter pc, QuestProgressPack pack) {
         progress.put(pc.getUniqueCharacterId(), pack);
     }
 
@@ -282,11 +280,7 @@ public abstract class AbstractQuest implements IQuest {
             for (int i = 0; i < objectiveGroup.length; i++) {
                 try {
                     IQuestObjective<?> obj = objectiveGroup[i];
-                    ParameterizedType superClass = (ParameterizedType) obj.getClass().getGenericSuperclass();
-                    @SuppressWarnings("unchecked")
-                    Class<? extends IQuestObjectiveProgress> type = (Class<? extends IQuestObjectiveProgress>) superClass.getActualTypeArguments()[0];
-                    IQuestObjectiveProgress prog = type.newInstance();
-                    pack.data[i] = new ObjectiveProgressPack(prog);
+                    pack.data[i] = obj.getProgressClass().newInstance();
 
                     obj.onBegin(pc);
                 } catch (Exception e) {

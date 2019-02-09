@@ -10,12 +10,13 @@ import java.lang.ref.WeakReference;
  * Warning! Objectives are registered as listeners <i>once.</i> Not for each objective instance.
  * @author Stumblinbear
  */
-public interface IQuestObjective<T extends IQuestObjectiveProgress> extends Listener, IQuestEventReceiver {
+public interface IQuestObjective<T> extends Listener, IQuestEventReceiver {
 	void init(WeakReference<IQuest> quest, int groupI, int objectiveI);
 
 	IQuest getQuest();
 	int getGroupIndex();
 	int getObjectiveIndex();
+	Class<T> getProgressClass();
 
 	T getProgress(PlayerCharacter pc);
 

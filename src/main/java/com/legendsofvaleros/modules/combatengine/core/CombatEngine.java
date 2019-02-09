@@ -1,7 +1,6 @@
 package com.legendsofvaleros.modules.combatengine.core;
 
 import com.legendsofvaleros.module.Module;
-import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.combatengine.api.CombatEngineAPI;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;

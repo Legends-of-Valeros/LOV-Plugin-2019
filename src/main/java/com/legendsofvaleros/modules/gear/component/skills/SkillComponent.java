@@ -4,10 +4,10 @@ import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.gear.component.GearComponent;
 import com.legendsofvaleros.modules.gear.component.GearComponentOrder;
-import com.legendsofvaleros.modules.gear.trigger.GearTrigger;
-import com.legendsofvaleros.modules.gear.trigger.UseTrigger;
 import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.item.NoPersist;
+import com.legendsofvaleros.modules.gear.trigger.GearTrigger;
+import com.legendsofvaleros.modules.gear.trigger.UseTrigger;
 import org.bukkit.ChatColor;
 
 public class SkillComponent extends GearComponent<NoPersist> {

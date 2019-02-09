@@ -14,10 +14,10 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.quests.QuestManager;
-import com.legendsofvaleros.modules.quests.event.QuestCompletedEvent;
-import com.legendsofvaleros.modules.quests.event.QuestStartedEvent;
 import com.legendsofvaleros.modules.quests.api.IQuest;
 import com.legendsofvaleros.modules.quests.core.QuestStatus;
+import com.legendsofvaleros.modules.quests.event.QuestCompletedEvent;
+import com.legendsofvaleros.modules.quests.event.QuestStartedEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
 import com.legendsofvaleros.util.item.Model;

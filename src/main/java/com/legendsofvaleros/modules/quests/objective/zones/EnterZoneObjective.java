@@ -2,15 +2,14 @@ package com.legendsofvaleros.modules.quests.objective.zones;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.objective.AbstractQuestObjective;
-import com.legendsofvaleros.modules.quests.progress.core.QuestObjectiveProgressBoolean;
-import com.legendsofvaleros.modules.zones.core.Zone;
 import com.legendsofvaleros.modules.zones.ZonesController;
+import com.legendsofvaleros.modules.zones.core.Zone;
 import com.legendsofvaleros.modules.zones.event.ZoneEnterEvent;
 import com.legendsofvaleros.modules.zones.event.ZoneLeaveEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.event.Event;
 
-public class EnterZoneObjective extends AbstractQuestObjective<QuestObjectiveProgressBoolean> {
+public class EnterZoneObjective extends AbstractQuestObjective<Boolean> {
     private String id;
 
     private transient Zone zone;
@@ -20,24 +19,24 @@ public class EnterZoneObjective extends AbstractQuestObjective<QuestObjectivePro
         zone = ZonesController.getManager().getZone(id);
 
         if (zone == null) {
-            MessageUtil.sendException(ZonesController.getInstance(), "No zone with that ID in gear. Offender: " + id + " in " + getQuest().getId());
+            MessageUtil.sendException(ZonesController.getInstance(), "No zone with that ID in quest. Offender: " + id + " in " + getQuest().getId());
         }
     }
 
     @Override
-    public void onBegin(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
-        if (id == null || zone == null) return;
+    public Boolean onBegin(PlayerCharacter pc, Boolean progress) {
+        if (id == null || zone == null) return false;
 
-        progress.value = zone.isInZone(pc.getLocation());
+        return zone.isInZone(pc.getLocation());
     }
 
     @Override
-    public boolean isCompleted(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
-        return progress.value;
+    public boolean isCompleted(PlayerCharacter pc, Boolean progress) {
+        return progress;
     }
 
     @Override
-    public String getProgressText(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
+    public String getProgressText(PlayerCharacter pc, Boolean progress) {
         return "Travel to " + (zone == null ? "UNKNOWN" : zone.name);
     }
 
@@ -52,13 +51,15 @@ public class EnterZoneObjective extends AbstractQuestObjective<QuestObjectivePro
     }
 
     @Override
-    public void onEvent(Event event, PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
+    public Boolean onEvent(Event event, PlayerCharacter pc, Boolean progress) {
         if (event.getClass() == ZoneEnterEvent.class) {
-            progress.value = true;
+            return true;
 
         } else if (event.getClass() == ZoneLeaveEvent.class) {
-            progress.value = false;
+            return false;
 
         }
+
+        return progress;
     }
 }

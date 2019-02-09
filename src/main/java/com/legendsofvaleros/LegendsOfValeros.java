@@ -35,7 +35,6 @@ import com.legendsofvaleros.modules.regions.RegionController;
 import com.legendsofvaleros.modules.skills.SkillsController;
 import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.scheduler.InternalScheduler;
-import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.ProgressBar;
 import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;

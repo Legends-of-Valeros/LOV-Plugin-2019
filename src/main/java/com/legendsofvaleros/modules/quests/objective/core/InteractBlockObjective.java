@@ -2,7 +2,6 @@ package com.legendsofvaleros.modules.quests.objective.core;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.objective.AbstractQuestObjective;
-import com.legendsofvaleros.modules.quests.progress.core.QuestObjectiveProgressBoolean;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -12,7 +11,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.Random;
 
-public class InteractBlockObjective extends AbstractQuestObjective<QuestObjectiveProgressBoolean> {
+public class InteractBlockObjective extends AbstractQuestObjective<Boolean> {
     private static final Random RAND = new Random();
 
     public String world;
@@ -31,36 +30,17 @@ public class InteractBlockObjective extends AbstractQuestObjective<QuestObjectiv
     }
 
     @Override
-    public Class<? extends Event>[] getRequestedEvents() {
-        return new Class[]{ PlayerInteractEvent.class };
+    public Boolean onBegin(PlayerCharacter pc, Boolean progress) {
+        return false;
     }
 
     @Override
-    public void onEvent(Event event, PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
-        PlayerInteractEvent e = (PlayerInteractEvent) event;
-
-        if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-
-        Location bloc = e.getClickedBlock().getLocation();
-
-        if (bloc.equals(loc)
-            || bloc.clone().add(
-                    e.getBlockFace().getModX(),
-                    e.getBlockFace().getModY(),
-                e.getBlockFace().getModZ()).equals(loc)) {
-            progress.value = true;
-
-            e.setCancelled(true);
-        }
+    public boolean isCompleted(PlayerCharacter pc, Boolean progress) {
+        return progress;
     }
 
     @Override
-    public boolean isCompleted(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
-        return progress.value;
-    }
-
-    @Override
-    public String getProgressText(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
+    public String getProgressText(PlayerCharacter pc, Boolean progress) {
         return "Right click at " + x + ", " + y + ", " + z;
     }
 
@@ -70,12 +50,40 @@ public class InteractBlockObjective extends AbstractQuestObjective<QuestObjectiv
     }
 
     @Override
+    public Class<? extends Event>[] getRequestedEvents() {
+        return new Class[]{ PlayerInteractEvent.class };
+    }
+
+    @Override
+    public Boolean onEvent(Event event, PlayerCharacter pc, Boolean progress) {
+        PlayerInteractEvent e = (PlayerInteractEvent) event;
+
+        if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return progress;
+
+        Location bloc = e.getClickedBlock().getLocation();
+
+        if (bloc.equals(loc)
+                || bloc.clone().add(
+                e.getBlockFace().getModX(),
+                e.getBlockFace().getModY(),
+                e.getBlockFace().getModZ()).equals(loc)) {
+            e.setCancelled(true);
+
+            return true;
+        }
+
+        return progress;
+    }
+
+    @Override
     public int getUpdateTimer() { return 4; }
 
     @Override
-    public void onUpdate(PlayerCharacter pc, QuestObjectiveProgressBoolean progress, int ticks) {
-        if(!progress.value) {
+    public Boolean onUpdate(PlayerCharacter pc, Boolean progress, int ticks) {
+        if(!progress) {
             pc.getPlayer().spawnParticle(Particle.VILLAGER_HAPPY, loc.clone().add(RAND.nextDouble(), RAND.nextDouble(), RAND.nextDouble()), 1);
         }
+
+        return progress;
     }
 }

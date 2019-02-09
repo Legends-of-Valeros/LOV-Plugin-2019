@@ -3,11 +3,9 @@ package com.legendsofvaleros.modules.skills.warrior.guardian;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import org.bukkit.World;
-import org.bukkit.entity.LivingEntity;
 
 public class SkillSunder extends Skill {
 	public static final String ID = "sunder";

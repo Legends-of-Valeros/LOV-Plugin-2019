@@ -1,15 +1,14 @@
 package com.legendsofvaleros.modules.quests.objective.bank;
 
 import com.legendsofvaleros.modules.bank.BankController;
-import com.legendsofvaleros.modules.npcs.trait.bank.repair.RepairItemEvent;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.gear.item.Gear;
+import com.legendsofvaleros.modules.npcs.trait.bank.repair.RepairItemEvent;
 import com.legendsofvaleros.modules.quests.objective.AbstractQuestObjective;
-import com.legendsofvaleros.modules.quests.progress.core.QuestObjectiveProgressBoolean;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.event.Event;
 
-public class RepairObjective extends AbstractQuestObjective<QuestObjectiveProgressBoolean> {
+public class RepairObjective extends AbstractQuestObjective<Boolean> {
     private String id;
 
     private transient Gear item;
@@ -19,16 +18,21 @@ public class RepairObjective extends AbstractQuestObjective<QuestObjectiveProgre
         item = Gear.fromID(id);
 
         if(item == null)
-            MessageUtil.sendException(BankController.getInstance(), "No item with that ID in gear. Offender: " + id + " in " + getQuest().getId());
+            MessageUtil.sendException(BankController.getInstance(), "No item with that ID in quest. Offender: " + id + " in " + getQuest().getId());
     }
 
     @Override
-    public boolean isCompleted(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
-        return progress.value;
+    public Boolean onBegin(PlayerCharacter pc, Boolean progress) {
+        return false;
     }
 
     @Override
-    public String getProgressText(PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
+    public boolean isCompleted(PlayerCharacter pc, Boolean progress) {
+        return progress;
+    }
+
+    @Override
+    public String getProgressText(PlayerCharacter pc, Boolean progress) {
         return "Repair " + (item == null ? "UNKNOWN" : item.getName());
     }
 
@@ -43,15 +47,13 @@ public class RepairObjective extends AbstractQuestObjective<QuestObjectiveProgre
     }
 
     @Override
-    public void onEvent(Event event, PlayerCharacter pc, QuestObjectiveProgressBoolean progress) {
+    public Boolean onEvent(Event event, PlayerCharacter pc, Boolean progress) {
         RepairItemEvent e = (RepairItemEvent) event;
 
-        if (id == null || item == null) return;
+        if (id == null || item == null) return progress;
 
-        if (progress.value) return;
+        if (progress) return true;
 
-        if (item.isSimilar(e.getItem())) {
-            progress.value = true;
-        }
+        return (item.isSimilar(e.getItem()));
     }
 }

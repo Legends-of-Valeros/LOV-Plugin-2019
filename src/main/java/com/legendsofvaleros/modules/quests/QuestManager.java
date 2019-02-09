@@ -19,20 +19,15 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
 import com.legendsofvaleros.modules.quests.action.AbstractQuestAction;
-import com.legendsofvaleros.modules.quests.api.IQuest;
-import com.legendsofvaleros.modules.quests.api.IQuestAction;
 import com.legendsofvaleros.modules.quests.action.QuestActionFactory;
 import com.legendsofvaleros.modules.quests.action.QuestActions;
-import com.legendsofvaleros.modules.quests.api.IQuestEventReceiver;
-import com.legendsofvaleros.modules.quests.api.IQuestObjective;
+import com.legendsofvaleros.modules.quests.api.*;
+import com.legendsofvaleros.modules.quests.core.QuestFactory;
+import com.legendsofvaleros.modules.quests.core.QuestObjectives;
+import com.legendsofvaleros.modules.quests.core.QuestProgressPack;
+import com.legendsofvaleros.modules.quests.core.QuestStatus;
 import com.legendsofvaleros.modules.quests.objective.QuestObjectiveFactory;
-import com.legendsofvaleros.modules.quests.api.IQuestPrerequisite;
 import com.legendsofvaleros.modules.quests.prerequisite.PrerequisiteFactory;
-import com.legendsofvaleros.modules.quests.api.IQuestObjectiveProgress;
-import com.legendsofvaleros.modules.quests.progress.ObjectiveProgressPack;
-import com.legendsofvaleros.modules.quests.progress.ProgressFactory;
-import com.legendsofvaleros.modules.quests.progress.QuestProgressPack;
-import com.legendsofvaleros.modules.quests.core.*;
 import com.legendsofvaleros.scheduler.InternalTask;
 import com.legendsofvaleros.util.FutureCache;
 import com.legendsofvaleros.util.MessageUtil;
@@ -41,14 +36,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.sql.ResultSet;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class QuestManager {
@@ -183,20 +184,6 @@ public class QuestManager {
                         throw new RuntimeException("Failed to decode objective! " + (e.getMessage() != null ? e.getMessage() : e.getCause().toString()) + " (" + json.toString() + ")");
                     }
                 })
-                .registerTypeAdapter(ObjectiveProgressPack.class, (JsonDeserializer<ObjectiveProgressPack>) (json, typeOfT, context) -> {
-                    try {
-                        JsonObject obj = json.getAsJsonObject();
-
-                        if (obj.get("type").getAsString() == null)
-                            throw new JsonParseException("No type defined in progress. Offender: " + obj.toString());
-
-                        IQuestObjectiveProgress progress = ProgressFactory.forType(obj.get("type").getAsString());
-                        applyFields(obj.get("type").getAsString(), progress, obj.get("progress").getAsJsonObject());
-                        return new ObjectiveProgressPack(progress);
-                    } catch (Exception e) {
-                        throw new RuntimeException("Failed to decode player progress! " + (e.getMessage() != null ? e.getMessage() : e.getCause().toString()) + " (" + json.toString() + ")");
-                    }
-                })
                 .registerTypeAdapter(Duration.class, (JsonDeserializer<Duration>) (json, typeOfT, context) -> Duration.parse(json.getAsString()))
                 .create();
 
@@ -311,7 +298,11 @@ public class QuestManager {
                             questsToLoad.addAndGet(1);
 
                             String questId = result.getString(QUEST_ID);
-                            QuestProgressPack progressPack = gson.fromJson(result.getString(QUEST_PROGRESS), QuestProgressPack.class);
+
+                            JsonObject progressObj = gson.fromJson(result.getString(QUEST_PROGRESS), JsonElement.class).getAsJsonObject();
+
+                            // {"group":1,"data":[{"type":"bool","progress":{"value":false}}]}
+
                             ListenableFuture<IQuest> future = getQuest(questId);
                             future.addListener(() -> {
                                 try {
@@ -319,6 +310,28 @@ public class QuestManager {
                                     if(quest == null) {
                                         throw new Exception("Quest didn't load. Does it still exist?");
                                     }else{
+                                        JsonArray progresses = progressObj.get("data").getAsJsonArray();
+                                        QuestProgressPack progressPack = new QuestProgressPack(progressObj.get("group").getAsInt(), progresses.size());
+
+                                        IQuestObjective<?>[] objectiveGroup = quest.getObjectives().groups[progressPack.group];
+
+                                        for (int i = 0; i < progresses.size(); i++) {
+                                            JsonElement entry = progresses.get(i);
+
+                                            // Decode old quest progress system
+                                            // NOTE: Until this is removed, complex progress objects cannot add the "type" value.
+                                            if (entry.isJsonObject() && entry.getAsJsonObject().has("type")) {
+                                                JsonObject oldProg = entry.getAsJsonObject();
+                                                if(oldProg.get("type").getAsString().equals("bool"))
+                                                    progressPack.setForObjective(i, oldProg.get("progress").getAsJsonObject().get("value").getAsBoolean());
+                                                if(oldProg.get("type").getAsString().equals("int"))
+                                                    progressPack.setForObjective(i, oldProg.get("progress").getAsJsonObject().get("value").getAsInt());
+                                                continue;
+                                            }
+
+                                            progressPack.setForObjective(i, gson.fromJson(entry, objectiveGroup[i].getProgressClass()));
+                                        }
+
                                         quest.loadProgress(pc, progressPack);
                                         playerQuests.put(pc.getUniqueCharacterId(), quest);
                                     }

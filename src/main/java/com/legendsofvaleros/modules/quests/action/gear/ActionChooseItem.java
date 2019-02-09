@@ -1,11 +1,11 @@
-package com.legendsofvaleros.modules.quests.objective.gear;
+package com.legendsofvaleros.modules.quests.action.gear;
 
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.slot.ISlotAction;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.gear.GearController;
-import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.ItemUtil;
+import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.quests.action.AbstractQuestAction;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;

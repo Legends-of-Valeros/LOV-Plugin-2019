@@ -6,7 +6,7 @@ import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.quests.api.IQuestAction;
-import com.legendsofvaleros.modules.quests.progress.QuestProgressPack;
+import com.legendsofvaleros.modules.quests.core.QuestProgressPack;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.entity.Player;
 

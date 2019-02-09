@@ -2,26 +2,14 @@ package com.legendsofvaleros.modules.regions;
 
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.Module;
-import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.IntegratesWith;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
-import com.legendsofvaleros.modules.hearthstones.event.HearthstoneCastEvent;
 import com.legendsofvaleros.modules.hearthstones.HearthstoneController;
 import com.legendsofvaleros.modules.regions.commands.RegionCommands;
 import com.legendsofvaleros.modules.regions.integration.HearthstonesIntegration;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.HashMap;
 
 @DependsOn(CombatEngine.class)
 @DependsOn(Characters.class)

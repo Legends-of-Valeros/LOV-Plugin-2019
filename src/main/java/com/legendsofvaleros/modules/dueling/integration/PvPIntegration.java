@@ -1,8 +1,8 @@
 package com.legendsofvaleros.modules.dueling.integration;
 
 import com.legendsofvaleros.module.Integration;
-import com.legendsofvaleros.modules.dueling.core.Duel;
 import com.legendsofvaleros.modules.dueling.DuelingController;
+import com.legendsofvaleros.modules.dueling.core.Duel;
 import com.legendsofvaleros.modules.pvp.event.PvPCheckEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

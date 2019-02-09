@@ -4,7 +4,7 @@ import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.action.QuestActions;
 import com.legendsofvaleros.modules.quests.core.QuestObjectives;
-import com.legendsofvaleros.modules.quests.progress.QuestProgressPack;
+import com.legendsofvaleros.modules.quests.core.QuestProgressPack;
 
 import java.util.List;
 import java.util.Map;

@@ -16,13 +16,13 @@ import com.legendsofvaleros.modules.combatengine.events.CombatEntityCreateEvent;
 import com.legendsofvaleros.modules.combatengine.events.VanillaDamageCancelledEvent;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
 import com.legendsofvaleros.modules.gear.GearController;
-import com.legendsofvaleros.modules.gear.trigger.*;
-import com.legendsofvaleros.modules.gear.trigger.GearTrigger.TriggerEvent;
+import com.legendsofvaleros.modules.gear.ItemUtil;
 import com.legendsofvaleros.modules.gear.event.ItemEquipEvent;
 import com.legendsofvaleros.modules.gear.event.ItemUnEquipEvent;
 import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.item.GearType;
-import com.legendsofvaleros.modules.gear.ItemUtil;
+import com.legendsofvaleros.modules.gear.trigger.*;
+import com.legendsofvaleros.modules.gear.trigger.GearTrigger.TriggerEvent;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
@@ -226,7 +226,7 @@ public class ItemListener implements Listener {
                 return;
             }
 
-            Bukkit.getPluginManager().callEvent(new ItemUnEquipEvent(Characters.getPlayerCharacter((Player) e.getWhoClicked()), gear));
+            Bukkit.getPluginManager().callEvent(new ItemUnEquipEvent(Characters.getPlayerCharacter((Player) e.getWhoClicked()), gear, !offhand ? EquipmentSlot.HAND : EquipmentSlot.OFF_HAND));
         }
     }
 
@@ -325,7 +325,7 @@ public class ItemListener implements Listener {
 
         gear = Gear.Instance.fromStack(event.getOldArmorPiece());
         if (gear != null)
-            Bukkit.getPluginManager().callEvent(new ItemUnEquipEvent(Characters.getPlayerCharacter(event.getPlayer()), gear));
+            Bukkit.getPluginManager().callEvent(new ItemUnEquipEvent(Characters.getPlayerCharacter(event.getPlayer()), gear, null));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
