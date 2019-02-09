@@ -159,7 +159,7 @@ public class Characters extends Module implements CharactersAPI {
         if (instance.getCharacter(id) == null) {
             return false;
         }
-        return instance.isCharacterLoaded(instance.getCharacter(id).getPlayer());
+        return instance.getCharacter(id).isCurrent();
     }
 
     public static boolean isPlayerCharacterLoaded(Player player) {

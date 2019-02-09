@@ -104,6 +104,8 @@ public class InternalScheduler extends Thread {
                         try {
                             fired.add(curr);
                             curr.run();
+                        } catch (IllegalStateException e) {
+                            // Cancelled
                         } catch (Exception e) {
                             MessageUtil.sendSevereException(name, e);
                         }

@@ -38,6 +38,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -538,20 +539,9 @@ public class QuestManager {
                                     int timer = obj.getUpdateTimer();
                                     if (timer <= 0) continue;
 
-                                    AtomicInteger i = new AtomicInteger();
-
-                                    questUpdates.put(quest_id, QuestController.getInstance().getScheduler().executeInSpigotCircleTimer(() -> {
-                                        for(Map.Entry<CharacterId, QuestProgressPack> prog : quest.getProgressions()) {
-                                            if(Characters.isPlayerCharacterLoaded(prog.getKey())) {
-                                                PlayerCharacter pc = Characters.getPlayerCharacter(prog.getKey());
-                                                if(!quest.hasProgress(pc)) continue;
-
-                                                if(obj.getGroupIndex() != quest.getObjectiveGroupI(pc)) continue;
-
-                                                obj.onUpdate(pc, i.getAndIncrement());
-                                            }
-                                        }
-                                    }, 0L, timer));
+                                    questUpdates.put(quest_id, QuestController.getInstance().getScheduler().executeInSpigotCircleTimer(
+                                            new QuestUpdater(quest, obj),
+                                        0L, timer));
                                 }
                         }
 
@@ -597,5 +587,35 @@ public class QuestManager {
 
     private static class QuestPrereqLoader extends HashMap<String, IQuestPrerequisite> {
         private static final long serialVersionUID = 1L;
+    }
+
+    private static class QuestUpdater implements Runnable {
+        WeakReference<IQuest> quest;
+        WeakReference<IQuestObjective> obj;
+
+        int i = 0;
+
+        public QuestUpdater(IQuest quest, IQuestObjective<?> obj) {
+            this.quest = new WeakReference<>(quest);
+            this.obj = new WeakReference<>(obj);
+        }
+
+        public void run() {
+            IQuest quest = this.quest.get();
+            IQuestObjective obj = this.obj.get();
+
+            if(quest == null || obj == null) return;
+
+            for(Map.Entry<CharacterId, QuestProgressPack> prog : quest.getProgressions()) {
+                if(Characters.isPlayerCharacterLoaded(prog.getKey())) {
+                    PlayerCharacter pc = Characters.getPlayerCharacter(prog.getKey());
+                    if(!quest.hasProgress(pc)) continue;
+
+                    if(obj.getGroupIndex() != quest.getObjectiveGroupI(pc)) continue;
+
+                    obj.onUpdate(pc, i++);
+                }
+            }
+        }
     }
 }
