@@ -6,7 +6,7 @@ import com.codingforcookies.robert.slot.Slot;
 import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.modules.bank.core.Money;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.fast_travel.DiscoveredFastTravels;
+import com.legendsofvaleros.modules.fast_travel.FastTravelController;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.npcs.core.NPCData;
 import com.legendsofvaleros.modules.npcs.core.NPCEmulator;
@@ -41,12 +41,12 @@ public class TraitFastTravel extends LOVTrait {
 			return;
 		}
 		
-		Collection<String> found = DiscoveredFastTravels.getDiscovered(Characters.getPlayerCharacter(player));
+		Collection<String> found = FastTravelController.getInstance().getApi().getDiscovered(Characters.getPlayerCharacter(player));
 
 		if(!found.contains(npc_id)) {
 			found.add(npc_id);
 
-			DiscoveredFastTravels.add(Characters.getPlayerCharacter(player), npc_id);
+			FastTravelController.getInstance().getApi().addDiscovered(Characters.getPlayerCharacter(player), npc_id);
 
 			Title title = new Title("Discovered Location!", "You can now fast travel here!");
 			title.setTitleColor(ChatColor.GREEN);

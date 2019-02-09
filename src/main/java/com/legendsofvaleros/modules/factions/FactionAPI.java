@@ -83,10 +83,10 @@ public class FactionAPI {
         return promise;
     }
 
-    private Promise<Void> onLogout(CharacterId characterId) {
-        Promise<Void> promise = new Promise<>();
+    private Promise<Boolean> onLogout(CharacterId characterId) {
+        Promise<Boolean> promise = rpc.updateRep(characterId, playerRep.row(characterId));
 
-        rpc.updateRep(characterId, playerRep.row(characterId)).on(() -> {
+        promise.on(() -> {
             playerRep.row(characterId).clear();
             promise.resolve(null);
         });

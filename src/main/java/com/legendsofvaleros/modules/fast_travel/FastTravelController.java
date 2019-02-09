@@ -7,8 +7,6 @@ import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.npcs.NPCsController;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 @DependsOn(CombatEngine.class)
 @DependsOn(BankController.class)
@@ -19,20 +17,15 @@ public class FastTravelController extends Module {
     private static FastTravelController instance;
     public static FastTravelController getInstance() { return instance; }
 
+    private FastTravelAPI api;
+    public FastTravelAPI getApi() { return api; }
+
+    @Override
     public void onLoad() {
         super.onLoad();
 
-        instance = this;
+        this.instance = this;
 
-        DiscoveredFastTravels.onEnable();
-    }
-
-    public void onUnload() {
-        super.onUnload();
-
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if(!Characters.isPlayerCharacterLoaded(p)) continue;
-            DiscoveredFastTravels.onLogout(Characters.getPlayerCharacter(p).getUniqueCharacterId());
-        }
+        this.api = new FastTravelAPI();
     }
 }

@@ -44,31 +44,35 @@ public class RPCFunction<T> {
     }
 
     public static <T> T oneShotSync(String func, Class<T> result, Object... args) {
-        Object arg = null;
-        if(args.length == 1) arg = args[0];
-        else if(args.length > 1) arg = args;
+        try {
+            Object arg = null;
+            if (args.length == 1) arg = args[0];
+            else if (args.length > 1) arg = args;
 
-        // This is a hack so we can use our own Gson parser.
-        // TODO: Fix when deepstream supports passing our own data.
-        Gson gson = APIController.getInstance().getGson();
-        if(gson == null)
-            throw new IllegalStateException("Must wait until postLoad() before using RPC functions!");
+            // This is a hack so we can use our own Gson parser.
+            // TODO: Fix when deepstream supports passing our own data.
+            Gson gson = APIController.getInstance().getGson();
+            if (gson == null)
+                throw new IllegalStateException("Must wait until postLoad() before using RPC functions!");
 
-        RpcResult res = APIController.getInstance().getClient().rpc.make(func,
-                arg != null ? gson.fromJson(gson.toJson(arg), JsonElement.class) : null);
+            RpcResult res = APIController.getInstance().getClient().rpc.make(func,
+                    arg != null ? gson.fromJson(gson.toJson(arg), JsonElement.class) : null);
 
-        if(res.success()) {
-            // Decode result into T using Gson
-            if(res.getData() instanceof JsonElement)
-                return APIController.getInstance().getGson().fromJson((JsonElement)res.getData(), result);
+            if (res.success()) {
+                // Decode result into T using Gson
+                if (res.getData() instanceof JsonElement)
+                    return APIController.getInstance().getGson().fromJson((JsonElement) res.getData(), result);
 
-            if(res.getData() instanceof String)
-                return APIController.getInstance().getGson().fromJson((String)res.getData(), result);
+                if (res.getData() instanceof String)
+                    return APIController.getInstance().getGson().fromJson((String) res.getData(), result);
 
-            return (T)res.getData();
+                return (T) res.getData();
+            }
+
+            throw new RuntimeException("" + res.getData());
+        } catch(Exception e) {
+            throw new RuntimeException(func + "() -> " + result.getSimpleName() + " failure!", e);
         }
-
-        throw new RuntimeException(func + "() failed: " + res.getData());
     }
 
     public static Object callMethod(Executor ifAsync, Method m, Object... args) {
@@ -107,8 +111,9 @@ public class RPCFunction<T> {
         Class<?> resultType = m.getReturnType();
         if(Promise.class.isAssignableFrom(resultType)) {
             Type type = ((ParameterizedType)m.getGenericReturnType()).getActualTypeArguments()[0];
+
             if(type instanceof ParameterizedTypeImpl)
-                resultType = (Class<?>)((ParameterizedTypeImpl) type).getActualTypeArguments()[0];
+                resultType = ((ParameterizedTypeImpl)type).getRawType();
             else
                 resultType = (Class<?>)type;
         }
