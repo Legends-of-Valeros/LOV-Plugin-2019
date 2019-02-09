@@ -63,11 +63,11 @@ public class InternalTask {
 
     public void run() {
         if(command == null)
-            throw new IllegalStateException("Attempted to run() an empty InternalTask.");
+            return;
 
         // Don't run a non-repeating task additional times
         if(!repeat && executed)
-            throw new IllegalStateException("Repeating task cancelled");
+            return;
 
         if(executor != null) {
             if(sync)
