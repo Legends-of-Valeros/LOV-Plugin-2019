@@ -24,6 +24,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.*;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
@@ -382,26 +383,22 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
         }
 
         @EventHandler
-        public void onPlayerJoin(PlayerJoinEvent event) {
+        public void onPlayerLogin(PlayerLoginEvent event) {
             // If a lock is still active, then processing is still being done for an old
             // player character. We don't want them to join, right now.
-            if(locks.containsKey(event.getPlayer().getUniqueId())) {
-                event.getPlayer().kickPlayer("Logging in too quickly! Try again in a moment.");
-                return;
-            }
+            if(locks.containsKey(event.getPlayer().getUniqueId()))
+                event.disallow(PlayerLoginEvent.Result.KICK_OTHER, "Logging in too quickly! Try again in a moment.");
+        }
 
-            PlayerLock lock = locks.put(event.getPlayer().getUniqueId(), PlayerLock.lockPlayer(event.getPlayer()));
-            if(lock != null) {
-                lock.release();
-
-                MessageUtil.sendError(event.getPlayer(), "Removed an existing player lock. This shouldn't happen.");
-            }
+        @EventHandler
+        public void onPlayerJoin(PlayerJoinEvent event) {
+            locks.put(event.getPlayer().getUniqueId(), PlayerLock.lockPlayer(event.getPlayer()));
 
             final ListenableFuture<PlayerCharacters> fut =
                     PlayerCharacterData.onLogin(event.getPlayer().getUniqueId());
             fut.addListener(() -> {
                 // syncs to main thread before calling event and launching ui
-                Characters.getInstance().getScheduler().executeInSpigotCircleLater(() -> {
+                Characters.getInstance().getScheduler().executeInSpigotCircle(() -> {
                     Player player = null;
                     try {
                         PlayerCharacters characters = fut.get();
@@ -409,9 +406,6 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
                         if (player == null || !player.isOnline()) {
                             return;
                         }
-
-                        // Clear inventory on login
-                        player.getInventory().clear();
 
                         if (characters.size() > 0) {
                             Characters.getInstance().getUiManager().forceCharacterSelection(characters, outer);
@@ -424,7 +418,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
                         Characters.getInstance().getLogger().warning("Could not get base character data.");
                         MessageUtil.sendSevereException(Characters.getInstance(), player, e);
                     }
-                }, SELECT_DELAY);
+                });
             }, Characters.getInstance().getScheduler()::async);
         }
 

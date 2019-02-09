@@ -13,13 +13,13 @@ import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.item.Model;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -29,7 +29,16 @@ public class TestListener implements Listener {
 		Characters.getInstance().registerEvents(this);
 		Characters.getInstance().registerEvents(new PlayerBookListener());
 	}
-	
+
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent event) {
+		event.getPlayer().getInventory().clear();
+		event.getPlayer().setExp(0);
+		event.getPlayer().setLevel(0);
+		event.getPlayer().setHealth(20);
+		event.getPlayer().setFoodLevel(20);
+	}
+
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerMenuOpen(PlayerMenuOpenEvent event) {
 		if(!Characters.isPlayerCharacterLoaded(event.getPlayer())) {
@@ -51,17 +60,17 @@ public class TestListener implements Listener {
 		
 		event.addSlot(Model.stack("menu-characters-button").setName("Character Selection").create(), (gui, p, event1) -> Characters.openCharacterSelection(p));
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOW)
 	public void onFillInventory(PlayerCharacterInventoryFillEvent e) {
 		InventoryManager.fillInventory(e.getPlayer());
 	}
-	
+
 	@EventHandler
 	public void onPlayerCharacterStartLoading(PlayerCharacterStartLoadingEvent event) {
 		if(event.getPlayer().hasPotionEffect(PotionEffectType.BLINDNESS))
 			event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 1), true);
-		
+
 		event.getPlayer().setLevel(0);
 		event.getPlayer().setExp(0F);
 
@@ -80,9 +89,6 @@ public class TestListener implements Listener {
 
 	@EventHandler
 	public void onPlayerCharacterFinishLoading(final PlayerCharacterFinishLoadingEvent event) {
-		event.getPlayer().setFlying(false);
-		event.getPlayer().setGameMode(Bukkit.getDefaultGameMode());
-
 		event.getPlayer().setLevel(event.getPlayerCharacter().getExperience().getLevel());
 		event.getPlayer().setExp((float)event.getPlayerCharacter().getExperience().getPercentageTowardsNextLevel());
 	}
