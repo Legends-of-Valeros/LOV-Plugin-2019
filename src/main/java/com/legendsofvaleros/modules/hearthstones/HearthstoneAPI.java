@@ -10,7 +10,6 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
-import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.hearthstones.core.HomePoint;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
@@ -34,7 +33,7 @@ public class HearthstoneAPI {
     private long cooldownDuration;
 
     public HearthstoneAPI() {
-        this.rpc = APIController.create(GearController.getInstance(), RPC.class);
+        this.rpc = APIController.create(HearthstoneController.getInstance(), RPC.class);
 
         this.cooldownDuration = HearthstoneController.getInstance().getConfig().getLong("cooldown-seconds") * 1000;
 

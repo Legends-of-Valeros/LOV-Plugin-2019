@@ -37,7 +37,7 @@ public class GraveyardAPI {
     private Multimap<String, Graveyard> graveyards = HashMultimap.create();
 
     public GraveyardAPI() {
-        this.rpc = APIController.create(GearController.getInstance(), RPC.class);
+        this.rpc = APIController.create(GraveyardController.getInstance(), RPC.class);
 
         APIController.getInstance().getGsonBuilder()
             .registerTypeAdapter(RangedValue.class, RangedValue.JSON)
