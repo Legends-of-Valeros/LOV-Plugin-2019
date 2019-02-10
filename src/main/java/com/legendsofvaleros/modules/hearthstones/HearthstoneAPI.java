@@ -1,5 +1,7 @@
 package com.legendsofvaleros.modules.hearthstones;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.api.annotation.ModuleRPC;
@@ -15,9 +17,6 @@ import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 public class HearthstoneAPI {
     @ModuleRPC("hearthstones")
     public interface RPC {
@@ -28,7 +27,8 @@ public class HearthstoneAPI {
 
     private final RPC rpc;
 
-    private Map<CharacterId, HomePoint> homes = new ConcurrentHashMap<>();
+    private Cache<CharacterId, HomePoint> homes = CacheBuilder.newBuilder()
+                                                        .concurrencyLevel(4).build();
 
     private long cooldownDuration;
 
@@ -41,7 +41,7 @@ public class HearthstoneAPI {
     }
 
     public HomePoint getHome(PlayerCharacter pc) {
-        return homes.get(pc.getUniqueCharacterId());
+        return homes.getIfPresent(pc.getUniqueCharacterId());
     }
 
     /**
@@ -62,13 +62,15 @@ public class HearthstoneAPI {
     }
 
     public Promise<Boolean> removeHome(PlayerCharacter pc) {
-        if(!homes.containsKey(pc.getUniqueCharacterId())) {
+        HomePoint point = homes.getIfPresent(pc.getUniqueCharacterId());
+
+        if(point == null) {
             Promise<Boolean> promise = new Promise<>();
             promise.reject(new IllegalStateException("That player does not have a home set."));
             return promise;
         }
 
-        return rpc.remove(homes.get(pc.getUniqueCharacterId()));
+        return rpc.remove(point);
     }
 
     /**
@@ -124,7 +126,7 @@ public class HearthstoneAPI {
 
         @EventHandler
         public void onPlayerCharacterQuit(PlayerCharacterLogoutEvent event) {
-            homes.remove(event.getPlayerCharacter().getUniqueCharacterId());
+            homes.invalidate(event.getPlayerCharacter().getUniqueCharacterId());
         }
 
         @EventHandler
