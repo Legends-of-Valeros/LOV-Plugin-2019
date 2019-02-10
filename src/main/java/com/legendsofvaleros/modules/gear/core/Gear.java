@@ -53,10 +53,8 @@ public class Gear implements IGear {
     @Override public String getModelId() {
         return modelId;
     }
-
-    public transient Model model;
     public Model getModel() {
-        return model;
+        return Model.get(modelId);
     }
 
     private byte maxAmount = 1;
@@ -275,7 +273,7 @@ public class Gear implements IGear {
             if (amount <= 0) return new ItemStack(Material.AIR);
 
             try {
-                ItemBuilder builder = gear.model.toStack();
+                ItemBuilder builder = gear.getModel().toStack();
 
                 if (gear.type.isRarityable() && gear.rarity != null)
                     builder.addLore(gear.rarity.getChatColor() + gear.rarity.getUserFriendlyName());
