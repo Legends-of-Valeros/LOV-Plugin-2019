@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.npcs.trait.bank.repair;
 
-import com.legendsofvaleros.modules.gear.item.Gear;
+import com.legendsofvaleros.modules.gear.core.Gear;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;

@@ -8,7 +8,7 @@ import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
-import com.legendsofvaleros.modules.gear.item.Gear;
+import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.modules.mobs.ai.AIStuckAction;
 import com.legendsofvaleros.modules.mobs.behavior.StaticAI;
@@ -232,7 +232,7 @@ public class Mob {
         private double chance = 1;
 
         public ItemStack getStack() {
-            ItemStack itemStack = Gear.fromID(id).newInstance().toStack();
+            ItemStack itemStack = Gear.fromId(id).newInstance().toStack();
             if (itemStack.getType() != Material.AIR) {
                 itemStack.setAmount(this.amount);
                 return itemStack;

@@ -1,15 +1,12 @@
-package com.legendsofvaleros.modules.gear.item;
+package com.legendsofvaleros.modules.gear.core;
 
-import com.codingforcookies.doris.orm.annotation.Column;
-import com.codingforcookies.doris.orm.annotation.ForeignKey;
-import com.codingforcookies.doris.orm.annotation.Table;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.codingforcookies.robert.item.NBTEditor;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.modules.gear.GearController;
-import com.legendsofvaleros.modules.gear.ItemManager;
 import com.legendsofvaleros.modules.gear.api.IGear;
 import com.legendsofvaleros.modules.gear.component.ComponentMap;
 import com.legendsofvaleros.modules.gear.component.GearComponent;
@@ -26,63 +23,52 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-@Table(name = "items")
 public class Gear implements IGear {
-    @Column(primary = true, name = "item_id", length = 64)
     private final String id;
-    @Override public String getID() {
+    @Override public String getId() {
         return id;
     }
 
-    @Column(name = "item_group", length = 64)
     private String group;
     public String getGroup() {
         return group;
     }
 
-    @Column(name = "item_version")
     private final int version;
     @Override public int getVersion() {
         return version;
     }
 
-    @Column(name = "item_name", length = 64)
     private String name;
     @Override public String getName() {
         return name;
     }
 
-    @Column(name = "item_type")
     private GearType type;
     @Override public GearType getType() {
         return type;
     }
 
-    @ForeignKey(table = Model.class, name = "model_id", onUpdate = ForeignKey.Trigger.CASCADE, onDelete = ForeignKey.Trigger.SET_DEFAULT)
-    @Column(index = true, name = "item_model", length = 48)
     private String modelId;
     @Override public String getModelId() {
         return modelId;
     }
 
-    public Model model;
+    public transient Model model;
     public Model getModel() {
         return model;
     }
 
-    @Column(name = "item_amount")
     private byte maxAmount = 1;
     @Override public byte getMaxAmount() {
         return maxAmount;
     }
 
-    @Column(name = "item_rarity")
     private GearRarity rarity;
     @Override public GearRarity getRarityLevel() {
         return rarity;
     }
 
-    @Column(name = "item_components")
     private ComponentMap components;
 
     public Gear(int version, String id) {
@@ -120,7 +106,7 @@ public class Gear implements IGear {
     }
 
     public boolean isSimilar(Gear.Instance gear) {
-        return gear != null && (this == gear.gear || this.id.equals(gear.getID()));
+        return gear != null && (this == gear.gear || this.id.equals(gear.getId()));
     }
 
     @Override
@@ -128,8 +114,8 @@ public class Gear implements IGear {
         return "GearController(version=" + version + ", id=" + id + ", group=" + group + ", name=" + name + ", type=" + type + ", model=" + modelId + ", rarity=" + rarity + ", components=" + components + ")";
     }
 
-    public static Gear fromID(String id) {
-        return ItemManager.getItem(id);
+    public static Gear fromId(String id) {
+        return GearController.getInstance().getApi().getGear(id);
     }
 
     public static class Instance implements IGear {
@@ -166,7 +152,7 @@ public class Gear implements IGear {
             this.uuid = uuid;
         }
 
-        @Override public String getID() { return gear.getID(); }
+        @Override public String getId() { return gear.getId(); }
         @Override public int getVersion() { return gear.getVersion(); }
         @Override public String getName() { return gear.getName(); }
         @Override public GearType getType() { return gear.getType(); }
@@ -232,9 +218,9 @@ public class Gear implements IGear {
             return GearTrigger.TriggerEvent.NOTHING;
         }
 
-        public static Gear.Instance fromID(String id) {
+        public static Gear.Instance fromId(String id) {
             try {
-                Gear.Instance instance = new Gear.Instance(Gear.fromID(id), UUID.randomUUID());
+                Gear.Instance instance = new Gear.Instance(Gear.fromId(id), UUID.randomUUID());
                 if (instance.gear == null) return null;
                 instance.amount = 1;
                 instance.persists = new PersistMap();
@@ -263,14 +249,14 @@ public class Gear implements IGear {
                 }
             }
 
-            Gear gear = Gear.fromID(nbt.getString("lov.name"));
+            Gear gear = Gear.fromId(nbt.getString("lov.name"));
             if (gear == null)
                 return null;
 
             Gear.Instance data = new Gear.Instance(gear, nbt.getString("lov.cache") == null ? UUID.randomUUID() : UUID.fromString(nbt.getString("lov.cache")));
             data.version = nbt.getInteger("lov.version");
             data.amount = stack.getAmount();
-            data.persists = ItemManager.gson.fromJson(nbt.getString("lov.persist"), PersistMap.class);
+            data.persists = APIController.getInstance().getGson().fromJson(nbt.getString("lov.persist"), PersistMap.class);
 
             return data;
         }
@@ -338,7 +324,7 @@ public class Gear implements IGear {
 
                 builder.setTag("lov.cache", uuid.toString());
 
-                String json = ItemManager.gson.toJson(persists);
+                String json = APIController.getInstance().getGson().toJson(persists);
                 builder.setTag("lov.persist", json);
 
                 builder.hideAttributes();
@@ -368,7 +354,7 @@ public class Gear implements IGear {
         public PersistMap persist = new PersistMap();
 
         public Gear.Instance toInstance() {
-            Gear gear = Gear.fromID(id);
+            Gear gear = Gear.fromId(id);
             if (gear == null) return null;
 
             Gear.Instance instance = new Gear.Instance(gear, UUID.randomUUID());
@@ -386,15 +372,16 @@ public class Gear implements IGear {
 
         public static Data loadData(String json) {
             try {
-                return ItemManager.gson.fromJson(json, Data.class);
+                return APIController.getInstance().getGson().fromJson(json, Data.class);
             } catch (Exception e) {
+                e.printStackTrace();
             }
             return null;
         }
 
         @Override
         public String toString() {
-            return ItemManager.gson.toJson(this);
+            return APIController.getInstance().getGson().toJson(this);
         }
     }
 }

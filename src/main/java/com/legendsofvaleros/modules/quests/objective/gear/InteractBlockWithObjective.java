@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.quests.objective.gear;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.gear.GearController;
-import com.legendsofvaleros.modules.gear.item.Gear;
+import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.quests.objective.AbstractQuestObjective;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
@@ -33,7 +33,7 @@ public class InteractBlockWithObjective extends AbstractQuestObjective<InteractB
     protected void onInit() {
         this.loc = new Location(Bukkit.getWorld(world), x, y, z);
 
-        item = Gear.fromID(itemId);
+        item = Gear.fromId(itemId);
 
         if (item == null)
             MessageUtil.sendException(GearController.getInstance(), "No item with that ID in quest. Offender: " + itemId + " in " + getQuest().getId());

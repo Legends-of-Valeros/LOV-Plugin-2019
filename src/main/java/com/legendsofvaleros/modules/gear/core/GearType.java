@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.gear.item;
+package com.legendsofvaleros.modules.gear.core;
 
 public enum GearType {
 	QUEST_ITEM(false, false),

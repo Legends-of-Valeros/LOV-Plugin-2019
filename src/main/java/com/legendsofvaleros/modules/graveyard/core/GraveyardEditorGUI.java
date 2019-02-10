@@ -1,6 +1,7 @@
-package com.legendsofvaleros.modules.graveyard;
+package com.legendsofvaleros.modules.graveyard.core;
 
 import com.codingforcookies.robert.core.GUI;
+import com.legendsofvaleros.modules.graveyard.GraveyardController;
 import com.legendsofvaleros.util.item.Model;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
@@ -15,7 +16,7 @@ public class GraveyardEditorGUI extends GUI {
 		super("Graveyard Editor");
 
 		slot(8, 2, Model.stack("menu-decline-button").setName("Delete Graveyard").create(), (gui, p, event) -> {
-			GraveyardManager.remove(yard);
+			GraveyardController.getInstance().getApi().removeGraveyard(yard);
 			gui.close(p);
 		});
 	}

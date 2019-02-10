@@ -3,7 +3,7 @@ package com.legendsofvaleros.modules.quests;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.GearController;
-import com.legendsofvaleros.modules.gear.item.Gear;
+import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.npcs.core.NPCData;
 import org.bukkit.ChatColor;
@@ -58,7 +58,7 @@ public class QuestUtil {
 				StringBuffer sb = new StringBuffer();
 
 				do {
-					Gear data = Gear.fromID(gears.group(1));
+					Gear data = Gear.fromId(gears.group(1));
 
 					String name = gears.group(1);
 					if(data != null && data != GearController.ERROR_ITEM)

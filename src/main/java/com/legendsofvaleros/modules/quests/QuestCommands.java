@@ -23,7 +23,7 @@ import java.util.concurrent.ExecutionException;
 
 @CommandAlias("quests|lov quests")
 public class QuestCommands extends BaseCommand {
-    @Subcommand("refresh")
+    @Subcommand("reload")
     @Description("Reload quests currently in the cache.")
     @CommandPermission("quests.reload")
     public void cmdReload(CommandSender sender) {

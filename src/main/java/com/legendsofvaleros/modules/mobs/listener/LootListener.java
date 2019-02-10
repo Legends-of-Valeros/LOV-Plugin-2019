@@ -4,7 +4,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
-import com.legendsofvaleros.modules.gear.ItemUtil;
+import com.legendsofvaleros.modules.gear.core.ItemUtil;
 import com.legendsofvaleros.modules.loot.LootManager;
 import com.legendsofvaleros.modules.loot.LootTable;
 import com.legendsofvaleros.modules.mobs.MobsController;

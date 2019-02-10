@@ -1,9 +1,9 @@
-package com.legendsofvaleros.modules.gear;
+package com.legendsofvaleros.modules.gear.core;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
+import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.modules.characters.core.PlayerInventoryData;
-import com.legendsofvaleros.modules.gear.item.Gear;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -19,7 +19,7 @@ public class GearInventoryLoader implements PlayerInventoryData.InventoryMethod 
             if (instance != null)
                 data[i] = instance.getData();
         }
-        ret.set(ItemManager.gson.toJson(data));
+        ret.set(APIController.getInstance().getGson().toJson(data));
 
         return ret;
     }
@@ -28,7 +28,7 @@ public class GearInventoryLoader implements PlayerInventoryData.InventoryMethod 
     public ListenableFuture<ItemStack[]> decode(String data) {
         SettableFuture<ItemStack[]> ret = SettableFuture.create();
 
-        Gear.Data[] gearData = ItemManager.gson.fromJson(data, Gear.Data[].class);
+        Gear.Data[] gearData = APIController.getInstance().getGson().fromJson(data, Gear.Data[].class);
         ItemStack[] contents = new ItemStack[gearData.length];
 
         AtomicInteger amount = new AtomicInteger(contents.length);

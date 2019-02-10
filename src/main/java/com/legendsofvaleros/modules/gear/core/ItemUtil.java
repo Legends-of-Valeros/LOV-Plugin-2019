@@ -1,11 +1,10 @@
-package com.legendsofvaleros.modules.gear;
+package com.legendsofvaleros.modules.gear.core;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.gear.component.core.GearPhysicalDamage;
 import com.legendsofvaleros.modules.gear.component.core.GearUseSpeed;
 import com.legendsofvaleros.modules.gear.event.GearPickupEvent;
 import com.legendsofvaleros.modules.gear.event.InventoryFullEvent;
-import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.listener.ItemListener;
 import com.legendsofvaleros.modules.gear.trigger.PickupTrigger;
 import com.legendsofvaleros.modules.playermenu.InventoryManager;

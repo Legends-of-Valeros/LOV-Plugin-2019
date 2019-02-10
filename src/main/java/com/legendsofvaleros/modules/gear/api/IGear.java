@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.gear.api;
 
-import com.legendsofvaleros.modules.gear.item.GearRarity;
-import com.legendsofvaleros.modules.gear.item.GearType;
+import com.legendsofvaleros.modules.gear.core.GearRarity;
+import com.legendsofvaleros.modules.gear.core.GearType;
 import com.legendsofvaleros.util.item.Model;
 
 public interface IGear {
@@ -9,7 +9,7 @@ public interface IGear {
      * A unique identifier for the item.
      * @return
      */
-    String getID();
+    String getId();
 
     /**
      * The current version of the item. If this is changes between

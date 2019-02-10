@@ -39,7 +39,7 @@ public class PlayerData {
 				.column(PLAYER_DISCORD_ID, "VARCHAR(32)").create();
 	}
 
-	public static ListenableFuture<PlayerData> getByDiscordID(String id) {
+	public static ListenableFuture<PlayerData> getByDiscordId(String id) {
 		SettableFuture<PlayerData> ret = SettableFuture.create();
 
 		for(Entry<UUID, PlayerData> entry : cache.asMap().entrySet()) {

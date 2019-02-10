@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.graveyard;
+package com.legendsofvaleros.modules.graveyard.core;
 
 import com.codingforcookies.robert.core.GUI;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
@@ -6,9 +6,11 @@ import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.ItemLine;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.modules.zones.core.Zone;
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 
 public class Graveyard {
@@ -18,29 +20,38 @@ public class Graveyard {
 	private Hologram hologram;
 	private TextLine textZone, textRadius;
 
-	public String zone;
-	public Zone getZone() { return ZonesController.getManager().getZone(zone); }
+	public Zone zone;
+	public Zone getZone() { return zone; }
 	
-	public String worldName;
+	public World world;
 	public World getWorld() {
-		return Bukkit.getWorld(worldName);
+		return world;
 	}
 
 	public int x;
 	public int y;
 	public int z;
 
+	public int radius;
+	public int getRadius() {
+		return radius;
+	}
+
+	public Graveyard(Zone zone, Location location, int radius) {
+		this.zone = zone;
+		this.world = location.getWorld();
+		this.x = location.getBlockX();
+		this.y = location.getBlockY();
+		this.z = location.getBlockZ();
+		this.radius = radius;
+	}
+
 	private Location location;
 
 	public Location getLocation() {
 		if (location == null)
-			location = new Location(getWorld(), x, y, z);
+			location = new Location(world, x, y, z);
 		return location;
-	}
-
-	public int radius;
-	public int getRadius() {
-		return radius;
 	}
 
 	public Hologram getHologram() {

@@ -128,7 +128,7 @@ public class ChatListener implements Listener {
 
             PlayerData data = null;
             try {
-                data = PlayerData.getByDiscordID(message.getAuthor().getId()).get();
+                data = PlayerData.getByDiscordId(message.getAuthor().getId()).get();
             } catch (InterruptedException | ExecutionException ee) {
                 ee.printStackTrace();
             }

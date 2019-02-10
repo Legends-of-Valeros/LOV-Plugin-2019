@@ -2,14 +2,13 @@ package com.legendsofvaleros.modules.quests.objective.gear;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.gear.GearController;
-import com.legendsofvaleros.modules.gear.ItemUtil;
-import com.legendsofvaleros.modules.gear.item.Gear;
+import com.legendsofvaleros.modules.gear.core.Gear;
+import com.legendsofvaleros.modules.gear.core.ItemUtil;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.npcs.core.NPCData;
 import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
 import com.legendsofvaleros.modules.quests.objective.AbstractQuestObjective;
 import com.legendsofvaleros.util.MessageUtil;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import org.bukkit.Location;
 import org.bukkit.event.Event;
@@ -25,7 +24,7 @@ public class FetchForNPCObjective extends AbstractQuestObjective<Boolean> {
 
     @Override
     protected void onInit() {
-        item = Gear.fromID(id);
+        item = Gear.fromId(id);
 
         if (item == null)
             MessageUtil.sendException(GearController.getInstance(), "No item with that ID in quest. Offender: " + id + " in " + getQuest().getId());

@@ -8,7 +8,7 @@ import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.bank.core.Bank;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.gear.item.Gear;
+import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

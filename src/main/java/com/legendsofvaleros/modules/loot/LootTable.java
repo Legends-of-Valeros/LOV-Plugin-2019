@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.loot;
 
-import com.legendsofvaleros.modules.gear.item.Gear;
+import com.legendsofvaleros.modules.gear.core.Gear;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -15,11 +15,11 @@ public class LootTable {
         public double weight = 1;
 
         public Gear getItem() {
-            return Gear.fromID(id);
+            return Gear.fromId(id);
         }
 
         public ItemStack getStack() {
-            ItemStack stack = Gear.fromID(id).newInstance().toStack();
+            ItemStack stack = Gear.fromId(id).newInstance().toStack();
             if (stack.getType() != Material.AIR)
                 return stack;
             else

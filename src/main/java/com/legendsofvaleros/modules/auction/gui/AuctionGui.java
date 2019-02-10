@@ -7,7 +7,7 @@ import com.legendsofvaleros.modules.auction.AuctionChatPrompt.AuctionPromptType;
 import com.legendsofvaleros.modules.auction.AuctionController;
 import com.legendsofvaleros.modules.auction.filter.FilterDirection;
 import com.legendsofvaleros.modules.auction.filter.FilterType;
-import com.legendsofvaleros.modules.gear.item.Gear;
+import com.legendsofvaleros.modules.gear.core.Gear;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;

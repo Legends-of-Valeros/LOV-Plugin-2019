@@ -9,6 +9,7 @@ import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.graveyard.commands.GraveyardCommands;
+import com.legendsofvaleros.modules.graveyard.core.Graveyard;
 import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Location;
@@ -28,11 +29,16 @@ public class GraveyardController extends ModuleListener {
     private static GraveyardController instance;
     public static GraveyardController getInstance() { return instance; }
 
+    private GraveyardAPI api;
+    public GraveyardAPI getApi() { return api; }
+
     @Override
     public void onLoad() {
         super.onLoad();
 
-        instance = this;
+        this.instance = this;
+
+        this.api = new GraveyardAPI();
 
         LegendsOfValeros.getInstance().getCommand("suicide").setExecutor((sender, arg1, arg2, arg3) -> {
             if(CombatEngine.getEntity((Player)sender) == null) return false;
@@ -42,13 +48,20 @@ public class GraveyardController extends ModuleListener {
         });
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new GraveyardCommands());
+    }
 
-        GraveyardManager.onEnable();
+    @Override
+    public void postLoad() {
+        try {
+            api.loadAll().get();
+        } catch (Throwable th) {
+            th.printStackTrace();
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDeath(PlayerRespawnEvent event) {
-        Graveyard data = GraveyardManager.getNearestGraveyard(ZonesController.getManager().getZone(event.getPlayer()), event.getPlayer().getLocation());
+        Graveyard data = api.getNearestGraveyard(ZonesController.getManager().getZone(event.getPlayer()), event.getPlayer().getLocation());
         if (data == null) {
             Location loc = event.getPlayer().getLocation();
             MessageUtil.sendException(this, event.getPlayer(), "Failed to locate graveyard at " + loc.getBlockX() + ", " + loc.getBlockZ() + "!");

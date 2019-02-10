@@ -9,7 +9,11 @@ import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.bank.core.Bank;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
+import com.legendsofvaleros.modules.zones.ZonesController;
+import com.legendsofvaleros.modules.zones.core.Zone;
 import io.deepstream.DeepstreamClient;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -59,6 +63,28 @@ public class APIController extends Module {
             @Override
             public CharacterId read(JsonReader jsonReader) throws IOException {
                 return CharacterId.fromString(jsonReader.nextString());
+            }
+        })
+        .registerTypeAdapter(World.class, new TypeAdapter<World>() {
+            @Override
+            public void write(JsonWriter jsonWriter, World world) throws IOException {
+                jsonWriter.value(world.getName());
+            }
+
+            @Override
+            public World read(JsonReader jsonReader) throws IOException {
+                return Bukkit.getWorld(jsonReader.nextString());
+            }
+        })
+        .registerTypeAdapter(Zone.class, new TypeAdapter<Zone>() {
+            @Override
+            public void write(JsonWriter jsonWriter, Zone zone) throws IOException {
+                jsonWriter.value(zone.id);
+            }
+
+            @Override
+            public Zone read(JsonReader jsonReader) throws IOException {
+                return ZonesController.getManager().getZone(jsonReader.nextString());
             }
         });
 

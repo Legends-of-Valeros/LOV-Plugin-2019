@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
 
 // TODO: Create subclass for listener
 public class NPCManager implements Listener {
@@ -49,10 +48,6 @@ public class NPCManager implements Listener {
     public HashMap<String, NPCData> npcs = new HashMap<>();
 
     public HashMap<String, Class<? extends LOVTrait>> traitTypes = new HashMap<>();
-
-    public Set<String> getTraitIDs() {
-        return traitTypes.keySet();
-    }
 
     public NPCManager() {
         Skins.onEnable();

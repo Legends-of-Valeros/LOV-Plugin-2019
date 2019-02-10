@@ -3,7 +3,7 @@ package com.legendsofvaleros.modules.mailbox;
 import com.codingforcookies.doris.orm.annotation.Column;
 import com.codingforcookies.doris.orm.annotation.Table;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
-import com.legendsofvaleros.modules.gear.item.Gear;
+import com.legendsofvaleros.modules.gear.core.Gear;
 
 /**
  * Created by Crystall on 11/24/2018

@@ -2,8 +2,8 @@ package com.legendsofvaleros.modules.gear.event;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterEvent;
-import com.legendsofvaleros.modules.gear.item.Gear;
-import com.legendsofvaleros.modules.gear.item.Gear.Instance;
+import com.legendsofvaleros.modules.gear.core.Gear;
+import com.legendsofvaleros.modules.gear.core.Gear.Instance;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 

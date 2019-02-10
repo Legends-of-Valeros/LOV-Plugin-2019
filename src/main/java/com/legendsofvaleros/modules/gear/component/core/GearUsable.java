@@ -8,11 +8,11 @@ import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
-import com.legendsofvaleros.modules.gear.ItemUtil;
 import com.legendsofvaleros.modules.gear.component.GearComponent;
 import com.legendsofvaleros.modules.gear.component.GearComponentOrder;
-import com.legendsofvaleros.modules.gear.item.Gear;
-import com.legendsofvaleros.modules.gear.item.GearType;
+import com.legendsofvaleros.modules.gear.core.Gear;
+import com.legendsofvaleros.modules.gear.core.GearType;
+import com.legendsofvaleros.modules.gear.core.ItemUtil;
 import com.legendsofvaleros.modules.gear.trigger.GearTrigger;
 import com.legendsofvaleros.modules.gear.trigger.UseTrigger;
 import com.legendsofvaleros.util.MessageUtil;
@@ -192,8 +192,8 @@ public class GearUsable {
 			
 			PlayerCharacter pc = Characters.getPlayerCharacter((Player)t.getEntity().getLivingEntity());
 			
-			if(cooldown > 0 && pc.getCooldowns().hasCooldown("usable-" + item.getID())) {
-				MessageUtil.sendError(pc.getPlayer(), "You cannot use that for another " + (int)Math.ceil(pc.getCooldowns().getCooldown("usable-" + item.getID()).getRemainingDurationMillis() / 1000) + " seconds.");
+			if(cooldown > 0 && pc.getCooldowns().hasCooldown("usable-" + item.getId())) {
+				MessageUtil.sendError(pc.getPlayer(), "You cannot use that for another " + (int)Math.ceil(pc.getCooldowns().getCooldown("usable-" + item.getId()).getRemainingDurationMillis() / 1000) + " seconds.");
 				return false;
 			}
 	
@@ -249,7 +249,7 @@ public class GearUsable {
 			}
 			
 			if(cooldown > 0)
-				pc.getCooldowns().offerCooldown("usable-" + item.getID(), Cooldowns.CooldownType.CHARACTER_PLAY_TIME, cooldown);
+				pc.getCooldowns().offerCooldown("usable-" + item.getId(), Cooldowns.CooldownType.CHARACTER_PLAY_TIME, cooldown);
 			
 			if(item.getType() == GearType.POTION)
 				pc.getPlayer().playSound(pc.getLocation(), "ui.potion.drink", 1F, 1F);

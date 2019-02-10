@@ -4,8 +4,8 @@ import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.slot.ISlotAction;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.gear.GearController;
-import com.legendsofvaleros.modules.gear.ItemUtil;
-import com.legendsofvaleros.modules.gear.item.Gear;
+import com.legendsofvaleros.modules.gear.core.Gear;
+import com.legendsofvaleros.modules.gear.core.ItemUtil;
 import com.legendsofvaleros.modules.quests.action.AbstractQuestAction;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
@@ -45,7 +45,7 @@ public class ActionChooseItem extends AbstractQuestAction {
 		Gear[] items = new Gear[itemIds.length];
 
 		for(int i = 0; i < itemIds.length; i++)
-			items[i] = Gear.fromID(itemIds[i]);
+			items[i] = Gear.fromId(itemIds[i]);
 
 		try {
 			GUI gui = new GUI("Choose One") {

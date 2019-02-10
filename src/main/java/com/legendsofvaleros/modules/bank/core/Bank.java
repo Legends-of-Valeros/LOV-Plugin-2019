@@ -3,7 +3,7 @@ package com.legendsofvaleros.modules.bank.core;
 import com.legendsofvaleros.modules.bank.event.PlayerCurrencyChangeEvent;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.gear.item.Gear;
+import com.legendsofvaleros.modules.gear.core.Gear;
 import org.bukkit.Bukkit;
 
 import java.util.HashMap;

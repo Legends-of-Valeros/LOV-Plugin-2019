@@ -12,7 +12,7 @@ import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.gear.GearController;
-import com.legendsofvaleros.modules.gear.item.Gear;
+import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.mailbox.Mail;
 import com.legendsofvaleros.modules.mailbox.MailboxController;
 import com.legendsofvaleros.scheduler.InternalTask;
