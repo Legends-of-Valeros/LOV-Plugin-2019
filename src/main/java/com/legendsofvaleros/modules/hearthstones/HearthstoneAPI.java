@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class HearthstoneAPI {
-    @ModuleRPC("hearthstone")
+    @ModuleRPC("hearthstones")
     public interface RPC {
         Promise<HomePoint> get(CharacterId characterId);
         Promise<Boolean> save(HomePoint point);
@@ -97,9 +97,10 @@ public class HearthstoneAPI {
                 System.currentTimeMillis() + cooldownDuration);
     }
 
-    private Promise<HomePoint> onLogin(final PlayerCharacter pc) {
+    private Promise<HomePoint> onLogin(PlayerCharacter pc) {
         return this.rpc.get(pc.getUniqueCharacterId()).onSuccess((home) -> {
-            homes.put(pc.getUniqueCharacterId(), home);
+            if(home != null)
+                homes.put(pc.getUniqueCharacterId(), home);
         });
         /*
         HearthstoneController.getInstance().getLogger().warning(

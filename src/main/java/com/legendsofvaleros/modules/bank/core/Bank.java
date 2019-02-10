@@ -22,6 +22,10 @@ public class Bank {
         return content;
     }
 
+    public Bank(CharacterId characterId) {
+        this.characterId = characterId;
+    }
+
     public long getCurrency(String currencyId) {
         if (!currencies.containsKey(currencyId))
             currencies.put(currencyId, 0L);
