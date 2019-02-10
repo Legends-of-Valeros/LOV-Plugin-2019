@@ -4,7 +4,6 @@ import com.codingforcookies.robert.core.StringUtil;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.hearthstones.HearthstoneController;
-import com.legendsofvaleros.modules.hearthstones.HearthstonesManager;
 import com.legendsofvaleros.modules.hearthstones.event.HearthstoneCastEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
@@ -58,7 +57,7 @@ public class HomeTeleporter implements Listener {
 			return;
 		}
 		
-		final HomePoint home = HearthstonesManager.getHome(pc);
+		final HomePoint home = HearthstoneController.getInstance().getApi().getHome(pc);
 		if (home == null) {
 			MessageUtil.sendError(pc.getPlayer(), "You do not have a home set! "
 					+ "Right-click an inn keeper to set a home.");
@@ -70,7 +69,7 @@ public class HomeTeleporter implements Listener {
 			return;
 		}
 
-		long cooldown = HearthstonesManager.getCooldown(pc);
+		long cooldown = HearthstoneController.getInstance().getApi().getCooldown(pc);
 		long timeRemaining = cooldown - System.currentTimeMillis();
 		if (timeRemaining > 0) {
 			MessageUtil.sendError(pc.getPlayer(), "You cannot cast Hearthstone for another " + StringUtil.getTimeFromMilliseconds(timeRemaining, 2, false) + ".");
@@ -88,7 +87,7 @@ public class HomeTeleporter implements Listener {
 				pc.getPlayer().playSound(pc.getPlayer().getLocation(), Sound.BLOCK_PORTAL_TRAVEL, 1f, 1f);
 				pendingSpawns.remove(pc.getPlayer().getUniqueId());
 				mustStay.remove(pc.getPlayer());
-				HearthstonesManager.addCooldown(pc);
+				HearthstoneController.getInstance().getApi().addCooldown(pc);
 			}
 		};
 		pendingSpawns.put(pc.getPlayer().getUniqueId(), task);

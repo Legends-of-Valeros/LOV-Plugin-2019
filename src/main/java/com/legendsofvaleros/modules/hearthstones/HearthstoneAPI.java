@@ -1,7 +1,8 @@
 package com.legendsofvaleros.modules.hearthstones;
 
-import com.codingforcookies.doris.orm.ORMTable;
-import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.api.APIController;
+import com.legendsofvaleros.api.Promise;
+import com.legendsofvaleros.api.annotation.ModuleRPC;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.Cooldowns;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
@@ -9,37 +10,38 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
+import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.hearthstones.core.HomePoint;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Hearthstone data about players.
- * <p>
- * Loads data from the database on login, writes to the database as changes are made.
- */
-public class HearthstonesManager {
-    private static ORMTable<HomePoint> homeTable;
+public class HearthstoneAPI {
+    @ModuleRPC("hearthstone")
+    public interface RPC {
+        Promise<HomePoint> get(CharacterId characterId);
+        Promise<Boolean> save(HomePoint point);
+        Promise<Boolean> remove(HomePoint point);
+    }
 
-    private static Map<CharacterId, HomePoint> homes = new ConcurrentHashMap<>();
+    private final RPC rpc;
 
-    private static long cooldownDuration;
+    private Map<CharacterId, HomePoint> homes = new ConcurrentHashMap<>();
 
-    public static void onEnable() {
-        cooldownDuration = HearthstoneController.getInstance().getConfig().getLong("cooldown-seconds") * 1000;
+    private long cooldownDuration;
 
-        homeTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), HomePoint.class);
+    public HearthstoneAPI() {
+        this.rpc = APIController.create(GearController.getInstance(), RPC.class);
+
+        this.cooldownDuration = HearthstoneController.getInstance().getConfig().getLong("cooldown-seconds") * 1000;
 
         HearthstoneController.getInstance().registerEvents(new PlayerListener());
     }
 
-    public static HomePoint getHome(PlayerCharacter pc) {
+    public HomePoint getHome(PlayerCharacter pc) {
         return homes.get(pc.getUniqueCharacterId());
     }
 
@@ -52,21 +54,22 @@ public class HearthstonesManager {
      * @param innName The name of the inn.
      * @param loc     The location of the home.
      */
-    public static void setHome(final PlayerCharacter pc, final String innName, final Location loc) {
-        if (innName == null || loc == null) {
-            homes.remove(pc.getUniqueCharacterId());
+    public Promise<Boolean> setHome(PlayerCharacter pc, String innName, Location loc) {
+        HomePoint home = new HomePoint(pc.getUniqueCharacterId(), innName, loc);
 
-            homeTable.query()
-                    .remove(pc.getUniqueCharacterId().toString())
-                    .execute(true);
-            return;
+        homes.put(pc.getUniqueCharacterId(), home);
+
+        return rpc.save(home);
+    }
+
+    public Promise<Boolean> removeHome(PlayerCharacter pc) {
+        if(!homes.containsKey(pc.getUniqueCharacterId())) {
+            Promise<Boolean> promise = new Promise<>();
+            promise.reject(new IllegalStateException("That player does not have a home set."));
+            return promise;
         }
 
-        HomePoint home;
-
-        homes.put(pc.getUniqueCharacterId(), (home = new HomePoint(pc.getUniqueCharacterId(), innName, loc)));
-
-        homeTable.save(home, true);
+        return rpc.remove(homes.get(pc.getUniqueCharacterId()));
     }
 
     /**
@@ -76,7 +79,7 @@ public class HearthstonesManager {
      * @return The earliest time the player can use their hearthstone again. <code>0</code> if no
      * cooldown as found in the locally tracked data for a player with the given name.
      */
-    public static long getCooldown(PlayerCharacter pc) {
+    public long getCooldown(PlayerCharacter pc) {
         if (!pc.getCooldowns().hasCooldown("hearthstone")) return 0;
         return pc.getCooldowns().getCooldown("hearthstone").getRemainingDurationMillis();
     }
@@ -89,30 +92,21 @@ public class HearthstonesManager {
      * until the next time they log into a server using the same data set.
      * @param pc The name of the player to add a cooldown to.
      */
-    public static void addCooldown(final PlayerCharacter pc) {
+    public void addCooldown(final PlayerCharacter pc) {
         pc.getCooldowns().overwriteCooldown("hearthstone",
                 Cooldowns.CooldownType.CALENDAR_TIME,
                 System.currentTimeMillis() + cooldownDuration);
     }
 
-    private static void loadPlayer(final PlayerCharacter pc, PhaseLock lock) {
-        homeTable.query()
-                .get(pc.getUniqueCharacterId().toString())
-                .forEach((home, i) -> {
-                    World world = Bukkit.getWorld(home.world);
-
-                    if (world == null) {
-                        HearthstoneController.getInstance().getLogger().warning(
-                                "Player '" + pc.getUniqueCharacterId() + "' has a home in the world '" + home.world
-                                        + "', but that world was not found on this server. "
-                                        + "Their home was not successfully loaded as a result.");
-                        return;
-                    }
-
-                    homes.put(pc.getUniqueCharacterId(), home);
-                })
-                .onFinished(lock::release)
-                .execute(true);
+    private Promise<HomePoint> onLogin(final PlayerCharacter pc) {
+        return this.rpc.get(pc.getUniqueCharacterId()).onSuccess((home) -> {
+            homes.put(pc.getUniqueCharacterId(), home);
+        });
+        /*
+        HearthstoneController.getInstance().getLogger().warning(
+                "Player '" + pc.getUniqueCharacterId() + "' has a home in the world '" + home.world
+                        + "', but that world was not found on this server. "
+                        + "Their home was not successfully loaded as a result.");*/
     }
 
     /**
@@ -120,20 +114,22 @@ public class HearthstonesManager {
      * <p>
      * Triggers reads from the database on login, and cleanup on logout.
      */
-    private static class PlayerListener implements Listener {
+    private class PlayerListener implements Listener {
         @EventHandler
-        public void onPlayerCharacterDelete(final PlayerCharacterRemoveEvent event) {
-            setHome(event.getPlayerCharacter(), null, null);
-        }
+        public void onPlayerCharacterLoad(PlayerCharacterStartLoadingEvent event) {
+            PhaseLock lock = event.getLock("Hearthstone");
 
-        @EventHandler
-        public void onPlayerCharacterLoad(final PlayerCharacterStartLoadingEvent event) {
-            loadPlayer(event.getPlayerCharacter(), event.getLock("Hearthstone"));
+            onLogin(event.getPlayerCharacter()).on(lock::release);
         }
 
         @EventHandler
         public void onPlayerCharacterQuit(PlayerCharacterLogoutEvent event) {
             homes.remove(event.getPlayerCharacter().getUniqueCharacterId());
+        }
+
+        @EventHandler
+        public void onPlayerCharacterDelete(PlayerCharacterRemoveEvent event) {
+            removeHome(event.getPlayerCharacter());
         }
     }
 }

@@ -21,24 +21,27 @@ public class HearthstoneController extends ModuleListener {
     private static HearthstoneController instance;
     public static HearthstoneController getInstance() { return instance; }
 
+    private HearthstoneAPI api;
+    public HearthstoneAPI getApi() { return api; }
+
     private HomeTeleporter teleporter;
 
     @Override
     public void onLoad() {
         super.onLoad();
 
-        instance = this;
+        this.instance = this;
 
-        HearthstonesManager.onEnable();
-        teleporter = new HomeTeleporter(getConfig().getLong("warmup-seconds"));
+        this.api = new HearthstoneAPI();
 
+        this.teleporter = new HomeTeleporter(getConfig().getLong("warmup-seconds"));
     }
 
     @EventHandler
     public void onCharacterOptionsOpen(PlayerOptionsOpenEvent event) {
         if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
 
-        HomePoint point = HearthstonesManager.getHome(Characters.getPlayerCharacter(event.getPlayer()));
+        HomePoint point = api.getHome(Characters.getPlayerCharacter(event.getPlayer()));
         if (point == null) return;
 
         event.addSlot(Model.stack("menu-hearthstone-button").setName("Hearthstone: " + point.innName).create(), (gui, p, type) -> {
