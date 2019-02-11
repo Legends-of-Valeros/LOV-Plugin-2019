@@ -77,6 +77,17 @@ public class MobsController extends Module {
     }
 
     @Override
+    public void onPostLoad() {
+        super.onPostLoad();
+
+        try {
+            this.api.loadAll().get();
+        } catch (Throwable th) {
+            th.printStackTrace();
+        }
+    }
+
+    @Override
     public void onUnload() {
         super.onUnload();
 
