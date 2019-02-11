@@ -38,6 +38,9 @@ public class MobsController extends Module {
     private static MobsController instance;
     public static MobsController getInstance() { return instance; }
 
+    private MobsAPI api;
+    public MobsAPI getApi() { return api; }
+
     private BehaviorEngine ai;
 
     public static BehaviorEngine ai() {
@@ -48,13 +51,12 @@ public class MobsController extends Module {
     public void onLoad() {
         super.onLoad();
 
-        instance = this;
+        this.instance = this;
+
+        this.api = new MobsAPI();
 
         getLogger().info("AI will update all entities over the course of " + LegendsOfValeros.getInstance().getConfig().getInt("ai-update-smear", 20) + " ticks.");
         ai = new BehaviorEngine(getConfig().getInt("ai-update-smear", 10));
-
-        SpawnManager.onEnable();
-        MobManager.onEnable();
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new MobCommands());
 

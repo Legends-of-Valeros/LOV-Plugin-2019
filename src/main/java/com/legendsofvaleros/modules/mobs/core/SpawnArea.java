@@ -6,7 +6,6 @@ import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.ItemLine;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.mobs.MobManager;
 import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.ChatColor;
@@ -76,7 +75,7 @@ public class SpawnArea {
     private Mob mob;
     public Mob getMob() {
         if (mob == null)
-            mob = MobManager.getEntity(entityId);
+            mob = MobsController.getInstance().getApi().getEntity(entityId);
         return mob;
     }
 

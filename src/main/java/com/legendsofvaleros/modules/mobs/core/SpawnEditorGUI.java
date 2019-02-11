@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.mobs.core;
 
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.item.ItemBuilder;
-import com.legendsofvaleros.modules.mobs.SpawnManager;
+import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.util.item.Model;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -42,7 +42,7 @@ public class SpawnEditorGUI extends GUI {
 							.create(), null);
 
 		slot(8, 2, Model.stack("menu-decline-button").setName("Delete Spawn").create(), (gui, p, event) -> {
-			SpawnManager.removeSpawn(spawn);
+			MobsController.getInstance().getApi().removeSpawn(spawn);
 			gui.close(p);
 		});
 	}

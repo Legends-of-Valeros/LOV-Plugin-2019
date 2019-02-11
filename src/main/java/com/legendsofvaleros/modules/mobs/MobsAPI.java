@@ -2,6 +2,7 @@ package com.legendsofvaleros.modules.mobs;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.api.annotation.ModuleRPC;
@@ -27,15 +28,18 @@ public class MobsAPI {
 
     private final RPC rpc;
 
-    private Map<String, Mob> mobs = new HashMap<>();
-    public Mob getMob(String id) { return mobs.get(id); }
+    private Map<String, Mob> entities = new HashMap<>();
+    public Mob getEntity(String id) { return entities.get(id); }
 
-    private static Multimap<String, SpawnArea> spawns = HashMultimap.create();
-    public static Collection<SpawnArea> getSpawns() {
+    private Multimap<String, SpawnArea> spawns = HashMultimap.create();
+    public Collection<SpawnArea> getSpawns() {
         return spawns.values();
     }
 
-    private static Multimap<String, SpawnArea> spawnsLoaded = HashMultimap.create();
+    private Multimap<String, SpawnArea> spawnsLoaded = HashMultimap.create();
+    public Collection<SpawnArea> getLoadedSpawns() {
+        return spawnsLoaded.values();
+    }
 
     public MobsAPI() {
         this.rpc = APIController.create(MobsController.getInstance(), RPC.class);
@@ -43,24 +47,56 @@ public class MobsAPI {
         MobsController.getInstance().registerEvents(new ChunkListener());
     }
 
-    public Promise<Object[]> loadAll() {
-        return Promise.collect(rpc.find().onSuccess(val -> {
-                mobs.clear();
+    public Promise loadAll() {
+        return rpc.find().onSuccess(val -> {
+                    entities.clear();
 
                 for(Mob mob : val)
-                    mobs.put(mob.getId(), mob);
+                    entities.put(mob.getId(), mob);
 
-                LootController.getInstance().getLogger().info("Loaded " + mobs.size() + " mobs.");
-            }).onFailure(Throwable::printStackTrace),
-            rpc.findSpawns().onSuccess(val -> {
+                LootController.getInstance().getLogger().info("Loaded " + entities.size() + " mobs.");
+            }).onFailure(Throwable::printStackTrace)
+            .next(rpc::findSpawns).onSuccess(val -> {
                 spawns.clear();
 
-                for(SpawnArea spawn : val)
+                for(SpawnArea spawn : val) {
                     spawns.put(getId(spawn.getLocation().getChunk()), spawn);
 
+                    addSpawn(spawn);
+                }
+
                 LootController.getInstance().getLogger().info("Loaded " + spawns.size() + " spawns.");
-            }).onFailure(Throwable::printStackTrace)
-        );
+            }).onFailure(Throwable::printStackTrace);
+    }
+
+    public void addSpawn(SpawnArea spawn) {
+        Chunk chunk = spawn.getLocation().getChunk();
+
+        spawns.put(getId(chunk), spawn);
+
+        // If editing is enabled, generate the hologram right away.
+        if(LegendsOfValeros.getMode().allowEditing())
+            MobsController.getInstance().getScheduler().sync(spawn::getHologram);
+
+        Mob mob = entities.get(spawn.getEntityId());
+        if (spawn.getMob() != null)
+            mob.getSpawns().add(spawn);
+    }
+
+    public void updateSpawn(final SpawnArea spawn) {
+        if (spawn == null)
+            return;
+
+        // spawnsTable.save(spawn, true);
+    }
+
+    public void removeSpawn(final SpawnArea spawn) {
+        if (spawn == null)
+            return;
+
+        spawn.delete();
+
+        // spawnsTable.delete(spawn, true);
     }
 
     private String getId(Chunk chunk) {
