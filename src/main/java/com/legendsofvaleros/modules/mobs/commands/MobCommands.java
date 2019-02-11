@@ -45,7 +45,7 @@ public class MobCommands extends BaseCommand {
 			levels = new int[] { Integer.parseInt(level), Integer.parseInt(level) };
 		}
 		
-		SpawnArea data = new SpawnArea(player.getLocation(, mobId, radius, padding, levels);
+		SpawnArea data = new SpawnArea(player.getLocation(), mobId, radius, padding, levels);
 
 		MessageUtil.sendUpdate(player, "Created spawn area with radius " + data.getRadius() + " blocks.");
 
