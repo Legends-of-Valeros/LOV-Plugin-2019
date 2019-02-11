@@ -59,13 +59,18 @@ public class MobsAPI {
             .next(rpc::findSpawns).onSuccess(val -> {
                 spawns.clear();
 
-                for(SpawnArea spawn : val) {
-                    spawns.put(getId(spawn.getLocation().getChunk()), spawn);
+                // Return to the spigot thread to allow fetching chunk objects.
+                // We could remove all of this, basically, if we just make a way
+                // to get the chunk ID from a block location, this can be async.
+                MobsController.getInstance().getScheduler().executeInSpigotCircle(() -> {
+                    for(SpawnArea spawn : val) {
+                        spawns.put(getId(spawn.getLocation().getChunk()), spawn);
 
-                    addSpawn(spawn);
-                }
+                        addSpawn(spawn);
+                    }
 
-                LootController.getInstance().getLogger().info("Loaded " + spawns.size() + " spawns.");
+                    LootController.getInstance().getLogger().info("Loaded " + spawns.size() + " spawns.");
+                });
             }).onFailure(Throwable::printStackTrace);
     }
 
