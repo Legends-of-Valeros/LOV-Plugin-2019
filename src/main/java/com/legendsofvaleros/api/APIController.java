@@ -7,7 +7,6 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
-import com.legendsofvaleros.modules.bank.core.Bank;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.modules.zones.core.Zone;
@@ -21,7 +20,6 @@ import java.lang.reflect.Proxy;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -100,15 +98,12 @@ public class APIController extends Module {
     }
 
     @Override
-    public void postLoad() {
-        super.postLoad();
+    public void onPostLoad() {
+        super.onPostLoad();
 
-        // Doing this in postLoad allows other modules to register
+        // Doing this in onPostLoad allows other modules to register
         // decoders for the API system.
         this.gson = this.gsonBuilder.create();
-
-        Bank b = new Bank();
-        b.characterId = new CharacterId(UUID.randomUUID(), 0);
 
         /*Promise<?> promise = api.ping().on((err, val) -> {
             if(err != null) {

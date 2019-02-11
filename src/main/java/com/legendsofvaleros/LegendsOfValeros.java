@@ -23,7 +23,7 @@ import com.legendsofvaleros.modules.hearthstones.HearthstoneController;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.modules.keepoutofocean.KeepOutOfOcean;
 import com.legendsofvaleros.modules.levelarchetypes.core.LevelArchetypes;
-import com.legendsofvaleros.modules.loot.LootManager;
+import com.legendsofvaleros.modules.loot.LootController;
 import com.legendsofvaleros.modules.mailbox.MailboxController;
 import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.modules.mount.MountsController;
@@ -155,7 +155,7 @@ public class LegendsOfValeros extends JavaPlugin {
         Modules.registerModule(Hotswitch.class);
         Modules.registerModule(KeepOutOfOcean.class);
         Modules.registerModule(LevelArchetypes.class);
-        Modules.registerModule(LootManager.class);
+        Modules.registerModule(LootController.class);
         Modules.registerModule(MobsController.class);
         Modules.registerModule(MountsController.class);
         // Modules.registerModule(Nanny.class);

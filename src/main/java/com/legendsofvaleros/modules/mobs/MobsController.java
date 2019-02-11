@@ -8,7 +8,7 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.levelarchetypes.core.LevelArchetypes;
-import com.legendsofvaleros.modules.loot.LootManager;
+import com.legendsofvaleros.modules.loot.LootController;
 import com.legendsofvaleros.modules.mobs.behavior.BehaviorEngine;
 import com.legendsofvaleros.modules.mobs.commands.MobCommands;
 import com.legendsofvaleros.modules.mobs.core.Mob;
@@ -30,7 +30,7 @@ import org.bukkit.entity.Player;
 @DependsOn(Characters.class)
 @DependsOn(LevelArchetypes.class)
 @DependsOn(GearController.class)
-@DependsOn(LootManager.class)
+@DependsOn(LootController.class)
 @DependsOn(PartiesController.class)
 @DependsOn(NPCsController.class)
 @ModuleInfo(name = "Mobs", info = "")

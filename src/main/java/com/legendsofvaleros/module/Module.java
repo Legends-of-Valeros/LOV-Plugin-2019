@@ -27,7 +27,7 @@ public abstract class Module {
         timings = new ModuleEventTimings(this);
     }
 
-    public void postLoad() { }
+    public void onPostLoad() { }
 
     public void onUnload() {
         timings.onUnload();

@@ -51,9 +51,11 @@ public class GraveyardController extends ModuleListener {
     }
 
     @Override
-    public void postLoad() {
+    public void onPostLoad() {
+        super.onPostLoad();
+
         try {
-            api.loadAll().get();
+            this.api.loadAll().get();
         } catch (Throwable th) {
             th.printStackTrace();
         }

@@ -1,13 +1,11 @@
 package com.legendsofvaleros.modules.mobs.listener;
 
-import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.gear.core.ItemUtil;
-import com.legendsofvaleros.modules.loot.LootManager;
+import com.legendsofvaleros.modules.loot.LootController;
 import com.legendsofvaleros.modules.loot.LootTable;
-import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Location;
@@ -19,7 +17,6 @@ import org.bukkit.event.Listener;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class LootListener implements Listener {
@@ -52,34 +49,27 @@ public class LootListener implements Listener {
             } else
                 i = null;
 
-            ListenableFuture<LootTable> future = LootManager.getInstance().getTable(data.id);
-            future.addListener(() -> {
-                try {
-                    LootTable table = future.get();
-                    if (table == null) {
-                        MessageUtil.sendSevereException(LootManager.getInstance(), event.getKiller().getLivingEntity(), "Mob has an unknown loot table. Offender: " + data.id + " on " + entity.mob.getId());
-                        return;
-                    }
+            LootTable table = LootController.getInstance().getApi().getTable(data.id);
+            if (table == null) {
+                MessageUtil.sendSevereException(LootController.getInstance(), event.getKiller().getLivingEntity(), "Mob has an unknown loot table. Offender: " + data.id + " on " + entity.mob.getId());
+                return;
+            }
 
-                    double chance = (data.chance == null ? table.chance : data.chance);
+            double chance = (data.chance == null ? table.chance : data.chance);
 
-                    for (int j = (i == null ? 0 : i.get()); j < data.amount; j++) {
-                        if (RAND.nextDouble() > chance)
-                            continue;
+            for (int j = (i == null ? 0 : i.get()); j < data.amount; j++) {
+                if (RAND.nextDouble() > chance)
+                    continue;
 
-                        // If we have dropped all possible in the connection.
-                        if (i != null)
-                            if (data.amount - i.getAndIncrement() < 0) break;
+                // If we have dropped all possible in the connection.
+                if (i != null)
+                    if (data.amount - i.getAndIncrement() < 0) break;
 
-                        LootTable.Item item = table.nextItem();
-                        if (item == null) continue;
+                LootTable.Item item = table.nextItem();
+                if (item == null) continue;
 
-                        ItemUtil.dropItem(dieLoc, item.getItem().newInstance(), pc);
-                    }
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                }
-            }, MobsController.getInstance().getScheduler()::sync);
+                ItemUtil.dropItem(dieLoc, item.getItem().newInstance(), pc);
+            }
         }
     }
 }

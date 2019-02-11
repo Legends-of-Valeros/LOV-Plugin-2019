@@ -53,7 +53,7 @@ public class RPCFunction<T> {
             // TODO: Fix when deepstream supports passing our own data.
             Gson gson = APIController.getInstance().getGson();
             if (gson == null)
-                throw new IllegalStateException("Must wait until postLoad() before using RPC functions!");
+                throw new IllegalStateException("Must wait until onPostLoad() before using RPC functions!");
 
             RpcResult res = APIController.getInstance().getClient().rpc.make(func,
                     arg != null ? gson.fromJson(gson.toJson(arg), JsonElement.class) : null);

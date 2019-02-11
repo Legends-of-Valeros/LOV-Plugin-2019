@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class LootTable {
+    public String id;
     public double chance;
     public Item[] items;
 
@@ -23,7 +24,7 @@ public class LootTable {
             if (stack.getType() != Material.AIR)
                 return stack;
             else
-                LootManager.getInstance().getLogger().severe("Attempt to use loot table item with unknown item name. Offender: " + id);
+                LootController.getInstance().getLogger().severe("Attempt to use loot table item with unknown item name. Offender: " + id);
             return null;
         }
 

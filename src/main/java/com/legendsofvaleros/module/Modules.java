@@ -110,7 +110,7 @@ public class Modules {
 
         for (InternalModule module : modules.values()) {
             if (module.isLoaded) {
-                module.instance.postLoad();
+                module.instance.onPostLoad();
             }
         }
 
