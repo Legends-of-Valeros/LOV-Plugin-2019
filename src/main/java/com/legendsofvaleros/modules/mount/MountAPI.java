@@ -72,9 +72,11 @@ public class MountAPI {
     private Promise<Collection<String>> onLogin(CharacterId characterId) {
         Promise<Collection<String>> promise = rpc.getPlayerMounts(characterId);
 
-        promise.onSuccess(val ->
-                val.stream().forEach(mountId ->
-                        playerMounts.put(characterId, mountId)));
+        promise.onSuccess(val -> {
+            if(val == null) return;
+            val.stream().forEach(mountId ->
+                    playerMounts.put(characterId, mountId));
+        });
 
         return promise;
     }
