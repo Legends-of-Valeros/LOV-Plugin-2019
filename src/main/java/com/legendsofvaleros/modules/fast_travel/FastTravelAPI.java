@@ -4,7 +4,6 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
-import com.legendsofvaleros.api.annotation.ModuleRPC;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
@@ -18,13 +17,12 @@ import java.util.Collection;
 import java.util.List;
 
 public class FastTravelAPI {
-    @ModuleRPC("fasttravel")
     public interface RPC {
-        Promise<List<String>> get(CharacterId characterId);
+        Promise<List<String>> getDiscoveredFastTravels(CharacterId characterId);
 
-        Promise<Boolean> update(CharacterId characterId, Collection<String> discovered);
+        Promise<Boolean> saveDiscoveredFastTravels(CharacterId characterId, Collection<String> discovered);
 
-        Promise<Boolean> delete(CharacterId characterId);
+        Promise<Boolean> deleteDiscoveredFastTravels(CharacterId characterId);
     }
 
     private final RPC rpc;
@@ -50,7 +48,7 @@ public class FastTravelAPI {
     }
 
     private Promise<List<String>> onLogin(CharacterId characterId) {
-        Promise<List<String>> promise = rpc.get(characterId);
+        Promise<List<String>> promise = rpc.getDiscoveredFastTravels(characterId);
 
         promise.onSuccess((arr) ->
                 arr.stream().forEach((npcId) ->
@@ -60,7 +58,7 @@ public class FastTravelAPI {
     }
 
     private Promise<Boolean> onLogout(CharacterId characterId) {
-        Promise<Boolean> promise = rpc.update(characterId, fastTravels.get(characterId));
+        Promise<Boolean> promise = rpc.saveDiscoveredFastTravels(characterId, fastTravels.get(characterId));
 
         promise.on(() -> fastTravels.removeAll(characterId));
 
@@ -84,7 +82,7 @@ public class FastTravelAPI {
 
         @EventHandler
         public void onPlayerRemoved(PlayerCharacterRemoveEvent event) {
-            rpc.delete(event.getPlayerCharacter().getUniqueCharacterId());
+            rpc.deleteDiscoveredFastTravels(event.getPlayerCharacter().getUniqueCharacterId());
         }
     }
 }

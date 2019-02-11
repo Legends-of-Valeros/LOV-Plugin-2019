@@ -19,7 +19,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -42,7 +44,7 @@ public class APIController extends Module {
     private DeepstreamClient client;
     public DeepstreamClient getClient() { return client; }
 
-    APITest api;
+    private Set<String> rpcFuncs = new HashSet<>();
 
     @Override
     public void onLoad() {
@@ -90,8 +92,6 @@ public class APIController extends Module {
             this.client = new DeepstreamClient("192.99.0.101:6020");
 
             this.client.login();
-
-            this.api = APIController.create(APITest.class);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -104,6 +104,15 @@ public class APIController extends Module {
         // Doing this in onPostLoad allows other modules to register
         // decoders for the API system.
         this.gson = this.gsonBuilder.create();
+
+        // Do a quick verify of methods registered
+        getScheduler().executeInSpigotCircle(() -> {
+            Map<String, Boolean> bools = RPCFunction.oneShotSync("ifMethodExists", Map.class, rpcFuncs);
+            for(Map.Entry<String, Boolean> entry : bools.entrySet()) {
+                if(!entry.getValue())
+                    getLogger().severe(entry.getKey() + "() is not known in the API!");
+            }
+        });
 
         /*Promise<?> promise = api.ping().on((err, val) -> {
             if(err != null) {
@@ -156,8 +165,11 @@ public class APIController extends Module {
     public static <T> T create(Executor executor, Class<T> clazz) {
         Map<String, RPCFunction> methods = new HashMap<>();
 
-        for(Method m : clazz.getDeclaredMethods())
-            methods.put(m.getName(), RPCFunction.create(executor, m));
+        RPCFunction rpc;
+        for(Method m : clazz.getDeclaredMethods()) {
+            methods.put(m.getName(), rpc = RPCFunction.create(executor, m));
+            getInstance().rpcFuncs.add(rpc.getName());
+        }
 
         return clazz.cast(Proxy.newProxyInstance(clazz.getClassLoader(), new java.lang.Class[] { clazz },
             (proxy, m, args) -> methods.get(m.getName()).call((args != null ? args : new Object[0]))

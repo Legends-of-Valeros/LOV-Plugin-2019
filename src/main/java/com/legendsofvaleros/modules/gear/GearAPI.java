@@ -5,7 +5,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
-import com.legendsofvaleros.api.annotation.ModuleRPC;
 import com.legendsofvaleros.modules.gear.component.ComponentMap;
 import com.legendsofvaleros.modules.gear.component.GearComponent;
 import com.legendsofvaleros.modules.gear.component.PersistMap;
@@ -18,9 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GearAPI {
-    @ModuleRPC("gear")
     public interface RPC {
-        Promise<Gear[]> find();
+        Promise<Gear[]> findGear();
     }
 
     private final RPC rpc;
@@ -64,7 +62,7 @@ public class GearAPI {
     }
 
     public Promise<Gear[]> loadAll() {
-        return rpc.find().onSuccess(val -> {
+        return rpc.findGear().onSuccess(val -> {
             gear.clear();
 
             for(Gear g : val)

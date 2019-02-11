@@ -13,7 +13,10 @@ import java.util.concurrent.Executor;
 
 public class RPCFunction<T> {
     private final Executor executor;
+
     private final String func;
+    public String getName() { return func; }
+
     private final Class<T> result;
 
     public RPCFunction(Executor executor, String func, Class<T> result) {

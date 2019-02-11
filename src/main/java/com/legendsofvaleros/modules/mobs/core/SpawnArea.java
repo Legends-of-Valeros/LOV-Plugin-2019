@@ -29,6 +29,7 @@ public class SpawnArea {
     private TextLine textEntityId, textLevel, textRadius, textPadding, textEntities, textInfo, textInterval;
 
     private int id;
+    public int getId() { return id; }
 
     private World world;
     public World getWorld() {

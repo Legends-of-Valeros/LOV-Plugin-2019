@@ -2,15 +2,13 @@ package com.legendsofvaleros.modules.loot;
 
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
-import com.legendsofvaleros.api.annotation.ModuleRPC;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class LootAPI {
-    @ModuleRPC("loottable")
     public interface RPC {
-        Promise<LootTable[]> find();
+        Promise<LootTable[]> findLootTables();
     }
 
     private final RPC rpc;
@@ -23,7 +21,7 @@ public class LootAPI {
     }
 
     public Promise<LootTable[]> loadAll() {
-        return rpc.find().onSuccess(val -> {
+        return rpc.findLootTables().onSuccess(val -> {
             tables.clear();
 
             for(LootTable table : val)

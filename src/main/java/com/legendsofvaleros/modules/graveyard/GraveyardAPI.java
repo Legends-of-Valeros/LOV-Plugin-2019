@@ -8,7 +8,6 @@ import com.google.gson.JsonObject;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
-import com.legendsofvaleros.api.annotation.ModuleRPC;
 import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.gear.GearRegistry;
 import com.legendsofvaleros.modules.gear.component.ComponentMap;
@@ -25,11 +24,10 @@ import java.util.Collection;
 import java.util.Map;
 
 public class GraveyardAPI {
-    @ModuleRPC("graveyard")
     public interface RPC {
-        Promise<Graveyard[]> find();
-        Promise<Boolean> save(Graveyard yard);
-        Promise<Boolean> remove(Graveyard yard);
+        Promise<Graveyard[]> findGraveyards();
+        Promise<Boolean> saveGraveyard(Graveyard yard);
+        Promise<Boolean> deleteGraveyard(Graveyard yard);
     }
 
     private final RPC rpc;
@@ -73,7 +71,7 @@ public class GraveyardAPI {
     }
 
     public Promise<Graveyard[]> loadAll() {
-        return rpc.find().onSuccess(val -> {
+        return rpc.findGraveyards().onSuccess(val -> {
             graveyards.clear();
 
             for(Graveyard g : val)
@@ -107,12 +105,12 @@ public class GraveyardAPI {
         if(LegendsOfValeros.getMode().allowEditing())
             GraveyardController.getInstance().getScheduler().sync(yard::getHologram);
 
-        return rpc.save(yard);
+        return rpc.saveGraveyard(yard);
     }
 
     public Promise<Boolean> removeGraveyard(Graveyard yard) {
         graveyards.remove(yard.zone.channel, yard);
 
-        return rpc.remove(yard);
+        return rpc.deleteGraveyard(yard);
     }
 }

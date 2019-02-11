@@ -5,7 +5,6 @@ import com.google.common.collect.Multimap;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
-import com.legendsofvaleros.api.annotation.ModuleRPC;
 import com.legendsofvaleros.modules.loot.LootController;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.mobs.core.SpawnArea;
@@ -20,10 +19,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MobsAPI {
-    @ModuleRPC("mobs")
     public interface RPC {
-        Promise<Mob[]> find();
+        Promise<Mob[]> findMobs();
+
         Promise<SpawnArea[]> findSpawns();
+        Promise<Boolean> saveSpawn(SpawnArea spawn);
+        Promise<Boolean> deleteSpawn(Integer spawn);
     }
 
     private final RPC rpc;
@@ -48,7 +49,7 @@ public class MobsAPI {
     }
 
     public Promise loadAll() {
-        return rpc.find().onSuccess(val -> {
+        return rpc.findMobs().onSuccess(val -> {
                     entities.clear();
 
                 for(Mob mob : val)
@@ -88,11 +89,11 @@ public class MobsAPI {
             mob.getSpawns().add(spawn);
     }
 
-    public void updateSpawn(final SpawnArea spawn) {
+    public void updateSpawn(SpawnArea spawn) {
         if (spawn == null)
             return;
 
-        // spawnsTable.save(spawn, true);
+        rpc.saveSpawn(spawn);
     }
 
     public void removeSpawn(final SpawnArea spawn) {
@@ -101,7 +102,7 @@ public class MobsAPI {
 
         spawn.delete();
 
-        // spawnsTable.delete(spawn, true);
+        rpc.deleteSpawn(spawn.getId());
     }
 
     private String getId(Chunk chunk) {

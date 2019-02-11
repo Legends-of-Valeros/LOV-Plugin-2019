@@ -4,7 +4,6 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
-import com.legendsofvaleros.api.annotation.ModuleRPC;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
@@ -21,13 +20,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FactionAPI {
-    @ModuleRPC("factions")
     public interface RPC {
-        Promise<Faction[]> find();
+        Promise<Faction[]> findFactions();
 
-        Promise<Map<String, Integer>> getRep(CharacterId characterId);
-        Promise<Boolean> updateRep(CharacterId characterId, Map<String, Integer> factions);
-        Promise<Boolean> deleteRep(CharacterId characterId);
+        Promise<Map<String, Integer>> getFactionReputation(CharacterId characterId);
+        Promise<Boolean> saveFactionReputation(CharacterId characterId, Map<String, Integer> factions);
+        Promise<Boolean> deleteFactionReputation(CharacterId characterId);
     }
 
     private final RPC rpc;
@@ -42,7 +40,7 @@ public class FactionAPI {
     }
 
     public Promise<Faction[]> loadAll() {
-        return rpc.find().onSuccess(val -> {
+        return rpc.findFactions().onSuccess(val -> {
             factions.clear();
 
             for(Faction fac : val)
@@ -74,7 +72,7 @@ public class FactionAPI {
     }
 
     private Promise<Map<String, Integer>> onLogin(CharacterId characterId) {
-        Promise<Map<String, Integer>> promise = rpc.getRep(characterId);
+        Promise<Map<String, Integer>> promise = rpc.getFactionReputation(characterId);
 
         promise.onSuccess((map) ->
                 map.entrySet().stream().forEach((entry) ->
@@ -84,7 +82,7 @@ public class FactionAPI {
     }
 
     private Promise<Boolean> onLogout(CharacterId characterId) {
-        Promise<Boolean> promise = rpc.updateRep(characterId, playerRep.row(characterId));
+        Promise<Boolean> promise = rpc.saveFactionReputation(characterId, playerRep.row(characterId));
 
         promise.on(() -> {
             playerRep.row(characterId).clear();
@@ -111,7 +109,7 @@ public class FactionAPI {
 
         @EventHandler
         public void onPlayerRemoved(PlayerCharacterRemoveEvent event) {
-            rpc.deleteRep(event.getPlayerCharacter().getUniqueCharacterId());
+            rpc.deleteFactionReputation(event.getPlayerCharacter().getUniqueCharacterId());
         }
     }
 }

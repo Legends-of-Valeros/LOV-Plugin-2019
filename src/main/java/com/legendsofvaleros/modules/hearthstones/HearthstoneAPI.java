@@ -4,7 +4,6 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
-import com.legendsofvaleros.api.annotation.ModuleRPC;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.Cooldowns;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
@@ -18,11 +17,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class HearthstoneAPI {
-    @ModuleRPC("hearthstones")
     public interface RPC {
-        Promise<HomePoint> get(CharacterId characterId);
-        Promise<Boolean> save(HomePoint point);
-        Promise<Boolean> remove(HomePoint point);
+        Promise<HomePoint> getHearthstone(CharacterId characterId);
+        Promise<Boolean> saveHearthstone(HomePoint point);
+        Promise<Boolean> deleteHearthstone(HomePoint point);
     }
 
     private final RPC rpc;
@@ -58,7 +56,7 @@ public class HearthstoneAPI {
 
         homes.put(pc.getUniqueCharacterId(), home);
 
-        return rpc.save(home);
+        return rpc.saveHearthstone(home);
     }
 
     public Promise<Boolean> removeHome(PlayerCharacter pc) {
@@ -70,7 +68,7 @@ public class HearthstoneAPI {
             return promise;
         }
 
-        return rpc.remove(point);
+        return rpc.deleteHearthstone(point);
     }
 
     /**
@@ -100,7 +98,7 @@ public class HearthstoneAPI {
     }
 
     private Promise<HomePoint> onLogin(PlayerCharacter pc) {
-        return this.rpc.get(pc.getUniqueCharacterId()).onSuccess(val -> {
+        return this.rpc.getHearthstone(pc.getUniqueCharacterId()).onSuccess(val -> {
             if(val != null)
                 homes.put(pc.getUniqueCharacterId(), val);
         });

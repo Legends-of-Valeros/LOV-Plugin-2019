@@ -2,7 +2,6 @@ package com.legendsofvaleros.modules.bank;
 
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
-import com.legendsofvaleros.api.annotation.ModuleRPC;
 import com.legendsofvaleros.modules.bank.core.Bank;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
@@ -17,11 +16,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BankAPI {
-    @ModuleRPC("banks")
     public interface RPC {
-        Promise<Bank> get(CharacterId characterId);
-        Promise<Boolean> save(Bank bank);
-        Promise<Boolean> delete(CharacterId characterId);
+        Promise<Bank> getBank(CharacterId characterId);
+        Promise<Boolean> saveBank(Bank bank);
+        Promise<Boolean> deleteBank(CharacterId characterId);
     }
 
     private final RPC rpc;
@@ -39,11 +37,11 @@ public class BankAPI {
     }
 
     private Promise<Boolean> removeBank(CharacterId characterId) {
-        return rpc.delete(characterId);
+        return rpc.deleteBank(characterId);
     }
 
     private Promise<Bank> onLogin(CharacterId characterId) {
-        Promise<Bank> promise = rpc.get(characterId);
+        Promise<Bank> promise = rpc.getBank(characterId);
 
         promise.onSuccess(val -> {
             if(val == null)
@@ -61,7 +59,7 @@ public class BankAPI {
         if (bank == null)
             promise.resolve(false);
         else
-            rpc.save(bank).on((err, val) -> {
+            rpc.saveBank(bank).on((err, val) -> {
                 if(err != null) promise.reject(err);
                 else promise.resolve(val);
             });
