@@ -74,7 +74,7 @@ public class MountsController extends ModuleListener {
 
     @EventHandler
     public void onCharacterOptionsOpen(PlayerOptionsOpenEvent event) {
-        List<String> mounts = new ArrayList<>(api.getMounts(Characters.getPlayerCharacter(event.getPlayer())));
+        List<Mount> mounts = new ArrayList<>(api.getMounts(Characters.getPlayerCharacter(event.getPlayer())));
 
         if(mounts.size() == 0) return;
 
@@ -83,7 +83,7 @@ public class MountsController extends ModuleListener {
 
             if (mounts.size() == 1) {
                 // Only one? Mount that shit!
-                api.getMount(mounts.iterator().next()).hopOn(p);
+                mounts.get(0).hopOn(p);
             } else if (mounts.size() > 1) {
                 GUI mountgui = new GUI("Your Mounts");
                 mountgui.type(InventoryType.DISPENSER);
