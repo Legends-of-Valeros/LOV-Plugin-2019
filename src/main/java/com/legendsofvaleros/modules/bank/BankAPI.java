@@ -2,6 +2,7 @@ package com.legendsofvaleros.modules.bank;
 
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
+import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.modules.bank.core.Bank;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
@@ -15,21 +16,24 @@ import org.bukkit.event.Listener;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BankAPI {
+public class BankAPI extends Module {
     public interface RPC {
         Promise<Bank> getPlayerBank(CharacterId characterId);
         Promise<Boolean> savePlayerBank(Bank bank);
         Promise<Boolean> deletePlayerBank(CharacterId characterId);
     }
 
-    private final RPC rpc;
+    private RPC rpc;
 
-    private static final Map<CharacterId, Bank> banks = new HashMap<>();
+    private final Map<CharacterId, Bank> banks = new HashMap<>();
 
-    public BankAPI() {
-        this.rpc = APIController.create(BankController.getInstance(), RPC.class);
+    @Override
+    public void onLoad() {
+        super.onLoad();
 
-        BankController.getInstance().registerEvents(new PlayerCharacterListener());
+        this.rpc = APIController.create(this, RPC.class);
+
+        registerEvents(new PlayerCharacterListener());
     }
 
     public Bank getBank(CharacterId characterId) {
