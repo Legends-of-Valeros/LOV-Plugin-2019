@@ -107,11 +107,18 @@ public class APIController extends Module {
 
         // Do a quick verify of methods registered
         getScheduler().executeInSpigotCircle(() -> {
+            boolean err = false;
+
             Map<String, Boolean> bools = RPCFunction.oneShotSync("ifMethodExists", Map.class, rpcFuncs);
             for(Map.Entry<String, Boolean> entry : bools.entrySet()) {
-                if(!entry.getValue())
+                if(!entry.getValue()) {
+                    err = true;
                     getLogger().severe(entry.getKey() + "() is not known in the API!");
+                }
             }
+
+            if(!err)
+                getLogger().info("No issues! All registered RPC functions exist!");
         });
 
         /*Promise<?> promise = api.ping().on((err, val) -> {

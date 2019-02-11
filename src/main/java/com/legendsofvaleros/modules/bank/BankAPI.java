@@ -17,9 +17,9 @@ import java.util.Map;
 
 public class BankAPI {
     public interface RPC {
-        Promise<Bank> getBank(CharacterId characterId);
-        Promise<Boolean> saveBank(Bank bank);
-        Promise<Boolean> deleteBank(CharacterId characterId);
+        Promise<Bank> getPlayerBank(CharacterId characterId);
+        Promise<Boolean> savePlayerBank(Bank bank);
+        Promise<Boolean> deletePlayerBank(CharacterId characterId);
     }
 
     private final RPC rpc;
@@ -37,11 +37,11 @@ public class BankAPI {
     }
 
     private Promise<Boolean> removeBank(CharacterId characterId) {
-        return rpc.deleteBank(characterId);
+        return rpc.deletePlayerBank(characterId);
     }
 
     private Promise<Bank> onLogin(CharacterId characterId) {
-        Promise<Bank> promise = rpc.getBank(characterId);
+        Promise<Bank> promise = rpc.getPlayerBank(characterId);
 
         promise.onSuccess(val -> {
             if(val == null)
@@ -59,7 +59,7 @@ public class BankAPI {
         if (bank == null)
             promise.resolve(false);
         else
-            rpc.saveBank(bank).on((err, val) -> {
+            rpc.savePlayerBank(bank).on((err, val) -> {
                 if(err != null) promise.reject(err);
                 else promise.resolve(val);
             });

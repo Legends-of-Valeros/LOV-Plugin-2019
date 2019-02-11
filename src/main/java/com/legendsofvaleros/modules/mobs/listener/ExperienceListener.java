@@ -4,7 +4,7 @@ import com.legendsofvaleros.module.Modules;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
-import com.legendsofvaleros.modules.mobs.ExperienceHelper;
+import com.legendsofvaleros.modules.mobs.core.ExperienceHelper;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.parties.PartiesController;
 import com.legendsofvaleros.modules.parties.PartyManager;

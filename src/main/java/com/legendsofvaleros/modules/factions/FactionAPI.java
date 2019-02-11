@@ -23,9 +23,9 @@ public class FactionAPI {
     public interface RPC {
         Promise<Faction[]> findFactions();
 
-        Promise<Map<String, Integer>> getFactionReputation(CharacterId characterId);
-        Promise<Boolean> saveFactionReputation(CharacterId characterId, Map<String, Integer> factions);
-        Promise<Boolean> deleteFactionReputation(CharacterId characterId);
+        Promise<Map<String, Integer>> getPlayerFactionReputation(CharacterId characterId);
+        Promise<Boolean> savePlayerFactionReputation(CharacterId characterId, Map<String, Integer> factions);
+        Promise<Boolean> deletePlayerFactionReputation(CharacterId characterId);
     }
 
     private final RPC rpc;
@@ -72,7 +72,7 @@ public class FactionAPI {
     }
 
     private Promise<Map<String, Integer>> onLogin(CharacterId characterId) {
-        Promise<Map<String, Integer>> promise = rpc.getFactionReputation(characterId);
+        Promise<Map<String, Integer>> promise = rpc.getPlayerFactionReputation(characterId);
 
         promise.onSuccess((map) ->
                 map.entrySet().stream().forEach((entry) ->
@@ -82,12 +82,9 @@ public class FactionAPI {
     }
 
     private Promise<Boolean> onLogout(CharacterId characterId) {
-        Promise<Boolean> promise = rpc.saveFactionReputation(characterId, playerRep.row(characterId));
+        Promise<Boolean> promise = rpc.savePlayerFactionReputation(characterId, playerRep.row(characterId));
 
-        promise.on(() -> {
-            playerRep.row(characterId).clear();
-            promise.resolve(null);
-        });
+        promise.on(() -> playerRep.row(characterId).clear());
 
         return promise;
     }
@@ -109,7 +106,7 @@ public class FactionAPI {
 
         @EventHandler
         public void onPlayerRemoved(PlayerCharacterRemoveEvent event) {
-            rpc.deleteFactionReputation(event.getPlayerCharacter().getUniqueCharacterId());
+            rpc.deletePlayerFactionReputation(event.getPlayerCharacter().getUniqueCharacterId());
         }
     }
 }

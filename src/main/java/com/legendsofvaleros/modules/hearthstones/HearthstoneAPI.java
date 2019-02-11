@@ -18,9 +18,9 @@ import org.bukkit.event.Listener;
 
 public class HearthstoneAPI {
     public interface RPC {
-        Promise<HomePoint> getHearthstone(CharacterId characterId);
-        Promise<Boolean> saveHearthstone(HomePoint point);
-        Promise<Boolean> deleteHearthstone(HomePoint point);
+        Promise<HomePoint> getPlayerHearthstone(CharacterId characterId);
+        Promise<Boolean> savePlayerHearthstone(HomePoint point);
+        Promise<Boolean> deletePlayerHearthstone(HomePoint point);
     }
 
     private final RPC rpc;
@@ -56,7 +56,7 @@ public class HearthstoneAPI {
 
         homes.put(pc.getUniqueCharacterId(), home);
 
-        return rpc.saveHearthstone(home);
+        return rpc.savePlayerHearthstone(home);
     }
 
     public Promise<Boolean> removeHome(PlayerCharacter pc) {
@@ -68,7 +68,7 @@ public class HearthstoneAPI {
             return promise;
         }
 
-        return rpc.deleteHearthstone(point);
+        return rpc.deletePlayerHearthstone(point);
     }
 
     /**
@@ -98,7 +98,7 @@ public class HearthstoneAPI {
     }
 
     private Promise<HomePoint> onLogin(PlayerCharacter pc) {
-        return this.rpc.getHearthstone(pc.getUniqueCharacterId()).onSuccess(val -> {
+        return this.rpc.getPlayerHearthstone(pc.getUniqueCharacterId()).onSuccess(val -> {
             if(val != null)
                 homes.put(pc.getUniqueCharacterId(), val);
         });

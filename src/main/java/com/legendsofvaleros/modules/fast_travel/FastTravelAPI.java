@@ -18,11 +18,11 @@ import java.util.List;
 
 public class FastTravelAPI {
     public interface RPC {
-        Promise<List<String>> getDiscoveredFastTravels(CharacterId characterId);
+        Promise<List<String>> getPlayerFastTravels(CharacterId characterId);
 
-        Promise<Boolean> saveDiscoveredFastTravels(CharacterId characterId, Collection<String> discovered);
+        Promise<Boolean> savePlayerFastTravels(CharacterId characterId, Collection<String> discovered);
 
-        Promise<Boolean> deleteDiscoveredFastTravels(CharacterId characterId);
+        Promise<Boolean> deletePlayerFastTravels(CharacterId characterId);
     }
 
     private final RPC rpc;
@@ -48,7 +48,7 @@ public class FastTravelAPI {
     }
 
     private Promise<List<String>> onLogin(CharacterId characterId) {
-        Promise<List<String>> promise = rpc.getDiscoveredFastTravels(characterId);
+        Promise<List<String>> promise = rpc.getPlayerFastTravels(characterId);
 
         promise.onSuccess((arr) ->
                 arr.stream().forEach((npcId) ->
@@ -58,7 +58,7 @@ public class FastTravelAPI {
     }
 
     private Promise<Boolean> onLogout(CharacterId characterId) {
-        Promise<Boolean> promise = rpc.saveDiscoveredFastTravels(characterId, fastTravels.get(characterId));
+        Promise<Boolean> promise = rpc.savePlayerFastTravels(characterId, fastTravels.get(characterId));
 
         promise.on(() -> fastTravels.removeAll(characterId));
 
@@ -82,7 +82,7 @@ public class FastTravelAPI {
 
         @EventHandler
         public void onPlayerRemoved(PlayerCharacterRemoveEvent event) {
-            rpc.deleteDiscoveredFastTravels(event.getPlayerCharacter().getUniqueCharacterId());
+            rpc.deletePlayerFastTravels(event.getPlayerCharacter().getUniqueCharacterId());
         }
     }
 }
