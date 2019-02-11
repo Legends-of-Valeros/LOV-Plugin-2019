@@ -1,7 +1,6 @@
 package com.legendsofvaleros.modules.mobs.core;
 
-import com.codingforcookies.doris.orm.annotation.Column;
-import com.codingforcookies.doris.orm.annotation.Table;
+import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
@@ -27,74 +26,54 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-@Table(name = "entities")
 public class Mob {
-    @Column(primary = true, name = "entity_id", length = 64)
     private String id;
-
     public String getId() {
         return id;
     }
 
-    @Column(name = "entity_group", length = 64)
     private String group;
-
     public String getGroup() {
         return group;
     }
 
-    @Column(name = "entity_name", length = 64)
     private String name;
-
     public String getName() {
         return name;
     }
 
-    @Column(name = "entity_type")
     private EntityType type;
-
     public EntityType getEntityType() {
         return type;
     }
 
-    @Column(name = "entity_rarity")
     private EntityRarity rarity;
-
     public EntityRarity getRarity() {
         return rarity;
     }
 
-    @Column(name = "entity_archetype", length = 32)
     private String archetype;
-
     public String getArchetype() {
         return archetype;
     }
 
-    @Column(name = "entity_class")
+    @SerializedName("class")
     private EntityClass entityClass;
-
     public EntityClass getEntityClass() {
         return entityClass;
     }
 
-    @Column(name = "entity_experience")
     private int experience = 0;
-
     public int getExperience() {
         return experience;
     }
 
-    @Column(name = "entity_invincible")
     private boolean invincible = false;
-
     public boolean isInvincible() {
         return invincible;
     }
 
-    @Column(name = "entity_stats")
     private Mob.StatsMap stats;
-
     public StatsMap getStats() {
         if (stats == null)
             stats = new StatsMap(new StatsMap.StatData[0]);
@@ -105,18 +84,14 @@ public class Mob {
         return getStats().get(e);
     }
 
-    @Column(name = "entity_equipment")
     private Mob.EquipmentMap equipment;
-
     public EquipmentMap getEquipment() {
         if (equipment == null)
             equipment = new EquipmentMap();
         return equipment;
     }
 
-    @Column(name = "entity_options")
     private Mob.Options options;
-
     public Options getOptions() {
         if (options == null)
             options = new Options();
@@ -124,7 +99,6 @@ public class Mob {
     }
 
     private Set<SpawnArea> spawns;
-
     public Set<SpawnArea> getSpawns() {
         if (spawns == null)
             spawns = new HashSet<>();

@@ -45,10 +45,10 @@ public class BankAPI {
     private Promise<Bank> onLogin(CharacterId characterId) {
         Promise<Bank> promise = rpc.get(characterId);
 
-        promise.onSuccess((bank) -> {
-            if(bank == null)
-                bank = new Bank(characterId);
-            banks.put(characterId, bank);
+        promise.onSuccess(val -> {
+            if(val == null)
+                val = new Bank(characterId);
+            banks.put(characterId, val);
         });
 
         return promise;

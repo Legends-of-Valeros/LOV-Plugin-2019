@@ -64,10 +64,10 @@ public class GearAPI {
     }
 
     public Promise<Gear[]> loadAll() {
-        return rpc.find().onSuccess((gears) -> {
+        return rpc.find().onSuccess(val -> {
             gear.clear();
 
-            for(Gear g : gears)
+            for(Gear g : val)
                 gear.put(g.getId(), g);
 
             GearController.ERROR_ITEM = Gear.fromId("perfectly-generic-item");

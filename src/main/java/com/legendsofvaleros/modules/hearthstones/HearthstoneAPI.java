@@ -100,9 +100,9 @@ public class HearthstoneAPI {
     }
 
     private Promise<HomePoint> onLogin(PlayerCharacter pc) {
-        return this.rpc.get(pc.getUniqueCharacterId()).onSuccess((home) -> {
-            if(home != null)
-                homes.put(pc.getUniqueCharacterId(), home);
+        return this.rpc.get(pc.getUniqueCharacterId()).onSuccess(val -> {
+            if(val != null)
+                homes.put(pc.getUniqueCharacterId(), val);
         });
         /*
         HearthstoneController.getInstance().getLogger().warning(

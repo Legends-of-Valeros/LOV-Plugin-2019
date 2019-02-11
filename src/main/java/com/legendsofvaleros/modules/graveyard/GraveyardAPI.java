@@ -73,10 +73,10 @@ public class GraveyardAPI {
     }
 
     public Promise<Graveyard[]> loadAll() {
-        return rpc.find().onSuccess((yards) -> {
+        return rpc.find().onSuccess(val -> {
             graveyards.clear();
 
-            for(Graveyard g : yards)
+            for(Graveyard g : val)
                 graveyards.put(g.zone.channel, g);
 
             GraveyardController.getInstance().getLogger().info("Loaded " + graveyards.size() + " graveyards.");

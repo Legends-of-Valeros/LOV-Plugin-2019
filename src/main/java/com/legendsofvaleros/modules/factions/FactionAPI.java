@@ -42,10 +42,10 @@ public class FactionAPI {
     }
 
     public Promise<Faction[]> loadAll() {
-        return rpc.find().onSuccess((facs) -> {
+        return rpc.find().onSuccess(val -> {
             factions.clear();
 
-            for(Faction fac : facs)
+            for(Faction fac : val)
                 factions.put(fac.getId(), fac);
 
             FactionController.getInstance().getLogger().info("Loaded " + factions.size() + " factions.");
