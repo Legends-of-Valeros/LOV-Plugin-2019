@@ -63,11 +63,25 @@ public class RPCFunction<T> {
 
             if (res.success()) {
                 // Decode result into T using Gson
-                if (res.getData() instanceof JsonElement)
-                    return APIController.getInstance().getGson().fromJson((JsonElement) res.getData(), result.getType());
+                if (res.getData() instanceof JsonElement) {
+                    APIController.getInstance().getLogger().info("");
+                    APIController.getInstance().getLogger().info("");
+                    APIController.getInstance().getLogger().info("");
+                    APIController.getInstance().getLogger().info("");
+                    APIController.getInstance().getLogger().info("");
+                    APIController.getInstance().getLogger().info(func);
+                    APIController.getInstance().getLogger().info("" + APIController.getInstance().getGson().fromJson((JsonElement)res.getData(), result.getType()));
+                    APIController.getInstance().getLogger().info("");
+                    APIController.getInstance().getLogger().info("");
+                    APIController.getInstance().getLogger().info("");
+                    APIController.getInstance().getLogger().info("");
+                    APIController.getInstance().getLogger().info("");
+
+                    return APIController.getInstance().getGson().fromJson((JsonElement)res.getData(), result.getType());
+                }
 
                 if (res.getData() instanceof String)
-                    return APIController.getInstance().getGson().fromJson((String) res.getData(), result.getType());
+                    return APIController.getInstance().getGson().fromJson((String)res.getData(), result.getType());
 
                 return (T) res.getData();
             }

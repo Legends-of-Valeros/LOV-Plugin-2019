@@ -38,4 +38,9 @@ public class NPCData {
 		
 		return null;
 	}
+
+	@Override
+    public String toString() {
+        return "NPC(id=" + id + ", name=" + name + ", skin=" + skin + ", traits=" + (traits != null ? "Trait(length=" + traits.length + ")" : null) + ")";
+    }
 }

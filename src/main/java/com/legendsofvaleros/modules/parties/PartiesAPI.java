@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.parties;
 
-import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.Module;
@@ -10,7 +9,6 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
 import com.legendsofvaleros.modules.parties.core.PlayerParty;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -36,14 +34,16 @@ public class PartiesAPI extends Module {
 
     @Override
     public void onLoad() {
+        super.onLoad();
+
         this.rpc = APIController.create(RPC.class);
 
-        registerEvents(new PlayerListener());
+        /*registerEvents(new PlayerListener());
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(LegendsOfValeros.getInstance(), () -> {
             for (PlayerParty party : parties.values())
                 party.updateUI();
-        }, 0L, 20L * 5L);
+        }, 0L, 20L * 5L);*/
     }
 
     public void addMember(PlayerParty party, CharacterId identifier) {

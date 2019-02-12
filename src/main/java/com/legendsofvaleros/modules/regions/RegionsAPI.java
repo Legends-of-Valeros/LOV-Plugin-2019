@@ -66,6 +66,8 @@ public class RegionsAPI extends Module {
 
     @Override
     public void onLoad() {
+        super.onLoad();
+
         this.rpc = APIController.create(RPC.class);
 
         registerEvents(new PlayerListener());

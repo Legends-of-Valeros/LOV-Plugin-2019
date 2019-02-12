@@ -79,4 +79,9 @@ public class Graveyard {
 
 		return hologram;
 	}
+
+	@Override
+	public String toString() {
+		return "Graveyard(id=" + zoneId + ", location=" + getLocation() + ")";
+	}
 }

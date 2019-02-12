@@ -15,4 +15,9 @@ public class MaterialWithData {
             this.data = Integer.valueOf(strs[1]);
         }
     }
+
+    @Override
+    public String toString() {
+        return type.name() + (data != null ? ":" + data : "");
+    }
 }

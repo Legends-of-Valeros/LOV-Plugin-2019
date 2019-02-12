@@ -7,4 +7,9 @@ public class Skin {
     public String username;
     public String signature;
     public String data;
+
+    @Override
+    public String toString() {
+        return "Skin(id=" + id + ", username=" + username + ")";
+    }
 }

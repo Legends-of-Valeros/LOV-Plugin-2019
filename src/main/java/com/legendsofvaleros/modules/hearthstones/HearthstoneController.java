@@ -38,7 +38,7 @@ public class HearthstoneController extends HearthstoneAPI {
         HomePoint point = getHome(Characters.getPlayerCharacter(event.getPlayer()));
         if (point == null) return;
 
-        event.addSlot(Model.stack("menu-hearthstone-button").setName("Hearthstone: " + point.innName).create(), (gui, p, type) -> {
+        event.addSlot(Model.stack("menu-hearthstone-button").setName("Hearthstone: " + point.name).create(), (gui, p, type) -> {
             gui.close(p);
 
             teleporter.attemptTeleport(Characters.getPlayerCharacter(p));
