@@ -1,10 +1,10 @@
 package com.legendsofvaleros.api;
 
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.legendsofvaleros.api.annotation.ModuleRPC;
 import io.deepstream.RpcResult;
-import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -17,9 +17,9 @@ public class RPCFunction<T> {
     private final String func;
     public String getName() { return func; }
 
-    private final Class<T> result;
+    private final TypeToken<T> result;
 
-    public RPCFunction(Executor executor, String func, Class<T> result) {
+    public RPCFunction(Executor executor, String func, TypeToken<T> result) {
         this.executor = executor != null ? executor : APIController.getInstance().getPool();
         this.func = func;
         this.result = result;
@@ -42,11 +42,11 @@ public class RPCFunction<T> {
     * These static functions are used if you have no way to store the RPCFunction object.
     * */
 
-    public static <T> Promise<T> oneShotAsync(Executor exec, String func, Class<T> result, Object... args) {
+    public static <T> Promise<T> oneShotAsync(Executor exec, String func, TypeToken<T> result, Object... args) {
         return Promise.make(() -> oneShotSync(func, result, args), exec);
     }
 
-    public static <T> T oneShotSync(String func, Class<T> result, Object... args) {
+    public static <T> T oneShotSync(String func, TypeToken<T> result, Object... args) {
         try {
             Object arg = null;
             if (args.length == 1) arg = args[0];
@@ -64,24 +64,24 @@ public class RPCFunction<T> {
             if (res.success()) {
                 // Decode result into T using Gson
                 if (res.getData() instanceof JsonElement)
-                    return APIController.getInstance().getGson().fromJson((JsonElement) res.getData(), result);
+                    return APIController.getInstance().getGson().fromJson((JsonElement) res.getData(), result.getType());
 
                 if (res.getData() instanceof String)
-                    return APIController.getInstance().getGson().fromJson((String) res.getData(), result);
+                    return APIController.getInstance().getGson().fromJson((String) res.getData(), result.getType());
 
                 return (T) res.getData();
             }
 
             throw new RuntimeException("" + res.getData());
         } catch(Exception e) {
-            throw new RuntimeException(func + "() -> " + result.getSimpleName() + " failure!", e);
+            throw new RuntimeException(func + "() -> " + result.getType().getTypeName() + " failure!", e);
         }
     }
 
     public static Object callMethod(Executor ifAsync, Method m, Object... args) {
         if(Promise.class.isAssignableFrom(m.getReturnType()))
             return oneShotAsync(ifAsync, getMethodName(m), getMethodResultType(m), args);
-        return oneShotSync(getMethodName(m), m.getReturnType(), args);
+        return oneShotSync(getMethodName(m), TypeToken.of(m.getReturnType()), args);
     }
 
     /**
@@ -110,16 +110,13 @@ public class RPCFunction<T> {
      *
      * For example: Float from Promise<Float>
      */
-    public static Class<?> getMethodResultType(Method m) {
-        Class<?> resultType = m.getReturnType();
-        if(Promise.class.isAssignableFrom(resultType)) {
+    public static TypeToken<?> getMethodResultType(Method m) {
+        if(Promise.class.isAssignableFrom(m.getReturnType())) {
             Type type = ((ParameterizedType)m.getGenericReturnType()).getActualTypeArguments()[0];
 
-            if(type instanceof ParameterizedTypeImpl)
-                resultType = ((ParameterizedTypeImpl)type).getRawType();
-            else
-                resultType = (Class<?>)type;
+            return TypeToken.of(type);
         }
-        return resultType;
+
+        return TypeToken.of(m.getReturnType());
     }
 }

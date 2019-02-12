@@ -1,5 +1,6 @@
 package com.legendsofvaleros.api;
 
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
@@ -114,7 +115,7 @@ public class APIController extends Module {
         getScheduler().executeInSpigotCircle(() -> {
             boolean err = false;
 
-            Map<String, Boolean> bools = RPCFunction.oneShotSync("ifMethodExists", Map.class, rpcFuncs);
+            Map<String, Boolean> bools = RPCFunction.oneShotSync("ifMethodExists", TypeToken.of(Map.class), rpcFuncs);
             for(Map.Entry<String, Boolean> entry : bools.entrySet()) {
                 if(!entry.getValue()) {
                     err = true;
