@@ -66,6 +66,10 @@ public class FastTravelAPI extends Module {
         return promise;
     }
 
+    public Promise<Boolean> onDelete(CharacterId characterId) {
+        return rpc.deletePlayerFastTravels(characterId);
+    }
+
     private class PlayerListener implements Listener {
         @EventHandler
         public void onPlayerLogin(PlayerCharacterStartLoadingEvent event) {
@@ -83,7 +87,7 @@ public class FastTravelAPI extends Module {
 
         @EventHandler
         public void onPlayerRemoved(PlayerCharacterRemoveEvent event) {
-            rpc.deletePlayerFastTravels(event.getPlayerCharacter().getUniqueCharacterId());
+            onDelete(event.getPlayerCharacter().getUniqueCharacterId());
         }
     }
 }

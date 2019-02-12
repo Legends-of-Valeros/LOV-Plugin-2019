@@ -10,7 +10,7 @@ public class Region {
 	public String id;
 	public World world;
 	
-	private final RegionBounds bounds;
+	private RegionBounds bounds;
 	public RegionBounds getBounds() { return bounds; }
 
 	public boolean allowAccess = false;

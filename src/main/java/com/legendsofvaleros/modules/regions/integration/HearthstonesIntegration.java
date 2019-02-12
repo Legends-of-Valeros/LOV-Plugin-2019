@@ -13,8 +13,8 @@ public class HearthstonesIntegration extends Integration implements Listener {
 
     @EventHandler
     public void onCastHearthstone(HearthstoneCastEvent event) {
-        for (String region_id : RegionController.getManager().getPlayerRegions(event.getPlayer())) {
-            if (!RegionController.getManager().getRegion(region_id).allowHearthstone) {
+        for (String region_id : RegionController.getInstance().getPlayerRegions(event.getPlayer())) {
+            if (!RegionController.getInstance().getRegion(region_id).allowHearthstone) {
                 event.setCancelled(true);
                 return;
             }

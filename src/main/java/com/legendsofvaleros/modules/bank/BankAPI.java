@@ -66,6 +66,10 @@ public class BankAPI extends Module {
         return promise;
     }
 
+    public Promise<Boolean> onDelete(CharacterId characterId) {
+        return removeBank(characterId);
+    }
+
     private class PlayerCharacterListener implements Listener {
         @EventHandler
         public void onCharacterStartLoading(PlayerCharacterStartLoadingEvent event) {
@@ -87,7 +91,7 @@ public class BankAPI extends Module {
 
         @EventHandler
         public void onCharacterRemoved(PlayerCharacterRemoveEvent event) {
-            removeBank(event.getPlayerCharacter().getUniqueCharacterId())
+            onDelete(event.getPlayerCharacter().getUniqueCharacterId())
                     .onFailure((err) -> MessageUtil.sendSevereException(BankController.getInstance(), event.getPlayer(), err));
         }
     }

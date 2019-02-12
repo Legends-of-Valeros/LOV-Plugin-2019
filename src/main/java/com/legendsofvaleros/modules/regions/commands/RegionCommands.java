@@ -43,7 +43,7 @@ public class RegionCommands extends BaseCommand {
 
 		if(access == null) access = false;
 
-		if(RegionController.getManager().getRegion(id) != null) {
+		if(RegionController.getInstance().getRegion(id) != null) {
 			MessageUtil.sendError(player, "A regions with that ID already exists.");
 			return;
 		}
@@ -56,7 +56,10 @@ public class RegionCommands extends BaseCommand {
 		
 		Region region = new Region(id, locations[0].getWorld(), new RegionBounds().setBounds(locations[0], locations[1]));
 		region.allowAccess = access;
-		RegionController.getManager().addRegion(region, true);
+
+		RegionController.getInstance().addRegion(region);
+        RegionController.getInstance().saveRegion(region);
+
 		MessageUtil.sendUpdate(player, "Region created. Default access: " + access);
 	}
 
@@ -66,12 +69,12 @@ public class RegionCommands extends BaseCommand {
 	public void cmdRemove(CommandSender sender, String regionId) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		if(RegionController.getManager().getRegion(regionId) == null) {
+		if(RegionController.getInstance().getRegion(regionId) == null) {
 			MessageUtil.sendError(sender, "A regions with that ID doesn't exist.");
 			return;
 		}
 		
-		RegionController.getManager().removeRegion(regionId);
+		RegionController.getInstance().removeRegion(regionId);
 		MessageUtil.sendError(sender, "Region removed.");
 	}
 
@@ -81,7 +84,7 @@ public class RegionCommands extends BaseCommand {
 	public void cmdToggleHearthstone(CommandSender sender, String regionId) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		Region region = RegionController.getManager().getRegion(regionId);
+		Region region = RegionController.getInstance().getRegion(regionId);
 		if(region == null) {
 			MessageUtil.sendError(sender, "A regions with that name doesn't exist.");
 			return;
@@ -89,7 +92,7 @@ public class RegionCommands extends BaseCommand {
 
 		region.allowHearthstone = !region.allowHearthstone;
 
-		RegionController.getManager().updateRegion(region);
+		RegionController.getInstance().saveRegion(region);
 		MessageUtil.sendUpdate(sender, "Region updated. Allows Hearthstones: " + region.allowHearthstone);
 	}
 
@@ -99,7 +102,7 @@ public class RegionCommands extends BaseCommand {
 	public void cmdQuestList(CommandSender sender, String regionId) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		Region region = RegionController.getManager().getRegion(regionId);
+		Region region = RegionController.getInstance().getRegion(regionId);
 		if(region == null) {
 			MessageUtil.sendError(sender, "A regions with that name doesn't exist.");
 			return;
@@ -114,7 +117,7 @@ public class RegionCommands extends BaseCommand {
 	public void cmdQuestAdd(CommandSender sender, String regionId, String questId) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		Region region = RegionController.getManager().getRegion(regionId);
+		Region region = RegionController.getInstance().getRegion(regionId);
 		if(region == null) {
 			MessageUtil.sendError(sender, "A regions with that name doesn't exist.");
 			return;
@@ -127,7 +130,7 @@ public class RegionCommands extends BaseCommand {
 
 		region.quests.add(questId);
 
-		RegionController.getManager().updateRegion(region);
+		RegionController.getInstance().saveRegion(region);
 		MessageUtil.sendUpdate(sender, "Region updated. Now triggers gear: " + questId);
 	}
 
@@ -137,7 +140,7 @@ public class RegionCommands extends BaseCommand {
 	public void cmdQuestDel(CommandSender sender, String regionId, String questId) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		Region region = RegionController.getManager().getRegion(regionId);
+		Region region = RegionController.getInstance().getRegion(regionId);
 		if(region == null) {
 			MessageUtil.sendError(sender, "A regions with that name doesn't exist.");
 			return;
@@ -150,7 +153,7 @@ public class RegionCommands extends BaseCommand {
 
 		region.quests.remove(questId);
 
-		RegionController.getManager().updateRegion(region);
+		RegionController.getInstance().saveRegion(region);
 		MessageUtil.sendUpdate(sender, "Region updated. No longer triggers gear: " + questId);
 	}
 
@@ -160,7 +163,7 @@ public class RegionCommands extends BaseCommand {
 	public void cmdSetEnter(CommandSender sender, String regionId, String message) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		Region region = RegionController.getManager().getRegion(regionId);
+		Region region = RegionController.getInstance().getRegion(regionId);
 		if(region == null) {
 			MessageUtil.sendError(sender, "A regions with that name doesn't exist.");
 			return;
@@ -168,7 +171,7 @@ public class RegionCommands extends BaseCommand {
 		
 		region.msgEnter = message;
 		
-		RegionController.getManager().updateRegion(region);
+		RegionController.getInstance().saveRegion(region);
 		MessageUtil.sendUpdate(sender, "Region updated. Enter: '" + region.msgEnter + "'");
 	}
 
@@ -178,7 +181,7 @@ public class RegionCommands extends BaseCommand {
 	public void cmdSetExit(CommandSender sender, String regionId, String message) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		Region region = RegionController.getManager().getRegion(regionId);
+		Region region = RegionController.getInstance().getRegion(regionId);
 		if(region == null) {
 			MessageUtil.sendError(sender, "A regions with that name doesn't exist.");
 			return;
@@ -186,7 +189,7 @@ public class RegionCommands extends BaseCommand {
 
 		region.msgExit = message;
 		
-		RegionController.getManager().updateRegion(region);
+		RegionController.getInstance().saveRegion(region);
 		MessageUtil.sendUpdate(sender, "Region updated. Exit: '" + region.msgExit + "'");
 	}
 
@@ -196,7 +199,7 @@ public class RegionCommands extends BaseCommand {
 	public void cmdSetFailure(CommandSender sender, String regionId, String message) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		Region region = RegionController.getManager().getRegion(regionId);
+		Region region = RegionController.getInstance().getRegion(regionId);
 		if(region == null) {
 			MessageUtil.sendError(sender, "A regions with that name doesn't exist.");
 			return;
@@ -204,7 +207,7 @@ public class RegionCommands extends BaseCommand {
 
 		region.msgFailure = message;
 		
-		RegionController.getManager().updateRegion(region);
+		RegionController.getInstance().saveRegion(region);
 		MessageUtil.sendUpdate(sender, "Region updated. Failure: '" + region.msgFailure + "'");
 	}
 

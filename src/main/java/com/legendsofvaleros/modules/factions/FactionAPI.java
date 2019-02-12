@@ -104,6 +104,10 @@ public class FactionAPI extends ModuleListener {
         return promise;
     }
 
+    public Promise<Boolean> onDelete(CharacterId characterId) {
+        return rpc.deletePlayerFactionReputation(characterId);
+    }
+
     private class PlayerListener implements Listener {
         @EventHandler
         public void onPlayerLogin(PlayerCharacterStartLoadingEvent event) {
@@ -121,7 +125,7 @@ public class FactionAPI extends ModuleListener {
 
         @EventHandler
         public void onPlayerRemoved(PlayerCharacterRemoveEvent event) {
-            rpc.deletePlayerFactionReputation(event.getPlayerCharacter().getUniqueCharacterId());
+            onDelete(event.getPlayerCharacter().getUniqueCharacterId());
         }
     }
 }

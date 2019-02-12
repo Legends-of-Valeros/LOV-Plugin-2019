@@ -101,6 +101,10 @@ public class MountAPI extends ModuleListener {
         return promise;
     }
 
+    public Promise<Boolean> onDelete(CharacterId characterId) {
+        return rpc.deletePlayerMounts(characterId);
+    }
+
     private class PlayerListener implements Listener {
         @EventHandler
         public void onPlayerLogin(PlayerCharacterStartLoadingEvent event) {
@@ -118,7 +122,7 @@ public class MountAPI extends ModuleListener {
 
         @EventHandler
         public void onPlayerRemoved(PlayerCharacterRemoveEvent event) {
-            rpc.deletePlayerMounts(event.getPlayerCharacter().getUniqueCharacterId());
+            onDelete(event.getPlayerCharacter().getUniqueCharacterId());
         }
     }
 }
