@@ -27,10 +27,8 @@ import java.util.UUID;
 
 import static com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat.HEALTH;
 
-public class PlayerParty implements IParty {
+public class PlayerParty {
     private UUID partyID;
-
-    @Override
     public UUID getUniqueId() {
         return partyID;
     }
@@ -42,7 +40,6 @@ public class PlayerParty implements IParty {
     public List<CharacterId> members = new ArrayList<>();
     public List<CharacterId> invitations = new ArrayList<>();
 
-    @Override
     public List<CharacterId> getMembers() {
         return members;
     }
@@ -69,13 +66,11 @@ public class PlayerParty implements IParty {
         partyID = id;
     }
 
-    @Override
     public void onDisbanded() {
         objective.unregister();
         objective = null;
     }
 
-    @Override
     public void onMemberJoin(CharacterId uniqueId) {
         invitations.remove(uniqueId);
 
@@ -87,7 +82,6 @@ public class PlayerParty implements IParty {
                 MessageUtil.sendUpdate(p, joined.getName() + " joined the party!");
     }
 
-    @Override
     public void onMemberLeave(CharacterId uniqueId) {
         Player left = Bukkit.getPlayer(uniqueId.getPlayerId());
         MessageUtil.sendUpdate(left, "You left the party!");
@@ -98,7 +92,6 @@ public class PlayerParty implements IParty {
         left.getPlayer().setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
     }
 
-    @Override
     public void onMemberEnter(CharacterId identifier) {
         if (board == null)
             board = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -112,7 +105,6 @@ public class PlayerParty implements IParty {
         }
     }
 
-    @Override
     public void onMemberExit(CharacterId identifier) {
         PlayerCharacter pc = Characters.getInstance().getCharacter(identifier);
         if (pc != null && pc.isCurrent()) {
@@ -124,7 +116,6 @@ public class PlayerParty implements IParty {
         }
     }
 
-    @Override
     public void updateUI() {
         if (members.size() == 0)
             return;

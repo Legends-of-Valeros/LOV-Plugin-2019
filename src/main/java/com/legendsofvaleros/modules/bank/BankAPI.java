@@ -26,6 +26,7 @@ public class BankAPI extends Module {
     private RPC rpc;
 
     private final Map<CharacterId, Bank> banks = new HashMap<>();
+    public Bank getBank(CharacterId characterId) { return banks.get(characterId); }
 
     @Override
     public void onLoad() {
@@ -36,10 +37,6 @@ public class BankAPI extends Module {
         registerEvents(new PlayerCharacterListener());
     }
 
-    public Bank getBank(CharacterId characterId) {
-        return banks.get(characterId);
-    }
-
     private Promise<Boolean> removeBank(CharacterId characterId) {
         return rpc.deletePlayerBank(characterId);
     }
@@ -48,9 +45,7 @@ public class BankAPI extends Module {
         Promise<Bank> promise = rpc.getPlayerBank(characterId);
 
         promise.onSuccess(val -> {
-            if(val == null)
-                val = new Bank(characterId);
-            banks.put(characterId, val);
+            banks.put(characterId, val.orElseGet(() -> new Bank(characterId)));
         });
 
         return promise;
@@ -64,8 +59,8 @@ public class BankAPI extends Module {
             promise.resolve(false);
         else
             rpc.savePlayerBank(bank).on((err, val) -> {
-                if(err != null) promise.reject(err);
-                else promise.resolve(val);
+                if(err.isPresent()) promise.reject(err.get());
+                else promise.resolve(val.orElse(false));
             });
 
         return promise;

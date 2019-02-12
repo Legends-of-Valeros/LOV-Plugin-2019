@@ -7,7 +7,6 @@ import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.mobs.core.ExperienceHelper;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.parties.PartiesController;
-import com.legendsofvaleros.modules.parties.PartyManager;
 import com.legendsofvaleros.modules.parties.core.PlayerParty;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -32,7 +31,7 @@ public class ExperienceListener implements Listener {
             int xp = ExperienceHelper.getExperience(pc, entity);
             pc.getExperience().addExperience(xp, false);
         }else{
-            PlayerParty party = (PlayerParty) PartyManager.getPartyByMember(pc.getUniqueCharacterId());
+            PlayerParty party = PartiesController.getInstance().getPartyByMember(pc.getUniqueCharacterId());
             if (party != null) {
                 double xpMod = (0.25 * (party.getOnlineMembers().size() - 2));
                 // Only apply to parties > 2

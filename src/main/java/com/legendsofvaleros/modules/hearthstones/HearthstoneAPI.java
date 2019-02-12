@@ -103,8 +103,8 @@ public class HearthstoneAPI extends ModuleListener {
 
     private Promise<HomePoint> onLogin(PlayerCharacter pc) {
         return this.rpc.getPlayerHearthstone(pc.getUniqueCharacterId()).onSuccess(val -> {
-            if(val != null)
-                homes.put(pc.getUniqueCharacterId(), val);
+            if(val.isPresent())
+                homes.put(pc.getUniqueCharacterId(), val.get());
         });
         /*
         HearthstoneController.getInstance().getLogger().warning(

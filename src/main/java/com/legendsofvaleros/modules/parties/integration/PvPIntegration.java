@@ -4,8 +4,7 @@ import com.legendsofvaleros.module.Integration;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.parties.PartiesController;
-import com.legendsofvaleros.modules.parties.PartyManager;
-import com.legendsofvaleros.modules.parties.core.IParty;
+import com.legendsofvaleros.modules.parties.core.PlayerParty;
 import com.legendsofvaleros.modules.pvp.event.PvPCheckEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,7 +24,7 @@ public class PvPIntegration extends Integration implements Listener {
             if(event.getSkill().getType() != Skill.Type.HARMFUL) return;
         }
 
-        IParty party = PartyManager.getPartyByMember(Characters.getPlayerCharacter(event.getAttacker()).getUniqueCharacterId());
+        PlayerParty party = PartiesController.getInstance().getPartyByMember(Characters.getPlayerCharacter(event.getAttacker()).getUniqueCharacterId());
         if (party != null && party.getMembers().contains(Characters.getPlayerCharacter(event.getDamaged()).getUniqueCharacterId()))
             event.setCancelled(true);
     }

@@ -6,7 +6,7 @@ import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.module.Integration;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.parties.PartyManager;
+import com.legendsofvaleros.modules.parties.PartiesController;
 import com.legendsofvaleros.modules.parties.commands.PartyCommands;
 import com.legendsofvaleros.modules.parties.core.PlayerParty;
 import com.legendsofvaleros.modules.playermenu.PlayerMenuOpenEvent;
@@ -24,12 +24,12 @@ public class PlayerMenuIntegration extends Integration implements Listener {
             final PlayerCharacter pc = Characters.getPlayerCharacter(p);
             final PlayerCharacter clickedPc = Characters.getPlayerCharacter(event.getClicked());
 
-            PlayerParty pParty = (PlayerParty) PartyManager.getPartyByMember(pc.getUniqueCharacterId());
-            PlayerParty clickedParty = (PlayerParty) PartyManager.getPartyByMember(clickedPc.getUniqueCharacterId());
+            PlayerParty pParty = PartiesController.getInstance().getPartyByMember(pc.getUniqueCharacterId());
+            PlayerParty clickedParty = PartiesController.getInstance().getPartyByMember(clickedPc.getUniqueCharacterId());
 
             if (clickedParty == null && pParty == null) {
                 pc.getPlayer().performCommand("party create");
-                pParty = (PlayerParty) PartyManager.getPartyByMember(pc.getUniqueCharacterId());
+                pParty = PartiesController.getInstance().getPartyByMember(pc.getUniqueCharacterId());
             }
 
             boolean openUI = true;

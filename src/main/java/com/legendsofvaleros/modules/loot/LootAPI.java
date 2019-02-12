@@ -1,15 +1,17 @@
 package com.legendsofvaleros.modules.loot;
 
+import com.google.common.collect.ImmutableList;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.Module;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class LootAPI extends Module {
     public interface RPC {
-        Promise<LootTable[]> findLootTables();
+        Promise<Collection<LootTable>> findLootTables();
     }
 
     private RPC rpc;
@@ -35,12 +37,12 @@ public class LootAPI extends Module {
         }
     }
 
-    public Promise<LootTable[]> loadAll() {
+    public Promise<Collection<LootTable>> loadAll() {
         return rpc.findLootTables().onSuccess(val -> {
             tables.clear();
 
-            for(LootTable table : val)
-                tables.put(table.id, table);
+            val.orElse(ImmutableList.of()).stream().forEach(table ->
+                    tables.put(table.id, table));
 
             LootController.getInstance().getLogger().info("Loaded " + tables.size() + " loot tables.");
         }).onFailure(Throwable::printStackTrace);

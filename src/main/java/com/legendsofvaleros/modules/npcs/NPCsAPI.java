@@ -1,5 +1,6 @@
 package com.legendsofvaleros.modules.npcs;
 
+import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -22,14 +23,11 @@ import net.citizensnpcs.api.trait.TraitInfo;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class NPCsAPI extends ModuleListener {
     public interface RPC {
-        Promise<NPCData[]> findNPCs();
+        Promise<Collection<NPCData>> findNPCs();
 
         Promise<Boolean> saveNPC(NPCData npc);
     }
@@ -85,19 +83,19 @@ public class NPCsAPI extends ModuleListener {
         }
     }
 
-    public Promise<NPCData[]> loadAll() {
+    public Promise<Collection<NPCData>> loadAll() {
         return rpc.findNPCs().onSuccess(val -> {
             npcs.clear();
 
-            for(NPCData npc : val)
-                npcs.put(npc.npcId, npc);
+            val.orElse(ImmutableList.of()).stream().forEach(npc ->
+                    npcs.put(npc.npcId, npc));
 
             LootController.getInstance().getLogger().info("Loaded " + npcs.size() + " NPCs.");
         }).onFailure(Throwable::printStackTrace);
     }
 
-    public void saveNPC(TraitLOV traitLOV) {
-        rpc.saveNPC(traitLOV.npcData);
+    public Promise<Boolean> saveNPC(TraitLOV traitLOV) {
+        return rpc.saveNPC(traitLOV.npcData);
     }
 
     public void registerTrait(String id, Class<? extends LOVTrait> trait) {

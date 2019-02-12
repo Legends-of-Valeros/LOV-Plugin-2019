@@ -1,6 +1,8 @@
 package com.legendsofvaleros.modules.factions;
 
 import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Table;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
@@ -17,12 +19,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class FactionAPI extends ModuleListener {
     public interface RPC {
-        Promise<Faction[]> findFactions();
+        Promise<Collection<Faction>> findFactions();
 
         Promise<Map<String, Integer>> getPlayerFactionReputation(CharacterId characterId);
         Promise<Boolean> savePlayerFactionReputation(CharacterId characterId, Map<String, Integer> factions);
@@ -54,12 +57,12 @@ public class FactionAPI extends ModuleListener {
         }
     }
 
-    public Promise<Faction[]> loadAll() {
+    public Promise<Collection<Faction>> loadAll() {
         return rpc.findFactions().onSuccess(val -> {
             factions.clear();
 
-            for(Faction fac : val)
-                factions.put(fac.getId(), fac);
+            val.orElse(ImmutableList.of()).stream().forEach(fac ->
+                    factions.put(fac.getId(), fac));
 
             getLogger().info("Loaded " + factions.size() + " factions.");
         }).onFailure(Throwable::printStackTrace);
@@ -87,13 +90,10 @@ public class FactionAPI extends ModuleListener {
     }
 
     private Promise<Map<String, Integer>> onLogin(CharacterId characterId) {
-        Promise<Map<String, Integer>> promise = rpc.getPlayerFactionReputation(characterId);
-
-        promise.onSuccess((map) ->
-                map.entrySet().stream().forEach((entry) ->
-                        playerRep.put(characterId, entry.getKey(), entry.getValue())));
-
-        return promise;
+        return rpc.getPlayerFactionReputation(characterId).onSuccess(val -> {
+            val.orElse(ImmutableMap.of()).entrySet().stream().forEach((entry) ->
+                    playerRep.put(characterId, entry.getKey(), entry.getValue()));
+        });
     }
 
     private Promise<Boolean> onLogout(CharacterId characterId) {

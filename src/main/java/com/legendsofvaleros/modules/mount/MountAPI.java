@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.mount;
 
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 
 public class MountAPI extends ModuleListener {
     public interface RPC {
-        Promise<Mount[]> findMounts();
+        Promise<Collection<Mount>> findMounts();
 
         Promise<Collection<String>> getPlayerMounts(CharacterId characterId);
         Promise<Boolean> savePlayerMounts(CharacterId characterId, Collection<String> strings);
@@ -53,12 +54,12 @@ public class MountAPI extends ModuleListener {
         }
     }
 
-    public Promise<Mount[]> loadAll() {
+    public Promise<Collection<Mount>> loadAll() {
         return rpc.findMounts().onSuccess(val -> {
             mounts.clear();
 
-            for(Mount mount : val)
-                mounts.put(mount.getId(), mount);
+            val.orElse(ImmutableList.of()).stream().forEach(mount ->
+                    mounts.put(mount.getId(), mount));
 
             getLogger().info("Loaded " + mounts.size() + " mounts.");
         }).onFailure(Throwable::printStackTrace);
@@ -85,15 +86,10 @@ public class MountAPI extends ModuleListener {
     }
 
     private Promise<Collection<String>> onLogin(CharacterId characterId) {
-        Promise<Collection<String>> promise = rpc.getPlayerMounts(characterId);
-
-        promise.onSuccess(val -> {
-            if(val == null) return;
-            val.stream().forEach(mountId ->
-                    playerMounts.put(characterId, mountId));
+        return rpc.getPlayerMounts(characterId).onSuccess(val -> {
+            val.orElse(ImmutableList.of()).stream().forEach(mount ->
+                    playerMounts.put(characterId, mount));
         });
-
-        return promise;
     }
 
     private Promise<Boolean> onLogout(CharacterId characterId) {

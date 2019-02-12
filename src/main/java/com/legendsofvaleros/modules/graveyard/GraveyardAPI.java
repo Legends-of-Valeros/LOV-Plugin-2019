@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.graveyard;
 
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -26,7 +27,7 @@ import java.util.Map;
 
 public class GraveyardAPI extends ModuleListener {
     public interface RPC {
-        Promise<Graveyard[]> findGraveyards();
+        Promise<Collection<Graveyard>> findGraveyards();
 
         Promise<Boolean> saveGraveyard(Graveyard yard);
         Promise<Boolean> deleteGraveyard(Graveyard yard);
@@ -86,12 +87,12 @@ public class GraveyardAPI extends ModuleListener {
         }
     }
 
-    public Promise<Graveyard[]> loadAll() {
+    public Promise<Collection<Graveyard>> loadAll() {
         return rpc.findGraveyards().onSuccess(val -> {
             graveyards.clear();
 
-            for(Graveyard g : val)
-                graveyards.put(g.zone.channel, g);
+            val.orElse(ImmutableList.of()).stream().forEach(yard ->
+                    graveyards.put(yard.zone.channel, yard));
 
             getLogger().info("Loaded " + graveyards.size() + " graveyards.");
         }).onFailure(Throwable::printStackTrace);

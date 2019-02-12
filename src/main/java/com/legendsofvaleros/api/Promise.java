@@ -3,10 +3,7 @@ package com.legendsofvaleros.api;
 import sun.misc.Unsafe;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -15,7 +12,7 @@ import java.util.function.Consumer;
 
 public class Promise<T> {
     public interface Function<T> { T run() throws Throwable; }
-    public interface Listener<T> { void run(Throwable th, T t); }
+    public interface Listener<T> { void run(Optional<Throwable> th, Optional<T> t); }
 
     enum State {PENDING, FIRED, RESOLVED, REJECTED }
 
@@ -93,9 +90,9 @@ public class Promise<T> {
         // If the promise is already fulfilled, fire the callback immediately
         if(isDone()) {
             if(wasSuccess())
-                ex.execute(() -> cb.run(null, (T)value));
+                ex.execute(() -> cb.run(Optional.empty(), Optional.of((T)value)));
             else if(wasRejected())
-                ex.execute(() -> cb.run((Throwable)value, null));
+                ex.execute(() -> cb.run(Optional.of((Throwable)value), Optional.empty()));
             else
                 throw new IllegalStateException();
         }
@@ -107,9 +104,9 @@ public class Promise<T> {
     public Promise<T> on(Listener<T> cb) { return on(cb, null); }
     public Promise<T> on(Listener<T> cb, Executor ex) { return addListener(cb, ex); }
 
-    public Promise<T> onSuccess(Runnable cb) { return onSuccess((val) -> cb.run(), null); }
-    public Promise<T> onSuccess(Consumer<T> cb) { return onSuccess(cb, null); }
-    public Promise<T> onSuccess(Consumer<T> cb, Executor ex) {
+    public Promise<T> onSuccess(Runnable cb) { return onSuccess(val -> cb.run(), null); }
+    public Promise<T> onSuccess(Consumer<Optional<T>> cb) { return onSuccess(cb, null); }
+    public Promise<T> onSuccess(Consumer<Optional<T>> cb, Executor ex) {
         return addListener((err, val) -> {
             if(err != null) return;
             cb.accept(val);
@@ -121,7 +118,7 @@ public class Promise<T> {
     public Promise<T> onFailure(Consumer<Throwable> cb, Executor ex) {
         return addListener((err, val) -> {
             if(val != null) return;
-            cb.accept(err);
+            cb.accept(err.get());
         }, ex);
     }
 
@@ -130,7 +127,7 @@ public class Promise<T> {
         Promise<N> promise = new Promise<>(ex);
 
         // Fire the next promise on success.
-        onSuccess((val) -> promise.fire(func), ex);
+        onSuccess(val -> promise.fire(func), ex);
 
         return promise;
     }
@@ -140,16 +137,16 @@ public class Promise<T> {
         Promise<N> promise = new Promise<>(ex);
 
         // Fire the next promise on success.
-        onSuccess((__) -> {
+        onSuccess(__ -> {
             // When the promise returns, propagate it up to the proxy promise.
             try {
                 func.run().addListener((err, val) -> {
-                    if(err != null) {
-                        promise.reject(err);
+                    if(err.isPresent()) {
+                        promise.reject(err.get());
                         return;
                     }
 
-                    promise.resolve(val);
+                    promise.resolve(val.orElse(null));
                 });
             } catch (Throwable th) {
                  promise.reject(th);
@@ -188,7 +185,7 @@ public class Promise<T> {
         this.value = t;
         this.state = State.RESOLVED;
 
-        callbacks.forEach((k, v) -> v.execute(() -> k.run(null, t)));
+        callbacks.forEach((k, v) -> v.execute(() -> k.run(Optional.empty(), Optional.ofNullable(t))));
         new HashSet<>(waiting).forEach(UNSAFE::unpark);
     }
 
@@ -201,7 +198,7 @@ public class Promise<T> {
         this.value = th;
         this.state = State.REJECTED;
 
-        callbacks.forEach((k, v) -> v.execute(() -> k.run(th, null)));
+        callbacks.forEach((k, v) -> v.execute(() -> k.run(Optional.of(th), null)));
         new HashSet<>(waiting).forEach(UNSAFE::unpark);
     }
 
@@ -248,7 +245,7 @@ public class Promise<T> {
 
         AtomicBoolean fail = new AtomicBoolean(false);
 
-        Object[] successes = new Object[promises.length];
+        Optional<Object>[] successes = new Optional[promises.length];
         Throwable[] failures = new Throwable[promises.length];
 
         AtomicInteger i = new AtomicInteger(promises.length);
@@ -265,7 +262,7 @@ public class Promise<T> {
 
         for(int j = 0; j < promises.length; j++) {
             final int k = j;
-            promises[j].onSuccess((val) -> {
+            ((Promise<Object>)promises[j]).onSuccess(val -> {
                 successes[k] = val;
                 onFinish.run();
             });
@@ -273,8 +270,8 @@ public class Promise<T> {
 
         for(int j = 0; j < promises.length; j++) {
             final int k = j;
-            promises[j].onFailure((err) -> {
-                failures[k] = (Throwable)err;
+            ((Promise<Object>)promises[j]).onFailure(err -> {
+                failures[k] = err;
 
                 fail.set(true);
                 onFinish.run();

@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.mobs;
 
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.api.APIController;
@@ -20,9 +21,9 @@ import java.util.Map;
 
 public class MobsAPI extends ModuleListener {
     public interface RPC {
-        Promise<Mob[]> findMobs();
+        Promise<Collection<Mob>> findMobs();
 
-        Promise<SpawnArea[]> findSpawns();
+        Promise<Collection<SpawnArea>> findSpawns();
         Promise<Boolean> saveSpawn(SpawnArea spawn);
         Promise<Boolean> deleteSpawn(Integer spawn);
     }
@@ -64,9 +65,9 @@ public class MobsAPI extends ModuleListener {
 
     public Promise<?> loadAll() {
         return rpc.findMobs().onSuccess(val -> {
-                    entities.clear();
+                entities.clear();
 
-                for(Mob mob : val)
+                for(Mob mob : val.orElse(ImmutableList.of()))
                     entities.put(mob.getId(), mob);
 
                 getLogger().info("Loaded " + entities.size() + " mobs.");
@@ -78,7 +79,7 @@ public class MobsAPI extends ModuleListener {
                 // We could remove all of this, basically, if we just make a way
                 // to get the chunk ID from a block location, this can be async.
                 getScheduler().executeInSpigotCircle(() -> {
-                    for(SpawnArea spawn : val) {
+                    for(SpawnArea spawn : val.orElse(ImmutableList.of())) {
                         spawns.put(getId(spawn.getLocation().getChunk()), spawn);
 
                         addSpawn(spawn);

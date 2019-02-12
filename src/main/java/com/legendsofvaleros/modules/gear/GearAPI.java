@@ -1,5 +1,6 @@
 package com.legendsofvaleros.modules.gear;
 
+import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -14,12 +15,13 @@ import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.field.RangedValue;
 
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class GearAPI extends Module {
     public interface RPC {
-        Promise<Gear[]> findGear();
+        Promise<Collection<Gear>> findGear();
     }
 
     private RPC rpc;
@@ -76,12 +78,12 @@ public class GearAPI extends Module {
         }
     }
 
-    public Promise<Gear[]> loadAll() {
+    public Promise<Collection<Gear>> loadAll() {
         return rpc.findGear().onSuccess(val -> {
             gear.clear();
 
-            for(Gear g : val)
-                gear.put(g.getId(), g);
+            val.orElse(ImmutableList.of()).stream().forEach(g ->
+                    gear.put(g.getId(), g));
 
             GearController.ERROR_ITEM = Gear.fromId("perfectly-generic-item");
             getLogger().info("Loaded " + gear.size() + " items.");

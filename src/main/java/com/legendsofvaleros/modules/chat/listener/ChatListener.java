@@ -9,7 +9,7 @@ import com.legendsofvaleros.modules.chat.ChatController;
 import com.legendsofvaleros.modules.chat.PlayerChat;
 import com.legendsofvaleros.modules.guilds.GuildController;
 import com.legendsofvaleros.modules.guilds.guild.Guild;
-import com.legendsofvaleros.modules.parties.PartyManager;
+import com.legendsofvaleros.modules.parties.PartiesController;
 import com.legendsofvaleros.modules.parties.core.PlayerParty;
 import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.modules.zones.core.Zone;
@@ -207,7 +207,7 @@ public class ChatListener implements Listener {
                 }
                 break;
             case PARTY:
-                PlayerParty party = (PlayerParty) PartyManager.getPartyByMember(Characters.getPlayerCharacter(p).getUniqueCharacterId());
+                PlayerParty party = PartiesController.getInstance().getPartyByMember(Characters.getPlayerCharacter(p).getUniqueCharacterId());
                 if (party == null) {
                     MessageUtil.sendError(p, "You are not in a party.");
                     return;
