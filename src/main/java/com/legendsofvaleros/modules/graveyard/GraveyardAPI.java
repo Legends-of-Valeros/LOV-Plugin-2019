@@ -92,7 +92,8 @@ public class GraveyardAPI extends ModuleListener {
         return rpc.findGraveyards().onSuccess(val -> {
             graveyards.clear();
 
-            val.orElse(ImmutableList.of()).stream().forEach(yard ->
+            val.orElse(ImmutableList.of()).stream()
+                .filter(yard -> yard.zone != null).forEach(yard ->
                     graveyards.put(yard.zone.channel, yard));
 
             getLogger().info("Loaded " + graveyards.size() + " graveyards.");

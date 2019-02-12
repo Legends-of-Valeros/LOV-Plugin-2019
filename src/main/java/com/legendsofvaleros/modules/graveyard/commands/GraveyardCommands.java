@@ -30,7 +30,7 @@ public class GraveyardCommands extends BaseCommand {
 	public void cmdCreate(Player player, int radius) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		Zone zone = ZonesController.getManager().getZone(player);
+		Zone zone = ZonesController.getInstance().getZone(player);
 		if(zone == null) {
 			MessageUtil.sendError(player, "You are not within a zone.");
 			return;

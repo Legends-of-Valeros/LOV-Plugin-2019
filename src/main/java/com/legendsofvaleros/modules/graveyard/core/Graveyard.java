@@ -6,6 +6,7 @@ import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.ItemLine;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.modules.zones.core.Zone;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -20,8 +21,14 @@ public class Graveyard {
 	private Hologram hologram;
 	private TextLine textZone, textRadius;
 
-	public Zone zone;
-	public Zone getZone() { return zone; }
+    private String zoneId;
+
+    public transient Zone zone;
+	public Zone getZone() {
+	    if(this.zone == null)
+	        this.zone = ZonesController.getInstance().getZone(this.zoneId);
+	    return this.zone;
+	}
 	
 	public World world;
 	public World getWorld() {

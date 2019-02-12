@@ -9,8 +9,6 @@ import com.google.gson.stream.JsonWriter;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
-import com.legendsofvaleros.modules.zones.ZonesController;
-import com.legendsofvaleros.modules.zones.core.Zone;
 import io.deepstream.ConfigOptions;
 import io.deepstream.DeepstreamClient;
 import io.deepstream.InvalidDeepstreamConfig;
@@ -77,17 +75,6 @@ public class APIController extends Module {
             @Override
             public World read(JsonReader jsonReader) throws IOException {
                 return Bukkit.getWorld(jsonReader.nextString());
-            }
-        })
-        .registerTypeAdapter(Zone.class, new TypeAdapter<Zone>() {
-            @Override
-            public void write(JsonWriter jsonWriter, Zone zone) throws IOException {
-                jsonWriter.value(zone.id);
-            }
-
-            @Override
-            public Zone read(JsonReader jsonReader) throws IOException {
-                return ZonesController.getManager().getZone(jsonReader.nextString());
             }
         });
 

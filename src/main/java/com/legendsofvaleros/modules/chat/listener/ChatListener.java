@@ -186,15 +186,15 @@ public class ChatListener implements Listener {
                 }
                 break;
             case ZONE:
-                Zone zone = ZonesController.getManager().getZone(p);
+                Zone zone = ZonesController.getInstance().getZone(p);
                 if (zone == null) {
                     MessageUtil.sendError(p, "Unable to send message. You are not in a zone!");
                     return;
                 }
 
                 Player pl;
-                for (Map.Entry<UUID, String> entry : ZonesController.getManager().getPlayerZones()) {
-                    Zone zz = ZonesController.getManager().getZone(entry.getValue());
+                for (Map.Entry<UUID, String> entry : ZonesController.getInstance().getPlayerZones()) {
+                    Zone zz = ZonesController.getInstance().getZone(entry.getValue());
                     if (zz.channel.equals(zone.channel)) {
                         pl = Bukkit.getPlayer(entry.getKey());
                         if (ChatController.getInstance().isChannelOn(pl, 'Z')) {

@@ -46,7 +46,7 @@ public class GraveyardController extends GraveyardAPI {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDeath(PlayerRespawnEvent event) {
-        Graveyard data = getNearestGraveyard(ZonesController.getManager().getZone(event.getPlayer()), event.getPlayer().getLocation());
+        Graveyard data = getNearestGraveyard(ZonesController.getInstance().getZone(event.getPlayer()), event.getPlayer().getLocation());
         if (data == null) {
             Location loc = event.getPlayer().getLocation();
             MessageUtil.sendException(this, event.getPlayer(), "Failed to locate graveyard at " + loc.getBlockX() + ", " + loc.getBlockZ() + "!");
