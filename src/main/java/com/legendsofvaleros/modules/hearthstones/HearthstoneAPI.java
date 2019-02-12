@@ -35,7 +35,7 @@ public class HearthstoneAPI extends ModuleListener {
     public void onLoad() {
         super.onLoad();
 
-        this.rpc = APIController.create(this, RPC.class);
+        this.rpc = APIController.create(RPC.class);
 
         this.cooldownDuration = getConfig().getLong("cooldown-seconds") * 1000;
 

@@ -30,7 +30,7 @@ public class GearAPI extends Module {
     public void onLoad() {
         super.onLoad();
 
-        this.rpc = APIController.create(this, RPC.class);
+        this.rpc = APIController.create(RPC.class);
 
         APIController.getInstance().getGsonBuilder()
             .registerTypeAdapter(RangedValue.class, RangedValue.JSON)

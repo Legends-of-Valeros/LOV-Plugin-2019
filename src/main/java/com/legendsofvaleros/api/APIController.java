@@ -171,7 +171,7 @@ public class APIController extends Module {
     }
 
     public static <T> T create(Module module, Class<T> clazz) {
-        return create(module.getScheduler()::async, clazz);
+        return create(getInstance().getPool(), clazz);
     }
 
     public static <T> T create(Executor executor, Class<T> clazz) {

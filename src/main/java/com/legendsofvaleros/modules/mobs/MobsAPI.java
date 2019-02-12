@@ -46,7 +46,7 @@ public class MobsAPI extends ModuleListener {
     public void onLoad() {
         super.onLoad();
 
-        this.rpc = APIController.create(this, RPC.class);
+        this.rpc = APIController.create(RPC.class);
 
         registerEvents(new ChunkListener());
     }
