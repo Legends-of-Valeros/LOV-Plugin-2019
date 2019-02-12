@@ -21,11 +21,11 @@ public class ThreatBehavior {
 	public static final BehaviorAction FIND = new BehaviorAction() {
 		@Override
 		public NodeStatus onStep(CombatEntity ce, long ticks) {
-			NPC npc = NPCsController.manager().registry.getNPC(ce.getLivingEntity());
+			NPC npc = NPCsController.getInstance().getNPC(ce.getLivingEntity());
 			MobTrait trait = npc.getTrait(MobTrait.class);
 			List<Entity> entities = ce.getLivingEntity().getNearbyEntities(trait.instance.mob.getOptions().distance.detection, trait.instance.mob.getOptions().distance.detection, trait.instance.mob.getOptions().distance.detection);
 			for(Entity entity : entities)
-				if(entity instanceof LivingEntity && !NPCsController.manager().registry.isNPC(entity)) {
+				if(entity instanceof LivingEntity && !NPCsController.getInstance().isNPC((LivingEntity)entity)) {
 					if(entity.getLocation().getBlockY() - npc.getEntity().getLocation().getBlockY() >= 2)
 						continue;
 					if(entity instanceof Player) {
@@ -50,7 +50,7 @@ public class ThreatBehavior {
 	public static final BehaviorAction NAVIGATE = new BehaviorAction() {
 		@Override
 		public NodeStatus onStep(CombatEntity ce, long ticks) {
-			NPC npc = NPCsController.manager().registry.getNPC(ce.getLivingEntity());
+			NPC npc = NPCsController.getInstance().getNPC(ce.getLivingEntity());
 
 			npc.getNavigator().setTarget(ce.getThreat().getTarget().getLivingEntity(), false);
 

@@ -29,12 +29,12 @@ public class FetchForNPCObjective extends AbstractQuestObjective<Boolean> {
         if (item == null)
             MessageUtil.sendException(GearController.getInstance(), "No item with that ID in quest. Offender: " + id + " in " + getQuest().getId());
 
-        if (!NPCsController.isNPC(npcId)) {
+        if (!NPCsController.getInstance().isNPC(npcId)) {
             MessageUtil.sendException(GearController.getInstance(), "No NPC with that ID in quest. Offender: " + id + " in " + getQuest().getId());
             return;
         }
 
-        npc = NPCsController.getNPC(npcId);
+        npc = NPCsController.getInstance().getNPC(npcId);
     }
 
     @Override

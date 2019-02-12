@@ -39,7 +39,7 @@ public class MobListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onEntitySpawn(CreatureSpawnEvent event) {
         if (event.getEntity() instanceof Player)
-            if (!NPCsController.manager().registry.isNPC(event.getEntity()))
+            if (!NPCsController.getInstance().isNPC(event.getEntity()))
                 return;
 
         switch (event.getSpawnReason()) {

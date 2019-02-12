@@ -254,7 +254,7 @@ public class Mob {
                 throw new IllegalStateException("Mob instance already destroyed.");
             active = true;
 
-            npc = NPCsController.manager().registry.createNPC(mob.type, "");
+            npc = NPCsController.getInstance().createNPC(mob.type, "");
 
             npc.getNavigator().getLocalParameters().updatePathRate(20)
                     .useNewPathfinder(true)

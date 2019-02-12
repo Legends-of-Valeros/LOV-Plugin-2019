@@ -48,7 +48,7 @@ public class MobsAPI {
         MobsController.getInstance().registerEvents(new ChunkListener());
     }
 
-    public Promise loadAll() {
+    public Promise<?> loadAll() {
         return rpc.findMobs().onSuccess(val -> {
                     entities.clear();
 

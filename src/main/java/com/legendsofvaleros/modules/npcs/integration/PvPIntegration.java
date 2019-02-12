@@ -6,6 +6,6 @@ import com.legendsofvaleros.modules.npcs.trait.pvp.TraitHonorTrader;
 
 public class PvPIntegration extends Integration {
     public PvPIntegration() {
-        NPCsController.registerTrait("honor-trader", TraitHonorTrader.class);
+        NPCsController.getInstance().registerTrait("honor-trader", TraitHonorTrader.class);
     }
 }

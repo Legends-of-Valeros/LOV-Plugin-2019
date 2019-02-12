@@ -8,10 +8,10 @@ public class NPCData {
 	public String name;
 	public String skin;
 	public LOVTrait[] traits;
-	
-	public Location loc;
-	
-	public <T extends LOVTrait> T getTrait(Class<T> trait) {
+
+    public Location loc;
+
+    public <T extends LOVTrait> T getTrait(Class<T> trait) {
 		for(LOVTrait t : traits) {
 			if(trait.isAssignableFrom(t.getClass()))
 				return trait.cast(t);

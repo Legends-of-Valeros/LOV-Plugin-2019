@@ -6,6 +6,6 @@ import com.legendsofvaleros.modules.npcs.trait.hearthstones.TraitInnkeeper;
 
 public class HearthstonesIntegration extends Integration {
     public HearthstonesIntegration() {
-        NPCsController.registerTrait("innkeeper", TraitInnkeeper.class);
+        NPCsController.getInstance().registerTrait("innkeeper", TraitInnkeeper.class);
     }
 }

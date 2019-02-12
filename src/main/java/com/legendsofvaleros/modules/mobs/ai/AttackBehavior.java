@@ -52,7 +52,7 @@ public class AttackBehavior {
 
                 LivingEntity target = ce.getThreat().getTarget().getLivingEntity();
 
-                NPC npc = NPCsController.manager().registry.getNPC(ce.getLivingEntity());
+                NPC npc = NPCsController.getInstance().getNPC(ce.getLivingEntity());
                 npc.faceLocation(target.getEyeLocation());
                 MobTrait trait = npc.getTrait(MobTrait.class);
 

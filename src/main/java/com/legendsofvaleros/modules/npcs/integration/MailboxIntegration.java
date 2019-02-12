@@ -6,6 +6,6 @@ import com.legendsofvaleros.modules.npcs.trait.mailbox.TraitMailbox;
 
 public class MailboxIntegration extends Integration {
     public MailboxIntegration() {
-        NPCsController.registerTrait("mailman", TraitMailbox.class);
+        NPCsController.getInstance().registerTrait("mailman", TraitMailbox.class);
     }
 }

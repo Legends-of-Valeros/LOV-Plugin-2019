@@ -70,7 +70,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
 
         String npcId = ctx.getString(1).toLowerCase();
 
-        if (!NPCsController.isNPC(npcId)) {
+        if (!NPCsController.getInstance().isNPC(npcId)) {
             MessageUtil.sendException(NPCsController.getInstance(), p, new Exception("No NPC with that ID exists in the cache. Offender: " + npcId));
             return;
         }
@@ -101,7 +101,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
 
         getNPC().data().setPersistent(NPC.SHOULD_SAVE_METADATA, true);
 
-        npcData = NPCsController.getNPC(npcId);
+        npcData = NPCsController.getInstance().getNPC(npcId);
         if (npcData == null) {
             getNPC().data().setPersistent(NPC.NAMEPLATE_VISIBLE_METADATA, true);
             getNPC().getEntity().setCustomNameVisible(true);
@@ -161,7 +161,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
                 || npcData.loc.getWorld() != getNPC().getEntity().getLocation().getWorld()
                 || getNPC().getEntity().getLocation().distance(npcData.loc) > 2) {
             npcData.loc = getNPC().getEntity().getLocation().getBlock().getLocation();
-            NPCsController.manager().updateNPC(this, getNPC());
+            NPCsController.getInstance().saveNPC(this);
         }
 
         npcId = npcData.npcId;

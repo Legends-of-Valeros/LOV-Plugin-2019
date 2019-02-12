@@ -26,6 +26,7 @@ import java.util.Map;
 public class GraveyardAPI {
     public interface RPC {
         Promise<Graveyard[]> findGraveyards();
+
         Promise<Boolean> saveGraveyard(Graveyard yard);
         Promise<Boolean> deleteGraveyard(Graveyard yard);
     }

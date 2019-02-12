@@ -6,6 +6,6 @@ import com.legendsofvaleros.modules.skills.gui.recharge.TraitRecharger;
 
 public class SkillsIntegration extends Integration {
     public SkillsIntegration() {
-        NPCsController.registerTrait("recharger", TraitRecharger.class);
+        NPCsController.getInstance().registerTrait("recharger", TraitRecharger.class);
     }
 }
