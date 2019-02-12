@@ -9,6 +9,7 @@ import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.modules.loot.LootController;
 import com.legendsofvaleros.modules.npcs.core.NPCData;
+import com.legendsofvaleros.modules.npcs.core.Skin;
 import com.legendsofvaleros.modules.npcs.core.Skins;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
@@ -37,9 +38,12 @@ public class NPCsAPI extends ModuleListener {
 
     private NPCRegistry registry;
 
+    private HashMap<String, Class<? extends LOVTrait>> traitTypes = new HashMap<>();
+
     private HashMap<String, NPCData> npcs = new HashMap<>();
 
-    private HashMap<String, Class<? extends LOVTrait>> traitTypes = new HashMap<>();
+    private static Map<String, Skin> skins = new HashMap<>();
+    public static Skin getSkin(String id) { return skins.get(id); }
 
     @Override
     public void onLoad() {
@@ -62,14 +66,12 @@ public class NPCsAPI extends ModuleListener {
                 try {
                     traits.add(context.deserialize(elem.getValue(), traitTypes.get(elem.getKey())));
                 } catch (Exception e) {
-                    MessageUtil.sendException(NPCsController.getInstance(), "Failed to load trait. Offender: " + elem.getKey() + " (" + elem.getValue().toString() + ")");
+                    MessageUtil.sendException(this, "Failed to load trait. Offender: " + elem.getKey() + " (" + elem.getValue().toString() + ")");
                     throw e;
                 }
             }
             return traits.toArray(new LOVTrait[0]);
         });
-
-        NPCsController.getInstance().registerEvents(this);
     }
 
     @Override

@@ -5,7 +5,7 @@ import com.google.common.collect.Multimap;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
-import com.legendsofvaleros.module.Module;
+import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.mobs.core.SpawnArea;
 import org.bukkit.Chunk;
@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MobsAPI extends Module {
+public class MobsAPI extends ModuleListener {
     public interface RPC {
         Promise<Mob[]> findMobs();
 
@@ -44,6 +44,8 @@ public class MobsAPI extends Module {
 
     @Override
     public void onLoad() {
+        super.onLoad();
+
         this.rpc = APIController.create(this, RPC.class);
 
         registerEvents(new ChunkListener());
@@ -126,7 +128,7 @@ public class MobsAPI extends Module {
         public void onChunkLoad(ChunkLoadEvent event) {
             String chunkId = getId(event.getChunk());
 
-            if(!spawns.containsKey(chunkId)) return;
+            if (!spawns.containsKey(chunkId)) return;
 
             spawnsLoaded.putAll(chunkId, spawns.get(chunkId));
         }

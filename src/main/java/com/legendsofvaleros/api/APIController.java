@@ -10,7 +10,9 @@ import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.modules.zones.core.Zone;
+import io.deepstream.ConfigOptions;
 import io.deepstream.DeepstreamClient;
+import io.deepstream.InvalidDeepstreamConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -89,10 +91,13 @@ public class APIController extends Module {
         });
 
         try {
-            this.client = new DeepstreamClient("192.99.0.101:6020");
+            Map<String, Object> opts = new HashMap<>();
+            opts.put(ConfigOptions.RPC_RESPONSE_TIMEOUT.toString(), "30000");
+
+            this.client = new DeepstreamClient("192.99.0.101:6020", opts);
 
             this.client.login();
-        } catch (URISyntaxException e) {
+        } catch (URISyntaxException | InvalidDeepstreamConfig e) {
             e.printStackTrace();
         }
     }

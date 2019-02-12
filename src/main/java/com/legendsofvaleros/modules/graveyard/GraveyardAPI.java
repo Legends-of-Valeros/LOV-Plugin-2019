@@ -38,6 +38,8 @@ public class GraveyardAPI extends ModuleListener {
 
     @Override
     public void onLoad() {
+        super.onLoad();
+
         this.rpc = APIController.create(this, RPC.class);
 
         APIController.getInstance().getGsonBuilder()

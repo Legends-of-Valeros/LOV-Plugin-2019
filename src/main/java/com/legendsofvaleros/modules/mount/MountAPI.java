@@ -35,6 +35,8 @@ public class MountAPI extends ModuleListener {
 
     @Override
     public void onLoad() {
+        super.onLoad();
+
         this.rpc = APIController.create(this, RPC.class);
 
         registerEvents(new PlayerListener());

@@ -19,6 +19,8 @@ public class LootAPI extends Module {
 
     @Override
     public void onLoad() {
+        super.onLoad();
+
         this.rpc = APIController.create(this, RPC.class);
     }
 
