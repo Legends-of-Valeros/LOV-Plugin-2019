@@ -41,12 +41,12 @@ public class TraitFastTravel extends LOVTrait {
 			return;
 		}
 		
-		Collection<String> found = FastTravelController.getInstance().getApi().getDiscovered(Characters.getPlayerCharacter(player));
+		Collection<String> found = FastTravelController.getInstance().getDiscovered(Characters.getPlayerCharacter(player));
 
 		if(!found.contains(npc_id)) {
 			found.add(npc_id);
 
-			FastTravelController.getInstance().getApi().addDiscovered(Characters.getPlayerCharacter(player), npc_id);
+			FastTravelController.getInstance().addDiscovered(Characters.getPlayerCharacter(player), npc_id);
 
 			Title title = new Title("Discovered Location!", "You can now fast travel here!");
 			title.setTitleColor(ChatColor.GREEN);

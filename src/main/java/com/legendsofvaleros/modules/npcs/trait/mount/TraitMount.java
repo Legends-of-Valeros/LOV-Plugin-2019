@@ -41,11 +41,11 @@ public class TraitMount extends LOVTrait {
 
         final PlayerCharacter pc = Characters.getPlayerCharacter(p);
 
-        Collection<Mount> playerMounts = MountsController.getInstance().getApi().getMounts(pc);
+        Collection<Mount> playerMounts = MountsController.getInstance().getMounts(pc);
         if (playerMounts.size() == 0) return;
 
         for (int i = 0; i < mounts.length; i++) {
-            final Mount m = MountsController.getInstance().getApi().getMount(mounts[i]);
+            final Mount m = MountsController.getInstance().getMount(mounts[i]);
             boolean owned = playerMounts.contains(m);
             boolean levelTooLow;
 
@@ -60,7 +60,7 @@ public class TraitMount extends LOVTrait {
 
             gui.slot(i, ib.create(), owned || levelTooLow ? null : (ISlotAction) (gui1, p1, event) -> {
                 if (Money.sub(Characters.getPlayerCharacter(p1), m.getCost())) {
-                    MountsController.getInstance().getApi().addMount(pc.getUniqueCharacterId(), m);
+                    MountsController.getInstance().addMount(pc.getUniqueCharacterId(), m);
                     gui1.close(p1);
                 }
             });

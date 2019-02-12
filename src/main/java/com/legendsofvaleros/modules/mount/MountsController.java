@@ -2,7 +2,6 @@ package com.legendsofvaleros.modules.mount;
 
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.item.ItemBuilder;
-import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.bank.BankController;
@@ -33,35 +32,17 @@ import java.util.UUID;
 @DependsOn(NPCsController.class)
 // TODO: Create subclass for listeners?
 @ModuleInfo(name = "Mounts", info = "")
-public class MountsController extends ModuleListener {
+public class MountsController extends MountAPI {
     private static MountsController instance;
     public static MountsController getInstance() { return instance; }
 
-    private MountAPI api;
-    public MountAPI getApi() {
-        return api;
-    }
-
-    public HashMap<UUID, Mount> riders = new HashMap<>();
+    HashMap<UUID, Mount> riders = new HashMap<>();
 
     @Override
     public void onLoad() {
         super.onLoad();
 
         this.instance = this;
-
-        this.api = new MountAPI();
-    }
-
-    @Override
-    public void onPostLoad() {
-        super.onPostLoad();
-
-        try {
-            this.api.loadAll().get();
-        } catch (Throwable th) {
-            th.printStackTrace();
-        }
     }
 
     @Override
@@ -74,7 +55,7 @@ public class MountsController extends ModuleListener {
 
     @EventHandler
     public void onCharacterOptionsOpen(PlayerOptionsOpenEvent event) {
-        List<Mount> mounts = new ArrayList<>(api.getMounts(Characters.getPlayerCharacter(event.getPlayer())));
+        List<Mount> mounts = new ArrayList<>(getMounts(Characters.getPlayerCharacter(event.getPlayer())));
 
         if(mounts.size() == 0) return;
 

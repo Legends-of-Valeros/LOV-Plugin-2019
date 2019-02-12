@@ -19,7 +19,7 @@ public class KillObjective extends AbstractQuestObjective<Integer> {
 
     @Override
     protected void onInit() {
-        mob = MobsController.getInstance().getApi().getEntity(id);
+        mob = MobsController.getInstance().getEntity(id);
 
         if (mob == null)
             MessageUtil.sendException(MobsController.getInstance(), "No instance with that ID in quest. Offender: " + id + " in " + getQuest().getId());

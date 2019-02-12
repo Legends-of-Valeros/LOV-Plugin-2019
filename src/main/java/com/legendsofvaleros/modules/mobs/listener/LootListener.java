@@ -49,7 +49,7 @@ public class LootListener implements Listener {
             } else
                 i = null;
 
-            LootTable table = LootController.getInstance().getApi().getTable(data.id);
+            LootTable table = LootController.getInstance().getTable(data.id);
             if (table == null) {
                 MessageUtil.sendSevereException(LootController.getInstance(), event.getKiller().getLivingEntity(), "Mob has an unknown loot table. Offender: " + data.id + " on " + entity.mob.getId());
                 return;

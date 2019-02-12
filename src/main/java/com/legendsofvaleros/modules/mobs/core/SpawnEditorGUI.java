@@ -42,7 +42,7 @@ public class SpawnEditorGUI extends GUI {
 							.create(), null);
 
 		slot(8, 2, Model.stack("menu-decline-button").setName("Delete Spawn").create(), (gui, p, event) -> {
-			MobsController.getInstance().getApi().removeSpawn(spawn);
+			MobsController.getInstance().removeSpawn(spawn);
 			gui.close(p);
 		});
 	}

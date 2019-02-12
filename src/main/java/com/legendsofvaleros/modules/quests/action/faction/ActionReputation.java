@@ -10,7 +10,7 @@ public class ActionReputation extends AbstractQuestAction {
 
     @Override
     public void play(PlayerCharacter pc, Next next) {
-        FactionController.getInstance().getApi().editRep(faction_id, pc, amount);
+        FactionController.getInstance().editRep(faction_id, pc, amount);
 
         next.go();
     }

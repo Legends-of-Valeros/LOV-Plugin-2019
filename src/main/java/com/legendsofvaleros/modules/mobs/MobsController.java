@@ -3,7 +3,6 @@ package com.legendsofvaleros.modules.mobs;
 import com.google.gson.JsonDeserializer;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.api.APIController;
-import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -38,12 +37,9 @@ import org.bukkit.inventory.EquipmentSlot;
 @DependsOn(PartiesController.class)
 @DependsOn(NPCsController.class)
 @ModuleInfo(name = "Mobs", info = "")
-public class MobsController extends Module {
+public class MobsController extends MobsAPI {
     private static MobsController instance;
     public static MobsController getInstance() { return instance; }
-
-    private MobsAPI api;
-    public MobsAPI getApi() { return api; }
 
     private BehaviorEngine ai;
 
@@ -56,8 +52,6 @@ public class MobsController extends Module {
         super.onLoad();
 
         this.instance = this;
-
-        this.api = new MobsAPI();
 
         APIController.getInstance().getGsonBuilder()
             .registerTypeAdapter(Mob.StatsMap.class, (JsonDeserializer<Mob.StatsMap>) (json, typeOfT, context) -> {
@@ -110,17 +104,6 @@ public class MobsController extends Module {
             LevelArchetypes.getInstance().registerLevelProvider(entity -> Mob.Instance.get(entity).level, type);
         }
         new MobSpawner();
-    }
-
-    @Override
-    public void onPostLoad() {
-        super.onPostLoad();
-
-        try {
-            this.api.loadAll().get();
-        } catch (Throwable th) {
-            th.printStackTrace();
-        }
     }
 
     @Override

@@ -19,7 +19,7 @@ public class GraveyardCommands extends BaseCommand {
 	@Description("Reload the graveyard cache.")
 	@CommandPermission("graveyards.reload")
 	public void cmdReload(CommandSender sender) {
-		GraveyardController.getInstance().getApi().loadAll();
+		GraveyardController.getInstance().loadAll();
 
 		MessageUtil.sendUpdate(sender, "Zones reloaded.");
 	}
@@ -38,7 +38,7 @@ public class GraveyardCommands extends BaseCommand {
 
 		Graveyard yard = new Graveyard(zone, player.getLocation(), radius);
 		
-		GraveyardController.getInstance().getApi().addGraveyard(yard);
+		GraveyardController.getInstance().addGraveyard(yard);
 
 		MessageUtil.sendUpdate(player, ChatColor.YELLOW + "Created graveyards with radius " + yard.radius + " blocks in zone '" + zone.name + "'.");
 	}

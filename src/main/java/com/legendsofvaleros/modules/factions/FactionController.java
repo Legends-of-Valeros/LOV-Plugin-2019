@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.factions;
 
-import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -9,20 +8,15 @@ import com.legendsofvaleros.modules.factions.listener.ReputationListener;
 @DependsOn(Characters.class)
 // TODO: Create subclass for listeners?
 @ModuleInfo(name = "Factions", info = "")
-public class FactionController extends ModuleListener {
+public class FactionController extends FactionAPI {
     private static FactionController instance;
     public static FactionController getInstance() { return instance; }
-
-    private FactionAPI api;
-    public FactionAPI getApi() { return api; }
 
     @Override
     public void onLoad() {
         super.onLoad();
 
         this.instance = this;
-
-        this.api = new FactionAPI();
 
         registerEvents(new ReputationListener());
 
@@ -47,16 +41,5 @@ public class FactionController extends ModuleListener {
 				                .background("minecraft:textures/gui/advancements/backgrounds/stone.png")
 				                .frame(FrameType.TASK)
 				            .build();*/
-    }
-
-    @Override
-    public void onPostLoad() {
-        super.onPostLoad();
-
-        try {
-            this.api.loadAll().get();
-        } catch (Throwable th) {
-            th.printStackTrace();
-        }
     }
 }

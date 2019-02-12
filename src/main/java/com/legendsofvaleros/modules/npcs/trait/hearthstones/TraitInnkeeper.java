@@ -41,14 +41,14 @@ public class TraitInnkeeper extends LOVTrait {
 		
 		final Location loc = p.getLocation();
 
-		HomePoint oldHome = HearthstoneController.getInstance().getApi().getHome(pc);
+		HomePoint oldHome = HearthstoneController.getInstance().getHome(pc);
 		if(oldHome != null && loc.distance(oldHome.getLocation()) <= SAME_LOC_DISTANCE)
 			NPCEmulator.speak(npc, p, "You already have a room here!");
 		else{
 			new WindowYesNo("Reserve a room?") {
 				@Override
 				public void onAccept(GUI gui, Player p) {
-					HearthstoneController.getInstance().getApi().setHome(pc, name, loc);
+					HearthstoneController.getInstance().setHome(pc, name, loc);
 					MessageUtil.sendUpdate(p, "Home set. Select the Hearthstone in your player menu to teleport back here!");
 					p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f);
 				}

@@ -113,7 +113,7 @@ public class Gear implements IGear {
     }
 
     public static Gear fromId(String id) {
-        return GearController.getInstance().getApi().getGear(id);
+        return GearController.getInstance().getGear(id);
     }
 
     public static class Instance implements IGear {

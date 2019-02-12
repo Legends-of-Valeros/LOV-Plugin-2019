@@ -4,6 +4,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
+import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
@@ -19,7 +20,7 @@ import org.bukkit.event.Listener;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FactionAPI {
+public class FactionAPI extends ModuleListener {
     public interface RPC {
         Promise<Faction[]> findFactions();
 
@@ -28,15 +29,27 @@ public class FactionAPI {
         Promise<Boolean> deletePlayerFactionReputation(CharacterId characterId);
     }
 
-    private final RPC rpc;
+    private RPC rpc;
 
-    private static Map<String, Faction> factions = new HashMap<>();
-    private static Table<CharacterId, String, Integer> playerRep = HashBasedTable.create();
+    private Map<String, Faction> factions = new HashMap<>();
+    private Table<CharacterId, String, Integer> playerRep = HashBasedTable.create();
 
-    public FactionAPI() {
-        this.rpc = APIController.create(FactionController.getInstance(), RPC.class);
+    @Override
+    public void onLoad() {
+        this.rpc = APIController.create(this, RPC.class);
 
-        FactionController.getInstance().registerEvents(new PlayerListener());
+        registerEvents(new PlayerListener());
+    }
+
+    @Override
+    public void onPostLoad() {
+        super.onPostLoad();
+
+        try {
+            this.loadAll().get();
+        } catch (Throwable th) {
+            th.printStackTrace();
+        }
     }
 
     public Promise<Faction[]> loadAll() {
@@ -46,7 +59,7 @@ public class FactionAPI {
             for(Faction fac : val)
                 factions.put(fac.getId(), fac);
 
-            FactionController.getInstance().getLogger().info("Loaded " + factions.size() + " factions.");
+            getLogger().info("Loaded " + factions.size() + " factions.");
         }).onFailure(Throwable::printStackTrace);
     }
 

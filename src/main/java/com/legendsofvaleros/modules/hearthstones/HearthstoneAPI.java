@@ -4,6 +4,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
+import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.Cooldowns;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
@@ -16,26 +17,29 @@ import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class HearthstoneAPI {
+public class HearthstoneAPI extends ModuleListener {
     public interface RPC {
         Promise<HomePoint> getPlayerHearthstone(CharacterId characterId);
         Promise<Boolean> savePlayerHearthstone(HomePoint point);
         Promise<Boolean> deletePlayerHearthstone(HomePoint point);
     }
 
-    private final RPC rpc;
+    private RPC rpc;
 
     private Cache<CharacterId, HomePoint> homes = CacheBuilder.newBuilder()
                                                         .concurrencyLevel(4).build();
 
     private long cooldownDuration;
 
-    public HearthstoneAPI() {
-        this.rpc = APIController.create(HearthstoneController.getInstance(), RPC.class);
+    @Override
+    public void onLoad() {
+        super.onLoad();
 
-        this.cooldownDuration = HearthstoneController.getInstance().getConfig().getLong("cooldown-seconds") * 1000;
+        this.rpc = APIController.create(this, RPC.class);
 
-        HearthstoneController.getInstance().registerEvents(new PlayerListener());
+        this.cooldownDuration = getConfig().getLong("cooldown-seconds") * 1000;
+
+        registerEvents(new PlayerListener());
     }
 
     public HomePoint getHome(PlayerCharacter pc) {

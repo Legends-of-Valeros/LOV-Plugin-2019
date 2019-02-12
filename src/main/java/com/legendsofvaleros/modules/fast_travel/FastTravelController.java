@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.fast_travel;
 
-import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.bank.BankController;
@@ -13,19 +12,14 @@ import com.legendsofvaleros.modules.npcs.NPCsController;
 @DependsOn(Characters.class)
 @DependsOn(NPCsController.class)
 @ModuleInfo(name = "FastTravel", info = "")
-public class FastTravelController extends Module {
+public class FastTravelController extends FastTravelAPI {
     private static FastTravelController instance;
     public static FastTravelController getInstance() { return instance; }
-
-    private FastTravelAPI api;
-    public FastTravelAPI getApi() { return api; }
 
     @Override
     public void onLoad() {
         super.onLoad();
 
         this.instance = this;
-
-        this.api = new FastTravelAPI();
     }
 }

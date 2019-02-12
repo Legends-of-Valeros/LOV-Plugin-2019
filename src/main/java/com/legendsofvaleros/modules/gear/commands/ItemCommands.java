@@ -19,7 +19,7 @@ public class ItemCommands extends BaseCommand {
     @Description("Reload the item cache.")
     @CommandPermission("gear.reload")
     public void cmdReload(CommandSender sender) {
-        GearController.getInstance().getApi().loadAll();
+        GearController.getInstance().loadAll();
         Model.reload();
 
         MessageUtil.sendUpdate(sender, "Item and item model cache reloaded.");

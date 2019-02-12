@@ -41,7 +41,7 @@ public class MobSpawner {
     }
 
     private void updateSpawn(long time) {
-        Collection<SpawnArea> loaded = MobsController.getInstance().getApi().getLoadedSpawns();
+        Collection<SpawnArea> loaded = MobsController.getInstance().getLoadedSpawns();
 
         int block = (int) (time % allUpdateInterval);
         int blockSize = (int) Math.ceil((double)loaded.size() / allUpdateInterval);

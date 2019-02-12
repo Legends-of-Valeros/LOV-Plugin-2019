@@ -4,6 +4,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
+import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
@@ -16,7 +17,7 @@ import org.bukkit.event.Listener;
 import java.util.Collection;
 import java.util.List;
 
-public class FastTravelAPI {
+public class FastTravelAPI extends Module {
     public interface RPC {
         Promise<List<String>> getPlayerFastTravels(CharacterId characterId);
 
@@ -25,14 +26,15 @@ public class FastTravelAPI {
         Promise<Boolean> deletePlayerFastTravels(CharacterId characterId);
     }
 
-    private final RPC rpc;
+    private RPC rpc;
 
     private static Multimap<CharacterId, String> fastTravels = HashMultimap.create();
 
-    public FastTravelAPI() {
-        this.rpc = APIController.create(FastTravelController.getInstance(), RPC.class);
+    @Override
+    public void onLoad() {
+        this.rpc = APIController.create(this, RPC.class);
 
-        FastTravelController.getInstance().registerEvents(new PlayerListener());
+        registerEvents(new PlayerListener());
     }
 
     public Collection<String> getDiscovered(PlayerCharacter pc) {

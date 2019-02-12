@@ -2,22 +2,35 @@ package com.legendsofvaleros.modules.loot;
 
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
+import com.legendsofvaleros.module.Module;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class LootAPI {
+public class LootAPI extends Module {
     public interface RPC {
         Promise<LootTable[]> findLootTables();
     }
 
-    private final RPC rpc;
+    private RPC rpc;
 
     private Map<String, LootTable> tables = new HashMap<>();
     public LootTable getTable(String id) { return tables.get(id); }
 
-    public LootAPI() {
-        this.rpc = APIController.create(LootController.getInstance(), RPC.class);
+    @Override
+    public void onLoad() {
+        this.rpc = APIController.create(this, RPC.class);
+    }
+
+    @Override
+    public void onPostLoad() {
+        super.onPostLoad();
+
+        try {
+            this.loadAll().get();
+        } catch (Throwable th) {
+            th.printStackTrace();
+        }
     }
 
     public Promise<LootTable[]> loadAll() {

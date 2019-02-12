@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
+import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.gear.GearRegistry;
 import com.legendsofvaleros.modules.gear.component.ComponentMap;
@@ -23,7 +24,7 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Map;
 
-public class GraveyardAPI {
+public class GraveyardAPI extends ModuleListener {
     public interface RPC {
         Promise<Graveyard[]> findGraveyards();
 
@@ -31,12 +32,13 @@ public class GraveyardAPI {
         Promise<Boolean> deleteGraveyard(Graveyard yard);
     }
 
-    private final RPC rpc;
+    private RPC rpc;
 
     private Multimap<String, Graveyard> graveyards = HashMultimap.create();
 
-    public GraveyardAPI() {
-        this.rpc = APIController.create(GraveyardController.getInstance(), RPC.class);
+    @Override
+    public void onLoad() {
+        this.rpc = APIController.create(this, RPC.class);
 
         APIController.getInstance().getGsonBuilder()
             .registerTypeAdapter(RangedValue.class, RangedValue.JSON)
@@ -71,6 +73,17 @@ public class GraveyardAPI {
         });
     }
 
+    @Override
+    public void onPostLoad() {
+        super.onPostLoad();
+
+        try {
+            this.loadAll().get();
+        } catch (Throwable th) {
+            th.printStackTrace();
+        }
+    }
+
     public Promise<Graveyard[]> loadAll() {
         return rpc.findGraveyards().onSuccess(val -> {
             graveyards.clear();
@@ -78,7 +91,7 @@ public class GraveyardAPI {
             for(Graveyard g : val)
                 graveyards.put(g.zone.channel, g);
 
-            GraveyardController.getInstance().getLogger().info("Loaded " + graveyards.size() + " graveyards.");
+            getLogger().info("Loaded " + graveyards.size() + " graveyards.");
         }).onFailure(Throwable::printStackTrace);
     }
 
@@ -104,7 +117,7 @@ public class GraveyardAPI {
 
         // If editing is enabled, generate the hologram right away.
         if(LegendsOfValeros.getMode().allowEditing())
-            GraveyardController.getInstance().getScheduler().sync(yard::getHologram);
+            getScheduler().sync(yard::getHologram);
 
         return rpc.saveGraveyard(yard);
     }

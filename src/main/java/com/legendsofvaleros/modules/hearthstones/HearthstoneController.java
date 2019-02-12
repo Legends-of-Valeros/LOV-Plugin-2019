@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.hearthstones;
 
-import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -17,12 +16,9 @@ import org.bukkit.event.EventHandler;
 @DependsOn(Characters.class)
 // TODO: Create subclass for listeners?
 @ModuleInfo(name = "Hearthstones", info = "")
-public class HearthstoneController extends ModuleListener {
+public class HearthstoneController extends HearthstoneAPI {
     private static HearthstoneController instance;
     public static HearthstoneController getInstance() { return instance; }
-
-    private HearthstoneAPI api;
-    public HearthstoneAPI getApi() { return api; }
 
     private HomeTeleporter teleporter;
 
@@ -32,8 +28,6 @@ public class HearthstoneController extends ModuleListener {
 
         this.instance = this;
 
-        this.api = new HearthstoneAPI();
-
         this.teleporter = new HomeTeleporter(getConfig().getLong("warmup-seconds"));
     }
 
@@ -41,7 +35,7 @@ public class HearthstoneController extends ModuleListener {
     public void onCharacterOptionsOpen(PlayerOptionsOpenEvent event) {
         if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
 
-        HomePoint point = api.getHome(Characters.getPlayerCharacter(event.getPlayer()));
+        HomePoint point = getHome(Characters.getPlayerCharacter(event.getPlayer()));
         if (point == null) return;
 
         event.addSlot(Model.stack("menu-hearthstone-button").setName("Hearthstone: " + point.innName).create(), (gui, p, type) -> {

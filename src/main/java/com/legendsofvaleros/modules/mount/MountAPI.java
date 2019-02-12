@@ -4,6 +4,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
+import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
@@ -18,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class MountAPI {
+public class MountAPI extends ModuleListener {
     public interface RPC {
         Promise<Mount[]> findMounts();
 
@@ -27,15 +28,27 @@ public class MountAPI {
         Promise<Boolean> deletePlayerMounts(CharacterId characterId);
     }
 
-    private final RPC rpc;
+    private RPC rpc;
 
-    private static Map<String, Mount> mounts = new HashMap<>();
-    private static Multimap<CharacterId, String> playerMounts = HashMultimap.create();
+    private Map<String, Mount> mounts = new HashMap<>();
+    private Multimap<CharacterId, String> playerMounts = HashMultimap.create();
 
-    public MountAPI() {
-        this.rpc = APIController.create(MountsController.getInstance(), RPC.class);
+    @Override
+    public void onLoad() {
+        this.rpc = APIController.create(this, RPC.class);
 
-        MountsController.getInstance().registerEvents(new PlayerListener());
+        registerEvents(new PlayerListener());
+    }
+
+    @Override
+    public void onPostLoad() {
+        super.onPostLoad();
+
+        try {
+            this.loadAll().get();
+        } catch (Throwable th) {
+            th.printStackTrace();
+        }
     }
 
     public Promise<Mount[]> loadAll() {
@@ -45,7 +58,7 @@ public class MountAPI {
             for(Mount mount : val)
                 mounts.put(mount.getId(), mount);
 
-            MountsController.getInstance().getLogger().info("Loaded " + mounts.size() + " mounts.");
+            getLogger().info("Loaded " + mounts.size() + " mounts.");
         }).onFailure(Throwable::printStackTrace);
     }
 

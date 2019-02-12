@@ -16,7 +16,7 @@ public class GraveyardEditorGUI extends GUI {
 		super("Graveyard Editor");
 
 		slot(8, 2, Model.stack("menu-decline-button").setName("Delete Graveyard").create(), (gui, p, event) -> {
-			GraveyardController.getInstance().getApi().removeGraveyard(yard);
+			GraveyardController.getInstance().removeGraveyard(yard);
 			gui.close(p);
 		});
 	}

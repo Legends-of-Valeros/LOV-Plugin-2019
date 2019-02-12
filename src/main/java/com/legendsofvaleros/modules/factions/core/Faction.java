@@ -25,10 +25,10 @@ public class Faction {
     }
 
     public Integer getRep(PlayerCharacter pc) {
-        return FactionController.getInstance().getApi().getRep(id, pc);
+        return FactionController.getInstance().getRep(id, pc);
     }
 
     public Integer editRep(PlayerCharacter pc, int amount) {
-        return FactionController.getInstance().getApi().editRep(id, pc, amount);
+        return FactionController.getInstance().editRep(id, pc, amount);
     }
 }

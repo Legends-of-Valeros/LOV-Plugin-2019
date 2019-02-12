@@ -17,7 +17,7 @@ public class MobCommands extends BaseCommand {
 	@Description("Reload the mob cache.")
 	@CommandPermission("mobs.clear")
 	public void cmdClear(CommandSender sender) {
-		MobsController.getInstance().getApi().loadAll();
+		MobsController.getInstance().loadAll();
 		MessageUtil.sendUpdate(sender, "Mob cache cleared.");
 	}
 	
@@ -28,7 +28,7 @@ public class MobCommands extends BaseCommand {
 	public void cmdCreate(Player player, String mobId, int radius, int padding, String level, @Optional Integer count, @Optional Integer interval, @Optional Integer chance) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		Mob mobData = MobsController.getInstance().getApi().getEntity(mobId);
+		Mob mobData = MobsController.getInstance().getEntity(mobId);
 		if(mobData == null) {
 			MessageUtil.sendError(player, "Unknown mob with that ID.");
 			return;
@@ -68,8 +68,8 @@ public class MobCommands extends BaseCommand {
 			MessageUtil.sendUpdate(player, "  There is a " + data.spawnChance + "% chance it'll spawn.");
 		}
 
-		MobsController.getInstance().getApi().addSpawn(data);
-		MobsController.getInstance().getApi().updateSpawn(data);
+		MobsController.getInstance().addSpawn(data);
+		MobsController.getInstance().updateSpawn(data);
 	}
 
 	@Default

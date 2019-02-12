@@ -76,7 +76,7 @@ public class SpawnArea {
     private Mob mob;
     public Mob getMob() {
         if (mob == null)
-            mob = MobsController.getInstance().getApi().getEntity(entityId);
+            mob = MobsController.getInstance().getEntity(entityId);
         return mob;
     }
 
