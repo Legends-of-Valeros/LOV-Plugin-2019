@@ -9,7 +9,10 @@ import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.action.QuestActionPlay;
 import com.legendsofvaleros.modules.quests.action.QuestActions;
-import com.legendsofvaleros.modules.quests.api.*;
+import com.legendsofvaleros.modules.quests.api.IQuest;
+import com.legendsofvaleros.modules.quests.api.IQuestAction;
+import com.legendsofvaleros.modules.quests.api.IQuestObjective;
+import com.legendsofvaleros.modules.quests.api.IQuestPrerequisite;
 import com.legendsofvaleros.modules.quests.event.QuestCompletedEvent;
 import com.legendsofvaleros.modules.quests.event.QuestObjectivesCompletedEvent;
 import com.legendsofvaleros.modules.quests.event.QuestObjectivesStartedEvent;
@@ -18,11 +21,8 @@ import com.legendsofvaleros.util.TextBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import java.lang.ref.WeakReference;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.*;
 
 public abstract class AbstractQuest implements IQuest {

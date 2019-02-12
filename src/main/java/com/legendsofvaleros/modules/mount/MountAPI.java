@@ -17,14 +17,15 @@ import org.bukkit.event.Listener;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MountAPI extends ModuleListener {
     public interface RPC {
-        Promise<Collection<Mount>> findMounts();
+        Promise<List<Mount>> findMounts();
 
-        Promise<Collection<String>> getPlayerMounts(CharacterId characterId);
+        Promise<List<String>> getPlayerMounts(CharacterId characterId);
         Promise<Boolean> savePlayerMounts(CharacterId characterId, Collection<String> strings);
         Promise<Boolean> deletePlayerMounts(CharacterId characterId);
     }
@@ -54,7 +55,7 @@ public class MountAPI extends ModuleListener {
         }
     }
 
-    public Promise<Collection<Mount>> loadAll() {
+    public Promise<List<Mount>> loadAll() {
         return rpc.findMounts().onSuccess(val -> {
             mounts.clear();
 
@@ -85,7 +86,7 @@ public class MountAPI extends ModuleListener {
         playerMounts.put(identifier, mount.getId());
     }
 
-    private Promise<Collection<String>> onLogin(CharacterId characterId) {
+    private Promise<List<String>> onLogin(CharacterId characterId) {
         return rpc.getPlayerMounts(characterId).onSuccess(val -> {
             val.orElse(ImmutableList.of()).stream().forEach(mount ->
                     playerMounts.put(characterId, mount));

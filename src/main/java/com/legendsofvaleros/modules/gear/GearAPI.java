@@ -15,13 +15,13 @@ import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.field.RangedValue;
 
 import java.lang.reflect.Type;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class GearAPI extends Module {
     public interface RPC {
-        Promise<Collection<Gear>> findGear();
+        Promise<List<Gear>> findGear();
     }
 
     private RPC rpc;
@@ -78,7 +78,7 @@ public class GearAPI extends Module {
         }
     }
 
-    public Promise<Collection<Gear>> loadAll() {
+    public Promise<List<Gear>> loadAll() {
         return rpc.findGear().onSuccess(val -> {
             gear.clear();
 

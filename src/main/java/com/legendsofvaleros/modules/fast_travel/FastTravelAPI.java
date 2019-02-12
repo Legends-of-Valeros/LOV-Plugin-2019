@@ -16,10 +16,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.Collection;
+import java.util.List;
 
 public class FastTravelAPI extends Module {
     public interface RPC {
-        Promise<Collection<String>> getPlayerFastTravels(CharacterId characterId);
+        Promise<List<String>> getPlayerFastTravels(CharacterId characterId);
 
         Promise<Boolean> savePlayerFastTravels(CharacterId characterId, Collection<String> discovered);
 
@@ -51,7 +52,7 @@ public class FastTravelAPI extends Module {
         return fastTravels.put(pc.getUniqueCharacterId(), npcId);
     }
 
-    private Promise<Collection<String>> onLogin(CharacterId characterId) {
+    private Promise<List<String>> onLogin(CharacterId characterId) {
         return rpc.getPlayerFastTravels(characterId).onSuccess(val ->
                 val.orElse(ImmutableList.of()).stream().forEach(npcId ->
                     fastTravels.put(characterId, npcId)));

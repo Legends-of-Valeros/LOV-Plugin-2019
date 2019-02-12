@@ -23,11 +23,12 @@ import org.bukkit.Location;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 public class GraveyardAPI extends ModuleListener {
     public interface RPC {
-        Promise<Collection<Graveyard>> findGraveyards();
+        Promise<List<Graveyard>> findGraveyards();
 
         Promise<Boolean> saveGraveyard(Graveyard yard);
         Promise<Boolean> deleteGraveyard(Graveyard yard);
@@ -87,7 +88,7 @@ public class GraveyardAPI extends ModuleListener {
         }
     }
 
-    public Promise<Collection<Graveyard>> loadAll() {
+    public Promise<List<Graveyard>> loadAll() {
         return rpc.findGraveyards().onSuccess(val -> {
             graveyards.clear();
 

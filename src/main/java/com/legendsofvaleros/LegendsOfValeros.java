@@ -28,6 +28,7 @@ import com.legendsofvaleros.modules.mailbox.MailboxController;
 import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.modules.mount.MountsController;
 import com.legendsofvaleros.modules.npcs.NPCsController;
+import com.legendsofvaleros.modules.parties.PartiesController;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.pvp.PvPController;
 import com.legendsofvaleros.modules.quests.QuestController;
@@ -159,7 +160,7 @@ public class LegendsOfValeros extends JavaPlugin {
         Modules.registerModule(MountsController.class);
         // Modules.registerModule(Nanny.class);
         Modules.registerModule(NPCsController.class);
-        // Modules.registerModule(PartiesController.class);
+        Modules.registerModule(PartiesController.class);
         Modules.registerModule(PlayerMenu.class);
         Modules.registerModule(PvPController.class);
         Modules.registerModule(QuestController.class);

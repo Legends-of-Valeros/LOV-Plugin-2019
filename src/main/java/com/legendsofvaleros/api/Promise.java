@@ -108,7 +108,7 @@ public class Promise<T> {
     public Promise<T> onSuccess(Consumer<Optional<T>> cb) { return onSuccess(cb, null); }
     public Promise<T> onSuccess(Consumer<Optional<T>> cb, Executor ex) {
         return addListener((err, val) -> {
-            if(err != null) return;
+            if(err.isPresent()) return;
             cb.accept(val);
         }, ex);
     }
@@ -117,7 +117,7 @@ public class Promise<T> {
     public Promise<T> onFailure(Consumer<Throwable> cb) { return onFailure(cb, null); }
     public Promise<T> onFailure(Consumer<Throwable> cb, Executor ex) {
         return addListener((err, val) -> {
-            if(val != null) return;
+            if(val.isPresent()) return;
             cb.accept(err.get());
         }, ex);
     }
@@ -180,7 +180,7 @@ public class Promise<T> {
     }
 
     public void resolve(T t) {
-        if(isDone()) return;
+        if(isDone()) throw new IllegalStateException("Promise already resolved!");
 
         this.value = t;
         this.state = State.RESOLVED;
@@ -190,7 +190,7 @@ public class Promise<T> {
     }
 
     public void reject(Throwable th) {
-        if(isDone()) return;
+        if(isDone()) throw new IllegalStateException("Promise already resolved!");
 
         // Always show rejected promises in the console
         new Exception("Promise rejected!", th).printStackTrace();

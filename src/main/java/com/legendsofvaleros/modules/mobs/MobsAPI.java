@@ -17,13 +17,14 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MobsAPI extends ModuleListener {
     public interface RPC {
-        Promise<Collection<Mob>> findMobs();
+        Promise<List<Mob>> findMobs();
 
-        Promise<Collection<SpawnArea>> findSpawns();
+        Promise<List<SpawnArea>> findSpawns();
         Promise<Boolean> saveSpawn(SpawnArea spawn);
         Promise<Boolean> deleteSpawn(Integer spawn);
     }

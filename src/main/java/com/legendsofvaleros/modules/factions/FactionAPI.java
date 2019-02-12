@@ -19,13 +19,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FactionAPI extends ModuleListener {
     public interface RPC {
-        Promise<Collection<Faction>> findFactions();
+        Promise<List<Faction>> findFactions();
 
         Promise<Map<String, Integer>> getPlayerFactionReputation(CharacterId characterId);
         Promise<Boolean> savePlayerFactionReputation(CharacterId characterId, Map<String, Integer> factions);
@@ -57,7 +57,7 @@ public class FactionAPI extends ModuleListener {
         }
     }
 
-    public Promise<Collection<Faction>> loadAll() {
+    public Promise<List<Faction>> loadAll() {
         return rpc.findFactions().onSuccess(val -> {
             factions.clear();
 

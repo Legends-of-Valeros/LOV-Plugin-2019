@@ -22,12 +22,15 @@ import net.citizensnpcs.api.trait.TraitInfo;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class NPCsAPI extends ModuleListener {
     public interface RPC {
-        Promise<Collection<NPCData>> findNPCs();
-        Promise<Collection<Skin>> findSkins();
+        Promise<List<NPCData>> findNPCs();
+        Promise<List<Skin>> findSkins();
 
         Promise<Boolean> saveNPC(NPCData npc);
     }
