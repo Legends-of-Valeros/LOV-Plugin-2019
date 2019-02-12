@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class Modules {
+    private static final InternalModule NONE = new InternalModule();
     private static Logger getLogger() {
         return LegendsOfValeros.getInstance().getLogger();
     }
@@ -148,17 +149,21 @@ public class Modules {
 
     private static boolean isDependencyMet(Class<? extends Module> dependency, boolean optional) {
         // Ignore optional dependencies if they're not enabled.
-        if (optional && !modules.get(dependency).isEnabled) return true;
+        if (optional && !isEnabled(dependency)) return true;
 
         // If the dependency is enabled, but not yet loaded, then dependencies aren't met
-        if (!modules.get(dependency).isLoaded)
+        if (!isLoaded(dependency))
             return false;
 
         return true;
     }
 
+    public static boolean isEnabled(Class<? extends Module> clazz) {
+        return modules.getOrDefault(clazz, NONE).isEnabled;
+    }
+
     public static boolean isLoaded(Class<? extends Module> clazz) {
-        return modules.get(clazz).isLoaded;
+        return modules.getOrDefault(clazz, NONE).isLoaded;
     }
 
     public static Module[] getLoadedModules() {
@@ -213,6 +218,8 @@ public class Modules {
         Map<Class<? extends Module>, Method> integrationMethods = new HashMap<>();
         Module instance;
         InternalScheduler scheduler;
+
+        private InternalModule() { }
 
         private InternalModule(Class<? extends Module> clazz) {
             this.moduleClass = clazz;
@@ -303,7 +310,7 @@ public class Modules {
                     : integrationClasses.entrySet()) {
 
                 // If the integration is satisfied, load the class
-                if (modules.get(integratesWith.getKey()).isLoaded()) {
+                if (Modules.isLoaded(integratesWith.getKey())) {
                     Class<? extends Integration> integrate = integratesWith.getValue();
 
                     // Verify that the integration class is inside of the module's package.
@@ -327,7 +334,7 @@ public class Modules {
                     : integrationMethods.entrySet()) {
 
                 // If the integration is satisfied, invoke the function
-                if (modules.get(integratesWith.getKey()).isLoaded()) {
+                if(Modules.isLoaded(integratesWith.getKey())) {
                     Method method = integratesWith.getValue();
 
                     try {

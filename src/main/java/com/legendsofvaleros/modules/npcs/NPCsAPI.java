@@ -11,7 +11,6 @@ import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.modules.loot.LootController;
 import com.legendsofvaleros.modules.npcs.core.NPCData;
 import com.legendsofvaleros.modules.npcs.core.Skin;
-import com.legendsofvaleros.modules.npcs.core.Skins;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
 import com.legendsofvaleros.util.MessageUtil;
@@ -28,6 +27,7 @@ import java.util.*;
 public class NPCsAPI extends ModuleListener {
     public interface RPC {
         Promise<Collection<NPCData>> findNPCs();
+        Promise<Collection<Skin>> findSkins();
 
         Promise<Boolean> saveNPC(NPCData npc);
     }
@@ -40,16 +40,14 @@ public class NPCsAPI extends ModuleListener {
 
     private HashMap<String, NPCData> npcs = new HashMap<>();
 
-    private static Map<String, Skin> skins = new HashMap<>();
-    public static Skin getSkin(String id) { return skins.get(id); }
+    private Map<String, Skin> skins = new HashMap<>();
+    public Skin getSkin(String id) { return skins.get(id); }
 
     @Override
     public void onLoad() {
         super.onLoad();
 
         this.rpc = APIController.create(RPC.class);
-
-        Skins.onEnable();
 
         this.registry = CitizensAPI.createAnonymousNPCRegistry(new MemoryNPCDataStore());
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TraitLOV.class).withName(TraitLOV.TRAIT_NAME));
@@ -83,7 +81,7 @@ public class NPCsAPI extends ModuleListener {
         }
     }
 
-    public Promise<Collection<NPCData>> loadAll() {
+    public Promise loadAll() {
         return rpc.findNPCs().onSuccess(val -> {
             npcs.clear();
 
@@ -91,6 +89,15 @@ public class NPCsAPI extends ModuleListener {
                     npcs.put(npc.npcId, npc));
 
             LootController.getInstance().getLogger().info("Loaded " + npcs.size() + " NPCs.");
+        }).onFailure(Throwable::printStackTrace)
+        .next(rpc::findSkins)
+        .onSuccess(val -> {
+            skins.clear();
+
+            val.orElse(ImmutableList.of()).stream().forEach(skin ->
+                    skins.put(skin.id, skin));
+
+            LootController.getInstance().getLogger().info("Loaded " + npcs.size() + " skins.");
         }).onFailure(Throwable::printStackTrace);
     }
 

@@ -13,7 +13,7 @@ import com.legendsofvaleros.modules.mobs.ai.AIStuckAction;
 import com.legendsofvaleros.modules.mobs.behavior.StaticAI;
 import com.legendsofvaleros.modules.mobs.trait.MobTrait;
 import com.legendsofvaleros.modules.npcs.NPCsController;
-import com.legendsofvaleros.modules.npcs.core.Skins;
+import com.legendsofvaleros.modules.npcs.core.Skin;
 import com.legendsofvaleros.util.MessageUtil;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.Equipment;
@@ -272,8 +272,7 @@ public class Mob {
             if (mob.type == EntityType.PLAYER) {
                 if (mob.getOptions().skin != null) {
                     try {
-                        Skins.Skin skin = Skins.getSkin(mob.getOptions().skin);
-
+                        Skin skin = NPCsController.getInstance().getSkin(mob.getOptions().skin);
                         if (skin == null)
                             throw new Exception("No skin with that ID. Offender: " + mob.getOptions().skin + " on " + mob.id);
 
