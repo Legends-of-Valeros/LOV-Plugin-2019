@@ -106,8 +106,8 @@ public class NPCCommands extends BaseCommand {
 						&& trait.getNPC().getEntity().getLocation() != null) {
 					player.teleport(trait.getNPC().getEntity().getLocation());
 					return;
-				}else if(trait.npcData.loc != null) {
-					player.teleport(trait.npcData.loc);
+				}else if(trait.npcData.getLocation() != null) {
+					player.teleport(trait.npcData.getLocation());
 					return;
 				}
 

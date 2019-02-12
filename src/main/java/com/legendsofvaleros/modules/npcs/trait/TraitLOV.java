@@ -137,7 +137,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
             try {
                 Skin skin = NPCsController.getInstance().getSkin(npcData.skin);
                 if (skin == null)
-                    throw new Exception("No skin with that ID. Offender: " + npcData.skin + " on " + npcData.npcId);
+                    throw new Exception("No skin with that ID. Offender: " + npcData.skin + " on " + npcData.id);
 
                 npc.data().setPersistent("cached-skin-uuid", skin.uuid);
                 npc.data().setPersistent("cached-skin-uuid-name", skin.username.toLowerCase());
@@ -155,14 +155,14 @@ public class TraitLOV extends Trait implements CommandConfigurable {
             }
         }
 
-        if (npcData.loc == null || npcData.loc.getWorld() == null
-                || npcData.loc.getWorld() != getNPC().getEntity().getLocation().getWorld()
-                || getNPC().getEntity().getLocation().distance(npcData.loc) > 2) {
-            npcData.loc = getNPC().getEntity().getLocation().getBlock().getLocation();
+        if (npcData.getLocation() == null || npcData.world == null
+                || npcData.world != getNPC().getEntity().getLocation().getWorld()
+                || getNPC().getEntity().getLocation().distance(npcData.getLocation()) > 2) {
+            npcData.setLocation(getNPC());
             NPCsController.getInstance().saveNPC(this);
         }
 
-        npcId = npcData.npcId;
+        npcId = npcData.id;
 
         traits = npcData.traits;
 

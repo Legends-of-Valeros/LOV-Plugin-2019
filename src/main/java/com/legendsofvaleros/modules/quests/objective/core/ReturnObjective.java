@@ -29,7 +29,7 @@ public class ReturnObjective extends AbstractQuestObjective<Boolean> {
 
     @Override
     public Location getLocation(PlayerCharacter pc) {
-        return npc != null ? npc.loc : null;
+        return npc != null ? npc.getLocation() : null;
     }
 
     @Override

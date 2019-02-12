@@ -89,7 +89,7 @@ public class NPCsAPI extends ModuleListener {
             npcs.clear();
 
             val.orElse(ImmutableList.of()).stream().forEach(npc ->
-                    npcs.put(npc.npcId, npc));
+                    npcs.put(npc.id, npc));
 
             LootController.getInstance().getLogger().info("Loaded " + npcs.size() + " NPCs.");
         }).onFailure(Throwable::printStackTrace)
@@ -100,7 +100,7 @@ public class NPCsAPI extends ModuleListener {
             val.orElse(ImmutableList.of()).stream().forEach(skin ->
                     skins.put(skin.id, skin));
 
-            LootController.getInstance().getLogger().info("Loaded " + npcs.size() + " skins.");
+            LootController.getInstance().getLogger().info("Loaded " + skins.size() + " skins.");
         }).onFailure(Throwable::printStackTrace);
     }
 

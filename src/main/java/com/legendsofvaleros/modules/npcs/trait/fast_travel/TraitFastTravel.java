@@ -102,7 +102,7 @@ public class TraitFastTravel extends LOVTrait {
                     return;
                 }
 
-                p1.teleport(npcData.loc);
+                p1.teleport(npcData.getLocation());
 
                 if(data.message != null && data.message.length() > 0)
                     NPCEmulator.speak(npc, p1, data.message);
