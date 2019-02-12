@@ -21,6 +21,7 @@ public class Modules {
      */
     private static Map<String, Class<? extends Module>> packages = new HashMap<>();
     private static Map<Class<? extends Module>, InternalModule> modules = new LinkedHashMap<>();
+    private static List<InternalModule> loadOrder = new ArrayList<>();
 
     public static void registerModule(Class<? extends Module> clazz) {
         modules.put(clazz, new InternalModule(clazz));
@@ -64,6 +65,8 @@ public class Modules {
                     getLogger().info("(" + (++i) + "/" + enabled + ") Loading " + module.getName() + "...");
 
                     module.load();
+
+                    loadOrder.add(module);
                 } catch (Exception e) {
                     getLogger().severe("Failed to load module. Aborting! Offender: " + module.getName());
                     e.printStackTrace();
@@ -102,19 +105,19 @@ public class Modules {
         i = 0;
 
         // For each loaded module
-        for (InternalModule module : modules.values()) {
+        for (InternalModule module : loadOrder) {
             if (module.isLoaded) {
                 i += module.loadIntegrations();
             }
         }
 
-        for (InternalModule module : modules.values()) {
+        getLogger().info("Loaded " + i + " integrations");
+
+        for (InternalModule module : loadOrder) {
             if (module.isLoaded) {
                 module.instance.onPostLoad();
             }
         }
-
-        getLogger().info("Loaded " + i + " integrations");
     }
 
     @Deprecated
@@ -125,13 +128,15 @@ public class Modules {
         packages.put(getModulePackage(clazz), clazz);
 
         im.load();
+
+        loadOrder.add(im);
     }
 
     /**
      * Unload all loaded modules.
      */
     public static void unloadModules() {
-        InternalModule[] toUnload = modules.values().stream()
+        InternalModule[] toUnload = loadOrder.stream()
                 .filter(InternalModule::isLoaded)
                 .toArray(length -> new InternalModule[length]);
 

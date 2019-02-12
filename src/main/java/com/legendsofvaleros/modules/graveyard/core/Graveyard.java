@@ -23,7 +23,7 @@ public class Graveyard {
 
     private String zoneId;
 
-    public transient Zone zone;
+    private transient Zone zone;
 	public Zone getZone() {
 	    if(this.zone == null)
 	        this.zone = ZonesController.getInstance().getZone(this.zoneId);

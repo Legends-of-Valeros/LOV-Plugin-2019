@@ -93,8 +93,8 @@ public class GraveyardAPI extends ModuleListener {
             graveyards.clear();
 
             val.orElse(ImmutableList.of()).stream()
-                .filter(yard -> yard.zone != null).forEach(yard ->
-                    graveyards.put(yard.zone.channel, yard));
+                .filter(yard -> yard.getZone() != null).forEach(yard ->
+                    graveyards.put(yard.getZone().channel, yard));
 
             getLogger().info("Loaded " + graveyards.size() + " graveyards.");
         }).onFailure(Throwable::printStackTrace);
@@ -118,7 +118,7 @@ public class GraveyardAPI extends ModuleListener {
     }
 
     public Promise<Boolean> addGraveyard(Graveyard yard) {
-        graveyards.put(yard.zone.channel, yard);
+        graveyards.put(yard.getZone().channel, yard);
 
         // If editing is enabled, generate the hologram right away.
         if(LegendsOfValeros.getMode().allowEditing())
@@ -128,7 +128,7 @@ public class GraveyardAPI extends ModuleListener {
     }
 
     public Promise<Boolean> removeGraveyard(Graveyard yard) {
-        graveyards.remove(yard.zone.channel, yard);
+        graveyards.remove(yard.getZone().channel, yard);
 
         return rpc.deleteGraveyard(yard);
     }
