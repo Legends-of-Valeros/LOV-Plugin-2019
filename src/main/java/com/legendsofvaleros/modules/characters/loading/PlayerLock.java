@@ -44,13 +44,13 @@ public class PlayerLock {
 		freezeTask.runTaskTimer(LegendsOfValeros.getInstance(), FREEZE_INTERVAL, FREEZE_INTERVAL);
 	}
 
-	public static void onDisable() {
+	/*public static void onDisable() {
 		locks.clear();
 		screenBlockers.clear();
 
 		HandlerList.unregisterAll(listener);
 		freezeTask.cancel();
-	}
+	}*/
 
 	/**
 	 * Gets a lock on a player that holds them in place and prevents them from moving, interacting, or
