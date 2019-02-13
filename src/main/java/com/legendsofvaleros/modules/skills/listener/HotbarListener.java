@@ -52,7 +52,7 @@ public class HotbarListener implements Runnable, Listener {
             return;
 
         if (e.isRightClick() && e.getSlot() < Hotswitch.SWITCHER_SLOT) {
-            SkillsController.getInstance().hotbarManager.updateSlot(Characters.getPlayerCharacter((Player) e.getWhoClicked()), Hotswitch.getInstance().getCurrentHotbar(e.getWhoClicked().getUniqueId()) * Hotswitch.SWITCHER_SLOT + e.getSlot(), null);
+            SkillsController.getInstance().updateSkillBar(Characters.getPlayerCharacter((Player) e.getWhoClicked()), Hotswitch.getInstance().getCurrentHotbar(e.getWhoClicked().getUniqueId()) * Hotswitch.SWITCHER_SLOT + e.getSlot(), null);
             e.getClickedInventory().setItem(e.getSlot(), Model.EMPTY_SLOT);
         }
     }
@@ -88,7 +88,7 @@ public class HotbarListener implements Runnable, Listener {
         for (int i = 0; i < Hotswitch.SWITCHER_SLOT; i++) {
             invStack = pc.getPlayer().getInventory().getItem(i);
 
-            String skill = SkillsController.getInstance().hotbarManager.getSlot(pc, bar * Hotswitch.SWITCHER_SLOT + i);
+            String skill = SkillsController.getInstance().getSkillBarSlot(pc, bar * Hotswitch.SWITCHER_SLOT + i);
             if (skill == null && invStack == null)
                 stack = Model.EMPTY_SLOT;
             else

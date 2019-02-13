@@ -96,7 +96,7 @@ public abstract class SkillTree {
             if (event.getHotbarButton() >= 0) {
                 if (event.getHotbarButton() < Hotswitch.SWITCHER_SLOT) {
                     if (skill.getValue() > 0) {
-                        SkillsController.getInstance().hotbarManager.updateSlot(pc, Hotswitch.getInstance().getCurrentHotbar(p.getUniqueId()) * Hotswitch.SWITCHER_SLOT + event.getHotbarButton(), skill.getKey().getId());
+                        SkillsController.getInstance().updateSkillBar(pc, Hotswitch.getInstance().getCurrentHotbar(p.getUniqueId()) * Hotswitch.SWITCHER_SLOT + event.getHotbarButton(), skill.getKey().getId());
                         p.getInventory().setItem(event.getHotbarButton(), skillStack);
 
                         Bukkit.getPluginManager().callEvent(new BindSkillEvent(p, Hotswitch.getInstance().getCurrentHotbar(p.getUniqueId()), event.getHotbarButton(), skill.getKey().getId()));

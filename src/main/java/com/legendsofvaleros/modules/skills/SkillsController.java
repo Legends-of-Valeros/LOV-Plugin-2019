@@ -2,7 +2,6 @@ package com.legendsofvaleros.modules.skills;
 
 import com.codingforcookies.robert.core.RomanNumeral;
 import com.codingforcookies.robert.item.ItemBuilder;
-import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.bank.BankController;
@@ -44,7 +43,7 @@ import java.util.Map.Entry;
 @DependsOn(Hotswitch.class)
 // TODO: Create subclass for listeners?
 @ModuleInfo(name = "Skills", info = "")
-public class SkillsController extends ModuleListener {
+public class SkillsController extends SkillsAPI {
     public static final SkillTree[] skillTrees = new SkillTree[] {
             new TreeWarrior(),
             new TreeRogue(),
@@ -55,15 +54,11 @@ public class SkillsController extends ModuleListener {
     private static SkillsController instance;
     public static SkillsController getInstance() { return instance; }
 
-    public SkillBarManager hotbarManager;
-
     @Override
     public void onLoad() {
         super.onLoad();
 
         instance = this;
-
-        hotbarManager = new SkillBarManager();
 
         new HotbarListener();
 
