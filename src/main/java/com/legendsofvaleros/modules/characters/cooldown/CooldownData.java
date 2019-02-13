@@ -1,16 +1,11 @@
 package com.legendsofvaleros.modules.characters.cooldown;
 
-import com.codingforcookies.doris.query.InsertQuery;
-import com.codingforcookies.doris.query.RemoveQuery;
-import com.codingforcookies.doris.sql.QueryMethod;
-import com.codingforcookies.doris.sql.TableManager;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.Cooldowns;
 import com.legendsofvaleros.modules.characters.api.Cooldowns.Cooldown;
 import com.legendsofvaleros.modules.characters.api.Cooldowns.CooldownType;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
-import com.legendsofvaleros.modules.characters.config.DatabaseConfig;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
@@ -42,7 +37,7 @@ public class CooldownData {
 
 	private static Set<CharacterId> loadedCharacters;
 
-	public static void onEnable(DatabaseConfig dbConfig) {
+	public static void onEnable() {
 		managerCooldowns = new TableManager(dbConfig.getDbPoolsId(), TABLE_NAME);
 
 		managerCooldowns.primary(ID_FIELD, "VARCHAR(38)")

@@ -46,10 +46,10 @@ public class EntityThreatLevels implements EntityThreat {
                 config.getValidationCheckTicks());
     }
 
-    static void onDisable() {
+    /*static void onDisable() {
         trackers.clear();
         checkTask.cancel();
-    }
+    }*/
 
     private final CombatEntity parent;
     private EntityListener listener;

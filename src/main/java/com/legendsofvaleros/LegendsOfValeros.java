@@ -7,7 +7,6 @@ import com.google.common.cache.CacheBuilder;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.Modules;
-import com.legendsofvaleros.modules.auction.AuctionController;
 import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.bigbrother.BigBrotherController;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -24,7 +23,6 @@ import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.modules.keepoutofocean.KeepOutOfOcean;
 import com.legendsofvaleros.modules.levelarchetypes.core.LevelArchetypes;
 import com.legendsofvaleros.modules.loot.LootController;
-import com.legendsofvaleros.modules.mailbox.MailboxController;
 import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.modules.mount.MountsController;
 import com.legendsofvaleros.modules.npcs.NPCsController;
@@ -167,8 +165,8 @@ public class LegendsOfValeros extends JavaPlugin {
         Modules.registerModule(RegionController.class);
         Modules.registerModule(SkillsController.class);
         Modules.registerModule(ZonesController.class);
-        Modules.registerModule(AuctionController.class);
-        Modules.registerModule(MailboxController.class);
+        // Modules.registerModule(AuctionController.class);
+        // Modules.registerModule(MailboxController.class);
     }
 
     public void registerEvents(Listener listener, Module module) {

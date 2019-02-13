@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.quests;
 
-import com.codingforcookies.doris.sql.TableManager;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.HashMultimap;
@@ -78,9 +77,6 @@ public class QuestManager {
     private static final String QUEST_OBJECTIVES = "quest_objectives";
 
     private static Gson gson;
-
-    private static TableManager managerPlayers;
-    private static TableManager managerQuests;
 
     private static FutureCache<String, IQuest> quests;
 

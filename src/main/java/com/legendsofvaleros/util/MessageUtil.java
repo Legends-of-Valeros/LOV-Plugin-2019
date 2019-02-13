@@ -1,6 +1,5 @@
 package com.legendsofvaleros.util;
 
-import com.codingforcookies.doris.sql.TableManager;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.Module;
 import de.btobastian.javacord.entities.Channel;
@@ -134,7 +133,7 @@ public class MessageUtil {
 
         if (LegendsOfValeros.getMode().doLogSaving()) {
             try {
-                ExceptionManager.add(module, sender, th);
+                // ExceptionManager.add(module, sender, th);
                 sendExceptionToDiscord(module, sender, th, true);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -214,11 +213,11 @@ public class MessageUtil {
         Thread.setDefaultUncaughtExceptionHandler((thread, th) -> {
             th.printStackTrace();
 
-            ExceptionManager.add(null, null, th);
+            // ExceptionManager.add(null, null, th);
         });
     }
 
-    public static class ExceptionManager {
+    /*public static class ExceptionManager {
         private static final String TABLE_NAME = "exceptions";
 
         private static final String ID_FIELD = "exception_id";
@@ -230,13 +229,7 @@ public class MessageUtil {
         private static TableManager manager;
 
         public static void onEnable(String dbPoolId) {
-            manager = new TableManager(dbPoolId, TABLE_NAME);
 
-            manager.primary(ID_FIELD, "INT NOT NULL AUTO_INCREMENT")
-                    .column(PLUGIN_FIELD, "VARCHAR(32)")
-                    .column(TIME, "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-                    .column(PLAYER, "VARCHAR(32)")
-                    .column(TRACE, "TEXT").create();
         }
 
         public static void add(String module, CommandSender sender, Throwable th) {
@@ -250,5 +243,5 @@ public class MessageUtil {
                     .build()
                     .execute(true);
         }
-    }
+    }*/
 }

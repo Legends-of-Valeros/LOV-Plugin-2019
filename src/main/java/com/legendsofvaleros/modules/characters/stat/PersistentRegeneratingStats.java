@@ -1,13 +1,10 @@
 package com.legendsofvaleros.modules.characters.stat;
 
-import com.codingforcookies.doris.query.InsertQuery;
-import com.codingforcookies.doris.sql.TableManager;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
-import com.legendsofvaleros.modules.characters.config.DatabaseConfig;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
@@ -16,7 +13,6 @@ import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.events.CombatEntityCreateEvent;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -43,7 +39,7 @@ public class PersistentRegeneratingStats {
 
     private Map<CharacterId, RegeneratingStatData> dataMap;
 
-    public PersistentRegeneratingStats(DatabaseConfig dbConfig) {
+    public PersistentRegeneratingStats() {
         managerStats = new TableManager(dbConfig.getDbPoolsId(), TABLE_NAME);
 
         managerStats.primary(CHARACTER_FIELD, "VARCHAR(38)")
@@ -55,7 +51,7 @@ public class PersistentRegeneratingStats {
         Characters.getInstance().registerEvents(new PlayerCharacterListener());
     }
 
-    public void onDisable() {
+    /*public void onDisable() {
         // saves any unsaved data. PlayerQuitEvents are not thrown on shutdown, so this is important
         // even if /reload is never used
         for (RegeneratingStatData data : dataMap.values()) {
@@ -66,7 +62,7 @@ public class PersistentRegeneratingStats {
         }
 
         dataMap.clear();
-    }
+    }*/
 
     private void load(CharacterId characterId, PhaseLock lock) {
         if (characterId == null) return;
@@ -210,5 +206,4 @@ public class PersistentRegeneratingStats {
             values = new HashMap<>();
         }
     }
-
 }

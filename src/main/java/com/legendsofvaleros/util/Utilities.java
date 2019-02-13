@@ -1,12 +1,10 @@
 package com.legendsofvaleros.util;
 
-import com.codingforcookies.doris.Doris;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.scheduler.InternalScheduler;
 import com.legendsofvaleros.scheduler.InternalTask;
-import com.legendsofvaleros.util.MessageUtil.ExceptionManager;
 import com.legendsofvaleros.util.commands.LOVCommands;
 import com.legendsofvaleros.util.commands.TemporaryCommand;
 import com.legendsofvaleros.util.item.Model;
@@ -49,7 +47,7 @@ public class Utilities extends ModuleListener {
         Discord.onEnable();
 
         LoggingOut.onEnable();
-        ExceptionManager.onEnable(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"));
+
         PlayerData.onEnable();
 
         new TitleUtil();
@@ -104,13 +102,6 @@ public class Utilities extends ModuleListener {
         // to start additional cleanup. This allows event handlers to
         // finish (maybe)? Does this create a race condition?
         getScheduler().executeInMyCircleTimer(() -> {
-            // Wait for async tasks to complete. Unless a task hits the database
-            // every second, this should pass eventually every time.
-            if (Doris.inst().waitingAsync.get() > 0) {
-                getLogger().info("Waiting for " + Doris.inst().waitingAsync.get() + " async queries to complete...");
-                return;
-            }
-
             for (InternalScheduler scheduler : InternalScheduler.getAllSchedulers()) {
                 if (scheduler == getScheduler()) continue;
 

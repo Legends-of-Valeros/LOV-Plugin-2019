@@ -1,7 +1,3 @@
-# The id of the DBPools database to use, as it appears in plugins/DBPools/config.yml
-# This plugin relies on DBPools for database connections. Without it, this plugin cannot function.
-dbpools-database: "mysql1"
-
 # Possible values are DEV, TESTING, and LIVE.
 # DEV = Verbose logging. Doesn't log exceptions.
 # TESTING = Verbose logging.

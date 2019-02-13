@@ -1,11 +1,3 @@
-# -----------------------------------------------------------------------------
-# The MySQL database pool to use, as it appears in the DBPools configuration.
-#
-# This database connection must be configured in DBPools' config and must be
-# reachable or Characters will not load.
-# -----------------------------------------------------------------------------
-dbpools-database: mysql1
-
 creation-start-text:
 - "MSG:You awake suddenly to the sound of horses and people shouting. It seems your comfortable journey came to an abrupt end."
 - WAIT:60
