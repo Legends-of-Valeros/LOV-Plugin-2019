@@ -35,7 +35,7 @@ public class SkillsAPI extends ModuleListener {
     public void onLoad() {
         super.onLoad();
 
-        this.rpc = APIController.create(SkillsController.getInstance(), RPC.class);
+        this.rpc = APIController.create(RPC.class);
 
         registerEvents(new PlayerListener());
     }
