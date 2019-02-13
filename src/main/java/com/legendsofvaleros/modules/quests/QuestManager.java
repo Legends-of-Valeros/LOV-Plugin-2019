@@ -307,7 +307,7 @@ public class QuestManager {
                                 try {
                                     IQuest quest = future.get();
                                     if(quest == null) {
-                                        throw new Exception("Quest didn't load. Does it still exist?");
+                                        throw new Exception("Quest didn't load with Id (" + questId + "). Does it still exist?");
                                     }else{
                                         JsonArray progresses = progressObj.get("data").getAsJsonArray();
                                         QuestProgressPack progressPack = new QuestProgressPack(

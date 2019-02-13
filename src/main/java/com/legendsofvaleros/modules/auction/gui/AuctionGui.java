@@ -61,11 +61,12 @@ public class AuctionGui extends GUI implements Listener {
             e.setCancelled(true);
         });
 
-        slot(48, filterType.getGuiMaterial(), (gui, p, e) -> { //change filter type
+        slot(48, filterType.toItemStack(), (gui, p, e) -> { //change filter type
             //TODO
         });
 
-        slot(48, filterDirection.getGuiMaterial(), (gui, p, e) -> { //change filter type
+        slot(49, filterDirection.toItemStack(), (gui, p, e) -> { //change filter direction
+            //TODO
         });
 
         if (currentPage < totalPages) {

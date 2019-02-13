@@ -142,7 +142,7 @@ public class Auction {
             return true;
         }
 
-        playerCharacter.getPlayer().sendMessage("You don't have enough money to buy " + amount + " of" + getItem().toInstance().gear.getName());
+        playerCharacter.getPlayer().sendMessage("You don't have enough money to buy " + amount + " of " + getItem().toInstance().gear.getName());
         return false;
     }
 
