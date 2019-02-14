@@ -4,7 +4,6 @@ import com.legendsofvaleros.module.Integration;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.npcs.trait.bank.repair.RepairItemEvent;
 import com.legendsofvaleros.modules.quests.QuestController;
-import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.action.QuestActionFactory;
 import com.legendsofvaleros.modules.quests.action.bank.ActionAddCurrency;
 import com.legendsofvaleros.modules.quests.objective.QuestObjectiveFactory;

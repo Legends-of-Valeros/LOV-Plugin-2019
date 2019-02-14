@@ -2,7 +2,6 @@ package com.legendsofvaleros.modules.quests.integration;
 
 import com.legendsofvaleros.module.Integration;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.objective.QuestObjectiveFactory;
 import com.legendsofvaleros.modules.quests.objective.skills.SkillBindObjective;
 import com.legendsofvaleros.modules.quests.objective.skills.SkillUseObjective;

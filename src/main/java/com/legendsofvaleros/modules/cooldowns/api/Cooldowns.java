@@ -1,4 +1,6 @@
-package com.legendsofvaleros.modules.characters.api;
+package com.legendsofvaleros.modules.cooldowns.api;
+
+import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 
 /**
  * A set of cooldowns for a player-character.
@@ -24,7 +26,7 @@ public interface Cooldowns {
 
   /**
    * Gets the cooldown for a given key, if there is one.
-   * 
+   *
    * @param key The key of the cooldown to get.
    * @return The cooldown for the given key, if one is found. Else <code>null</code>.
    * @throws IllegalStateException If the player these cooldowns is for is not online.
@@ -151,7 +153,7 @@ public interface Cooldowns {
      * Counts down only while the player is online the server/network, but regardless of which
      * character they are playing.
      */
-    PLAYER_PLAY_TIME(),
+    // PLAYER_PLAY_TIME(),
 
     /**
      * Counts down only while the player is logged in as the specific character that the cooldown is

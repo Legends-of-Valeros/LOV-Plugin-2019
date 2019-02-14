@@ -1,13 +1,13 @@
 package com.legendsofvaleros.modules.gear.component.core;
 
 import com.codingforcookies.robert.item.ItemBuilder;
-import com.legendsofvaleros.modules.characters.api.Cooldowns;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
+import com.legendsofvaleros.modules.cooldowns.api.Cooldowns;
 import com.legendsofvaleros.modules.gear.component.GearComponent;
 import com.legendsofvaleros.modules.gear.component.GearComponentOrder;
 import com.legendsofvaleros.modules.gear.core.Gear;

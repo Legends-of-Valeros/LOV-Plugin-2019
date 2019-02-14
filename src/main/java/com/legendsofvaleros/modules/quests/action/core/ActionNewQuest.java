@@ -3,7 +3,6 @@ package com.legendsofvaleros.modules.quests.action.core;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.QuestController;
-import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.action.AbstractQuestAction;
 import com.legendsofvaleros.modules.quests.api.IQuest;
 import com.legendsofvaleros.util.MessageUtil;

@@ -2,7 +2,6 @@ package com.legendsofvaleros.modules.characters.core;
 
 import com.legendsofvaleros.modules.characters.api.AbilityStats;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
-import com.legendsofvaleros.modules.characters.api.Cooldowns;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.config.RaceConfig;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
@@ -11,6 +10,8 @@ import com.legendsofvaleros.modules.characters.race.EntityRace;
 import com.legendsofvaleros.modules.characters.skill.PlayerSkillSet;
 import com.legendsofvaleros.modules.characters.skill.SkillSet;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
+import com.legendsofvaleros.modules.cooldowns.CooldownsController;
+import com.legendsofvaleros.modules.cooldowns.api.Cooldowns;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -37,7 +38,6 @@ public class ReusablePlayerCharacter implements PlayerCharacter {
 	private Location savedLoc;
 
 	private CharacterExperience experience;
-	private CharacterCooldowns cooldowns;
 	private CharacterAbilityStats abilityStats;
 
 	private InventoryData inventoryData;
@@ -65,8 +65,6 @@ public class ReusablePlayerCharacter implements PlayerCharacter {
 
 		this.experience = experience;
 		experience.setParent(this);
-
-		this.cooldowns = new CharacterCooldowns(this);
 
 		this.inventoryData = inventoryData;
 		
@@ -129,11 +127,6 @@ public class ReusablePlayerCharacter implements PlayerCharacter {
 	}
 
 	@Override
-	public Cooldowns getCooldowns() {
-		return cooldowns;
-	}
-
-	@Override
 	public AbilityStats getAbilityStats() {
 		return abilityStats;
 	}
@@ -146,6 +139,11 @@ public class ReusablePlayerCharacter implements PlayerCharacter {
 	@Override
 	public SkillSet getSkillSet() {
 		return skillSet;
+	}
+
+	@Override
+	public Cooldowns getCooldowns() {
+		return CooldownsController.getInstance().getCooldowns(id);
 	}
 
 	/**
@@ -171,8 +169,6 @@ public class ReusablePlayerCharacter implements PlayerCharacter {
 			if (p == null) {
 				return;
 			}
-
-			cooldowns.setCurrent(current);
 
 			if (current) { // on set to current
 				p.teleport(savedLoc);
@@ -216,9 +212,4 @@ public class ReusablePlayerCharacter implements PlayerCharacter {
 			inventoryData.onDeath(this);
 		}
 	}
-
-	void onQuit() {
-		cooldowns.onQuit();
-	}
-
 }

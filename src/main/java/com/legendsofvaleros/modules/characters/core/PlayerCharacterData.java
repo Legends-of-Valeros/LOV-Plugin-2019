@@ -1,8 +1,6 @@
 package com.legendsofvaleros.modules.characters.core;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
 import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
@@ -104,16 +102,14 @@ public class PlayerCharacterData {
      * Saves basic player-character data when for a player when they log out.
      * @param playerId The name of the player logging out.
      */
-    static ListenableFuture<Void> onLogout(UUID playerId) {
-        SettableFuture<Void> ret = SettableFuture.create();
+    static Promise<Boolean> onLogout(UUID playerId) {
+        Promise<Boolean> promise = new Promise<>();
 
         PlayerCharacterCollection data = dataMap.remove(playerId);
 
         if (data == null) {
-            ret.set(null);
+            promise.resolve(false);
         } else {
-            data.onQuit();
-
             Set<ReusablePlayerCharacter> changed;
             if (!(changed = data.getChanged()).isEmpty()) {
                 for (ReusablePlayerCharacter rpc : changed) {
@@ -121,18 +117,18 @@ public class PlayerCharacterData {
                         rpc.getInventoryData().saveInventory(rpc).addListener(() -> {
                             save(rpc);
 
-                            ret.set(null);
+                            promise.resolve(true);
                         }, Characters.getInstance().getScheduler()::sync);
                     }else{
                         save(rpc);
 
-                        ret.set(null);
+                        promise.resolve(true);
                     }
                 }
             }
         }
 
-        return ret;
+        return promise;
     }
 
     public static Promise<Boolean> remove(UUID playerId, int characterId) {

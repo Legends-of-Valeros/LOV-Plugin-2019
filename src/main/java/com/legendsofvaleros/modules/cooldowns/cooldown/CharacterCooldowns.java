@@ -1,10 +1,8 @@
-package com.legendsofvaleros.modules.characters.core;
+package com.legendsofvaleros.modules.cooldowns.cooldown;
 
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.characters.api.Cooldowns;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.cooldown.CooldownData;
-import com.legendsofvaleros.modules.characters.cooldown.RemainingDurationCalculator;
+import com.legendsofvaleros.modules.cooldowns.api.Cooldowns;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
@@ -33,7 +31,9 @@ public class CharacterCooldowns implements Cooldowns {
 
     private final PlayerCharacter playerCharacter;
     private final RemainingDurationCalculator calc;
+
     private final Map<String, CharacterCooldown> cooldownMap;
+    public Collection<CharacterCooldown> getCooldowns() { return cooldownMap.values(); }
 
     private final Set<CharacterCooldown> shortCooldowns;
     private final Set<CharacterCooldown> mediumCooldowns;
@@ -113,39 +113,26 @@ public class CharacterCooldowns implements Cooldowns {
         return cd;
     }
 
-    void setCurrent(boolean current) {
+    public void onLogin() {
+        calc.onLogin();
 
-        if (current) {
-            calc.onCharacterLogin();
-
-            // schedules expiration tasks for any listened-to character-play-time cooldowns
-            for (CharacterCooldown cd : cooldownMap.values()) {
-                if (cd.type == CooldownType.CHARACTER_PLAY_TIME) {
-                    cd.scheduleTask();
-                }
-            }
-
-        } else {
-            calc.onCharacterLogout();
-
-            // halts expiration tasks for any listened-to character-play-time cooldowns
-            for (CharacterCooldown cd : cooldownMap.values()) {
-                if (cd.type == CooldownType.CHARACTER_PLAY_TIME) {
-                    cd.unscheduleTask();
-                }
+        // schedules expiration tasks for any listened-to character-play-time cooldowns
+        for (CharacterCooldown cd : cooldownMap.values()) {
+            if (cd.type == CooldownType.CHARACTER_PLAY_TIME) {
+                cd.scheduleTask();
             }
         }
     }
 
-    void onQuit() {
-        calc.onPlayerQuit();
+    public void onLogout() {
+        calc.onLogout();
 
+        // halts expiration tasks for any listened-to character-play-time cooldowns
         for (CharacterCooldown cd : cooldownMap.values()) {
-            cd.unscheduleTask();
+            if (cd.type == CooldownType.CHARACTER_PLAY_TIME) {
+                cd.unscheduleTask();
+            }
         }
-
-        CooldownData.saveCooldowns(playerCharacter.getUniqueCharacterId(), cooldownMap.values(),
-                expiredKeys);
     }
 
     private CharacterCooldown createCooldown(String key, CooldownType type, long durationMillis) {
@@ -265,7 +252,7 @@ public class CharacterCooldowns implements Cooldowns {
     /**
      * An instance of a cooldown for a player-character.
      */
-    private class CharacterCooldown implements Cooldown {
+    public class CharacterCooldown implements Cooldown {
 
         private final Cooldowns parent;
         private final String key;
@@ -324,7 +311,7 @@ public class CharacterCooldowns implements Cooldowns {
             }
         }
 
-        private void unscheduleTask() {
+        public void unscheduleTask() {
             if (scheduledTask != null) {
                 scheduledTask.cancel();
                 scheduledTask = null;

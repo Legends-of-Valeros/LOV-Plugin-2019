@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.chat;
 
-import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
@@ -8,8 +7,6 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.chat.listener.ChatListener;
 import com.legendsofvaleros.modules.chat.listener.CommandListener;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
-import com.legendsofvaleros.modules.playermenu.settings.PlayerSettings;
-import com.legendsofvaleros.modules.playermenu.settings.PlayerSettingsOpenEvent;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -21,7 +18,6 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
 @DependsOn(PlayerMenu.class)
 @DependsOn(Characters.class)
@@ -95,7 +91,7 @@ public class ChatController extends ModuleListener {
             }
         }
 
-        ListenableFuture<PlayerSettings> future = PlayerSettings.get(event.getPlayer());
+        /*ListenableFuture<PlayerSettings> future = PlayerSettings.get(event.getPlayer());
         future.addListener(() -> {
             try {
                 PlayerSettings settings = future.get();
@@ -108,7 +104,7 @@ public class ChatController extends ModuleListener {
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
-        }, ChatController.getInstance().getScheduler()::sync);
+        }, ChatController.getInstance().getScheduler()::sync);*/
 
         players.put(event.getPlayer().getUniqueId(), data);
     }
@@ -123,10 +119,5 @@ public class ChatController extends ModuleListener {
     @Override
     public void onUnload() {
         super.onUnload();
-    }
-
-    @EventHandler
-    public void onSettingsOpen(PlayerSettingsOpenEvent event) {
-
     }
 }

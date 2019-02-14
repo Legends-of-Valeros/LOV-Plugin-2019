@@ -8,7 +8,6 @@ import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.parties.PartiesController;
 import com.legendsofvaleros.modules.parties.core.PlayerParty;
 import com.legendsofvaleros.modules.quests.QuestController;
-import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.objective.QuestObjectiveFactory;
 import com.legendsofvaleros.modules.quests.objective.mobs.KillObjective;
 import org.bukkit.entity.Player;

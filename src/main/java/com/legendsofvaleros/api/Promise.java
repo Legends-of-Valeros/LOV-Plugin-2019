@@ -10,9 +10,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-public class Promise<T> {
-    public interface Function<T> { T run() throws Throwable; }
-    public interface Listener<T> { void run(Optional<Throwable> th, Optional<T> t); }
+public class Promise<R> {
+    public interface Function<R, V> { R run(Optional<V> val) throws Throwable; }
+    public interface FunctionAlone<R> { R run() throws Throwable; }
+    public interface Listener<R> { void run(Optional<Throwable> th, Optional<R> t); }
 
     enum State {PENDING, FIRED, RESOLVED, REJECTED }
 
@@ -80,9 +81,9 @@ public class Promise<T> {
     public boolean wasSuccess() { return this.state == State.RESOLVED; }
     public boolean wasRejected() { return this.state == State.REJECTED; }
 
-    public Promise<T> addListener(Runnable cb) { return addListener((err, val) -> cb.run(), null); }
-    public Promise<T> addListener(Listener<T> cb) { return addListener(cb, null); }
-    public Promise<T> addListener(Listener<T> cb, Executor ex) {
+    public Promise<R> addListener(Runnable cb) { return addListener((err, val) -> cb.run(), null); }
+    public Promise<R> addListener(Listener<R> cb) { return addListener(cb, null); }
+    public Promise<R> addListener(Listener<R> cb, Executor ex) {
         if(ex == null) ex = this.executor;
 
         callbacks.put(cb, ex);
@@ -90,7 +91,7 @@ public class Promise<T> {
         // If the promise is already fulfilled, fire the callback immediately
         if(isDone()) {
             if(wasSuccess())
-                ex.execute(() -> cb.run(Optional.empty(), Optional.of((T)value)));
+                ex.execute(() -> cb.run(Optional.empty(), Optional.ofNullable((R)value)));
             else if(wasRejected())
                 ex.execute(() -> cb.run(Optional.of((Throwable)value), Optional.empty()));
             else
@@ -100,53 +101,53 @@ public class Promise<T> {
         return this;
     }
 
-    public Promise<T> on(Runnable cb) { return on((err, val) -> cb.run(), null); }
-    public Promise<T> on(Listener<T> cb) { return on(cb, null); }
-    public Promise<T> on(Listener<T> cb, Executor ex) { return addListener(cb, ex); }
+    public Promise<R> on(Runnable cb) { return on((err, val) -> cb.run(), null); }
+    public Promise<R> on(Listener<R> cb) { return on(cb, null); }
+    public Promise<R> on(Listener<R> cb, Executor ex) { return addListener(cb, ex); }
 
-    public Promise<T> onSuccess(Runnable cb) { return onSuccess(val -> cb.run(), null); }
-    public Promise<T> onSuccess(Consumer<Optional<T>> cb) { return onSuccess(cb, null); }
-    public Promise<T> onSuccess(Consumer<Optional<T>> cb, Executor ex) {
+    public Promise<R> onSuccess(Runnable cb) { return onSuccess(val -> cb.run(), null); }
+    public Promise<R> onSuccess(Consumer<Optional<R>> cb) { return onSuccess(cb, null); }
+    public Promise<R> onSuccess(Consumer<Optional<R>> cb, Executor ex) {
         return addListener((err, val) -> {
             if(err.isPresent()) return;
             cb.accept(val);
         }, ex);
     }
 
-    public Promise<T> onFailure(Runnable cb) { return onFailure((err) -> cb.run(), null); }
-    public Promise<T> onFailure(Consumer<Throwable> cb) { return onFailure(cb, null); }
-    public Promise<T> onFailure(Consumer<Throwable> cb, Executor ex) {
+    public Promise<R> onFailure(Runnable cb) { return onFailure((err) -> cb.run(), null); }
+    public Promise<R> onFailure(Consumer<Throwable> cb) { return onFailure(cb, null); }
+    public Promise<R> onFailure(Consumer<Throwable> cb, Executor ex) {
         return addListener((err, val) -> {
             if(val.isPresent()) return;
             cb.accept(err.get());
         }, ex);
     }
 
-    public <N> Promise<N> then(Function<N> func) { return then(func, this.executor); }
-    public <N> Promise<N> then(Function<N> func, Executor ex) {
-        Promise<N> promise = new Promise<>(ex);
+    public <V> Promise<V> then(Function<V, R> func) { return then(func, this.executor); }
+    public <V> Promise<V> then(Function<V, R> func, Executor ex) {
+        Promise<V> promise = new Promise<>(ex);
 
         // Fire the next promise on success.
-        onSuccess(val -> promise.fire(func), ex);
+        onSuccess(val -> promise.fire(func, val.orElse(null)), ex);
 
         return promise;
     }
 
-    public <N> Promise<N> next(Function<Promise<N>> func) { return next(func, this.executor); }
-    public <N> Promise<N> next(Function<Promise<N>> func, Executor ex) {
-        Promise<N> promise = new Promise<>(ex);
+    public <V> Promise<V> next(Function<Promise<V>, R> func) { return next(func, this.executor); }
+    public <V> Promise<V> next(Function<Promise<V>, R> func, Executor ex) {
+        Promise<V> promise = new Promise<>(ex);
 
         // Fire the next promise on success.
-        onSuccess(__ -> {
+        onSuccess(val -> {
             // When the promise returns, propagate it up to the proxy promise.
             try {
-                func.run().addListener((err, val) -> {
+                func.run(Optional.ofNullable(val.orElse(null))).on((err, val2) -> {
                     if(err.isPresent()) {
                         promise.reject(err.get());
                         return;
                     }
 
-                    promise.resolve(val.orElse(null));
+                    promise.resolve(val2.orElse(null));
                 });
             } catch (Throwable th) {
                  promise.reject(th);
@@ -156,11 +157,11 @@ public class Promise<T> {
         return promise;
     }
 
-    public T get() throws Throwable {
+    public R get() throws Throwable {
         return get(null, 0L);
     }
 
-    public T get(TimeUnit unit, long duration) throws Throwable {
+    public R get(TimeUnit unit, long duration) throws Throwable {
         if(!isDone()) {
             waiting.add(Thread.currentThread());
 
@@ -176,10 +177,10 @@ public class Promise<T> {
         }
 
         if(this.value instanceof Throwable) throw (Throwable)this.value;
-        return (T)this.value;
+        return (R)this.value;
     }
 
-    public void resolve(T t) {
+    public void resolve(R t) {
         if(isDone()) throw new IllegalStateException("Promise already resolved!");
 
         this.value = t;
@@ -209,7 +210,7 @@ public class Promise<T> {
      * don't need knowledge of the function that called them,
      * and it gives us more flexibility if they don't.
      */
-    private Promise<T> fire(Function<T> func) {
+    private <V> Promise<R> fire(Function<R, V> func, V val) {
         if(this.state != State.PENDING)
             throw new IllegalStateException("Promise has already been made! You cannot fire it again!");
 
@@ -218,7 +219,7 @@ public class Promise<T> {
         if(func != null) {
             this.executor.execute(() -> {
                 try {
-                    this.resolve(func.run());
+                    this.resolve(func.run(Optional.ofNullable(val)));
                 } catch (Throwable th) {
                     this.reject(th);
                 }
@@ -228,12 +229,20 @@ public class Promise<T> {
         return this;
     }
 
-    public static <T> Promise<T> make(Function<T> func) {
-        return make(func, null);
+    public static <R> Promise<R> make(R r) {
+        return make(() -> r);
     }
 
-    public static <T> Promise<T> make(Function<T> func, Executor exec) {
-        return new Promise<T>(exec).fire(func);
+    public static Promise<Void> make(Runnable func) {
+        return make(v -> { func.run(); return null; }, null);
+    }
+
+    public static <R> Promise<R> make(FunctionAlone<R> func) {
+        return make(v -> func.run(), null);
+    }
+
+    public static <R> Promise<R> make(Function<R, Void> func, Executor exec) {
+        return new Promise<R>(exec).fire(func, null);
     }
 
     public static Promise<Object[]> collect(Promise... promises) {

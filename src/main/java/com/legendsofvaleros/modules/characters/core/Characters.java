@@ -10,7 +10,6 @@ import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
 import com.legendsofvaleros.modules.characters.config.BukkitConfig;
 import com.legendsofvaleros.modules.characters.config.CharactersConfig;
-import com.legendsofvaleros.modules.characters.cooldown.CooldownData;
 import com.legendsofvaleros.modules.characters.creation.PlayerCreation;
 import com.legendsofvaleros.modules.characters.loading.PlayerLock;
 import com.legendsofvaleros.modules.characters.skilleffect.PersistingEffects;
@@ -77,8 +76,6 @@ public class Characters extends Module implements CharactersAPI {
         // initializes core player-character data
         PlayerCharacterData.onEnable();
 
-        // initializes cooldown data
-        CooldownData.onEnable();
         // initializes persistent health, mana, and energy data
         persistentRegenStats = new PersistentRegeneratingStats();
 

@@ -5,17 +5,15 @@ import com.google.common.cache.CacheStats;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
+import com.legendsofvaleros.api.Promise;
 
 import javax.annotation.Nonnull;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ExecutionException;
 
-public class FutureCache<K, V> {
+public class PromiseCache<K, V> {
     @FunctionalInterface
     public interface ILoader<K, V> {
-        void loadValue(K key, SettableFuture<V> ret);
+        Promise<V> loadValue(K key);
     }
 
     private final Cache<K, V> cache;
@@ -24,9 +22,9 @@ public class FutureCache<K, V> {
     /**
      * Stores the futures waiting for a value to be loaded.
      */
-    private Multimap<K, SettableFuture<V>> awaiting = HashMultimap.create();
+    private Multimap<K, Promise<V>> awaiting = HashMultimap.create();
 
-    public FutureCache(Cache<K, V> cache, ILoader<K, V> loader) {
+    public PromiseCache(Cache<K, V> cache, ILoader<K, V> loader) {
         this.cache = cache;
         this.loader = loader;
     }
@@ -35,33 +33,25 @@ public class FutureCache<K, V> {
         return cache.getIfPresent(k);
     }
 
-    public synchronized ListenableFuture<V> get(@Nonnull K k) {
+    public synchronized Promise<V> get(@Nonnull K k) {
         if(k == null) return null;
 
-        SettableFuture<V> ret = SettableFuture.create();
+        Promise<V> promise = new Promise<>();
 
         V cached = cache.getIfPresent(k);
         if(cached != null)
-            ret.set(cached);
+            promise.resolve(cached);
         else{
             if(!awaiting.containsKey(k)) {
-                SettableFuture<V> future = SettableFuture.create();
-
-                loader.loadValue(k, future);
-
-                future.addListener(() -> {
-                    try {
-                        put(k, future.get());
-                    } catch (InterruptedException | ExecutionException e) {
-                        e.printStackTrace();
-                    }
-                }, Utilities.getInstance().getScheduler()::async);
+                loader.loadValue(k).onSuccess(val -> {
+                    put(k, val.orElse(null));
+                });
             }
 
-            awaiting.put(k, ret);
+            awaiting.put(k, promise);
         }
 
-        return ret;
+        return promise;
     }
 
     public synchronized void put(K k, V v) {
@@ -69,8 +59,8 @@ public class FutureCache<K, V> {
             cache.put(k, v);
 
         if(awaiting.containsKey(k)) {
-            for (SettableFuture<V> ret : awaiting.get(k))
-                ret.set(v);
+            for (Promise<V> ret : awaiting.get(k))
+                ret.resolve(v);
             awaiting.removeAll(k);
         }
     }

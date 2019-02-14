@@ -156,19 +156,6 @@ public class PlayerCharacterCollection implements PlayerCharacters {
 		return ret;
 	}
 
-	void onQuit() {
-		quit();
-	}
-
-	private void quit() {
-		if (!hasQuit) {
-			hasQuit = true;
-			for (ReusablePlayerCharacter character : characters.values()) {
-				character.onQuit();
-			}
-		}
-	}
-
 	/**
 	 * Listens to events that affect this player's characters.
 	 */
@@ -202,10 +189,8 @@ public class PlayerCharacterCollection implements PlayerCharacters {
 					}
 				}
 
-				if (event.isServerLogout()) {
+				if (event.isServerLogout())
 					HandlerList.unregisterAll(this);
-					quit();
-				}
 			}
 		}
 

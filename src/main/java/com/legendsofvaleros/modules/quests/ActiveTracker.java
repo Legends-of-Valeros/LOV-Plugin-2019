@@ -1,8 +1,7 @@
 package com.legendsofvaleros.modules.quests;
 
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -17,7 +16,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.ExecutionException;
 
 public class ActiveTracker {
     private static Random RAND = new Random();
@@ -51,51 +49,36 @@ public class ActiveTracker {
         active.put(pc.getUniqueCharacterId(), s);
     }
 
-    public static ListenableFuture<IQuest> getActiveQuest(PlayerCharacter pc) {
-        SettableFuture<IQuest> ret = SettableFuture.create();
-
+    public static Promise<IQuest> getActiveQuest(PlayerCharacter pc) {
         String activeId = getActive(pc);
         if(activeId == null) {
-            Collection<IQuest> quests = QuestManager.getQuestsForEntity(pc);
-            if(quests == null || quests.size() == 0)
-                ret.set(null);
-            else{
+            return Promise.make(() -> {
+                Collection<IQuest> quests = QuestController.getInstance().getPlayerQuests(pc);
+                if(quests == null || quests.size() == 0)
+                    return null;
+
                 IQuest active = quests.iterator().next();
 
                 setActive(pc, active.getId());
 
-                ret.set(active);
-            }
+                return active;
+            });
         }else{
-            ListenableFuture<IQuest> future = QuestManager.getQuest(getActive(pc));
-            future.addListener(() -> {
-                try {
-                    IQuest quest = future.get();
-                    if(QuestManager.getStatus(pc, quest) == QuestStatus.ACCEPTED) {
-                        ret.set(quest);
-                        return;
-                    }
-                } catch (ExecutionException | InterruptedException e) {
-                    e.printStackTrace();
-                }
+            return QuestController.getInstance().getQuest(getActive(pc)).then(val -> {
+                if(!val.isPresent()) return null;
+
+                IQuest quest = val.get();
+                if(QuestController.getInstance().getStatus(pc, quest) == QuestStatus.ACCEPTED)
+                    return quest;
 
                 setActive(pc, null);
 
-                ListenableFuture<IQuest> future2 = getActiveQuest(pc);
-                future2.addListener(() -> {
-                    try {
-                        ret.set(future2.get());
-                        return;
-                    } catch (ExecutionException | InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                    ret.set(null);
-                }, QuestController.getInstance().getScheduler()::async);
-            }, QuestController.getInstance().getScheduler()::async);
+                return null;
+            }).next(v -> {
+                if(v.isPresent()) return Promise.make(v.orElse(null));
+                return getActiveQuest(pc);
+            });
         }
-
-        return ret;
     }
 
     private static void onTick(long time) {
@@ -109,13 +92,12 @@ public class ActiveTracker {
 
                     PlayerCharacter pc = Characters.getPlayerCharacter(p);
 
-                    ListenableFuture<IQuest> future = getActiveQuest(pc);
-                    future.addListener(() -> {
+                    getActiveQuest(pc).on((err, val) -> {
                         boolean invalid = true;
 
-                        try {
-                            IQuest active = future.get();
-                            if(active != null) {
+                        if(err != null && !val.isPresent()) {
+                            IQuest active = val.get();
+                            if (active != null) {
                                 IQuestObjective<?>[] group = active.getObjectiveGroup(pc);
                                 if (group != null)
                                     for (IQuestObjective<?> obj : group) {
@@ -129,8 +111,6 @@ public class ActiveTracker {
                                         }
                                     }
                             }
-                        } catch (ExecutionException | InterruptedException e) {
-                            e.printStackTrace();
                         }
 
                         if(invalid) {

@@ -7,7 +7,6 @@ import com.legendsofvaleros.modules.gear.event.GearPickupEvent;
 import com.legendsofvaleros.modules.gear.event.ItemEquipEvent;
 import com.legendsofvaleros.modules.gear.event.ItemUnEquipEvent;
 import com.legendsofvaleros.modules.quests.QuestController;
-import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.action.QuestActionFactory;
 import com.legendsofvaleros.modules.quests.action.gear.ActionChooseItem;
 import com.legendsofvaleros.modules.quests.action.gear.ActionGiveItem;
