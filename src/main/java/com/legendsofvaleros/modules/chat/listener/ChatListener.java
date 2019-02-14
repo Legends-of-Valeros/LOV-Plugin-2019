@@ -1,5 +1,6 @@
 package com.legendsofvaleros.modules.chat.listener;
 
+import com.legendsofvaleros.modules.auction.AuctionController;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.chat.ChatChannel;
@@ -153,9 +154,9 @@ public class ChatListener implements Listener {
             case TRADE:
                 for (Player pl : Bukkit.getOnlinePlayers()) {
                     if (ChatController.getInstance().isChannelOn(pl, 'T')) {
-                        /*if (AuctionController.getInstance().isPrompted(pl)) {
+                        if (AuctionController.getInstance().isPrompted(pl)) {
                             continue;
-                        }*/
+                        }
                         pl.spigot().sendMessage(bc);
                     }
                 }
@@ -163,9 +164,9 @@ public class ChatListener implements Listener {
             case LOCAL:
                 for (Player pl : Bukkit.getOnlinePlayers()) {
                     if (pl.getLocation().distance(p.getLocation()) < 50) {
-                        /*if (AuctionController.getInstance().isPrompted(pl)) {
+                        if (AuctionController.getInstance().isPrompted(pl)) {
                             continue;
-                        }*/
+                        }
                         pl.spigot().sendMessage(bc);
                     }
                 }
@@ -173,9 +174,9 @@ public class ChatListener implements Listener {
             case WORLD:
                 for (Player pl : Bukkit.getOnlinePlayers()) {
                     if (ChatController.getInstance().isChannelOn(pl, 'W')) {
-                        /*if (AuctionController.getInstance().isPrompted(pl)) {
+                        if (AuctionController.getInstance().isPrompted(pl)) {
                             continue;
-                        }*/
+                        }
                         pl.spigot().sendMessage(bc);
                     }
                 }
@@ -193,9 +194,9 @@ public class ChatListener implements Listener {
                     if (zz.channel.equals(zone.channel)) {
                         pl = Bukkit.getPlayer(entry.getKey());
                         if (ChatController.getInstance().isChannelOn(pl, 'Z')) {
-                            /*if (AuctionController.getInstance().isPrompted(pl)) {
+                            if (AuctionController.getInstance().isPrompted(pl)) {
                                 continue;
-                            }*/
+                            }
                             pl.spigot().sendMessage(bc);
                         }
                     }
