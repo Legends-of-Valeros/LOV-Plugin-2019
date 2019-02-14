@@ -2,6 +2,7 @@ package com.legendsofvaleros.modules.characters.core;
 
 import com.google.common.collect.ImmutableList;
 import com.google.gson.annotations.SerializedName;
+import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
@@ -24,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PlayerCharacterData {
     private interface RPC {
         Promise<List<CharacterData>> getPlayerCharacters(UUID uuid);
-        Promise<Boolean> savePlayerCharacter(UUID uuid, CharacterData characters);
+        Promise<Boolean> savePlayerCharacter(UUID uuid, CharacterData character);
         Promise<Boolean> deletePlayerCharacter(UUID uuid, int number);
     }
 
@@ -33,6 +34,8 @@ public class PlayerCharacterData {
     private static Map<UUID, PlayerCharacterCollection> dataMap;
 
     static void onEnable() {
+        rpc = APIController.create(RPC.class);
+
         dataMap = new ConcurrentHashMap<>();
     }
 

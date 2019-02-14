@@ -19,7 +19,6 @@ import com.legendsofvaleros.modules.quests.action.QuestActions;
 import com.legendsofvaleros.modules.quests.api.*;
 import com.legendsofvaleros.modules.quests.core.*;
 import com.legendsofvaleros.modules.quests.objective.QuestObjectiveFactory;
-import com.legendsofvaleros.modules.quests.prerequisite.PrerequisiteFactory;
 import com.legendsofvaleros.scheduler.InternalTask;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.PromiseCache;
@@ -30,27 +29,24 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Field;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class QuestAPI extends ModuleListener {
     public interface RPC {
         Promise<IQuest> getQuest(String questId);
 
-        Promise<Map<String, Object>> getPlayerQuestsProgress(CharacterId characterId);
+        Promise<Map<String, JsonElement>> getPlayerQuestsProgress(CharacterId characterId);
         Promise<Boolean> savePlayerQuestsProgress(CharacterId characterId, Map<String, Object> map);
         Promise<Boolean> deletePlayerQuestsProgress(CharacterId characterId);
     }
 
     private RPC rpc;
 
-    private final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    //private final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private PromiseCache<String, IQuest> quests;
     public Promise<IQuest> getQuest(String quest_id) {
@@ -82,13 +78,13 @@ public class QuestAPI extends ModuleListener {
     public void onLoad() {
         super.onLoad();
 
-        this.rpc = APIController.create(QuestController.getInstance(), RPC.class);
+        this.rpc = APIController.create(RPC.class);
 
         this.quests = new PromiseCache<>(CacheBuilder.newBuilder()
                 .concurrencyLevel(4)
                 .weakValues()
                 .removalListener(entry -> {
-                    QuestController.getInstance().getLogger().warning("Quest '" + entry.getKey() + "' removed from the cache: " + entry.getCause());
+                    getLogger().warning("Quest '" + entry.getKey() + "' removed from the cache: " + entry.getCause());
 
                     questEvents.column(String.valueOf(entry.getKey())).clear();
 
@@ -98,32 +94,16 @@ public class QuestAPI extends ModuleListener {
                 })
                 .build(), this::loadQuest);
 
-        QuestController.getInstance().getScheduler().executeInMyCircleTimer(() -> {
+        getScheduler().executeInMyCircleTimer(() -> {
             // This is done so we get almost-live updates on GC'd listeners.
             quests.cleanUp();
         }, 0L, 20L);
 
         APIController.getInstance().getGsonBuilder()
-            .registerTypeAdapter(IQuest.class, (JsonDeserializer<IQuest>) (json, typeOfT, context) -> {
-                Class<? extends IQuest> questClass = QuestFactory.getType(
-                        json.getAsJsonObject().get("type").getAsString());
-                return context.deserialize(json, questClass);
-            })
-            .registerTypeAdapter(QuestPrereqMap.class, (JsonDeserializer<QuestPrereqMap>) (json, typeOfT, context) -> {
-                QuestPrereqMap loader = new QuestPrereqMap();
-                JsonObject obj = json.getAsJsonObject();
-                for (Map.Entry<String, JsonElement> entry : obj.entrySet()) {
-                    try {
-                        Class<? extends IQuestPrerequisite> prereq = PrerequisiteFactory.getType(entry.getKey());
-                        if (prereq == null)
-                            throw new RuntimeException("Unknown prerequisite type! Offender: " + entry.getKey());
-                        loader.put(entry.getKey(), context.deserialize(entry.getValue(), prereq));
-                    } catch (Exception e) {
-                        throw new RuntimeException("Failed to decode prerequisite! " + (e.getMessage() != null ? e.getMessage() : e.getCause().toString()) + " Offender: " + entry.getKey() + " (" + entry.getValue() + ")");
-                    }
-                }
-                return loader;
-            })
+            .registerTypeAdapter(IQuest.class, (JsonDeserializer<IQuest>) (json, typeOfT, context) ->
+                context.deserialize(json, QuestFactory.getType(
+                        json.getAsJsonObject().get("type").getAsString()))
+            )
             .registerTypeAdapter(IQuestAction.class, (JsonDeserializer<IQuestAction>) (json, typeOfT, context) -> {
                 try {
                     JsonObject obj = json.getAsJsonObject();
@@ -131,7 +111,11 @@ public class QuestAPI extends ModuleListener {
                     if (obj.get("type") == null || obj.get("type").getAsString() == null)
                         throw new JsonParseException("No type defined in action. Offender: " + obj.toString());
 
-                    return context.deserialize(obj.get("fields").getAsJsonObject(), QuestActionFactory.getType(obj.get("type").getAsString()));
+                    IQuestAction action = QuestActionFactory.newAction(obj.get("type").getAsString());
+
+                    applyFields(obj.get("type").getAsString(), action, obj.get("fields").getAsJsonObject());
+
+                    return action;
                 } catch (Exception e) {
                     throw new RuntimeException("Failed to decode action! " + (e.getMessage() != null ? e.getMessage() : (e.getCause() != null ? e.getCause() : e)) + " (" + json.toString() + ")");
                 }
@@ -143,7 +127,11 @@ public class QuestAPI extends ModuleListener {
                     if (obj.get("type").getAsString() == null)
                         throw new JsonParseException("No type defined in action. Offender: " + obj.toString());
 
-                    return context.deserialize(obj.get("fields").getAsJsonObject(), QuestObjectiveFactory.getType(obj.get("type").getAsString()));
+                    IQuestObjective objective = QuestObjectiveFactory.newObjective(obj.get("type").getAsString());
+
+                    applyFields(obj.get("type").getAsString(), objective, obj.get("fields").getAsJsonObject());
+
+                    return objective;
                 } catch (Exception e) {
                     throw new RuntimeException("Failed to decode objective! " + (e.getMessage() != null ? e.getMessage() : e.getCause().toString()) + " (" + json.toString() + ")");
                 }
@@ -152,19 +140,46 @@ public class QuestAPI extends ModuleListener {
 
         registerEvents(new PlayerListener());
     }
+    private void applyFields(String act, Object obj, JsonObject fields) {
+        Map<String, Field> classFields = getFields(obj.getClass());
+        for (Map.Entry<String, JsonElement> entry : fields.entrySet()) {
+            try {
+                Field field = classFields.get(entry.getKey());
+                if (field == null) continue;
+
+                field.setAccessible(true);
+
+                field.set(obj, APIController.getInstance().getGson().getAdapter(field.getType()).fromJsonTree(entry.getValue()));
+            } catch (Exception e) {
+                QuestController.getInstance().getLogger().severe("Failed to apply fields! Offender: " + (obj == null ? "null" : obj.getClass().getSimpleName()) + ":" + act);
+                MessageUtil.sendSevereException(QuestController.getInstance(), e);
+            }
+        }
+    }
+
+    private Map<String, Field> getFields(Class<?> clazz) {
+        Map<String, Field> fields = new HashMap<>();
+        while (clazz != Object.class) {
+            for (Field f : clazz.getDeclaredFields())
+                fields.put(f.getName(), f);
+            clazz = clazz.getSuperclass();
+        }
+        return fields;
+    }
 
     public Promise<Void> onLogin(final PlayerCharacter pc) {
         Promise<Void> promise = new Promise<>();
 
-        rpc.getPlayerQuestsProgress(pc.getUniqueCharacterId()).onSuccess(val -> {
-            Map<String, Object> map = val.orElse(ImmutableMap.of());
+        rpc.getPlayerQuestsProgress(pc.getUniqueCharacterId())
+                .onFailure(promise::reject).onSuccess(val -> {
+            Map<String, JsonElement> map = val.orElse(ImmutableMap.of());
 
             if(map.size() == 0) {
                 promise.resolve(null);
                 return;
             }
 
-            AtomicInteger questsToLoad = new AtomicInteger(0);
+            AtomicInteger questsToLoad = new AtomicInteger(map.size());
 
             map.forEach((k, v) -> {
                 getQuest(k).onSuccess(q -> {
@@ -173,13 +188,11 @@ public class QuestAPI extends ModuleListener {
                             IQuest quest = q.get();
 
                             // Quest is already completed.
-                            if (v instanceof JsonArray) {
-                                JsonArray arr = (JsonArray) v;
+                            if (v instanceof JsonPrimitive) {
                                 completedQuests.put(pc.getUniqueCharacterId(),
-                                        arr.get(0).getAsString(),
-                                        LocalDateTime.parse(arr.get(1).getAsString(), DATE_FORMAT));
-                            } else {
-                                JsonObject progressObj = (JsonObject) v;
+                                        k, LocalDateTime.parse(v.getAsString()));
+                            }else{
+                                JsonObject progressObj = (JsonObject)v;
 
                                 JsonArray progresses = progressObj.get("data").getAsJsonArray();
                                 QuestProgressPack progressPack = new QuestProgressPack(
@@ -188,37 +201,39 @@ public class QuestAPI extends ModuleListener {
 
                                 progressPack.actionI = progressObj.has("actionI") ? progressObj.get("actionI").getAsInt() : null;
 
-                                IQuestObjective<?>[] objectiveGroup = quest.getObjectives().groups[progressPack.group];
+                                if(progressPack.group != null) {
+                                    IQuestObjective<?>[] objectiveGroup = quest.getObjectives().groups[progressPack.group];
 
-                                for (int i = 0; i < progresses.size(); i++) {
-                                    JsonElement entry = progresses.get(i);
+                                    for (int i = 0; i < progresses.size(); i++) {
+                                        JsonElement entry = progresses.get(i);
 
-                                    // Decode old quest progress system
-                                    // NOTE: Until this is removed, complex progress objects cannot add the "type" value.
-                                    if (entry.isJsonObject() && entry.getAsJsonObject().has("type")) {
-                                        JsonObject oldProg = entry.getAsJsonObject();
-                                        if (oldProg.get("type").getAsString().equals("bool"))
-                                            progressPack.setForObjective(i, oldProg.get("progress").getAsJsonObject().get("value").getAsBoolean());
-                                        if (oldProg.get("type").getAsString().equals("int"))
-                                            progressPack.setForObjective(i, oldProg.get("progress").getAsJsonObject().get("value").getAsInt());
-                                        continue;
+                                        // Decode old quest progress system
+                                        // NOTE: Until this is removed, complex progress objects cannot add the "type" value.
+                                        if (entry.isJsonObject() && entry.getAsJsonObject().has("type")) {
+                                            JsonObject oldProg = entry.getAsJsonObject();
+                                            if (oldProg.get("type").getAsString().equals("bool"))
+                                                progressPack.setForObjective(i, oldProg.get("progress").getAsJsonObject().get("value").getAsBoolean());
+                                            if (oldProg.get("type").getAsString().equals("int"))
+                                                progressPack.setForObjective(i, oldProg.get("progress").getAsJsonObject().get("value").getAsInt());
+                                            continue;
+                                        }
+
+                                        progressPack.setForObjective(i,
+                                                APIController.getInstance().getGson().fromJson(entry,
+                                                        objectiveGroup[i].getProgressClass()));
                                     }
-
-                                    progressPack.setForObjective(i,
-                                            APIController.getInstance().getGson().fromJson(entry,
-                                                    objectiveGroup[i].getProgressClass()));
                                 }
 
                                 quest.loadProgress(pc, progressPack);
                                 playerQuests.put(pc.getUniqueCharacterId(), quest);
                             }
                         } catch (Exception e) {
-                            QuestController.getInstance().getLogger().warning("Player attempt to load progress for quest, but something went wrong. Offender: " + pc.getPlayer().getName() + " in quest " + k);
+                            getLogger().warning("Player attempt to load progress for quest, but something went wrong. Offender: " + pc.getPlayer().getName() + " in quest " + k);
                             MessageUtil.sendSevereException(QuestController.getInstance(), pc.getPlayer(), e);
                         }
                     }
-
-                    if(questsToLoad.incrementAndGet() == 0)
+                }).on(() -> {
+                    if(questsToLoad.decrementAndGet() == 0)
                         promise.resolve(null);
                 });
             });
@@ -235,11 +250,14 @@ public class QuestAPI extends ModuleListener {
         Map<String, Object> map = new HashMap<>();
 
         for(Map.Entry<String, LocalDateTime> entry : completedQuests.row(pc.getUniqueCharacterId()).entrySet())
-            map.put(entry.getKey(), new String[] { "done", entry.getValue().format(DATE_FORMAT) });
+            map.put(entry.getKey(), entry.getValue().toString());
 
         for(IQuest quest : playerQuests.get(pc.getUniqueCharacterId())) {
             map.put(quest.getId(), quest.getProgress(pc));
         }
+
+        playerQuests.removeAll(pc.getUniqueCharacterId());
+        completedQuests.row(pc.getUniqueCharacterId()).clear();
 
         return this.rpc.savePlayerQuestsProgress(pc.getUniqueCharacterId(), map);
     }
@@ -345,7 +363,7 @@ public class QuestAPI extends ModuleListener {
                     int timer = obj.getUpdateTimer();
                     if (timer <= 0) continue;
 
-                    questUpdates.put(questId, QuestController.getInstance().getScheduler().executeInSpigotCircleTimer(
+                    questUpdates.put(questId, getScheduler().executeInSpigotCircleTimer(
                             new QuestUpdater(quest, obj),
                             0L, timer));
                 }
@@ -421,9 +439,7 @@ public class QuestAPI extends ModuleListener {
         }
     }
 
-    private static class QuestPrereqMap extends HashMap<String, IQuestPrerequisite> {
-        private static final long serialVersionUID = 1L;
-    }
+    private interface QuestPrereqMap extends List<IQuestPrerequisite> { }
 
     private class PlayerListener implements Listener {
         @EventHandler
@@ -445,14 +461,6 @@ public class QuestAPI extends ModuleListener {
             PhaseLock lock = event.getLock("Quests");
 
             onLogout(event.getPlayerCharacter()).on(lock::release);
-
-            for (IQuest q : getPlayerQuests(event.getPlayerCharacter())) {
-                q.saveProgress(event.getPlayerCharacter());
-                q.clearProgress(event.getPlayerCharacter());
-            }
-
-            playerQuests.removeAll(event.getPlayerCharacter().getUniqueCharacterId());
-            completedQuests.row(event.getPlayerCharacter().getUniqueCharacterId()).clear();
         }
 
         @EventHandler

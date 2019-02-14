@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.parties.core;
 
-import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -8,7 +7,6 @@ import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
-import com.legendsofvaleros.modules.parties.PartiesController;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.PlayerData;
 import org.bukkit.Bukkit;
@@ -185,14 +183,10 @@ class ScoreHolder {
         if (name == null) {
             name = "Unknown Player";
 
-            ListenableFuture<PlayerData> future = PlayerData.get(uuid.getPlayerId());
-            future.addListener(() -> {
-                try {
-                    PlayerData data = future.get();
-                    name = data.username;
-                } catch (Exception e) {
-                }
-            }, PartiesController.getInstance().getScheduler()::async);
+            PlayerData.get(uuid.getPlayerId()).onSuccess(val -> {
+                if(!val.isPresent()) return;
+                name = val.get().username;
+            });
         }
 
         update();

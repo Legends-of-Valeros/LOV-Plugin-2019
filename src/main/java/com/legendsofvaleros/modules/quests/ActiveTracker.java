@@ -95,7 +95,7 @@ public class ActiveTracker {
                     getActiveQuest(pc).on((err, val) -> {
                         boolean invalid = true;
 
-                        if(err != null && !val.isPresent()) {
+                        if(err != null && val.isPresent()) {
                             IQuest active = val.get();
                             if (active != null) {
                                 IQuestObjective<?>[] group = active.getObjectiveGroup(pc);

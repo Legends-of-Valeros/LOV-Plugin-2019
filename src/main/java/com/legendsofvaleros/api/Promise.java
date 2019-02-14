@@ -3,6 +3,7 @@ package com.legendsofvaleros.api;
 import com.google.common.collect.ImmutableList;
 import sun.misc.Unsafe;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.Executor;
@@ -12,9 +13,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 public class Promise<R> {
-    public interface Function<R, V> { R run(Optional<V> val) throws Throwable; }
+    public interface Function<R, V> { R run(@Nonnull Optional<V> val) throws Throwable; }
     public interface FunctionAlone<R> { R run() throws Throwable; }
-    public interface Listener<R> { void run(Optional<Throwable> th, Optional<R> t) throws Throwable; }
+    public interface Listener<R> { void run(@Nonnull Optional<Throwable> th, @Nonnull Optional<R> t) throws Throwable; }
 
     enum State {PENDING, FIRED, RESOLVED, REJECTED }
 
@@ -136,6 +137,8 @@ public class Promise<R> {
         }, ex);
     }
 
+    public <V> Promise<V> then(FunctionAlone<V> func) { return then(() -> func.run(), this.executor); }
+    public <V> Promise<V> then(FunctionAlone<V> func, Executor exec) { return then(() -> func.run(), exec); }
     public <V> Promise<V> then(Function<V, R> func) { return then(func, this.executor); }
     public <V> Promise<V> then(Function<V, R> func, Executor ex) {
         Promise<V> promise = new Promise<>(ex);
@@ -146,6 +149,12 @@ public class Promise<R> {
         return promise;
     }
 
+    public <V> Promise<V> next(FunctionAlone<Promise<V>> func) {
+        return next(v -> func.run(), this.executor);
+    }
+    public <V> Promise<V> next(FunctionAlone<Promise<V>> func, Executor exec) {
+        return next(v -> func.run(), exec);
+    }
     public <V> Promise<V> next(Function<Promise<V>, R> func) { return next(func, this.executor); }
     public <V> Promise<V> next(Function<Promise<V>, R> func, Executor ex) {
         Promise<V> promise = new Promise<>(ex);
@@ -220,7 +229,7 @@ public class Promise<R> {
 
         callbacks.forEach((k, v) -> v.execute(() -> {
             try {
-                k.run(Optional.of(th), null);
+                k.run(Optional.of(th), Optional.empty());
             } catch(Throwable th2) {
                 th2.printStackTrace();
             }
@@ -314,7 +323,7 @@ public class Promise<R> {
 
         for(int j = 0; j < promises.length; j++) {
             final int k = j;
-            ((Promise<Object>)promises[j]).onFailure(err -> {
+            promises[j].onFailure(err -> {
                 failures[k] = err;
 
                 fail.set(true);

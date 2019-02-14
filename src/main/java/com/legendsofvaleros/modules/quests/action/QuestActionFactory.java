@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.quests.action;
 
 import com.legendsofvaleros.modules.quests.QuestController;
+import com.legendsofvaleros.modules.quests.api.IQuestAction;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -14,7 +15,7 @@ public class QuestActionFactory {
 		actionTypes.put(type, objClass);
 	}
 	
-	public static AbstractQuestAction newAction(String type) {
+	public static IQuestAction newAction(String type) {
 		try {
 			return actionTypes.get(type).newInstance();
 		} catch(Exception e) { }

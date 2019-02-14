@@ -12,10 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BasicQuest extends AbstractQuest {
-    public BasicQuest(String id) {
-        super(id);
-    }
-
     @Override
     public void onStart(PlayerCharacter pc) {
         List<String> list = new ArrayList<>();

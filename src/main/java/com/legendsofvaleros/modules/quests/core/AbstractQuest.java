@@ -36,7 +36,7 @@ public abstract class AbstractQuest implements IQuest {
     }
     @Override public void clearProgress(PlayerCharacter pc) { progress.remove(pc.getUniqueCharacterId()); }
 
-    private final String id;
+    private String id;
     @Override public String getId() { return id; }
 
     private String type;
@@ -71,9 +71,7 @@ public abstract class AbstractQuest implements IQuest {
     private QuestObjectives objectives;
     public QuestObjectives getObjectives() { return objectives; }
 
-    public AbstractQuest(String id) {
-        this.id = id;
-    }
+    public AbstractQuest() { }
 
     @Override
     public void onAccept(PlayerCharacter pc) {
@@ -176,8 +174,6 @@ public abstract class AbstractQuest implements IQuest {
         }
 
         if (objectives.groups.length > 0) {
-            saveProgress(pc);
-
             // Set up the new objective group progress information
             QuestProgressPack pack;
             IQuestObjective<?>[] objectiveGroup = objectives.groups[nextGroup];

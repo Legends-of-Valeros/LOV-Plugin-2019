@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class Model {
 	private interface RPC {
-		Promise<List<Model>> getModels();
+		Promise<List<Model>> findModels();
 	}
 
 	private static RPC rpc;
@@ -26,9 +26,11 @@ public class Model {
 
 	private static final Map<String, Model> models = new HashMap<>();
 
-	public static void onEnable() {
+	public static void onLoad() {
 		rpc = APIController.create(RPC.class);
+	}
 
+	public static void onPostLoad() {
 		try {
 			loadAll().get();
 		} catch (Throwable throwable) {
@@ -41,7 +43,7 @@ public class Model {
 	public static Promise<List<Model>> loadAll() {
 		models.clear();
 
-		return rpc.getModels().onSuccess(val -> {
+		return rpc.findModels().onSuccess(val -> {
 			models.clear();
 
 			val.orElse(ImmutableList.of()).stream().forEach(model -> models.put(model.id, model));
@@ -85,27 +87,27 @@ public class Model {
 	private final Material material;
 	public Material getMaterial() { return material; }
 
-	private final short metaData;
-	public short getMetaData() { return metaData; }
+	private final short metadata;
+	public short getMetaData() { return metadata; }
 	
 	public Model(Material material, int metaData) {
 		this(null, "Generated", material, metaData);
 	}
 	
-	public Model(String id, String name, Material material, int metaData) {
+	public Model(String id, String name, Material material, int metadata) {
 		this.id = id;
 		this.group = null;
 		this.name = name;
 		this.material = material;
-		this.metaData = (short)metaData;
+		this.metadata = (short)metadata;
 	}
 
 	public ItemBuilder toStack() {
-		return new ItemBuilder(material).setName(null).setDurability(metaData).unbreakable().addFlag(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
+		return new ItemBuilder(material).setName(null).setDurability(metadata).unbreakable().addFlag(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
 	}
 
 	@Override
 	public String toString() {
-		return "Model(id=" + id + ", group=" + group + ", name=" + name + ", material=" + material + ", meta_data=" + metaData + ")";
+		return "Model(id=" + id + ", group=" + group + ", name=" + name + ", material=" + material + ", metadata=" + metadata + ")";
 	}
 }

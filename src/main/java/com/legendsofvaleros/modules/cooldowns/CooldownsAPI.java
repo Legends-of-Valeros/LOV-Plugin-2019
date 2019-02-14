@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.cooldowns;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.Module;
@@ -8,6 +8,7 @@ import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
+import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
 import com.legendsofvaleros.modules.cooldowns.api.Cooldowns;
@@ -16,9 +17,7 @@ import com.legendsofvaleros.modules.cooldowns.cooldown.CharacterCooldowns;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,8 +28,9 @@ public class CooldownsAPI extends Module {
 	private static final long MAX_CALENDAR_AGE = 20160000;
 
 	private interface RPC {
-		Promise<List<CooldownData>> getPlayerCooldowns(CharacterId characterId);
-		Promise<Boolean> savePlayerCooldowns(CharacterId characterId, List<CooldownData> cooldowns);
+		Promise<Map<String, CooldownData>> getPlayerCooldowns(CharacterId characterId);
+		Promise<Boolean> savePlayerCooldowns(CharacterId characterId, Map<String, CooldownData> cooldowns);
+		Promise<Boolean> deletePlayerCooldowns(CharacterId characterId);
 	}
 
 	private RPC rpc;
@@ -47,13 +47,11 @@ public class CooldownsAPI extends Module {
 		Characters.getInstance().registerEvents(new PlayerListener());
 	}
 
-
-
-	private Promise<List<CooldownData>> onLogin(PlayerCharacter pc) {
+	private Promise<Map<String, CooldownData>> onLogin(PlayerCharacter pc) {
 		return rpc.getPlayerCooldowns(pc.getUniqueCharacterId()).onSuccess(val -> {
 			CharacterCooldowns cools = new CharacterCooldowns(pc);
 
-			val.orElse(ImmutableList.of()).forEach(cooldown -> {
+			val.orElse(ImmutableMap.of()).forEach((key, cooldown) -> {
 				long duration = 0;
 				switch (cooldown.type) {
 					case CALENDAR_TIME:
@@ -69,7 +67,7 @@ public class CooldownsAPI extends Module {
 				}
 
 				if (duration > 0)
-					cools.overwriteCooldown(cooldown.key, cooldown.type, duration);
+					cools.overwriteCooldown(key, cooldown.type, duration);
 			});
 
 			cools.onLogin();
@@ -82,8 +80,8 @@ public class CooldownsAPI extends Module {
 	 * Makes an asynchronous attempt to persistently save cooldown changes to the database record for
 	 * a player-character.
 	 */
-	public Promise<Boolean> onLogout(PlayerCharacter pc) {
-		List<CooldownData> save = new ArrayList<>();
+	private Promise<Boolean> onLogout(PlayerCharacter pc) {
+		Map<String, CooldownData> save = new HashMap<>();
 
 		CharacterCooldowns cools = cooldowns.get(pc.getUniqueCharacterId());
 
@@ -99,7 +97,6 @@ public class CooldownsAPI extends Module {
 			if(remaining >= MIN_MILLIS_REMAINING_TO_SAVE) {
 				CooldownData datum = new CooldownData();
 
-				datum.key = cd.getKey();
 				datum.type = cd.getCooldownType();
 
 				switch (cd.getCooldownType()) {
@@ -114,11 +111,15 @@ public class CooldownsAPI extends Module {
 						break;
 				}
 
-				save.add(datum);
+				save.put(cd.getKey(), datum);
 			}
 		}
 
 		return rpc.savePlayerCooldowns(pc.getUniqueCharacterId(), save);
+	}
+
+	private Promise<Boolean> onDelete(PlayerCharacter pc) {
+		return rpc.deletePlayerCooldowns(pc.getUniqueCharacterId());
 	}
 
 	/**
@@ -138,13 +139,17 @@ public class CooldownsAPI extends Module {
 
 			onLogout(event.getPlayerCharacter()).on(lock::release);
 		}
+
+		@EventHandler
+		public void onPlayerDelete(PlayerCharacterRemoveEvent event) {
+			onDelete(event.getPlayerCharacter());
+		}
 	}
 
 	/**
 	 * Stores cooldown data until it can be added on the main thread.
 	 */
 	private static class CooldownData {
-		private String key;
 		private CooldownType type;
 		private long time;
 	}

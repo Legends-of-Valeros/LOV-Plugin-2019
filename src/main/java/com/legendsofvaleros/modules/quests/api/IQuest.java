@@ -80,6 +80,4 @@ public interface IQuest {
 	QuestProgressPack getProgress(PlayerCharacter pc);
 	void loadProgress(PlayerCharacter pc, QuestProgressPack progress);
 	void clearProgress(PlayerCharacter pc);
-	
-	void saveProgress(PlayerCharacter pc);
 }

@@ -1,21 +1,16 @@
 package com.legendsofvaleros.modules.chat.listener;
 
-import com.legendsofvaleros.module.Modules;
-import com.legendsofvaleros.modules.auction.AuctionController;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.chat.ChatChannel;
 import com.legendsofvaleros.modules.chat.ChatController;
 import com.legendsofvaleros.modules.chat.PlayerChat;
-import com.legendsofvaleros.modules.guilds.GuildController;
-import com.legendsofvaleros.modules.guilds.guild.Guild;
 import com.legendsofvaleros.modules.parties.PartiesController;
 import com.legendsofvaleros.modules.parties.core.PlayerParty;
 import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.modules.zones.core.Zone;
 import com.legendsofvaleros.util.Discord;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.PlayerData;
 import com.legendsofvaleros.util.TextBuilder;
 import de.btobastian.javacord.DiscordAPI;
 import de.btobastian.javacord.entities.Channel;
@@ -45,9 +40,9 @@ public class ChatListener implements Listener {
         }
 
         //player is in an auction prompt and therefore the message should not be sent
-        if (AuctionController.getInstance().isPrompted(e.getPlayer())) {
-            return;
-        }
+        /*if (AuctionController.getInstance().isPrompted(pl)) {
+            continue;
+        }*/
 
         e.setCancelled(true);
 
@@ -65,7 +60,7 @@ public class ChatListener implements Listener {
                     tb.hover(data.title);
             }
 
-            if(Modules.isLoaded(GuildController.class)) {
+            /*if(Modules.isLoaded(GuildController.class)) {
                 // Guild tag goes after permission prefix
                 Guild g = Guild.getGuildByMember(e.getPlayer().getUniqueId());
                 if(g != null && g.getTag() != null) {
@@ -74,7 +69,7 @@ public class ChatListener implements Listener {
                                     ChatColor.GRAY + g.getMember(e.getPlayer().getUniqueId()).getRole().getName());
                     tb.append(" ");
                 }
-            }
+            }*/
 
             // Player titles go here
 
@@ -126,24 +121,24 @@ public class ChatListener implements Listener {
             char channelId = chat.getDiscordToChannel(message.getChannelReceiver().getId());
             ChatChannel ch = chat.getChannel(channelId);
 
-            PlayerData data = null;
+            /*PlayerData data = null;
             try {
                 data = PlayerData.getByDiscordId(message.getAuthor().getId()).get();
             } catch (InterruptedException | ExecutionException ee) {
                 ee.printStackTrace();
-            }
+            }*/
 
             TextBuilder tb = new TextBuilder("");
 
             tb.append(channelId + " ").color(ch.getTagColor()).bold(true).hover(ch.getName());
 
-            tb.append(data != null ? data.username :
+            tb.append(//data != null ? data.username :
                     (message.getAuthor().hasNickname(server) ? message.getAuthor().getNickname(server) : message.getAuthor().getName()))
                     .color(ChatColor.GRAY).italic(true);
 
-            if (data == null)
+            /*if (data == null)
                 tb.underlined(true).hover("Unverified Discord");
-            else
+            else*/
                 tb.hover("Verified Discord");
 
             tb.append(": ").color(ChatColor.DARK_GRAY);
@@ -158,9 +153,9 @@ public class ChatListener implements Listener {
             case TRADE:
                 for (Player pl : Bukkit.getOnlinePlayers()) {
                     if (ChatController.getInstance().isChannelOn(pl, 'T')) {
-                        if (AuctionController.getInstance().isPrompted(pl)) {
+                        /*if (AuctionController.getInstance().isPrompted(pl)) {
                             continue;
-                        }
+                        }*/
                         pl.spigot().sendMessage(bc);
                     }
                 }
@@ -168,9 +163,9 @@ public class ChatListener implements Listener {
             case LOCAL:
                 for (Player pl : Bukkit.getOnlinePlayers()) {
                     if (pl.getLocation().distance(p.getLocation()) < 50) {
-                        if (AuctionController.getInstance().isPrompted(pl)) {
+                        /*if (AuctionController.getInstance().isPrompted(pl)) {
                             continue;
-                        }
+                        }*/
                         pl.spigot().sendMessage(bc);
                     }
                 }
@@ -178,9 +173,9 @@ public class ChatListener implements Listener {
             case WORLD:
                 for (Player pl : Bukkit.getOnlinePlayers()) {
                     if (ChatController.getInstance().isChannelOn(pl, 'W')) {
-                        if (AuctionController.getInstance().isPrompted(pl)) {
+                        /*if (AuctionController.getInstance().isPrompted(pl)) {
                             continue;
-                        }
+                        }*/
                         pl.spigot().sendMessage(bc);
                     }
                 }
@@ -198,9 +193,9 @@ public class ChatListener implements Listener {
                     if (zz.channel.equals(zone.channel)) {
                         pl = Bukkit.getPlayer(entry.getKey());
                         if (ChatController.getInstance().isChannelOn(pl, 'Z')) {
-                            if (AuctionController.getInstance().isPrompted(pl)) {
+                            /*if (AuctionController.getInstance().isPrompted(pl)) {
                                 continue;
-                            }
+                            }*/
                             pl.spigot().sendMessage(bc);
                         }
                     }
@@ -214,9 +209,9 @@ public class ChatListener implements Listener {
                 }
 
                 for (Player partyPlayer : party.getOnlineMembers()) {
-                    if (AuctionController.getInstance().isPrompted(partyPlayer)) {
+                    /*if (AuctionController.getInstance().isPrompted(pl)) {
                         continue;
-                    }
+                    }*/
                     partyPlayer.spigot().sendMessage(bc);
                 }
                 break;

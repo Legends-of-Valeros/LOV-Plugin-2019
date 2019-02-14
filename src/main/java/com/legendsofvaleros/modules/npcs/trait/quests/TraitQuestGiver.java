@@ -84,9 +84,6 @@ public class TraitQuestGiver extends LOVTrait {
             if(working.contains(trait)) return;
             working.add(trait);
 
-            List<Promise<IQuest>> promises = new ArrayList<>();
-            AtomicInteger left = new AtomicInteger(trait.questIDs.length);
-
             for (IQuest quest : trait.quests) {
                 QuestStatus status = QuestController.getInstance().getStatus(pc, quest);
 

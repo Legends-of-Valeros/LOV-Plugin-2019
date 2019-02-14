@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.ModuleListener;
@@ -60,13 +59,12 @@ public class NPCsAPI extends ModuleListener {
             List<LOVTrait> traits = new ArrayList<>();
             for (Map.Entry<String, JsonElement> elem : obj.entrySet()) {
                 if (!traitTypes.containsKey(elem.getKey()))
-                    throw new JsonParseException("Trait with that ID is not registered. Offender: " + elem.getKey());
+                    MessageUtil.sendException(this, "Trait with that ID is not registered. Offender: " + elem.getKey());
 
                 try {
                     traits.add(context.deserialize(elem.getValue(), traitTypes.get(elem.getKey())));
                 } catch (Exception e) {
                     MessageUtil.sendException(this, "Failed to load trait. Offender: " + elem.getKey() + " (" + elem.getValue().toString() + ")");
-                    throw e;
                 }
             }
             return traits.toArray(new LOVTrait[0]);

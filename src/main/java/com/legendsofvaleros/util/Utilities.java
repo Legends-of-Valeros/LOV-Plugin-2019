@@ -52,9 +52,16 @@ public class Utilities extends ModuleListener {
 
         new TitleUtil();
 
-        Model.onEnable();
+        Model.onLoad();
         MessageUtil.onEnable();
         Advancements.onEnable();
+    }
+
+    @Override
+    public void onPostLoad() {
+        super.onPostLoad();
+
+        Model.onPostLoad();
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
