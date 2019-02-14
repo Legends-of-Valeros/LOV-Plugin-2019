@@ -32,7 +32,7 @@ public class MobsIntegration extends Integration implements Listener {
 
         PlayerCharacter pc = Characters.getPlayerCharacter(p);
 
-        QuestManager.callEvent(event, pc);
+        QuestController.getInstance().callEvent(event, pc);
 
         // Update for each player in the party
         if(Modules.isLoaded(PartiesController.class)) {
@@ -43,7 +43,7 @@ public class MobsIntegration extends Integration implements Listener {
                         continue;
 
                     PlayerCharacter ppc = Characters.getPlayerCharacter(pp);
-                    QuestManager.callEvent(event, ppc);
+                    QuestController.getInstance().callEvent(event, ppc);
                 }
             }
         }

@@ -23,6 +23,6 @@ public class BankIntegration extends Integration implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onRepairItem(RepairItemEvent event) {
         if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
-        QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
+        QuestController.getInstance().callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
     }
 }

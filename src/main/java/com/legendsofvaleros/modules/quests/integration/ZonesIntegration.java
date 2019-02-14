@@ -24,13 +24,13 @@ public class ZonesIntegration extends Integration implements Listener {
     public void onPlayerEnterZone(ZoneEnterEvent event) {
         if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
 
-        QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
+        QuestController.getInstance().callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerLeaveZone(ZoneLeaveEvent event) {
         if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
 
-        QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
+        QuestController.getInstance().callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
     }
 }

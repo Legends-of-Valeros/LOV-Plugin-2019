@@ -5,7 +5,6 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import com.codingforcookies.robert.core.StringUtil;
 import com.codingforcookies.robert.item.Book;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -19,7 +18,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
-import java.util.concurrent.ExecutionException;
 
 @CommandAlias("quests|lov quests")
 public class QuestCommands extends BaseCommand {
@@ -121,17 +119,11 @@ public class QuestCommands extends BaseCommand {
 
         ActiveTracker.setActive(pc, questId);
 
-        ListenableFuture<IQuest> future = ActiveTracker.getActiveQuest(pc);
-        future.addListener(() -> {
-            try {
-                IQuest active = future.get();
-                if (active == null)
-                    MessageUtil.sendUpdate(pc.getPlayer(), "You are no longer tracking a gear.");
-                else
-                    MessageUtil.sendUpdate(pc.getPlayer(), "You are now tracking '" + active.getName() + "'.");
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
+        ActiveTracker.getActiveQuest(pc).onSuccess(val -> {
+            if (!val.isPresent())
+                MessageUtil.sendUpdate(pc.getPlayer(), "You are no longer tracking a gear.");
+            else
+                MessageUtil.sendUpdate(pc.getPlayer(), "You are now tracking '" + val.get().getName() + "'.");
         }, QuestController.getInstance().getScheduler()::async);
     }
 

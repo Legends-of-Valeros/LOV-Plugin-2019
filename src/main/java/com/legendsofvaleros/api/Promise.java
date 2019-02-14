@@ -1,5 +1,6 @@
 package com.legendsofvaleros.api;
 
+import com.google.common.collect.ImmutableList;
 import sun.misc.Unsafe;
 
 import java.lang.reflect.Field;
@@ -13,7 +14,7 @@ import java.util.function.Consumer;
 public class Promise<R> {
     public interface Function<R, V> { R run(Optional<V> val) throws Throwable; }
     public interface FunctionAlone<R> { R run() throws Throwable; }
-    public interface Listener<R> { void run(Optional<Throwable> th, Optional<R> t); }
+    public interface Listener<R> { void run(Optional<Throwable> th, Optional<R> t) throws Throwable; }
 
     enum State {PENDING, FIRED, RESOLVED, REJECTED }
 
@@ -91,9 +92,21 @@ public class Promise<R> {
         // If the promise is already fulfilled, fire the callback immediately
         if(isDone()) {
             if(wasSuccess())
-                ex.execute(() -> cb.run(Optional.empty(), Optional.ofNullable((R)value)));
+                ex.execute(() -> {
+                    try {
+                        cb.run(Optional.empty(), Optional.ofNullable((R)value));
+                    } catch(Throwable th) {
+                        th.printStackTrace();
+                    }
+                });
             else if(wasRejected())
-                ex.execute(() -> cb.run(Optional.of((Throwable)value), Optional.empty()));
+                ex.execute(() -> {
+                    try {
+                        cb.run(Optional.of((Throwable)value), Optional.empty());
+                    } catch(Throwable th) {
+                        th.printStackTrace();
+                    }
+                });
             else
                 throw new IllegalStateException();
         }
@@ -186,7 +199,13 @@ public class Promise<R> {
         this.value = t;
         this.state = State.RESOLVED;
 
-        callbacks.forEach((k, v) -> v.execute(() -> k.run(Optional.empty(), Optional.ofNullable(t))));
+        callbacks.forEach((k, v) -> v.execute(() -> {
+            try {
+                k.run(Optional.empty(), Optional.ofNullable(t));
+            } catch(Throwable th) {
+                th.printStackTrace();
+            }
+        }));
         new HashSet<>(waiting).forEach(UNSAFE::unpark);
     }
 
@@ -199,7 +218,13 @@ public class Promise<R> {
         this.value = th;
         this.state = State.REJECTED;
 
-        callbacks.forEach((k, v) -> v.execute(() -> k.run(Optional.of(th), null)));
+        callbacks.forEach((k, v) -> v.execute(() -> {
+            try {
+                k.run(Optional.of(th), null);
+            } catch(Throwable th2) {
+                th2.printStackTrace();
+            }
+        }));
         new HashSet<>(waiting).forEach(UNSAFE::unpark);
     }
 
@@ -238,23 +263,30 @@ public class Promise<R> {
     }
 
     public static <R> Promise<R> make(FunctionAlone<R> func) {
-        return make(v -> func.run(), null);
+        return make(func, null);
+    }
+    public static <R> Promise<R> make(FunctionAlone<R> func, Executor exec) {
+        return make(v -> func.run(), exec);
     }
 
     public static <R> Promise<R> make(Function<R, Void> func, Executor exec) {
         return new Promise<R>(exec).fire(func, null);
     }
 
-    public static Promise<Object[]> collect(Promise... promises) {
+    public static <T> Promise<List<T>> collect(Promise<T>... promises) {
         return collect(null, promises);
     }
 
-    public static Promise<Object[]> collect(Executor exec, Promise... promises) {
-        Promise<Object[]> promise = new Promise<>(exec);
+    public static <T> Promise<List<T>> collect(Collection<Promise<T>> promises) {
+        return collect(null, promises.toArray(new Promise[0]));
+    }
+
+    public static <T> Promise<List<T>> collect(Executor exec, Promise<T>... promises) {
+        Promise<List<T>> promise = new Promise<>(exec);
 
         AtomicBoolean fail = new AtomicBoolean(false);
 
-        Optional<Object>[] successes = new Optional[promises.length];
+        Object[] successes = new Object[promises.length];
         Throwable[] failures = new Throwable[promises.length];
 
         AtomicInteger i = new AtomicInteger(promises.length);
@@ -265,14 +297,17 @@ public class Promise<R> {
                     return;
                 }
 
-                promise.resolve(successes);
+                List<T> success = new ArrayList<>();
+                for(Object o : successes)
+                    success.add((T)o);
+                promise.resolve(ImmutableList.copyOf(success));
             }
         };
 
         for(int j = 0; j < promises.length; j++) {
             final int k = j;
-            ((Promise<Object>)promises[j]).onSuccess(val -> {
-                successes[k] = val;
+            promises[j].onSuccess(val -> {
+                successes[k] = val.orElse(null);
                 onFinish.run();
             });
         }

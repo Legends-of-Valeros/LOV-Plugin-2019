@@ -33,15 +33,15 @@ public class RegionIntegration extends Integration implements Listener {
 
         if(event.getRegion().quests.size() > 0) {
             for(String questId : event.getRegion().quests)
-                QuestController.attemptGiveQuest(Characters.getPlayerCharacter(event.getPlayer()), questId);
+                QuestController.getInstance().attemptGiveQuest(Characters.getPlayerCharacter(event.getPlayer()), questId);
         }
 
-        QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
+        QuestController.getInstance().callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onLeaveRegion(RegionLeaveEvent event) {
         if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
-        QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
+        QuestController.getInstance().callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
     }
 }

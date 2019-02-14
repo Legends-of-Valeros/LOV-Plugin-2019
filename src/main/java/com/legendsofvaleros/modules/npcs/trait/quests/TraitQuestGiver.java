@@ -5,8 +5,8 @@ import com.codingforcookies.robert.item.Book;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.codingforcookies.robert.slot.Slot;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
+import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterFinishLoadingEvent;
@@ -29,7 +29,6 @@ import org.bukkit.event.Listener;
 
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TraitQuestGiver extends LOVTrait {
@@ -85,44 +84,20 @@ public class TraitQuestGiver extends LOVTrait {
             if(working.contains(trait)) return;
             working.add(trait);
 
-            List<ListenableFuture<IQuest>> futures = new ArrayList<>();
+            List<Promise<IQuest>> promises = new ArrayList<>();
             AtomicInteger left = new AtomicInteger(trait.questIDs.length);
 
-            for (String id : trait.questIDs) {
-                ListenableFuture<IQuest> future = QuestManager.getQuest(id);
+            for (IQuest quest : trait.quests) {
+                QuestStatus status = QuestController.getInstance().getStatus(pc, quest);
 
-                futures.add(future);
-
-                future.addListener(() -> {
-                    if(future.isCancelled()) return;
-
-                    try {
-                        try {
-                            IQuest quest = future.get();
-                            QuestStatus status = QuestManager.getStatus(pc, quest);
-
-                            // If the quest can be accepted, the marker should be active.
-                            if(status.canAccept()) {
-                                working.remove(trait);
-                                trait.available.getVisibilityManager().showTo(pc.getPlayer());
-                                futures.forEach(f -> f.cancel(true));
-                                return;
-                            }
-
-                            // TODO: Add a marker for NPCs that you need to talk to in a quest (?)
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        }
-
-                        if(left.decrementAndGet() == 0) {
-                            working.remove(trait);
-                            trait.available.getVisibilityManager().hideTo(pc.getPlayer());
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }, QuestController.getInstance().getScheduler()::sync);
+                // If the quest can be accepted, the marker should be active.
+                if (status.canAccept()) {
+                    trait.available.getVisibilityManager().showTo(pc.getPlayer());
+                    return;
+                }
             }
+
+            trait.available.getVisibilityManager().hideTo(pc.getPlayer());
         }
     }
 
@@ -136,7 +111,16 @@ public class TraitQuestGiver extends LOVTrait {
         available.appendItemLine(Model.stack("marker-gear-available").create());
         available.getVisibilityManager().setVisibleByDefault(false);
 
-        Marker.update(this);
+        List<Promise<IQuest>> promises = new ArrayList<>();
+
+        for (String id : questIDs) {
+            promises.add(QuestController.getInstance().getQuest(id));
+        }
+
+        Promise.collect(promises).onSuccess(val -> {
+            quests = val.get();
+            Marker.update(this);
+        });
     }
 
     @Override
@@ -149,6 +133,8 @@ public class TraitQuestGiver extends LOVTrait {
     public String introText;
     public String[] questIDs;
     public Hologram available;
+
+    public transient List<IQuest> quests;
 
     @Override
     public void onRightClick(Player player, SettableFuture<Slot> slot) {
@@ -165,7 +151,7 @@ public class TraitQuestGiver extends LOVTrait {
             try {
                 PlayerCharacter pc = Characters.getPlayerCharacter(player);
                 for (IQuest quest : future.get()) {
-                    QuestStatus status = QuestManager.getStatus(pc, quest);
+                    QuestStatus status = QuestController.getInstance().getStatus(pc, quest);
                     if (status.canAccept())
                         playerQuests.put(quest, status);
                 }
@@ -194,18 +180,12 @@ public class TraitQuestGiver extends LOVTrait {
         List<IQuest> quests = new ArrayList<>();
         AtomicInteger left = new AtomicInteger(questIDs.length);
         for (String questId : questIDs) {
-            ListenableFuture<IQuest> futureQuest = QuestManager.getQuest(questId);
-
-            futureQuest.addListener(() -> {
-                try {
-                    IQuest quest = futureQuest.get();
-                    if (quest != null)
-                        quests.add(quest);
-                    else
-                        throw new Exception("Failed to load quest on NPC! Offender: " + questId + " on " + trait.npcId);
-                } catch (Exception e) {
-                    MessageUtil.sendException(QuestController.getInstance(), e);
-                }
+            QuestController.getInstance().getQuest(questId).on((err, val) -> {
+                if(val.isPresent()) {
+                    IQuest quest = val.get();
+                    quests.add(quest);
+                }else
+                    throw new Exception("Failed to load quest on NPC! Offender: " + questId + " on " + trait.npcId);
 
                 if (left.decrementAndGet() == 0)
                     future.set(quests);
