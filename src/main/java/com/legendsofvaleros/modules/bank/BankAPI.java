@@ -58,15 +58,16 @@ public class BankAPI extends ModuleListener {
 
     private Promise<Boolean> onLogout(CharacterId characterId) {
         Promise<Boolean> promise = new Promise<>();
-
         Bank bank = banks.remove(characterId);
-        if (bank == null)
+
+        if (bank == null) {
             promise.resolve(false);
-        else
+        } else {
             rpc.savePlayerBank(bank).on((err, val) -> {
                 if (err.isPresent()) promise.reject(err.get());
                 else promise.resolve(val.orElse(false));
             });
+        }
 
         return promise;
     }

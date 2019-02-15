@@ -1,5 +1,9 @@
-# Possible values are DEV, TESTING, and LIVE.
+# Possible values are LOCAL, DEV, TESTING, and LIVE.
+# LOCAL = Verbose logging. Doesn't log exceptions.
 # DEV = Verbose logging. Doesn't log exceptions.
 # TESTING = Verbose logging.
 # LIVE = Normal logging. Only moderation commands enabled.
 server-mode: DEV
+
+#The api endpoint ip, deepstream  is trying to connect to
+api-endpoint: 127.0.0.1:6020

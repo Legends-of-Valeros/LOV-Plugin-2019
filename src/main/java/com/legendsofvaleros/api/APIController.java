@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
@@ -29,21 +30,34 @@ import java.util.concurrent.Executors;
 @ModuleInfo(name = "API", info = "")
 public class APIController extends Module {
     private static APIController instance;
+
     public static APIController getInstance() {
         return instance;
     }
 
     private Executor pool;
-    public Executor getPool() { return pool; }
+
+    public Executor getPool() {
+        return pool;
+    }
 
     private GsonBuilder gsonBuilder = new GsonBuilder();
-    public GsonBuilder getGsonBuilder() { return gsonBuilder; }
+
+    public GsonBuilder getGsonBuilder() {
+        return gsonBuilder;
+    }
 
     private Gson gson;
-    public Gson getGson() { return gson; }
+
+    public Gson getGson() {
+        return gson;
+    }
 
     private DeepstreamClient client;
-    public DeepstreamClient getClient() { return client; }
+
+    public DeepstreamClient getClient() {
+        return client;
+    }
 
     private Set<String> rpcFuncs = new HashSet<>();
 
@@ -65,8 +79,7 @@ public class APIController extends Module {
             public CharacterId read(JsonReader jsonReader) throws IOException {
                 return CharacterId.fromString(jsonReader.nextString());
             }
-        })
-        .registerTypeAdapter(World.class, new TypeAdapter<World>() {
+        }).registerTypeAdapter(World.class, new TypeAdapter<World>() {
             @Override
             public void write(JsonWriter jsonWriter, World world) throws IOException {
                 jsonWriter.value(world.getName());
@@ -82,7 +95,8 @@ public class APIController extends Module {
             Map<String, Object> opts = new HashMap<>();
             opts.put(ConfigOptions.RPC_RESPONSE_TIMEOUT.toString(), "30000");
 
-            this.client = new DeepstreamClient("192.99.0.101:6020", opts);
+            String apiEndpoint = LegendsOfValeros.getInstance().getConfig().getString("api-endpoint", "192.99.0.101:6020");
+            this.client = new DeepstreamClient(apiEndpoint, opts);
 
             this.client.login();
         } catch (URISyntaxException | InvalidDeepstreamConfig e) {
@@ -103,14 +117,14 @@ public class APIController extends Module {
             boolean err = false;
 
             Map<String, Boolean> bools = RPCFunction.oneShotSync("ifMethodExists", TypeToken.of(Map.class), rpcFuncs);
-            for(Map.Entry<String, Boolean> entry : bools.entrySet()) {
-                if(!entry.getValue()) {
+            for (Map.Entry<String, Boolean> entry : bools.entrySet()) {
+                if (!entry.getValue()) {
                     err = true;
                     getLogger().severe(entry.getKey() + "() is not known in the API!");
                 }
             }
 
-            if(!err)
+            if (!err)
                 getLogger().info("No issues! All registered RPC functions exist!");
         });
 
@@ -166,13 +180,13 @@ public class APIController extends Module {
         Map<String, RPCFunction> methods = new HashMap<>();
 
         RPCFunction rpc;
-        for(Method m : clazz.getDeclaredMethods()) {
+        for (Method m : clazz.getDeclaredMethods()) {
             methods.put(m.getName(), rpc = RPCFunction.create(executor, m));
             getInstance().rpcFuncs.add(rpc.getName());
         }
 
-        return clazz.cast(Proxy.newProxyInstance(clazz.getClassLoader(), new java.lang.Class[] { clazz },
-            (proxy, m, args) -> methods.get(m.getName()).call((args != null ? args : new Object[0]))
+        return clazz.cast(Proxy.newProxyInstance(clazz.getClassLoader(), new java.lang.Class[]{clazz},
+                (proxy, m, args) -> methods.get(m.getName()).call((args != null ? args : new Object[0]))
         ));
     }
 }

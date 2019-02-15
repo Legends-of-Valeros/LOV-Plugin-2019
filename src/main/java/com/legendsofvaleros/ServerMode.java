@@ -1,7 +1,6 @@
 package com.legendsofvaleros;
 
 public enum ServerMode {
-    LOCAL(true, false, true, true),
     DEV(true, false, true, true),
     TESTING(true, true, true, true),
     LIVE(false, true, false, false);
