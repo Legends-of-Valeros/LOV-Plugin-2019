@@ -1,25 +1,18 @@
 package com.legendsofvaleros.modules.auction;
 
-import com.codingforcookies.doris.orm.annotation.Column;
-import com.codingforcookies.doris.orm.annotation.Table;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 
 /**
  * Created by Crystall on 01/07/2019
  */
-@Table(name = "auction_bid_history")
 public class BidHistoryEntry {
-    @Column(primary = true, name = "auction_id")
     private int auctionId;
 
-    @Column(name = "character_id")
     private CharacterId characterId;
 
     //integer to identify the order of the different bids (could also be ordered by value height)
-    @Column(name = "bid_number")
     private int bidNumber;
 
-    @Column(name = "bid_price")
     private int price;
 
     public BidHistoryEntry(int auctionId, CharacterId characterId, int bidNumber, int price) {
