@@ -30,17 +30,7 @@ public class TraitAuctioneer extends LOVTrait {
         slot.set(new Slot(new ItemBuilder(Material.BOOK).setName("Auction House").create(), (gui, p, event) -> {
             gui.close(p);
 
-            ListenableFuture<ArrayList<Auction>> future = AuctionController.getInstance().loadEntries();
-
-            future.addListener(() -> {
-                try {
-                    ArrayList<Auction> auctions = future.get();
-
-                    new AuctionGui(auctions).open(p);
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                }
-            }, AuctionController.getInstance().getScheduler()::sync);
+            new AuctionGui(AuctionController.getInstance().auctions).open(p);
         }));
     }
 }
