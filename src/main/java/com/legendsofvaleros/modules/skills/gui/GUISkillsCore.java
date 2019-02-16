@@ -70,5 +70,10 @@ public class GUISkillsCore extends GUI {
 			slot(1 + i, 1, stack.getKey(), stack.getValue());
 			i++;
 		}
+
+		//if(pc.getPlayer().hasPermission("lov.admin"))
+			slot(4, 2, new ItemBuilder(Material.NETHER_STAR).setName("Admin Skills").create(), (gui, p, button) -> {
+				new GUIAdminSkills(pc).open(p);
+			});
 	}
 }

@@ -16,14 +16,15 @@ import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.playermenu.options.PlayerOptionsOpenEvent;
 import com.legendsofvaleros.modules.skills.core.SkillTree;
+import com.legendsofvaleros.modules.skills.core.admin.AdminSkills;
+import com.legendsofvaleros.modules.skills.core.mage.TreeMage;
+import com.legendsofvaleros.modules.skills.core.priest.TreePriest;
+import com.legendsofvaleros.modules.skills.core.rogue.TreeRogue;
+import com.legendsofvaleros.modules.skills.core.warrior.TreeWarrior;
 import com.legendsofvaleros.modules.skills.event.*;
 import com.legendsofvaleros.modules.skills.gui.GUISkillsCore;
 import com.legendsofvaleros.modules.skills.listener.HotbarListener;
 import com.legendsofvaleros.modules.skills.listener.SkillListener;
-import com.legendsofvaleros.modules.skills.mage.TreeMage;
-import com.legendsofvaleros.modules.skills.priest.TreePriest;
-import com.legendsofvaleros.modules.skills.rogue.TreeRogue;
-import com.legendsofvaleros.modules.skills.warrior.TreeWarrior;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.item.Model;
 import org.bukkit.Bukkit;
@@ -58,7 +59,9 @@ public class SkillsController extends SkillsAPI {
     public void onLoad() {
         super.onLoad();
 
-        instance = this;
+        this.instance = this;
+
+        new AdminSkills();
 
         new HotbarListener();
 
