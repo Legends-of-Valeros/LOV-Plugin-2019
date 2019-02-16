@@ -24,7 +24,6 @@ import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.modules.keepoutofocean.KeepOutOfOcean;
 import com.legendsofvaleros.modules.levelarchetypes.core.LevelArchetypes;
 import com.legendsofvaleros.modules.loot.LootController;
-import com.legendsofvaleros.modules.mailbox.MailboxController;
 import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.modules.mount.MountsController;
 import com.legendsofvaleros.modules.npcs.NPCsController;
@@ -169,7 +168,6 @@ public class LegendsOfValeros extends JavaPlugin {
         Modules.registerModule(SkillsController.class);
         Modules.registerModule(ZonesController.class);
         Modules.registerModule(AuctionController.class);
-        Modules.registerModule(MailboxController.class);
     }
 
     public void registerEvents(Listener listener, Module module) {
