@@ -5,10 +5,7 @@ import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.core.Gear;
-import com.legendsofvaleros.modules.mailbox.Mail;
-import com.legendsofvaleros.modules.mailbox.MailboxController;
 import com.legendsofvaleros.util.MessageUtil;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -98,12 +95,6 @@ public class Auction {
         if (Money.sub(playerCharacter, value)) {
             //re-add the money to the previous bidder - auction fee
             PlayerCharacter previousBidder = Characters.getPlayerCharacter(highestBidderId);
-            if (previousBidder != null) {
-                Money.add(previousBidder, (long) (price * (1 - AuctionController.AUCTION_FEE)));
-                Mail mail = new Mail(previousBidder.getUniqueCharacterId(), "Your bid on the auction " + ChatColor.UNDERLINE + ChatColor.WHITE + ChatColor.BOLD +
-                        getItem().toInstance().gear.getName() + ChatColor.RESET + " got overbidden", false);
-                MailboxController.getInstance().getMailbox(playerCharacter.getUniqueCharacterId()).addMail(mail);
-            }
 
             //set the values of the current bidder and also save
             this.price = value;
@@ -148,7 +139,6 @@ public class Auction {
         contentLines.forEach(contentBuilder::append);
 
         if (sendMail) {
-            MailboxController.getInstance().saveMail(getOwnerId(), new Mail(getOwnerId(), contentBuilder.toString(), false));
             return;
         }
 

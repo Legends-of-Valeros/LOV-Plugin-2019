@@ -8,8 +8,6 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.gear.core.Gear;
-import com.legendsofvaleros.modules.mailbox.Mail;
-import com.legendsofvaleros.modules.mailbox.MailboxController;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -112,12 +110,6 @@ public class AuctionController extends AuctionAPI {
      */
     private void handleBidEnd(Auction auction) {
         BidHistoryEntry entry = auction.getLastBidEntry();
-        //TODO make pretty
-        Mail mail = new Mail(entry.getCharacterId(), "You won the auction", false);
-        mail.setItem(auction.getItem());
-
-        MailboxController.getInstance().saveMail(entry.getCharacterId(), mail);
-
         removeAuction(auction);
         auction.notifyOwner("Your bid auction has ended. " + ChatColor.BOLD + ChatColor.UNDERLINE + ChatColor.WHITE +
                 auction.getItem().toInstance().gear.getName() + ChatColor.RESET + " was sold for " + ChatColor.BOLD + ChatColor.UNDERLINE + ChatColor.WHITE +
