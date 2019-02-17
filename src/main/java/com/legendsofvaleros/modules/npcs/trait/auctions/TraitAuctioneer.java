@@ -2,18 +2,13 @@ package com.legendsofvaleros.modules.npcs.trait.auctions;
 
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.codingforcookies.robert.slot.Slot;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
-import com.legendsofvaleros.modules.auction.Auction;
 import com.legendsofvaleros.modules.auction.AuctionController;
 import com.legendsofvaleros.modules.auction.gui.AuctionGui;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-
-import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Crystall on 11/25/2018
