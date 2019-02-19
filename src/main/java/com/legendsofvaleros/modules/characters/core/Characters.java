@@ -1,7 +1,5 @@
 package com.legendsofvaleros.modules.characters.core;
 
-import com.codingforcookies.doris.orm.ORMField;
-import com.codingforcookies.doris.orm.ORMRegistry;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.annotation.DependsOn;
@@ -12,7 +10,6 @@ import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
 import com.legendsofvaleros.modules.characters.config.BukkitConfig;
 import com.legendsofvaleros.modules.characters.config.CharactersConfig;
-import com.legendsofvaleros.modules.characters.cooldown.CooldownData;
 import com.legendsofvaleros.modules.characters.creation.PlayerCreation;
 import com.legendsofvaleros.modules.characters.loading.PlayerLock;
 import com.legendsofvaleros.modules.characters.skilleffect.PersistingEffects;
@@ -29,8 +26,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.UUID;
 
 /**
@@ -79,12 +74,10 @@ public class Characters extends Module implements CharactersAPI {
         combatStatusTracker = new CombatStatusTracker(config);
 
         // initializes core player-character data
-        PlayerCharacterData.onEnable(config);
+        PlayerCharacterData.onEnable();
 
-        // initializes cooldown data
-        CooldownData.onEnable(config);
         // initializes persistent health, mana, and energy data
-        persistentRegenStats = new PersistentRegeneratingStats(config);
+        persistentRegenStats = new PersistentRegeneratingStats();
 
         // player loading
         PlayerLock.onEnable();
@@ -97,31 +90,16 @@ public class Characters extends Module implements CharactersAPI {
 
         // persistent duration-based effects from skills/spells/etc.
         this.skillEffects = new SkillEffects();
-        PersistingEffects.onEnable(config, skillEffects);
+        PersistingEffects.onEnable(skillEffects);
 
         // provides player-characters' levels to other plugins
         LevelArchetypes.getInstance().registerLevelProvider(new PlayerCharacterLevelProvider(),
                 EntityType.PLAYER);
 
-        ORMRegistry.addMutator(CharacterId.class, new ORMRegistry.SQLMutator<CharacterId>() {
-            @Override public void applyToField(ORMField field) {
-                field.sqlType = "VARCHAR";
-                field.length = 39;
-            }
-
-            @Override public CharacterId fromSQL(ResultSet result, String key) throws SQLException {
-                return CharacterId.fromString(result.getString(key));
-            }
-
-            @Override public Object toSQL(CharacterId value) {
-                return value.toString();
-            }
-        });
-
         new Test();
     }
 
-    @Override
+    /*@Override
     public void onUnload() {
         super.onUnload();
 
@@ -137,7 +115,7 @@ public class Characters extends Module implements CharactersAPI {
         // Saves core player-character data. This should go last, to preserve the core of Characters
         // long enough for other disabling modules to use them
         PlayerCharacterData.onDisable();
-    }
+    }*/
 
     public static void openCharacterSelection(Player p) {
         getInstance().uiManager.openCharacterSelection(getInstance().getCharacters(p), getInstance().loader);

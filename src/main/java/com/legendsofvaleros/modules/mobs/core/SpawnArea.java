@@ -1,17 +1,17 @@
 package com.legendsofvaleros.modules.mobs.core;
 
-import com.codingforcookies.doris.orm.annotation.Column;
-import com.codingforcookies.doris.orm.annotation.Table;
 import com.codingforcookies.robert.core.GUI;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.ItemLine;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.mobs.MobManager;
 import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.util.MessageUtil;
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 
 import java.time.Instant;
@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-@Table(name = "entity_spawns")
 public class SpawnArea {
     private static final Random rand = new Random();
 
@@ -29,26 +28,19 @@ public class SpawnArea {
     private Hologram hologram;
     private TextLine textEntityId, textLevel, textRadius, textPadding, textEntities, textInfo, textInterval;
 
-    @Column(primary = true, name = "spawn_id")
     private int id;
+    public int getId() { return id; }
 
-    @Column(name = "spawn_world", length = 64)
-    private String worldName;
+    private World world;
     public World getWorld() {
-        return Bukkit.getWorld(worldName);
+        return world;
     }
 
-    @Column(name = "spawn_x")
     private int x;
-
-    @Column(name = "spawn_y")
     private int y;
-
-    @Column(name = "spawn_z")
     private int z;
 
     private Location location;
-
     public Location getLocation() {
         if (location == null)
             location = new Location(getWorld(), x, y, z);
@@ -59,7 +51,6 @@ public class SpawnArea {
      * The radius that defines the length of this spawn point. Entities will spawn in this
      * radius around the point.
      */
-    @Column(name = "spawn_radius")
     private int radius;
     public int getRadius() {
         return radius;
@@ -69,7 +60,6 @@ public class SpawnArea {
      * Used by AI. This defines how much further past the spawn radius that they can exist
      * around the spawn radius.
      */
-    @Column(name = "spawn_padding")
     private int padding;
     public int getPadding() {
         return padding;
@@ -78,7 +68,6 @@ public class SpawnArea {
     /**
      * The ID of the entities that spawn here.
      */
-    @Column(name = "spawn_entity_id", length = 64)
     private String entityId;
     public String getEntityId() {
         return entityId;
@@ -87,7 +76,7 @@ public class SpawnArea {
     private Mob mob;
     public Mob getMob() {
         if (mob == null)
-            mob = MobManager.getEntity(entityId);
+            mob = MobsController.getInstance().getEntity(entityId);
         return mob;
     }
 
@@ -96,7 +85,6 @@ public class SpawnArea {
      * <br />
      * Example: 1-5 defines that an entitiy spawned here should be between level 1 and 5.
      */
-    @Column(name = "spawn_entity_level")
     private String entityLevel;
     private int[] levels;
 
@@ -113,19 +101,16 @@ public class SpawnArea {
         return levels[0] + rand.nextInt(levels[1] - levels[0] + 1);
     }
 
-    @Column(name = "spawn_count")
     public short spawnCount = 1;
     public int getSpawnCount() {
         return spawnCount;
     }
 
-    @Column(name = "spawn_time")
     public int spawnInterval = 60;
     public int getSpawnInterval() {
         return spawnInterval;
     }
 
-    @Column(name = "spawn_chance")
     public byte spawnChance = 100;
     public byte getSpawnChance() {
         return spawnChance;
@@ -148,7 +133,6 @@ public class SpawnArea {
     }
 
     private List<Mob.Instance> entities;
-
     public List<Mob.Instance> getEntities() {
         if (entities == null)
             entities = new ArrayList<>();
@@ -156,7 +140,6 @@ public class SpawnArea {
     }
 
     private Location ground;
-
     public Location getGround() {
         if (ground == null) {
             World world = getWorld();
@@ -168,17 +151,17 @@ public class SpawnArea {
         return ground;
     }
 
-    public SpawnArea(String worldName, int x, int y, int z, String entityId, int radius, int padding, int[] levels) {
-        this.worldName = worldName;
+    public SpawnArea(Location loc, String entityId, int radius, int padding, int[] levels) {
+        this.world = loc.getWorld();
         this.entityId = entityId;
         this.radius = radius;
         this.padding = padding;
         this.entityLevel = levels[0] + "-" + levels[1];
 
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.location = new Location(getWorld(), x, y, z);
+        this.x = loc.getBlockX();
+        this.y = loc.getBlockY();
+        this.z = loc.getBlockZ();
+        this.location = loc;
     }
 
     public void updateStats() {

@@ -3,8 +3,7 @@ package com.legendsofvaleros.modules.npcs.trait;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.npcs.core.NPCData;
-import com.legendsofvaleros.modules.npcs.core.Skins;
-import com.legendsofvaleros.modules.npcs.core.Skins.Skin;
+import com.legendsofvaleros.modules.npcs.core.Skin;
 import com.legendsofvaleros.modules.npcs.nameplate.Nameplates;
 import com.legendsofvaleros.util.MessageUtil;
 import net.citizensnpcs.api.command.CommandConfigurable;
@@ -70,7 +69,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
 
         String npcId = ctx.getString(1).toLowerCase();
 
-        if (!NPCsController.isNPC(npcId)) {
+        if (!NPCsController.getInstance().isNPC(npcId)) {
             MessageUtil.sendException(NPCsController.getInstance(), p, new Exception("No NPC with that ID exists in the cache. Offender: " + npcId));
             return;
         }
@@ -101,7 +100,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
 
         getNPC().data().setPersistent(NPC.SHOULD_SAVE_METADATA, true);
 
-        npcData = NPCsController.getNPC(npcId);
+        npcData = NPCsController.getInstance().getNPC(npcId);
         if (npcData == null) {
             getNPC().data().setPersistent(NPC.NAMEPLATE_VISIBLE_METADATA, true);
             getNPC().getEntity().setCustomNameVisible(true);
@@ -136,10 +135,9 @@ public class TraitLOV extends Trait implements CommandConfigurable {
             updatedSkin = true;
 
             try {
-                Skin skin = Skins.getSkin(npcData.skin);
-
+                Skin skin = NPCsController.getInstance().getSkin(npcData.skin);
                 if (skin == null)
-                    throw new Exception("No skin with that ID. Offender: " + npcData.skin + " on " + npcData.npcId);
+                    throw new Exception("No skin with that ID. Offender: " + npcData.skin + " on " + npcData.id);
 
                 npc.data().setPersistent("cached-skin-uuid", skin.uuid);
                 npc.data().setPersistent("cached-skin-uuid-name", skin.username.toLowerCase());
@@ -157,14 +155,14 @@ public class TraitLOV extends Trait implements CommandConfigurable {
             }
         }
 
-        if (npcData.loc == null || npcData.loc.getWorld() == null
-                || npcData.loc.getWorld() != getNPC().getEntity().getLocation().getWorld()
-                || getNPC().getEntity().getLocation().distance(npcData.loc) > 2) {
-            npcData.loc = getNPC().getEntity().getLocation().getBlock().getLocation();
-            NPCsController.manager().updateNPC(this, getNPC());
+        if (npcData.getLocation() == null || npcData.world == null
+                || npcData.world != getNPC().getEntity().getLocation().getWorld()
+                || getNPC().getEntity().getLocation().distance(npcData.getLocation()) > 2) {
+            npcData.setLocation(getNPC());
+            NPCsController.getInstance().saveNPC(this);
         }
 
-        npcId = npcData.npcId;
+        npcId = npcData.id;
 
         traits = npcData.traits;
 

@@ -4,7 +4,6 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.mobs.MobsController;
-import com.legendsofvaleros.modules.mobs.SpawnManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -13,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
@@ -41,10 +41,12 @@ public class MobSpawner {
     }
 
     private void updateSpawn(long time) {
-        int block = (int) (time % allUpdateInterval);
-        int blockSize = (int) Math.ceil((double) SpawnManager.getSpawns().size() / allUpdateInterval);
+        Collection<SpawnArea> loaded = MobsController.getInstance().getLoadedSpawns();
 
-        SpawnManager.getSpawns().stream()
+        int block = (int) (time % allUpdateInterval);
+        int blockSize = (int) Math.ceil((double)loaded.size() / allUpdateInterval);
+
+        loaded.stream()
                 .skip(block * blockSize).limit(blockSize)
                 .forEach(spawn -> {
                     spawn.updateStats();

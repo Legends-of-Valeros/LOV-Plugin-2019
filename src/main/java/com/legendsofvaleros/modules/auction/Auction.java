@@ -1,12 +1,10 @@
 package com.legendsofvaleros.modules.auction;
 
-import com.codingforcookies.doris.orm.annotation.Column;
-import com.codingforcookies.doris.orm.annotation.Table;
 import com.legendsofvaleros.modules.bank.core.Money;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.gear.item.Gear;
+import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.mailbox.Mail;
 import com.legendsofvaleros.modules.mailbox.MailboxController;
 import com.legendsofvaleros.util.MessageUtil;
@@ -18,35 +16,25 @@ import java.util.ArrayList;
 /**
  * Created by Crystall on 10/10/2018
  */
-@Table(name = "auctions")
 public class Auction {
-    @Column(primary = true, autoincrement = true, name = "id")
     private int id;
 
-    @Column(name = "owner_id")
     private CharacterId ownerId;
 
     //to support offline players and multiple server
-    @Column(name = "owner_name")
     private String ownerName;
 
-    @Column(name = "auction_item")
     private Gear.Data item;
 
-    @Column(name = "price")
     private int price;
 
-    @Column(name = "valid_until")
     private long validUntil;
 
-    @Column(name = "is_bid_offer")
     private boolean isBidOffer = false;
 
-    @Column(name = "highest_bidder_id")
     private CharacterId highestBidderId;
 
     //to support offline players and multiple server
-    @Column(name = "highest_bidder_name")
     private String highestBidderName;
 
     public Auction(CharacterId ownerId, String ownerName, Gear.Data item) {
@@ -65,6 +53,7 @@ public class Auction {
 
     /**
      * Returns if a player owns the auction
+     *
      * @param player
      * @return
      */
@@ -74,6 +63,7 @@ public class Auction {
 
     /**
      * Returns the lore
+     *
      * @return
      */
     public ArrayList<String> getDescription() {
@@ -89,6 +79,7 @@ public class Auction {
 
     /**
      * Bids on an auction, sets the new price, and adds the bidding person to the bid history
+     *
      * @param value
      * @return
      */
@@ -148,6 +139,7 @@ public class Auction {
 
     /**
      * Notifies the owner of the auction
+     *
      * @param contentLines
      */
     public void notifyOwner(ArrayList<String> contentLines, boolean sendMail) {
@@ -168,6 +160,7 @@ public class Auction {
 
     /**
      * Notifies the owner of the auction
+     *
      * @param message
      */
     public void notifyOwner(String message, boolean sendMail) {
@@ -234,22 +227,6 @@ public class Auction {
 
     public void setOwnerName(String ownerName) {
         this.ownerName = ownerName;
-    }
-
-    public CharacterId getHighestBidderId() {
-        return highestBidderId;
-    }
-
-    public String getHighestBidderName() {
-        return highestBidderName;
-    }
-
-    public void setHighestBidderId(CharacterId highestBidderId) {
-        this.highestBidderId = highestBidderId;
-    }
-
-    public void setHighestBidderName(String highestBidderName) {
-        this.highestBidderName = highestBidderName;
     }
 
     public ArrayList<BidHistoryEntry> getBidHistory() {

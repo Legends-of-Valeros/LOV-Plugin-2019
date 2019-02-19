@@ -46,7 +46,7 @@ public class MetaEffectInstance<T> implements SkillEffectInstance {
 			this.affectedId = affected.getUniqueId();
 			this.affected = new WeakReference<>(affected);
 
-			if (affected.getType() == EntityType.PLAYER && !NPCsController.isNPC(affected)) {
+			if (affected.getType() == EntityType.PLAYER && !NPCsController.getInstance().isNPC(affected)) {
 				PlayerCharacter pc = Characters.getPlayerCharacter((Player) affected);
 				ui = Characters.getInstance().getUiManager().getCharacterEffectInterface(pc);
 			}
@@ -55,7 +55,7 @@ public class MetaEffectInstance<T> implements SkillEffectInstance {
 		if (appliedBy != null) {
 			this.appliedById = appliedBy.getUniqueId();
 			PlayerCharacter pc;
-			if (appliedBy.getType() == EntityType.PLAYER && !NPCsController.isNPC(affected)
+			if (appliedBy.getType() == EntityType.PLAYER && !NPCsController.getInstance().isNPC(affected)
 					&& (pc = Characters.getPlayerCharacter((Player) appliedBy)) != null) {
 				appliedByCharacterId = pc.getUniqueCharacterId();
 			} else {

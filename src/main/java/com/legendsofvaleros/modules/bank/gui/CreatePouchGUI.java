@@ -7,7 +7,7 @@ import com.legendsofvaleros.modules.bank.core.Money;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.component.bank.WorthComponent;
-import com.legendsofvaleros.modules.gear.item.Gear;
+import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.item.Model;
 import org.bukkit.Material;
@@ -123,7 +123,7 @@ public class CreatePouchGUI extends GUI {
 				onOpen(p, getView(p));
 			}
 		
-			Gear.Instance instance = Gear.Instance.fromID("crowns-pouch");
+			Gear.Instance instance = Gear.Instance.fromId("crowns-pouch");
 			if(instance == null) return null;
 			
 			instance.putPersist(WorthComponent.class, amount);

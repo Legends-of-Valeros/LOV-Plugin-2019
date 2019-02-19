@@ -7,7 +7,6 @@ import com.legendsofvaleros.modules.gear.event.GearPickupEvent;
 import com.legendsofvaleros.modules.gear.event.ItemEquipEvent;
 import com.legendsofvaleros.modules.gear.event.ItemUnEquipEvent;
 import com.legendsofvaleros.modules.quests.QuestController;
-import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.action.QuestActionFactory;
 import com.legendsofvaleros.modules.quests.action.gear.ActionChooseItem;
 import com.legendsofvaleros.modules.quests.action.gear.ActionGiveItem;
@@ -38,26 +37,26 @@ public class GearIntegration extends Integration implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPickupItem(GearPickupEvent event) {
         if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
-        QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
+        QuestController.getInstance().callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onArmorEquip(ArmorEquipEvent event) {
         if(event.isCancelled()) return;
         if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
-        QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
+        QuestController.getInstance().callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onItemEquip(ItemEquipEvent event) {
         if(event.isCancelled()) return;
         if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
-        QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
+        QuestController.getInstance().callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onItemUnEquip(ItemUnEquipEvent event) {
         if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
-        QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
+        QuestController.getInstance().callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
     }
 }

@@ -3,7 +3,7 @@ package com.legendsofvaleros.modules.gear.component.core;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.modules.gear.component.GearComponent;
 import com.legendsofvaleros.modules.gear.component.GearComponentOrder;
-import com.legendsofvaleros.modules.gear.item.Gear;
+import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.gear.trigger.GearTrigger;
 import com.legendsofvaleros.util.field.RangedValue;
 import org.bukkit.ChatColor;

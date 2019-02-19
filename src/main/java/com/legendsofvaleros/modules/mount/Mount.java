@@ -13,13 +13,11 @@ import java.util.UUID;
 
 public class Mount {
     private String id;
-
     public String getId() {
         return id;
     }
 
     private String name;
-
     public String getName() {
         return name;
     }
@@ -30,17 +28,14 @@ public class Mount {
      * A value representing the percentage faster a mount is compared to a player.
      */
     private float speed;
-
     public float getSpeed() {
         return speed;
     }
-
     public int getSpeedPercent() {
         return (int) (speed * 100);
     }
 
     private int minLevel;
-
     public int getMinimumLevel() {
         return minLevel;
     }
@@ -56,13 +51,11 @@ public class Mount {
     }
 
     private Material icon;
-
     public Material getIcon() {
         return icon;
     }
 
     private int cost;
-
     public int getCost() {
         return cost;
     }

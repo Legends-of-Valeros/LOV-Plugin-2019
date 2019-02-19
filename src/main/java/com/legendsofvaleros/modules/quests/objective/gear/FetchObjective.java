@@ -2,8 +2,8 @@ package com.legendsofvaleros.modules.quests.objective.gear;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.gear.GearController;
+import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.gear.event.GearPickupEvent;
-import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.quests.objective.AbstractQuestObjective;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.event.Event;
@@ -18,7 +18,7 @@ public class FetchObjective extends AbstractQuestObjective<Integer> {
 
     @Override
     protected void onInit() {
-        item = Gear.fromID(id);
+        item = Gear.fromId(id);
 
         if (item == null)
             MessageUtil.sendException(GearController.getInstance(), "No item with that ID in quest. Offender: " + id + " in " + getQuest().getId());

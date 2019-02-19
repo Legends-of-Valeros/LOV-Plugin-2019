@@ -4,6 +4,7 @@ import com.legendsofvaleros.modules.characters.core.InventoryData;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.race.EntityRace;
 import com.legendsofvaleros.modules.characters.skill.SkillSet;
+import com.legendsofvaleros.modules.cooldowns.api.Cooldowns;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -90,13 +91,6 @@ public interface PlayerCharacter {
 	Experience getExperience();
 
 	/**
-	 * Gets this player-character's cooldowns.
-	 * 
-	 * @return This player-character's cooldowns.
-	 */
-	Cooldowns getCooldowns();
-
-	/**
 	 * If this character is currently being played, gets this player-character's stats that have
 	 * different effects depending on its player-class.
 	 * <p>
@@ -124,4 +118,6 @@ public interface PlayerCharacter {
 	 * @return This player-character's skill set.
 	 */
 	SkillSet getSkillSet();
+
+	Cooldowns getCooldowns();
 }

@@ -6,6 +6,6 @@ import com.legendsofvaleros.modules.npcs.trait.quests.TraitQuestGiver;
 
 public class QuestsIntegration extends Integration {
     public QuestsIntegration() {
-        NPCsController.registerTrait("questgiver", TraitQuestGiver.class);
+        NPCsController.getInstance().registerTrait("questgiver", TraitQuestGiver.class);
     }
 }

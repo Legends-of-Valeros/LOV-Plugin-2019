@@ -15,7 +15,7 @@ public class HomeBehavior {
     static Random rand = new Random();
 
     public static final ITest NEAR = (ce) -> {
-        NPC npc = NPCsController.manager().registry.getNPC(ce.getLivingEntity());
+        NPC npc = NPCsController.getInstance().getNPC(ce.getLivingEntity());
         MobTrait trait = npc.getTrait(MobTrait.class);
         Location loc = trait.instance.home.getLocation();
         return npc.getEntity().getLocation().distance(loc) <= trait.instance.home.getRadius() + trait.instance.home.getPadding();
@@ -24,7 +24,7 @@ public class HomeBehavior {
     public static final BehaviorAction NAVIGATE = new BehaviorAction() {
         @Override
         public NodeStatus onStep(CombatEntity ce, long ticks) {
-            NPC npc = NPCsController.manager().registry.getNPC(ce.getLivingEntity());
+            NPC npc = NPCsController.getInstance().getNPC(ce.getLivingEntity());
             MobTrait trait = npc.getTrait(MobTrait.class);
             Location loc = trait.instance.home.getLocation();
             loc.add((double) trait.instance.home.getRadius() - rand.nextInt(trait.instance.home.getRadius() * 2),

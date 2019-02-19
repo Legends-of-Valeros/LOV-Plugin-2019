@@ -63,12 +63,12 @@ public class CombatEngine extends Module implements CombatEngineAPI {
         new AttackForEffectsListener();
     }
 
-    @Override
+    /*@Override
     public void onUnload() {
         super.onUnload();
 
         EntityThreatLevels.onDisable();
-    }
+    }*/
 
     public static CombatEngineConfig getEngineConfig() {
         return config;

@@ -1,9 +1,7 @@
 package com.legendsofvaleros.modules.quests.objective.mobs;
 
-import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
-import com.legendsofvaleros.modules.mobs.MobManager;
 import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.mobs.core.SpawnArea;
@@ -13,8 +11,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
-import java.util.concurrent.ExecutionException;
-
 public class KillObjective extends AbstractQuestObjective<Integer> {
     private String id;
     private int amount;
@@ -23,17 +19,10 @@ public class KillObjective extends AbstractQuestObjective<Integer> {
 
     @Override
     protected void onInit() {
-        ListenableFuture<Mob> future = MobManager.loadEntity(id);
-        future.addListener(() -> {
-            try {
-                mob = future.get();
+        mob = MobsController.getInstance().getEntity(id);
 
-                if (mob == null)
-                    MessageUtil.sendException(MobsController.getInstance(), "No instance with that ID in quest. Offender: " + id + " in " + getQuest().getId());
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-        }, MobsController.getInstance().getScheduler()::async);
+        if (mob == null)
+            MessageUtil.sendException(MobsController.getInstance(), "No instance with that ID in quest. Offender: " + id + " in " + getQuest().getId());
     }
 
     @Override

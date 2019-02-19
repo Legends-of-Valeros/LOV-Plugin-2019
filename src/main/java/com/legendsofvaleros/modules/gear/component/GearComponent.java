@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.gear.component;
 
 import com.codingforcookies.robert.item.ItemBuilder;
-import com.legendsofvaleros.modules.gear.item.Gear;
+import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.gear.trigger.GearTrigger;
 
 public abstract class GearComponent<T> {

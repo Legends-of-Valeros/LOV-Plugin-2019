@@ -41,12 +41,12 @@ public class GUISkillsCore extends GUI {
 				.setName(treeSkills[0].name)
 				.addLore("", (pc.getExperience().getLevel() >= 10 ? (hasSkill1 ? ChatColor.YELLOW + "Unlocked" : (hasSkill2 ? ChatColor.RED + "Locked" : ChatColor.GREEN + "Available")) : ChatColor.GRAY + "Unlocked at level 10"))
 				.setEnchanted(hasSkill1)
-				.create(), (gui, p, clickType) -> new GUISkillsSpecialized(pc, true, treeSkills[0]).open(p));
+				.create(), (gui, p, clickType) -> new GUISkillsSpecialized(pc, true, treeSkills[0]).open(p, Flag.REPLACE));
 		slot(8, Model.stack("menu-arrow-right-button")
 				.setName(treeSkills[1].name)
 				.addLore("", (pc.getExperience().getLevel() >= 10 ? (hasSkill2 ? ChatColor.YELLOW + "Unlocked" : (hasSkill1 ? ChatColor.RED + "Locked" : ChatColor.GREEN + "Available")) : ChatColor.GRAY + "Unlocked at level 10"))
 				.setEnchanted(hasSkill2)
-				.create(), (gui, p, clickType) -> new GUISkillsSpecialized(pc, false, treeSkills[1]).open(p));
+				.create(), (gui, p, clickType) -> new GUISkillsSpecialized(pc, false, treeSkills[1]).open(p, Flag.REPLACE));
 
 		slot(4, new ItemBuilder(Material.BOOK)
 				.setName(tree.getName())
@@ -70,5 +70,10 @@ public class GUISkillsCore extends GUI {
 			slot(1 + i, 1, stack.getKey(), stack.getValue());
 			i++;
 		}
+
+		//if(pc.getPlayer().hasPermission("lov.admin"))
+			slot(4, 2, new ItemBuilder(Material.NETHER_STAR).setName("Admin Skills").create(), (gui, p, button) -> {
+				new GUIAdminSkills(pc).open(p);
+			});
 	}
 }

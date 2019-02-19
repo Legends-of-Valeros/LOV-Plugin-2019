@@ -6,6 +6,6 @@ import com.legendsofvaleros.modules.npcs.trait.mount.TraitMount;
 
 public class MountIntegration extends Integration {
     public MountIntegration() {
-        NPCsController.registerTrait("stablemaster", TraitMount.class);
+        NPCsController.getInstance().registerTrait("stablemaster", TraitMount.class);
     }
 }

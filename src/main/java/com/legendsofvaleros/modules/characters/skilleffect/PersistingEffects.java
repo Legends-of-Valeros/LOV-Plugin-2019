@@ -1,83 +1,73 @@
 package com.legendsofvaleros.modules.characters.skilleffect;
 
-import com.codingforcookies.doris.query.InsertQuery;
-import com.codingforcookies.doris.sql.TableManager;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
+import com.legendsofvaleros.api.APIController;
+import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
-import com.legendsofvaleros.modules.characters.config.DatabaseConfig;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
+import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
 import com.legendsofvaleros.modules.characters.skilleffect.PersistingEffect.PersistingEffectBuilder;
 import com.legendsofvaleros.modules.combatengine.events.CombatEntityCreateEvent;
 import com.legendsofvaleros.util.MessageUtil;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 
 /**
  * Stores and read data to/form a database for character effects that persist across logins.
  */
 public class PersistingEffects {
+	private interface RPC {
+		Promise<List<SavedPersistentEffect>> getPlayerPersistingEffects(CharacterId characterId);
+		Promise<Boolean> savePlayerPersistingEffects(CharacterId characterId, List<SavedPersistentEffect> effects);
+		Promise<Boolean> deletePlayerPersistingEffects(CharacterId characterId);
+	}
+
+	private static class SavedPersistentEffect {
+		public String id;
+
+		public long remaining;
+		public long elapsed;
+		public int level;
+
+		public String metaString;
+		public byte[] metaBytes;
+
+		private SavedPersistentEffect(PersistingEffect effect) {
+			this.id = effect.getEffectId();
+			this.remaining = effect.getRemainingDurationMillis();
+			this.elapsed = effect.getElapsedMillis();
+			this.level = effect.getLevel();
+			this.metaString = effect.getStringMeta();
+			this.metaBytes = effect.getByteMeta();
+		}
+	}
+
+	private static RPC rpc;
+
 	private static final long MIN_MILLIS_REMAINING_TO_SAVE = 500;
-	
-	private static final String TABLE_NAME = "player_skilleffect";
-	private static final String CHARACTER_ID_FIELD = "character_id";
-	private static final String EFFECT_FIELD = "effect_id";
-	private static final String REMAINING_DURATION_FIELD = "remaining_duration_millis";
-	private static final String ELAPSED_DURATION_FIELD = "elapsed_duration_millis";
-	private static final String LEVEL_FIELD = "effect_level";
-	private static final String STRING_META_FIELD = "string_meta";
-	private static final String BYTE_META_FIELD = "byte_meta";
 
-	private static TableManager managerEffects;
-
-	private static Set<CharacterId> loadedCharacters;
 	private static Multimap<CharacterId, PersistingEffect> dataMap;
 	private static SkillEffects effectManager;
 
-	public static void onEnable(DatabaseConfig dbConfig, SkillEffects characterEffects) {
-		managerEffects = new TableManager(dbConfig.getDbPoolsId(), TABLE_NAME);
+	public static void onEnable(SkillEffects characterEffects) {
+		rpc = APIController.create(RPC.class);
 
-		managerEffects.primary(CHARACTER_ID_FIELD, "VARCHAR(36)")
-				.primary(EFFECT_FIELD, "VARCHAR(64)")
-				.column(REMAINING_DURATION_FIELD, "BIGINT")
-				.column(ELAPSED_DURATION_FIELD, "BIGINT")
-				.column(LEVEL_FIELD, "INT")
-				.column(STRING_META_FIELD, "VARCHAR(255)")
-				.column(BYTE_META_FIELD, "VARBINARY(512)").create();
-		
-		loadedCharacters = new HashSet<>();
 		dataMap = HashMultimap.create();
 		effectManager = characterEffects;
 
 		Characters.getInstance().registerEvents(new PlayerCharacterListener());
-	}
-
-	public static void onDisable() {
-		Set<PersistingEffect> saveAll = new HashSet<>();
-
-		saveAll.addAll(dataMap.values());
-		dataMap.clear();
-
-		if(!saveAll.isEmpty())
-			writeEffects(saveAll);
 	}
 
 	/**
@@ -90,129 +80,61 @@ public class PersistingEffects {
 		if (effect == null) {
 			return;
 		}
+
 		dataMap.put(effect.getAffected(), effect);
 	}
 
-	private static void loadEffects(final CharacterId characterId, final PhaseLock lock) {
-		managerEffects.query()
-							.select()
-								.where(CHARACTER_ID_FIELD, characterId.toString())
-							.build()
-						.callback((statement, count) -> {
-							ResultSet result = statement.getResultSet();
+	private static Promise<Boolean> onLogin(PlayerCharacter pc) {
+		Promise<Boolean> promise = new Promise<>();
 
-							final List<PersistingEffect> fromDb = new ArrayList<>();
-							while (result.next()) {
-								String effectId = result.getString(EFFECT_FIELD);
-								long remaining = result.getLong(REMAINING_DURATION_FIELD);
+		rpc.getPlayerPersistingEffects(pc.getUniqueCharacterId()).onSuccess(val -> {
+			val.orElse(ImmutableList.of()).forEach(saved -> {
+				PersistingEffectBuilder builder =
+						PersistingEffect.newBuilder(saved.id, pc.getUniqueCharacterId(), saved.remaining);
 
-								PersistingEffectBuilder builder =
-										PersistingEffect.newBuilder(effectId, characterId, remaining);
+				builder.setElapsedDurationMillis(saved.elapsed);
+				builder.setLevel(saved.level);
+				builder.setStringMeta(saved.metaString);
+				builder.setByteMeta(saved.metaBytes);
 
-								builder.setElapsedDurationMillis(result.getLong(ELAPSED_DURATION_FIELD));
-								builder.setLevel(result.getInt(LEVEL_FIELD));
-								builder.setStringMeta(result.getString(STRING_META_FIELD));
-								builder.setByteMeta(result.getBytes(BYTE_META_FIELD));
+				dataMap.put(pc.getUniqueCharacterId(), builder.build());
+			});
 
-								fromDb.add(builder.build());
-							}
+			promise.resolve(true);
+		}).onFailure(promise::reject);
 
-							if(!fromDb.isEmpty()) {
-								managerEffects.query()
-													.remove()
-														.where(CHARACTER_ID_FIELD, characterId.toString())
-													.build()
-												.execute(true);
-
-								// syncs to the main thread before putting data in the cache
-								Characters.getInstance().getScheduler().executeInSpigotCircle(() -> {
-									PlayerCharacter pc = Characters.getInstance().getCharacter(characterId);
-									Player player = Bukkit.getPlayer(characterId.getPlayerId());
-									// makes sure the player is still online and valid
-									if (pc == null || player == null || !player.isOnline()) {
-										return;
-									}
-
-									for (PersistingEffect effect : fromDb) {
-										dataMap.put(characterId, effect);
-									}
-
-									lock.release();
-								});
-
-							} else {
-								lock.release();
-							}
-						})
-					.execute(true);
+		return promise;
 	}
 
-	private static ListenableFuture<Void> writeEffects(Set<PersistingEffect> effects) {
-		SettableFuture<Void> ret = SettableFuture.create();
+	private static Promise<Boolean> onLogout(PlayerCharacter pc) {
+		List<SavedPersistentEffect> effects = new ArrayList<>();
 
-		if (effects == null || effects.isEmpty()) {
-			ret.set(null);
-		}else {
-			// makes a final, defensive copy of the effects to save
-			final Set<PersistingEffect> effs = new HashSet<>();
-			for (PersistingEffect effect : effects) {
+		dataMap.get(pc.getUniqueCharacterId()).stream()
+				.filter(effect -> effect.getRemainingDurationMillis() >= MIN_MILLIS_REMAINING_TO_SAVE)
+				.forEach(effect -> effects.add(new SavedPersistentEffect(effect)));
 
-				// does not bother writing effects with very short remaining durations
-				if (effect.getRemainingDurationMillis() >= MIN_MILLIS_REMAINING_TO_SAVE) {
-					effs.add(effect);
-				}
-			}
+		return rpc.savePlayerPersistingEffects(pc.getUniqueCharacterId(), effects);
+	}
 
-			if (effs.isEmpty()) {
-				ret.set(null);
-			}else{
-				InsertQuery<ResultSet> insert = managerEffects.query()
-						.insert()
-						.onDuplicateUpdate(CHARACTER_ID_FIELD,
-								EFFECT_FIELD,
-								REMAINING_DURATION_FIELD,
-								ELAPSED_DURATION_FIELD,
-								LEVEL_FIELD,
-								STRING_META_FIELD,
-								BYTE_META_FIELD);
-				for (PersistingEffect eff : effs) {
-					insert.values(CHARACTER_ID_FIELD, eff.getAffected().toString(),
-							EFFECT_FIELD, eff.getEffectId(),
-							REMAINING_DURATION_FIELD, eff.getRemainingDurationMillis(),
-							ELAPSED_DURATION_FIELD, eff.getElapsedMillis(),
-							LEVEL_FIELD, eff.getLevel(),
-							STRING_META_FIELD, eff.getStringMeta(),
-							BYTE_META_FIELD, eff.getByteMeta());
-					insert.addBatch();
-				}
-				insert.build().onFinished(() -> ret.set(null)).execute(true);
-			}
-		}
-
-		return ret;
+	private static Promise<Boolean> onDelete(PlayerCharacter pc) {
+		return rpc.deletePlayerPersistingEffects(pc.getUniqueCharacterId());
 	}
 
 	/**
 	 * Loads and applies persisting effects on player-character logins.
 	 */
 	private static class PlayerCharacterListener implements Listener {
-
 		@EventHandler
 		public void onPlayerCharacterStartLoading(final PlayerCharacterStartLoadingEvent event) {
-			if (loadedCharacters.add(event.getPlayerCharacter().getUniqueCharacterId())) {
-				final PhaseLock lock = event.getLock("Effects");
+			PhaseLock lock = event.getLock("Effects");
 
-				Characters.getInstance().getScheduler().executeInMyCircle(() -> loadEffects(event.getPlayerCharacter().getUniqueCharacterId(), lock));
-			}
+			onLogin(event.getPlayerCharacter()).on(lock::release);
 		}
 
 		@EventHandler
 		public void onCombatEntityCreate(CombatEntityCreateEvent event) {
-			if (event.getLivingEntity().getType() == EntityType.PLAYER) {
-				Player player = (Player) event.getLivingEntity();
-
-				if(!Characters.isPlayerCharacterLoaded(player)) return;
-
+			if (event.getCombatEntity().isPlayer()) {
+				Player player = (Player)event.getLivingEntity();
 				PlayerCharacter pc = Characters.getPlayerCharacter(player);
 
 				if (dataMap.containsKey(pc.getUniqueCharacterId())) {
@@ -227,33 +149,20 @@ public class PersistingEffects {
 							MessageUtil.sendSevereException(Characters.getInstance(), player, ex);
 						}
 					}
-
-					dataMap.removeAll(pc.getUniqueCharacterId());
 				}
 			}
 		}
 
 		@EventHandler(priority = EventPriority.HIGHEST)
 		public void onPlayerCharacterLogoutEvent(PlayerCharacterLogoutEvent event) {
-			if (event.isServerLogout()) {
-				PlayerCharacters characters = Characters.getInstance().getCharacters(event.getPlayer());
-				if (characters != null) {
+			PhaseLock lock = event.getLock("Effects");
 
-					Set<PersistingEffect> saveThese = new HashSet<>();
+			onLogout(event.getPlayerCharacter()).on(lock::release);
+		}
 
-					for (PlayerCharacter pc : characters.getCharacterSet()) {
-						loadedCharacters.remove(pc.getUniqueCharacterId());
-
-						if (dataMap.containsKey(pc.getUniqueCharacterId())) {
-							saveThese.addAll(dataMap.removeAll(pc.getUniqueCharacterId()));
-						}
-					}
-
-					PhaseLock lock = event.getLock("Effects");
-					writeEffects(saveThese).addListener(lock::release, Characters.getInstance().getScheduler()::async);
-				}
-			}
+		@EventHandler
+		public void onPlayerCharacterDeleteEvent(PlayerCharacterRemoveEvent event) {
+			onDelete(event.getPlayerCharacter());
 		}
 	}
-
 }

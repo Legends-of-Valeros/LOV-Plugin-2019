@@ -2,11 +2,11 @@ package com.legendsofvaleros.modules.pvp.integration;
 
 import com.legendsofvaleros.module.Integration;
 import com.legendsofvaleros.modules.bank.BankController;
-import com.legendsofvaleros.modules.characters.api.Cooldowns;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
+import com.legendsofvaleros.modules.cooldowns.api.Cooldowns;
 import com.legendsofvaleros.modules.pvp.PvPController;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.configuration.ConfigurationSection;

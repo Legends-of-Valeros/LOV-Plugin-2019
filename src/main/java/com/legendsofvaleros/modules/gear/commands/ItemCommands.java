@@ -5,9 +5,9 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.gear.ItemManager;
-import com.legendsofvaleros.modules.gear.ItemUtil;
-import com.legendsofvaleros.modules.gear.item.Gear;
+import com.legendsofvaleros.modules.gear.GearController;
+import com.legendsofvaleros.modules.gear.core.Gear;
+import com.legendsofvaleros.modules.gear.core.ItemUtil;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.item.Model;
 import org.bukkit.command.CommandSender;
@@ -19,8 +19,9 @@ public class ItemCommands extends BaseCommand {
     @Description("Reload the item cache.")
     @CommandPermission("gear.reload")
     public void cmdReload(CommandSender sender) {
-        ItemManager.reload();
-        Model.reload();
+        GearController.getInstance().loadAll();
+        Model.loadAll();
+
         MessageUtil.sendUpdate(sender, "Item and item model cache reloaded.");
     }
 
@@ -30,7 +31,7 @@ public class ItemCommands extends BaseCommand {
     public void cmdSpawn(Player player, String itemId, @Optional Integer amount) {
         if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-        Gear gear = Gear.fromID(itemId);
+        Gear gear = Gear.fromId(itemId);
 
         if (gear == null) {
             MessageUtil.sendError(player, "That item name doesn't exist.");

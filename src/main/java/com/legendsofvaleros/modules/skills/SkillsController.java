@@ -2,29 +2,29 @@ package com.legendsofvaleros.modules.skills;
 
 import com.codingforcookies.robert.core.RomanNumeral;
 import com.codingforcookies.robert.item.ItemBuilder;
-import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.bank.BankController;
-import com.legendsofvaleros.modules.characters.api.Cooldowns;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.cooldowns.api.Cooldowns;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.playermenu.options.PlayerOptionsOpenEvent;
 import com.legendsofvaleros.modules.skills.core.SkillTree;
+import com.legendsofvaleros.modules.skills.core.admin.AdminSkills;
+import com.legendsofvaleros.modules.skills.core.mage.TreeMage;
+import com.legendsofvaleros.modules.skills.core.priest.TreePriest;
+import com.legendsofvaleros.modules.skills.core.rogue.TreeRogue;
+import com.legendsofvaleros.modules.skills.core.warrior.TreeWarrior;
 import com.legendsofvaleros.modules.skills.event.*;
 import com.legendsofvaleros.modules.skills.gui.GUISkillsCore;
 import com.legendsofvaleros.modules.skills.listener.HotbarListener;
 import com.legendsofvaleros.modules.skills.listener.SkillListener;
-import com.legendsofvaleros.modules.skills.mage.TreeMage;
-import com.legendsofvaleros.modules.skills.priest.TreePriest;
-import com.legendsofvaleros.modules.skills.rogue.TreeRogue;
-import com.legendsofvaleros.modules.skills.warrior.TreeWarrior;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.item.Model;
 import org.bukkit.Bukkit;
@@ -44,7 +44,7 @@ import java.util.Map.Entry;
 @DependsOn(Hotswitch.class)
 // TODO: Create subclass for listeners?
 @ModuleInfo(name = "Skills", info = "")
-public class SkillsController extends ModuleListener {
+public class SkillsController extends SkillsAPI {
     public static final SkillTree[] skillTrees = new SkillTree[] {
             new TreeWarrior(),
             new TreeRogue(),
@@ -55,15 +55,13 @@ public class SkillsController extends ModuleListener {
     private static SkillsController instance;
     public static SkillsController getInstance() { return instance; }
 
-    public SkillBarManager hotbarManager;
-
     @Override
     public void onLoad() {
         super.onLoad();
 
-        instance = this;
+        this.instance = this;
 
-        hotbarManager = new SkillBarManager();
+        new AdminSkills();
 
         new HotbarListener();
 

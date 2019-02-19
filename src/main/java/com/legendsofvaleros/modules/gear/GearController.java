@@ -1,9 +1,6 @@
 package com.legendsofvaleros.modules.gear;
 
-import com.codingforcookies.doris.orm.ORMField;
-import com.codingforcookies.doris.orm.ORMRegistry;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.IntegratesWith;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
@@ -13,17 +10,15 @@ import com.legendsofvaleros.modules.characters.core.PlayerInventoryData;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.gear.commands.ItemCommands;
 import com.legendsofvaleros.modules.gear.component.core.*;
+import com.legendsofvaleros.modules.gear.core.Gear;
+import com.legendsofvaleros.modules.gear.core.GearInventoryLoader;
 import com.legendsofvaleros.modules.gear.integration.BankIntegration;
 import com.legendsofvaleros.modules.gear.integration.SkillsIntegration;
-import com.legendsofvaleros.modules.gear.item.Gear;
 import com.legendsofvaleros.modules.gear.listener.InventoryListener;
 import com.legendsofvaleros.modules.gear.listener.ItemListener;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.skills.SkillsController;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 @DependsOn(CombatEngine.class)
 @DependsOn(PlayerMenu.class)
@@ -32,7 +27,7 @@ import java.sql.SQLException;
 @IntegratesWith(module = BankController.class, integration = BankIntegration.class)
 @IntegratesWith(module = SkillsController.class, integration = SkillsIntegration.class)
 @ModuleInfo(name = "Gear", info = "")
-public class GearController extends Module {
+public class GearController extends GearAPI {
     private static GearController instance;
     public static GearController getInstance() { return instance; }
 
@@ -42,14 +37,12 @@ public class GearController extends Module {
     public void onLoad() {
         super.onLoad();
 
-        instance = this;
+        this.instance = this;
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new ItemCommands());
 
         registerEvents(new ItemListener());
         registerEvents(new InventoryListener());
-
-        ItemManager.onEnable();
 
         GearRegistry.registerComponent("lore", LoreComponent.class);
         GearRegistry.registerComponent("bind", SoulbindComponent.class);
@@ -61,23 +54,6 @@ public class GearController extends Module {
         GearRegistry.registerComponent("use_speed", GearUseSpeed.Component.class);
 
         GearRegistry.registerComponent("stats", GearStats.Component.class);
-
-        ORMRegistry.addMutator(Gear.Data.class, new ORMRegistry.SQLMutator<Gear.Data>() {
-            @Override
-            public void applyToField(ORMField field) {
-                field.sqlType = "TEXT";
-            }
-
-            @Override
-            public Gear.Data fromSQL(ResultSet result, String key) throws SQLException {
-                return Gear.Data.loadData(result.getString(key));
-            }
-
-            @Override
-            public Object toSQL(Gear.Data value) {
-                return value.toString();
-            }
-        });
 
         PlayerInventoryData.method = new GearInventoryLoader();
     }

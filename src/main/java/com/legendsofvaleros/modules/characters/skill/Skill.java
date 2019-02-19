@@ -82,7 +82,7 @@ public abstract class Skill {
     private final Object[] description;
 
     protected static Object getEarliest(Object[] arr, int level) {
-        return arr[Math.max(0, Math.min(level, arr.length) - 1)];
+        return arr.length > 0 ?arr[Math.max(0, Math.min(level, arr.length) - 1)] : 0;
     }
 
     protected static int getEarliest(int[] arr, int level) {
@@ -103,17 +103,24 @@ public abstract class Skill {
         this.id = id;
         this.type = type;
         this.pclass = pclass;
-        this.levelCosts = levelCosts;
-        this.powerCost = powerCost;
+        this.levelCosts = levelCosts != null ? levelCosts : new int[0];
+        this.powerCost = powerCost != null ? powerCost : new int[0];
 
-        this.cooldown = new int[cooldown.length];
-        for (int i = 0; i < this.cooldown.length; i++)
-            this.cooldown[i] = (int) (1000 * cooldown[i]);
+        if(cooldown == null) {
+            this.cooldown = new int[0];
+        }else{
+            this.cooldown = new int[cooldown.length];
+            for (int i = 0; i < this.cooldown.length; i++)
+                this.cooldown[i] = (int) (1000 * cooldown[i]);
+        }
 
         List<Object> desc = new ArrayList<>();
         desc.add("\n" + ChatColor.GOLD + ChatColor.BOLD + "Cooldown: ");
         desc.add(new TimePart().millis(this.cooldown));
-        desc.add("\n" + ChatColor.GOLD + ChatColor.BOLD + getStatUsed().getUserFriendlyName() + " Cost: ");
+
+        if(pclass != null)
+            desc.add("\n" + ChatColor.GOLD + ChatColor.BOLD + getStatUsed().getUserFriendlyName() + " Cost: ");
+
         desc.add((IDescriptionPart) (level, showUpgrade) -> new String[]{String.valueOf(getSkillCost(level))});
         if (getActivationTime() != null)
             desc.add("\n" + ChatColor.GOLD + ChatColor.BOLD + "Activation: " + ChatColor.YELLOW + getActivationTime());
@@ -121,7 +128,9 @@ public abstract class Skill {
         desc.addAll(Arrays.asList(description));
         this.description = desc.toArray(new Object[0]);
 
-        classSkills.put(pclass, this);
+        if(pclass != null)
+            classSkills.put(pclass, this);
+
         availableSkills.put(this.id, this);
     }
 
@@ -251,7 +260,7 @@ public abstract class Skill {
     }
 
     public final RegeneratingStat getStatUsed() {
-        return pclass.getSkillCostType();
+        return pclass != null ? pclass.getSkillCostType() : null;
     }
 
     public final double getSkillCost(int level) {

@@ -1,7 +1,5 @@
 package com.legendsofvaleros.modules.characters.api;
 
-import com.google.common.util.concurrent.ListenableFuture;
-
 /**
  * An listener level for a player character.
  */
@@ -66,17 +64,6 @@ public interface Experience {
   ExperienceMultiplier addMultiplier(double amount);
 
   /**
-   * Asynchronously refreshes the listener level from the database.
-   * <p>
-   * Does not overwrite any changes to listener that have happened since the last read from the
-   * database. Just adjusts the base, starting level to any changes that have happened since the
-   * last read.
-   * 
-   * @return The asynchronous, future result of this computation. Returns this object.
-   */
-  ListenableFuture<Experience> refresh();
-
-  /**
    * Sets the player's listener level.
    * 
    * @param setTo The level to set listener to. Cannot be negative.
@@ -95,7 +82,7 @@ public interface Experience {
    * level.
    * 
    * @param setTo The amount to set the character's listener to. Cannot be negative.
-   * @deprecated It is much better to use relative edits (ie {@link #add(long)}, because they are
+   * @deprecated It is much better to use relative edits (ie {@link #addExperience(long, boolean)}, because they are
    *             much less dangerous. Setting xp has a very high likelihood of causing logical
    *             conflicts with other clients or the database record (especially if it is being
    *             edited from multiple sources at once).

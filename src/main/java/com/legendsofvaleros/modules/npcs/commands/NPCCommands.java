@@ -12,7 +12,6 @@ import com.legendsofvaleros.util.MessageUtil;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -23,20 +22,11 @@ public class NPCCommands extends BaseCommand {
 	@Subcommand("reload")
 	@Description("Reload the NPC cache and citizens.")
 	@CommandPermission("npcs.reload")
-	public void cmdListNPCReload(CommandSender sender) {
-		NPCsController.manager().reload();
+	public void cmdListNPCReload(CommandSender sender) throws Throwable {
+		NPCsController.getInstance().loadAll().get();
 
 		Bukkit.dispatchCommand(sender, "citizens save");
 		Bukkit.dispatchCommand(sender, "citizens reload");
-	}
-
-	@Subcommand("traits")
-	@Description("List all existing LOV NPC traits.")
-	@CommandPermission("npcs.traits.list")
-	public void cmdListTraits(CommandSender sender) {
-		sender.sendMessage(ChatColor.YELLOW + "Enabled Traits:");
-		for(String str : NPCsController.manager().traitTypes.keySet())
-			sender.sendMessage(ChatColor.YELLOW + " " + str);
 	}
 
 	@Subcommand("activate")
@@ -45,7 +35,7 @@ public class NPCCommands extends BaseCommand {
 	public void cmdActivateNPC(Player player, String npcId, String side) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		NPCData npc = NPCsController.manager().npcs.get(npcId);
+		NPCData npc = NPCsController.getInstance().getNPC(npcId);
 
 		if(side.equalsIgnoreCase("left"))
 			TraitHelper.onLeftClick(npc.name, player, npc.traits);
@@ -61,7 +51,7 @@ public class NPCCommands extends BaseCommand {
 	public void cmdBindNPC(Player player, String npcId) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		NPCData npcData = NPCsController.manager().npcs.get(npcId);
+		NPCData npcData = NPCsController.getInstance().getNPC(npcId);
 		if(npcData == null) {
 			MessageUtil.sendError(player, "NPC with that ID does not exist.");
 			return;
@@ -116,8 +106,8 @@ public class NPCCommands extends BaseCommand {
 						&& trait.getNPC().getEntity().getLocation() != null) {
 					player.teleport(trait.getNPC().getEntity().getLocation());
 					return;
-				}else if(trait.npcData.loc != null) {
-					player.teleport(trait.npcData.loc);
+				}else if(trait.npcData.getLocation() != null) {
+					player.teleport(trait.npcData.getLocation());
 					return;
 				}
 

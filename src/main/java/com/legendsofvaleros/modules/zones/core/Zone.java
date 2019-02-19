@@ -2,7 +2,6 @@ package com.legendsofvaleros.modules.zones.core;
 
 import com.codingforcookies.ambience.Sound;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 
 public class Zone {
@@ -13,8 +12,7 @@ public class Zone {
 	public String name;
 	public String subname;
 	
-	public Material material;
-	public byte materialData = 0;
+	public MaterialWithData material;
 	
 	public boolean pvp;
 	
@@ -24,6 +22,12 @@ public class Zone {
 	public boolean isInZone(Location loc) {
 		if(loc == null) return false;
 		Block b = loc.getWorld().getBlockAt(loc.getBlockX(), y, loc.getBlockZ());
-		return b.getType() == material && b.getData() == materialData;
+		return b.getType() == material.type
+				&& (material.data != null && b.getData() == material.data);
 	}
+
+	@Override
+    public String toString() {
+        return "Zone(id=" + id + ", name=" + name + ", subname=" + subname + ", material=" + material + ", y=" + y + ", pvp=" + pvp + ", ambience=Sounds(length=" + ambience.length + "))";
+    }
 }

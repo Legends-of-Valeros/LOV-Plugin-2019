@@ -7,7 +7,7 @@ import co.aikar.commands.contexts.OnlinePlayer;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.parties.PartyManager;
+import com.legendsofvaleros.modules.parties.PartiesController;
 import com.legendsofvaleros.modules.parties.core.PlayerParty;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
@@ -17,18 +17,6 @@ import org.bukkit.entity.Player;
 
 @CommandAlias("party|p|lov party")
 public class PartyCommands extends BaseCommand {
-    @Subcommand("create")
-    @Description("Create a new party.")
-    public static void cmdPartyCreate(Player player) {
-        PlayerCharacter pc = getPlayerCharacter(player);
-        if (getCurrentParty(pc) != null) {
-            MessageUtil.sendError(player, "You are already in a party. If you'd like to leave, use /party leave");
-            return;
-        }
-
-        PartyManager.addMember(new PlayerParty(), pc.getUniqueCharacterId());
-    }
-
     @Subcommand("join")
     @Description("Join an existing party that you have been invited to.")
     public static void cmdPartyJoin(Player player, OnlinePlayer join) {
@@ -45,7 +33,7 @@ public class PartyCommands extends BaseCommand {
         } else if (!pp.invitations.contains(pc.getUniqueCharacterId())) {
             MessageUtil.sendError(player, "You have not been invited to that party.");
         } else {
-            PartyManager.addMember(pp, pc.getUniqueCharacterId());
+            PartiesController.getInstance().addMember(pp, pc.getUniqueCharacterId());
         }
     }
 
@@ -58,7 +46,7 @@ public class PartyCommands extends BaseCommand {
             return;
         }
 
-        PartyManager.removeMember(getCurrentParty(pc), pc.getUniqueCharacterId());
+        PartiesController.getInstance().removeMember(getCurrentParty(pc), pc.getUniqueCharacterId());
     }
 
     @Subcommand("invite")
@@ -66,7 +54,7 @@ public class PartyCommands extends BaseCommand {
     public static void cmdPartyInvite(Player player, OnlinePlayer invite) {
         PlayerCharacter pc = getPlayerCharacter(player);
         if (getCurrentParty(pc) == null) {
-            PartyManager.addMember(new PlayerParty(), pc.getUniqueCharacterId());
+            PartiesController.getInstance().addMember(new PlayerParty(), pc.getUniqueCharacterId());
         }
 
         PlayerCharacter tpc = getPlayerCharacter(invite.getPlayer());
@@ -104,7 +92,7 @@ public class PartyCommands extends BaseCommand {
             }
 
             MessageUtil.sendUpdate(player, player.getDisplayName() + " has kicked " + Bukkit.getOfflinePlayer(targetId.getPlayerId()).getName() + " from the party.");
-            PartyManager.removeMember(pp, targetId);
+            PartiesController.getInstance().removeMember(pp, targetId);
         } else {
             MessageUtil.sendError(player, "You are not the party leader.");
             return;
@@ -117,7 +105,7 @@ public class PartyCommands extends BaseCommand {
     }
 
     public static PlayerParty getCurrentParty(PlayerCharacter pc) {
-        return (PlayerParty) PartyManager.getPartyByMember(pc.getUniqueCharacterId());
+        return PartiesController.getInstance().getPartyByMember(pc.getUniqueCharacterId());
     }
 
     @Default

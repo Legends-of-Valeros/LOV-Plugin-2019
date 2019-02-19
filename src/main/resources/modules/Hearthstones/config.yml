@@ -5,7 +5,3 @@ warmup-seconds: 5
 
 # The number of seconds a player must wait after successfully casting hearthstone before they can use it again.
 cooldown-seconds: 6000
-
-# The id of the DBPools database to use, as it appears in plugins/DBPools/config.yml
-# This plugin relies on DBPools for database connections. Without it, this plugin cannot function.
-dbpools-database: "mysql1"

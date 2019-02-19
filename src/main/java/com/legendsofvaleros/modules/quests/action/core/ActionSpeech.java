@@ -30,7 +30,7 @@ public class ActionSpeech extends AbstractQuestAction implements IQuestEventRece
 
     @Override
     public void play(PlayerCharacter pc, Next next) {
-        if (!NPCsController.isNPC(npcId)) {
+        if (!NPCsController.getInstance().isNPC(npcId)) {
             MessageUtil.sendError(pc.getPlayer(), "No NPC with that name: " + npcId);
             next.go();
             return;

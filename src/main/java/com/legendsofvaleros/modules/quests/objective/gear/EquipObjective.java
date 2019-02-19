@@ -1,17 +1,15 @@
 package com.legendsofvaleros.modules.quests.objective.gear;
 
 import com.codingforcookies.armorequip.ArmorEquipEvent;
-import com.codingforcookies.robert.item.NBTEditor;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.gear.GearController;
+import com.legendsofvaleros.modules.gear.core.Gear;
+import com.legendsofvaleros.modules.gear.core.GearType;
 import com.legendsofvaleros.modules.gear.event.ItemEquipEvent;
 import com.legendsofvaleros.modules.gear.event.ItemUnEquipEvent;
-import com.legendsofvaleros.modules.gear.item.Gear;
-import com.legendsofvaleros.modules.gear.item.GearType;
 import com.legendsofvaleros.modules.quests.objective.AbstractQuestObjective;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.event.Event;
-import org.bukkit.inventory.ItemStack;
 
 public class EquipObjective extends AbstractQuestObjective<Boolean> {
 	private String id;
@@ -20,7 +18,7 @@ public class EquipObjective extends AbstractQuestObjective<Boolean> {
 
 	@Override
 	protected void onInit() {
-		item = Gear.fromID(id);
+		item = Gear.fromId(id);
 
 		if(item == null)
 			MessageUtil.sendException(GearController.getInstance(), "No item with that ID in quest. Offender: " + id + " in " + getQuest().getId());
@@ -64,13 +62,13 @@ public class EquipObjective extends AbstractQuestObjective<Boolean> {
 		}else if(event.getClass() == ItemEquipEvent.class) {
 			if(item.getType() == GearType.ARMOR) return progress;
 
-			if(((ItemEquipEvent)event).getGear().getID().equals(id))
+			if(((ItemEquipEvent)event).getGear().getId().equals(id))
 				return true;
 
 		}else if(event.getClass() == ItemUnEquipEvent.class) {
 			if(item.getType() == GearType.ARMOR) return progress;
 
-			if(((ItemUnEquipEvent)event).getGear().getID().equals(id))
+			if(((ItemUnEquipEvent)event).getGear().getId().equals(id))
 				return false;
 		}
 

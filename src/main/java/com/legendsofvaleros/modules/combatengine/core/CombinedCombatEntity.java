@@ -74,7 +74,7 @@ public class CombinedCombatEntity implements CombatEntity, EntityStats, EntitySt
         }
         this.uid = entity.getUniqueId();
         this.entity = new WeakReference<>(entity);
-        this.isPlayer = entity.getType() == EntityType.PLAYER && !NPCsController.isNPC(entity);
+        this.isPlayer = entity.getType() == EntityType.PLAYER && !NPCsController.getInstance().isNPC(entity);
 
         this.listener = new ChangeListener(this);
         this.healthHandler = CombatEngine.getInstance().getMinecraftHealthHandler();

@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.quests.objective.bank;
 
 import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.gear.item.Gear;
+import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.npcs.trait.bank.repair.RepairItemEvent;
 import com.legendsofvaleros.modules.quests.objective.AbstractQuestObjective;
 import com.legendsofvaleros.util.MessageUtil;
@@ -15,7 +15,7 @@ public class RepairObjective extends AbstractQuestObjective<Boolean> {
 
     @Override
     protected void onInit() {
-        item = Gear.fromID(id);
+        item = Gear.fromId(id);
 
         if(item == null)
             MessageUtil.sendException(BankController.getInstance(), "No item with that ID in quest. Offender: " + id + " in " + getQuest().getId());

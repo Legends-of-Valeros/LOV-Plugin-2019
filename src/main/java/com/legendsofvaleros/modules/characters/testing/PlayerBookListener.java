@@ -11,7 +11,6 @@ import com.legendsofvaleros.modules.characters.entityclass.StatModifierModel;
 import com.legendsofvaleros.modules.characters.events.PlayerInformationBookEvent;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
-import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import com.legendsofvaleros.util.TextBuilder;
 import org.bukkit.ChatColor;
@@ -20,29 +19,14 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import java.text.DecimalFormat;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public class PlayerBookListener implements Listener {
     private static final DecimalFormat DF = new DecimalFormat("#.00");
 
-    private Map<Stat, IStatDisplay> display = new HashMap<>();
-
     public PlayerBookListener() {
-        display.put(Stat.HEALTH_REGEN, () -> new String[]{"+" + DF.format(CombatEngine.getEngineConfig().getRegenPercentagePerPoint(RegeneratingStat.HEALTH) * 100) + "% rate"});
-        display.put(Stat.MANA_REGEN, () -> new String[]{"+" + DF.format(CombatEngine.getEngineConfig().getRegenPercentagePerPoint(RegeneratingStat.MANA) * 100) + "% rate"});
-        display.put(Stat.ENERGY_REGEN, () -> new String[]{"+" + DF.format(CombatEngine.getEngineConfig().getRegenPercentagePerPoint(RegeneratingStat.ENERGY) * 100) + "% rate"});
-        display.put(Stat.SPEED, () -> new String[]{"+" + DF.format((1 / CombatEngine.getEngineConfig().getSpeedPointsPerPotionLevel())) + " speed level"});
-        display.put(Stat.PHYSICAL_ATTACK, () -> new String[]{"+" + DF.format(CombatEngine.getEngineConfig().getPhysicalDamageIncrease() * 100) + "% damage"});
-        display.put(Stat.MAGIC_ATTACK, () -> new String[]{"+" + DF.format(CombatEngine.getEngineConfig().getMagicDamageIncrease() * 100) + "% damage"});
-        display.put(Stat.ARMOR, () -> new String[]{
-                "+" + DF.format(CombatEngine.getEngineConfig().getArmorPhysicalDamageReduction() * 100) + "% physical reduction",
-                "+" + DF.format(CombatEngine.getEngineConfig().getArmorSpellDamageReduction() * 100) + "% magical reduction"
-        });
-        display.put(Stat.FIRE_RESISTANCE, () -> new String[]{"+" + DF.format(CombatEngine.getEngineConfig().getResistanceSpellDamageReduction() * 100) + "% reduction"});
-        display.put(Stat.ICE_RESISTANCE, () -> new String[]{"+" + DF.format(CombatEngine.getEngineConfig().getResistanceSpellDamageReduction() * 100) + "% reduction"});
+
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -106,22 +90,26 @@ public class PlayerBookListener implements Listener {
         event.getPages().add(tb.create());
 
         Set<Stat> filter = new HashSet<>();
+        filter.add(Stat.HEALTH_REGEN);
+        filter.add(Stat.MAX_HEALTH);
+
         for (EntityClass clazz : EntityClass.values()) {
             if (clazz == pc.getPlayerClass()) continue;
             filter.add(clazz.getSkillCostType().getMaxStat());
             filter.add(clazz.getSkillCostType().getRegenStat());
         }
 
-        IStatDisplay disp;
+        StatDisplay.IStatDisplay disp;
         for (Stat.Category cat : Stat.Category.values()) {
             tb = new TextBuilder(StringUtil.center(Book.WIDTH, cat.getUserFriendlyName() + " Stats") + "\n\n").color(ChatColor.BLACK).underlined(true);
             for (Stat s : Stat.values()) {
-                if (s.getCategory() != cat) continue;
+                if(s.getCategory() != cat) continue;
+                if(!filter.contains(s)) continue;
 
                 tooltip.append(ChatColor.GRAY);
                 tooltip.append(String.join("\n", StringUtil.splitForStackLore(CombatEngine.getEngineConfig().getStatDescription(s))));
 
-                if ((disp = display.get(s)) != null) {
+                if ((disp = StatDisplay.getFor(s)) != null) {
                     tooltip.append("\n\n");
                     tooltip.append(ChatColor.GOLD);
                     tooltip.append(ChatColor.BOLD);
@@ -133,7 +121,6 @@ public class PlayerBookListener implements Listener {
                         tooltip.append(str);
                     }
                 }
-
 
                 tb.append(s.getShortName() + ":").color(ChatColor.BLACK)
                         .hover(s.getUserFriendlyName(), "", tooltip.toString().trim())
@@ -151,8 +138,4 @@ public class PlayerBookListener implements Listener {
 					.then(" +10% XP").color(ChatColor.DARK_AQUA);*/
     }
 
-    @FunctionalInterface
-    private interface IStatDisplay {
-        String[] getPerPoint();
-    }
 }

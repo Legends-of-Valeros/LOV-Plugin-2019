@@ -2,7 +2,7 @@ main: com.legendsofvaleros.LegendsOfValeros
 name: "${project.name}"
 version: "${project.version}"
 author: "Crystall, Stumblinbear, Brutus"
-depend: [Citizens, Robert, DBPools, Doris, ArmorEquipEvent]
+depend: [Citizens, Robert, ArmorEquipEvent]
 
 permissions:
     characters.slots.x:

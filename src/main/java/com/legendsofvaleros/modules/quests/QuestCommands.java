@@ -5,7 +5,6 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import com.codingforcookies.robert.core.StringUtil;
 import com.codingforcookies.robert.item.Book;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -19,15 +18,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
-import java.util.concurrent.ExecutionException;
 
 @CommandAlias("quests|lov quests")
 public class QuestCommands extends BaseCommand {
-    @Subcommand("refresh")
+    @Subcommand("reload")
     @Description("Reload quests currently in the cache.")
     @CommandPermission("quests.reload")
-    public void cmdReload(CommandSender sender) {
-        QuestManager.reloadQuests();
+    public void cmdReload(CommandSender sender) throws Throwable {
+        QuestController.getInstance().reloadQuests();
 
         MessageUtil.sendUpdate(sender, "Quests reloaded.");
     }
@@ -38,23 +36,15 @@ public class QuestCommands extends BaseCommand {
     public void cmdComplete(Player player, String questId) {
         PlayerCharacter pc = Characters.getPlayerCharacter(player);
 
-        ListenableFuture<IQuest> future = QuestManager.getQuest(questId);
-        future.addListener(() -> {
-            try {
-                IQuest quest = future.get();
-                if(quest == null) {
-                    MessageUtil.sendUpdate(player, "Unknown gear.");
-                    return;
-                }
-
-                QuestManager.finishQuest(quest, pc);
-                MessageUtil.sendUpdate(player, "Quest completed.");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+        QuestController.getInstance().getQuest(questId).onSuccess(val -> {
+            if(!val.isPresent()) {
+                MessageUtil.sendUpdate(player, "Unknown quest.");
+                return;
             }
-        }, QuestController.getInstance().getScheduler()::async);
+
+            QuestController.getInstance().finishQuest(val.get(), pc);
+            MessageUtil.sendUpdate(player, "Quest completed.");
+        });
     }
 
     @Subcommand("uncomplete")
@@ -65,7 +55,7 @@ public class QuestCommands extends BaseCommand {
 
         PlayerCharacter pc = Characters.getPlayerCharacter(player);
 
-        QuestManager.removeQuestProgress(questId, pc);
+        QuestController.getInstance().removeQuestProgress(questId, pc);
         MessageUtil.sendUpdate(player, "Quest uncompleted.");
     }
 
@@ -75,7 +65,7 @@ public class QuestCommands extends BaseCommand {
         PlayerCharacter pc = Characters.getPlayerCharacter(player);
 
         player.closeInventory();
-        QuestController.attemptGiveQuest(pc, questId);
+        QuestController.getInstance().attemptGiveQuest(pc, questId);
     }
 
     @Subcommand("accept")
@@ -85,18 +75,17 @@ public class QuestCommands extends BaseCommand {
 
         player.closeInventory();
 
-        ListenableFuture<IQuest> future = QuestManager.getQuest(questId);
-        future.addListener(() -> {
-            try {
-                IQuest quest = future.get();
-
-                quest.onAccept(pc);
-
-                MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' accepted!");
-            } catch (Exception e) {
-                MessageUtil.sendException(QuestController.getInstance(), player, e);
+        QuestController.getInstance().getQuest(questId).onSuccess(val -> {
+            if(!val.isPresent()) {
+                MessageUtil.sendUpdate(player, "Unknown quest.");
+                return;
             }
-        }, QuestController.getInstance().getScheduler()::async);
+
+            IQuest quest = val.get();
+            quest.onAccept(pc);
+
+            MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' accepted!");
+        });
     }
 
     @Subcommand("decline")
@@ -106,16 +95,16 @@ public class QuestCommands extends BaseCommand {
 
         player.closeInventory();
 
-        ListenableFuture<IQuest> future = QuestManager.getQuest(questId);
-        future.addListener(() -> {
-            try {
-                future.get().onDecline(pc);
-
-                MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' declined!");
-            } catch (Exception e) {
-                MessageUtil.sendException(QuestController.getInstance(), player, e);
+        QuestController.getInstance().getQuest(questId).onSuccess(val -> {
+            if(!val.isPresent()) {
+                MessageUtil.sendUpdate(player, "Unknown quest.");
+                return;
             }
-        }, QuestController.getInstance().getScheduler()::async);
+
+            val.get().onDecline(pc);
+
+            MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' declined!");
+        });
     }
 
     @Subcommand("close")
@@ -130,17 +119,11 @@ public class QuestCommands extends BaseCommand {
 
         ActiveTracker.setActive(pc, questId);
 
-        ListenableFuture<IQuest> future = ActiveTracker.getActiveQuest(pc);
-        future.addListener(() -> {
-            try {
-                IQuest active = future.get();
-                if (active == null)
-                    MessageUtil.sendUpdate(pc.getPlayer(), "You are no longer tracking a gear.");
-                else
-                    MessageUtil.sendUpdate(pc.getPlayer(), "You are now tracking '" + active.getName() + "'.");
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
+        ActiveTracker.getActiveQuest(pc).onSuccess(val -> {
+            if (!val.isPresent())
+                MessageUtil.sendUpdate(pc.getPlayer(), "You are no longer tracking a gear.");
+            else
+                MessageUtil.sendUpdate(pc.getPlayer(), "You are now tracking '" + val.get().getName() + "'.");
         }, QuestController.getInstance().getScheduler()::async);
     }
 
@@ -153,7 +136,7 @@ public class QuestCommands extends BaseCommand {
 
         String activeId = ActiveTracker.getActive(pc);
 
-        Collection<IQuest> quests = QuestManager.getQuestsForEntity(pc);
+        Collection<IQuest> quests = QuestController.getInstance().getPlayerQuests(pc);
 
         Book book = new Book("Quest Journal", "Acolyte");
 
@@ -162,7 +145,7 @@ public class QuestCommands extends BaseCommand {
                         .append("\n\n\n" + StringUtil.center(Book.WIDTH, "Current Quests:") + "\n").color(ChatColor.DARK_AQUA)
                         .append(StringUtil.center(Book.WIDTH, quests.size() + "") + "\n").color(ChatColor.BLACK)
                         .append(StringUtil.center(Book.WIDTH, "Completed Quests:") + "\n").color(ChatColor.DARK_PURPLE)
-                        .append(StringUtil.center(Book.WIDTH, QuestManager.completedQuests.row(pc.getUniqueCharacterId()).size() + "")).color(ChatColor.BLACK)
+                        .append(StringUtil.center(Book.WIDTH, QuestController.getInstance().completedQuests.row(pc.getUniqueCharacterId()).size() + "")).color(ChatColor.BLACK)
                         .create()
         );
 

@@ -2,7 +2,6 @@ package com.legendsofvaleros.modules.playermenu.options;
 
 import com.codingforcookies.robert.core.GUI.Flag;
 import com.codingforcookies.robert.window.ExpandingGUI;
-import com.legendsofvaleros.modules.playermenu.settings.PlayerSettings;
 import com.legendsofvaleros.util.item.Model;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -17,7 +16,7 @@ public class PlayerOptions {
 		if(event.isCancelled()) return;
 		
 		
-		event.addSlot(Model.stack("menu-settings-button").setName("Settings").create(), (gui, _p, _event) -> PlayerSettings.open(p));
+		//event.addSlot(Model.stack("menu-settings-button").setName("Settings").create(), (gui, _p, _event) -> PlayerSettings.open(p));
 		
 		ExpandingGUI gui = new ExpandingGUI(p.getName(), event.getSlots()) {
 			private ItemStack stack;

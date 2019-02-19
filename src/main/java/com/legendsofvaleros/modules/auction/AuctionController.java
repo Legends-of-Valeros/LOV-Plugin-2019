@@ -1,10 +1,5 @@
 package com.legendsofvaleros.modules.auction;
 
-import com.codingforcookies.doris.orm.ORMTable;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
-import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
@@ -12,10 +7,9 @@ import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.gear.GearController;
-import com.legendsofvaleros.modules.gear.item.Gear;
+import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.mailbox.Mail;
 import com.legendsofvaleros.modules.mailbox.MailboxController;
-import com.legendsofvaleros.scheduler.InternalTask;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,18 +17,15 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Crystall on 10/10/2018
  */
 @DependsOn(GearController.class)
 @DependsOn(Characters.class)
-// TODO: Create subclass for listeners?
 @ModuleInfo(name = "Auctions", info = "")
-public class AuctionController extends ModuleListener {
+public class AuctionController extends AuctionAPI {
     private static AuctionController instance;
     //auction fee in percentage
     public static final float AUCTION_FEE = 0.1f;
@@ -44,22 +35,16 @@ public class AuctionController extends ModuleListener {
     }
 
     private HashMap<CharacterId, AuctionChatPrompt> auctionPrompts = new HashMap<>();
-//    private static final Cache<String, Inventory> cache = CacheBuilder.newBuilder()
+
+    //    private static final Cache<String, Inventory> cache = CacheBuilder.newBuilder()
 //            .concurrencyLevel(4)
 //            .maximumSize(1024)
 //            .expireAfterAccess(5, TimeUnit.MINUTES)
 //            .build();
-
-    private static ORMTable<Auction> auctionsTable;
-    private static ORMTable<BidHistoryEntry> auctionBidHistoryTable;
-
     @Override
     public void onLoad() {
         super.onLoad();
         instance = this;
-
-        auctionsTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), Auction.class);
-        auctionBidHistoryTable = ORMTable.bind(LegendsOfValeros.getInstance().getConfig().getString("dbpools-database"), BidHistoryEntry.class);
 
 //        getScheduler().executeInMyCircleTimer(new InternalTask(() -> {
 //            try {
@@ -89,131 +74,9 @@ public class AuctionController extends ModuleListener {
         super.onUnload();
     }
 
-    public SettableFuture<ArrayList<Auction>> loadEntries() {
-        SettableFuture<ArrayList<Auction>> ret = SettableFuture.create();
-        ArrayList<Auction> auctions = new ArrayList<>();
-
-        getScheduler().executeInMyCircle(new InternalTask(() ->
-                auctionsTable.query()
-                        .all()
-                        .forEach((auction, i) -> auctions.add(auction))
-                        .onFinished(() -> ret.set(auctions))
-                        .execute(false))
-        );
-
-        return ret;
-    }
-
-    public SettableFuture<ArrayList<Auction>> loadBidAuctions() {
-        SettableFuture<ArrayList<Auction>> ret = SettableFuture.create();
-        ArrayList<Auction> auctions = new ArrayList<>();
-
-        getScheduler().executeInMyCircle(new InternalTask(() ->
-                auctionsTable.query()
-                        .select()
-                        .where("is_bid_offer", true)
-                        .build()
-                        .forEach((auction, i) -> auctions.add(auction))
-                        .onFinished(() -> ret.set(auctions))
-                        .execute(false))
-        );
-
-        return ret;
-    }
-
-    private void addAuction(Auction auction) {
-        getScheduler().executeInMyCircle(new InternalTask(() ->
-                auctionsTable.query().insert().values(
-                        "owner_id", auction.getOwnerId().toString(),
-                        "owner_name", auction.getOwnerName(),
-                        "auction_item", auction.getItem().toString(),
-                        "valid_until", auction.getValidUntil(),
-                        "is_bid_offer", auction.isBidOffer(),
-                        "price", auction.getPrice()
-                ).build().execute(true))
-        );
-    }
-
-    private void updateAuction(Auction auction) {
-        getScheduler().executeInMyCircle(new InternalTask(() -> {
-            removeAuction(auction);
-            addAuction(auction);
-            //TODO not working -> fix and remove above
-            //auctionsTable.save(auction, true)
-        }));
-    }
-
-    private void removeAuction(Auction auction) {
-        getScheduler().executeInMyCircle(new InternalTask(() ->
-                auctionsTable.query()
-                        .remove()
-                        .where("id", auction.getId())
-                        .build()
-                        .execute(true))
-        );
-    }
-
-    /**
-     * Query for security reason, to make sure, that the item did not get bought by another player
-     * @param auction
-     * @return
-     */
-    private ListenableFuture<Boolean> checkIfAuctionStillExists(Auction auction) {
-        SettableFuture<Boolean> ret = SettableFuture.create();
-
-        if (!ret.isDone()) {
-            getScheduler().executeInMyCircle(new InternalTask(() ->
-                    auctionsTable.query()
-                            .select()
-                            .where("id", auction.getId())
-                            .build()
-                            .callback((statement, count) -> {
-                                if (count == 0) {
-                                    ret.set(false);
-                                    return;
-                                }
-                                ret.set(true);
-                            }).execute(true))
-            );
-        }
-
-        return ret;
-    }
-
-    public ListenableFuture<ArrayList<BidHistoryEntry>> getBidHistory(Auction auction) {
-        SettableFuture<ArrayList<BidHistoryEntry>> ret = SettableFuture.create();
-        ArrayList<BidHistoryEntry> entries = new ArrayList<>();
-
-        getScheduler().executeInMyCircle(new InternalTask(() ->
-                auctionBidHistoryTable.query()
-                        .select()
-                        .where("auction_id", auction.getId())
-                        .build()
-                        .forEach((entry, i) -> entries.add(entry))
-                        .onFinished(() -> ret.set(entries))
-                        .execute(false))
-        );
-
-        return ret;
-    }
-
-    /**
-     * adds a bid entry to the table
-     * @param entry
-     */
-    public void addBidEntry(BidHistoryEntry entry) {
-        getScheduler().executeInMyCircle(new InternalTask(() ->
-                auctionBidHistoryTable.query().insert().values(
-                        "auction_id", entry.getAuctionId(),
-                        "character_id", entry.getCharacterId().toString(),
-                        "bid_number", entry.getBidNumber(),
-                        "bid_price", entry.getPrice()
-                ).build().execute(true))
-        );
-    }
-
     /**
      * Starts an auction chat prompt to (buy / sell / bid) an item
+     *
      * @param p
      * @param itemData
      */
@@ -223,6 +86,7 @@ public class AuctionController extends ModuleListener {
 
     /**
      * Starts an AuctionChatPrompt and guides the user through the process
+     *
      * @param p
      * @param auction
      * @param type
@@ -243,6 +107,7 @@ public class AuctionController extends ModuleListener {
 
     /**
      * Handles the end of an bid auction
+     *
      * @param auction
      */
     private void handleBidEnd(Auction auction) {
@@ -273,6 +138,7 @@ public class AuctionController extends ModuleListener {
 
     /**
      * Executes the last step of the AuctionChatPrompt
+     *
      * @param characterId
      */
     public void confirmBuyPrompt(CharacterId characterId, int amount) {
@@ -281,15 +147,8 @@ public class AuctionController extends ModuleListener {
             if (auctionPrompts.containsKey(characterId)) {
                 AuctionChatPrompt prompt = auctionPrompts.get(characterId);
 
-                boolean result = false;
-                try {
-                    //TODO add callback, remove freeze of mainthread
-                    result = checkIfAuctionStillExists(prompt.getAuction()).get();
-                } catch (InterruptedException | ExecutionException ee) {
-                    ee.printStackTrace();
-                }
 
-                if (!result) {
+                if (!checkIfAuctionStillExists(prompt.getAuction())) {
                     p.sendMessage("Item is already sold");
                     return;
                 }
@@ -313,6 +172,7 @@ public class AuctionController extends ModuleListener {
 
     /**
      * Executes the last step of the AuctionChatPrompt
+     *
      * @param characterId
      */
     public void confirmBidPrompt(CharacterId characterId) {
@@ -321,15 +181,7 @@ public class AuctionController extends ModuleListener {
             if (auctionPrompts.containsKey(characterId)) {
                 AuctionChatPrompt prompt = auctionPrompts.get(characterId);
 
-                boolean result = false;
-                try {
-                    //TODO add callback, remove freeze of mainthread
-                    result = checkIfAuctionStillExists(prompt.getAuction()).get();
-                } catch (InterruptedException | ExecutionException ee) {
-                    ee.printStackTrace();
-                }
-
-                if (!result) {
+                if (!checkIfAuctionStillExists(prompt.getAuction())) {
                     p.sendMessage("The auction is already over");
                     return;
                 }
@@ -359,6 +211,7 @@ public class AuctionController extends ModuleListener {
 
     /**
      * Returns true if a playerCharacter is in an AuctionChatPrompt
+     *
      * @param p
      * @return
      */
