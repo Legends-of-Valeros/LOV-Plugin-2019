@@ -43,7 +43,7 @@ public class GUISkillsSpecialized extends GUI {
 		slot(startLeft ? 0 : 8, 0, Model.stack(startLeft ? "menu-arrow-left-button" : "menu-arrow-right-button")
 				.setName("Core Skills")
 				.setEnchanted(true)
-				.create(), (gui, p, clickType) -> gui.close(p));
+				.create(), (gui, p, clickType) -> new GUISkillsCore(pc).open(p, Flag.REPLACE));
 
 		slot(4, new ItemBuilder(Material.BOOK)
 				.setName(null)
