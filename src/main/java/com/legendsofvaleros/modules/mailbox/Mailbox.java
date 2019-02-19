@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.mailbox;
 
-import com.codingforcookies.doris.orm.ORM;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.util.MessageUtil;
@@ -12,7 +11,7 @@ import java.util.ArrayList;
  * Created by Crystall on 11/24/2018
  * Represents a Mailbox object that contains all mails of a loaded character
  */
-public class Mailbox extends ORM {
+public class Mailbox {
 
     public CharacterId characterId;
     public ArrayList<Mail> mails;
