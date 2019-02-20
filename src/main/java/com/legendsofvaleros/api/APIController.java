@@ -95,7 +95,7 @@ public class APIController extends Module {
             Map<String, Object> opts = new HashMap<>();
             opts.put(ConfigOptions.RPC_RESPONSE_TIMEOUT.toString(), "30000");
 
-            String apiEndpoint = LegendsOfValeros.getInstance().getConfig().getString("api-endpoint", "192.99.0.101:6020");
+            String apiEndpoint = LegendsOfValeros.getInstance().getConfig().getString("api-endpoint", "127.0.0.1:6020");
             this.client = new DeepstreamClient(apiEndpoint, opts);
 
             this.client.login();
