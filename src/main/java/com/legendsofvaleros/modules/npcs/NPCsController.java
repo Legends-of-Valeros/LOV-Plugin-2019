@@ -7,6 +7,7 @@ import com.legendsofvaleros.modules.auction.AuctionController;
 import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.fast_travel.FastTravelController;
 import com.legendsofvaleros.modules.hearthstones.HearthstoneController;
+import com.legendsofvaleros.modules.mailbox.MailboxController;
 import com.legendsofvaleros.modules.mount.MountsController;
 import com.legendsofvaleros.modules.npcs.commands.NPCCommands;
 import com.legendsofvaleros.modules.npcs.integration.*;
@@ -24,6 +25,7 @@ import org.bukkit.event.EventPriority;
 @IntegratesWith(module = BankController.class, integration = BankIntegration.class)
 @IntegratesWith(module = FastTravelController.class, integration = FastTravelIntegration.class)
 @IntegratesWith(module = HearthstoneController.class, integration = HearthstonesIntegration.class)
+@IntegratesWith(module = MailboxController.class, integration = MailboxIntegration.class)
 @IntegratesWith(module = MountsController.class, integration = MountIntegration.class)
 @IntegratesWith(module = PvPController.class, integration = PvPIntegration.class)
 @IntegratesWith(module = QuestController.class, integration = QuestsIntegration.class)
