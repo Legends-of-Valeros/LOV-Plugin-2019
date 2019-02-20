@@ -82,12 +82,12 @@ public class DamageEngine {
 				.build();
 
 		event.newDamageModifierBuilder("Armor Penalty")
-				.setModifierType(ValueModifierBuilder.ModifierType.FLAT_EDIT)
+				.setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
 				.setValue(multiplierHandler.getSpellDamageArmorPenalty(ceTarget))
 				.build();
 
 		event.newDamageModifierBuilder("Resistance Penalty")
-				.setModifierType(ValueModifierBuilder.ModifierType.FLAT_EDIT)
+				.setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
 				.setValue(multiplierHandler.getSpellResistancePenalty(ceTarget, type))
 				.build();
 
@@ -133,7 +133,7 @@ public class DamageEngine {
 				.build();
 
 		event.newDamageModifierBuilder("Armor Penalty")
-				.setModifierType(ValueModifierBuilder.ModifierType.FLAT_EDIT)
+				.setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
 				.setValue(multiplierHandler.getPhysicalDamageArmorPenalty(ceTarget))
 				.build();
 
