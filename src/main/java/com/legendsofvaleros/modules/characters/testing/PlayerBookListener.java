@@ -35,14 +35,16 @@ public class PlayerBookListener implements Listener {
         display.put(Stat.MANA_REGEN, () -> new String[]{"+" + DF.format(CombatEngine.getEngineConfig().getRegenPercentagePerPoint(RegeneratingStat.MANA) * 100) + "% rate"});
         display.put(Stat.ENERGY_REGEN, () -> new String[]{"+" + DF.format(CombatEngine.getEngineConfig().getRegenPercentagePerPoint(RegeneratingStat.ENERGY) * 100) + "% rate"});
         display.put(Stat.SPEED, () -> new String[]{"+" + DF.format((1 / CombatEngine.getEngineConfig().getSpeedPointsPerPotionLevel())) + " speed level"});
-        display.put(Stat.PHYSICAL_ATTACK, () -> new String[]{"+" + DF.format(CombatEngine.getEngineConfig().getPhysicalDamageIncrease() * 100) + "% damage"});
-        display.put(Stat.MAGIC_ATTACK, () -> new String[]{"+" + DF.format(CombatEngine.getEngineConfig().getMagicDamageIncrease() * 100) + "% damage"});
+        display.put(Stat.PHYSICAL_ATTACK, () -> new String[]{"+" + DF.format(CombatEngine.getEngineConfig().getPhysicalDamageIncrease()) + " damage"});
+        display.put(Stat.MAGIC_ATTACK, () -> new String[]{"+" + DF.format(CombatEngine.getEngineConfig().getMagicDamageIncrease()) + " damage"});
         display.put(Stat.ARMOR, () -> new String[]{
                 "+" + DF.format(CombatEngine.getEngineConfig().getArmorPhysicalDamageReduction() * 100) + "% physical reduction",
                 "+" + DF.format(CombatEngine.getEngineConfig().getArmorSpellDamageReduction() * 100) + "% magical reduction"
         });
-        display.put(Stat.FIRE_RESISTANCE, () -> new String[]{"+" + DF.format(CombatEngine.getEngineConfig().getResistanceSpellDamageReduction() * 100) + "% reduction"});
-        display.put(Stat.ICE_RESISTANCE, () -> new String[]{"+" + DF.format(CombatEngine.getEngineConfig().getResistanceSpellDamageReduction() * 100) + "% reduction"});
+
+        IStatDisplay iStatDisplay = () -> new String[]{"+" + DF.format(CombatEngine.getEngineConfig().getResistanceSpellDamageReduction() * 100) + "% reduction"};
+        display.put(Stat.FIRE_RESISTANCE, iStatDisplay);
+        display.put(Stat.ICE_RESISTANCE, iStatDisplay);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
