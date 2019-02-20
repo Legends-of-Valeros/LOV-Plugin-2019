@@ -10,7 +10,7 @@ import com.legendsofvaleros.modules.gear.component.skills.CastTrigger;
 import com.legendsofvaleros.modules.gear.component.skills.GearCharge;
 import com.legendsofvaleros.modules.gear.component.skills.SkillComponent;
 import com.legendsofvaleros.modules.gear.component.skills.SkillResetComponent;
-import com.legendsofvaleros.modules.gear.item.Gear;
+import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.gear.trigger.GearTrigger;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.modules.skills.SkillsController;

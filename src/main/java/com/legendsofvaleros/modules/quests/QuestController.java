@@ -1,9 +1,7 @@
 package com.legendsofvaleros.modules.quests;
 
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.module.ModuleListener;
+import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.IntegratesWith;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
@@ -46,10 +44,8 @@ import io.chazza.advancementapi.AdvancementAPI;
 import io.chazza.advancementapi.FrameType;
 import io.chazza.advancementapi.Trigger;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -68,7 +64,7 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 @IntegratesWith(module = ZonesController.class, integration = ZonesIntegration.class)
 // TODO: Create subclass for listeners?
 @ModuleInfo(name = "Quests", info = "")
-public class QuestController extends ModuleListener {
+public class QuestController extends QuestAPI {
     public static AdvancementAPI NEW_OBJECTIVES;
 
     private static QuestController instance;
@@ -84,7 +80,6 @@ public class QuestController extends ModuleListener {
 
         introQuestId = getConfig().getString("intro-quest", "intro");
 
-        QuestManager.onEnable();
         ActiveTracker.onEnable();
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new QuestCommands());
@@ -149,51 +144,27 @@ public class QuestController extends ModuleListener {
         NEW_OBJECTIVES.add();
     }
 
-    @Override
-    public void onUnload() {
-        super.onUnload();
+    public Promise<Boolean> attemptGiveQuest(PlayerCharacter pc, String questId) {
+        return getQuest(questId).then(val -> {
+            if (val.isPresent()) {
+                IQuest quest = val.get();
 
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (!Characters.isPlayerCharacterLoaded(p)) continue;
-            PlayerCharacter pc = Characters.getPlayerCharacter(p);
+                QuestStatus status = getStatus(pc, quest);
 
-            for (IQuest q : QuestManager.getQuestsForEntity(pc))
-                q.saveProgress(pc);
-        }
-    }
+                if (status.canAccept()) {
+                    quest.onStart(pc);
 
-    public static ListenableFuture<Boolean> attemptGiveQuest(PlayerCharacter pc, String questId) {
-        SettableFuture<Boolean> ret = SettableFuture.create();
+                    MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' can be accepted!");
 
-        ListenableFuture<IQuest> future = QuestManager.getQuest(questId);
-        future.addListener(() -> {
-            try {
-                IQuest quest = future.get();
-
-                if (quest != null) {
-                    QuestStatus status = QuestManager.getStatus(pc, quest);
-
-                    if (status.canAccept()) {
-                        quest.onStart(pc);
-
-                        ret.set(true);
-
-                        MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' can be accepted!");
-
-                        return;
-                    }else
-                        MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' cannot be accepted! Status: " + status.name());
-                }else{
-                    MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' doesn't exist!");
-                }
-            } catch (Exception e) {
-                MessageUtil.sendSevereException(QuestController.getInstance(), pc.getPlayer(), e);
+                    return true;
+                }else
+                    MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' cannot be accepted! Status: " + status.name());
+            }else{
+                MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' doesn't exist!");
             }
 
-            ret.set(false);
-        }, QuestController.getInstance().getScheduler()::async);
-
-        return ret;
+            return false;
+        });
     }
 
     @EventHandler
@@ -227,7 +198,7 @@ public class QuestController extends ModuleListener {
 
         if (!Characters.isPlayerCharacterLoaded(event.getClicker())) return;
 
-        QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getClicker()));
+        callEvent(event, Characters.getPlayerCharacter(event.getClicker()));
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -236,7 +207,7 @@ public class QuestController extends ModuleListener {
 
         if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
 
-        QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
+        callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -245,6 +216,6 @@ public class QuestController extends ModuleListener {
 
         if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
 
-        QuestManager.callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
+        callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
     }
 }

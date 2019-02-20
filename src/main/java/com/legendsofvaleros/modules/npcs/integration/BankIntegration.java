@@ -8,8 +8,8 @@ import com.legendsofvaleros.modules.npcs.trait.bank.trade.TraitTrader;
 
 public class BankIntegration extends Integration {
     public BankIntegration() {
-        NPCsController.registerTrait("banker", TraitBanker.class);
-        NPCsController.registerTrait("trader", TraitTrader.class);
-        NPCsController.registerTrait("blacksmith", TraitBlacksmith.class);
+        NPCsController.getInstance().registerTrait("banker", TraitBanker.class);
+        NPCsController.getInstance().registerTrait("trader", TraitTrader.class);
+        NPCsController.getInstance().registerTrait("blacksmith", TraitBlacksmith.class);
     }
 }

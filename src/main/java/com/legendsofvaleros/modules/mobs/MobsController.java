@@ -1,14 +1,15 @@
 package com.legendsofvaleros.modules.mobs;
 
+import com.google.gson.JsonDeserializer;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.module.Module;
+import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.levelarchetypes.core.LevelArchetypes;
-import com.legendsofvaleros.modules.loot.LootManager;
+import com.legendsofvaleros.modules.loot.LootController;
 import com.legendsofvaleros.modules.mobs.behavior.BehaviorEngine;
 import com.legendsofvaleros.modules.mobs.commands.MobCommands;
 import com.legendsofvaleros.modules.mobs.core.Mob;
@@ -19,22 +20,24 @@ import com.legendsofvaleros.modules.mobs.listener.MobListener;
 import com.legendsofvaleros.modules.mobs.pl8.MobHealthbarManager;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.parties.PartiesController;
+import net.citizensnpcs.api.trait.trait.Equipment;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 
 @DependsOn(CombatEngine.class)
 @DependsOn(Characters.class)
 @DependsOn(LevelArchetypes.class)
 @DependsOn(GearController.class)
-@DependsOn(LootManager.class)
+@DependsOn(LootController.class)
 @DependsOn(PartiesController.class)
 @DependsOn(NPCsController.class)
 @ModuleInfo(name = "Mobs", info = "")
-public class MobsController extends Module {
+public class MobsController extends MobsAPI {
     private static MobsController instance;
     public static MobsController getInstance() { return instance; }
 
@@ -48,13 +51,42 @@ public class MobsController extends Module {
     public void onLoad() {
         super.onLoad();
 
-        instance = this;
+        this.instance = this;
+
+        APIController.getInstance().getGsonBuilder()
+            .registerTypeAdapter(Mob.StatsMap.class, (JsonDeserializer<Mob.StatsMap>) (json, typeOfT, context) -> {
+                return new Mob.StatsMap(context.deserialize(json.getAsJsonArray(), Mob.StatsMap.StatData[].class));
+            })
+            .registerTypeAdapter(Equipment.EquipmentSlot.class, (JsonDeserializer<Equipment.EquipmentSlot>) (json, typeOfT, context) -> {
+                String name = json.getAsString().toUpperCase();
+
+                if (name.equals("OFFHAND"))
+                    name = "OFF_HAND";
+
+                try {
+                    return Equipment.EquipmentSlot.valueOf(name);
+                } catch (Exception e) {
+                    try {
+                        switch (EquipmentSlot.valueOf(name)) {
+                            case HEAD:
+                                return Equipment.EquipmentSlot.HELMET;
+                            case CHEST:
+                                return Equipment.EquipmentSlot.CHESTPLATE;
+                            case LEGS:
+                                return Equipment.EquipmentSlot.LEGGINGS;
+                            case FEET:
+                                return Equipment.EquipmentSlot.BOOTS;
+                            default:
+                                return null;
+                        }
+                    } catch (Exception e1) {
+                        throw new RuntimeException("Unknown equipment slot. Offender: " + name);
+                    }
+                }
+            });
 
         getLogger().info("AI will update all entities over the course of " + LegendsOfValeros.getInstance().getConfig().getInt("ai-update-smear", 20) + " ticks.");
         ai = new BehaviorEngine(getConfig().getInt("ai-update-smear", 10));
-
-        SpawnManager.onEnable();
-        MobManager.onEnable();
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new MobCommands());
 

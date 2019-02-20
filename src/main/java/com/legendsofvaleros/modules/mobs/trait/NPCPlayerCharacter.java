@@ -2,7 +2,10 @@ package com.legendsofvaleros.modules.mobs.trait;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
-import com.legendsofvaleros.modules.characters.api.*;
+import com.legendsofvaleros.modules.characters.api.AbilityStats;
+import com.legendsofvaleros.modules.characters.api.CharacterId;
+import com.legendsofvaleros.modules.characters.api.Experience;
+import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.InventoryData;
 import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
@@ -10,6 +13,7 @@ import com.legendsofvaleros.modules.characters.race.EntityRace;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.characters.skill.SkillSet;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
+import com.legendsofvaleros.modules.cooldowns.api.Cooldowns;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -40,10 +44,6 @@ public class NPCPlayerCharacter implements PlayerCharacter {
         }
 
         @Override public ExperienceMultiplier addMultiplier(double amount) {
-            return null;
-        }
-
-        @Override public ListenableFuture<Experience> refresh() {
             return null;
         }
 

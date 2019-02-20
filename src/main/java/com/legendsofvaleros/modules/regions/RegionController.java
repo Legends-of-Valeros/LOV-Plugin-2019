@@ -1,7 +1,6 @@
 package com.legendsofvaleros.modules.regions;
 
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.IntegratesWith;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
@@ -16,25 +15,17 @@ import com.legendsofvaleros.modules.regions.integration.HearthstonesIntegration;
 @DependsOn(Characters.class)
 @IntegratesWith(module = HearthstoneController.class, integration = HearthstonesIntegration.class)
 @ModuleInfo(name = "Regions", info = "")
-public class RegionController extends Module {
+public class RegionController extends RegionsAPI {
     private static RegionController instance;
     public static RegionController getInstance() { return instance; }
 
     public static boolean REGION_DEBUG = false;
 
-    private static RegionManager regionManager;
-
-    public static RegionManager getManager() {
-        return regionManager;
-    }
-
     @Override
     public void onLoad() {
         super.onLoad();
 
-        instance = this;
-
-        regionManager = new RegionManager();
+        this.instance = this;
 
         registerEvents(new RegionSelector());
 

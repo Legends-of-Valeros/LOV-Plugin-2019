@@ -1,9 +1,8 @@
 package com.legendsofvaleros.modules.characters.core;
 
 import com.codingforcookies.robert.core.StringUtil;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
@@ -150,9 +149,9 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
         }
 
         if (oldCharacter != null) {
-            logoutCharacter(player, false).addListener(() -> {
+            logoutCharacter(player, false).on(() -> {
                 loadCharacter(newCharacter);
-            }, Characters.getInstance().getScheduler()::sync);
+            });
         }else
             loadCharacter(newCharacter);
         return true;
@@ -286,11 +285,11 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
         combatEngine.createCombatEntity(doneLoading.getPlayer());
     }
 
-    private ListenableFuture<Void> logoutCharacter(Player player, boolean serverLogout) {
-        SettableFuture<Void> ret = SettableFuture.create();
+    private Promise<Boolean> logoutCharacter(Player player, boolean serverLogout) {
+        Promise<Boolean> promise = new Promise<>();
 
         if (!Characters.isPlayerCharacterLoaded(player)) {
-            ret.set(null);
+            promise.resolve(false);
         }else{
             Characters.getInstance().getLogger().info(player.getDisplayName() + " is logging out of his character...");
 
@@ -327,7 +326,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
                 tp.start(character.getUniqueCharacterId(), (value, error) -> {
                     logoutCallback.callback(value, error);
 
-                    ret.set(null);
+                    promise.resolve(true);
                 });
 
                 // locks the player during the logout process and clears any previous locks.
@@ -340,7 +339,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
 
             } else {
                 onDoneLoggingOut(character.getUniqueCharacterId());
-                ret.set(null);
+                promise.resolve(true);
             }
         }
 
@@ -348,7 +347,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
         // away from
         combatEngine.invalidateCombatEntity(player);
 
-        return ret;
+        return promise;
     }
 
     private void onDoneLoggingOut(CharacterId uniqueCharacterId) {
@@ -365,9 +364,9 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
         }
 
         // Cannot let the user be a character while making a new one.
-        logoutCharacter(player, false).addListener(() -> {
+        logoutCharacter(player, false).on(() -> {
             Characters.getInstance().getUiManager().startCharacterCreation(player, number, creationListener);
-        }, Characters.getInstance().getScheduler()::sync);
+        });
     }
 
     /**
@@ -394,46 +393,36 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
         public void onPlayerJoin(PlayerJoinEvent event) {
             locks.put(event.getPlayer().getUniqueId(), PlayerLock.lockPlayer(event.getPlayer()));
 
-            final ListenableFuture<PlayerCharacters> fut =
-                    PlayerCharacterData.onLogin(event.getPlayer().getUniqueId());
-            fut.addListener(() -> {
-                // syncs to main thread before calling event and launching ui
-                Characters.getInstance().getScheduler().executeInSpigotCircle(() -> {
-                    Player player = null;
-                    try {
-                        PlayerCharacters characters = fut.get();
-                        player = characters.getPlayer();
-                        if (player == null || !player.isOnline()) {
-                            return;
-                        }
+            PlayerCharacterData.onLogin(event.getPlayer().getUniqueId()).onSuccess(val -> {
+                if(!val.isPresent()) return;
 
-                        if (characters.size() > 0) {
-                            Characters.getInstance().getUiManager().forceCharacterSelection(characters, outer);
-                        } else {
-                            // automatically makes new character because the player has none
-                            createNewCharacter(player, 0);
-                        }
+                PlayerCharacters characters = val.get();
 
-                    } catch (Exception e) {
-                        Characters.getInstance().getLogger().warning("Could not get base character data.");
-                        MessageUtil.sendSevereException(Characters.getInstance(), player, e);
-                    }
-                });
-            }, Characters.getInstance().getScheduler()::async);
+                Player player = characters.getPlayer();
+                if (player == null || !player.isOnline())
+                    return;
+
+                if (characters.size() > 0) {
+                    Characters.getInstance().getUiManager().forceCharacterSelection(characters, outer);
+                } else {
+                    // automatically makes new character because the player has none
+                    createNewCharacter(player, 0);
+                }
+            });
         }
 
         @EventHandler(priority = EventPriority.HIGH)
-        public void onPlayerQuit(final PlayerQuitEvent event) {
+        public void onPlayerQuit(PlayerQuitEvent event) {
             haveAlreadyLoaded.remove(event.getPlayer().getUniqueId());
 
-            logoutCharacter(event.getPlayer(), true).addListener(() -> {
-                PlayerCharacterData.onLogout(event.getPlayer().getUniqueId()).addListener(() -> {
+            logoutCharacter(event.getPlayer(), true).on(() -> {
+                PlayerCharacterData.onLogout(event.getPlayer().getUniqueId()).on(() -> {
                     PlayerLock lock = locks.remove(event.getPlayer().getUniqueId());
                     if(lock != null) {
                         lock.release();
                     }
-                }, Characters.getInstance().getScheduler()::async);
-            }, Characters.getInstance().getScheduler()::async);
+                });
+            });
         }
 
         @EventHandler(priority = EventPriority.HIGHEST)

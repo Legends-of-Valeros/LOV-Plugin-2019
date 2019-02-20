@@ -8,7 +8,7 @@ import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.bank.core.Bank;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.gear.item.Gear;
+import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -41,8 +41,7 @@ public class TraitBanker extends LOVTrait {
 			type(6);
 
 			for(int i = 0; i < 6 * 9; i++) {
-				Bank.Entry entry = bank.content.get(i);
-				Gear.Data item = entry != null ? entry.item : null;
+				Gear.Data item = bank.getContent().get(i);
 
 				int j = i;
 				slot(i, item != null ? item.toStack() : null, new SlotUsable() {

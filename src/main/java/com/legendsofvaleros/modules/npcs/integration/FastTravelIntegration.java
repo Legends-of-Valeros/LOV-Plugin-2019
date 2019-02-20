@@ -6,6 +6,6 @@ import com.legendsofvaleros.modules.npcs.trait.fast_travel.TraitFastTravel;
 
 public class FastTravelIntegration extends Integration {
     public FastTravelIntegration() {
-        NPCsController.registerTrait("fasttravel", TraitFastTravel.class);
+        NPCsController.getInstance().registerTrait("fasttravel", TraitFastTravel.class);
     }
 }

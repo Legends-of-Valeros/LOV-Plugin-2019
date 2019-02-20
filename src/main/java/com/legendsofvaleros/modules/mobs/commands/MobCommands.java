@@ -4,8 +4,7 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.mobs.MobManager;
-import com.legendsofvaleros.modules.mobs.SpawnManager;
+import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.mobs.core.SpawnArea;
 import com.legendsofvaleros.util.MessageUtil;
@@ -14,11 +13,11 @@ import org.bukkit.entity.Player;
 
 @CommandAlias("mobs|lov mobs")
 public class MobCommands extends BaseCommand {
-	@Subcommand("clear")
-	@Description("Clear the mob cache.")
+	@Subcommand("reload")
+	@Description("Reload the mob cache.")
 	@CommandPermission("mobs.clear")
 	public void cmdClear(CommandSender sender) {
-		MobManager.clear();
+		MobsController.getInstance().loadAll();
 		MessageUtil.sendUpdate(sender, "Mob cache cleared.");
 	}
 	
@@ -29,7 +28,7 @@ public class MobCommands extends BaseCommand {
 	public void cmdCreate(Player player, String mobId, int radius, int padding, String level, @Optional Integer count, @Optional Integer interval, @Optional Integer chance) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		Mob mobData = MobManager.getEntity(mobId);
+		Mob mobData = MobsController.getInstance().getEntity(mobId);
 		if(mobData == null) {
 			MessageUtil.sendError(player, "Unknown mob with that ID.");
 			return;
@@ -45,7 +44,7 @@ public class MobCommands extends BaseCommand {
 			levels = new int[] { Integer.parseInt(level), Integer.parseInt(level) };
 		}
 		
-		SpawnArea data = new SpawnArea(player.getLocation().getWorld().getName(), player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ(), mobId, radius, padding, levels);
+		SpawnArea data = new SpawnArea(player.getLocation(), mobId, radius, padding, levels);
 
 		MessageUtil.sendUpdate(player, "Created spawn area with radius " + data.getRadius() + " blocks.");
 
@@ -69,8 +68,8 @@ public class MobCommands extends BaseCommand {
 			MessageUtil.sendUpdate(player, "  There is a " + data.spawnChance + "% chance it'll spawn.");
 		}
 
-		SpawnManager.addSpawn(data);
-		SpawnManager.updateSpawn(data);
+		MobsController.getInstance().addSpawn(data);
+		MobsController.getInstance().updateSpawn(data);
 	}
 
 	@Default

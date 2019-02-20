@@ -104,11 +104,6 @@ public class BukkitConfig implements CharactersConfig {
 	}
 
 	@Override
-	public String getDbPoolsId() {
-		return dbpoolsId;
-	}
-
-	@Override
 	public String getStatDescription(AbilityStat stat) {
 		return statDescriptions.get(stat);
 	}

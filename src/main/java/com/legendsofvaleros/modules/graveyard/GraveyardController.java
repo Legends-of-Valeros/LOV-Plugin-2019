@@ -1,7 +1,6 @@
 package com.legendsofvaleros.modules.graveyard;
 
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -9,6 +8,7 @@ import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.graveyard.commands.GraveyardCommands;
+import com.legendsofvaleros.modules.graveyard.core.Graveyard;
 import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Location;
@@ -24,7 +24,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 @DependsOn(ZonesController.class)
 // TODO: Create subclass for listeners?
 @ModuleInfo(name = "Graveyards", info = "")
-public class GraveyardController extends ModuleListener {
+public class GraveyardController extends GraveyardAPI {
     private static GraveyardController instance;
     public static GraveyardController getInstance() { return instance; }
 
@@ -32,7 +32,7 @@ public class GraveyardController extends ModuleListener {
     public void onLoad() {
         super.onLoad();
 
-        instance = this;
+        this.instance = this;
 
         LegendsOfValeros.getInstance().getCommand("suicide").setExecutor((sender, arg1, arg2, arg3) -> {
             if(CombatEngine.getEntity((Player)sender) == null) return false;
@@ -42,13 +42,11 @@ public class GraveyardController extends ModuleListener {
         });
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new GraveyardCommands());
-
-        GraveyardManager.onEnable();
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDeath(PlayerRespawnEvent event) {
-        Graveyard data = GraveyardManager.getNearestGraveyard(ZonesController.getManager().getZone(event.getPlayer()), event.getPlayer().getLocation());
+        Graveyard data = getNearestGraveyard(ZonesController.getInstance().getZone(event.getPlayer()), event.getPlayer().getLocation());
         if (data == null) {
             Location loc = event.getPlayer().getLocation();
             MessageUtil.sendException(this, event.getPlayer(), "Failed to locate graveyard at " + loc.getBlockX() + ", " + loc.getBlockZ() + "!");

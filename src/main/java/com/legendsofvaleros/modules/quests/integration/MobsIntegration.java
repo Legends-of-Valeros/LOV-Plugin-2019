@@ -6,10 +6,8 @@ import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.parties.PartiesController;
-import com.legendsofvaleros.modules.parties.PartyManager;
 import com.legendsofvaleros.modules.parties.core.PlayerParty;
 import com.legendsofvaleros.modules.quests.QuestController;
-import com.legendsofvaleros.modules.quests.QuestManager;
 import com.legendsofvaleros.modules.quests.objective.QuestObjectiveFactory;
 import com.legendsofvaleros.modules.quests.objective.mobs.KillObjective;
 import org.bukkit.entity.Player;
@@ -34,18 +32,18 @@ public class MobsIntegration extends Integration implements Listener {
 
         PlayerCharacter pc = Characters.getPlayerCharacter(p);
 
-        QuestManager.callEvent(event, pc);
+        QuestController.getInstance().callEvent(event, pc);
 
         // Update for each player in the party
         if(Modules.isLoaded(PartiesController.class)) {
-            PlayerParty party = (PlayerParty) PartyManager.getPartyByMember(pc.getUniqueCharacterId());
+            PlayerParty party = PartiesController.getInstance().getPartyByMember(pc.getUniqueCharacterId());
             if(party != null) {
                 for (Player pp : party.getOnlineMembers()) {
                     if(p == pp || !Characters.isPlayerCharacterLoaded(pp))
                         continue;
 
                     PlayerCharacter ppc = Characters.getPlayerCharacter(pp);
-                    QuestManager.callEvent(event, ppc);
+                    QuestController.getInstance().callEvent(event, ppc);
                 }
             }
         }

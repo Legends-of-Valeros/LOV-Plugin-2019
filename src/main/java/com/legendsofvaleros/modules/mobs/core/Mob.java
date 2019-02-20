@@ -1,20 +1,19 @@
 package com.legendsofvaleros.modules.mobs.core;
 
-import com.codingforcookies.doris.orm.annotation.Column;
-import com.codingforcookies.doris.orm.annotation.Table;
+import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
-import com.legendsofvaleros.modules.gear.item.Gear;
+import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.modules.mobs.ai.AIStuckAction;
 import com.legendsofvaleros.modules.mobs.behavior.StaticAI;
 import com.legendsofvaleros.modules.mobs.trait.MobTrait;
 import com.legendsofvaleros.modules.npcs.NPCsController;
-import com.legendsofvaleros.modules.npcs.core.Skins;
+import com.legendsofvaleros.modules.npcs.core.Skin;
 import com.legendsofvaleros.util.MessageUtil;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.Equipment;
@@ -27,74 +26,54 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-@Table(name = "entities")
 public class Mob {
-    @Column(primary = true, name = "entity_id", length = 64)
     private String id;
-
     public String getId() {
         return id;
     }
 
-    @Column(name = "entity_group", length = 64)
     private String group;
-
     public String getGroup() {
         return group;
     }
 
-    @Column(name = "entity_name", length = 64)
     private String name;
-
     public String getName() {
         return name;
     }
 
-    @Column(name = "entity_type")
     private EntityType type;
-
     public EntityType getEntityType() {
         return type;
     }
 
-    @Column(name = "entity_rarity")
     private EntityRarity rarity;
-
     public EntityRarity getRarity() {
         return rarity;
     }
 
-    @Column(name = "entity_archetype", length = 32)
     private String archetype;
-
     public String getArchetype() {
         return archetype;
     }
 
-    @Column(name = "entity_class")
+    @SerializedName("class")
     private EntityClass entityClass;
-
     public EntityClass getEntityClass() {
         return entityClass;
     }
 
-    @Column(name = "entity_experience")
     private int experience = 0;
-
     public int getExperience() {
         return experience;
     }
 
-    @Column(name = "entity_invincible")
     private boolean invincible = false;
-
     public boolean isInvincible() {
         return invincible;
     }
 
-    @Column(name = "entity_stats")
     private Mob.StatsMap stats;
-
     public StatsMap getStats() {
         if (stats == null)
             stats = new StatsMap(new StatsMap.StatData[0]);
@@ -105,18 +84,14 @@ public class Mob {
         return getStats().get(e);
     }
 
-    @Column(name = "entity_equipment")
     private Mob.EquipmentMap equipment;
-
     public EquipmentMap getEquipment() {
         if (equipment == null)
             equipment = new EquipmentMap();
         return equipment;
     }
 
-    @Column(name = "entity_options")
     private Mob.Options options;
-
     public Options getOptions() {
         if (options == null)
             options = new Options();
@@ -124,7 +99,6 @@ public class Mob {
     }
 
     private Set<SpawnArea> spawns;
-
     public Set<SpawnArea> getSpawns() {
         if (spawns == null)
             spawns = new HashSet<>();
@@ -232,7 +206,7 @@ public class Mob {
         private double chance = 1;
 
         public ItemStack getStack() {
-            ItemStack itemStack = Gear.fromID(id).newInstance().toStack();
+            ItemStack itemStack = Gear.fromId(id).newInstance().toStack();
             if (itemStack.getType() != Material.AIR) {
                 itemStack.setAmount(this.amount);
                 return itemStack;
@@ -280,7 +254,7 @@ public class Mob {
                 throw new IllegalStateException("Mob instance already destroyed.");
             active = true;
 
-            npc = NPCsController.manager().registry.createNPC(mob.type, "");
+            npc = NPCsController.getInstance().createNPC(mob.type, "");
 
             npc.getNavigator().getLocalParameters().updatePathRate(20)
                     .useNewPathfinder(true)
@@ -298,8 +272,7 @@ public class Mob {
             if (mob.type == EntityType.PLAYER) {
                 if (mob.getOptions().skin != null) {
                     try {
-                        Skins.Skin skin = Skins.getSkin(mob.getOptions().skin);
-
+                        Skin skin = NPCsController.getInstance().getSkin(mob.getOptions().skin);
                         if (skin == null)
                             throw new Exception("No skin with that ID. Offender: " + mob.getOptions().skin + " on " + mob.id);
 

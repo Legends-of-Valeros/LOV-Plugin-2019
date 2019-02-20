@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.gear.trigger;
 
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.gear.item.Gear;
+import com.legendsofvaleros.modules.gear.core.Gear;
 
 public class CombineTrigger extends CombatEntityTrigger {
 	private final Gear.Instance base;

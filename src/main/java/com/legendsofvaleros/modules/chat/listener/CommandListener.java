@@ -1,10 +1,8 @@
 package com.legendsofvaleros.modules.chat.listener;
 
-import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.chat.ChatChannel;
 import com.legendsofvaleros.modules.chat.ChatController;
 import com.legendsofvaleros.modules.chat.PlayerChat;
-import com.legendsofvaleros.modules.playermenu.settings.PlayerSettings;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -70,19 +68,6 @@ public class CommandListener implements Listener {
                             }
                         }
 
-                        ListenableFuture<PlayerSettings> future = PlayerSettings.get(e.getPlayer());
-                        future.addListener(() -> {
-                            try {
-                                PlayerSettings settings = future.get();
-                                if (data.offChannels.size() == 0)
-                                    settings.remove("chat.off");
-                                else
-                                    settings.put("chat.off", String.join("", data.offChannels.toArray(new String[data.offChannels.size()])));
-                            } catch (InterruptedException | ExecutionException e1) {
-                                e1.printStackTrace();
-                            }
-                        }, ChatController.getInstance().getScheduler()::sync);
-
                         return;
                     }
                 }
@@ -103,7 +88,6 @@ public class CommandListener implements Listener {
                     MessageUtil.sendError(e.getPlayer(), "You are not allowed to set that channel as default.");
                 } else {
                     data.channel = channelId;
-                    PlayerSettings.get(e.getPlayer()).get().put("chat.selected", String.valueOf(channelId));
                     MessageUtil.sendUpdate(e.getPlayer(), "You are now speaking in " + ch.getName() + " chat.");
                 }
             }

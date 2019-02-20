@@ -1,7 +1,6 @@
 package com.legendsofvaleros.modules.zones;
 
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.IntegratesWith;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
@@ -21,30 +20,20 @@ import com.legendsofvaleros.modules.zones.listener.ZoneListener;
 @DependsOn(Characters.class)
 @ModuleInfo(name = "Zones", info = "")
 @IntegratesWith(module = PvPController.class, integration = PvPIntegration.class)
-public class ZonesController extends Module {
+public class ZonesController extends ZonesAPI {
     private static ZonesController instance;
-
     public static ZonesController getInstance() {
         return instance;
-    }
-
-    private static ZoneManager manager;
-
-    public static ZoneManager getManager() {
-        return manager;
     }
 
     @Override
     public void onLoad() {
         super.onLoad();
 
-        instance = this;
-
-        manager = new ZoneManager();
+        this.instance = this;
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new ZoneCommands());
 
         registerEvents(new ZoneListener());
     }
-
 }

@@ -6,8 +6,8 @@ import com.codingforcookies.robert.slot.Slot;
 import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.gear.ItemUtil;
-import com.legendsofvaleros.modules.gear.item.Gear;
+import com.legendsofvaleros.modules.gear.core.Gear;
+import com.legendsofvaleros.modules.gear.core.ItemUtil;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import com.legendsofvaleros.modules.pvp.PvPController;
 import org.bukkit.ChatColor;
@@ -62,7 +62,7 @@ public class TraitHonorTrader extends LOVTrait {
     public void onSpawn() {
         gears = new Gear[items.length];
         for (int i = 0; i < items.length; i++)
-            gears[i] = Gear.fromID(items[i]);
+            gears[i] = Gear.fromId(items[i]);
     }
 
     @Override

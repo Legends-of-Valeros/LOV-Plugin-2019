@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.quests.action.faction;
 
-import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.factions.FactionController;
 import com.legendsofvaleros.modules.quests.action.AbstractQuestAction;
@@ -11,7 +10,8 @@ public class ActionReputation extends AbstractQuestAction {
 
     @Override
     public void play(PlayerCharacter pc, Next next) {
-        ListenableFuture<Boolean> future = FactionController.getInstance().editFactionRep(faction_id, pc, amount);
-        future.addListener(next::go, FactionController.getInstance().getScheduler()::async);
+        FactionController.getInstance().editRep(faction_id, pc, amount);
+
+        next.go();
     }
 }

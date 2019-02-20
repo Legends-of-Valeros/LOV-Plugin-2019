@@ -4,8 +4,8 @@ import com.codingforcookies.robert.core.StringUtil;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.modules.gear.component.GearComponent;
 import com.legendsofvaleros.modules.gear.component.GearComponentOrder;
-import com.legendsofvaleros.modules.gear.item.Gear;
-import com.legendsofvaleros.modules.gear.item.NoPersist;
+import com.legendsofvaleros.modules.gear.core.Gear;
+import com.legendsofvaleros.modules.gear.core.NoPersist;
 import org.bukkit.ChatColor;
 
 public class LoreComponent extends GearComponent<NoPersist> {

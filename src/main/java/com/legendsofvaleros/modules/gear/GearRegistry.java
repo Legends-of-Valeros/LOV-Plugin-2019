@@ -15,12 +15,12 @@ public class GearRegistry {
 		return components.get(id);
 	}
 
-	public static String getComponentID(Class<? extends GearComponent<?>> component) {
+	public static String getComponentId(Class<? extends GearComponent<?>> component) {
 		return componentID.get(component);
 	}
 
 	public static <T extends GearComponent<?>> T getComponent(Class<T> component) {
-		return component.cast(components.get(getComponentID(component)));
+		return component.cast(components.get(getComponentId(component)));
 	}
 
 	public static Type getPersist(Object key) {

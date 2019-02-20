@@ -2,8 +2,6 @@ package com.legendsofvaleros.modules.mount;
 
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.item.ItemBuilder;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.bank.BankController;
@@ -21,8 +19,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 @DependsOn(CombatEngine.class)
 @DependsOn(PlayerMenu.class)
@@ -31,25 +32,17 @@ import java.util.Map.Entry;
 @DependsOn(NPCsController.class)
 // TODO: Create subclass for listeners?
 @ModuleInfo(name = "Mounts", info = "")
-public class MountsController extends ModuleListener {
+public class MountsController extends MountAPI {
     private static MountsController instance;
     public static MountsController getInstance() { return instance; }
 
-    private MountManager manager;
-
-    public MountManager getMountManager() {
-        return manager;
-    }
-
-    public HashMap<UUID, Mount> riders = new HashMap<>();
+    HashMap<UUID, Mount> riders = new HashMap<>();
 
     @Override
     public void onLoad() {
         super.onLoad();
 
-        instance = this;
-
-        manager = new MountManager();
+        this.instance = this;
     }
 
     @Override
@@ -62,40 +55,34 @@ public class MountsController extends ModuleListener {
 
     @EventHandler
     public void onCharacterOptionsOpen(PlayerOptionsOpenEvent event) {
+        List<Mount> mounts = new ArrayList<>(getMounts(Characters.getPlayerCharacter(event.getPlayer())));
+
+        if(mounts.size() == 0) return;
+
         event.addSlot(Model.stack("menu-mounts-button").setName("Mount").create(), (gui, p, event12) -> {
             gui.close(p);
 
-            List<Mount> playerMounts = new ArrayList<>();
-            ListenableFuture<Collection<Mount>> future = manager.getMounts(Characters.getPlayerCharacter(p).getUniqueCharacterId());
-            future.addListener(() -> {
-                try {
-                    playerMounts.addAll(future.get());
+            if (mounts.size() == 1) {
+                // Only one? Mount that shit!
+                mounts.get(0).hopOn(p);
+            } else if (mounts.size() > 1) {
+                GUI mountgui = new GUI("Your Mounts");
+                mountgui.type(InventoryType.DISPENSER);
 
-                    if (playerMounts.size() == 1) {
-                        // Only one? Mount that shit!
-                        playerMounts.get(0).hopOn(p);
-                    } else if (playerMounts.size() > 1) {
-                        GUI mountgui = new GUI("Your Mounts");
-                        mountgui.type(InventoryType.DISPENSER);
-
-                        for (int i = 0; i < playerMounts.size(); i++) {
-                            final Mount m = playerMounts.get(i);
-                            mountgui.slot(i, new ItemBuilder(m.getIcon()).setName(m.getName())
-                                    .addLore("", "Speed: " + ChatColor.GREEN + m.getSpeedPercent() + "%")
-                                    .create(), (gui1, p1, event1) -> {
-                                m.hopOn(p1);
-                                mountgui.close(p1);
-                            });
-                        }
-
-                        mountgui.open(p);
-                    } else {
-                        MessageUtil.sendError(p, "You don't have any mounts!");
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                for (int i = 0; i < mounts.size(); i++) {
+                    final Mount m = mounts.get(i);
+                    mountgui.slot(i, new ItemBuilder(m.getIcon()).setName(m.getName())
+                            .addLore("", "Speed: " + ChatColor.GREEN + m.getSpeedPercent() + "%")
+                            .create(), (gui1, p1, event1) -> {
+                        m.hopOn(p1);
+                        mountgui.close(p1);
+                    });
                 }
-            }, MountsController.getInstance().getScheduler()::async);
+
+                mountgui.open(p);
+            } else {
+                MessageUtil.sendError(p, "You don't have any mounts!");
+            }
         });
     }
 

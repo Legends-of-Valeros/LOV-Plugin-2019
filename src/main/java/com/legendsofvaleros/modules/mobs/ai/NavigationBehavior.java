@@ -15,19 +15,19 @@ public class NavigationBehavior {
 	static Random rand = new Random();
 	
 	public static final ITest HAS_TARGET = (ce) -> {
-		NPC npc = NPCsController.manager().registry.getNPC(ce.getLivingEntity());
+		NPC npc = NPCsController.getInstance().getNPC(ce.getLivingEntity());
 		return npc.getNavigator().getTargetAsLocation() != null;
 	};
 	
 	public static final ITest NEAR_TARGET = (ce) -> {
-		NPC npc = NPCsController.manager().registry.getNPC(ce.getLivingEntity());
+		NPC npc = NPCsController.getInstance().getNPC(ce.getLivingEntity());
 		return ce.getLivingEntity().getLocation().distance(npc.getNavigator().getTargetAsLocation()) < 2D;
 	};
 
 	public static final BehaviorAction WANDER = new BehaviorAction() {
 		@Override
 		public NodeStatus onStep(CombatEntity ce, long ticks) {
-			NPC npc = NPCsController.manager().registry.getNPC(ce.getLivingEntity());
+			NPC npc = NPCsController.getInstance().getNPC(ce.getLivingEntity());
 			MobTrait trait = npc.getTrait(MobTrait.class);
 			Location spawn = trait.instance.home.getLocation();
 			
@@ -45,7 +45,7 @@ public class NavigationBehavior {
 	public static final BehaviorAction LOOK_RANDOM = new BehaviorAction() {
 		@Override
 		public NodeStatus onStep(CombatEntity ce, long ticks) {
-			NPC npc = NPCsController.manager().registry.getNPC(ce.getLivingEntity());
+			NPC npc = NPCsController.getInstance().getNPC(ce.getLivingEntity());
 			Location loc = npc.getEntity().getLocation().clone();
 			loc.add(rand.nextInt(10) - 5, rand.nextInt(3) - 1.5D, rand.nextInt(10) - 5);
 			npc.faceLocation(loc);

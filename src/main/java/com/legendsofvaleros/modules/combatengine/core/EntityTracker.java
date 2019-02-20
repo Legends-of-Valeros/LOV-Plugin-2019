@@ -64,13 +64,13 @@ public class EntityTracker implements UnsafePlayerInitializer {
     }
 
     public CombinedCombatEntity getCombatEntity(LivingEntity entity) {
-        if (NPCsController.isStaticNPC(entity)) return null;
+        if (NPCsController.getInstance().isStaticNPC(entity)) return null;
 
         UUID uid = entity.getUniqueId();
         CombinedCombatEntity ce = combatEntities.getIfPresent(uid);
 
         // creates on access, unless using a manual player initializer and the entity is a player
-        if (ce == null && (!usePlayerInitializer || entity.getType() != EntityType.PLAYER || NPCsController.isNPC(entity))) {
+        if (ce == null && (!usePlayerInitializer || entity.getType() != EntityType.PLAYER || NPCsController.getInstance().isNPC(entity))) {
             ce = create(entity);
 
         } else if (ce != null) {

@@ -10,6 +10,8 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Map;
+
 @CommandAlias("banks|lov banks")
 public class BankCommands extends BaseCommand {
 	@Subcommand("add")
@@ -31,8 +33,8 @@ public class BankCommands extends BaseCommand {
 		Bank pb = BankController.getBank(Characters.getPlayerCharacter(p));
 		sender.sendMessage(p.getDisplayName() + "'s Bank");
 
-		for(Bank.Currency c : pb.getCurrencies())
-			sender.sendMessage(" " + c.getCurrencyId() + " = " + BankController.getInstance().getCurrency(c.getCurrencyId()).getDisplay(c.amount));
+		for(Map.Entry<String, Long> c : pb.getCurrencies().entrySet())
+			sender.sendMessage(" " + c.getKey() + " = " + BankController.getInstance().getCurrency(c.getKey()).getDisplay(c.getValue()));
 	}
 
 	@Default

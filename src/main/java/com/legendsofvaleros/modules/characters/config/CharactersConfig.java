@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Main configuration for Characters.
  */
-public interface CharactersConfig extends DatabaseConfig, AbilityStatInformationConfig, LocationConfig,
+public interface CharactersConfig extends AbilityStatInformationConfig, LocationConfig,
 											CombatLoggingConfig, ExperienceConfig {
 
 	/**

@@ -1,7 +1,6 @@
 package com.legendsofvaleros.modules.parties;
 
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.IntegratesWith;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
@@ -19,9 +18,8 @@ import com.legendsofvaleros.modules.pvp.PvPController;
 @IntegratesWith(module = PlayerMenu.class, integration = PvPIntegration.class)
 @IntegratesWith(module = PvPController.class, integration = PvPIntegration.class)
 @ModuleInfo(name = "Parties", info = "")
-public class PartiesController extends Module {
+public class PartiesController extends PartiesAPI {
     private static PartiesController instance;
-
     public static PartiesController getInstance() {
         return instance;
     }
@@ -30,11 +28,8 @@ public class PartiesController extends Module {
     public void onLoad() {
         super.onLoad();
 
-        instance = this;
-
-        PartyManager.onEnable();
+        this.instance = this;
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new PartyCommands());
     }
-
 }

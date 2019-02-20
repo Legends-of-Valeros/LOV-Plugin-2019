@@ -7,7 +7,7 @@ import com.legendsofvaleros.modules.auction.AuctionChatPrompt.AuctionPromptType;
 import com.legendsofvaleros.modules.auction.AuctionController;
 import com.legendsofvaleros.modules.auction.filter.FilterDirection;
 import com.legendsofvaleros.modules.auction.filter.FilterType;
-import com.legendsofvaleros.modules.gear.item.Gear;
+import com.legendsofvaleros.modules.gear.core.Gear;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -61,11 +61,12 @@ public class AuctionGui extends GUI implements Listener {
             e.setCancelled(true);
         });
 
-        slot(48, filterType.getGuiMaterial(), (gui, p, e) -> { //change filter type
+        slot(48, filterType.toItemStack(), (gui, p, e) -> { //change filter type
             //TODO
         });
 
-        slot(48, filterDirection.getGuiMaterial(), (gui, p, e) -> { //change filter type
+        slot(49, filterDirection.toItemStack(), (gui, p, e) -> { //change filter direction
+            //TODO
         });
 
         if (currentPage < totalPages) {

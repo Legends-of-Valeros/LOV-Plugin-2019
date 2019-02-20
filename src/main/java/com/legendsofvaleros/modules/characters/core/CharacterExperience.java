@@ -1,13 +1,10 @@
 package com.legendsofvaleros.modules.characters.core;
 
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.modules.characters.api.Experience;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.config.ExperienceConfig;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterExperienceChangeEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLevelChangeEvent;
-import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
 
 /**
@@ -17,7 +14,6 @@ import org.bukkit.Bukkit;
  * these relative edits should be saved to the database.
  */
 public class CharacterExperience implements Experience {
-
 	private final ExperienceConfig config;
 	private PlayerCharacter playerCharacter;
 
@@ -80,52 +76,6 @@ public class CharacterExperience implements Experience {
 	@Override
 	public ExperienceMultiplier addMultiplier(double amount) {
 		return new CharacterExperienceMultiplier(amount);
-	}
-
-	@Override
-	public ListenableFuture<Experience> refresh() {
-		final SettableFuture<Experience> ret = SettableFuture.create();
-
-		final ListenableFuture<Integer> levelRequest =
-				PlayerCharacterData.getExperienceLevel(playerCharacter.getUniqueCharacterId());
-		final ListenableFuture<Long> xpRequest =
-				PlayerCharacterData.getExperienceTowardsNextLevel(playerCharacter.getUniqueCharacterId());
-
-		Runnable listener = new Runnable() {
-			private boolean jobDone = false;
-
-			@Override
-			public synchronized void run() {
-				if (jobDone || !(levelRequest.isDone() && xpRequest.isDone())) {
-					return;
-				}
-				jobDone = true;
-
-				// syncs to main thread, delivers refreshed values, and calls back
-				Characters.getInstance().getScheduler().executeInSpigotCircle(() -> {
-                    try {
-                        levelFromDb = levelRequest.get();
-                    } catch (Exception e) {
-                        MessageUtil.sendException(Characters.getInstance(), playerCharacter.getPlayer(), e);
-                    }
-                    try {
-                        xpFromDb = xpRequest.get();
-                    } catch (Exception e) {
-                        MessageUtil.sendException(Characters.getInstance(), playerCharacter.getPlayer(), e);
-                    }
-
-                    refreshXpToLevel();
-                    checkLevelUp();
-
-                    ret.set(CharacterExperience.this);
-                });
-			}
-		};
-
-		levelRequest.addListener(listener, Characters.getInstance().getScheduler()::async);
-		xpRequest.addListener(listener, Characters.getInstance().getScheduler()::async);
-
-		return ret;
 	}
 
 	@Override

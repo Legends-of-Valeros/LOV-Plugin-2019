@@ -27,8 +27,12 @@ public class EventsAspect {
         } finally {
             long tookTime = System.currentTimeMillis() - startTime;
 
-            if(module != null)
-                module.getTimings().calledEvent(event, tookTime);
+            if(module != null) {
+                if(module.getTimings() == null)
+                    module.getLogger().warning("Event timings for '" + module.getName() + "' is null!");
+                else
+                    module.getTimings().calledEvent(event, tookTime);
+            }
         }
 
         return returnObject;

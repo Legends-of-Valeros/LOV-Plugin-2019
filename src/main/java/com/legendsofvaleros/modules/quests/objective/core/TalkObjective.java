@@ -18,17 +18,17 @@ public class TalkObjective extends AbstractQuestObjective<Boolean> {
 
     @Override
     protected void onInit() {
-        if (!NPCsController.isNPC(id)) {
+        if (!NPCsController.getInstance().isNPC(id)) {
             MessageUtil.sendException(QuestController.getInstance(), "No NPC with that ID in quest. Offender: " + id + " in " + getQuest().getId());
             return;
         }
 
-        npc = NPCsController.getNPC(id);
+        npc = NPCsController.getInstance().getNPC(id);
     }
 
     @Override
     public Location getLocation(PlayerCharacter pc) {
-        return npc != null ? npc.loc : null;
+        return npc != null ? npc.getLocation() : null;
     }
 
     @Override

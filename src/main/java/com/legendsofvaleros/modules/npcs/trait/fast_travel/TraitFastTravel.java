@@ -6,7 +6,7 @@ import com.codingforcookies.robert.slot.Slot;
 import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.modules.bank.core.Money;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.fast_travel.DiscoveredFastTravels;
+import com.legendsofvaleros.modules.fast_travel.FastTravelController;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.npcs.core.NPCData;
 import com.legendsofvaleros.modules.npcs.core.NPCEmulator;
@@ -41,12 +41,12 @@ public class TraitFastTravel extends LOVTrait {
 			return;
 		}
 		
-		Collection<String> found = DiscoveredFastTravels.getDiscovered(Characters.getPlayerCharacter(player));
+		Collection<String> found = FastTravelController.getInstance().getDiscovered(Characters.getPlayerCharacter(player));
 
 		if(!found.contains(npc_id)) {
 			found.add(npc_id);
 
-			DiscoveredFastTravels.add(Characters.getPlayerCharacter(player), npc_id);
+			FastTravelController.getInstance().addDiscovered(Characters.getPlayerCharacter(player), npc_id);
 
 			Title title = new Title("Discovered Location!", "You can now fast travel here!");
 			title.setTitleColor(ChatColor.GREEN);
@@ -76,7 +76,7 @@ public class TraitFastTravel extends LOVTrait {
 		for(String id : available) {
 			TraitFastTravel.Data data = connections.get(id);
 			
-			NPCData npcData = NPCsController.getNPC(id);
+			NPCData npcData = NPCsController.getInstance().getNPC(id);
 			if(npc == null) {
 				MessageUtil.sendError(p, "Unable to find NPC with that ID: " + id);
 				continue;
@@ -102,7 +102,7 @@ public class TraitFastTravel extends LOVTrait {
                     return;
                 }
 
-                p1.teleport(npcData.loc);
+                p1.teleport(npcData.getLocation());
 
                 if(data.message != null && data.message.length() > 0)
                     NPCEmulator.speak(npc, p1, data.message);
