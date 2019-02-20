@@ -51,6 +51,10 @@ public class Model {
 		return models.get(id);
 	}
 
+	public static void put(String id, String name, Material material) {
+		models.put(id, new Model(id, name, material, 0));
+	}
+
 	public static ItemBuilder stack(String id) {
 		return get(id).toStack();
 	}
