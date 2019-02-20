@@ -35,28 +35,22 @@ public class DamageMultiplier {
   /**
    * Gets the multiplier for an instance of spell damage, based on its type and the attacker and
    * defender's stats.
-   * 
-   * @param target The affected entity.
+   *
    * @param attacker The attacker. Can be <code>null</code> if the damage was ambiguous or not
    *        directly caused by another entity.
-   * @param criticalHit <code>true</code> if this is a critical hit and the critical-hit bonus
-   *        multiplier should be added, else <code>false</code>.
-   * @param spellType The type of spell damage.
    * @return A single, final multiplier for the damage based on all of the attacker's and defender's
    *         factors combined.
    */
-  public double getSpellDamageMultiplier(CombatEntity target, CombatEntity attacker,
-      boolean criticalHit, SpellType spellType) {
+  public double getSpellDamageBonus(CombatEntity attacker, SpellType type) {
+    if (attacker == null)
+      return 1;
+    return attacker.getStats().getStat(Stat.MAGIC_ATTACK) * odConfig.getMagicDamageIncrease();
+  }
 
-    double attackBonus = 1;
-    if (attacker != null) {
-      attackBonus +=
-          attacker.getStats().getStat(Stat.MAGIC_ATTACK) * odConfig.getMagicDamageIncrease();
-    }
-
-    double armorPenalty =
-        1 - (target.getStats().getStat(Stat.ARMOR) * odConfig.getArmorSpellDamageReduction());
-
+  public double getSpellDamageArmorPenalty(CombatEntity target) {
+    return 1 - (target.getStats().getStat(Stat.ARMOR) * odConfig.getArmorPhysicalDamageReduction());
+  }
+  public double getSpellResistancePenalty(CombatEntity target, SpellType spellType) {
     Stat[] resistances = applicableResistances.get(spellType);
     double resistPenalty = 1.0;
     for (Stat resist : resistances) {
@@ -65,40 +59,30 @@ public class DamageMultiplier {
                 1 - (target.getStats().getStat(resist) * odConfig.getResistanceSpellDamageReduction());
       }
     }
-
-    double critBonus = criticalHit ? chConfig.getCritMultiplier() : 1.0;
-
-    return attackBonus * armorPenalty * resistPenalty * critBonus;
+    return resistPenalty;
   }
 
   /**
    * Gets the multiplier for an instance of physical damage, based on its type and the attacker and
    * defender's stats.
-   * 
-   * @param target The affected entity.
+   *
    * @param attacker The attacker. Can be <code>null</code> if the damage was ambiguous or not
    *        directly caused by another entity.
-   * @param criticalHit <code>true</code> if this is a critical hit and the critical-hit bonus
-   *        multiplier should be added, else <code>false</code>.
    * @param physicalType The type of physical damage.
    * @return A single, final multiplier for the damage based on all of the attacker's and defender's
    *         factors combined.
    */
-  public double getPhysicalDamageMultiplier(CombatEntity target, CombatEntity attacker,
-      boolean criticalHit, PhysicalType physicalType) {
-
-    double attackBonus = 1;
-    if (attacker != null) {
-      attackBonus +=
-          attacker.getStats().getStat(Stat.PHYSICAL_ATTACK) * odConfig.getPhysicalDamageIncrease();
-    }
-
-    double armorPenalty =
-        1 - (target.getStats().getStat(Stat.ARMOR) * odConfig.getArmorPhysicalDamageReduction());
-
-    double critBonus = criticalHit ? chConfig.getCritMultiplier() : 1.0;
-
-    return attackBonus * armorPenalty * critBonus;
+  public double getPhysicalDamageBonus(CombatEntity attacker, PhysicalType physicalType) {
+    if (attacker == null)
+      return 1;
+    return attacker.getStats().getStat(Stat.PHYSICAL_ATTACK) * odConfig.getPhysicalDamageIncrease();
   }
 
+  public double getPhysicalDamageArmorPenalty(CombatEntity target) {
+    return 1 - (target.getStats().getStat(Stat.ARMOR) * odConfig.getArmorPhysicalDamageReduction());
+  }
+
+  public double getCritDamageMultiplier() {
+    return chConfig.getCritMultiplier();
+  }
 }

@@ -1,7 +1,3 @@
-# The id of the DBPools database to use, as it appears in plugins/DBPools/config.yml
-# This plugin relies on DBPools for database connections. Without it, this plugin cannot function.
-dbpools-database: "mysql1"
-
 stat-description:
     # The descriptions for each stat.
     MAX_HEALTH: "Dictates how many hits your character can take before dying."
@@ -60,16 +56,14 @@ damage-modifiers:
 
     offensive:
         # ---
-        # The percentage increase in physical damage for each point of the PHYSICAL_ATTACK stat, as
-        # a decimal. Ex: 0.01 for 1%, 0.005 for 0.5%, 1.0 for 100%
+        # The ratio of the increase in physical damage for each point of the PHYSICAL_ATTACK stat.
         #
-        # For example, if this was set to 0.001 (0.1%), and an entity had a 95 PHYSICAL_ATTACK stat,
-        # the base damage of their physical attacks would be increased by 9.5%.
-        physical-multiplier-per-point: 0.001
+        # For example: a value of .5 will increase physical damage 1 for every 2 points of PHYSICAL_ATTACK.
+        physical-attack-per-point: 1
 
         # ---
         # The same thing as above, except for spell damage and the MAGIC_ATTACK stat.
-        magic-multiplier-per-point: 0.001
+        magic-attack-per-point: 1
 
     defensive:
         # ---
@@ -77,32 +71,31 @@ damage-modifiers:
         # much ARMOR reduces damage for each type of damage.
         armor:
             # ---
-            # The percentage decrease in physical damage for each point of the ARMOR stat, as a
-            # decimal. Ex: 0.01 for 1%, 0.005 for 0.5%, 1.0 for 100%
+            # The ratio of the decrease in physical damage for each point of the ARMOR stat.
             #
-            # For example, if this was set to 0.001 (0.1%), and an entity had a 197 ARMOR stat,
-            # the base damage of physical attacks on them would be reduced by 19.7%.
-            physical-reduction-per-point: 0.001
+            # For example, if this was set to 0.1, and an entity had a 197 ARMOR stat,
+            # the base damage of physical attacks on them would be reduced by 19.7.
+            physical-reduction-per-point: 1
 
             # ---
             # The same as above, except for defending against spell damage.
             #
             # Because spell damage can also be reduced by elemental resistances, it may be wise for
             # armor to reduce magic damage less than it reduces physical damage.
-            magic-reduction-per-point: 0.0007
+            magic-reduction-per-point: 1
 
         # ---
         # Elemental resistances such as FIRE_RESISTANCE and ICE_RESISTANCE reduce damage from specific
         # types of spells.
         resistances:
             # ---
-            # The percentage decrease in spell damage for each point in the spell's corresponding
-            # resistance stat, as a decimal. Ex: 0.01 for 1%, 0.005 for 0.5%, 1.0 for 100%
+            # The ratio fof the decrease in spell damage for each point in the spell's corresponding
+            # resistance stat.
             #
             # Elemental resistances only affect one or another type of spell. If a player has 10,000
             # FIRE_RESISTANCE and gets hit with an ice spell, their FIRE_RESISTANCE stat will not affect
             # the base damage in any way.
-            damage-reduction-per-point: 0.001
+            damage-reduction-per-point: 1
 
 
 # -------------------------------------------------------------------------------------------------

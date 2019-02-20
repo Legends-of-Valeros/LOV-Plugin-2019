@@ -97,8 +97,8 @@ public class BukkitConfig implements CombatEngineConfig {
 		// armor, attack damage, magic damage, and resistances
 		ConfigurationSection damageSec = config.getConfigurationSection("damage-modifiers");
 		ConfigurationSection offenseSec = damageSec.getConfigurationSection("offensive");
-		physicalDamageIncrease = offenseSec.getDouble("physical-multiplier-per-point");
-		magicDamageIncrease = offenseSec.getDouble("magic-multiplier-per-point");
+		physicalDamageIncrease = offenseSec.getDouble("physical-attack-per-point");
+		magicDamageIncrease = offenseSec.getDouble("magic-attack-per-point");
 		ConfigurationSection defenseSec = damageSec.getConfigurationSection("defensive");
 		ConfigurationSection armorSec = defenseSec.getConfigurationSection("armor");
 		armorPhysicalDamageReduction = armorSec.getDouble("physical-reduction-per-point");

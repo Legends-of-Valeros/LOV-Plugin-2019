@@ -71,17 +71,32 @@ public class DamageEngine {
 			return false;
 		}
 
-		// does the attack crit?
 		boolean crit = canCrit && hitAndCit.doesAttackCrit(ceTarget, ceAttacker);
 
 		CombatEngineSpellDamageEvent event =
 				new CombatEngineSpellDamageEvent(ceTarget, ceAttacker, damageOrigin, baseDamage, crit, type);
 
-		event.newDamageModifierBuilder("Resistance")
-				.setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
-				.setValue(multiplierHandler.getSpellDamageMultiplier(ceTarget, ceAttacker, crit, type))
-			.build();
-		
+		event.newDamageModifierBuilder("Physical Attack Bonus")
+				.setModifierType(ValueModifierBuilder.ModifierType.FLAT_EDIT)
+				.setValue(multiplierHandler.getSpellDamageBonus(ceAttacker, type))
+				.build();
+
+		event.newDamageModifierBuilder("Armor Penalty")
+				.setModifierType(ValueModifierBuilder.ModifierType.FLAT_EDIT)
+				.setValue(multiplierHandler.getSpellDamageArmorPenalty(ceTarget))
+				.build();
+
+		event.newDamageModifierBuilder("Resistance Penalty")
+				.setModifierType(ValueModifierBuilder.ModifierType.FLAT_EDIT)
+				.setValue(multiplierHandler.getSpellResistancePenalty(ceTarget, type))
+				.build();
+
+		if(crit)
+			event.newDamageModifierBuilder("Critical")
+					.setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
+					.setValue(multiplierHandler.getCritDamageMultiplier())
+					.build();
+
 		return handleEvent(event);
 	}
 
@@ -107,16 +122,26 @@ public class DamageEngine {
 			return false;
 		}
 
-		// does the attack crit?
 		boolean crit = canCrit && hitAndCit.doesAttackCrit(ceTarget, ceAttacker);
 
 		CombatEnginePhysicalDamageEvent event =
 				new CombatEnginePhysicalDamageEvent(ceTarget, ceAttacker, damageOrigin, baseDamage, crit, type);
 
-		event.newDamageModifierBuilder("Resistance")
-				.setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
-				.setValue(multiplierHandler.getPhysicalDamageMultiplier(ceTarget, ceAttacker, crit, type))
-			.build();
+		event.newDamageModifierBuilder("Physical Attack Bonus")
+				.setModifierType(ValueModifierBuilder.ModifierType.FLAT_EDIT)
+				.setValue(multiplierHandler.getPhysicalDamageBonus(ceAttacker, type))
+				.build();
+
+		event.newDamageModifierBuilder("Armor Penalty")
+				.setModifierType(ValueModifierBuilder.ModifierType.FLAT_EDIT)
+				.setValue(multiplierHandler.getPhysicalDamageArmorPenalty(ceTarget))
+				.build();
+
+		if(crit)
+			event.newDamageModifierBuilder("Critical")
+					.setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
+					.setValue(multiplierHandler.getCritDamageMultiplier())
+					.build();
 
 		return handleEvent(event);
 	}
