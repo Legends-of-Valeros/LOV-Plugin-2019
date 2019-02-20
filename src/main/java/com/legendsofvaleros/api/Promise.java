@@ -1,6 +1,8 @@
 package com.legendsofvaleros.api;
 
 import com.google.common.collect.ImmutableList;
+import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.util.MessageUtil;
 import sun.misc.Unsafe;
 
 import javax.annotation.Nonnull;
@@ -36,6 +38,8 @@ public class Promise<R> {
 
         return null;
     }
+
+    private final String trace;
 
     /**
      * This is the default executor for the promise if a listener does
@@ -76,6 +80,8 @@ public class Promise<R> {
      * it just allows some better syntactic sugar.
      */
     public Promise(Executor executor) {
+        this.trace = MessageUtil.getStackTrace(new Throwable("Created Promise"));
+
         this.executor = executor != null ? executor : APIController.getInstance().getPool();
     }
 
@@ -222,7 +228,29 @@ public class Promise<R> {
         if(isDone()) throw new IllegalStateException("Promise already resolved!");
 
         // Always show rejected promises in the console
-        new Exception("Promise rejected!", th).printStackTrace();
+        LegendsOfValeros.getInstance().getLogger().warning("Promise rejected!");
+        LegendsOfValeros.getInstance().getLogger().warning("----------------------------------------");
+        int i = -1;
+        for(String line : trace.split("\n")) {
+            if(i == -1) {
+                // Ignore non-LOV packages
+                if (!line.contains("com.legendsofvaleros")) continue;
+                // Ignore api package
+                if (line.contains("com.legendsofvaleros.api")) continue;
+            }
+
+            i++;
+
+            LegendsOfValeros.getInstance().getLogger().warning(line);
+
+            // Don't print too many lines. After an amount, it's just spam.
+            if(i > 6 && !line.contains("legendsofvaleros")) break;
+        }
+
+        // Print the actual reason for rejection
+        th.printStackTrace();
+
+        LegendsOfValeros.getInstance().getLogger().warning("----------------------------------------");
 
         this.value = th;
         this.state = State.REJECTED;

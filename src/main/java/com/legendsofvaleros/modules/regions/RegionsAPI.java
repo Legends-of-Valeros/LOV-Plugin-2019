@@ -92,7 +92,7 @@ public class RegionsAPI extends Module {
             val.orElse(ImmutableList.of()).stream().forEach(this::addRegion);
 
             getLogger().info("Loaded " + regions.size() + " regions.");
-        }).onFailure(Throwable::printStackTrace);
+        }, RegionController.getInstance().getScheduler()::sync).onFailure(Throwable::printStackTrace);
     }
 
     public List<Region> findRegions(Location location) {

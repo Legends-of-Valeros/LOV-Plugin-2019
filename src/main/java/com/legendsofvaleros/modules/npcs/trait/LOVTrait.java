@@ -6,9 +6,12 @@ import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.entity.Player;
 
 public abstract class LOVTrait {
-	public String npc_id;
-	public NPC npc;
-	public TraitLOV trait;
+	public transient TraitLOV trait;
+
+	public transient String id;
+
+	public transient String npc_id;
+	public transient NPC npc;
 
 	public void onSpawn() { }
 	public void onDespawn() { }

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializer;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.ModuleListener;
@@ -62,12 +63,21 @@ public class NPCsAPI extends ModuleListener {
                     MessageUtil.sendException(this, "Trait with that ID is not registered. Offender: " + elem.getKey());
 
                 try {
-                    traits.add(context.deserialize(elem.getValue(), traitTypes.get(elem.getKey())));
+                    LOVTrait trait = context.deserialize(elem.getValue(), traitTypes.get(elem.getKey()));
+                    trait.id = elem.getKey();
+                    traits.add(trait);
                 } catch (Exception e) {
                     MessageUtil.sendException(this, "Failed to load trait. Offender: " + elem.getKey() + " (" + elem.getValue().toString() + ")");
                 }
             }
             return traits.toArray(new LOVTrait[0]);
+        });
+
+        APIController.getInstance().getGsonBuilder().registerTypeAdapter(LOVTrait[].class, (JsonSerializer<LOVTrait[]>) (val, typeOfT, context) -> {
+            JsonObject obj = new JsonObject();
+            for (LOVTrait trait : val)
+                obj.add(trait.id, context.serialize(trait));
+            return obj;
         });
     }
 
@@ -103,7 +113,17 @@ public class NPCsAPI extends ModuleListener {
     }
 
     public Promise<Boolean> saveNPC(TraitLOV traitLOV) {
-        return rpc.saveNPC(traitLOV.npcData);
+        System.out.println(traitLOV.npcData);
+        System.out.println(APIController.getInstance().getGson().toJson(traitLOV.npcData.traits));
+        System.out.println(APIController.getInstance().getGson().toJson(traitLOV.npcData.world));
+
+        try {
+            //rpc.saveNPC(traitLOV.npcData).get();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+
+        return new Promise<>();
     }
 
     public void registerTrait(String id, Class<? extends LOVTrait> trait) {
