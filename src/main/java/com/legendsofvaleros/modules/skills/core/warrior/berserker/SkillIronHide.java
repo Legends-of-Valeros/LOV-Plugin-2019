@@ -15,7 +15,7 @@ public class SkillIronHide extends Skill {
 	private static final int[] DEFENCE = new int[] { 25 };
 	private static final int[] TIME = new int[] { 10 };
 	private static final Object[] DESCRIPTION = new Object[] {
-			"Increases the warriors defense by ", DEFENCE, "% for ", new TimePart().seconds(TIME), "."
+			"Increases the warriors defense by ", new PercentPart(DEFENCE), " for ", new TimePart().seconds(TIME), "."
 		};
 
 	public SkillIronHide() { super(ID, Type.BENEFICIAL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }

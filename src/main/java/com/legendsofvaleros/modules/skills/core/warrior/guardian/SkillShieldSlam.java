@@ -16,7 +16,7 @@ public class SkillShieldSlam extends Skill {
 	private static final int[] DAMAGE = new int[] { 400, 425, 450, 475, 500 };
 	private static final int[] RAGE = new int[] { 20, 30, 40, 50, 75 };
 	private static final Object[] DESCRIPTION = new Object[] {
-			"Slams target with shield, causing ", DAMAGE, "% of weapon damage. Generates ", RAGE, " rage."
+			"Slams target with shield, causing ", new WDPart(DAMAGE), ". Generates ", RAGE, " rage."
 		};
 
 	public SkillShieldSlam() { super(ID, Type.HARMFUL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }

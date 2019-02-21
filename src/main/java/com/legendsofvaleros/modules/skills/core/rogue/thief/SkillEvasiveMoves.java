@@ -16,7 +16,7 @@ public class SkillEvasiveMoves extends Skill {
 	private static final int[] TIME = new int[] { 6 };
 	private static final Object[] DESCRIPTION = new Object[] {
 			"Increases your ability to dodge magical and physical attacks by ",
-			DODGE, "% for ", new TimePart().seconds(TIME), "."
+			new PercentPart(DODGE), " for ", new TimePart().seconds(TIME), "."
 		};
 
 	public SkillEvasiveMoves() { super(ID, Type.BENEFICIAL, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }

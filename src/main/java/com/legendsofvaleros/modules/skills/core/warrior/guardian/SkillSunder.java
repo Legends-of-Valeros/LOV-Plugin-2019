@@ -15,7 +15,7 @@ public class SkillSunder extends Skill {
 	private static final int[] DEFENCE = new int[] { 50, 55 };
 	private static final int[] TIME = new int[] { 3, 4 };
 	private static final Object[] DESCRIPTION = new Object[] {
-			"Decreases the targets defence by ", DEFENCE, "% for ", new TimePart().seconds(TIME), "."
+			"Decreases the targets defence by ", new PercentPart(DEFENCE), " for ", new TimePart().seconds(TIME), "."
 		};
 
 	public SkillSunder() { super(ID, Type.HARMFUL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }

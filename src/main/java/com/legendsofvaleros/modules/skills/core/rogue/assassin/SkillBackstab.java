@@ -14,7 +14,7 @@ public class SkillBackstab extends Skill {
 	private static final int[] DAMAGE_STEALTH = new int[] { 240, 300, 370, 450, 500 };
 	private static final Object[] DESCRIPTION = new Object[] {
 			"Does ", new WDPart(DAMAGE), " when attacking from behind the target, ",
-			DAMAGE_STEALTH, "% when from stealth"
+			new PercentPart(DAMAGE_STEALTH), " when from stealth"
 		};
 
 	public SkillBackstab() { super(ID, Type.HARMFUL, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }

@@ -28,7 +28,7 @@ public class SkillHailstorm extends Skill {
             new RadiusPart(RADIUS), " for ",
             new TimePart().seconds(TIME), " which does ",
             new DamagePart(DAMAGE), " and has a ",
-            FREEZE_CHANCE, "% chance to cause ",
+            new PercentPart(FREEZE_CHANCE), " chance to cause ",
             new EffectPart<Double>("Freeze") {
                 public void meta(int level, MetaEffectInstance<Double> meta) {
                     meta.level = getEarliest(FREEZE_LEVEL, level);

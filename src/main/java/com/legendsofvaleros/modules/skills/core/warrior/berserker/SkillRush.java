@@ -22,7 +22,7 @@ public class SkillRush extends Skill {
 	private static final int[] TIME = new int[] { 5, 6, 8 };
 	private static final Object[] DESCRIPTION = new Object[] {
 			"Sprint forward for ", new RangePart(RANGE), " and slow down targets movement speed by ",
-			SPEED, "% for ", new TimePart().seconds(TIME), "."
+			new PercentPart(SPEED), " for ", new TimePart().seconds(TIME), "."
 		};
 	
 	public SkillRush() { super(ID, Type.HARMFUL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }

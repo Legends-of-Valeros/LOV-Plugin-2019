@@ -14,7 +14,7 @@ public class SkillRoundhouseKick extends Skill {
 	private static final double[] TIME = new double[] { 2.5, 3, 4, 5, 6 };
 	private static final int[] RANGE = new int[] { 3 };
 	private static final Object[] DESCRIPTION = new Object[] {
-			"Deals ", DAMAGE, "% damage to targets within ",
+			"Deals ", new WDPart(DAMAGE), " to targets within ",
 			new RangePart(RANGE), " and silences them for ",
 			new TimePart().seconds(TIME), "."
 		};

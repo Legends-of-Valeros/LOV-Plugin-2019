@@ -15,7 +15,7 @@ public class SkillMagicArmor extends Skill {
 	private static final int[] SPELL_DEFENCE = new int[] { 50, 55, 60 };
 	private static final int[] TIME = new int[] { 5 };
 	private static final Object[] DESCRIPTION = new Object[] {
-			"Decreases spell damage received by ", SPELL_DEFENCE, "% for ", new TimePart().seconds(TIME), "."
+			"Decreases spell damage received by ", new PercentPart(SPELL_DEFENCE), " for ", new TimePart().seconds(TIME), "."
 		};
 
 	public SkillMagicArmor() { super(ID, Type.BENEFICIAL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }

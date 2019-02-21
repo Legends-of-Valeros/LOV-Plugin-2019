@@ -14,7 +14,7 @@ public class SkillTrueStrike extends Skill {
 	private static final double[] COOLDOWN = new double[] { 60 };
 	private static final int[] DAMAGE = new int[] { 400, 450 };
 	private static final Object[] DESCRIPTION = new Object[] {
-			"Deals weapon damage ", DAMAGE, "% once."
+			"Deals ", new WDPart(DAMAGE), " once."
 		};
 
 	public SkillTrueStrike() { super(ID, Type.HARMFUL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }

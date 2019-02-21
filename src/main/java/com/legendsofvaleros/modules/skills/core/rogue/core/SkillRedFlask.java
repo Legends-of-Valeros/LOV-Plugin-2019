@@ -12,7 +12,7 @@ public class SkillRedFlask extends Skill {
 	private static final double[] COOLDOWN = new double[] { 60 };
 	private static final int[] HEALTH = new int[] { 30, 31, 32, 33, 35 };
 	private static final Object[] DESCRIPTION = new Object[] {
-			"Drink a potion to regain ", HEALTH, "% of your maximum health"
+			"Drink a potion to regain ", new PercentPart(HEALTH), " of your maximum health"
 		};
 
 	public SkillRedFlask() { super(ID, Type.BENEFICIAL, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }

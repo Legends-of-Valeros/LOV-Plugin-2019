@@ -20,7 +20,7 @@ public class SkillStunningStomp extends Skill {
 	private static final int[] TIME = new int[] { 4, 5, 6 };
 	private static final Object[] DESCRIPTION = new Object[] {
 			"Stomps the ground slowing all enemies in a ",
-			new RadiusPart(RADIUS), " by ", SPEED, "% for ",
+			new RadiusPart(RADIUS), " by ", new PercentPart(SPEED), " for ",
 			new TimePart().seconds(TIME), "."
 		};
 

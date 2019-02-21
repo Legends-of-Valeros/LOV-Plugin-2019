@@ -15,7 +15,8 @@ public class SkillEnrage extends Skill {
 	private static final int[] TIME = new int[] { 20 };
 	private static final int[] DEFENCE = new int[] { 15 };
 	private static final Object[] DESCRIPTION = new Object[] {
-			"The warrior enrages for ", new TimePart().seconds(TIME), " increasing defense and damage by ", DEFENCE, "%."
+			"The warrior enrages for ", new TimePart().seconds(TIME),
+			" increasing defense and damage by ", new PercentPart(DEFENCE), "."
 		};
 
 	public SkillEnrage() { super(ID, Type.BENEFICIAL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }

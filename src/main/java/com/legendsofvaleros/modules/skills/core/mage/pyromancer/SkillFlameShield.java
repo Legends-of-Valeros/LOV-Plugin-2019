@@ -18,7 +18,7 @@ public class SkillFlameShield extends Skill {
     private static final int[] REFLECTION = new int[]{30};
     private static final int[] TIME = new int[]{10};
     private static final Object[] DESCRIPTION = new Object[]{
-            "Flame shield around mage, enemy attacks have ", CHANCE, "% chance taking ",
+            "Flame shield around mage, enemy attacks have ", new PercentPart(CHANCE), " chance taking ",
             new WDPart(REFLECTION), " for ",
             new TimePart().seconds(TIME), "."
     };

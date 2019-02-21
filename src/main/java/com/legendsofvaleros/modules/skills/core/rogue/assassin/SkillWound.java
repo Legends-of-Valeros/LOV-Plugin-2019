@@ -15,7 +15,7 @@ public class SkillWound extends Skill {
 	private static final int[] TIME = new int[] { 10 };
 	private static final Object[] DESCRIPTION = new Object[] {
 			new WDPart(DAMAGE), " wounds a target denying his healing ability by ",
-			HEALING, "% for ", new TimePart().seconds(TIME), "."
+			new PercentPart(HEALING), " for ", new TimePart().seconds(TIME), "."
 		};
 
 	public SkillWound() { super(ID, Type.HARMFUL, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }

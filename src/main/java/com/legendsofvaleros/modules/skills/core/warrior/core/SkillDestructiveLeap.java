@@ -22,7 +22,7 @@ public class SkillDestructiveLeap extends Skill {
     private static final int[] RADIUS = new int[]{7};
     private static final Object[] DESCRIPTION = new Object[]{
             "Jump forward ", new RangePart(RANGE), ", dealing ",
-            DAMAGE, "% of the attack power in a ", new RadiusPart(RADIUS), "."
+            new PercentPart(DAMAGE), " of the attack power in a ", new RadiusPart(RADIUS), "."
     };
 
     public SkillDestructiveLeap() {

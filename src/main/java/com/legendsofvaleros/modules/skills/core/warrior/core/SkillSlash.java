@@ -14,7 +14,7 @@ public class SkillSlash extends Skill {
 	private static final double[] COOLDOWN = new double[] { 5 };
 	private static final int[] DAMAGE = new int[] { 200, 210, 225, 240, 275 };
 	private static final Object[] DESCRIPTION = new Object[] {
-			"Slashes the target, doing ", DAMAGE,  "% physical damage."
+			"Slashes the target, doing ", new WDPart(DAMAGE),  "."
 		};
 	
 	public SkillSlash() { super(ID, Type.HARMFUL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }

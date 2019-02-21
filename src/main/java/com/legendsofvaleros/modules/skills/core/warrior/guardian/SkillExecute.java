@@ -16,7 +16,7 @@ public class SkillExecute extends Skill {
 	private static final int[] DAMAGE = new int[] { 300, 325, 350, 375, 400 };
 	private static final int[] HEAL = new int[] { 50, 55, 60, 65, 80 };
 	private static final Object[] DESCRIPTION = new Object[] {
-			"Does ", DAMAGE, "% of the weapon damage and heals the warrior by ", HEAL, "% of the damage dealt."
+			"Does ", new WDPart(DAMAGE), " and heals the warrior by ", new PercentPart(HEAL), " of the damage dealt."
 		};
 
 	public SkillExecute() { super(ID, Type.HARMFUL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }

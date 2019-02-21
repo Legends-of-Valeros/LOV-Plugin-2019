@@ -15,7 +15,7 @@ public class SkillSprint extends Skill {
 	private static final int[] SPEED = new int[] { 50, 55, 60 };
 	private static final int[] TIME = new int[] { 20 };
 	private static final Object[] DESCRIPTION = new Object[] {
-			"The thief moves ", SPEED, "% faster for ", new TimePart().seconds(TIME), "."
+			"The thief moves ", new PercentPart(SPEED), " faster for ", new TimePart().seconds(TIME), "."
 		};
 
 	public SkillSprint() { super(ID, Type.SELF, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }

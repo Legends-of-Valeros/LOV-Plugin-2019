@@ -15,7 +15,7 @@ public class SkillAbsorb extends Skill {
 	private static final int[] RANGE = new int[] { 15 };
 	private static final int[] TIME = new int[] { 5 };
 	private static final Object[] DESCRIPTION = new Object[] {
-			"Resist ", RESIST, "% of all damage, absorbs ", ABSORB,
+			"Resist ", new PercentPart(RESIST), " of all damage, absorbs ", ABSORB,
 			"% of all damage to party members in ", new RangePart(RANGE),
 			" range for ", new TimePart().seconds(TIME), "."
 		};

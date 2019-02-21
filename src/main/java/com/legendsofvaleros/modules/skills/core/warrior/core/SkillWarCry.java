@@ -20,7 +20,7 @@ public class SkillWarCry extends Skill {
 	private static final int[] DAMAGE = new int[] { 10, 12, 15, 19, 25 };
 	private static final Object[] DESCRIPTION = new Object[] {
 			"For ", new TimePart().seconds(TIME), ", all party members within a ",
-			new RadiusPart(RADIUS), " do ", DAMAGE, "% increased melee damage."
+			new RadiusPart(RADIUS), " do ", new PercentPart(DAMAGE), " increased melee damage."
 		};
 	
 	public SkillWarCry() { super(ID, Type.BENEFICIAL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }

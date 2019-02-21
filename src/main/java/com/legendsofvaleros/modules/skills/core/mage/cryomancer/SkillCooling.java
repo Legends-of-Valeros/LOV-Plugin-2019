@@ -18,7 +18,7 @@ public class SkillCooling extends Skill {
 	private static final int[] MANA = new int[] { 20, 25, 25 };
 	private static final Object[] DESCRIPTION = new Object[] {
 			"Tiny ice crystals heal the mage for ",
-			HEALTH, "% of his total health, regenerate ", MANA, "% mana."
+			new PercentPart(HEALTH), " of his total health, regenerate ", new PercentPart(MANA), " mana."
 		};
 
 	public SkillCooling() { super(ID, Type.SELF, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION); }

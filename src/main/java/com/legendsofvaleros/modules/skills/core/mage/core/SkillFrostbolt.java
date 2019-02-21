@@ -23,7 +23,7 @@ public class SkillFrostbolt extends Skill {
     private static final Object[] DESCRIPTION = new Object[]{
             "Shoots a bolt of ice ", new RangePart(RANGE),
             ", dealing ", new DamagePart(DAMAGE), ", slows target ",
-            SLOW, "% for ", new TimePart().seconds(TIME), "."
+            new PercentPart(SLOW), " for ", new TimePart().seconds(TIME), "."
     };
 
     public SkillFrostbolt() {

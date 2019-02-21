@@ -14,7 +14,7 @@ public class SkillEviscerate extends Skill {
 	private static final int[] BYPASS = new int[] { 15, 17, 19 };
 	private static final int[] RANGE = new int[] { 15, 17, 19 };
 	private static final Object[] DESCRIPTION = new Object[] {
-			"Does ", new WDPart(DAMAGE), " within a ", RANGE, " block range, bypassing armor by ", BYPASS, "%."
+			"Does ", new WDPart(DAMAGE), " within a ", RANGE, " block range, bypassing armor by ", new PercentPart(BYPASS), "."
 		};
 
 	public SkillEviscerate() { super(ID, Type.HARMFUL, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }

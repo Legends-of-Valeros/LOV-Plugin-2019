@@ -14,7 +14,7 @@ public class SkillDeadwish extends Skill {
 	private static final double[] COOLDOWN = new double[] { 45 };
 	private static final int[] DAMAGE = new int[] { 300, 350, 375, 400, 450 };
 	private static final Object[] DESCRIPTION = new Object[] {
-			"Next single strike does ", DAMAGE, "% damage."
+			"Next single strike does ", new WDPart(DAMAGE), "."
 		};
 
 	public SkillDeadwish() { super(ID, Type.HARMFUL, EntityClass.WARRIOR, LEVELS, COST, COOLDOWN, DESCRIPTION); }

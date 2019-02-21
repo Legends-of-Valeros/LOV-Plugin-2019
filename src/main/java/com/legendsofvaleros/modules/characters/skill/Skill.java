@@ -463,6 +463,12 @@ public abstract class Skill {
         }
     }
 
+    public static class PercentPart extends IntArrPart {
+        public PercentPart(int[] range) {
+            super("%", range);
+        }
+    }
+
     public static class RangePart extends IntArrPart {
         public RangePart(int[] range) {
             super(" blocks", range);

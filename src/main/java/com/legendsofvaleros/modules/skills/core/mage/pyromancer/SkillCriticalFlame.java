@@ -20,8 +20,8 @@ public class SkillCriticalFlame extends Skill {
 	private static final int[] MANA_REGEN = new int[] { 5 };
 	private static final int[] TIME = new int[] { 10 };
 	private static final Object[] DESCRIPTION = new Object[] {
-			"Your spells have ", CRIT_CHANCE, "% more chance to do critical damage for ",
-			new TimePart().seconds(TIME), ", mana regen ", MANA_REGEN, "%/s."
+			"Your spells have ", new PercentPart(CRIT_CHANCE), " more chance to do critical damage for ",
+			new TimePart().seconds(TIME), ", mana regen ", MANA_REGEN, "/s."
 		};
 
 	public SkillCriticalFlame() { super(ID, Type.SELF, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION); }
