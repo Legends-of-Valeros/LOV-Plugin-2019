@@ -15,6 +15,7 @@ import io.deepstream.DeepstreamClient;
 import io.deepstream.InvalidDeepstreamConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -81,7 +82,7 @@ public class APIController extends Module {
             }
         });
 
-        this.gsonBuilder.registerTypeAdapter(World.class, new TypeAdapter<World>() {
+        TypeAdapter<World> worldType = new TypeAdapter<World>() {
             @Override
             public void write(JsonWriter write, World world) throws IOException {
                 write.value(world.getName());
@@ -91,7 +92,9 @@ public class APIController extends Module {
             public World read(JsonReader read) throws IOException {
                 return Bukkit.getWorld(read.nextString());
             }
-        });
+        };
+        this.gsonBuilder.registerTypeAdapter(World.class, worldType);
+        this.gsonBuilder.registerTypeAdapter(CraftWorld.class, worldType);
 
         try {
             Map<String, Object> opts = new HashMap<>();

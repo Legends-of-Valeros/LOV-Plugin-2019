@@ -113,17 +113,7 @@ public class NPCsAPI extends ModuleListener {
     }
 
     public Promise<Boolean> saveNPC(TraitLOV traitLOV) {
-        System.out.println(traitLOV.npcData);
-        System.out.println(APIController.getInstance().getGson().toJson(traitLOV.npcData.traits));
-        System.out.println(APIController.getInstance().getGson().toJson(traitLOV.npcData));
-
-        try {
-            //rpc.saveNPC(traitLOV.npcData).get();
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
-
-        return new Promise<>();
+        return rpc.saveNPC(traitLOV.npcData);
     }
 
     public void registerTrait(String id, Class<? extends LOVTrait> trait) {
