@@ -2,23 +2,23 @@ package com.legendsofvaleros.modules.skills.core.admin;
 
 import com.codingforcookies.robert.core.StringUtil;
 import com.codingforcookies.robert.item.Book;
-import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.characters.testing.StatDisplay;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import com.legendsofvaleros.util.TextBuilder;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-public class SkillInsight extends Skill {
+public class SkillInsight extends AdminSkill {
 	public static final String ID = "admin-insight";
 	private static final Object[] DESCRIPTION = new Object[] {
 			"View the base stats of any entity."
 		};
 
-	public SkillInsight() { super(ID, Type.NEUTRAL, null, null, null, null, DESCRIPTION); }
+	public SkillInsight() { super(ID, Material.BOOK, Type.NEUTRAL, null, DESCRIPTION); }
 	
 	@Override
 	public String getUserFriendlyName(int level) { return "Insight"; }
