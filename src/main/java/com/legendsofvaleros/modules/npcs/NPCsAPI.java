@@ -115,7 +115,7 @@ public class NPCsAPI extends ModuleListener {
     public Promise<Boolean> saveNPC(TraitLOV traitLOV) {
         System.out.println(traitLOV.npcData);
         System.out.println(APIController.getInstance().getGson().toJson(traitLOV.npcData.traits));
-        System.out.println(APIController.getInstance().getGson().toJson(traitLOV.npcData.world));
+        System.out.println(APIController.getInstance().getGson().toJson(traitLOV.npcData));
 
         try {
             //rpc.saveNPC(traitLOV.npcData).get();

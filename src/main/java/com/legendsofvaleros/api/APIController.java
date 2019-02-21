@@ -1,7 +1,11 @@
 package com.legendsofvaleros.api;
 
 import com.google.common.reflect.TypeToken;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
@@ -12,6 +16,7 @@ import io.deepstream.InvalidDeepstreamConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.URISyntaxException;
@@ -64,15 +69,29 @@ public class APIController extends Module {
 
         this.pool = Executors.newFixedThreadPool(8);
 
-        this.gsonBuilder.registerTypeAdapter(CharacterId.class, (JsonSerializer<CharacterId>) (val, typeOfT, context) ->
-            new JsonPrimitive(val.toString()));
-        this.gsonBuilder.registerTypeAdapter(CharacterId.class, (JsonDeserializer<CharacterId>) (json, typeOfT, context) ->
-                CharacterId.fromString(json.getAsString()));
+        this.gsonBuilder.registerTypeAdapter(CharacterId.class, new TypeAdapter<CharacterId>() {
+            @Override
+            public void write(JsonWriter write, CharacterId characterId) throws IOException {
+                write.value(characterId.toString());
+            }
 
-        this.gsonBuilder.registerTypeAdapter(World.class, (JsonSerializer<World>) (val, typeOfT, context) ->
-            new JsonPrimitive(val.getName()));
-        this.gsonBuilder.registerTypeAdapter(World.class, (JsonDeserializer<World>) (json, typeOfT, context) ->
-                Bukkit.getWorld(json.getAsString()));
+            @Override
+            public CharacterId read(JsonReader read) throws IOException {
+                return CharacterId.fromString(read.nextString());
+            }
+        });
+
+        this.gsonBuilder.registerTypeAdapter(World.class, new TypeAdapter<World>() {
+            @Override
+            public void write(JsonWriter write, World world) throws IOException {
+                write.value(world.getName());
+            }
+
+            @Override
+            public World read(JsonReader read) throws IOException {
+                return Bukkit.getWorld(read.nextString());
+            }
+        });
 
         try {
             Map<String, Object> opts = new HashMap<>();

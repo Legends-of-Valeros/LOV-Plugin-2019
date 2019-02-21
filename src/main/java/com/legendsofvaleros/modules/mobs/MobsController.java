@@ -54,9 +54,8 @@ public class MobsController extends MobsAPI {
         this.instance = this;
 
         APIController.getInstance().getGsonBuilder()
-            .registerTypeAdapter(Mob.StatsMap.class, (JsonDeserializer<Mob.StatsMap>) (json, typeOfT, context) -> {
-                return new Mob.StatsMap(context.deserialize(json.getAsJsonArray(), Mob.StatsMap.StatData[].class));
-            })
+            .registerTypeAdapter(Mob.StatsMap.class, (JsonDeserializer<Mob.StatsMap>) (json, typeOfT, context) ->
+                new Mob.StatsMap(context.deserialize(json.getAsJsonArray(), Mob.StatsMap.StatData[].class)))
             .registerTypeAdapter(Equipment.EquipmentSlot.class, (JsonDeserializer<Equipment.EquipmentSlot>) (json, typeOfT, context) -> {
                 String name = json.getAsString().toUpperCase();
 
