@@ -1,12 +1,10 @@
 package com.legendsofvaleros.modules.skills.core.mage.pyromancer;
 
-import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.damage.spell.SpellType;
-import com.legendsofvaleros.modules.skills.core.SkillUtil;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
@@ -15,11 +13,11 @@ public class SkillFlamingStreak extends Skill {
     public static final String ID = "flamingstreak";
     private static final int[] LEVELS = new int[]{3, 1, 2};
     private static final int[] COST = new int[]{5};
-    private static final double[] COOLDOWN = new double[]{60};
-    private static final int[] DAMAGE = new int[]{200, 250, 300};
+    private static final double[] COOLDOWN = new double[]{11};
+    private static final int[] DAMAGE = new int[]{20, 50, 125};
     private static final Object[] DESCRIPTION = new Object[]{
             "Blasts enemy with instant explosion for ",
-            new WDPart(DAMAGE), ", can be casted while running."
+            new DamagePart(DAMAGE), ", can be casted while running."
     };
 
     public SkillFlamingStreak() {
@@ -58,8 +56,7 @@ public class SkillFlamingStreak extends Skill {
         }
 
         CombatEngine.getInstance().causeSpellDamage(target.getLivingEntity(), ce.getLivingEntity(), SpellType.FIRE,
-                SkillUtil.getSpellDamage(ce, SpellType.FIRE, Characters.getInstance().getCharacterConfig().getClassConfig(EntityClass.MAGE).getBaseMeleeDamage())
-                        * getEarliest(DAMAGE, level) / 100D, null, false, true);
+                getEarliest(DAMAGE, level), null, false, true);
 
         return true;
     }

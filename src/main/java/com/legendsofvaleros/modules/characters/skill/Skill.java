@@ -475,6 +475,12 @@ public abstract class Skill {
         }
     }
 
+    public static class DamagePart extends IntArrPart {
+        public DamagePart(int[] damage) {
+            super(" damage", damage);
+        }
+    }
+
     public static class WDPart extends IntArrPart {
         public WDPart(int[] damage) {
             super("% weapon damage", damage);

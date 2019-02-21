@@ -21,14 +21,14 @@ public class SkillAvalanche extends Skill {
     public static final String ID = "avalanche";
     private static final int[] LEVELS = new int[]{3, 1};
     private static final int[] COST = new int[]{5};
-    private static final double[] COOLDOWN = new double[]{55};
+    private static final double[] COOLDOWN = new double[]{25};
     private static final int[] RANGE = new int[]{8};
     private static final int[] THICKNESS = new int[]{4};
-    private static final int[] DAMAGE = new int[]{300, 350};
+    private static final int[] DAMAGE = new int[]{40, 80};
     private static final Object[] DESCRIPTION = new Object[]{
             "Blasts a wall of snow and ice up to ",
             new RangePart(RANGE), " away from the mage dealing ",
-            new WDPart(DAMAGE), "."
+            new DamagePart(DAMAGE), "."
     };
 
     static final Random rand = new Random();

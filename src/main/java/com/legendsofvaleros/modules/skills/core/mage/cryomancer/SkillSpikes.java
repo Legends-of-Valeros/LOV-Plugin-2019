@@ -20,13 +20,13 @@ public class SkillSpikes extends Skill {
     public static final String ID = "spikes";
     private static final int[] LEVELS = new int[]{6, 1, 2, 3};
     private static final int[] COST = new int[]{15};
-    private static final double[] COOLDOWN = new double[]{240};
+    private static final double[] COOLDOWN = new double[]{50};
     private static final int[] RADIUS = new int[]{10};
-    private static final int[] DAMAGE = new int[]{500, 550, 600, 700};
+    private static final int[] DAMAGE = new int[]{60, 150, 375, 938};
     private static final Object[] DESCRIPTION = new Object[]{
             "Ice spikes rise from the ground in a ",
             new RadiusPart(RADIUS), ", damaging enemies hit by ",
-            new WDPart(DAMAGE), "."
+            new DamagePart(DAMAGE), "."
     };
 
     public SkillSpikes() {

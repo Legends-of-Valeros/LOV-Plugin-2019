@@ -13,9 +13,9 @@ public class SkillFlameStrike extends Skill {
     public static final String ID = "flamestrike";
     private static final int[] LEVELS = new int[]{4, 1};
     private static final int[] COST = new int[]{5};
-    private static final double[] COOLDOWN = new double[]{35};
+    private static final double[] COOLDOWN = new double[]{19};
     private static final int[] RADIUS = new int[]{5};
-    private static final int[] DAMAGE = new int[]{230, 350};
+    private static final int[] DAMAGE = new int[]{18, 36};
     private static final Object[] DESCRIPTION = new Object[]{
             "Summons a pillar of fire burning all enemies in a ",
             new RadiusPart(RADIUS), " for ", new WDPart(DAMAGE), "."

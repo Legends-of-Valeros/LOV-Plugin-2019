@@ -16,15 +16,15 @@ public class SkillWalkOfFire extends Skill {
     public static final String ID = "walkoffire";
     private static final int[] LEVELS = new int[]{3, 1, 2, 3};
     private static final int[] COST = new int[]{10};
-    private static final double[] COOLDOWN = new double[]{60};
+    private static final double[] COOLDOWN = new double[]{35};
     private static final int[] RANGE = new int[]{8};
     private static final int[] THICKNESS = new int[]{3};
-    private static final int[] DAMAGE = new int[]{90, 150, 200, 300};
+    private static final int[] DAMAGE = new int[]{15, 23, 34, 51};
     private static final Object[] DESCRIPTION = new Object[]{
             "Trail of fire ",
             new RangePart(RANGE), " long and ",
             new RangePart(THICKNESS), " thick in front of the mage dealing ",
-            new WDPart(DAMAGE), "."
+            new DamagePart(DAMAGE), "."
     };
 
     public SkillWalkOfFire() {

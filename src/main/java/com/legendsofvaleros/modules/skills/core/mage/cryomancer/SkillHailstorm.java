@@ -17,17 +17,17 @@ public class SkillHailstorm extends Skill {
     public static final String ID = "hailstorm";
     private static final int[] LEVELS = new int[]{6, 1, 1, 2, 3};
     private static final int[] COST = new int[]{3};
-    private static final double[] COOLDOWN = new double[]{45};
+    private static final double[] COOLDOWN = new double[]{30};
     private static final int[] RADIUS = new int[]{5};
     private static final int[] TIME = new int[]{10};
-    private static final int[] DAMAGE = new int[]{50, 65, 80, 100, 150};
+    private static final int[] DAMAGE = new int[]{35, 70, 140, 280, 560};
     private static final int[] FREEZE_CHANCE = new int[]{10};
     private static final int[] FREEZE_LEVEL = new int[]{10};
     private static final Object[] DESCRIPTION = new Object[]{
             "Ice rains from sky in a ",
             new RadiusPart(RADIUS), " for ",
             new TimePart().seconds(TIME), " which does ",
-            new WDPart(DAMAGE), " and has a ",
+            new DamagePart(DAMAGE), " and has a ",
             FREEZE_CHANCE, "% chance to cause ",
             new EffectPart<Double>("Freeze") {
                 public void meta(int level, MetaEffectInstance<Double> meta) {

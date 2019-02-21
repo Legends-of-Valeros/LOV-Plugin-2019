@@ -1,12 +1,10 @@
 package com.legendsofvaleros.modules.skills.core.mage.core;
 
-import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.damage.spell.SpellType;
-import com.legendsofvaleros.modules.skills.core.SkillUtil;
 import com.legendsofvaleros.modules.skills.event.ParticleFollow;
 import org.bukkit.Particle;
 import org.bukkit.World;
@@ -15,11 +13,11 @@ public class SkillFireSurge extends Skill {
     public static final String ID = "firesurge";
     private static final int[] LEVELS = new int[]{-1, 1, 2, 2, 3};
     private static final int[] COST = new int[]{1};
-    private static final double[] COOLDOWN = new double[]{12};
-    private static final int[] DAMAGE = new int[]{300, 350, 400, 450, 500};
+    private static final double[] COOLDOWN = new double[]{8};
+    private static final int[] DAMAGE = new int[]{17, 43, 106, 266, 664};
     private static final Object[] DESCRIPTION = new Object[]{
             "Blasts the crosshair target with a fiery explosion of ",
-            new WDPart(DAMAGE), "."
+            new DamagePart(DAMAGE), "."
     };
 
     public SkillFireSurge() {
@@ -46,8 +44,7 @@ public class SkillFireSurge extends Skill {
         ParticleFollow.follow(target.getLivingEntity(), 20, Particle.FLAME, 3, .5, 2, .5, .01);
 
         CombatEngine.getInstance().causeSpellDamage(target.getLivingEntity(), ce.getLivingEntity(), SpellType.FIRE,
-                SkillUtil.getSpellDamage(ce, SpellType.FIRE, Characters.getInstance().getCharacterConfig().getClassConfig(EntityClass.MAGE).getBaseMeleeDamage())
-                        * getEarliest(DAMAGE, level) / 100D,
+                getEarliest(DAMAGE, level),
                 ce.getLivingEntity().getLocation(), false, true);
 
         return true;

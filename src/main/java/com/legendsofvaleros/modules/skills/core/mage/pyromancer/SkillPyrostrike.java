@@ -1,12 +1,10 @@
 package com.legendsofvaleros.modules.skills.core.mage.pyromancer;
 
-import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.damage.spell.SpellType;
-import com.legendsofvaleros.modules.skills.core.SkillUtil;
 import com.legendsofvaleros.modules.skills.event.OnProjectile;
 import com.legendsofvaleros.modules.skills.event.ParticleFollow;
 import org.bukkit.Particle;
@@ -19,9 +17,10 @@ public class SkillPyrostrike extends Skill {
     private static final int[] LEVELS = new int[]{4};
     private static final int[] COST = new int[]{2};
     private static final double[] COOLDOWN = new double[]{30};
-    private static final int[] DAMAGE = new int[]{420};
+    private static final int[] DAMAGE = new int[]{50};
     private static final Object[] DESCRIPTION = new Object[]{
-            "Hurls a large fiery boulder towards the enemy which inflicts ", new WDPart(DAMAGE), "."
+            "Hurls a large fiery boulder towards the enemy which inflicts ",
+            new DamagePart(DAMAGE), "."
     };
 
     public SkillPyrostrike() {
@@ -47,8 +46,7 @@ public class SkillPyrostrike extends Skill {
     public boolean onSkillUse(World world, CombatEntity ce, int level) {
         world.playSound(ce.getLivingEntity().getLocation(), "spell.fire.fireball.throw", 1F, 1F);
 
-        double spellDamage = SkillUtil.getSpellDamage(ce, SpellType.FIRE, Characters.getInstance().getCharacterConfig().getClassConfig(EntityClass.MAGE).getBaseMeleeDamage())
-                * getEarliest(DAMAGE, level) / 100D;
+        double spellDamage = getEarliest(DAMAGE, level);
 
         LargeFireball f = OnProjectile.shoot(ce, 2, 20, LargeFireball.class, (ce1, entities) -> {
             if (entities.size() > 0)

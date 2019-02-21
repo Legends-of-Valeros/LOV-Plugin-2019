@@ -1,12 +1,10 @@
 package com.legendsofvaleros.modules.skills.core.mage.pyromancer;
 
-import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.damage.spell.SpellType;
-import com.legendsofvaleros.modules.skills.core.SkillUtil;
 import com.legendsofvaleros.modules.skills.event.OnProjectile;
 import com.legendsofvaleros.modules.skills.event.ParticleFollow;
 import org.bukkit.Particle;
@@ -19,9 +17,9 @@ public class SkillFireball extends Skill {
     private static final int[] LEVELS = new int[]{2, 1, 1};
     private static final int[] COST = new int[]{2};
     private static final double[] COOLDOWN = new double[]{2};
-    private static final int[] DAMAGE = new int[]{200, 225, 250};
+    private static final int[] DAMAGE = new int[]{8, 16, 32};
     private static final Object[] DESCRIPTION = new Object[]{
-            "Throws a fireball at the enemy, causing ", new WDPart(DAMAGE), "."
+            "Throws a fireball at the enemy, causing ", new DamagePart(DAMAGE), "."
     };
 
     public SkillFireball() {
@@ -47,8 +45,7 @@ public class SkillFireball extends Skill {
     public boolean onSkillUse(World world, CombatEntity ce, int level) {
         world.playSound(ce.getLivingEntity().getLocation(), "spell.fire.fireball.throw", 1F, 1F);
 
-        double spellDamage = SkillUtil.getSpellDamage(ce, SpellType.FIRE, Characters.getInstance().getCharacterConfig().getClassConfig(EntityClass.MAGE).getBaseMeleeDamage())
-                * getEarliest(DAMAGE, level) / 100D;
+        double spellDamage = getEarliest(DAMAGE, level);
 
         SmallFireball f = OnProjectile.shoot(ce, 2, 20, SmallFireball.class, (ce1, entities) -> {
             if (entities.size() > 0)
