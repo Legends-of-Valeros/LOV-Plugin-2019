@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.mailbox;
 
 import com.google.common.collect.ImmutableList;
+import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
@@ -32,6 +33,9 @@ public class MailboxAPI extends ModuleListener {
     @Override
     public void onLoad() {
         super.onLoad();
+
+        this.rpc = APIController.create(MailboxAPI.RPC.class);
+
     }
 
     @Override
@@ -41,7 +45,6 @@ public class MailboxAPI extends ModuleListener {
 
     /**
      * Adds a mail to the mailbox of player character
-     *
      * @param characterId
      * @param mail
      * @return
@@ -63,7 +66,6 @@ public class MailboxAPI extends ModuleListener {
 
     /**
      * Load the Mailbox object with all emails into the cache / RAM
-     *
      * @param characterId
      * @return
      */
@@ -81,7 +83,6 @@ public class MailboxAPI extends ModuleListener {
 
     /**
      * Saves all emails of the mailbox
-     *
      * @param characterId
      * @return
      */
@@ -97,7 +98,6 @@ public class MailboxAPI extends ModuleListener {
 
     /**
      * Deletes all mails according to a character
-     *
      * @param characterId
      * @return
      */

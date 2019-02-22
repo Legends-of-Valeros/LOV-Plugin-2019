@@ -40,7 +40,6 @@ public class MailboxController extends MailboxAPI {
 
     /**
      * Returns the mailbox object of a player character
-     *
      * @param characterId
      * @return
      */
@@ -74,7 +73,6 @@ public class MailboxController extends MailboxAPI {
 
     /**
      * Opens a book with the content of the mail
-     *
      * @param mail
      */
     public void openMail(Mail mail) {
