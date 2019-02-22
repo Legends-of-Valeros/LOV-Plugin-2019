@@ -143,6 +143,19 @@ public class Promise<R> {
         }, ex);
     }
 
+    public Promise<R> sleep(long ticks) {
+        Promise<R> promise = new Promise<>(this.executor);
+
+        onSuccess(val -> {
+            APIController.getInstance().getScheduler().executeInMyCircleLater(() ->
+                    promise.resolve(val.orElse(null)), ticks);
+        });
+
+        onFailure(promise::reject);
+
+        return promise;
+    }
+
     public <V> Promise<V> then(FunctionAlone<V> func) { return then(() -> func.run(), this.executor); }
     public <V> Promise<V> then(FunctionAlone<V> func, Executor exec) { return then(() -> func.run(), exec); }
     public <V> Promise<V> then(Function<V, R> func) { return then(func, this.executor); }

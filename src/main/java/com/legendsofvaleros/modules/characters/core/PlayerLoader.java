@@ -408,7 +408,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
                     // automatically makes new character because the player has none
                     createNewCharacter(player, 0);
                 }
-            });
+            }, Characters.getInstance().getScheduler()::sync);
         }
 
         @EventHandler(priority = EventPriority.HIGH)
