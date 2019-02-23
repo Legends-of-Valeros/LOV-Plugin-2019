@@ -8,7 +8,10 @@ import com.legendsofvaleros.modules.gear.core.Gear;
  * Represents a single mail within the mailsystem / gui
  */
 public class Mail {
-    private CharacterId characterId;
+    private CharacterId receiver;
+
+    //can be null, then the message is from the System
+    private CharacterId from;
 
     private String content;
 
@@ -18,18 +21,20 @@ public class Mail {
 
     private boolean isRead;
 
-    public Mail(CharacterId characterId, String content, boolean isRead) {
-        this.characterId = characterId;
+    public Mail(CharacterId receiver, CharacterId from, String content, boolean isRead) {
+        this.receiver = receiver;
+        this.from = from;
         this.content = content;
         this.isRead = isRead;
     }
 
-    public Mail(CharacterId characterId, String content, Gear.Instance item, boolean isRead) {
-        this(characterId, content, item.getData(), isRead);
+    public Mail(CharacterId receiver, CharacterId from, String content, Gear.Instance item, boolean isRead) {
+        this(receiver, from, content, item.getData(), isRead);
     }
 
-    public Mail(CharacterId characterId, String content, Gear.Data item, boolean isRead) {
-        this.characterId = characterId;
+    public Mail(CharacterId receiver, CharacterId from, String content, Gear.Data item, boolean isRead) {
+        this.receiver = receiver;
+        this.from = from;
         this.content = content;
         this.item = item;
         this.isRead = isRead;
@@ -59,11 +64,19 @@ public class Mail {
         this.content = content;
     }
 
-    public CharacterId getCharacterId() {
-        return characterId;
+    public CharacterId getReceiver() {
+        return receiver;
     }
 
-    public void setCharacterId(CharacterId characterId) {
-        this.characterId = characterId;
+    public void setReceiver(CharacterId receiver) {
+        this.receiver = receiver;
+    }
+
+    public CharacterId getFrom() {
+        return from;
+    }
+
+    public void setFrom(CharacterId from) {
+        this.from = from;
     }
 }

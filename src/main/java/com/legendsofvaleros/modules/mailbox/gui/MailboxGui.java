@@ -2,8 +2,6 @@ package com.legendsofvaleros.modules.mailbox.gui;
 
 import com.codingforcookies.robert.core.GUI;
 import com.codingforcookies.robert.slot.SlotUsable;
-import com.legendsofvaleros.modules.auction.filter.FilterDirection;
-import com.legendsofvaleros.modules.auction.filter.FilterType;
 import com.legendsofvaleros.modules.mailbox.Mail;
 import com.legendsofvaleros.modules.mailbox.MailboxController;
 import org.bukkit.Material;
@@ -11,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 
@@ -21,9 +20,6 @@ public class MailboxGui extends GUI {
     private ArrayList<Mail> mails;
     private int currentPage = 1;
     private int totalPages;
-    private FilterType filterType = FilterType.REMAINING_TIME;
-    private FilterDirection filterDirection = FilterDirection.DESCENDING;
-
     private static final int ITEM_COUNT_PER_PAGE = 36;
 
     public MailboxGui(ArrayList<Mail> mails) {
@@ -90,26 +86,28 @@ public class MailboxGui extends GUI {
         }
     }
 
-
     /**
      * Adds all items to the current page
      */
     private void loadItemsForPage() {
         for (int i = 0; i < MailboxGui.ITEM_COUNT_PER_PAGE; i++) {
+            ItemStack slotItem = new ItemStack(Material.AIR);
             Mail mail = getMailFromSlot(i);
-            //TODO add paper with enchantment when unread?
-            slot(i, mail != null ? (mail.isRead() ? Material.PAPER : Material.BOOK) : Material.AIR, new SlotUsable() {
-                @Override
-                public void onPickup(GUI gui, Player p, ItemStack stack, InventoryClickEvent e) {
-                    e.setCancelled(true);
-                    mail.setRead(true);
-                    MailboxController.getInstance().openMail(mail);
-                }
 
-                @Override
-                public void onPlace(GUI gui, Player p, ItemStack stack, InventoryClickEvent e) {
-                    e.setCancelled(true);
-                }
+            if (mail != null) {
+                slotItem = new ItemStack(mail.isRead() ? Material.PAPER : Material.BOOK);
+                ItemMeta im = slotItem.getItemMeta();
+                ArrayList<String> lore = (ArrayList<String>) im.getLore();
+                lore.add(mail.getContent());
+                im.setLore(lore);
+                slotItem.setItemMeta(im);
+            }
+
+            slot(i, slotItem, (gui, p, e) -> {
+                Mail clickedMail = getMailFromSlot(e.getSlot());
+                if (clickedMail == null) return;
+                clickedMail.setRead(true);
+                MailboxController.getInstance().openMail(clickedMail);
             });
         }
         addUIElements();
@@ -127,4 +125,5 @@ public class MailboxGui extends GUI {
         }
         return mail;
     }
+
 }

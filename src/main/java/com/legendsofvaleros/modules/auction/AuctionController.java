@@ -76,7 +76,6 @@ public class AuctionController extends AuctionAPI {
 
     /**
      * Starts an auction chat prompt to (buy / sell / bid) an item
-     *
      * @param p
      * @param itemData
      */
@@ -86,7 +85,6 @@ public class AuctionController extends AuctionAPI {
 
     /**
      * Starts an AuctionChatPrompt and guides the user through the process
-     *
      * @param p
      * @param auction
      * @param type
@@ -107,13 +105,12 @@ public class AuctionController extends AuctionAPI {
 
     /**
      * Handles the end of an bid auction
-     *
      * @param auction
      */
     private void handleBidEnd(Auction auction) {
         BidHistoryEntry entry = auction.getLastBidEntry();
         //TODO make pretty
-        Mail mail = new Mail(entry.getCharacterId(), "You won the auction", false);
+        Mail mail = new Mail(entry.getCharacterId(), null, "You won the auction", false);
         mail.setItem(auction.getItem());
 
         MailboxController.getInstance().saveMail(entry.getCharacterId(), mail);
@@ -138,7 +135,6 @@ public class AuctionController extends AuctionAPI {
 
     /**
      * Executes the last step of the AuctionChatPrompt
-     *
      * @param characterId
      */
     public void confirmBuyPrompt(CharacterId characterId, int amount) {
@@ -172,7 +168,6 @@ public class AuctionController extends AuctionAPI {
 
     /**
      * Executes the last step of the AuctionChatPrompt
-     *
      * @param characterId
      */
     public void confirmBidPrompt(CharacterId characterId) {
@@ -211,7 +206,6 @@ public class AuctionController extends AuctionAPI {
 
     /**
      * Returns true if a playerCharacter is in an AuctionChatPrompt
-     *
      * @param p
      * @return
      */

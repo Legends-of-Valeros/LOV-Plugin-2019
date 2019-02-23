@@ -53,7 +53,6 @@ public class Auction {
 
     /**
      * Returns if a player owns the auction
-     *
      * @param player
      * @return
      */
@@ -63,7 +62,6 @@ public class Auction {
 
     /**
      * Returns the lore
-     *
      * @return
      */
     public ArrayList<String> getDescription() {
@@ -79,7 +77,6 @@ public class Auction {
 
     /**
      * Bids on an auction, sets the new price, and adds the bidding person to the bid history
-     *
      * @param value
      * @return
      */
@@ -100,8 +97,9 @@ public class Auction {
             PlayerCharacter previousBidder = Characters.getPlayerCharacter(highestBidderId);
             if (previousBidder != null) {
                 Money.add(previousBidder, (long) (price * (1 - AuctionController.AUCTION_FEE)));
-                Mail mail = new Mail(previousBidder.getUniqueCharacterId(), "Your bid on the auction " + ChatColor.UNDERLINE + ChatColor.WHITE + ChatColor.BOLD +
-                        getItem().toInstance().gear.getName() + ChatColor.RESET + " got overbidden", false);
+                String content = "Your bid on the auction " + ChatColor.UNDERLINE + ChatColor.WHITE + ChatColor.BOLD +
+                        getItem().toInstance().gear.getName() + ChatColor.RESET + " got overbidden";
+                Mail mail = new Mail(previousBidder.getUniqueCharacterId(), null, content, false);
                 MailboxController.getInstance().getMailbox(playerCharacter.getUniqueCharacterId()).addMail(mail);
             }
 
@@ -139,7 +137,6 @@ public class Auction {
 
     /**
      * Notifies the owner of the auction
-     *
      * @param contentLines
      */
     public void notifyOwner(ArrayList<String> contentLines, boolean sendMail) {
@@ -148,7 +145,7 @@ public class Auction {
         contentLines.forEach(contentBuilder::append);
 
         if (sendMail) {
-            MailboxController.getInstance().saveMail(getOwnerId(), new Mail(getOwnerId(), contentBuilder.toString(), false));
+            MailboxController.getInstance().saveMail(getOwnerId(), new Mail(getOwnerId(), null, contentBuilder.toString(), false));
             return;
         }
 
@@ -160,7 +157,6 @@ public class Auction {
 
     /**
      * Notifies the owner of the auction
-     *
      * @param message
      */
     public void notifyOwner(String message, boolean sendMail) {
