@@ -100,7 +100,7 @@ public class Gear implements IGear {
     }
 
     public boolean isSimilar(ItemStack stack) {
-        return isSimilar(stack);
+        return isSimilar(Gear.Instance.fromStack(stack));
     }
 
     public boolean isSimilar(Gear.Instance gear) {
