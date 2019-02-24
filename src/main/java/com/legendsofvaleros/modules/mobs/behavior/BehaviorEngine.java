@@ -51,7 +51,7 @@ public class BehaviorEngine {
         for (int i = block * blockSize; i < entities.size() && i < block * blockSize + blockSize; i++) {
             data = entities.get(i);
 
-            if (!data.ce.isActive() || data.ce.getLivingEntity() == null || data.ce.getLivingEntity().isDead()) {
+            if (data.ce == null || !data.ce.isActive() || data.ce.getLivingEntity() == null || data.ce.getLivingEntity().isDead()) {
                 entities.remove(i--);
                 continue;
             }

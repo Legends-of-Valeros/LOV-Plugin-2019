@@ -25,8 +25,8 @@ public class SpawnArea {
     /**
      * Used for debugging.
      */
-    private Hologram hologram;
-    private TextLine textEntityId, textLevel, textRadius, textPadding, textEntities, textInfo, textInterval;
+    private transient Hologram hologram;
+    private transient TextLine textEntityId, textLevel, textRadius, textPadding, textEntities, textInfo, textInterval;
 
     private int id;
     public int getId() { return id; }
@@ -40,7 +40,7 @@ public class SpawnArea {
     private int y;
     private int z;
 
-    private Location location;
+    private transient Location location;
     public Location getLocation() {
         if (location == null)
             location = new Location(getWorld(), x, y, z);
@@ -73,7 +73,7 @@ public class SpawnArea {
         return entityId;
     }
 
-    private Mob mob;
+    private transient Mob mob;
     public Mob getMob() {
         if (mob == null)
             mob = MobsController.getInstance().getEntity(entityId);

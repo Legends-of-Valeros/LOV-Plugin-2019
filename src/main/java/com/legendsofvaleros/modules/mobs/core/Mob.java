@@ -304,7 +304,10 @@ public class Mob {
 
             ce = CombatEngine.getEntity((LivingEntity) npc.getEntity());
 
-            MobsController.ai().bind(ce, StaticAI.AGGRESSIVE);
+            if(ce != null)
+                MobsController.ai().bind(ce, StaticAI.AGGRESSIVE);
+            else
+                System.out.println("isNpc : " + NPCsController.getInstance().isStaticNPC((LivingEntity)npc.getEntity()));
 
             home.getEntities().add(this);
         }
