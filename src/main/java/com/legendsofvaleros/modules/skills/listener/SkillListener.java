@@ -66,6 +66,8 @@ public class SkillListener implements Listener {
 
         e.getCombatEntity().getStats().editRegeneratingStat(pc.getPlayerClass().getSkillCostType(), -e.getSkill().getSkillCost(e.getLevel()));
 
-        cooldowns.offerCooldown("skill-" + e.getSkill().getId(), Cooldowns.CooldownType.CHARACTER_PLAY_TIME, e.getSkill().getSkillCooldownTime(pc, e.getLevel()));
+        long time = e.getSkill().getSkillCooldownTime(pc, e.getLevel());
+        if(time > 0)
+            cooldowns.offerCooldown("skill-" + e.getSkill().getId(), Cooldowns.CooldownType.CHARACTER_PLAY_TIME, time);
     }
 }
