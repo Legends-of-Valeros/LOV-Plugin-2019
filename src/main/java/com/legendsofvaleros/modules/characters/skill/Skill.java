@@ -117,7 +117,8 @@ public abstract class Skill {
         List<Object> desc = new ArrayList<>();
         {
             desc.add("\n" + ChatColor.GOLD + ChatColor.BOLD + "Cooldown: ");
-            desc.add(new TimePart().millis(this.cooldown) + "\n");
+            desc.add(new TimePart().millis(this.cooldown));
+            desc.add("\n");
 
             if (pclass != null) {
                 desc.add("" + ChatColor.GOLD + ChatColor.BOLD + getStatUsed().getUserFriendlyName() + " Cost: ");

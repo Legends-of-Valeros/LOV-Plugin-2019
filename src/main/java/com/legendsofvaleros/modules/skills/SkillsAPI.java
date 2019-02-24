@@ -58,6 +58,8 @@ public class SkillsAPI extends ModuleListener {
     }
 
     public void updateSkillBar(PlayerCharacter pc, int slot, String skillId) {
+        pc.getPlayer().sendMessage(skillId);
+
         if (skillId == null) {
             skills.remove(pc.getUniqueCharacterId(), slot);
             return;
