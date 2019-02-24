@@ -115,17 +115,25 @@ public abstract class Skill {
         }
 
         List<Object> desc = new ArrayList<>();
-        desc.add("\n" + ChatColor.GOLD + ChatColor.BOLD + "Cooldown: ");
-        desc.add(new TimePart().millis(this.cooldown));
+        {
+            desc.add("\n" + ChatColor.GOLD + ChatColor.BOLD + "Cooldown: ");
+            desc.add(new TimePart().millis(this.cooldown) + "\n");
 
-        if(pclass != null)
-            desc.add("\n" + ChatColor.GOLD + ChatColor.BOLD + getStatUsed().getUserFriendlyName() + " Cost: ");
+            if (pclass != null) {
+                desc.add("" + ChatColor.GOLD + ChatColor.BOLD + getStatUsed().getUserFriendlyName() + " Cost: ");
+                desc.add((IDescriptionPart) (level, showUpgrade) -> new String[]{String.valueOf(getSkillCost(level))});
+                desc.add("\n");
+            }
 
-        desc.add((IDescriptionPart) (level, showUpgrade) -> new String[]{String.valueOf(getSkillCost(level))});
-        if (getActivationTime() != null)
-            desc.add("\n" + ChatColor.GOLD + ChatColor.BOLD + "Activation: " + ChatColor.YELLOW + getActivationTime());
-        desc.add("\n\n");
-        desc.addAll(Arrays.asList(description));
+            if (getActivationTime() != null) {
+                desc.add("" + ChatColor.GOLD + ChatColor.BOLD + "Activation: " + ChatColor.YELLOW + getActivationTime());
+                desc.add("\n");
+            }
+
+            desc.add("\n");
+
+            desc.addAll(Arrays.asList(description));
+        }
         this.description = desc.toArray(new Object[0]);
 
         if(pclass != null)
