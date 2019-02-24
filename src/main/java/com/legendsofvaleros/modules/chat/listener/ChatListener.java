@@ -100,7 +100,6 @@ public class ChatListener implements Listener {
         }
 
         BaseComponent[] bc = tb.create();
-        Bukkit.getConsoleSender().spigot().sendMessage(bc);
 
         onChat(e.getPlayer(), bc, ch);
         sendDiscordMessage(e, data);
