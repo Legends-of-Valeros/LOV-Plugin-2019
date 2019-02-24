@@ -121,7 +121,7 @@ public class SkillsController extends SkillsAPI {
     }
 
     public static ItemStack getStackForSkillCooldown(PlayerCharacter pc, Entry<Skill, Integer> skill) {
-        if (skill == null || skill.getValue() == 0)
+        if (skill == null)
             return Model.EMPTY_SLOT;
 
         ItemBuilder builder = getItemRepresentation(skill.getKey());
