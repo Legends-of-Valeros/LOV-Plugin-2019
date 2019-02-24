@@ -91,8 +91,8 @@ public class SpawnArea {
     public int[] getLevelRange() {
         if (levels == null)
             levels = new int[]{
-                    Integer.parseInt(level.split("-")[0]),
-                    Integer.parseInt(level.split("-")[1])};
+                    level != null ? Integer.parseInt(level.split("-")[0]) : 0,
+                    level != null ? Integer.parseInt(level.split("-")[1]) : 0};
         return levels;
     }
 
@@ -169,7 +169,11 @@ public class SpawnArea {
 
     public void updateStats() {
         if(hologram != null) {
-            textEntities.setText(getEntities().size() + " / " + despawnedEnemies);
+            textEntities.setText(
+                    getEntities()
+                            .size() +
+                            " / " +
+                            despawnedEnemies);
             textInterval.setText(Instant.ofEpochMilli(System.currentTimeMillis()).toString());
         }
     }
