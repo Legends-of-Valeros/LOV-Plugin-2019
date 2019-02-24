@@ -79,8 +79,10 @@ public class APIController extends Module {
 
             @Override
             public CharacterId read(JsonReader read) throws IOException {
-                if(read.peek() == JsonToken.NULL)
+                if(read.peek() == JsonToken.NULL) {
+                    read.nextNull();
                     return null;
+                }
                 return CharacterId.fromString(read.nextString());
             }
         });
