@@ -29,6 +29,7 @@ public class SkillInsight extends AdminSkill {
 	@Override
 	public boolean onSkillUse(World world, CombatEntity ce, int level) {
 		CombatEntity target = getTarget(ce, 50);
+		if(target == null) return false;
 
 		Book book = new Book("Entity Information", "Acolyte");
 
