@@ -85,14 +85,14 @@ public class SpawnArea {
      * <br />
      * Example: 1-5 defines that an entitiy spawned here should be between level 1 and 5.
      */
-    private String entityLevel;
+    private String level;
     private int[] levels;
 
     public int[] getLevelRange() {
         if (levels == null)
             levels = new int[]{
-                    Integer.parseInt(entityLevel.split("-")[0]),
-                    Integer.parseInt(entityLevel.split("-")[1])};
+                    Integer.parseInt(level.split("-")[0]),
+                    Integer.parseInt(level.split("-")[1])};
         return levels;
     }
 
@@ -101,30 +101,33 @@ public class SpawnArea {
         return levels[0] + rand.nextInt(levels[1] - levels[0] + 1);
     }
 
-    public short spawnCount = 1;
-    public int getSpawnCount() {
-        return spawnCount;
+    private short count = 1;
+    public int getCount() {
+        return count;
     }
+    public void setCount(short count) { this.count = count; }
 
-    public int spawnInterval = 60;
-    public int getSpawnInterval() {
-        return spawnInterval;
+    private int interval = 60;
+    public int getInterval() {
+        return interval;
     }
+    public void setInterval(int interval) { this.interval = interval; }
 
-    public byte spawnChance = 100;
-    public byte getSpawnChance() {
-        return spawnChance;
+    private byte chance = 100;
+    public byte getChance() {
+        return chance;
     }
+    public void setChance(byte chance) { this.chance = chance; }
 
-    private long lastInterval = 0;
-    public long getLastSpawn() {
+    private transient long lastInterval = 0;
+    public long getLastInterval() {
         return lastInterval;
     }
     public void markInterval() {
         lastInterval = System.currentTimeMillis();
     }
 
-    private int despawnedEnemies = 0;
+    private transient int despawnedEnemies = 0;
     public int getDespawnedEnemies() {
         return despawnedEnemies;
     }
@@ -132,14 +135,14 @@ public class SpawnArea {
         despawnedEnemies = 0;
     }
 
-    private List<Mob.Instance> entities;
+    private transient List<Mob.Instance> entities;
     public List<Mob.Instance> getEntities() {
         if (entities == null)
             entities = new ArrayList<>();
         return entities;
     }
 
-    private Location ground;
+    private transient Location ground;
     public Location getGround() {
         if (ground == null) {
             World world = getWorld();
@@ -156,7 +159,7 @@ public class SpawnArea {
         this.entityId = entityId;
         this.radius = radius;
         this.padding = padding;
-        this.entityLevel = levels[0] + "-" + levels[1];
+        this.level = levels[0] + "-" + levels[1];
 
         this.x = loc.getBlockX();
         this.y = loc.getBlockY();

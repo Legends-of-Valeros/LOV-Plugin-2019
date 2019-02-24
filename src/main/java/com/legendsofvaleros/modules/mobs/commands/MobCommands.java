@@ -51,21 +51,21 @@ public class MobCommands extends BaseCommand {
 		MessageUtil.sendUpdate(player, "Set spawn point level to [" + data.getLevelRange()[0] + "-" + data.getLevelRange()[1] + "].");
 		
 		if(count != null) {
-			data.spawnCount = count.shortValue();
-			MessageUtil.sendUpdate(player, "  Will spawn up to " + data.spawnCount + " entities.");
+			data.setCount(count.shortValue());
+			MessageUtil.sendUpdate(player, "  Will spawn up to " + data.getCount() + " entities.");
 		}
 
 		if(interval != null) {
-			data.spawnInterval = interval;
-			MessageUtil.sendUpdate(player, "  Will update about every " + data.spawnInterval + " seconds.");
+			data.setInterval(interval);
+			MessageUtil.sendUpdate(player, "  Will update about every " + data.getInterval() + " seconds.");
 			MessageUtil.sendUpdate(player, "  On Update:.");
 			MessageUtil.sendUpdate(player, "    Spawn cleared when no players nearby.");
 			MessageUtil.sendUpdate(player, "    If players nearby, spawn new mobs.");
 		}
 		
 		if(chance != null) {
-			data.spawnChance = chance.byteValue();
-			MessageUtil.sendUpdate(player, "  There is a " + data.spawnChance + "% chance it'll spawn.");
+			data.setChance(chance.byteValue());
+			MessageUtil.sendUpdate(player, "  There is a " + data.getChance() + "% chance it'll spawn.");
 		}
 
 		MobsController.getInstance().addSpawn(data);

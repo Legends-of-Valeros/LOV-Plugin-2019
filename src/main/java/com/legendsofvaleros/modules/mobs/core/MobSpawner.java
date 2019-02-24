@@ -110,7 +110,7 @@ public class MobSpawner {
                         }
 
                         // Make sure enough time has passed before the spawn is updated
-                        if (System.currentTimeMillis() - spawn.getLastSpawn() < spawn.getSpawnInterval() * 1000) {
+                        if (System.currentTimeMillis() - spawn.getLastInterval() < spawn.getInterval() * 1000) {
                             spawn.setDebugInfo("Waiting for timeout");
                             return;
                         }
@@ -118,8 +118,8 @@ public class MobSpawner {
                         // Spawn the mobs, so we reset the spawn counter.
                         spawn.markInterval();
 
-                        int entityCount = spawn.getSpawnCount() - spawn.getEntities().size();
-                        while (entityCount-- > 0 && rand.nextInt(100) < spawn.getSpawnChance())
+                        int entityCount = spawn.getCount() - spawn.getEntities().size();
+                        while (entityCount-- > 0 && rand.nextInt(100) < spawn.getChance())
                             spawn.spawn(mob);
 
                         spawn.setDebugInfo("No problems");

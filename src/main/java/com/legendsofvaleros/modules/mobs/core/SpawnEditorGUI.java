@@ -24,21 +24,21 @@ public class SpawnEditorGUI extends GUI {
 
 		slot(1, 1, new ItemBuilder(Material.BOOK)
 							.setName("Spawn Options")
-							.addLore("Will attempt to spawn every " + (spawn.getSpawnInterval() / 20))
+							.addLore("Will attempt to spawn every " + (spawn.getInterval() / 20))
 							.addLore("  seconds, in which it will spawn 1 enemy ")
-							.addLore("  " + DF.format(spawn.getSpawnChance()) + "% of the time, " + spawn.getSpawnCount() + " times.")
+							.addLore("  " + DF.format(spawn.getChance()) + "% of the time, " + spawn.getCount() + " times.")
 							.addLore("")
-							.addLore("There is a " + DF.format(Math.pow(spawn.getSpawnChance() / 100D, spawn.getSpawnCount()) * 100) + "% chance that all")
+							.addLore("There is a " + DF.format(Math.pow(spawn.getChance() / 100D, spawn.getCount()) * 100) + "% chance that all")
 							.addLore("  enemies will spawn in one interval.")
 							.addLore("")
-							.addLore(" Interval: " + spawn.getSpawnInterval() + " ticks")
-							.addLore(" Chance : " + spawn.getSpawnChance() + "%")
-							.addLore(" Count   : " + spawn.getSpawnCount())
+							.addLore(" Interval: " + spawn.getInterval() + " ticks")
+							.addLore(" Chance : " + spawn.getChance() + "%")
+							.addLore(" Count   : " + spawn.getCount())
 
 							.addLore("")
 							.addLore(" Current : " + spawn.getEntities().size())
 							.addLore(" Unpops  : " + spawn.getDespawnedEnemies())
-							.addLore(" Last    : " + Instant.ofEpochMilli(spawn.getLastSpawn()).toString())
+							.addLore(" Last    : " + Instant.ofEpochMilli(spawn.getLastInterval()).toString())
 							.create(), null);
 
 		slot(8, 2, Model.stack("menu-decline-button").setName("Delete Spawn").create(), (gui, p, event) -> {
