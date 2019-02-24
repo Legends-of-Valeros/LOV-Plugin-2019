@@ -27,7 +27,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -76,13 +78,8 @@ public class TraitQuestGiver extends LOVTrait {
                 update(trait, pc);
         }
 
-        private static Set<TraitQuestGiver> working = new HashSet<>();
-
         private static void update(TraitQuestGiver trait, PlayerCharacter pc) {
-            // Since this includes async components, we should prevent updating
-            // the same trait a second time while it's already being updated.
-            if(working.contains(trait)) return;
-            working.add(trait);
+            if(trait.quests == null) return;
 
             for (IQuest quest : trait.quests) {
                 QuestStatus status = QuestController.getInstance().getStatus(pc, quest);
@@ -115,7 +112,7 @@ public class TraitQuestGiver extends LOVTrait {
         }
 
         Promise.collect(promises).onSuccess(val -> {
-            quests = val.get();
+            quests = val.orElseGet(() -> new ArrayList<>());
             Marker.update(this);
         });
     }

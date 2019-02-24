@@ -1,6 +1,7 @@
 package com.legendsofvaleros.api;
 
 import com.google.common.reflect.TypeToken;
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
@@ -42,7 +43,7 @@ public class APIController extends Module {
         return pool;
     }
 
-    private GsonBuilder gsonBuilder = new GsonBuilder();
+    private GsonBuilder gsonBuilder = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
 
     public GsonBuilder getGsonBuilder() {
         return gsonBuilder;

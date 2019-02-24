@@ -31,7 +31,7 @@ public class RegionIntegration extends Integration implements Listener {
     public void onEnterRegion(RegionEnterEvent event) {
         if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
 
-        if(event.getRegion().quests.size() > 0) {
+        if(event.getRegion().quests != null) {
             for(String questId : event.getRegion().quests)
                 QuestController.getInstance().attemptGiveQuest(Characters.getPlayerCharacter(event.getPlayer()), questId);
         }
