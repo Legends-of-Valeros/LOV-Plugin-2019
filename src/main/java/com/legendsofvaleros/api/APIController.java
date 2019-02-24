@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.Module;
@@ -78,6 +79,8 @@ public class APIController extends Module {
 
             @Override
             public CharacterId read(JsonReader read) throws IOException {
+                if(read.peek() == JsonToken.NULL)
+                    return null;
                 return CharacterId.fromString(read.nextString());
             }
         });
