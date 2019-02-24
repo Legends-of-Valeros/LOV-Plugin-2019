@@ -32,6 +32,7 @@ public class GUIAdminSkills extends ExpandingGUI {
 		for(Skill skill : AdminSkills.getSkills()) {
 			ItemStack skillStack = new ItemBuilder(Material.NETHER_STAR)
 					.setName(skill.getUserFriendlyName(0))
+					.addLore(skill.getSkillDescription(pc, 0, false))
 					.create();
 
 			slots.add(new Slot(skillStack, (gui, p, event) -> {
