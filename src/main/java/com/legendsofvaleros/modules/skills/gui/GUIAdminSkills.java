@@ -38,7 +38,9 @@ public class GUIAdminSkills extends ExpandingGUI {
 			slots.add(new Slot(skillStack, (gui, p, event) -> {
 				if (event.getHotbarButton() >= 0) {
 					if (event.getHotbarButton() < Hotswitch.SWITCHER_SLOT) {
-						SkillsController.getInstance().updateSkillBar(pc, Hotswitch.getInstance().getCurrentHotbar(p.getUniqueId()) * Hotswitch.SWITCHER_SLOT + event.getHotbarButton(), skill.getId());
+						SkillsController.getInstance().updateSkillBar(pc,
+								Hotswitch.getInstance().getCurrentHotbar(p.getUniqueId()) * Hotswitch.SWITCHER_SLOT + event.getHotbarButton(),
+								skill.getId());
 						p.getInventory().setItem(event.getHotbarButton(), skillStack);
 
 						Bukkit.getPluginManager().callEvent(new BindSkillEvent(p, Hotswitch.getInstance().getCurrentHotbar(p.getUniqueId()), event.getHotbarButton(), skill.getId()));

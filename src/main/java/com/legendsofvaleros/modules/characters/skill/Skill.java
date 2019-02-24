@@ -82,15 +82,15 @@ public abstract class Skill {
     private final Object[] description;
 
     protected static Object getEarliest(Object[] arr, int level) {
-        return arr.length > 0 ?arr[Math.max(0, Math.min(level, arr.length) - 1)] : 0;
+        return arr != null && arr.length > 0 ? arr[Math.max(0, Math.min(level, arr.length) - 1)] : 0;
     }
 
     protected static int getEarliest(int[] arr, int level) {
-        return arr[Math.max(0, Math.min(level, arr.length) - 1)];
+        return arr != null && arr.length > 0 ? arr[Math.max(0, Math.min(level, arr.length) - 1)] : 0;
     }
 
     protected static double getEarliest(double[] arr, int level) {
-        return arr[Math.max(0, Math.min(level, arr.length) - 1)];
+        return arr != null && arr.length > 0 ? arr[Math.max(0, Math.min(level, arr.length) - 1)] : 0;
     }
 
     public Skill(String id, Type type, EntityClass pclass, int[] levelCosts, int[] powerCost, double[] cooldown, Object[] description) throws IllegalArgumentException {

@@ -36,8 +36,6 @@ public class Model {
 		} catch (Throwable throwable) {
 			throwable.printStackTrace();
 		}
-
-		EMPTY_SLOT = stack("empty-slot").create();
 	}
 
 	public static Promise<List<Model>> loadAll() {
@@ -46,7 +44,10 @@ public class Model {
 		return rpc.findModels().onSuccess(val -> {
 			models.clear();
 
-			val.orElse(ImmutableList.of()).stream().forEach(model -> models.put(model.id, model));
+			val.orElse(ImmutableList.of()).stream().forEach(model ->
+					models.put(model.id, model));
+
+			EMPTY_SLOT = stack("empty-slot").create();
 
 			Utilities.getInstance().getLogger().info("Loaded " + models.size() + " models.");
 		});
