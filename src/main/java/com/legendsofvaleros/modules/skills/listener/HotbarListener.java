@@ -36,7 +36,7 @@ public class HotbarListener implements Runnable, Listener {
             if (reader.nbt == null) return;
 
             PlayerCharacter pc = Characters.getPlayerCharacter(e.getPlayer());
-            Entry<Skill, Integer> skillPair = pc.getSkillSet().getCharacterSkill(reader.nbt.getString("skill"));
+            Entry<Skill, Integer> skillPair = pc.getSkillSet().get(reader.nbt.getString("skill"));
             SkillsController.castSkill(CombatEngine.getEntity(e.getPlayer()), skillPair.getKey(), skillPair.getValue());
         }
     }
@@ -99,7 +99,7 @@ public class HotbarListener implements Runnable, Listener {
             if(skill == null && invStack == null)
                 stack = Model.EMPTY_SLOT;
             else
-                stack = SkillsController.getStackForSkillCooldown(pc, pc.getSkillSet().getCharacterSkill(skill));
+                stack = SkillsController.getStackForSkillCooldown(pc, pc.getSkillSet().get(skill));
 
             if (invStack == null || stack.getAmount() != invStack.getAmount() || !stack.isSimilar(invStack))
                 pc.getPlayer().getInventory().setItem(i, stack);

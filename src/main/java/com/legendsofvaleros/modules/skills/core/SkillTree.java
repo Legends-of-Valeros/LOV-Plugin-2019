@@ -29,7 +29,7 @@ public abstract class SkillTree {
 
         public boolean hasSkill(PlayerCharacter pc) {
             for (String skill : skills) {
-                Entry<Skill, Integer> pair = pc.getSkillSet().getCharacterSkill(skill);
+                Entry<Skill, Integer> pair = pc.getSkillSet().get(skill);
                 if (pair != null && pair.getValue() > 0)
                     return true;
             }
@@ -106,7 +106,7 @@ public abstract class SkillTree {
                 }
             } else if (canUpgrade && event.isRightClick()) {
                 if (pointCount >= upgradeCost) {
-                    pc.getSkillSet().addCharacterSkill(skill.getKey().getId());
+                    pc.getSkillSet().add(skill.getKey().getId());
                     onSuccess.doAction(gui, p, event);
                 }
             }

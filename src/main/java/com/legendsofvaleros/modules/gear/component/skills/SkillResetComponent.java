@@ -41,7 +41,7 @@ public class SkillResetComponent extends GearComponent<NoPersist> {
 				
 				for(SpecializedTree tree : SkillsController.skillTrees[pc.getPlayerClass().ordinal()].getSpecializedTrees())
 					for(String skill : tree.skills)
-						if(pc.getSkillSet().getCharacterSkill(skill) != null)
+						if(pc.getSkillSet().get(skill) != null)
 							return true;
 			}
 		}
@@ -58,15 +58,15 @@ public class SkillResetComponent extends GearComponent<NoPersist> {
 				
 				Entry<Skill, Integer> skillObj;
 				for(String skill : SkillsController.skillTrees[pc.getPlayerClass().ordinal()].getCoreSkills()) {
-					if((skillObj = pc.getSkillSet().removeCharacterSkill(skill)) != null) {
-						pc.getSkillSet().addCharacterSkill(skill);
+					if((skillObj = pc.getSkillSet().remove(skill)) != null) {
+						pc.getSkillSet().add(skill);
 						MessageUtil.sendUpdate(pc.getPlayer(), "You've suddenly forgotten your training for " + skillObj.getKey().getUserFriendlyName(skillObj.getValue()) + ".");
 					}
 				}
 				
 				for(SpecializedTree tree : SkillsController.skillTrees[pc.getPlayerClass().ordinal()].getSpecializedTrees())
 					for(String skill : tree.skills) {
-						if((skillObj = pc.getSkillSet().removeCharacterSkill(skill)) != null)
+						if((skillObj = pc.getSkillSet().remove(skill)) != null)
 							MessageUtil.sendUpdate(pc.getPlayer(), "You have forgotten how to use " + skillObj.getKey().getUserFriendlyName(skillObj.getValue()));
 					}
 			}

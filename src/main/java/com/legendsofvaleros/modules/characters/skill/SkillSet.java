@@ -10,13 +10,15 @@ public interface SkillSet {
 
 	// TODO respect silence
 
-	void addCharacterSkill(String skillId);
-	Entry<Skill, Integer> removeCharacterSkill(String skillId);
+	void add(String skillId);
+	Entry<Skill, Integer> remove(String skillId);
 	
-	List<String> getCharacterSkillIds();
-	int getCharacterSkillLevel(String skillId);
-	List<Entry<Skill, Integer>> getCharacterSkills();
-	Entry<Skill, Integer> getCharacterSkill(String skillId);
+	List<String> getAll();
+	List<Entry<Skill, Integer>> getSkills();
+
+	boolean has(String skillId);
+	Entry<Skill, Integer> get(String skillId);
+	int getLevel(String skillId);
 
 	// TODO passive skills?
 

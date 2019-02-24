@@ -58,7 +58,7 @@ public class GUISkillsSpecialized extends GUI {
 		boolean previousOwned = (pc.getExperience().getLevel() >= 10);
 		for(int i = 0; i < tree.skills.length; i++) {
 			Skill skill = Skill.getSkillById(tree.skills[i]);
-			int level = pc.getSkillSet().getCharacterSkillLevel(tree.skills[i]);
+			int level = pc.getSkillSet().getLevel(tree.skills[i]);
 			Entry<ItemStack, ISlotAction> stack = SkillTree.buildStack(pointCount, pc, new SimpleImmutableEntry<>(skill, level), previousOwned, (gui, p, button) -> new GUISkillsSpecialized(pc, startLeft, tree).open(p, Flag.REPLACE));
 			slot(SLOTS[i * 4], SLOTS[i * 4 + 1], stack.getKey(), stack.getValue());
 			previousOwned = level > 0;

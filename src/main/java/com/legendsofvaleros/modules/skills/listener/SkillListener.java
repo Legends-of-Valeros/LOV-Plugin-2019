@@ -30,8 +30,8 @@ public class SkillListener implements Listener {
         for(int i = 0; i < coreSkills.length; i++) {
             if((i + 1) * 10 > level)
                 break;
-            if(e.getPlayerCharacter().getSkillSet().getCharacterSkillLevel(coreSkills[i]) == 0)
-                e.getPlayerCharacter().getSkillSet().addCharacterSkill(coreSkills[i]);
+            if(e.getPlayerCharacter().getSkillSet().getLevel(coreSkills[i]) == 0)
+                e.getPlayerCharacter().getSkillSet().add(coreSkills[i]);
         }
     }
 
@@ -42,12 +42,13 @@ public class SkillListener implements Listener {
         SkillTree tree = SkillsController.skillTrees[e.getPlayerCharacter().getPlayerClass().ordinal()];
         if(tree.getCoreSkills().length <= i)
             return;
-        if(e.getPlayerCharacter().getSkillSet().getCharacterSkill(tree.getCoreSkills()[i]) != null)
+
+        if(e.getPlayerCharacter().getSkillSet().has(tree.getCoreSkills()[i]))
             return;
 
-        e.getPlayerCharacter().getSkillSet().addCharacterSkill(tree.getCoreSkills()[i]);
+        e.getPlayerCharacter().getSkillSet().add(tree.getCoreSkills()[i]);
 
-        Map.Entry<Skill, Integer> s = e.getPlayerCharacter().getSkillSet().getCharacterSkill(tree.getCoreSkills()[i]);
+        Map.Entry<Skill, Integer> s = e.getPlayerCharacter().getSkillSet().get(tree.getCoreSkills()[i]);
         ItemStack stack = SkillsController.getStackForSkillCooldown(e.getPlayerCharacter(), s);
         List<String> lore = stack.getItemMeta().getLore();
         lore.add(0, stack.getItemMeta().getDisplayName());

@@ -65,7 +65,7 @@ public class GUISkillsCore extends GUI {
 				continue;
 			}
 			
-			int level = pc.getSkillSet().getCharacterSkillLevel(skillID);
+			int level = pc.getSkillSet().getLevel(skillID);
 			Entry<ItemStack, ISlotAction> stack = SkillTree.buildStack(pointCount, pc, new SimpleImmutableEntry<>(skill, level), true, (gui, p, button) -> new GUISkillsCore(pc).open(p, Flag.REPLACE));
 			slot(1 + i, 1, stack.getKey(), stack.getValue());
 			i++;

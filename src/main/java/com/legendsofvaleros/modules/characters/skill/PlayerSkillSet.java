@@ -33,7 +33,7 @@ public class PlayerSkillSet implements SkillSet {
 	}
 
 	@Override
-	public void addCharacterSkill(String skillId) {
+	public void add(String skillId) {
 		Skill skill = Skill.getSkillById(skillId);
 		if(skill != null) {
 			if(characterSkills.containsKey(skillId)) {
@@ -45,7 +45,7 @@ public class PlayerSkillSet implements SkillSet {
 	}
 
 	@Override
-	public Entry<Skill, Integer> removeCharacterSkill(String skillId) {
+	public Entry<Skill, Integer> remove(String skillId) {
 		Skill skill = Skill.getSkillById(skillId);
 		if(skill != null)
 			return characterSkills.remove(skillId);
@@ -53,27 +53,32 @@ public class PlayerSkillSet implements SkillSet {
 	}
 	
 	@Override
-	public List<String> getCharacterSkillIds() {
+	public List<String> getAll() {
 		return new ArrayList<>(characterSkills.keySet());
 	}
 
 	@Override
-	public int getCharacterSkillLevel(String skillId) {
+	public List<Entry<Skill, Integer>> getSkills() {
+		return new ArrayList<>(characterSkills.values());
+	}
+
+	@Override
+	public boolean has(String skillId) {
+		return characterSkills.containsKey(skillId);
+	}
+
+	@Override
+	public Entry<Skill, Integer> get(String skillId) {
+		if(!characterSkills.containsKey(skillId))
+			return new AbstractMap.SimpleImmutableEntry<>(Skill.getSkillById(skillId), 0);
+		return characterSkills.get(skillId);
+	}
+
+	@Override
+	public int getLevel(String skillId) {
 		Entry<Skill, Integer> skill = characterSkills.get(skillId);
 		if(skill == null)
 			return 0;
 		return skill.getValue();
-	}
-	
-	@Override
-	public List<Entry<Skill, Integer>> getCharacterSkills() {
-		return new ArrayList<>(characterSkills.values());
-	}
-	
-	@Override
-	public Entry<Skill, Integer> getCharacterSkill(String skillId) {
-		if(!characterSkills.containsKey(skillId))
-			return new AbstractMap.SimpleImmutableEntry<>(Skill.getSkillById(skillId), 0);
-		return characterSkills.get(skillId);
 	}
 }

@@ -113,7 +113,7 @@ public class SkillsController extends SkillsAPI {
 
         int points = character.getExperience().getLevel();
 
-        List<Entry<Skill, Integer>> skills = character.getSkillSet().getCharacterSkills();
+        List<Entry<Skill, Integer>> skills = character.getSkillSet().getSkills();
         for (Entry<Skill, Integer> skill : skills)
             points -= skill.getKey().getTotalLevelCost(skill.getValue());
 

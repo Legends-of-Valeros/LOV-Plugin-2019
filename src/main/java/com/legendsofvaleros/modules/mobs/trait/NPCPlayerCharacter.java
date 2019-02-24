@@ -125,26 +125,21 @@ public class NPCPlayerCharacter implements PlayerCharacter {
         }
     };
     static final SkillSet skillSet = new SkillSet() {
-        @Override public void addCharacterSkill(String skillId) {
-        }
-
-        @Override public List<String> getCharacterSkillIds() {
+        @Override public void add(String skillId) { }
+        @Override public List<String> getAll() {
             return null;
         }
-
-        @Override public int getCharacterSkillLevel(String skillId) {
+        @Override public int getLevel(String skillId) {
             return 0;
         }
-
-        @Override public List<Entry<Skill, Integer>> getCharacterSkills() {
+        @Override public List<Entry<Skill, Integer>> getSkills() {
             return null;
         }
-
-        @Override public Entry<Skill, Integer> getCharacterSkill(String skillId) {
+        @Override public boolean has(String skillId) { return false; }
+        @Override public Entry<Skill, Integer> get(String skillId) {
             return null;
         }
-
-        @Override public Entry<Skill, Integer> removeCharacterSkill(String skillId) {
+        @Override public Entry<Skill, Integer> remove(String skillId) {
             return null;
         }
     };

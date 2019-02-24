@@ -184,7 +184,7 @@ public class PlayerCharacterData {
 
             this.inventory = character.getInventoryData().getData();
 
-            List<Entry<Skill, Integer>> skills = character.getSkillSet().getCharacterSkills();
+            List<Entry<Skill, Integer>> skills = character.getSkillSet().getSkills();
 
             this.skills = new ArrayList<>();
 
