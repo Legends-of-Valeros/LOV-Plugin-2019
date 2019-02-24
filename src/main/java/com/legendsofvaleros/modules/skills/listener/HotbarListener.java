@@ -84,8 +84,11 @@ public class HotbarListener implements Runnable, Listener {
     public void fillBar(PlayerCharacter pc, int bar) {
         bar = bar * Hotswitch.SWITCHER_SLOT;
 
-        if(!pc.getPlayer().getInventory().getItem(Hotswitch.SWITCHER_SLOT).isSimilar(Model.EMPTY_SLOT))
-            pc.getPlayer().getInventory().setItem(Hotswitch.SWITCHER_SLOT, Model.EMPTY_SLOT);
+        {
+            ItemStack stack = pc.getPlayer().getInventory().getItem(Hotswitch.SWITCHER_SLOT);
+            if (stack == null || !stack.isSimilar(Model.EMPTY_SLOT))
+                pc.getPlayer().getInventory().setItem(Hotswitch.SWITCHER_SLOT, Model.EMPTY_SLOT);
+        }
 
         ItemStack invStack, stack;
         for (int i = 0; i < Hotswitch.SWITCHER_SLOT; i++) {
