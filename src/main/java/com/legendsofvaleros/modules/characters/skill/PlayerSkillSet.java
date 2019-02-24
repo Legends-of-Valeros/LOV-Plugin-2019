@@ -2,6 +2,7 @@ package com.legendsofvaleros.modules.characters.skill;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 
+import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,6 +69,11 @@ public class PlayerSkillSet implements SkillSet {
 
 	@Override
 	public Entry<Skill, Integer> get(String skillId) {
+		if(!characterSkills.containsKey(skillId)) {
+			if(Skill.getSkillById(skillId) == null)
+				return null;
+			return new AbstractMap.SimpleImmutableEntry<>(Skill.getSkillById(skillId), 0);
+		}
 		return characterSkills.get(skillId);
 	}
 

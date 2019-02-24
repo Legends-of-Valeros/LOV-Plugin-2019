@@ -16,8 +16,20 @@ public interface SkillSet {
 	List<String> getAll();
 	List<Entry<Skill, Integer>> getSkills();
 
+	/**
+	 * Check if the user has levels in the skill.
+	 */
 	boolean has(String skillId);
+
+	/**
+	 * Always returns a value (unless skillId doesn't exist). If the user does not have
+	 * the skill, it returns a level of zero.
+	 */
 	Entry<Skill, Integer> get(String skillId);
+
+	/**
+	 * Get the level of the skill.
+	 */
 	int getLevel(String skillId);
 
 	// TODO passive skills?
