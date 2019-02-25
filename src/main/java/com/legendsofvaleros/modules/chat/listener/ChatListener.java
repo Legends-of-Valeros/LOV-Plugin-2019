@@ -1,5 +1,7 @@
 package com.legendsofvaleros.modules.chat.listener;
 
+import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.ServerMode;
 import com.legendsofvaleros.modules.auction.AuctionController;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -139,7 +141,7 @@ public class ChatListener implements Listener {
             /*if (data == null)
                 tb.underlined(true).hover("Unverified Discord");
             else*/
-                tb.hover("Verified Discord");
+            tb.hover("Verified Discord");
 
             tb.append(": ").color(ChatColor.DARK_GRAY);
             tb.append(message.getContent()).color(ch.getChatColor());
@@ -220,6 +222,9 @@ public class ChatListener implements Listener {
     }
 
     private void sendDiscordMessage(AsyncPlayerChatEvent e, PlayerChat data) {
+        if (LegendsOfValeros.getMode() == ServerMode.DEV) {
+            return; //prevent discord messages on local/dev setups
+        }
         if (chat.getChannelToDiscord(data.channel) != null) {
             if (Discord.SERVER != null) {
                 String channelId = chat.getChannelToDiscord(data.channel);
