@@ -2,6 +2,8 @@ package com.legendsofvaleros.modules.auction;
 
 import com.legendsofvaleros.modules.bank.core.Money;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
+import com.legendsofvaleros.util.MessageUtil;
+import org.bukkit.ChatColor;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -25,14 +27,14 @@ public class AuctionChatPrompt {
         this.auction = auction;
         this.prompt = prompt;
         //TODO MessageUtil.sendInfo
-        playerCharacter.getPlayer().sendMessage(divider);
-        playerCharacter.getPlayer().sendMessage("You started " + prompt.getChatString() + " " + auction.getItem().toInstance().gear.getName());
+        playerCharacter.getPlayer().sendMessage(ChatColor.BOLD + divider);
+        MessageUtil.sendInfo(playerCharacter.getPlayer(), "You started " + prompt.getChatString() + " " + auction.getItem().toInstance().gear.getName());
         this.handleDecision("");
     }
 
     public void finish() {
         AuctionController.getInstance().removePrompt(playerCharacter.getUniqueCharacterId());
-        getPlayerCharacter().getPlayer().sendMessage(divider);
+        getPlayerCharacter().getPlayer().sendMessage(ChatColor.BOLD + divider);
     }
 
     private void cancelPrompt() {
@@ -44,8 +46,8 @@ public class AuctionChatPrompt {
             playerCharacter.getPlayer().getInventory().addItem(getAuction().getItem().toStack());
         }
 
-        playerCharacter.getPlayer().sendMessage("You Stopped " + prompt.getChatString() + " " + auction.getItem().toInstance().gear.getName());
-        getPlayerCharacter().getPlayer().sendMessage(divider);
+        MessageUtil.sendInfo(playerCharacter.getPlayer(), "You Stopped " + prompt.getChatString() + " " + auction.getItem().toInstance().gear.getName());
+        getPlayerCharacter().getPlayer().sendMessage(ChatColor.BOLD + divider);
     }
 
     public void handleDecision(String decision) {
@@ -77,7 +79,7 @@ public class AuctionChatPrompt {
 
     private boolean handleBidSteps(String decision) {
         if (currentStep == 1) {
-            playerCharacter.getPlayer().sendMessage(
+            MessageUtil.sendInfo(playerCharacter.getPlayer(),
                     "The current bid price is " + auction.getPriceFormatted() + ". How much do you want to bid?"
             );
         } else if (currentStep == 2) {
@@ -89,9 +91,11 @@ public class AuctionChatPrompt {
                 }
 
                 AuctionController.getInstance().confirmBidPrompt(playerCharacter.getUniqueCharacterId());
-                playerCharacter.getPlayer().sendMessage("You successfully bid " + Money.Format.format(price) + " on " + auction.getItem().toInstance().gear.getName());
+                MessageUtil.sendInfo(playerCharacter.getPlayer(),
+                        "You successfully bid " + Money.Format.format(price) + " on " + auction.getItem().toInstance().gear.getName()
+                );
             } catch (NumberFormatException e) {
-                playerCharacter.getPlayer().sendMessage("Please enter a valid number");
+                MessageUtil.sendError(playerCharacter.getPlayer(), "Please enter a valid number");
                 cancelPrompt();
             }
         }
@@ -101,9 +105,9 @@ public class AuctionChatPrompt {
     private boolean handleBuySteps(String decision) {
         if (currentStep == 1) {
             if (auction.getItem().amount > 1) {
-                playerCharacter.getPlayer().sendMessage("How many " + auction.getItem().toInstance().gear.getName() + " do you want to buy?");
+                MessageUtil.sendInfo(playerCharacter.getPlayer(), "How many " + auction.getItem().toInstance().gear.getName() + " do you want to buy?");
             } else {
-                playerCharacter.getPlayer().sendMessage(
+                MessageUtil.sendInfo(playerCharacter.getPlayer(),
                         "Do you really want to buy " + auction.getItem().toInstance().gear.getName() + " for " + auction.getPriceFormatted() + " ?"
                 );
             }
@@ -112,7 +116,9 @@ public class AuctionChatPrompt {
                 try {
                     int amount = Integer.parseInt(decision);
                     if (amount > auction.getItem().amount) {
-                        playerCharacter.getPlayer().sendMessage("You are trying to buy more items than the auction has. The maximum amount is " + auction.getItem().amount);
+                        MessageUtil.sendError(playerCharacter.getPlayer(),
+                                "You are trying to buy more items than the auction has. The maximum amount is " + auction.getItem().amount
+                        );
                         cancelPrompt();
                         return false;
                     }
@@ -122,9 +128,9 @@ public class AuctionChatPrompt {
                         return false;
                     }
                     AuctionController.getInstance().confirmBuyPrompt(playerCharacter.getUniqueCharacterId(), amount);
-                    playerCharacter.getPlayer().sendMessage("You successfully bought " + amount + "x of " + auction.getItem().toInstance().gear.getName());
+                    MessageUtil.sendInfo(playerCharacter.getPlayer(), "You successfully bought " + amount + "x of " + auction.getItem().toInstance().gear.getName());
                 } catch (NumberFormatException e) {
-                    playerCharacter.getPlayer().sendMessage("Please enter a valid number");
+                    MessageUtil.sendError(playerCharacter.getPlayer(), "Please enter a valid number");
                     cancelPrompt();
                     return false;
                 }
@@ -135,7 +141,7 @@ public class AuctionChatPrompt {
                         return false;
                     }
                     AuctionController.getInstance().confirmBuyPrompt(playerCharacter.getUniqueCharacterId(), 1);
-                    playerCharacter.getPlayer().sendMessage("You successfuly bought " + auction.getItem().toInstance().gear.getName());
+                    MessageUtil.sendInfo(playerCharacter.getPlayer(), "You successfuly bought " + auction.getItem().toInstance().gear.getName());
                 } else {
                     cancelPrompt();
                 }
@@ -147,7 +153,7 @@ public class AuctionChatPrompt {
     private boolean handleSellSteps(String decision) {
         switch (currentStep) {
             case 1:
-                playerCharacter.getPlayer().sendMessage("Do you want to sell or auction the item?");
+                MessageUtil.sendInfo(playerCharacter.getPlayer(), "Do you want to sell or auction the item?");
                 break;
             case 2:
                 if (decision.equalsIgnoreCase("auction")) {
@@ -163,9 +169,9 @@ public class AuctionChatPrompt {
                 return true;
             case 3:
                 if (auction.isBidOffer()) {
-                    playerCharacter.getPlayer().sendMessage("Please enter a minimum bid");
+                    MessageUtil.sendInfo(playerCharacter.getPlayer(), "Please enter a minimum bid");
                 } else {
-                    playerCharacter.getPlayer().sendMessage(
+                    MessageUtil.sendInfo(playerCharacter.getPlayer(),
                             "How much should 1x " + auction.getItem().toInstance().gear.getName() + " cost?"
                     );
                 }
@@ -174,12 +180,12 @@ public class AuctionChatPrompt {
                 try {
                     int price = Integer.parseInt(decision);
                     auction.setPrice(price);
-                    playerCharacter.getPlayer().sendMessage(
+                    MessageUtil.sendInfo(playerCharacter.getPlayer(),
                             "You successfully started selling " + auction.getItem().toInstance().gear.getName() + " for " + auction.getPriceFormatted()
                     );
                     return true;
                 } catch (NumberFormatException e) {
-                    playerCharacter.getPlayer().sendMessage("Please enter a valid number");
+                    MessageUtil.sendError(playerCharacter.getPlayer(), "Please enter a valid number");
                     cancelPrompt();
                 }
                 break;
