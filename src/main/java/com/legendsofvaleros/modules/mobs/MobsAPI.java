@@ -95,14 +95,14 @@ public class MobsAPI extends ModuleListener {
         Chunk chunk = spawn.getLocation().getChunk();
 
         spawns.put(getId(chunk), spawn);
+        spawnsLoaded.put(getId(chunk), spawn);
 
         // If editing is enabled, generate the hologram right away.
         if(LegendsOfValeros.getMode().allowEditing())
             getScheduler().sync(spawn::getHologram);
 
-        Mob mob = entities.get(spawn.getEntityId());
         if (spawn.getMob() != null)
-            mob.getSpawns().add(spawn);
+            spawn.getMob().getSpawns().add(spawn);
     }
 
     public void updateSpawn(SpawnArea spawn) {

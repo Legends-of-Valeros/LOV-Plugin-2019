@@ -25,8 +25,8 @@ public class SpawnArea {
     /**
      * Used for debugging.
      */
-    private Hologram hologram;
-    private TextLine textEntityId, textLevel, textRadius, textPadding, textEntities, textInfo, textInterval;
+    private transient Hologram hologram;
+    private transient TextLine textEntityId, textLevel, textRadius, textPadding, textEntities, textInfo, textInterval;
 
     private int id;
     public int getId() { return id; }
@@ -40,7 +40,7 @@ public class SpawnArea {
     private int y;
     private int z;
 
-    private Location location;
+    private transient Location location;
     public Location getLocation() {
         if (location == null)
             location = new Location(getWorld(), x, y, z);
@@ -73,7 +73,7 @@ public class SpawnArea {
         return entityId;
     }
 
-    private Mob mob;
+    private transient Mob mob;
     public Mob getMob() {
         if (mob == null)
             mob = MobsController.getInstance().getEntity(entityId);
@@ -91,8 +91,8 @@ public class SpawnArea {
     public int[] getLevelRange() {
         if (levels == null)
             levels = new int[]{
-                    Integer.parseInt(level.split("-")[0]),
-                    Integer.parseInt(level.split("-")[1])};
+                    level != null ? Integer.parseInt(level.split("-")[0]) : 0,
+                    level != null ? Integer.parseInt(level.split("-")[1]) : 0};
         return levels;
     }
 
@@ -169,7 +169,11 @@ public class SpawnArea {
 
     public void updateStats() {
         if(hologram != null) {
-            textEntities.setText(getEntities().size() + " / " + despawnedEnemies);
+            textEntities.setText(
+                    getEntities()
+                            .size() +
+                            " / " +
+                            despawnedEnemies);
             textInterval.setText(Instant.ofEpochMilli(System.currentTimeMillis()).toString());
         }
     }

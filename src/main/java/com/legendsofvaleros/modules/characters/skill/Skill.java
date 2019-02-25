@@ -55,18 +55,6 @@ public abstract class Skill {
         return null;
     }
 
-    public static List<Skill> getSkillsForCharacter(List<String> skills) {
-        List<Skill> characterSkills = new ArrayList<>();
-
-        for (String skillId : skills) {
-            Skill skill = getSkillById(skillId);
-            if (skill != null)
-                characterSkills.add(skill);
-        }
-
-        return characterSkills;
-    }
-
 
     private final String id;
     private final Type type;

@@ -132,12 +132,12 @@ public class NPCsAPI extends ModuleListener {
         return npcs.get(id);
     }
 
-    public NPC getNPC(LivingEntity entity) { return registry.getNPC(entity); }
+    public NPC getNPC(LivingEntity entity) { return CitizensAPI.getNPCRegistry().getNPC(entity); }
 
-    public boolean isNPC(LivingEntity entity) { return registry.isNPC(entity); }
+    public boolean isNPC(LivingEntity entity) { return CitizensAPI.getNPCRegistry().isNPC(entity); }
 
     public boolean isStaticNPC(LivingEntity entity) {
-        NPC npc = registry.getNPC(entity);
-        return npc != null && npc.getOwningRegistry() == registry;
+        NPC npc = CitizensAPI.getNPCRegistry().getNPC(entity);
+        return npc != null && npc.getOwningRegistry() == CitizensAPI.getNPCRegistry();
     }
 }
