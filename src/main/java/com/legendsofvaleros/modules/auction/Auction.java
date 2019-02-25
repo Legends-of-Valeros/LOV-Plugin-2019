@@ -12,6 +12,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Crystall on 10/10/2018
@@ -67,12 +69,21 @@ public class Auction {
     public ArrayList<String> getDescription() {
         ArrayList<String> lore = new ArrayList<>();
         lore.add("Owner: " + getOwnerName());
-        lore.add("Type: " + (isBidOffer ? "Bid" : "Sell"));
         if (isBidOffer) {
-            lore.add("Highest Bidder: " + highestBidderName);
+            lore.add("Highest bidder: " + (highestBidderName != null ? highestBidderName : "none"));
+            lore.add("Remaining time: " + this.getRemainingTime() + " minutes");
         }
+        lore.add("Type: " + (isBidOffer ? "bid" : "sell"));
         lore.add((isBidOffer ? "Current bid: " : "Price: ") + getPriceFormatted());
         return lore;
+    }
+
+    /**
+     * @return
+     */
+    public long getRemainingTime() {
+        long current = TimeUnit.MILLISECONDS.toSeconds(Calendar.getInstance().getTime().getTime());
+        return TimeUnit.SECONDS.toMinutes(current - validUntil);
     }
 
     /**
@@ -88,8 +99,12 @@ public class Auction {
             return false;
         }
         PlayerCharacter playerCharacter = Characters.getPlayerCharacter(characterId);
+        if (playerCharacter.getPlayerId().equals(getOwnerId().getPlayerId())) {
+            MessageUtil.sendError(playerCharacter.getPlayer(), "You can't bid on your own auctions");
+            return false;
+        }
         if (value <= price) {
-            playerCharacter.getPlayer().sendMessage("Your bid price " + Money.Format.format(value) + " is not higher than the current bid price of " + getPriceFormatted());
+            MessageUtil.sendError(playerCharacter.getPlayer(), "Your bid price " + Money.Format.format(value) + " is not higher than the current bid price of " + getPriceFormatted());
             return false;
         }
         if (Money.sub(playerCharacter, value)) {
@@ -99,7 +114,7 @@ public class Auction {
                 Money.add(previousBidder, (long) (price * (1 - AuctionController.AUCTION_FEE)));
                 String content = "Your bid on the auction " + ChatColor.UNDERLINE + ChatColor.WHITE + ChatColor.BOLD +
                         getItem().toInstance().gear.getName() + ChatColor.RESET + " got overbidden";
-                Mail mail = new Mail(previousBidder.getUniqueCharacterId(), null, content, false);
+                Mail mail = new Mail(previousBidder.getUniqueCharacterId(), null, "AuctionHouse", content, false);
                 MailboxController.getInstance().getMailbox(playerCharacter.getUniqueCharacterId()).addMail(mail);
             }
 
@@ -123,11 +138,14 @@ public class Auction {
         if (!Characters.isPlayerCharacterLoaded(characterId)) {
             return false;
         }
-        int value = price * amount;
         PlayerCharacter playerCharacter = Characters.getPlayerCharacter(characterId);
-
+        if (playerCharacter.getPlayerId().equals(getOwnerId().getPlayerId())) {
+            MessageUtil.sendError(playerCharacter.getPlayer(), "You can't buy your own auctions");
+            return false;
+        }
+        int value = price * amount;
         if (Money.sub(playerCharacter, value)) {
-            notifyOwner(playerCharacter.getPlayer().getDisplayName() + " bought " + getItem().toInstance().gear.getName() + " for " + Money.Format.format(value), false);
+            notifyOwner(playerCharacter.getPlayer().getDisplayName() + " bought " + getItem().toInstance().gear.getName() + " for " + Money.Format.format(value), true);
             return true;
         }
 
@@ -140,17 +158,16 @@ public class Auction {
      * @param contentLines
      */
     public void notifyOwner(ArrayList<String> contentLines, boolean sendMail) {
-        Player p = Characters.getPlayerCharacter(ownerId).getPlayer();
         StringBuilder contentBuilder = new StringBuilder();
         contentLines.forEach(contentBuilder::append);
 
         if (sendMail) {
-            MailboxController.getInstance().saveMail(getOwnerId(), new Mail(getOwnerId(), null, contentBuilder.toString(), false));
+            Mail mail = new Mail(getOwnerId(), null, "AuctionHouse", contentBuilder.toString(), false);
+            MailboxController.getInstance().saveMailToMailbox(getOwnerId(), mail);
             return;
         }
-
-        if (Characters.isPlayerCharacterLoaded(p)) {
-            // TODO make pretty like a princess
+        if (Characters.isPlayerCharacterLoaded(getOwnerId())) {
+            Player p = Characters.getPlayerCharacter(getOwnerId()).getPlayer();
             MessageUtil.sendInfo(p, contentBuilder.toString());
         }
     }
@@ -223,6 +240,22 @@ public class Auction {
 
     public void setOwnerName(String ownerName) {
         this.ownerName = ownerName;
+    }
+
+    public String getHighestBidderName() {
+        return highestBidderName;
+    }
+
+    public CharacterId getHighestBidderId() {
+        return highestBidderId;
+    }
+
+    public void setHighestBidderName(String highestBidderName) {
+        this.highestBidderName = highestBidderName;
+    }
+
+    public void setHighestBidderId(CharacterId highestBidderId) {
+        this.highestBidderId = highestBidderId;
     }
 
     public ArrayList<BidHistoryEntry> getBidHistory() {

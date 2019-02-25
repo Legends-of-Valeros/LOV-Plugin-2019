@@ -2,12 +2,12 @@ package com.legendsofvaleros.modules.auction.gui;
 
 import com.codingforcookies.robert.core.GUI;
 import com.legendsofvaleros.modules.auction.Auction;
-import com.legendsofvaleros.modules.auction.AuctionChatPrompt;
 import com.legendsofvaleros.modules.auction.AuctionChatPrompt.AuctionPromptType;
 import com.legendsofvaleros.modules.auction.AuctionController;
 import com.legendsofvaleros.modules.auction.filter.FilterDirection;
 import com.legendsofvaleros.modules.auction.filter.FilterType;
 import com.legendsofvaleros.modules.gear.core.Gear;
+import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -22,7 +22,6 @@ import java.util.ArrayList;
  * Created by Crystall on 11/24/2018
  */
 public class AuctionGui extends GUI implements Listener {
-    private ArrayList<Auction> auctions;
     private int currentPage = 1;
     private int totalPages;
     private FilterType filterType = FilterType.REMAINING_TIME;
@@ -33,7 +32,6 @@ public class AuctionGui extends GUI implements Listener {
     public AuctionGui(ArrayList<Auction> auctions) {
         super("Auctioneer");
         type(6);
-        this.auctions = auctions;
         this.totalPages = (int) Math.ceil(auctions.size() / ITEM_COUNT_PER_PAGE);
         AuctionController.getInstance().registerEvents(this);
         this.init();
@@ -58,7 +56,7 @@ public class AuctionGui extends GUI implements Listener {
         }
 
         slot(47, AuctionGuiItem.REFRESH.toItemStack(), (gui, p, e) -> { //refresh
-            e.setCancelled(true);
+            AuctionController.getInstance().loadEntries().addListener(this::loadItemsForPage);
         });
 
         slot(48, filterType.toItemStack(), (gui, p, e) -> { //change filter type
@@ -82,7 +80,9 @@ public class AuctionGui extends GUI implements Listener {
      * Adds all items to the current page
      */
     private void loadItemsForPage() {
-        for (int i = 0; i < AuctionGui.ITEM_COUNT_PER_PAGE; i++) {
+        int firstOnPage = (currentPage > 0 ? (currentPage - 1) * AuctionGui.ITEM_COUNT_PER_PAGE : 0);
+        int lastOnPage = currentPage * AuctionGui.ITEM_COUNT_PER_PAGE;
+        for (int i = firstOnPage; i < lastOnPage; i++) {
             ItemStack slotItem = null;
             Auction auction = getAuctionFromSlot(i);
 
@@ -116,7 +116,7 @@ public class AuctionGui extends GUI implements Listener {
     private Auction getAuctionFromSlot(int slot) {
         Auction auction = null;
         try {
-            auction = auctions.get(slot + (currentPage - 1) * ITEM_COUNT_PER_PAGE);
+            auction = AuctionController.getInstance().auctions.get(slot + (currentPage - 1) * ITEM_COUNT_PER_PAGE);
         } catch (Exception ex) { //silent catch to prevent OutOfBoundsException
         }
         return auction;
@@ -127,14 +127,19 @@ public class AuctionGui extends GUI implements Listener {
         if (gui instanceof AuctionGui) {
             e.setCancelled(true);
             Gear.Instance item = Gear.Instance.fromStack(e.getCurrentItem());
-            if (item != null) {
-                e.setCurrentItem(new ItemStack(Material.AIR));
-                AuctionController.getInstance().startPrompt(
-                        (Player) e.getWhoClicked(),
-                        item.getData(),
-                        AuctionChatPrompt.AuctionPromptType.SELL
-                );
+            if (item == null) {
+                return;
             }
+            if (!item.getType().isTradable()) {
+                MessageUtil.sendError(p, "You can't auction this item!");
+                return;
+            }
+            e.setCurrentItem(new ItemStack(Material.AIR));
+            AuctionController.getInstance().startPrompt(
+                    (Player) e.getWhoClicked(),
+                    item.getData(),
+                    AuctionPromptType.SELL
+            );
         }
     }
 }

@@ -10,6 +10,8 @@ import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.mailbox.Mail;
 import com.legendsofvaleros.modules.mailbox.MailboxController;
+import com.legendsofvaleros.scheduler.InternalTask;
+import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,6 +20,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Crystall on 10/10/2018
@@ -46,28 +49,15 @@ public class AuctionController extends AuctionAPI {
         super.onLoad();
         instance = this;
 
-//        getScheduler().executeInMyCircleTimer(new InternalTask(() -> {
-//            try {
-//                SettableFuture<ArrayList<Auction>> future = this.loadBidAuctions();
-//
-//                future.addListener(() -> {
-//                    try {
-//                        ArrayList<Auction> auctions = future.get();
-//                        if (auctions == null) return;
-//
-//                        auctions.forEach(auction -> {
-//                            if (auction.getValidUntil() <= System.currentTimeMillis()) {
-//                                this.handleBidEnd(auction);
-//                            }
-//                        });
-//                    } catch (InterruptedException | ExecutionException e) {
-//                        e.printStackTrace();
-//                    }
-//                }, getScheduler()::async);
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//            }
-//        }), 0, 15000); //call every 15 seconds.
+        getScheduler().executeInMyCircleTimer(new InternalTask(() -> {
+            auctions.forEach(auction -> {
+                if (auction.isBidOffer()) {
+                    if (auction.getValidUntil() < TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())) {
+                        this.handleBidEnd(auction);
+                    }
+                }
+            });
+        }), 0, 1000); //call every 15 seconds.
     }
 
     public void onUnload() {
@@ -95,8 +85,7 @@ public class AuctionController extends AuctionAPI {
             PlayerCharacter playerCharacter = Characters.getPlayerCharacter(p);
             CharacterId characterId = playerCharacter.getUniqueCharacterId();
             if (auctionPrompts.containsKey(characterId)) {
-                //TODO make pretty like a princess
-                p.sendMessage("You are already " + auctionPrompts.get(characterId).getPrompt().getChatString() + " an item.");
+                MessageUtil.sendError(p, "You are already " + auctionPrompts.get(characterId).getPrompt().getChatString() + " an item.");
                 return;
             }
             auctionPrompts.put(characterId, new AuctionChatPrompt(playerCharacter, auction, type));
@@ -108,12 +97,9 @@ public class AuctionController extends AuctionAPI {
      * @param auction
      */
     private void handleBidEnd(Auction auction) {
-        BidHistoryEntry entry = auction.getLastBidEntry();
-        //TODO make pretty
-        Mail mail = new Mail(entry.getCharacterId(), null, "You won the auction", false);
+        Mail mail = new Mail(auction.getHighestBidderId(), null, "AuctionHouse: You won the auction", "Congratulations, you won the auction", false);
         mail.setItem(auction.getItem());
-
-        MailboxController.getInstance().saveMail(entry.getCharacterId(), mail);
+        MailboxController.getInstance().saveMailToMailbox(auction.getHighestBidderId(), mail);
 
         removeAuction(auction);
         auction.notifyOwner("Your bid auction has ended. " + ChatColor.BOLD + ChatColor.UNDERLINE + ChatColor.WHITE +
@@ -143,9 +129,8 @@ public class AuctionController extends AuctionAPI {
             if (auctionPrompts.containsKey(characterId)) {
                 AuctionChatPrompt prompt = auctionPrompts.get(characterId);
 
-
-                if (!checkIfAuctionStillExists(prompt.getAuction())) {
-                    p.sendMessage("Item is already sold");
+                if (checkIfAuctionStillExists(prompt.getAuction())) {
+                    MessageUtil.sendError(p, "The auction doesn't exist anymore");
                     return;
                 }
 
@@ -176,8 +161,8 @@ public class AuctionController extends AuctionAPI {
             if (auctionPrompts.containsKey(characterId)) {
                 AuctionChatPrompt prompt = auctionPrompts.get(characterId);
 
-                if (!checkIfAuctionStillExists(prompt.getAuction())) {
-                    p.sendMessage("The auction is already over");
+                if (checkIfAuctionStillExists(prompt.getAuction())) {
+                    MessageUtil.sendError(p, "The auction doesn't exist anymore");
                     return;
                 }
                 updateAuction(prompt.getAuction());

@@ -9,10 +9,12 @@ import com.legendsofvaleros.modules.gear.core.Gear;
  */
 public class Mail {
     private CharacterId receiver;
+    private String receiverName;
 
-    //can be null, then the message is from the System
     private CharacterId from;
+    private String fromName;
 
+    private String title;
     private String content;
 
     // Has to be Gear.Data, otherwise we lose persistent values
@@ -21,9 +23,10 @@ public class Mail {
 
     private boolean isRead;
 
-    public Mail(CharacterId receiver, CharacterId from, String content, boolean isRead) {
+    public Mail(CharacterId receiver, CharacterId from, String title, String content, boolean isRead) {
         this.receiver = receiver;
         this.from = from;
+        this.title = title;
         this.content = content;
         this.isRead = isRead;
     }

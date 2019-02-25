@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.mailbox;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.util.MessageUtil;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -35,7 +36,6 @@ public class Mailbox {
 
     /**
      * Returns the amount of unread mails in the mailbox
-     *
      * @return
      */
     public int getUnreadMails() {
@@ -53,7 +53,7 @@ public class Mailbox {
         Player p = Characters.getPlayerCharacter(characterId).getPlayer();
         if (Characters.isPlayerCharacterLoaded(p)) {
             // TODO make pretty like a princess
-            MessageUtil.sendInfo(p, "You have" + getUnreadMails() + " unread mails!");
+            MessageUtil.sendInfo(p, "You have" + ChatColor.BOLD + getUnreadMails() + ChatColor.RESET + " unread mails!");
         }
     }
 

@@ -55,14 +55,13 @@ public class AuctionAPI extends ModuleListener {
     }
 
     public Promise<List<Auction>> loadEntries() {
-        Promise<List<Auction>> promise = rpc.getAllAuctions();
         auctions.clear();
 
-        promise.onSuccess(val -> {
+        return rpc.getAllAuctions().onSuccess(val -> {
             auctions.addAll(val.orElse(ImmutableList.of()));
-        }).onFailure(Throwable::printStackTrace);
 
-        return promise;
+            AuctionController.getInstance().getLogger().info("Loaded " + auctions.size() + " auctions.");
+        }).onFailure(Throwable::printStackTrace);
     }
 
     public Promise<List<Auction>> loadBidAuctions() {
@@ -75,34 +74,45 @@ public class AuctionAPI extends ModuleListener {
         return promise;
     }
 
-    public void addAuction(Auction auction) {
+    void addAuction(Auction auction) {
         getScheduler().executeInMyCircle(new InternalTask(() -> {
-            auctions.add(auction);
-            rpc.saveAuction(auction);
+            rpc.saveAuction(auction).onSuccess(() -> {
+                auctions.add(auction);
+            }).onFailure(Throwable::printStackTrace);
         }));
     }
 
-    public void updateAuction(Auction auction) {
+    void updateAuction(Auction auction) {
         getScheduler().executeInMyCircle(new InternalTask(() -> {
-            rpc.saveAuction(auction);
-
+            rpc.saveAuction(auction).onFailure(Throwable::printStackTrace);
         }));
     }
 
-    public void removeAuction(Auction auction) {
-        getScheduler().executeInMyCircle(new InternalTask(() -> rpc.deleteAuction(auction.getId())));
+    void removeAuction(Auction auction) {
+        getScheduler().executeInMyCircle(new InternalTask(() -> {
+                    rpc.deleteAuction(auction.getId()).onSuccess(val -> {
+                        auctions.remove(auction);
+                    }).onFailure(Throwable::printStackTrace);
+                })
+        );
     }
 
     /**
      * Query for security reason, to make sure, that the item did not get bought by another player
-     *
      * @param auction
      * @return
      */
-    public boolean checkIfAuctionStillExists(Auction auction) {
-        //TODO add multi server support
-        if (auctions.contains(auction)) return true;
-        return false;
+    boolean checkIfAuctionStillExists(Auction auction) {
+        Auction[] result = {null};
+        getScheduler().executeInMyCircle(new InternalTask(() -> {
+                    try {
+                        result[0] = rpc.getAuction(auction.getId()).get();
+                    } catch (Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                })
+        );
+        return result[0] == null;
     }
 
     public ListenableFuture<ArrayList<BidHistoryEntry>> getBidHistory(Auction auction) {
@@ -118,7 +128,6 @@ public class AuctionAPI extends ModuleListener {
 
     /**
      * adds a bid entry to the table
-     *
      * @param entry
      */
     public void addBidEntry(BidHistoryEntry entry) {

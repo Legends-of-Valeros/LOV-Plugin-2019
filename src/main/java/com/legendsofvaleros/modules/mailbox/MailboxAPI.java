@@ -21,13 +21,13 @@ public class MailboxAPI extends ModuleListener {
 
         Promise<Boolean> saveMail(CharacterId characterId, Mail mail);
 
-        Promise<Boolean> saveMailbox(CharacterId characterId, ArrayList<Mail> mails);
+        Promise<Boolean> saveMailbox(ArrayList<Mail> mails);
 
         Promise<Boolean> deleteMailbox(CharacterId characterId);
     }
 
     private MailboxAPI.RPC rpc;
-    public Map<CharacterId, Mailbox> mailboxes = new HashMap<>();
+    protected Map<CharacterId, Mailbox> mailboxes = new HashMap<>();
 
 
     @Override
@@ -49,19 +49,18 @@ public class MailboxAPI extends ModuleListener {
      * @param mail
      * @return
      */
-    public Promise<Boolean> saveMail(CharacterId characterId, Mail mail) {
+    Promise<Boolean> saveMail(CharacterId characterId, Mail mail) {
 
         Mailbox mailbox = mailboxes.get(characterId);
 
-        if (mailbox != null) {
-            Promise<Boolean> promise = rpc.saveMail(characterId, mail);
-            promise.onSuccess(val -> {
+        Promise<Boolean> promise = rpc.saveMail(characterId, mail);
+        promise.onSuccess(val -> {
+            if (mailbox != null) {
                 mailbox.mails.add(mail);
-            }).onFailure(Throwable::printStackTrace);
-            return promise;
+            }
+        }).onFailure(Throwable::printStackTrace);
+        return promise;
 
-        }
-        return null;
     }
 
     /**
@@ -69,7 +68,7 @@ public class MailboxAPI extends ModuleListener {
      * @param characterId
      * @return
      */
-    public Promise<List<Mail>> loadMailbox(CharacterId characterId) {
+    Promise<List<Mail>> loadMailbox(CharacterId characterId) {
         Promise<List<Mail>> promise = rpc.getMails(characterId);
 
         Mailbox mailbox = new Mailbox(characterId);
@@ -86,14 +85,14 @@ public class MailboxAPI extends ModuleListener {
      * @param characterId
      * @return
      */
-    public Promise<Boolean> saveMailbox(CharacterId characterId) {
+    Promise<Boolean> saveMailbox(CharacterId characterId) {
         Mailbox mailbox = mailboxes.get(characterId);
 
         if (mailbox == null) {
             return null;
         }
 
-        return rpc.saveMailbox(characterId, mailbox.getMails());
+        return rpc.saveMailbox(mailbox.getMails());
     }
 
     /**
@@ -101,7 +100,7 @@ public class MailboxAPI extends ModuleListener {
      * @param characterId
      * @return
      */
-    public Promise<Boolean> deleteMailbox(CharacterId characterId) {
+    Promise<Boolean> deleteMailbox(CharacterId characterId) {
         Mailbox mailbox = mailboxes.get(characterId);
 
         if (mailbox == null) {

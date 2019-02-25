@@ -47,6 +47,13 @@ public class MailboxController extends MailboxAPI {
         return mailboxes.get(characterId);
     }
 
+    public void saveMailToMailbox(CharacterId characterId, Mail mail) {
+        this.saveMail(characterId, mail);
+        if (mailboxes.containsKey(characterId)) {
+            mailboxes.get(characterId).notifyOwner();
+        }
+    }
+
     @EventHandler
     public void onCharacterStartLoading(PlayerCharacterStartLoadingEvent event) {
         PhaseLock lock = event.getLock("Mailbox");

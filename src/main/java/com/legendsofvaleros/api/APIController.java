@@ -67,19 +67,23 @@ public class APIController extends Module {
     public void onLoad() {
         super.onLoad();
 
-        this.instance = this;
+        instance = this;
 
         this.pool = Executors.newFixedThreadPool(8);
 
         this.gsonBuilder.registerTypeAdapter(CharacterId.class, new TypeAdapter<CharacterId>() {
             @Override
             public void write(JsonWriter write, CharacterId characterId) throws IOException {
+                if (characterId == null) {
+                    write.nullValue();
+                    return;
+                }
                 write.value(characterId.toString());
             }
 
             @Override
             public CharacterId read(JsonReader read) throws IOException {
-                if(read.peek() == JsonToken.NULL) {
+                if (read.peek() == JsonToken.NULL) {
                     read.nextNull();
                     return null;
                 }
