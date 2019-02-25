@@ -121,6 +121,15 @@ public class Promise<R> {
         return this;
     }
 
+    public Promise<R> on(Promise<R> promise) { return on((err, val) -> {
+        if(err.isPresent()) {
+            promise.reject(err.get());
+            return;
+        }
+
+        promise.resolve(val.orElse(null));
+    }, null); }
+
     public Promise<R> on(Runnable cb) { return on((err, val) -> cb.run(), null); }
     public Promise<R> on(Listener<R> cb) { return on(cb, null); }
     public Promise<R> on(Listener<R> cb, Executor ex) { return addListener(cb, ex); }

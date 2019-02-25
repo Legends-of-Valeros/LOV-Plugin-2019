@@ -34,7 +34,6 @@ public class ReusablePlayerCharacter implements PlayerCharacter {
 	
 	private final EntityClass playerClass;
 
-	private Location locFromDb;
 	private Location savedLoc;
 
 	private CharacterExperience experience;
@@ -60,7 +59,6 @@ public class ReusablePlayerCharacter implements PlayerCharacter {
 		this.configRace = Characters.getInstance().getCharacterConfig().getRaceConfig(playerRace);
 		this.playerClass = playerClass;
 
-		this.locFromDb = startingLocation;
 		this.savedLoc = startingLocation;
 
 		this.experience = experience;
@@ -152,14 +150,14 @@ public class ReusablePlayerCharacter implements PlayerCharacter {
 	 * @return <code>true</code> if this has changes that should be written to the database, else
 	 *         <code>false</code>.
 	 */
-	boolean hasChanged() {
+	/*boolean hasChanged() {
 		if (experience.hasChanged()) {
 			return true;
 		} else if (!locFromDb.equals(getLocation())) {
 			return true;
 		}
 		return false;
-	}
+	}*/
 
 	void setCurrent(boolean current) {
 		if (this.current != current) {

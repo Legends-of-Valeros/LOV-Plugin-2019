@@ -140,23 +140,6 @@ public class PlayerCharacterCollection implements PlayerCharacters {
 	}
 
 	/**
-	 * Gets which characters in this collection are different from when they were added/constructed.
-	 * 
-	 * @return The characters who have changes that should be written to the database, if any.
-	 */
-	Set<ReusablePlayerCharacter> getChanged() {
-		Set<ReusablePlayerCharacter> ret = new HashSet<>();
-
-		for (ReusablePlayerCharacter pc : characters.values()) {
-			if (pc.hasChanged()) {
-				ret.add(pc);
-			}
-		}
-
-		return ret;
-	}
-
-	/**
 	 * Listens to events that affect this player's characters.
 	 */
 	private class PlayerListener implements Listener {

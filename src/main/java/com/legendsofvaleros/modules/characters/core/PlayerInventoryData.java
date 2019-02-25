@@ -1,33 +1,26 @@
 package com.legendsofvaleros.modules.characters.core;
 
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
+import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterInventoryFillEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.concurrent.ExecutionException;
-
 public class PlayerInventoryData implements InventoryData {
 	public interface InventoryMethod {
-		ListenableFuture<String> encode(ItemStack[] contents);
-		ListenableFuture<ItemStack[]> decode(String data);
+		Promise<String> encode(ItemStack[] contents);
+		Promise<ItemStack[]> decode(String data);
 	}
 	
 	public static InventoryMethod method = new InventoryMethod() {
 		@Override
-		public ListenableFuture<String> encode(ItemStack[] contents) {
-			SettableFuture<String> ret = SettableFuture.create();
-			ret.set("");
-			return ret;
+		public Promise<String> encode(ItemStack[] contents) {
+			return Promise.make("");
 		}
 
 		@Override
-		public ListenableFuture<ItemStack[]> decode(String data) {
-			SettableFuture<ItemStack[]> ret = SettableFuture.create();
-			ret.set(new ItemStack[0]);
-			return ret;
+		public Promise<ItemStack[]> decode(String data) {
+			return Promise.make(new ItemStack[0]);
 		}
 		
 	};
@@ -40,34 +33,15 @@ public class PlayerInventoryData implements InventoryData {
 	}
 	
 	@Override
-	public ListenableFuture<Void> onInvalidated(PlayerCharacter pc) {
-		SettableFuture<Void> ret = SettableFuture.create();
-
-		saveInventory(pc).addListener(() -> {
-			pc.getPlayer().getInventory().clear();
-
-			ret.set(null);
-		}, Characters.getInstance().getScheduler()::sync);
-
-		return ret;
+	public Promise<Boolean> onInvalidated(PlayerCharacter pc) {
+		return saveInventory(pc);
 	}
 	
 	@Override
-	public ListenableFuture<Void> saveInventory(PlayerCharacter pc) {
-		SettableFuture<Void> ret = SettableFuture.create();
-
-		ListenableFuture<String> future = method.encode(pc.getPlayer().getInventory().getContents());
-		future.addListener(() -> {
-			try {
-				inventoryData = future.get();
-
-				ret.set(null);
-			} catch(InterruptedException | ExecutionException e) {
-				e.printStackTrace();
-			}
-		}, Characters.getInstance().getScheduler()::async);
-
-		return ret;
+	public Promise<Boolean> saveInventory(PlayerCharacter pc) {
+		return method.encode(pc.getPlayer().getInventory().getContents()).onSuccess(val -> {
+			inventoryData = val.orElseGet(null);
+		}).next(val -> Promise.make(val.isPresent()));
 	}
 
 	@Override
@@ -76,27 +50,19 @@ public class PlayerInventoryData implements InventoryData {
 	}
 
 	@Override
-	public ListenableFuture<Void> loadInventory(PlayerCharacter pc) {
-		SettableFuture<Void> ret = SettableFuture.create();
-
+	public Promise<Boolean> loadInventory(PlayerCharacter pc) {
 		pc.getPlayer().getInventory().clear();
-		
+
 		if(inventoryData != null) {
-			ListenableFuture<ItemStack[]> future = method.decode(inventoryData);
-			future.addListener(() -> {
-				try {
-					pc.getPlayer().getInventory().setContents(future.get());
+			return method.decode(inventoryData).onSuccess(val -> {
+				pc.getPlayer().getInventory().setContents(val.orElse(new ItemStack[0]));
 
-					Bukkit.getServer().getPluginManager().callEvent(new PlayerCharacterInventoryFillEvent(pc, false));
-
-					ret.set(null);
-				} catch(InterruptedException | ExecutionException e) {
-					e.printStackTrace();
-				}
-			}, Characters.getInstance().getScheduler()::sync);
+				Bukkit.getServer().getPluginManager().callEvent(new PlayerCharacterInventoryFillEvent(pc, false));
+			}, Characters.getInstance().getScheduler()::sync)
+					.next(al -> Promise.make(al.isPresent()));
 		}
 
-		return ret;
+		return Promise.make(true);
 	}
 
 	@Override

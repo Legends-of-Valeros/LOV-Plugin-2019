@@ -101,44 +101,21 @@ public class PlayerCharacterData {
         return promise;
     }
 
-    /**
-     * Saves basic player-character data when for a player when they log out.
-     * @param playerId The name of the player logging out.
-     */
-    static Promise<Boolean> onLogout(UUID playerId) {
-        Promise<Boolean> promise = new Promise<>();
+    static Promise<Boolean> onLogout(PlayerCharacter pc) {
+        return pc.getInventoryData().saveInventory(pc).onSuccess(val -> {
+            save(pc);
+        });
+    }
 
-        PlayerCharacterCollection data = dataMap.remove(playerId);
-
-        if (data == null) {
-            promise.resolve(false);
-        } else {
-            Set<ReusablePlayerCharacter> changed;
-            if (!(changed = data.getChanged()).isEmpty()) {
-                for (ReusablePlayerCharacter rpc : changed) {
-                    if(rpc.isCurrent()) {
-                        rpc.getInventoryData().saveInventory(rpc).addListener(() -> {
-                            save(rpc);
-
-                            promise.resolve(true);
-                        }, Characters.getInstance().getScheduler()::sync);
-                    }else{
-                        save(rpc);
-
-                        promise.resolve(true);
-                    }
-                }
-            }
-        }
-
-        return promise;
+    static void onLogout(UUID playerId) {
+        dataMap.remove(playerId);
     }
 
     public static Promise<Boolean> remove(UUID playerId, int characterId) {
         return rpc.deletePlayerCharacter(playerId, characterId);
     }
 
-    public static Promise<Boolean> save(ReusablePlayerCharacter pc) {
+    public static Promise<Boolean> save(PlayerCharacter pc) {
         return rpc.savePlayerCharacter(pc.getPlayerId(), new CharacterData(pc));
     }
 

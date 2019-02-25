@@ -16,25 +16,11 @@ public class PlayerCharacterFinishLoadingEvent extends PlayerCharacterEvent {
 
 	private static final HandlerList handlers = new HandlerList();
 
-	private final boolean firstInSession;
 	private final boolean firstLogin;
 
-	public PlayerCharacterFinishLoadingEvent(PlayerCharacter playerCharacter, boolean firstInSession, boolean firstLogin) {
+	public PlayerCharacterFinishLoadingEvent(PlayerCharacter playerCharacter, boolean firstLogin) {
 		super(playerCharacter);
-		this.firstInSession = firstInSession;
 		this.firstLogin = firstLogin;
-	}
-
-	/**
-	 * Gets whether this is the first time a player has successfully started playing a character since
-	 * they logged into this Minecraft server.
-	 * 
-	 * @return <code>true</code> if this is the first time a player finished loading their character
-	 *         since logging into this MC server. <code>false</code> if they switched from another
-	 *         character.
-	 */
-	public boolean isFirstInSession() {
-		return firstInSession;
 	}
 
 	public boolean isFirstLogin() {

@@ -59,7 +59,6 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
     private CombatStatusTracker combatTracker;
 
     private Map<UUID, PlayerLock> locks;
-    private Set<UUID> haveAlreadyLoaded;
     private Set<UUID> firstLogin;
 
     private Callback<CharacterId> loadingCallback = (value, error) -> {
@@ -88,8 +87,6 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
             PlayerCharacter newCharacter =
                     PlayerCharacterData.getPlayerCharacters(player.getUniqueId()).addNewCharacter(number, raceSelected, classSelected);
 
-            haveAlreadyLoaded.remove(player.getUniqueId());
-
             if (newCharacter == null) {
                 firstLogin.remove(player.getUniqueId());
                 player.kickPlayer(ChatColor.RED + "Something went wrong!");
@@ -109,7 +106,6 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
         this.combatTracker = combatTracker;
 
         locks = new HashMap<>();
-        haveAlreadyLoaded = new HashSet<>();
         firstLogin = new HashSet<>();
 
         new PlayerListener(this);
@@ -233,23 +229,18 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
 
             PlayerCharacterStartLoadingEvent event =
                     new PlayerCharacterStartLoadingEvent(load, tp,
-                            haveAlreadyLoaded.add(load.getPlayerId()),
                             firstLogin.contains(load.getPlayerId()));
             Bukkit.getPluginManager().callEvent(event);
 
             if (tp.hasLocks()) {
                 tp.start(load.getUniqueCharacterId(), loadingCallback);
 
-                // if the player is not still under the effect of an initial login lock
-                if (!event.isFirstInSession()) {
-                    // locks the player during the loading process and clears any previous locks
-                    PlayerLock previousLock =
-                            locks.put(load.getPlayerId(), PlayerLock.lockPlayer(load.getPlayer()));
-                    if (previousLock != null) {
-                        previousLock.release();
-                    }
+                // locks the player during the loading process and clears any previous locks
+                PlayerLock previousLock =
+                        locks.put(load.getPlayerId(), PlayerLock.lockPlayer(load.getPlayer()));
+                if (previousLock != null) {
+                    previousLock.release();
                 }
-
             } else {
                 onDoneLoading(load.getUniqueCharacterId());
             }
@@ -272,7 +263,6 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
 
         PlayerCharacterFinishLoadingEvent event =
                 new PlayerCharacterFinishLoadingEvent(doneLoading,
-                        !haveAlreadyLoaded.contains(doneLoading.getPlayerId()),
                         firstLogin.contains(doneLoading.getPlayerId()));
         Bukkit.getPluginManager().callEvent(event);
 
@@ -411,22 +401,8 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
             }, Characters.getInstance().getScheduler()::sync);
         }
 
-        @EventHandler(priority = EventPriority.HIGH)
-        public void onPlayerQuit(PlayerQuitEvent event) {
-            haveAlreadyLoaded.remove(event.getPlayer().getUniqueId());
-
-            logoutCharacter(event.getPlayer(), true).on(() -> {
-                PlayerCharacterData.onLogout(event.getPlayer().getUniqueId()).on(() -> {
-                    PlayerLock lock = locks.remove(event.getPlayer().getUniqueId());
-                    if(lock != null) {
-                        lock.release();
-                    }
-                });
-            });
-        }
-
         @EventHandler(priority = EventPriority.HIGHEST)
-        public void onStartLoading(PlayerCharacterStartLoadingEvent event) {
+        public void onPlayerLogin(PlayerCharacterStartLoadingEvent event) {
             PlayerCharacter pc = event.getPlayerCharacter();
             InventoryData inventory = pc.getInventoryData();
 
@@ -434,13 +410,26 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
 
             Characters.getInstance().getScheduler().executeInMyCircle(() -> {
                 if (inventory.getData() != null)
-                    inventory.loadInventory(pc).addListener(lock::release, Characters.getInstance().getScheduler()::async);
+                    inventory.loadInventory(pc).on(lock::release);
                 else{
                     inventory.initInventory(pc);
 
                     lock.release();
                 }
             });
+        }
+
+        @EventHandler(priority = EventPriority.HIGH)
+        public void onPlayerLogout(PlayerCharacterLogoutEvent event) {
+            PhaseLock lock = event.getLock("Character");
+
+            PlayerCharacterData.onLogout(event.getPlayerCharacter()).on(lock::release);
+        }
+
+        @EventHandler(priority = EventPriority.HIGH)
+        public void onServerLogout(PlayerQuitEvent event) {
+            logoutCharacter(event.getPlayer(), true).on(() ->
+                    PlayerCharacterData.onLogout(event.getPlayer().getUniqueId()));
         }
     }
 }

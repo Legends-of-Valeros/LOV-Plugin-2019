@@ -1,7 +1,6 @@
 package com.legendsofvaleros.modules.mobs.trait;
 
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
+import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.modules.characters.api.AbilityStats;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.Experience;
@@ -89,40 +88,23 @@ public class NPCPlayerCharacter implements PlayerCharacter {
     };
     static final InventoryData inventory = new InventoryData() {
         @Override
-        public ListenableFuture<Void> onInvalidated(PlayerCharacter pc) {
-            SettableFuture<Void> ret = SettableFuture.create();
-            ret.set(null);
-            return ret;
+        public Promise<Boolean> onInvalidated(PlayerCharacter pc) {
+            return Promise.make(false);
         }
 
         @Override
-        public ListenableFuture<Void> saveInventory(PlayerCharacter pc) {
-            SettableFuture<Void> ret = SettableFuture.create();
-            ret.set(null);
-            return ret;
+        public Promise<Boolean> saveInventory(PlayerCharacter pc) {
+            return Promise.make((Boolean)null);
         }
 
         @Override
-        public void initInventory(PlayerCharacter pc) {
-
+        public Promise<Boolean> loadInventory(PlayerCharacter pc) {
+            return Promise.make(false);
         }
 
-        @Override
-        public ListenableFuture<Void> loadInventory(PlayerCharacter pc) {
-            SettableFuture<Void> ret = SettableFuture.create();
-            ret.set(null);
-            return ret;
-        }
-
-        @Override
-        public void onDeath(PlayerCharacter pc) {
-
-        }
-
-        @Override
-        public String getData() {
-            return null;
-        }
+        @Override public void initInventory(PlayerCharacter pc) {  }
+        @Override public void onDeath(PlayerCharacter pc) { }
+        @Override public String getData() { return null; }
     };
     static final SkillSet skillSet = new SkillSet() {
         @Override public void add(String skillId) { }
