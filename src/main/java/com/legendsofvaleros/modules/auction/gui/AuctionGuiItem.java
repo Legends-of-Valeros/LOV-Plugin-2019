@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -27,14 +28,15 @@ public enum AuctionGuiItem {
 
     /**
      * Returns the gui item with all its properties
-     *
      * @return
      */
     public ItemStack toItemStack() {
         ItemStack is = new ItemStack(this.material);
         ItemMeta im = is.getItemMeta();
+        ArrayList<String> lore = new ArrayList<>();
+        lore.add(Arrays.toString(this.lore));
         im.setDisplayName(this.title);
-        im.setLore(Arrays.asList(this.lore));
+        im.setLore(lore);
         is.setItemMeta(im);
         return is;
     }
