@@ -21,7 +21,7 @@ public class HearthstoneAPI extends ModuleListener {
     public interface RPC {
         Promise<HomePoint> getPlayerHearthstone(CharacterId characterId);
         Promise<Boolean> savePlayerHearthstone(HomePoint point);
-        Promise<Boolean> deletePlayerHearthstone(HomePoint point);
+        Promise<Boolean> deletePlayerHearthstone(CharacterId characterId);
     }
 
     private RPC rpc;
@@ -64,15 +64,9 @@ public class HearthstoneAPI extends ModuleListener {
     }
 
     public Promise<Boolean> removeHome(PlayerCharacter pc) {
-        HomePoint point = homes.getIfPresent(pc.getUniqueCharacterId());
+        homes.invalidate(pc.getUniqueCharacterId());
 
-        if(point == null) {
-            Promise<Boolean> promise = new Promise<>();
-            promise.reject(new IllegalStateException("That player does not have a home set."));
-            return promise;
-        }
-
-        return rpc.deletePlayerHearthstone(point);
+        return rpc.deletePlayerHearthstone(pc.getUniqueCharacterId());
     }
 
     /**
@@ -133,10 +127,7 @@ public class HearthstoneAPI extends ModuleListener {
 
         @EventHandler
         public void onPlayerCharacterDelete(PlayerCharacterRemoveEvent event) {
-            onLogin(event.getPlayerCharacter()).onSuccess(val -> {
-                if(val.isPresent())
-                    removeHome(event.getPlayerCharacter());
-            });
+            removeHome(event.getPlayerCharacter());
         }
     }
 }
