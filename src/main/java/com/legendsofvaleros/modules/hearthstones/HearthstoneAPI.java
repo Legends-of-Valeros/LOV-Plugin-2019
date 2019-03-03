@@ -133,7 +133,10 @@ public class HearthstoneAPI extends ModuleListener {
 
         @EventHandler
         public void onPlayerCharacterDelete(PlayerCharacterRemoveEvent event) {
-            removeHome(event.getPlayerCharacter());
+            onLogin(event.getPlayerCharacter()).onSuccess(val -> {
+                if(val.isPresent())
+                    removeHome(event.getPlayerCharacter());
+            });
         }
     }
 }

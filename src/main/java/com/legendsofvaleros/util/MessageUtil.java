@@ -34,6 +34,7 @@ public class MessageUtil {
     }
 
     public static String resetColor(ChatColor c, String msg) {
+        if(msg == null) return msg;
         return msg.replace(ChatColor.RESET.toString(), c.toString());
     }
 

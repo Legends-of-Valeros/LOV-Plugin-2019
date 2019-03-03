@@ -145,9 +145,9 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
         }
 
         if (oldCharacter != null) {
-            logoutCharacter(player, false).on(() -> {
+            logoutCharacter(player, false).on((err, val) -> {
                 loadCharacter(newCharacter);
-            });
+            }, Characters.getInstance().getScheduler()::sync);
         }else
             loadCharacter(newCharacter);
         return true;
@@ -354,9 +354,9 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
         }
 
         // Cannot let the user be a character while making a new one.
-        logoutCharacter(player, false).on(() -> {
+        logoutCharacter(player, false).on((err, val) -> {
             Characters.getInstance().getUiManager().startCharacterCreation(player, number, creationListener);
-        });
+        }, Characters.getInstance().getScheduler()::sync);
     }
 
     /**
