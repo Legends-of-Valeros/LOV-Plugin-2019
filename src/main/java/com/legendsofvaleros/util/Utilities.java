@@ -12,6 +12,7 @@ import com.legendsofvaleros.util.title.TitleUtil;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Painting;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,6 +20,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerCommandEvent;
+import org.bukkit.util.BlockIterator;
+import org.bukkit.util.Vector;
 
 // TODO: Create subclass for listeners?
 @ModuleInfo(name = "Utilities", info = "")
@@ -202,6 +205,24 @@ public class Utilities extends ModuleListener {
         }
 
         loc.getWorld().spawnParticle(particle, loc, data);
+    }
+
+    /**
+     * Checks whether {@code entity} is exposed to sunlight.
+     *
+     * @param entity entity to check
+     * @return true if {@code entity} is exposed to sunlight, otherwise false
+     */
+    public boolean exposedToSunlight(Entity entity) {
+        Vector vector = entity.getLocation().toVector();
+        // When using 256 it loops back to 0.
+        int distance = 255 - vector.getBlockY();
+        BlockIterator it = new BlockIterator(entity.getWorld(), vector, new Vector(0, 1, 0), 0, distance);
+        while (it.hasNext()) {
+            if (it.next().getType().isSolid())
+                return false;
+        }
+        return true;
     }
 
 }

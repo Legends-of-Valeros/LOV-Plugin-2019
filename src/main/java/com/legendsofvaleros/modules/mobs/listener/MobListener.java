@@ -14,12 +14,13 @@ import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import org.bukkit.Location;
 import org.bukkit.Particle;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityCombustByBlockEvent;
+import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
@@ -93,9 +94,17 @@ public class MobListener implements Listener {
         loc.getWorld().spawnParticle(Particle.CLOUD, loc, 8, .5D, 2D, .5D, 0D);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onEntityCombust(EntityCombustEvent event) {
-        // XXX: THIS IS WHY ENTITIES DON'T BURN. MAKE SURE YOU ADD A CHECK SO THEY DONT BURN IN SUNLIGHT.
-        event.setCancelled(true);
+        // Return if interactive event
+        if (event instanceof EntityCombustByBlockEvent
+                || event instanceof EntityCombustByEntityEvent) {
+            return;
+        }
+        if (event.getEntity() instanceof Zombie ||
+                event.getEntity() instanceof Skeleton ||
+                event.getEntity() instanceof PigZombie) {
+            event.setCancelled(true);
+        }
     }
 }
