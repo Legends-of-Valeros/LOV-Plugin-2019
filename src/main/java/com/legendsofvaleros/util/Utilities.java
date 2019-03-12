@@ -116,7 +116,7 @@ public class Utilities extends ModuleListener {
 
                 if (scheduler.getTasksRemaining() > 0) {
                     getLogger().info("Waiting for " + scheduler.getTasksRemaining() + " tasks to complete in " + scheduler.getName() + " (" + scheduler.getCurrentTick() + ")...");
-                    for(InternalTask task : scheduler.getTasksQueued())
+                    for (InternalTask task : scheduler.getTasksQueued())
                         getLogger().info(" -" + task.toString());
                     return;
                 }
@@ -155,8 +155,10 @@ public class Utilities extends ModuleListener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onInteract(PlayerInteractEvent event) {
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+        if (event.getAction() == Action.PHYSICAL) {
             switch (event.getClickedBlock().getType()) {
+                case SOIL:
+                case CROPS:
                 case CHEST:
                 case HOPPER:
                 case FURNACE:
@@ -169,11 +171,13 @@ public class Utilities extends ModuleListener {
                 case DROPPER:
                 case ITEM_FRAME:
                 case BREWING_STAND:
+                case FLOWER_POT:
                     event.setCancelled(true);
                 default:
-                    if (event.getClickedBlock().getType().name().endsWith("_SHULKER_BOX"))
+                    if (event.getClickedBlock().getType().name().endsWith("_SHULKER_BOX") ||
+                            event.getClickedBlock().getType().name().contains("DOOR")) {
                         event.setCancelled(true);
-                    break;
+                    }
             }
         }
 
