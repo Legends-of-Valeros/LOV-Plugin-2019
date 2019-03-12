@@ -28,52 +28,56 @@ import java.util.*;
 
 public class Mob {
     private String id;
-    public String getId() {
-        return id;
-    }
-
     private String group;
+    private String name;
+    private EntityType type;
+    private EntityRarity rarity;
+    private String archetype;
+    @SerializedName("class")
+    private EntityClass entityClass;
+    private int experience = 0;
+    private boolean invincible = false;
+    private Mob.StatsMap stats;
+    private Mob.Options options;
+    private Set<SpawnArea> spawns;
+    private Mob.EquipmentMap equipment;
+
     public String getGroup() {
         return group;
     }
 
-    private String name;
+    public String getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
 
-    private EntityType type;
     public EntityType getEntityType() {
         return type;
     }
 
-    private EntityRarity rarity;
     public EntityRarity getRarity() {
         return rarity;
     }
 
-    private String archetype;
     public String getArchetype() {
         return archetype;
     }
 
-    @SerializedName("class")
-    private EntityClass entityClass;
     public EntityClass getEntityClass() {
         return entityClass;
     }
 
-    private int experience = 0;
     public int getExperience() {
         return experience;
     }
 
-    private boolean invincible = false;
     public boolean isInvincible() {
         return invincible;
     }
 
-    private Mob.StatsMap stats;
     public StatsMap getStats() {
         if (stats == null)
             stats = new StatsMap(new StatsMap.StatData[0]);
@@ -84,21 +88,18 @@ public class Mob {
         return getStats().get(e);
     }
 
-    private Mob.EquipmentMap equipment;
     public EquipmentMap getEquipment() {
         if (equipment == null)
             equipment = new EquipmentMap();
         return equipment;
     }
 
-    private Mob.Options options;
     public Options getOptions() {
         if (options == null)
             options = new Options();
         return options;
     }
 
-    private Set<SpawnArea> spawns;
     public Set<SpawnArea> getSpawns() {
         if (spawns == null)
             spawns = new HashSet<>();
@@ -119,14 +120,13 @@ public class Mob {
     }
 
     public static class StatsMap extends HashMap<Object, Integer> {
+        private boolean locked;
+        private final StatData[] stats;
+
         public static class StatData {
             public String id;
             public double change;
         }
-
-        private boolean locked;
-
-        private final StatData[] stats;
 
         public StatData[] getData() {
             return stats;
@@ -161,8 +161,9 @@ public class Mob {
                         }
                     }
 
-                if (s != null)
+                if (s != null) {
                     put(s, (int) stat.change);
+                }
             }
 
             locked = true;
@@ -223,6 +224,18 @@ public class Mob {
 
     public static class Instance {
         private static final Map<UUID, Instance> INSTANCES = new HashMap<>();
+        public Boolean active = null;
+        public final Mob mob;
+        public final SpawnArea home;
+        public final int level;
+        public CombatEntity ce;
+        public NPC npc;
+
+        public Instance(Mob mob, SpawnArea home, int level) {
+            this.mob = mob;
+            this.home = home;
+            this.level = level;
+        }
 
         public static Instance get(UUID uuid) {
             return INSTANCES.get(uuid);
@@ -232,30 +245,12 @@ public class Mob {
             return get(entity.getUniqueId());
         }
 
-        public Boolean active = null;
-
-        public final Mob mob;
-        public final SpawnArea home;
-
-        public final int level;
-
-        public CombatEntity ce;
-        public NPC npc;
-
-        public Instance(Mob mob, SpawnArea home, int level) {
-            this.mob = mob;
-            this.home = home;
-
-            this.level = level;
-        }
-
         public void spawn(Location loc) {
             if (active == Boolean.FALSE)
                 throw new IllegalStateException("Mob instance already destroyed.");
             active = true;
 
             npc = NPCsController.getInstance().createNPC(mob.type, "");
-
             npc.getNavigator().getLocalParameters().updatePathRate(20)
                     .useNewPathfinder(true)
                     .stuckAction(AIStuckAction.INSTANCE)
@@ -297,17 +292,15 @@ public class Mob {
             }
 
             npc.addTrait(new MobTrait(this));
-
             npc.spawn(loc);
-
             INSTANCES.put(npc.getEntity().getUniqueId(), this);
-
             ce = CombatEngine.getEntity((LivingEntity) npc.getEntity());
 
-            if(ce != null)
+            if (ce != null) {
                 MobsController.ai().bind(ce, StaticAI.AGGRESSIVE);
-            else
-                System.out.println("isNpc : " + NPCsController.getInstance().isStaticNPC((LivingEntity)npc.getEntity()));
+            } else {
+                System.out.println("isNpc : " + NPCsController.getInstance().isStaticNPC((LivingEntity) npc.getEntity()));
+            }
 
             home.getEntities().add(this);
         }

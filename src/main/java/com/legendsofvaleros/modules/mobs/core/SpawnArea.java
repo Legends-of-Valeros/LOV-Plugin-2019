@@ -29,9 +29,13 @@ public class SpawnArea {
     private transient TextLine textEntityId, textLevel, textRadius, textPadding, textEntities, textInfo, textInterval;
 
     private int id;
-    public int getId() { return id; }
+
+    public int getId() {
+        return id;
+    }
 
     private World world;
+
     public World getWorld() {
         return world;
     }
@@ -41,6 +45,7 @@ public class SpawnArea {
     private int z;
 
     private transient Location location;
+
     public Location getLocation() {
         if (location == null)
             location = new Location(getWorld(), x, y, z);
@@ -52,6 +57,7 @@ public class SpawnArea {
      * radius around the point.
      */
     private int radius;
+
     public int getRadius() {
         return radius;
     }
@@ -61,6 +67,7 @@ public class SpawnArea {
      * around the spawn radius.
      */
     private int padding;
+
     public int getPadding() {
         return padding;
     }
@@ -69,11 +76,13 @@ public class SpawnArea {
      * The ID of the entities that spawn here.
      */
     private String entityId;
+
     public String getEntityId() {
         return entityId;
     }
 
     private transient Mob mob;
+
     public Mob getMob() {
         if (mob == null)
             mob = MobsController.getInstance().getEntity(entityId);
@@ -102,40 +111,57 @@ public class SpawnArea {
     }
 
     private short count = 1;
+
     public int getCount() {
         return count;
     }
-    public void setCount(short count) { this.count = count; }
+
+    public void setCount(short count) {
+        this.count = count;
+    }
 
     private int interval = 60;
+
     public int getInterval() {
         return interval;
     }
-    public void setInterval(int interval) { this.interval = interval; }
+
+    public void setInterval(int interval) {
+        this.interval = interval;
+    }
 
     private byte chance = 100;
+
     public byte getChance() {
         return chance;
     }
-    public void setChance(byte chance) { this.chance = chance; }
+
+    public void setChance(byte chance) {
+        this.chance = chance;
+    }
 
     private transient long lastInterval = 0;
+
     public long getLastInterval() {
         return lastInterval;
     }
+
     public void markInterval() {
         lastInterval = System.currentTimeMillis();
     }
 
     private transient int despawnedEnemies = 0;
+
     public int getDespawnedEnemies() {
         return despawnedEnemies;
     }
+
     public void repopulated() {
         despawnedEnemies = 0;
     }
 
     private transient List<Mob.Instance> entities;
+
     public List<Mob.Instance> getEntities() {
         if (entities == null)
             entities = new ArrayList<>();
@@ -143,6 +169,7 @@ public class SpawnArea {
     }
 
     private transient Location ground;
+
     public Location getGround() {
         if (ground == null) {
             World world = getWorld();
@@ -168,7 +195,7 @@ public class SpawnArea {
     }
 
     public void updateStats() {
-        if(hologram != null) {
+        if (hologram != null) {
             textEntities.setText(
                     getEntities()
                             .size() +
@@ -179,12 +206,12 @@ public class SpawnArea {
     }
 
     public void setDebugInfo(String info) {
-        if(hologram != null)
+        if (hologram != null)
             textInfo.setText(info);
     }
 
     public Hologram getHologram() {
-        if(hologram == null) {
+        if (hologram == null) {
             hologram = HologramsAPI.createHologram(LegendsOfValeros.getInstance(), getLocation());
             textEntityId = hologram.appendTextLine(ChatColor.GOLD + "" + ChatColor.BOLD + entityId);
             textLevel = hologram.appendTextLine("[" + getLevelRange()[0] + " - " + getLevelRange()[1] + "]");
@@ -195,7 +222,6 @@ public class SpawnArea {
             textInterval = hologram.appendTextLine("");
 
             updateStats();
-
             hologram.getVisibilityManager().setVisibleByDefault(LegendsOfValeros.getMode().allowEditing());
 
             ItemLine touchLine = hologram.appendItemLine(new ItemStack(Material.EYE_OF_ENDER));
@@ -214,7 +240,6 @@ public class SpawnArea {
         despawnedEnemies = 0;
 
         if (entities == null || entities.size() == 0) return;
-
         Mob.Instance instance;
 
         int i = 0;
@@ -227,21 +252,20 @@ public class SpawnArea {
             }
 
             instance.destroy();
-
             despawnedEnemies++;
         }
 
-        if (entities.size() == 0)
+        if (entities.size() == 0) {
             entities = null;
+        }
     }
 
     public Mob.Instance spawn(Mob mob) {
         World world = getWorld();
         Location ground = getGround();
 
-        if(radius < 0) {
+        if (radius < 0) {
             radius = 0;
-
             MessageUtil.sendException(MobsController.getInstance(), "Spawn '" + id + "' has a radius of < 0, setting it to 0.");
         }
 
@@ -266,11 +290,11 @@ public class SpawnArea {
 
     public void delete() {
         Mob mob = getMob();
-        if (mob != null)
+        if (mob != null) {
             mob.getSpawns().remove(this);
+        }
 
         clear();
-
         if (hologram != null) {
             hologram.delete();
             hologram = null;

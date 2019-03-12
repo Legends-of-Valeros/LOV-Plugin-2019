@@ -39,10 +39,12 @@ import org.bukkit.inventory.EquipmentSlot;
 @ModuleInfo(name = "Mobs", info = "")
 public class MobsController extends MobsAPI {
     private static MobsController instance;
-    public static MobsController getInstance() { return instance; }
+
+    public static MobsController getInstance() {
+        return instance;
+    }
 
     private BehaviorEngine ai;
-
     public static BehaviorEngine ai() {
         return instance.ai;
     }
@@ -54,35 +56,35 @@ public class MobsController extends MobsAPI {
         this.instance = this;
 
         APIController.getInstance().getGsonBuilder()
-            .registerTypeAdapter(Mob.StatsMap.class, (JsonDeserializer<Mob.StatsMap>) (json, typeOfT, context) ->
-                new Mob.StatsMap(context.deserialize(json.getAsJsonArray(), Mob.StatsMap.StatData[].class)))
-            .registerTypeAdapter(Equipment.EquipmentSlot.class, (JsonDeserializer<Equipment.EquipmentSlot>) (json, typeOfT, context) -> {
-                String name = json.getAsString().toUpperCase();
+                .registerTypeAdapter(Mob.StatsMap.class, (JsonDeserializer<Mob.StatsMap>) (json, typeOfT, context) ->
+                        new Mob.StatsMap(context.deserialize(json.getAsJsonArray(), Mob.StatsMap.StatData[].class)))
+                .registerTypeAdapter(Equipment.EquipmentSlot.class, (JsonDeserializer<Equipment.EquipmentSlot>) (json, typeOfT, context) -> {
+                    String name = json.getAsString().toUpperCase();
 
-                if (name.equals("OFFHAND"))
-                    name = "OFF_HAND";
+                    if (name.equals("OFFHAND"))
+                        name = "OFF_HAND";
 
-                try {
-                    return Equipment.EquipmentSlot.valueOf(name);
-                } catch (Exception e) {
                     try {
-                        switch (EquipmentSlot.valueOf(name)) {
-                            case HEAD:
-                                return Equipment.EquipmentSlot.HELMET;
-                            case CHEST:
-                                return Equipment.EquipmentSlot.CHESTPLATE;
-                            case LEGS:
-                                return Equipment.EquipmentSlot.LEGGINGS;
-                            case FEET:
-                                return Equipment.EquipmentSlot.BOOTS;
-                            default:
-                                return null;
+                        return Equipment.EquipmentSlot.valueOf(name);
+                    } catch (Exception e) {
+                        try {
+                            switch (EquipmentSlot.valueOf(name)) {
+                                case HEAD:
+                                    return Equipment.EquipmentSlot.HELMET;
+                                case CHEST:
+                                    return Equipment.EquipmentSlot.CHESTPLATE;
+                                case LEGS:
+                                    return Equipment.EquipmentSlot.LEGGINGS;
+                                case FEET:
+                                    return Equipment.EquipmentSlot.BOOTS;
+                                default:
+                                    return null;
+                            }
+                        } catch (Exception e1) {
+                            throw new RuntimeException("Unknown equipment slot. Offender: " + name);
                         }
-                    } catch (Exception e1) {
-                        throw new RuntimeException("Unknown equipment slot. Offender: " + name);
                     }
-                }
-            });
+                });
 
         getLogger().info("AI will update all entities over the course of " + LegendsOfValeros.getInstance().getConfig().getInt("ai-update-smear", 20) + " ticks.");
         ai = new BehaviorEngine(getConfig().getInt("ai-update-smear", 10));
@@ -114,4 +116,6 @@ public class MobsController extends MobsAPI {
                 if (e instanceof LivingEntity && !(e instanceof Player))
                     e.remove();
     }
+
+
 }

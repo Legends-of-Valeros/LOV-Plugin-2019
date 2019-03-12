@@ -15,8 +15,8 @@ public class MobTrait extends Trait {
 
 	public final Mob.Instance instance;
 
-	TextLine nameplate;
-	ItemLine rarityPlate;
+	private TextLine nameplate;
+	private ItemLine rarityPlate;
 	
 	public MobTrait(Mob.Instance instance) {
 		super(TRAIT_NAME);
