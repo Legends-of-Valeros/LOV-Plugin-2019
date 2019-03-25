@@ -51,7 +51,10 @@ public class ThreatBehavior {
                     }
                     ce.getThreat().editThreat((LivingEntity) entity, 10);
 
-                    return NodeStatus.SUCCESS;
+                    if (ce.getThreat().getThreat((LivingEntity) entity) > 0) {
+                        return NodeStatus.SUCCESS;
+                    }
+
                 }
 
             return NodeStatus.FAIL;
