@@ -196,11 +196,7 @@ public class SpawnArea {
 
     public void updateStats() {
         if (hologram != null) {
-            textEntities.setText(
-                    getEntities()
-                            .size() +
-                            " / " +
-                            despawnedEnemies);
+            textEntities.setText(getEntities().size() + " / " + despawnedEnemies);
             textInterval.setText(Instant.ofEpochMilli(System.currentTimeMillis()).toString());
         }
     }

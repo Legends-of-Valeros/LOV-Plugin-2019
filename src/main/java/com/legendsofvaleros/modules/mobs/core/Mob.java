@@ -110,7 +110,7 @@ public class Mob {
     public boolean equals(Object obj) {
         if (obj instanceof Mob) {
             Mob mob = (Mob) obj;
-            return mob != null && (this == mob || this.id.equals(mob.id));
+            return this == mob || this.id.equals(mob.id);
         } else if (obj instanceof Instance) {
             Mob mob = ((Instance) obj).mob;
             return mob != null && (this == mob || this.id.equals(mob.id));

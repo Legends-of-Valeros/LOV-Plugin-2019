@@ -28,26 +28,29 @@ public class LootListener implements Listener {
 
         Mob.Instance entity = Mob.Instance.get(event.getDied().getLivingEntity());
         if (entity == null) return;
-        if (entity.mob.getOptions().loot == null) return;
+        if (entity.mob.getOptions().loot == null) {
+            return;
+        }
 
-        if (event.getKiller() == null || !event.getKiller().isPlayer()) return;
-        if (!Characters.isPlayerCharacterLoaded((Player) event.getKiller().getLivingEntity())) return;
+        if (event.getKiller() == null || !event.getKiller().isPlayer() || !Characters.isPlayerCharacterLoaded((Player) event.getKiller().getLivingEntity())) {
+            return;
+        }
 
         PlayerCharacter pc = Characters.getPlayerCharacter((Player) event.getKiller().getLivingEntity());
-
         Location dieLoc = event.getDied().getLivingEntity().getLocation();
-
         Map<String, AtomicInteger> connections = new HashMap<>();
 
         for (Mob.Options.LootData data : entity.mob.getOptions().loot) {
             AtomicInteger i;
 
             if (data.connect != null) {
-                if (!connections.containsKey(data.connect))
+                if (!connections.containsKey(data.connect)) {
                     connections.put(data.connect, new AtomicInteger());
+                }
                 i = connections.get(data.connect);
-            } else
+            } else {
                 i = null;
+            }
 
             LootTable table = LootController.getInstance().getTable(data.id);
             if (table == null) {
@@ -58,15 +61,21 @@ public class LootListener implements Listener {
             double chance = (data.chance == null ? table.chance : data.chance);
 
             for (int j = (i == null ? 0 : i.get()); j < data.amount; j++) {
-                if (RAND.nextDouble() > chance)
+                if (RAND.nextDouble() > chance) {
                     continue;
+                }
 
                 // If we have dropped all possible in the connection.
-                if (i != null)
-                    if (data.amount - i.getAndIncrement() < 0) break;
+                if (i != null) {
+                    if (data.amount - i.getAndIncrement() < 0) {
+                        break;
+                    }
+                }
 
                 LootTable.Item item = table.nextItem();
-                if (item == null) continue;
+                if (item == null) {
+                    continue;
+                }
 
                 ItemUtil.dropItem(dieLoc, item.getItem().newInstance(), pc);
             }

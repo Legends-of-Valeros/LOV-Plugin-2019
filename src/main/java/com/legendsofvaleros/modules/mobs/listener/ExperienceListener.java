@@ -16,33 +16,41 @@ import org.bukkit.event.Listener;
 public class ExperienceListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityDeath(CombatEngineDeathEvent event) {
-        if(event.getDied().isPlayer()) return;
+        if (event.getDied().isPlayer()) {
+            return;
+        }
 
         Mob.Instance entity = Mob.Instance.get(event.getDied().getLivingEntity());
-        if(entity == null) return;
+        if (entity == null) {
+            return;
+        }
 
-        if(event.getKiller() == null || !event.getKiller().isPlayer()) return;
-        if(!Characters.isPlayerCharacterLoaded((Player)event.getKiller().getLivingEntity())) return;
+        if (event.getKiller() == null || !event.getKiller().isPlayer()) {
+            return;
+        }
+        if (!Characters.isPlayerCharacterLoaded((Player) event.getKiller().getLivingEntity())) {
+            return;
+        }
 
-        PlayerCharacter pc = Characters.getPlayerCharacter((Player)event.getKiller().getLivingEntity());
+        PlayerCharacter pc = Characters.getPlayerCharacter((Player) event.getKiller().getLivingEntity());
 
         // Parties is optional. If the parties plugin doesn't exist, just give xp to the murderer.
-        if(!Modules.isLoaded(PartiesController.class)) {
+        if (!Modules.isLoaded(PartiesController.class)) {
             int xp = ExperienceHelper.getExperience(pc, entity);
             pc.getExperience().addExperience(xp, false);
-        }else{
+        } else {
             PlayerParty party = PartiesController.getInstance().getPartyByMember(pc.getUniqueCharacterId());
             if (party != null) {
                 double xpMod = (0.25 * (party.getOnlineMembers().size() - 2));
                 // Only apply to parties > 2
                 xpMod = (xpMod > 0 ? xpMod + 1 : 1);
-
                 PlayerCharacter highestPC = pc;
 
                 for (Player p : party.getOnlineMembers()) {
                     PlayerCharacter ppc = Characters.getPlayerCharacter(p);
-                    if (ppc.getExperience().getLevel() > highestPC.getExperience().getLevel())
+                    if (ppc.getExperience().getLevel() > highestPC.getExperience().getLevel()) {
                         highestPC = ppc;
+                    }
                 }
 
                 int xp = (int) (ExperienceHelper.getExperience(highestPC, entity) * xpMod);

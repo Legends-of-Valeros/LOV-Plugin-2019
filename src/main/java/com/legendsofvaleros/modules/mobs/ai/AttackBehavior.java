@@ -35,7 +35,8 @@ public class AttackBehavior {
 
     public static final BehaviorAction THREAT = new BehaviorAction() {
         @Override
-        public @Nonnull NodeStatus onStep(CombatEntity ce, long ticks) {
+        public @Nonnull
+        NodeStatus onStep(CombatEntity ce, long ticks) {
             Long time = swingTime.getIfPresent(ce.getLivingEntity().getUniqueId());
 
             if (time == null || time - System.currentTimeMillis() <= 0) {
@@ -44,8 +45,9 @@ public class AttackBehavior {
                 Gear.Instance gear = Gear.Instance.fromStack(ce.getLivingEntity().getEquipment().getItemInMainHand());
                 if (gear != null) {
                     GearUseSpeed.Persist use = gear.getPersist(GearUseSpeed.Component.class);
-                    if (use != null)
-                        time = System.currentTimeMillis() + (long)(use.speed * 1000L);
+                    if (use != null) {
+                        time = System.currentTimeMillis() + (long) (use.speed * 1000L);
+                    }
                 }
 
                 time += (long) (1000L * rand.nextDouble());

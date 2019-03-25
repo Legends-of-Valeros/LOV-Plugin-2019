@@ -11,7 +11,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class MobTrait extends Trait {
-	public static final String TRAIT_NAME = "fuck_you_citizens";
+	public static final String TRAIT_NAME = "LOVMobTrait";
 
 	public final Mob.Instance instance;
 

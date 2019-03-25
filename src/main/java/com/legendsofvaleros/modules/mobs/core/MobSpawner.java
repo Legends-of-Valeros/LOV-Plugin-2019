@@ -44,7 +44,7 @@ public class MobSpawner {
         Collection<SpawnArea> loaded = MobsController.getInstance().getLoadedSpawns();
 
         int block = (int) (time % allUpdateInterval);
-        int blockSize = (int) Math.ceil((double)loaded.size() / allUpdateInterval);
+        int blockSize = (int) Math.ceil((double) loaded.size() / allUpdateInterval);
 
         loaded.stream()
                 .skip(block * blockSize).limit(blockSize)
@@ -71,12 +71,12 @@ public class MobSpawner {
 
                     List<org.bukkit.entity.Entity> entities = new ArrayList<>(
                             world.getNearbyEntities(spawnLocation,
-                                                    spawn.getRadius() + 25,
-                                                    spawn.getRadius() + 20,
-                                                    spawn.getRadius() + 25));
+                                    spawn.getRadius() + 25,
+                                    spawn.getRadius() + 20,
+                                    spawn.getRadius() + 25));
                     CombatEntity ce;
                     for (org.bukkit.entity.Entity e : entities) {
-                        if(!(e instanceof Player)) continue;
+                        if (!(e instanceof Player)) continue;
                         ce = CombatEngine.getEntity((Player) e);
                         if (ce != null && ce.isPlayer()) {
                             playerNearby = true;
@@ -87,12 +87,11 @@ public class MobSpawner {
                     if (!playerNearby) {
                         if (spawn.getEntities().size() > 0) {
                             distance++;
-
                             spawn.clear();
                         }
 
                         spawn.setDebugInfo("No players nearby");
-                    }else{
+                    } else {
                         Mob mob = spawn.getMob();
                         if (mob == null) {
                             Bukkit.broadcastMessage(ChatColor.RED + "[!] Unknown instance ID. Offender: " + spawn.getEntityId() + " at " + spawn.getLocation());
@@ -105,8 +104,9 @@ public class MobSpawner {
                             spawn.repopulated();
 
                             int entityCount = spawn.getDespawnedEnemies();
-                            while (entityCount-- > 0)
+                            while (entityCount-- > 0) {
                                 spawn.spawn(mob);
+                            }
                         }
 
                         // Make sure enough time has passed before the spawn is updated
