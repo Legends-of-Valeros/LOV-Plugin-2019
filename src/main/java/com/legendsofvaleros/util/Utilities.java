@@ -103,7 +103,7 @@ public class Utilities extends ModuleListener {
 
         for (Player p : Bukkit.getOnlinePlayers())
             try {
-                p.kickPlayer("Server shutting down...");
+                p.kickPlayer("Legends of Valeros is restarting.");
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
