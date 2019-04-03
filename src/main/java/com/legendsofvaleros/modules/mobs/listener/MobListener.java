@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.mobs.listener;
 
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.core.CombatProfile;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEntityCreateEvent;

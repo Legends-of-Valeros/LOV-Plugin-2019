@@ -2,12 +2,15 @@ package com.legendsofvaleros.modules.mobs.listener;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.damage.DamageHistory;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.gear.core.ItemUtil;
 import com.legendsofvaleros.modules.loot.LootController;
 import com.legendsofvaleros.modules.loot.LootTable;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.util.MessageUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -29,6 +32,7 @@ public class LootListener implements Listener {
         Mob.Instance entity = Mob.Instance.get(event.getDied().getLivingEntity());
         if (entity == null) return;
         if (entity.mob.getOptions().loot == null) {
+            MessageUtil.sendError(Bukkit.getConsoleSender(), "No loot found for entity " + entity.mob.getName());
             return;
         }
 
@@ -36,7 +40,10 @@ public class LootListener implements Listener {
             return;
         }
 
-        PlayerCharacter pc = Characters.getPlayerCharacter((Player) event.getKiller().getLivingEntity());
+        //Get the person that did the most damage
+        DamageHistory history = CombatEngine.getInstance().getDamageHistory(event.getDied().getLivingEntity());
+        PlayerCharacter pc = Characters.getPlayerCharacter((Player) history.getHighestDamager());
+
         Location dieLoc = event.getDied().getLivingEntity().getLocation();
         Map<String, AtomicInteger> connections = new HashMap<>();
 
