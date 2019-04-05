@@ -44,6 +44,12 @@ public class LootListener implements Listener {
         DamageHistory history = CombatEngine.getInstance().getDamageHistory(event.getDied().getLivingEntity());
         PlayerCharacter pc = Characters.getPlayerCharacter((Player) history.getHighestDamager());
 
+        //fallback if nobody did damage before
+        if (pc == null) {
+            MessageUtil.sendDebug(Bukkit.getConsoleSender(), "Loot Listener - No damage history found for killer");
+            pc = Characters.getPlayerCharacter((Player) event.getKiller());
+        }
+
         Location dieLoc = event.getDied().getLivingEntity().getLocation();
         Map<String, AtomicInteger> connections = new HashMap<>();
 
@@ -66,6 +72,12 @@ public class LootListener implements Listener {
             }
 
             double chance = (data.chance == null ? table.chance : data.chance);
+            if (table.chance == 0) {
+                MessageUtil.sendException(LootController.getInstance().moduleName, "Table has 0 drop chanche:" + table.id);
+            }
+            if (data.chance != null) {
+                MessageUtil.sendDebug(Bukkit.getConsoleSender(), "Drop chanche of LootData" + data.id + ": " + data.chance);
+            }
 
             for (int j = (i == null ? 0 : i.get()); j < data.amount; j++) {
                 if (RAND.nextDouble() > chance) {
@@ -83,7 +95,6 @@ public class LootListener implements Listener {
                 if (item == null) {
                     continue;
                 }
-
                 ItemUtil.dropItem(dieLoc, item.getItem().newInstance(), pc);
             }
         }
