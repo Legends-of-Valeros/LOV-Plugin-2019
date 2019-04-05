@@ -128,10 +128,11 @@ public class Utilities extends ModuleListener {
             // Once all other schedulers have shut down, start the shutdown of my scheduler
             getScheduler().shutdown();
 
-            if (getScheduler().getTasksRemaining() > 0)
+            if (getScheduler().getTasksRemaining() > 0) {
                 getLogger().info("Waiting for " + getScheduler().getTasksRemaining() + " tasks to complete...");
-            else
+            } else {
                 Bukkit.shutdown();
+            }
         }, 20L, 20L);
     }
 
@@ -209,7 +210,6 @@ public class Utilities extends ModuleListener {
 
     /**
      * Checks whether {@code entity} is exposed to sunlight.
-     *
      * @param entity entity to check
      * @return true if {@code entity} is exposed to sunlight, otherwise false
      */

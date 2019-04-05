@@ -60,7 +60,7 @@ public class ItemListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDropItem(PlayerDropItemEvent event) {
-        if(event.isCancelled()) return;
+        if (event.isCancelled()) return;
 
         Gear.Instance instance = Gear.Instance.fromStack(event.getItemDrop().getItemStack());
 
@@ -80,7 +80,7 @@ public class ItemListener implements Listener {
                     public void onAccept(GUI gui, Player p) {
                         gui.close(p);
 
-                        if(!ItemUtil.removeItem(event.getPlayer(), instance.gear, amount))
+                        if (!ItemUtil.removeItem(event.getPlayer(), instance.gear, amount))
                             MessageUtil.sendError(event.getPlayer(), "Unable to remove that, for some reason...");
                         else
                             MessageUtil.sendUpdate(event.getPlayer(), instance.getName() + " has been destroyed.");
@@ -118,8 +118,14 @@ public class ItemListener implements Listener {
             event.getItem().remove();
 
             Gear.Instance instance = Gear.Instance.fromStack(event.getItem().getItemStack());
-            if (instance != null)
+            if (instance != null) {
                 ItemUtil.giveItem(pc, instance);
+                //dont log currency drops since they are logged on their own
+                if (instance.getModelId().toLowerCase().contains("crown")) {
+                    return;
+                }
+                MessageUtil.sendUpdate(pc.getPlayer(), "Picked up " + instance.getName());
+            }
         }
     }
 
@@ -261,8 +267,8 @@ public class ItemListener implements Listener {
                 event.getAttacker().getLivingEntity().getEquipment().setItemInMainHand(gear.toStack());
 
             event.newDamageModifierBuilder("GearController")
-                        .setModifierType(ValueModifierBuilder.ModifierType.FLAT_EDIT)
-                        .setValue(e.getDamage())
+                    .setModifierType(ValueModifierBuilder.ModifierType.FLAT_EDIT)
+                    .setValue(e.getDamage())
                     .build();
         }
     }

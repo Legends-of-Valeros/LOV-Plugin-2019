@@ -187,7 +187,6 @@ public class Mob {
         public String skin;
         public Distance distance = new Distance();
         public Boolean ghost = false;
-        public Map<CharacterId, Integer> damager = new HashMap<>();
         public Map<CharacterId, Long> leashed = new HashMap<>();
 
         public static class LootData {
@@ -255,7 +254,7 @@ public class Mob {
 
             npc = NPCsController.getInstance().createNPC(mob.type, "");
             npc.getNavigator().getLocalParameters().updatePathRate(20)
-                    .useNewPathfinder(true)
+                    .useNewPathfinder(false)
                     .stuckAction(AIStuckAction.INSTANCE)
                     .avoidWater(false);
 

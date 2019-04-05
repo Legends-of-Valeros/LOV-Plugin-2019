@@ -73,7 +73,7 @@ public class LootListener implements Listener {
 
             double chance = (data.chance == null ? table.chance : data.chance);
             if (table.chance == 0) {
-                MessageUtil.sendException(LootController.getInstance().moduleName, "Table has 0 drop chanche:" + table.id);
+                MessageUtil.sendSevereException(LootController.getInstance().moduleName, "Table has 0 drop chanche:" + table.id);
             }
             if (data.chance != null) {
                 MessageUtil.sendDebug(Bukkit.getConsoleSender(), "Drop chanche of LootData" + data.id + ": " + data.chance);

@@ -111,4 +111,8 @@ public class DamageHistory {
         return highestDamager != null ? highestDamager.getKey() : null;
     }
 
+    public boolean didDamage(LivingEntity ent) {
+        return damagers.containsKey(ent);
+    }
+
 }
