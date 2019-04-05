@@ -10,7 +10,7 @@ import com.legendsofvaleros.modules.characters.skilleffect.MetaEffectInstance;
 import com.legendsofvaleros.modules.characters.skilleffect.SkillEffect;
 import com.legendsofvaleros.modules.characters.skilleffect.SkillEffects;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.damage.DamageHistory;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import org.bukkit.*;

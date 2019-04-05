@@ -7,7 +7,7 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLevelChange
 import com.legendsofvaleros.modules.characters.util.ProgressionUtils;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.api.EntityStats;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.core.CombatProfile;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;

@@ -14,7 +14,7 @@ import org.bukkit.event.HandlerList;
  * decreases over time, or if threat is added manually through the threat API.
  * <p>
  * Threat is a measurement of how high priority a given enemy should be. The enemy entity with the
- * highest threat will be an attacking entity's highest-priority target (unless they are a human and
+ * highest threat will be an attacking entity's highest-priority target (unless they are a humanH and
  * have free will).
  */
 public class DamageAddsThreatEvent extends Event implements Cancellable {

@@ -7,7 +7,7 @@ import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.bank.core.Currency;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.pvp.integration.BankIntegration;
 import com.legendsofvaleros.modules.pvp.listener.PvPListener;
 import org.bukkit.ChatColor;

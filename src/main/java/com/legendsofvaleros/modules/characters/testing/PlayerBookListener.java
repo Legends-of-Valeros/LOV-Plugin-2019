@@ -10,7 +10,7 @@ import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.entityclass.StatModifierModel;
 import com.legendsofvaleros.modules.characters.events.PlayerInformationBookEvent;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import com.legendsofvaleros.util.TextBuilder;
 import org.bukkit.ChatColor;

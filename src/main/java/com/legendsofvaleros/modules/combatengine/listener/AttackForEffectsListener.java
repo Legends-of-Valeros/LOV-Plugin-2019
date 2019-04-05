@@ -1,5 +1,6 @@
-package com.legendsofvaleros.modules.combatengine.core;
+package com.legendsofvaleros.modules.combatengine.listener;
 
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineAttackMissEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEnginePhysicalDamageEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineSpellDamageEvent;

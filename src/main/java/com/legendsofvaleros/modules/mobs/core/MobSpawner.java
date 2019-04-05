@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.mobs.core;
 
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.mobs.MobsController;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

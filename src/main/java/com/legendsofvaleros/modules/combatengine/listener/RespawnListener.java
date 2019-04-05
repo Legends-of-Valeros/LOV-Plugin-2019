@@ -1,5 +1,6 @@
-package com.legendsofvaleros.modules.combatengine.core;
+package com.legendsofvaleros.modules.combatengine.listener;
 
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.api.EntityStats;
 import com.legendsofvaleros.modules.combatengine.config.RespawnConfig;

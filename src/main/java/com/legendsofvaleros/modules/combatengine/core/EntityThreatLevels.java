@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.combatengine.core;
 
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.api.EntityThreat;
 import com.legendsofvaleros.modules.combatengine.config.ThreatConfig;
@@ -36,7 +37,7 @@ public class EntityThreatLevels implements EntityThreat {
     private static CheckTask checkTask;
     private static Set<EntityThreatLevels> trackers;
 
-    static void onEnable(ThreatConfig threatConfig) {
+    public static void onEnable(ThreatConfig threatConfig) {
         config = threatConfig;
 
         trackers = new HashSet<>();

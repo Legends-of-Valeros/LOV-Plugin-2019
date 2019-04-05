@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.combatengine.damage;
 
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.config.CombatEngineConfig;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.core.MinecraftHealthHandler;
 import com.legendsofvaleros.modules.combatengine.damage.physical.PhysicalType;
 import com.legendsofvaleros.modules.combatengine.damage.spell.SpellType;
@@ -32,299 +32,303 @@ import java.util.Map;
  */
 public class DamageEngine {
 
-	private HitAndCritCalculator hitAndCit;
-	private DamageAttributer attributer;
-	public DamageAttributer getAttributer() { return attributer; }
-	
-	private MinecraftHealthHandler mcHealth;
-	private DamageMultiplier multiplierHandler;
+    private HitAndCritCalculator hitAndCit;
+    private DamageAttributer attributer;
 
-	public DamageEngine(CombatEngineConfig config, MinecraftHealthHandler mcHealth) {
-		this.mcHealth = mcHealth;
-		this.hitAndCit = new HitAndCritCalculator(config, config);
-		this.attributer = new DamageAttributer(config);
-		this.multiplierHandler = new DamageMultiplier(config, config);
+    public DamageAttributer getAttributer() {
+        return attributer;
+    }
 
-		CombatEngine.getInstance().registerEvents(new DeathListener());
-		CombatEngine.getInstance().registerEvents(new Debugging());
-	}
+    private MinecraftHealthHandler mcHealth;
+    private DamageMultiplier multiplierHandler;
 
-	public boolean causeSpellDamage(LivingEntity target, LivingEntity attacker, SpellType type,
-			double baseDamage, Location damageOrigin, boolean canMiss, boolean canCrit) {
-		if (target == null || baseDamage <= 0) {
-			return false;
-		}
-		if (type == null) {
-			type = SpellType.OTHER;
-		}
+    public DamageEngine(CombatEngineConfig config, MinecraftHealthHandler mcHealth) {
+        this.mcHealth = mcHealth;
+        this.hitAndCit = new HitAndCritCalculator(config, config);
+        this.attributer = new DamageAttributer(config);
+        this.multiplierHandler = new DamageMultiplier(config, config);
 
-		CombatEntity ceTarget = CombatEngine.getEntity(target);
-		if(ceTarget == null)
-			return false;
+        CombatEngine.getInstance().registerEvents(new DeathListener());
+        CombatEngine.getInstance().registerEvents(new Debugging());
+    }
 
-		CombatEntity ceAttacker = CombatEngine.getEntity(attacker);
+    public boolean causeSpellDamage(LivingEntity target, LivingEntity attacker, SpellType type,
+                                    double baseDamage, Location damageOrigin, boolean canMiss, boolean canCrit) {
+        if (target == null || baseDamage <= 0) {
+            return false;
+        }
+        if (type == null) {
+            type = SpellType.OTHER;
+        }
 
-		// does the attack hit?
-		if (canMiss && !hitAndCit.doesAttackHit(ceTarget, ceAttacker)) {
-			CombatEngineAttackMissEvent event = new CombatEngineAttackMissEvent(ceTarget, ceAttacker);
-			Bukkit.getServer().getPluginManager().callEvent(event);
-			return false;
-		}
+        CombatEntity ceTarget = CombatEngine.getEntity(target);
+        if (ceTarget == null)
+            return false;
 
-		boolean crit = canCrit && hitAndCit.doesAttackCrit(ceTarget, ceAttacker);
+        CombatEntity ceAttacker = CombatEngine.getEntity(attacker);
 
-		CombatEngineSpellDamageEvent event =
-				new CombatEngineSpellDamageEvent(ceTarget, ceAttacker, damageOrigin, baseDamage, crit, type);
+        // does the attack hit?
+        if (canMiss && !hitAndCit.doesAttackHit(ceTarget, ceAttacker)) {
+            CombatEngineAttackMissEvent event = new CombatEngineAttackMissEvent(ceTarget, ceAttacker);
+            Bukkit.getServer().getPluginManager().callEvent(event);
+            return false;
+        }
 
-		event.newDamageModifierBuilder("Physical Attack Bonus")
-				.setModifierType(ValueModifierBuilder.ModifierType.FLAT_EDIT)
-				.setValue(multiplierHandler.getSpellDamageBonus(ceAttacker, type))
-				.build();
+        boolean crit = canCrit && hitAndCit.doesAttackCrit(ceTarget, ceAttacker);
 
-		event.newDamageModifierBuilder("Armor Penalty")
-				.setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
-				.setValue(multiplierHandler.getSpellDamageArmorPenalty(ceTarget))
-				.build();
+        CombatEngineSpellDamageEvent event =
+                new CombatEngineSpellDamageEvent(ceTarget, ceAttacker, damageOrigin, baseDamage, crit, type);
 
-		event.newDamageModifierBuilder("Resistance Penalty")
-				.setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
-				.setValue(multiplierHandler.getSpellResistancePenalty(ceTarget, type))
-				.build();
+        event.newDamageModifierBuilder("Physical Attack Bonus")
+                .setModifierType(ValueModifierBuilder.ModifierType.FLAT_EDIT)
+                .setValue(multiplierHandler.getSpellDamageBonus(ceAttacker, type))
+                .build();
 
-		if(crit)
-			event.newDamageModifierBuilder("Critical")
-					.setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
-					.setValue(multiplierHandler.getCritDamageMultiplier())
-					.build();
+        event.newDamageModifierBuilder("Armor Penalty")
+                .setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
+                .setValue(multiplierHandler.getSpellDamageArmorPenalty(ceTarget))
+                .build();
 
-		return handleEvent(event);
-	}
+        event.newDamageModifierBuilder("Resistance Penalty")
+                .setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
+                .setValue(multiplierHandler.getSpellResistancePenalty(ceTarget, type))
+                .build();
 
-	public boolean causePhysicalDamage(LivingEntity target, LivingEntity attacker, PhysicalType type,
-			double baseDamage, Location damageOrigin, boolean canMiss, boolean canCrit) {
-		if (target == null || baseDamage <= 0) {
-			return false;
-		}
-		if (type == null) {
-			type = PhysicalType.OTHER;
-		}
-		
-		CombatEntity ceTarget = CombatEngine.getEntity(target);
-		if(ceTarget == null)
-			return false;
+        if (crit)
+            event.newDamageModifierBuilder("Critical")
+                    .setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
+                    .setValue(multiplierHandler.getCritDamageMultiplier())
+                    .build();
 
-		CombatEntity ceAttacker = CombatEngine.getEntity(attacker);
-		
-		// does the attack hit?
-		if (canMiss && !hitAndCit.doesAttackHit(ceTarget, ceAttacker)) {
-			CombatEngineAttackMissEvent event = new CombatEngineAttackMissEvent(ceTarget, ceAttacker);
-			Bukkit.getServer().getPluginManager().callEvent(event);
-			return false;
-		}
+        return handleEvent(event);
+    }
 
-		boolean crit = canCrit && hitAndCit.doesAttackCrit(ceTarget, ceAttacker);
+    public boolean causePhysicalDamage(LivingEntity target, LivingEntity attacker, PhysicalType type,
+                                       double baseDamage, Location damageOrigin, boolean canMiss, boolean canCrit) {
+        if (target == null || baseDamage <= 0) {
+            return false;
+        }
+        if (type == null) {
+            type = PhysicalType.OTHER;
+        }
 
-		CombatEnginePhysicalDamageEvent event =
-				new CombatEnginePhysicalDamageEvent(ceTarget, ceAttacker, damageOrigin, baseDamage, crit, type);
+        CombatEntity ceTarget = CombatEngine.getEntity(target);
+        if (ceTarget == null)
+            return false;
 
-		event.newDamageModifierBuilder("Physical Attack Bonus")
-				.setModifierType(ValueModifierBuilder.ModifierType.FLAT_EDIT)
-				.setValue(multiplierHandler.getPhysicalDamageBonus(ceAttacker, type))
-				.build();
+        CombatEntity ceAttacker = CombatEngine.getEntity(attacker);
 
-		event.newDamageModifierBuilder("Armor Penalty")
-				.setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
-				.setValue(multiplierHandler.getPhysicalDamageArmorPenalty(ceTarget))
-				.build();
+        // does the attack hit?
+        if (canMiss && !hitAndCit.doesAttackHit(ceTarget, ceAttacker)) {
+            CombatEngineAttackMissEvent event = new CombatEngineAttackMissEvent(ceTarget, ceAttacker);
+            Bukkit.getServer().getPluginManager().callEvent(event);
+            return false;
+        }
 
-		if(crit)
-			event.newDamageModifierBuilder("Critical")
-					.setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
-					.setValue(multiplierHandler.getCritDamageMultiplier())
-					.build();
+        boolean crit = canCrit && hitAndCit.doesAttackCrit(ceTarget, ceAttacker);
 
-		return handleEvent(event);
-	}
+        CombatEnginePhysicalDamageEvent event =
+                new CombatEnginePhysicalDamageEvent(ceTarget, ceAttacker, damageOrigin, baseDamage, crit, type);
 
-	public boolean causeTrueDamage(LivingEntity target, LivingEntity attacker, double damage,
-			Location damageOrigin) {
-		if (target == null || damage <= 0) {
-			return false;
-		}
+        event.newDamageModifierBuilder("Physical Attack Bonus")
+                .setModifierType(ValueModifierBuilder.ModifierType.FLAT_EDIT)
+                .setValue(multiplierHandler.getPhysicalDamageBonus(ceAttacker, type))
+                .build();
 
-		CombatEntity ceTarget = CombatEngine.getEntity(target);
-		if(ceTarget == null)
-			return false;
+        event.newDamageModifierBuilder("Armor Penalty")
+                .setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
+                .setValue(multiplierHandler.getPhysicalDamageArmorPenalty(ceTarget))
+                .build();
 
-		CombatEntity ceAttacker = CombatEngine.getEntity(attacker);
+        if (crit)
+            event.newDamageModifierBuilder("Critical")
+                    .setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
+                    .setValue(multiplierHandler.getCritDamageMultiplier())
+                    .build();
 
-		CombatEngineTrueDamageEvent event =
-				new CombatEngineTrueDamageEvent(ceTarget, ceAttacker, damageOrigin, damage);
-		
-		return handleEvent(event);
-	}
+        return handleEvent(event);
+    }
 
-	public void killEntity(LivingEntity target) {
-		if(target == null) return;
+    public boolean causeTrueDamage(LivingEntity target, LivingEntity attacker, double damage,
+                                   Location damageOrigin) {
+        if (target == null || damage <= 0) {
+            return false;
+        }
 
-		CombatEntity ceTarget = CombatEngine.getEntity(target);
-		if(ceTarget == null) return;
+        CombatEntity ceTarget = CombatEngine.getEntity(target);
+        if (ceTarget == null)
+            return false;
 
-		CombatEngineDeathEvent vEvent = new CombatEngineDeathEvent(ceTarget, null);
-		Bukkit.getServer().getPluginManager().callEvent(vEvent);
-		
-		target.remove();
-	}
+        CombatEntity ceAttacker = CombatEngine.getEntity(attacker);
 
-	private boolean handleEvent(CombatEngineDamageEvent event) {
-		Bukkit.getServer().getPluginManager().callEvent(event);
+        CombatEngineTrueDamageEvent event =
+                new CombatEngineTrueDamageEvent(ceTarget, ceAttacker, damageOrigin, damage);
 
-		if (!event.isCancelled() && event.getFinalDamage() > 0) {
-			CombatEntity ce = event.getDamaged();
+        return handleEvent(event);
+    }
 
-			// tracks the damage so it can be attributed
-			attributer.reportDamage(event.getDamaged().getLivingEntity(),
-					(event.getAttacker() != null ? event.getAttacker().getLivingEntity() : null),
-					event.getFinalDamage());
+    public void killEntity(LivingEntity target) {
+        if (target == null) return;
 
-			// passes on information about knockbacks
-			mcHealth.setNextDamageOrigin(event.getDamageOrigin());
+        CombatEntity ceTarget = CombatEngine.getEntity(target);
+        if (ceTarget == null) return;
 
-			// applies the reduction in health
-			ce.getStats().editRegeneratingStat(RegeneratingStat.HEALTH, -1 * event.getFinalDamage());
-			
-			return true;
+        CombatEngineDeathEvent vEvent = new CombatEngineDeathEvent(ceTarget, null);
+        Bukkit.getServer().getPluginManager().callEvent(vEvent);
 
-		} else {
-			return false;
-		}
-	}
+        target.remove();
+    }
 
-	/**
-	 * Informs listeners of kill attribution.
-	 */
-	public class DeathListener implements Listener {
-		public DeathListener() { }
+    private boolean handleEvent(CombatEngineDamageEvent event) {
+        Bukkit.getServer().getPluginManager().callEvent(event);
 
-		@EventHandler(priority = EventPriority.LOWEST)
-		public void onEntityDeath(EntityDeathEvent event) {
-			LivingEntity killer = attributer.onDeath(event.getEntity());
-			
-			// does not attribute suicides in the called event
-			if (event.getEntity().equals(killer)) {
-				killer = null;
-			}
+        if (!event.isCancelled() && event.getFinalDamage() > 0) {
+            CombatEntity ce = event.getDamaged();
 
-			CombatEntity ceDied = CombatEngine.getEntity(event.getEntity());
-			CombatEntity ceKiller = CombatEngine.getEntity(killer);
+            // tracks the damage so it can be attributed
+            attributer.reportDamage(event.getDamaged().getLivingEntity(),
+                    (event.getAttacker() != null ? event.getAttacker().getLivingEntity() : null),
+                    event.getFinalDamage());
 
-			if (ceDied != null) {
-				if(!ceDied.isPlayer()) {
-					event.getEntity().getEquipment().clear();
-					event.getDrops().clear();
-					
-					if(ceDied.getLivingEntity() instanceof Player) {
-						((Player)ceDied.getLivingEntity()).getInventory().clear();
-					}
-				}
-				
-				CombatEngineDeathEvent vEvent = new CombatEngineDeathEvent(ceDied, ceKiller);
-				Bukkit.getServer().getPluginManager().callEvent(vEvent);
-				event.getDrops().addAll(vEvent.drops);
-			}
-		}
-	}
+            // passes on information about knockbacks
+            mcHealth.setNextDamageOrigin(event.getDamageOrigin());
 
-	public class Debugging implements Listener {
-		private final DecimalFormat DF = new DecimalFormat("#.00");
+            // applies the reduction in health
+            ce.getStats().editRegeneratingStat(RegeneratingStat.HEALTH, -1 * event.getFinalDamage());
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-		public Debugging() { }
+    /**
+     * Informs listeners of kill attribution.
+     */
+    public class DeathListener implements Listener {
+        public DeathListener() {
+        }
 
-		@EventHandler(priority = EventPriority.LOWEST)
-		public void onAttack(CombatEngineAttackMissEvent event) {
-			if(!event.getAttacker().isPlayer()) return;
-			
-			Player p = (Player)event.getAttacker().getLivingEntity();
-			if(DebugFlags.is(p) && DebugFlags.get(p).damage)
-				MessageUtil.sendInfo(p, "[MISS] 0.00 = 0.00 * 0.00 * 0.00 * 0.00");
-		}
-		
-		@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-		public void onTrue(CombatEngineTrueDamageEvent event) {
-			output("TRUE", event);
-		}
-		
-		@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-		public void onSpell(CombatEngineSpellDamageEvent event) {
-			output("SPEL", event);
-		}
-		
-		@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-		public void onPhysical(CombatEnginePhysicalDamageEvent event) {
-			output("PHYS", event);
-		}
+        @EventHandler(priority = EventPriority.LOWEST)
+        public void onEntityDeath(EntityDeathEvent event) {
+            LivingEntity killer = attributer.onDeath(event.getEntity());
 
-		public void output(String prefix, CombatEngineDamageEvent event) {
-			if(event.getAttacker() == null || event.getDamaged() == null) return;
-			if(!event.getAttacker().isPlayer() && !event.getDamaged().isPlayer()) return;
+            // does not attribute suicides in the called event
+            if (event.getEntity().equals(killer)) {
+                killer = null;
+            }
 
-			Player pA = event.getAttacker().isPlayer() ? (Player)event.getAttacker().getLivingEntity() : null;
-			boolean pAOP = pA != null && (DebugFlags.is(pA) && DebugFlags.get(pA).damage);
-			Player pD = event.getDamaged().isPlayer() ? (Player)event.getDamaged().getLivingEntity() : null;
-			boolean pDOP = pD != null && (DebugFlags.is(pD) && DebugFlags.get(pD).damage);
+            CombatEntity ceDied = CombatEngine.getEntity(event.getEntity());
+            CombatEntity ceKiller = CombatEngine.getEntity(killer);
 
-			if(!pAOP && !pDOP)
-				return;
+            if (ceDied != null) {
+                if (!ceDied.isPlayer()) {
+                    event.getEntity().getEquipment().clear();
+                    event.getDrops().clear();
 
-			if(event.isCriticalHit()) prefix += "*";
-			else prefix += " ";
-			
-			prefix += ": ";
-			
-			if(event.isCancelled()) {
-				if(pAOP)
-					MessageUtil.sendInfo(pA, prefix + "Damage prevented by a plugin.");
-				if(pDOP)
-					MessageUtil.sendInfo(pD, prefix + "Damage prevented by a plugin.");
-			}else{
-				TextBuilder tb = new TextBuilder(prefix)
-						.append(DF.format(event.getFinalDamage())).color(ChatColor.AQUA).hover("Final Damage")
-						.append(" = ");
+                    if (ceDied.getLivingEntity() instanceof Player) {
+                        ((Player) ceDied.getLivingEntity()).getInventory().clear();
+                    }
+                }
 
-				tb.append("((");
+                CombatEngineDeathEvent vEvent = new CombatEngineDeathEvent(ceDied, ceKiller);
+                Bukkit.getServer().getPluginManager().callEvent(vEvent);
+                event.getDrops().addAll(vEvent.drops);
+            }
+        }
+    }
 
-				tb.append(DF.format(event.getBaseDamage())).hover("Base Damage");
+    public class Debugging implements Listener {
+        private final DecimalFormat DF = new DecimalFormat("#.00");
 
-				for(Map.Entry<String, ValueModifier> entry : event.getModifiers().entrySet()) {
-					if(entry.getValue().getType() != ValueModifierBuilder.ModifierType.FLAT_EDIT) continue;
-					tb.append(" + ").append(DF.format(entry.getValue().getValue())).color(ChatColor.YELLOW).hover(entry.getKey());
-				}
+        public Debugging() {
+        }
 
-				tb.append(")");
+        @EventHandler(priority = EventPriority.LOWEST)
+        public void onAttack(CombatEngineAttackMissEvent event) {
+            if (!event.getAttacker().isPlayer()) return;
 
-				for(Map.Entry<String, ValueModifier> entry : event.getModifiers().entrySet()) {
-					if(entry.getValue().getType() != ValueModifierBuilder.ModifierType.MULTIPLIER) continue;
-					tb.append(" * ").append(DF.format(entry.getValue().getValue())).color(ChatColor.YELLOW).hover(entry.getKey());
-				}
+            Player p = (Player) event.getAttacker().getLivingEntity();
+            if (DebugFlags.is(p) && DebugFlags.get(p).damage)
+                MessageUtil.sendInfo(p, "[MISS] 0.00 = 0.00 * 0.00 * 0.00 * 0.00");
+        }
 
-				tb.append(")");
+        @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+        public void onTrue(CombatEngineTrueDamageEvent event) {
+            output("TRUE", event);
+        }
 
-				for(Map.Entry<String, ValueModifier> entry : event.getModifiers().entrySet()) {
-					if(entry.getValue().getType() != ValueModifierBuilder.ModifierType.FLAT_EDIT_IGNORES_MULTIPLIERS) continue;
-					tb.append(" + ").append(DF.format(entry.getValue().getValue())).color(ChatColor.YELLOW).hover(entry.getKey());
-				}
+        @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+        public void onSpell(CombatEngineSpellDamageEvent event) {
+            output("SPEL", event);
+        }
 
-				BaseComponent[] bc = tb.create();
+        @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+        public void onPhysical(CombatEnginePhysicalDamageEvent event) {
+            output("PHYS", event);
+        }
 
-				if(pAOP) {
-					MessageUtil.sendInfo(pA, MessageUtil.prepend(bc,
-							new TextBuilder(">").create()));
-				}
-				if(pDOP) {
-					MessageUtil.sendInfo(pD, MessageUtil.prepend(bc,
-							new TextBuilder("<").create()));
-				}
-			}
-		}
-	}
+        public void output(String prefix, CombatEngineDamageEvent event) {
+            if (event.getAttacker() == null || event.getDamaged() == null) return;
+            if (!event.getAttacker().isPlayer() && !event.getDamaged().isPlayer()) return;
+
+            Player pA = event.getAttacker().isPlayer() ? (Player) event.getAttacker().getLivingEntity() : null;
+            boolean pAOP = pA != null && (DebugFlags.is(pA) && DebugFlags.get(pA).damage);
+            Player pD = event.getDamaged().isPlayer() ? (Player) event.getDamaged().getLivingEntity() : null;
+            boolean pDOP = pD != null && (DebugFlags.is(pD) && DebugFlags.get(pD).damage);
+
+            if (!pAOP && !pDOP)
+                return;
+
+            if (event.isCriticalHit()) prefix += "*";
+            else prefix += " ";
+
+            prefix += ": ";
+
+            if (event.isCancelled()) {
+                if (pAOP)
+                    MessageUtil.sendInfo(pA, prefix + "Damage prevented by a plugin.");
+                if (pDOP)
+                    MessageUtil.sendInfo(pD, prefix + "Damage prevented by a plugin.");
+            } else {
+                TextBuilder tb = new TextBuilder(prefix)
+                        .append(DF.format(event.getFinalDamage())).color(ChatColor.AQUA).hover("Final Damage")
+                        .append(" = ");
+
+                tb.append("((");
+
+                tb.append(DF.format(event.getBaseDamage())).hover("Base Damage");
+
+                for (Map.Entry<String, ValueModifier> entry : event.getModifiers().entrySet()) {
+                    if (entry.getValue().getType() != ValueModifierBuilder.ModifierType.FLAT_EDIT) continue;
+                    tb.append(" + ").append(DF.format(entry.getValue().getValue())).color(ChatColor.YELLOW).hover(entry.getKey());
+                }
+
+                tb.append(")");
+
+                for (Map.Entry<String, ValueModifier> entry : event.getModifiers().entrySet()) {
+                    if (entry.getValue().getType() != ValueModifierBuilder.ModifierType.MULTIPLIER) continue;
+                    tb.append(" * ").append(DF.format(entry.getValue().getValue())).color(ChatColor.YELLOW).hover(entry.getKey());
+                }
+
+                tb.append(")");
+
+                for (Map.Entry<String, ValueModifier> entry : event.getModifiers().entrySet()) {
+                    if (entry.getValue().getType() != ValueModifierBuilder.ModifierType.FLAT_EDIT_IGNORES_MULTIPLIERS)
+                        continue;
+                    tb.append(" + ").append(DF.format(entry.getValue().getValue())).color(ChatColor.YELLOW).hover(entry.getKey());
+                }
+
+                BaseComponent[] bc = tb.create();
+
+                if (pAOP) {
+                    MessageUtil.sendInfo(pA, MessageUtil.prepend(bc,
+                            new TextBuilder(">").create()));
+                }
+                if (pDOP) {
+                    MessageUtil.sendInfo(pD, MessageUtil.prepend(bc,
+                            new TextBuilder("<").create()));
+                }
+            }
+        }
+    }
 }

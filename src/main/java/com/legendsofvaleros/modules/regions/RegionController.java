@@ -5,7 +5,7 @@ import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.IntegratesWith;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.hearthstones.HearthstoneController;
 import com.legendsofvaleros.modules.regions.commands.RegionCommands;
 import com.legendsofvaleros.modules.regions.core.RegionSelector;

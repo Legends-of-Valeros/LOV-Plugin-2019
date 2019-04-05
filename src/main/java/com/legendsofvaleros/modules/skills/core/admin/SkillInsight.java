@@ -4,7 +4,7 @@ import com.codingforcookies.robert.core.StringUtil;
 import com.codingforcookies.robert.item.Book;
 import com.legendsofvaleros.modules.characters.testing.StatDisplay;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import com.legendsofvaleros.util.TextBuilder;
 import org.bukkit.ChatColor;

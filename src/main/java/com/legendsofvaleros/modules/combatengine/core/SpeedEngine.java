@@ -1,5 +1,6 @@
 package com.legendsofvaleros.modules.combatengine.core;
 
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.config.SpeedConfig;
 import com.legendsofvaleros.modules.combatengine.events.CombatEntityCreateEvent;

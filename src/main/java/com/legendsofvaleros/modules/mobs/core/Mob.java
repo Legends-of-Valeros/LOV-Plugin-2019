@@ -1,10 +1,11 @@
 package com.legendsofvaleros.modules.mobs.core;
 
 import com.google.gson.annotations.SerializedName;
+import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import com.legendsofvaleros.modules.gear.core.Gear;
@@ -186,6 +187,8 @@ public class Mob {
         public String skin;
         public Distance distance = new Distance();
         public Boolean ghost = false;
+        public Map<CharacterId, Integer> damager = new HashMap<>();
+        public Map<CharacterId, Long> leashed = new HashMap<>();
 
         public static class LootData {
             public String id;

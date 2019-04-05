@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.characters.testing;
 
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.playermenu.InventoryManager;
 import com.legendsofvaleros.modules.playermenu.options.PlayerOptions;
 

@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.combatengine.statuseffects;
 
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifier;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder.ModifierType;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;

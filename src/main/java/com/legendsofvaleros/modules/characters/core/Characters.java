@@ -18,7 +18,7 @@ import com.legendsofvaleros.modules.characters.stat.PersistentRegeneratingStats;
 import com.legendsofvaleros.modules.characters.testing.Test;
 import com.legendsofvaleros.modules.characters.ui.*;
 import com.legendsofvaleros.modules.characters.ui.loading.ProgressView;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.levelarchetypes.core.LevelArchetypes;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;

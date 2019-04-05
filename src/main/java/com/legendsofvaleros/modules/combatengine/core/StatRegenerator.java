@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.combatengine.core;
 
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.config.StatRegenerationConfig;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineRegenEvent;

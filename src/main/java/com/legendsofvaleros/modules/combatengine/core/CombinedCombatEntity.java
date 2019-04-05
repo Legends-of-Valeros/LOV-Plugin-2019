@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.combatengine.core;
 
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.api.EntityStats;
 import com.legendsofvaleros.modules.combatengine.api.EntityStatusEffects;
@@ -36,8 +37,7 @@ import java.util.*;
  * make sure it stays in memory. For non-expiring edits, the onus is on the client to keep the
  * modifier in memory if they wish to reverse it.
  */
-public class CombinedCombatEntity implements CombatEntity, EntityStats, EntityStatusEffects,
-        ConstructionListener {
+public class CombinedCombatEntity implements CombatEntity, EntityStats, EntityStatusEffects, ConstructionListener {
 
     // TODO check if the entity is in memory every time this is interacted with? (or at least when
     // isActive() is called?). Invalidation happens when the cache is accessed, not as soon as the

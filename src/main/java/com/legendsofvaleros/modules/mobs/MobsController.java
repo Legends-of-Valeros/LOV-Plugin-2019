@@ -6,7 +6,7 @@ import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.levelarchetypes.core.LevelArchetypes;
 import com.legendsofvaleros.modules.loot.LootController;
@@ -45,6 +45,7 @@ public class MobsController extends MobsAPI {
     }
 
     private BehaviorEngine ai;
+
     public static BehaviorEngine ai() {
         return instance.ai;
     }
@@ -55,9 +56,8 @@ public class MobsController extends MobsAPI {
 
         this.instance = this;
 
-        APIController.getInstance().getGsonBuilder()
-                .registerTypeAdapter(Mob.StatsMap.class, (JsonDeserializer<Mob.StatsMap>) (json, typeOfT, context) ->
-                        new Mob.StatsMap(context.deserialize(json.getAsJsonArray(), Mob.StatsMap.StatData[].class)))
+        APIController.getInstance().getGsonBuilder().registerTypeAdapter(Mob.StatsMap.class, (JsonDeserializer<Mob.StatsMap>) (json, typeOfT, context) ->
+                new Mob.StatsMap(context.deserialize(json.getAsJsonArray(), Mob.StatsMap.StatData[].class)))
                 .registerTypeAdapter(Equipment.EquipmentSlot.class, (JsonDeserializer<Equipment.EquipmentSlot>) (json, typeOfT, context) -> {
                     String name = json.getAsString().toUpperCase();
 
@@ -111,10 +111,13 @@ public class MobsController extends MobsAPI {
     public void onUnload() {
         super.onUnload();
 
-        for (World world : Bukkit.getWorlds())
-            for (Entity e : world.getEntities())
-                if (e instanceof LivingEntity && !(e instanceof Player))
+        for (World world : Bukkit.getWorlds()) {
+            for (Entity e : world.getEntities()) {
+                if (e instanceof LivingEntity && !(e instanceof Player)) {
                     e.remove();
+                }
+            }
+        }
     }
 
 

@@ -11,7 +11,7 @@ import com.legendsofvaleros.modules.characters.skilleffect.PersistingEffect.Pers
 import com.legendsofvaleros.modules.characters.skilleffect.RemovalReason;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.api.EntityStats;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.damage.spell.SpellType;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import org.bukkit.entity.LivingEntity;

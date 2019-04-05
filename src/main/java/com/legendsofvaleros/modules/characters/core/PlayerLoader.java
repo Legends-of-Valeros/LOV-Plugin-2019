@@ -16,7 +16,7 @@ import com.legendsofvaleros.modules.characters.race.EntityRace;
 import com.legendsofvaleros.modules.characters.ui.CharacterCreationListener;
 import com.legendsofvaleros.modules.characters.ui.CharacterSelectionListener;
 import com.legendsofvaleros.modules.combatengine.api.UnsafePlayerInitializer;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

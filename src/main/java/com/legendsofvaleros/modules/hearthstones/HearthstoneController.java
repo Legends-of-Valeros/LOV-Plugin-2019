@@ -3,7 +3,7 @@ package com.legendsofvaleros.modules.hearthstones;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.hearthstones.core.HomePoint;
 import com.legendsofvaleros.modules.hearthstones.core.HomeTeleporter;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;

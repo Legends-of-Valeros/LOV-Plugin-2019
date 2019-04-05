@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.combatengine.core;
+package com.legendsofvaleros.modules.combatengine;
 
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
@@ -7,10 +7,13 @@ import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.api.UnsafePlayerInitializer;
 import com.legendsofvaleros.modules.combatengine.config.BukkitConfig;
 import com.legendsofvaleros.modules.combatengine.config.CombatEngineConfig;
+import com.legendsofvaleros.modules.combatengine.core.*;
 import com.legendsofvaleros.modules.combatengine.damage.DamageEngine;
 import com.legendsofvaleros.modules.combatengine.damage.DamageHistory;
 import com.legendsofvaleros.modules.combatengine.damage.physical.PhysicalType;
 import com.legendsofvaleros.modules.combatengine.damage.spell.SpellType;
+import com.legendsofvaleros.modules.combatengine.listener.AttackForEffectsListener;
+import com.legendsofvaleros.modules.combatengine.listener.RespawnListener;
 import com.legendsofvaleros.modules.combatengine.ui.CombatEngineUiManager;
 import com.legendsofvaleros.modules.combatengine.ui.PlayerCombatInterface;
 import org.bukkit.Bukkit;
@@ -25,7 +28,10 @@ import org.bukkit.entity.Player;
 @ModuleInfo(name = "CombatEngine", info = "")
 public class CombatEngine extends Module implements CombatEngineAPI {
     private static CombatEngine instance;
-    public static CombatEngine getInstance() { return instance; }
+
+    public static CombatEngine getInstance() {
+        return instance;
+    }
 
     private static CombatEngineConfig config;
 
@@ -140,7 +146,7 @@ public class CombatEngine extends Module implements CombatEngineAPI {
      * @return The player's user interface to inform of changes in their combat data.
      * <code>null</code> if none was found for the given player.
      */
-    PlayerCombatInterface getPlayerInterface(Player player) {
+    public PlayerCombatInterface getPlayerInterface(Player player) {
         if (player == null || playerInterfaces == null) {
             return null;
         }
@@ -151,7 +157,7 @@ public class CombatEngine extends Module implements CombatEngineAPI {
      * Gets the handler for translating between CombatEngine health and vanilla Minecraft health.
      * @return The vanilla Minecraft health handler.
      */
-    MinecraftHealthHandler getMinecraftHealthHandler() {
+    public MinecraftHealthHandler getMinecraftHealthHandler() {
         return mcHealthHandler;
     }
 
@@ -159,7 +165,7 @@ public class CombatEngine extends Module implements CombatEngineAPI {
      * Gets the handler for translating from speed stats to entity's in-game movement speed.
      * @return The speed engine.
      */
-    SpeedEngine getSpeedEngine() {
+    public SpeedEngine getSpeedEngine() {
         return speedEngine;
     }
 

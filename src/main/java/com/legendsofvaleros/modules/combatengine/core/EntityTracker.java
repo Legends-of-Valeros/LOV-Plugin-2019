@@ -5,6 +5,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.api.UnsafePlayerInitializer;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEntityCreateEvent;
@@ -85,7 +86,7 @@ public class EntityTracker implements UnsafePlayerInitializer {
     // ---
     // start manual player initializer methods
 
-    void usePlayerInitializer() {
+    public void usePlayerInitializer() {
         this.usePlayerInitializer = true;
     }
 

@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.skills.event;
 
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.skills.SkillsController;
 import com.legendsofvaleros.modules.skills.api.IEntitiesListener;
 import org.bukkit.Location;

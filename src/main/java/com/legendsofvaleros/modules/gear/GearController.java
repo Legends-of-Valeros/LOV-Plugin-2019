@@ -7,7 +7,7 @@ import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.core.PlayerInventoryData;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.gear.commands.ItemCommands;
 import com.legendsofvaleros.modules.gear.component.core.*;
 import com.legendsofvaleros.modules.gear.core.Gear;

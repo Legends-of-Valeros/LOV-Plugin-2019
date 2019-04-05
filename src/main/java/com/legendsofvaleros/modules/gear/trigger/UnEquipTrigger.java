@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.gear.trigger;
 
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.gear.event.ItemUnEquipEvent;
 
 public class UnEquipTrigger extends CombatEntityTrigger {

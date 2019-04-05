@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.combatengine.stat;
 
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 

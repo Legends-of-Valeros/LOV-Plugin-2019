@@ -7,7 +7,7 @@ import com.legendsofvaleros.modules.characters.skilleffect.PersistingEffect.Pers
 import com.legendsofvaleros.modules.characters.skilleffect.RemovalReason;
 import com.legendsofvaleros.modules.characters.skilleffect.SkillEffect;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.core.StatusEffectType;
 import org.bukkit.entity.LivingEntity;
 

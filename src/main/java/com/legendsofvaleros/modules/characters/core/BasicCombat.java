@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.characters.core;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.config.CharactersConfig;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.damage.physical.PhysicalType;
 import com.legendsofvaleros.modules.combatengine.damage.spell.SpellType;
 import com.legendsofvaleros.modules.combatengine.events.CombatEnginePhysicalDamageEvent;

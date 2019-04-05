@@ -12,7 +12,7 @@ import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.bigbrother.BigBrotherController;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.chat.ChatController;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.cooldowns.CooldownsController;
 import com.legendsofvaleros.modules.dueling.DuelingController;
 import com.legendsofvaleros.modules.factions.FactionController;

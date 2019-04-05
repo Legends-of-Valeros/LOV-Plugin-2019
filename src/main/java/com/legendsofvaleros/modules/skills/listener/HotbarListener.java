@@ -5,7 +5,7 @@ import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterInventoryFillEvent;
 import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.modules.hotswitch.event.PlayerSwitchHotbarEvent;
 import com.legendsofvaleros.modules.hotswitch.event.PlayerUseHotbarEvent;

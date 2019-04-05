@@ -3,7 +3,7 @@ package com.legendsofvaleros.modules.skills.core.mage.pyromancer;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.damage.spell.SpellType;
 import org.bukkit.Location;
 import org.bukkit.Particle;

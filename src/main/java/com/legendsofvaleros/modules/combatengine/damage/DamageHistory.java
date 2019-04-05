@@ -1,5 +1,7 @@
 package com.legendsofvaleros.modules.combatengine.damage;
 
+import com.legendsofvaleros.util.MessageUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 
 import java.lang.ref.WeakReference;
@@ -98,11 +100,15 @@ public class DamageHistory {
     public LivingEntity getHighestDamager() {
         Entry<LivingEntity, Double> highestDamager = null;
         for (Entry<LivingEntity, Double> ent : damagers.entrySet()) {
-            if (ent.getValue() > highestDamager.getValue()) {
+            if (highestDamager == null) {
                 highestDamager = ent;
+            } else {
+                if (ent.getValue() > highestDamager.getValue()) {
+                    highestDamager = ent;
+                }
             }
         }
-        return highestDamager.getKey();
+        return highestDamager != null ? highestDamager.getKey() : null;
     }
 
 }

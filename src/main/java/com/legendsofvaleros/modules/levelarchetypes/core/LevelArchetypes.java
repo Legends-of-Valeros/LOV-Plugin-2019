@@ -4,7 +4,7 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
-import com.legendsofvaleros.modules.combatengine.core.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.levelarchetypes.api.Archetype;
 import com.legendsofvaleros.modules.levelarchetypes.api.LevelArchetypesAPI;
 import com.legendsofvaleros.modules.levelarchetypes.api.LevelProvider;
