@@ -26,6 +26,7 @@ import com.legendsofvaleros.modules.gear.trigger.GearTrigger.TriggerEvent;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -124,7 +125,7 @@ public class ItemListener implements Listener {
                 if (instance.getModelId().toLowerCase().contains("crown")) {
                     return;
                 }
-                MessageUtil.sendUpdate(pc.getPlayer(), "Picked up " + instance.getName());
+                MessageUtil.sendUpdate(pc.getPlayer(), "Picked up " + ChatColor.WHITE + ChatColor.BOLD + instance.getName());
             }
         }
     }
@@ -148,7 +149,10 @@ public class ItemListener implements Listener {
         if (((Player) ace.getLivingEntity()).getInventory().getHeldItemSlot() != Hotswitch.HELD_SLOT) {
             vEvent.setCancelled(true);
 
-            MessageUtil.sendError(ace.getLivingEntity(), "You may only attack using your equipped item slot!");
+            //prevent message being sent when left clicking while holding a spell
+            if (((Player) ace.getLivingEntity()).getInventory().getHeldItemSlot() > Hotswitch.HELD_SLOT) {
+                MessageUtil.sendError(ace.getLivingEntity(), "You may only attack using your equipped item slot!");
+            }
         }
     }
 
