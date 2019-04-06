@@ -72,7 +72,8 @@ public class ThreatBehavior {
 
             //handle safe spotting
             if (target.getLocation().distanceSquared(ce.getLivingEntity().getLocation()) > 2 &&
-                    Math.abs(target.getLocation().getBlockY() - npc.getEntity().getLocation().getBlockY()) > 2) {
+                    target.getLocation().distance(ce.getLivingEntity().getLocation()) < 6 &&
+                    Math.abs(target.getLocation().getBlockY() - npc.getEntity().getLocation().getBlockY()) >= 2) {
 
                 CharacterId characterId = Characters.getPlayerCharacter(target.getUniqueId()).getUniqueCharacterId();
 
