@@ -20,22 +20,14 @@ import java.util.concurrent.TimeUnit;
  */
 public class Auction {
     private int id;
-
     private CharacterId ownerId;
-
     //to support offline players and multiple server
     private String ownerName;
-
     private Gear.Data item;
-
     private int price;
-
     private long validUntil;
-
     private boolean isBidOffer = false;
-
     private CharacterId highestBidderId;
-
     //to support offline players and multiple server
     private String highestBidderName;
 

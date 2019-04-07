@@ -8,6 +8,7 @@ import com.legendsofvaleros.modules.auction.filter.FilterDirection;
 import com.legendsofvaleros.modules.auction.filter.FilterType;
 import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.util.MessageUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -32,31 +33,29 @@ public class AuctionGui extends GUI implements Listener {
     public AuctionGui(ArrayList<Auction> auctions) {
         super("Auctioneer");
         type(6);
-        this.totalPages = (int) Math.ceil(auctions.size() / ITEM_COUNT_PER_PAGE);
+        this.totalPages = (int) Math.ceil(((double) auctions.size()) / ((double) ITEM_COUNT_PER_PAGE));
         AuctionController.getInstance().registerEvents(this);
-        this.init();
+        this.loadItemsForPage();
     }
 
     @Override
     public void onClose(Player p, InventoryView view) {
     }
 
-    private void init() {
-        loadItemsForPage();
-        addUIElements();
-    }
 
     private void addUIElements() {
         if (currentPage > 1) {
             slot(45, AuctionGuiItem.PREVIOUS_PAGE.toItemStack(), (gui, p, e) -> { //previous page
                 e.setCancelled(true);
                 currentPage--;
-                init();
+                this.loadItemsForPage();
             });
+        } else {
+            getInventory().setItem(45, new ItemStack(Material.AIR));
         }
 
         slot(47, AuctionGuiItem.REFRESH.toItemStack(), (gui, p, e) -> { //refresh
-            AuctionController.getInstance().loadEntries().addListener(this::loadItemsForPage);
+            this.loadItemsForPage();
         });
 
         slot(48, filterType.toItemStack(), (gui, p, e) -> { //change filter type
@@ -68,37 +67,42 @@ public class AuctionGui extends GUI implements Listener {
         });
 
         if (currentPage < totalPages) {
-            slot(54, AuctionGuiItem.NEXT_PAGE.toItemStack(), (gui, p, e) -> {
+            slot(53, AuctionGuiItem.NEXT_PAGE.toItemStack(), (gui, p, e) -> {
                 currentPage++;
-                init();
+                this.loadItemsForPage();
             });
+        } else {
+            getInventory().setItem(53, new ItemStack(Material.AIR));
         }
-
     }
 
     /**
      * Adds all items to the current page
      */
     private void loadItemsForPage() {
-        int firstOnPage = (currentPage > 0 ? (currentPage - 1) * AuctionGui.ITEM_COUNT_PER_PAGE : 0);
-        int lastOnPage = currentPage * AuctionGui.ITEM_COUNT_PER_PAGE;
+        int firstOnPage = (currentPage - 1) * AuctionGui.ITEM_COUNT_PER_PAGE;
+        int lastOnPage = Math.min(currentPage * AuctionGui.ITEM_COUNT_PER_PAGE, AuctionController.getInstance().auctions.size());
+        getInventory().clear();
         for (int i = firstOnPage; i < lastOnPage; i++) {
-            ItemStack slotItem = null;
             Auction auction = getAuctionFromSlot(i);
+            int slotIndex = i - ((currentPage - 1) * AuctionGui.ITEM_COUNT_PER_PAGE);
 
-            if (auction != null) {
-                slotItem = auction.getItem().toStack();
+            if (auction == null) {
+                continue;
             }
 
-            if (slotItem != null) {
-                ItemMeta im = slotItem.getItemMeta();
-                ArrayList<String> lore = (ArrayList<String>) im.getLore();
-                lore.addAll(auction.getDescription());
-                im.setLore(lore);
-                slotItem.setItemMeta(im);
+            ItemStack slotItem = auction.getItem().toStack();
+            if (slotItem == null) {
+                continue;
             }
 
-            slot(i, slotItem != null ? slotItem : new ItemStack(Material.AIR), (gui, p, e) -> {
+            ItemMeta im = slotItem.getItemMeta();
+            ArrayList<String> lore = (ArrayList<String>) im.getLore();
+            lore.addAll(auction.getDescription());
+            im.setLore(lore);
+            slotItem.setItemMeta(im);
+
+            slot(slotIndex, slotItem, (gui, p, e) -> {
                 Auction clickedAuction = getAuctionFromSlot(e.getSlot());
                 if (clickedAuction == null) return;
 
@@ -116,7 +120,7 @@ public class AuctionGui extends GUI implements Listener {
     private Auction getAuctionFromSlot(int slot) {
         Auction auction = null;
         try {
-            auction = AuctionController.getInstance().auctions.get(slot + (currentPage - 1) * ITEM_COUNT_PER_PAGE);
+            auction = AuctionController.getInstance().auctions.get(slot);
         } catch (Exception ex) { //silent catch to prevent OutOfBoundsException
         }
         return auction;
