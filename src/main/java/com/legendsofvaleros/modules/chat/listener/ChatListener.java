@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.chat.listener;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.ServerMode;
 import com.legendsofvaleros.modules.auction.AuctionController;
+import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.chat.ChatChannel;
@@ -150,7 +151,7 @@ public class ChatListener implements Listener {
         });
     }
 
-    private void onChat(Player p, BaseComponent[] bc, ChatChannel sendTo) {
+    private void onChat(Player sender, BaseComponent[] bc, ChatChannel sendTo) {
         switch (sendTo) {
             case TRADE:
                 for (Player pl : Bukkit.getOnlinePlayers()) {
@@ -164,7 +165,7 @@ public class ChatListener implements Listener {
                 break;
             case LOCAL:
                 for (Player pl : Bukkit.getOnlinePlayers()) {
-                    if (pl.getLocation().distance(p.getLocation()) < 50) {
+                    if (pl.getLocation().distance(sender.getLocation()) < 50) {
                         if (AuctionController.getInstance().isPrompted(pl)) {
                             continue;
                         }
@@ -183,30 +184,29 @@ public class ChatListener implements Listener {
                 }
                 break;
             case ZONE:
-                Zone zone = ZonesController.getInstance().getZone(p);
+                Zone zone = ZonesController.getInstance().getZone(sender);
                 if (zone == null) {
-                    MessageUtil.sendError(p, "Unable to send message. You are not in a zone!");
+                    MessageUtil.sendError(sender, "Unable to send message. You are not in a zone!");
                     return;
                 }
 
-                Player pl;
-                for (Map.Entry<UUID, String> entry : ZonesController.getInstance().getPlayerZones()) {
-                    Zone zz = ZonesController.getInstance().getZone(entry.getValue());
-                    if (zz.channel.equals(zone.channel)) {
-                        pl = Bukkit.getPlayer(entry.getKey());
-                        if (ChatController.getInstance().isChannelOn(pl, 'Z')) {
-                            if (AuctionController.getInstance().isPrompted(pl)) {
-                                continue;
-                            }
-                            pl.spigot().sendMessage(bc);
+                for (CharacterId characterId : zone.playersInZone) {
+                    PlayerCharacter playerCharacter = Characters.getPlayerCharacter(characterId);
+                    if (playerCharacter.isCurrent()) {
+                        if (!ChatController.getInstance().isChannelOn(playerCharacter.getPlayer(), 'Z')) {
+                            continue;
                         }
+                        if (AuctionController.getInstance().isPrompted(playerCharacter.getPlayer())) {
+                            continue;
+                        }
+                        playerCharacter.getPlayer().spigot().sendMessage(bc);
                     }
                 }
                 break;
             case PARTY:
-                PlayerParty party = PartiesController.getInstance().getPartyByMember(Characters.getPlayerCharacter(p).getUniqueCharacterId());
+                PlayerParty party = PartiesController.getInstance().getPartyByMember(Characters.getPlayerCharacter(sender).getUniqueCharacterId());
                 if (party == null) {
-                    MessageUtil.sendError(p, "You are not in a party.");
+                    MessageUtil.sendError(sender, "You are not in a party.");
                     return;
                 }
 
@@ -218,7 +218,6 @@ public class ChatListener implements Listener {
                 }
                 break;
         }
-
     }
 
     private void sendDiscordMessage(AsyncPlayerChatEvent e, PlayerChat data) {

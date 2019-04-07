@@ -22,30 +22,60 @@ public class InternalScheduler extends Thread {
     private static final int TIMINGS_COUNT = 20 * 5;
 
     private static Map<String, InternalScheduler> all = new HashMap<>();
-    public static Collection<InternalScheduler> getAllSchedulers() { return all.values(); }
+
+    public static Collection<InternalScheduler> getAllSchedulers() {
+        return all.values();
+    }
 
     private String name;
 
     private boolean shutdown = false;
-    public void shutdown() { this.shutdown = true; }
-    public boolean isShuttingDown() { return shutdown; }
+
+    public void shutdown() {
+        this.shutdown = true;
+    }
+
+    public boolean isShuttingDown() {
+        return shutdown;
+    }
 
     private Queue<InternalTask> list = new ConcurrentLinkedQueue<>();
-    public int getTasksRemaining() { return list.size(); }
-    public InternalTask[] getTasksQueued() { return list.toArray(new InternalTask[0]); }
+
+    public int getTasksRemaining() {
+        return list.size();
+    }
+
+    public InternalTask[] getTasksQueued() {
+        return list.toArray(new InternalTask[0]);
+    }
 
     int totalS = 0, totalA = 0;
-    public int getSyncTasksFired() { return totalS; }
-    public int getAsyncTasksFired() { return totalA; }
+
+    public int getSyncTasksFired() {
+        return totalS;
+    }
+
+    public int getAsyncTasksFired() {
+        return totalA;
+    }
 
     private long totalBehind = 0;
-    public long getTotalBehind() { return totalBehind; }
+
+    public long getTotalBehind() {
+        return totalBehind;
+    }
 
     private long tick = 0;
-    public long getCurrentTick() { return tick; }
+
+    public long getCurrentTick() {
+        return tick;
+    }
 
     private long lastTickTime = 0L;
-    public long getLastTickTime() { return lastTickTime; }
+
+    public long getLastTickTime() {
+        return lastTickTime;
+    }
 
     public List<Long> timings = new ArrayList<>();
 
@@ -58,7 +88,7 @@ public class InternalScheduler extends Thread {
 
     @Override
     public void run() {
-        if(all.containsKey(name))
+        if (all.containsKey(name))
             throw new IllegalStateException("A scheduler with that name is already running!");
         all.put(name, this);
 
@@ -74,8 +104,8 @@ public class InternalScheduler extends Thread {
                 // Notify once a second of remaining tasks
                 if (shutdown && tick % SHUTDOWN_NOTIFY == 0) {
                     LegendsOfValeros.getInstance().getLogger().warning("'" + name + "' is waiting for " + list.size() + " tasks to complete...");
-                    for(InternalTask task : list) {
-                        if(!task.getName().contains("com.legendsofvaleros"))
+                    for (InternalTask task : list) {
+                        if (!task.getName().contains("com.legendsofvaleros"))
                             LegendsOfValeros.getInstance().getLogger().warning("  - " + task.getName());
                     }
                 }
@@ -144,8 +174,8 @@ public class InternalScheduler extends Thread {
                         LegendsOfValeros.getInstance().getLogger().warning("----------------------------------------");
                         for (InternalTask task : fired) {
                             int i = -1;
-                            for(String line : task.getTrace().split("\n")) {
-                                if(i == -1) {
+                            for (String line : task.getTrace().split("\n")) {
+                                if (i == -1) {
                                     // Ignore non-LOV packages
                                     if (!line.contains("com.legendsofvaleros")) continue;
                                     // Ignore scheduler package
@@ -159,14 +189,14 @@ public class InternalScheduler extends Thread {
                                 LegendsOfValeros.getInstance().getLogger().warning(line);
 
                                 // Don't print too many lines. After an amount, it's just spam.
-                                if(i > 6 && !line.contains("legendsofvaleros")) break;
+                                if (i > 6 && !line.contains("legendsofvaleros")) break;
                             }
                         }
                         LegendsOfValeros.getInstance().getLogger().warning("----------------------------------------");
                     }
                 }
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -187,8 +217,9 @@ public class InternalScheduler extends Thread {
         executeInMyCircle(it = new InternalTask(task));
         return it;
     }
+
     public void executeInMyCircle(InternalTask task) {
-        if(!isAlive() && shutdown)
+        if (!isAlive() && shutdown)
             throw new IllegalStateException("Cannot add a task to a scheduler that has shut down!");
 
         task.setExecutor(this);
@@ -202,8 +233,9 @@ public class InternalScheduler extends Thread {
         executeInMyCircleLater(it = new InternalTask(task), delay);
         return it;
     }
+
     public void executeInMyCircleLater(InternalTask task, long delay) {
-        if(!isAlive() && shutdown)
+        if (!isAlive() && shutdown)
             throw new IllegalStateException("Cannot add a task to a scheduler that has shut down!");
 
         task.setExecutor(this);
@@ -217,8 +249,9 @@ public class InternalScheduler extends Thread {
         executeInMyCircleTimer(it = new InternalTask(task), delay, interval);
         return it;
     }
+
     public void executeInMyCircleTimer(InternalTask task, long delay, long interval) {
-        if(!isAlive() && shutdown)
+        if (!isAlive() && shutdown)
             throw new IllegalStateException("Cannot add a task to a scheduler that has shut down!");
 
         task.setExecutor(this);
@@ -234,8 +267,9 @@ public class InternalScheduler extends Thread {
         executeInSpigotCircle(it = new InternalTask(task));
         return it;
     }
+
     public void executeInSpigotCircle(final InternalTask task) {
-        if(!isAlive() && shutdown)
+        if (!isAlive() && shutdown)
             throw new IllegalStateException("Cannot add a task to a scheduler that has shut down!");
 
         task.setExecutor(this);
@@ -253,8 +287,9 @@ public class InternalScheduler extends Thread {
         executeInSpigotCircleLater(it = new InternalTask(task), delay);
         return it;
     }
+
     public void executeInSpigotCircleLater(final InternalTask task, long delay) {
-        if(!isAlive() && shutdown)
+        if (!isAlive() && shutdown)
             throw new IllegalStateException("Cannot add a task to a scheduler that has shut down!");
 
         task.setExecutor(this);
@@ -272,9 +307,11 @@ public class InternalScheduler extends Thread {
         executeInSpigotCircleTimer(it = new InternalTask(task), delay, interval);
         return it;
     }
+
     public void executeInSpigotCircleTimer(final InternalTask task, long delay, long interval) {
-        if(!isAlive() && shutdown)
+        if (!isAlive() && shutdown) {
             throw new IllegalStateException("Cannot add a task to a scheduler that has shut down!");
+        }
 
         task.setExecutor(this);
         task.setSync(true);
@@ -293,24 +330,24 @@ public class InternalScheduler extends Thread {
     }
 
     public synchronized Long getAverageTiming() {
-        if(timings.size() == 0) return null;
+        if (timings.size() == 0) return null;
 
         long time = 0;
-        for(Long timing : timings)
+        for (Long timing : timings)
             time += timing;
         return time / timings.size();
     }
 
     public synchronized double getLastTiming() {
-        if(timings.size() == 0) return 0;
+        if (timings.size() == 0) return 0;
         return timings.get(timings.size() - 1);
     }
 
     public double getAverageTPSUsage() {
         Long timing = getAverageTiming();
-        if(timing == null) return 0;
+        if (timing == null) return 0;
         double avg = timing / (1000D / 20D);
-        return (int)(avg * 10000) / 10000D;
+        return (int) (avg * 10000) / 10000D;
     }
 
     public double getAverageTPS() {

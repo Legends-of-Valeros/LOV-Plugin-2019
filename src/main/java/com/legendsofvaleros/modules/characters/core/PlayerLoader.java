@@ -148,8 +148,9 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
             logoutCharacter(player, false).on((err, val) -> {
                 loadCharacter(newCharacter);
             }, Characters.getInstance().getScheduler()::sync);
-        }else
+        } else {
             loadCharacter(newCharacter);
+        }
         return true;
     }
 
@@ -261,13 +262,12 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
             playerLock.release();
         }
 
-        PlayerCharacterFinishLoadingEvent event =
-                new PlayerCharacterFinishLoadingEvent(doneLoading,
-                        firstLogin.contains(doneLoading.getPlayerId()));
-        Bukkit.getPluginManager().callEvent(event);
+        Bukkit.getPluginManager().callEvent(new PlayerCharacterFinishLoadingEvent(doneLoading,
+                firstLogin.contains(doneLoading.getPlayerId())));
 
-        if (firstLogin.contains(doneLoading.getPlayerId()))
+        if (firstLogin.contains(doneLoading.getPlayerId())) {
             Bukkit.getPluginManager().callEvent(new PlayerCharacterCreateEvent(doneLoading));
+        }
 
         firstLogin.remove(doneLoading.getPlayerId());
 
@@ -280,7 +280,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
 
         if (!Characters.isPlayerCharacterLoaded(player)) {
             promise.resolve(false);
-        }else{
+        } else {
             Characters.getInstance().getLogger().info(player.getDisplayName() + " is logging out of his character...");
 
             PlayerCharacter character = Characters.getPlayerCharacter(player);
@@ -375,8 +375,9 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
         public void onPlayerLogin(PlayerLoginEvent event) {
             // If a lock is still active, then processing is still being done for an old
             // player character. We don't want them to join, right now.
-            if(locks.containsKey(event.getPlayer().getUniqueId()))
+            if (locks.containsKey(event.getPlayer().getUniqueId())) {
                 event.disallow(PlayerLoginEvent.Result.KICK_OTHER, "Logging in too quickly! Try again in a moment.");
+            }
         }
 
         @EventHandler
@@ -384,7 +385,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
             locks.put(event.getPlayer().getUniqueId(), PlayerLock.lockPlayer(event.getPlayer()));
 
             PlayerCharacterData.onLogin(event.getPlayer().getUniqueId()).onSuccess(val -> {
-                if(!val.isPresent()) return;
+                if (!val.isPresent()) return;
 
                 PlayerCharacters characters = val.get();
 
@@ -411,7 +412,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
             Characters.getInstance().getScheduler().executeInMyCircle(() -> {
                 if (inventory.getData() != null)
                     inventory.loadInventory(pc).on(lock::release);
-                else{
+                else {
                     inventory.initInventory(pc);
 
                     lock.release();
