@@ -219,7 +219,7 @@ public class ChatListener implements Listener {
     }
 
     private void sendDiscordMessage(AsyncPlayerChatEvent e, PlayerChat data) {
-        if (LegendsOfValeros.getMode() == ServerMode.DEV) {
+        if (LegendsOfValeros.getMode() != ServerMode.LIVE) {
             return; //prevent discord messages on local/dev setups
         }
         if (chat.getChannelToDiscord(data.channel) != null) {
