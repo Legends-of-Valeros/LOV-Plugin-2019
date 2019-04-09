@@ -37,7 +37,7 @@ public class AuctionChatPrompt {
         getPlayerCharacter().getPlayer().sendMessage(ChatColor.BOLD + divider);
     }
 
-    private void cancelPrompt() {
+    public void cancelPrompt() {
         isCancelled = true;
         AuctionController.getInstance().removePrompt(playerCharacter.getUniqueCharacterId());
 

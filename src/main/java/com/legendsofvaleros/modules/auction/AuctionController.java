@@ -129,11 +129,6 @@ public class AuctionController extends AuctionAPI {
             if (auctionPrompts.containsKey(characterId)) {
                 AuctionChatPrompt prompt = auctionPrompts.get(characterId);
 
-                if (checkIfAuctionStillExists(prompt.getAuction())) {
-                    MessageUtil.sendError(p, "The auction doesn't exist anymore");
-                    return;
-                }
-
                 ItemStack is = prompt.getAuction().getItem().toStack();
                 is.setAmount(amount);
                 p.getInventory().addItem(is);
@@ -157,14 +152,8 @@ public class AuctionController extends AuctionAPI {
      */
     public void confirmBidPrompt(CharacterId characterId) {
         if (Characters.isPlayerCharacterLoaded(characterId)) {
-            Player p = Characters.getPlayerCharacter(characterId).getPlayer();
             if (auctionPrompts.containsKey(characterId)) {
                 AuctionChatPrompt prompt = auctionPrompts.get(characterId);
-
-                if (checkIfAuctionStillExists(prompt.getAuction())) {
-                    MessageUtil.sendError(p, "The auction doesn't exist anymore");
-                    return;
-                }
                 updateAuction(prompt.getAuction());
             }
         }

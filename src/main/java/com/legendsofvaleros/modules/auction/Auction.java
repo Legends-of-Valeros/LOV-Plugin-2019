@@ -95,6 +95,10 @@ public class Auction {
             MessageUtil.sendError(playerCharacter.getPlayer(), "You can't bid on your own auctions");
             return false;
         }
+        if (!AuctionController.getInstance().checkIfAuctionStillExists(this)) {
+            MessageUtil.sendError(playerCharacter.getPlayer(), "The auction doesn't exist anymore");
+            return false;
+        }
         if (value <= price) {
             MessageUtil.sendError(playerCharacter.getPlayer(), "Your bid price " + Money.Format.format(value) + " is not higher than the current bid price of " + getPriceFormatted());
             return false;
@@ -133,6 +137,10 @@ public class Auction {
         PlayerCharacter playerCharacter = Characters.getPlayerCharacter(characterId);
         if (playerCharacter.getPlayerId().equals(getOwnerId().getPlayerId())) {
             MessageUtil.sendError(playerCharacter.getPlayer(), "You can't buy your own auctions");
+            return false;
+        }
+        if (!AuctionController.getInstance().checkIfAuctionStillExists(this)) {
+            MessageUtil.sendError(playerCharacter.getPlayer(), "The auction doesn't exist anymore");
             return false;
         }
         int value = price * amount;

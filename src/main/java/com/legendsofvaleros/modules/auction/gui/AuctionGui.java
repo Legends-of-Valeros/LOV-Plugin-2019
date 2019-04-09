@@ -8,7 +8,6 @@ import com.legendsofvaleros.modules.auction.filter.FilterDirection;
 import com.legendsofvaleros.modules.auction.filter.FilterType;
 import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.util.MessageUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -27,21 +26,19 @@ public class AuctionGui extends GUI implements Listener {
     private int totalPages;
     private FilterType filterType = FilterType.REMAINING_TIME;
     private FilterDirection filterDirection = FilterDirection.DESCENDING;
-
     private static final int ITEM_COUNT_PER_PAGE = 36;
 
     public AuctionGui(ArrayList<Auction> auctions) {
         super("Auctioneer");
-        type(6);
         this.totalPages = (int) Math.ceil(((double) auctions.size()) / ((double) ITEM_COUNT_PER_PAGE));
         AuctionController.getInstance().registerEvents(this);
+        type(6);
         this.loadItemsForPage();
     }
 
     @Override
     public void onClose(Player p, InventoryView view) {
     }
-
 
     private void addUIElements() {
         if (currentPage > 1) {
@@ -103,7 +100,7 @@ public class AuctionGui extends GUI implements Listener {
             slotItem.setItemMeta(im);
 
             slot(slotIndex, slotItem, (gui, p, e) -> {
-                Auction clickedAuction = getAuctionFromSlot(e.getSlot());
+                Auction clickedAuction = getAuctionFromSlot(e.getSlot() + (currentPage - 1) * AuctionGui.ITEM_COUNT_PER_PAGE);
                 if (clickedAuction == null) return;
 
                 AuctionPromptType promptType = clickedAuction.isBidOffer() ? AuctionPromptType.BID : AuctionPromptType.BUY;
