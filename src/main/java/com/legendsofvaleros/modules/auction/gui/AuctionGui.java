@@ -135,6 +135,10 @@ public class AuctionGui extends GUI implements Listener {
                 MessageUtil.sendError(p, "You can't auction this item!");
                 return;
             }
+            if (AuctionController.getInstance().isPrompted(p)) {
+                MessageUtil.sendError(p, "You are already selling an item.");
+                return;
+            }
             e.setCurrentItem(new ItemStack(Material.AIR));
             AuctionController.getInstance().startPrompt(
                     (Player) e.getWhoClicked(),
