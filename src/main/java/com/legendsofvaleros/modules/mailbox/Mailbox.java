@@ -53,7 +53,7 @@ public class Mailbox {
         Player p = Characters.getPlayerCharacter(characterId).getPlayer();
         if (Characters.isPlayerCharacterLoaded(p)) {
             // TODO make pretty like a princess
-            MessageUtil.sendInfo(p, "You have" + ChatColor.BOLD + getUnreadMails() + ChatColor.RESET + " unread mails!");
+            MessageUtil.sendInfo(p, "You have " + ChatColor.BOLD + getUnreadMails() + ChatColor.RESET + " unread mails!");
         }
     }
 

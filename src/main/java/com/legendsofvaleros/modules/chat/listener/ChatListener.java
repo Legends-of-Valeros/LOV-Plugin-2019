@@ -30,8 +30,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 public class ChatListener implements Listener {
@@ -44,9 +42,9 @@ public class ChatListener implements Listener {
         }
 
         //player is in an auction prompt and therefore the message should not be sent
-        /*if (AuctionController.getInstance().isPrompted(pl)) {
-            continue;
-        }*/
+        if (AuctionController.getInstance().isPrompted(e.getPlayer())) {
+            return;
+        }
 
         e.setCancelled(true);
 
@@ -211,9 +209,9 @@ public class ChatListener implements Listener {
                 }
 
                 for (Player partyPlayer : party.getOnlineMembers()) {
-                    /*if (AuctionController.getInstance().isPrompted(pl)) {
+                    if (AuctionController.getInstance().isPrompted(partyPlayer)) {
                         continue;
-                    }*/
+                    }
                     partyPlayer.spigot().sendMessage(bc);
                 }
                 break;

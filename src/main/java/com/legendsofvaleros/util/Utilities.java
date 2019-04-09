@@ -48,9 +48,7 @@ public class Utilities extends ModuleListener {
         }
 
         Discord.onEnable();
-
         LoggingOut.onEnable();
-
         PlayerData.onEnable();
 
         new TitleUtil();

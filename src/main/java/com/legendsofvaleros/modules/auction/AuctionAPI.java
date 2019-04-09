@@ -30,7 +30,6 @@ public class AuctionAPI extends ModuleListener {
         Promise<Boolean> saveAuctionBidEntry(BidHistoryEntry entry);
 
         Promise<List<BidHistoryEntry>> getAllBidHistoryEntries(int auctionId);
-
     }
 
     private AuctionAPI.RPC rpc;
@@ -106,6 +105,7 @@ public class AuctionAPI extends ModuleListener {
         Auction[] result = {null};
         getScheduler().executeInMyCircle(new InternalTask(() -> {
                     try {
+                        //TODO add callback / listener
                         result[0] = rpc.getAuction(auction.getId()).get();
                     } catch (Throwable throwable) {
                         throwable.printStackTrace();
