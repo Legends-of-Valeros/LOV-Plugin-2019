@@ -10,9 +10,7 @@ import com.legendsofvaleros.modules.mobs.behavior.NodeStatus;
 import com.legendsofvaleros.modules.mobs.behavior.test.ITest;
 import com.legendsofvaleros.modules.mobs.trait.MobTrait;
 import com.legendsofvaleros.modules.npcs.NPCsController;
-import com.legendsofvaleros.util.MessageUtil;
 import net.citizensnpcs.api.npc.NPC;
-import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
@@ -72,7 +70,7 @@ public class ThreatBehavior {
 
             //handle safe spotting
             if (target.getLocation().distanceSquared(ce.getLivingEntity().getLocation()) > 2 &&
-                    target.getLocation().distance(ce.getLivingEntity().getLocation()) < 6 &&
+                    target.getLocation().distance(ce.getLivingEntity().getLocation()) <= 10 &&
                     Math.abs(target.getLocation().getBlockY() - npc.getEntity().getLocation().getBlockY()) >= 2) {
 
                 CharacterId characterId = Characters.getPlayerCharacter(target.getUniqueId()).getUniqueCharacterId();
