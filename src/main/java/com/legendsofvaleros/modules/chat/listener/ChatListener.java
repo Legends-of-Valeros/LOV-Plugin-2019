@@ -40,13 +40,11 @@ public class ChatListener implements Listener {
         if (e.isCancelled()) {
             return;
         }
-
+        e.setCancelled(true);
         //player is in an auction prompt and therefore the message should not be sent
         if (AuctionController.getInstance().isPrompted(e.getPlayer())) {
             return;
         }
-
-        e.setCancelled(true);
 
         PlayerChat data = chat.getPlayer(e.getPlayer().getUniqueId());
         ChatChannel ch = chat.getChannel(data.channel);

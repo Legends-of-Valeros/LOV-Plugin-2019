@@ -1,12 +1,16 @@
 package com.legendsofvaleros.modules.mailbox.gui;
 
 import com.codingforcookies.robert.core.GUI;
-import com.codingforcookies.robert.slot.SlotUsable;
+import com.legendsofvaleros.modules.auction.Auction;
+import com.legendsofvaleros.modules.auction.AuctionChatPrompt;
+import com.legendsofvaleros.modules.auction.AuctionController;
+import com.legendsofvaleros.modules.auction.gui.AuctionGui;
+import com.legendsofvaleros.modules.auction.gui.AuctionGuiItem;
 import com.legendsofvaleros.modules.mailbox.Mail;
 import com.legendsofvaleros.modules.mailbox.MailboxController;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -16,7 +20,7 @@ import java.util.ArrayList;
 /**
  * Created by Crystall on 11/24/2018
  */
-public class MailboxGui extends GUI {
+public class MailboxGui extends GUI implements Listener {
     private ArrayList<Mail> mails;
     private int currentPage = 1;
     private int totalPages;
@@ -24,65 +28,38 @@ public class MailboxGui extends GUI {
 
     public MailboxGui(ArrayList<Mail> mails) {
         super("Mailbox");
-        type(6);
         this.mails = mails;
-        this.totalPages = (int) Math.ceil(mails.size() / ITEM_COUNT_PER_PAGE);
-        this.init();
+        this.totalPages = (int) Math.ceil(((double) mails.size()) / ((double) ITEM_COUNT_PER_PAGE));
+        MailboxController.getInstance().registerEvents(this);
+        type(6);
+        this.loadItemsForPage();
     }
 
     @Override
     public void onClose(Player p, InventoryView view) {
     }
 
-    private void init() {
-        loadItemsForPage();
-        addUIElements();
-    }
-
     private void addUIElements() {
         if (currentPage > 1) {
-            slot(45, Material.PAPER, new SlotUsable() { //previous page
-                @Override
-                public void onPickup(GUI gui, Player p, ItemStack stack, InventoryClickEvent e) {
-                    e.setCancelled(true);
-                    currentPage--;
-                    init();
-                }
-
-                @Override
-                public void onPlace(GUI gui, Player p, ItemStack stack, InventoryClickEvent e) {
-                    e.setCancelled(true);
-                }
+            slot(45, AuctionGuiItem.PREVIOUS_PAGE.toItemStack(), (gui, p, e) -> { //previous page
+                currentPage--;
+                this.loadItemsForPage();
             });
+        } else {
+            getInventory().setItem(45, new ItemStack(Material.AIR));
         }
 
-        slot(47, Material.GREEN_RECORD, new SlotUsable() { //refresh
-            @Override
-            public void onPickup(GUI gui, Player p, ItemStack stack, InventoryClickEvent e) {
-                e.setCancelled(true);
-                init();
-            }
-
-            @Override
-            public void onPlace(GUI gui, Player p, ItemStack stack, InventoryClickEvent e) {
-                e.setCancelled(true);
-            }
+        slot(47, AuctionGuiItem.REFRESH.toItemStack(), (gui, p, e) -> { //refresh
+            this.loadItemsForPage();
         });
 
         if (currentPage < totalPages) {
-            slot(54, Material.PAPER, new SlotUsable() { //next page
-                @Override
-                public void onPickup(GUI gui, Player p, ItemStack stack, InventoryClickEvent e) {
-                    e.setCancelled(true);
-                    currentPage++;
-                    init();
-                }
-
-                @Override
-                public void onPlace(GUI gui, Player p, ItemStack stack, InventoryClickEvent e) {
-                    e.setCancelled(true);
-                }
+            slot(53, AuctionGuiItem.NEXT_PAGE.toItemStack(), (gui, p, e) -> {
+                currentPage++;
+                this.loadItemsForPage();
             });
+        } else {
+            getInventory().setItem(53, new ItemStack(Material.AIR));
         }
     }
 
@@ -90,22 +67,30 @@ public class MailboxGui extends GUI {
      * Adds all items to the current page
      */
     private void loadItemsForPage() {
-        for (int i = 0; i < MailboxGui.ITEM_COUNT_PER_PAGE; i++) {
-            ItemStack slotItem = new ItemStack(Material.AIR);
+        int firstOnPage = (currentPage - 1) * MailboxGui.ITEM_COUNT_PER_PAGE;
+        int lastOnPage = Math.min(currentPage * MailboxGui.ITEM_COUNT_PER_PAGE, AuctionController.getInstance().auctions.size());
+        getInventory().clear();
+        for (int i = firstOnPage; i < lastOnPage; i++) {
             Mail mail = getMailFromSlot(i);
+            int slotIndex = i - ((currentPage - 1) * MailboxGui.ITEM_COUNT_PER_PAGE);
 
-            if (mail != null) {
-                slotItem = new ItemStack(mail.isRead() ? Material.PAPER : Material.BOOK);
-                ItemMeta im = slotItem.getItemMeta();
-                ArrayList<String> lore = (ArrayList<String>) im.getLore();
-                lore.add(mail.getContent());
-                im.setLore(lore);
-                slotItem.setItemMeta(im);
+            if (mail == null) {
+                continue;
             }
 
-            slot(i, slotItem, (gui, p, e) -> {
-                Mail clickedMail = getMailFromSlot(e.getSlot());
-                if (clickedMail == null) return;
+            ItemStack slotItem = new ItemStack(mail.isRead() ? Material.PAPER : Material.BOOK);
+            ItemMeta im = slotItem.getItemMeta();
+            im.setDisplayName(mail.getTitle());
+            ArrayList<String> lore = new ArrayList<>();
+            lore.add(mail.getContent());
+            im.setLore(lore);
+            slotItem.setItemMeta(im);
+
+            slot(slotIndex, slotItem, (gui, p, e) -> {
+                Mail clickedMail = getMailFromSlot(e.getSlot() + (currentPage - 1) * MailboxGui.ITEM_COUNT_PER_PAGE);
+                if (clickedMail == null) {
+                    return;
+                }
                 clickedMail.setRead(true);
                 MailboxController.getInstance().openMail(clickedMail);
             });
@@ -120,7 +105,7 @@ public class MailboxGui extends GUI {
     private Mail getMailFromSlot(int slot) {
         Mail mail = null;
         try {
-            mail = mails.get(slot + (currentPage - 1) * ITEM_COUNT_PER_PAGE);
+            mail = mails.get(slot);
         } catch (Exception ex) { //silent catch to prevent OutOfBoundsException
         }
         return mail;

@@ -8,6 +8,7 @@ import com.legendsofvaleros.modules.gear.core.Gear;
  * Represents a single mail within the mailsystem / gui
  */
 public class Mail {
+    private int id;
     private CharacterId receiver;
     private String receiverName;
 
@@ -81,5 +82,33 @@ public class Mail {
 
     public void setFrom(CharacterId from) {
         this.from = from;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getFromName() {
+        return fromName;
+    }
+
+    public String getReceiverName() {
+        return receiverName;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setFromName(String fromName) {
+        this.fromName = fromName;
+    }
+
+    public void setReceiverName(String receiverName) {
+        this.receiverName = receiverName;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

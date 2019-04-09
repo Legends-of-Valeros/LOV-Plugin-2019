@@ -19,7 +19,7 @@ public class MailboxAPI extends ModuleListener {
     public interface RPC {
         Promise<List<Mail>> getMails(CharacterId characterId);
 
-        Promise<Boolean> saveMail(CharacterId characterId, Mail mail);
+        Promise<Boolean> saveMail(Mail mail);
 
         Promise<Boolean> saveMailbox(ArrayList<Mail> mails);
 
@@ -50,17 +50,18 @@ public class MailboxAPI extends ModuleListener {
      * @return
      */
     Promise<Boolean> saveMail(CharacterId characterId, Mail mail) {
+        Promise<Boolean> promise = rpc.saveMail(mail);
 
+        if (!mailboxes.containsKey(characterId)) {
+            promise.resolve(false);
+            return promise;
+        }
         Mailbox mailbox = mailboxes.get(characterId);
-
-        Promise<Boolean> promise = rpc.saveMail(characterId, mail);
         promise.onSuccess(val -> {
-            if (mailbox != null) {
-                mailbox.mails.add(mail);
-            }
+            mailbox.mails.add(mail);
         }).onFailure(Throwable::printStackTrace);
-        return promise;
 
+        return promise;
     }
 
     /**
@@ -86,11 +87,12 @@ public class MailboxAPI extends ModuleListener {
      * @return
      */
     Promise<Boolean> saveMailbox(CharacterId characterId) {
-        Mailbox mailbox = mailboxes.get(characterId);
-
-        if (mailbox == null) {
-            return null;
+        Promise<Boolean> promise = rpc.saveMailbox(new ArrayList<>());
+        if (!mailboxes.containsKey(characterId)) {
+            promise.resolve(false);
+            return promise;
         }
+        Mailbox mailbox = mailboxes.get(characterId);
 
         return rpc.saveMailbox(mailbox.getMails());
     }
