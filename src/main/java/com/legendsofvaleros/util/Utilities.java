@@ -137,7 +137,7 @@ public class Utilities extends ModuleListener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onLoginServer(AsyncPlayerPreLoginEvent event) {
         if (isShutdown) {
-            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "Server is shutting down...");
+            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "Legends of Valeros is shutting down...");
         }
     }
 
@@ -157,7 +157,11 @@ public class Utilities extends ModuleListener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onInteract(PlayerInteractEvent event) {
-        if (event.getAction() == Action.PHYSICAL) {
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.PHYSICAL) {
+            if (event.getClickedBlock().getType().name().endsWith("_SHULKER_BOX") ||
+                    event.getClickedBlock().getType().name().contains("DOOR")) {
+                event.setCancelled(true);
+            }
             switch (event.getClickedBlock().getType()) {
                 case SOIL:
                 case CROPS:
@@ -175,17 +179,7 @@ public class Utilities extends ModuleListener {
                 case BREWING_STAND:
                 case FLOWER_POT:
                     event.setCancelled(true);
-                default:
-                    if (event.getClickedBlock().getType().name().endsWith("_SHULKER_BOX") ||
-                            event.getClickedBlock().getType().name().contains("DOOR")) {
-                        event.setCancelled(true);
-                    }
             }
-        }
-
-        //prevent farmland from being trampled
-        if (event.getAction() == Action.PHYSICAL && event.getClickedBlock().getType() == Material.SOIL) {
-            event.setCancelled(true);
         }
     }
 
