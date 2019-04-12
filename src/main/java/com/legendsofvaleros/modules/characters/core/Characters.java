@@ -153,7 +153,7 @@ public class Characters extends Module implements CharactersAPI {
         if (player == null) throw new IllegalArgumentException("Player cannot be null.");
 
         PlayerCharacters characters = PlayerCharacterData.getPlayerCharacters(player.getUniqueId());
-        if (characters == null) throw new NullPointerException("Player has no character data.");
+        if (characters == null) throw new NullPointerException(player.getDisplayName() + " has no character data.");
 
         return characters.getCurrentCharacter();
     }
