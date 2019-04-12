@@ -30,21 +30,20 @@ import com.legendsofvaleros.modules.mount.MountsController;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.parties.PartiesController;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
+import com.legendsofvaleros.modules.professions.ProfessionsController;
 import com.legendsofvaleros.modules.pvp.PvPController;
 import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.regions.RegionController;
+import com.legendsofvaleros.modules.restrictions.RestrictionsController;
 import com.legendsofvaleros.modules.skills.SkillsController;
 import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.scheduler.InternalScheduler;
-import com.legendsofvaleros.util.ProgressBar;
 import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Field;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,20 +52,27 @@ import java.util.Map;
  */
 public class LegendsOfValeros extends JavaPlugin {
     private static LegendsOfValeros instance;
+    private boolean isShutdown = false;
+    public static long startTime = 0;
+    private ServerMode mode;
+    private PaperCommandManager manager;
+
+    public boolean isShutdown() {
+        return isShutdown;
+    }
+
+    public void setShutdown(boolean shutdown) {
+        isShutdown = shutdown;
+    }
 
     public static LegendsOfValeros getInstance() {
         return instance;
     }
 
-    public static long startTime = 0;
-
-    private ServerMode mode;
-
     public static ServerMode getMode() {
         return instance.mode;
     }
 
-    private PaperCommandManager manager;
 
     public PaperCommandManager getCommandManager() {
         return manager;
@@ -90,7 +96,8 @@ public class LegendsOfValeros extends JavaPlugin {
         getLogger().info("Server mode is set to: " + mode.name());
         if (mode.isVerbose()) getLogger().info("  - Verbosity enabled");
         if (mode.doLogSaving()) getLogger().info("  - Log saving enabled");
-        if (mode.allowEditing()) getLogger().warning("  - Editing enabled: THIS SHOULD NOT BE ENABLED ON A LIVE SERVER");
+        if (mode.allowEditing())
+            getLogger().warning("  - Editing enabled: THIS SHOULD NOT BE ENABLED ON A LIVE SERVER");
         if (mode.isLenient()) getLogger().warning("  - Leniency enabled: THIS SHOULD NOT BE ENABLED ON A LIVE SERVER");
 
         manager = new PaperCommandManager(LegendsOfValeros.getInstance());
@@ -170,6 +177,8 @@ public class LegendsOfValeros extends JavaPlugin {
         Modules.registerModule(ZonesController.class);
         Modules.registerModule(AuctionController.class);
         Modules.registerModule(MailboxController.class);
+        Modules.registerModule(ProfessionsController.class);
+        Modules.registerModule(RestrictionsController.class);
     }
 
     public void registerEvents(Listener listener, Module module) {
@@ -184,39 +193,5 @@ public class LegendsOfValeros extends JavaPlugin {
         loadedEventClassesName.put(listener.hashCode(), listenerName);
 
         Bukkit.getServer().getPluginManager().registerEvents(listener, this);
-    }
-
-    /**
-     * Creates a progressbar for the given tps
-     *
-     * @param tps
-     * @return
-     */
-    public String createTPSBar(double tps) {
-        ChatColor tpsc = ChatColor.GREEN;
-        if (tps < 14.5) tpsc = ChatColor.YELLOW;
-        if (tps < 9) tpsc = ChatColor.GOLD;
-        if (tps < 5.5) tpsc = ChatColor.RED;
-        if (tps < 2.7) tpsc = ChatColor.DARK_RED;
-        return ProgressBar.getBar((float) ((tps + 0.5) / 20F), 40, tpsc, ChatColor.GRAY, ChatColor.DARK_GREEN);
-    }
-
-    /**
-     * Returns the current uptime of the server
-     *
-     * @return
-     */
-    public String getUptime() {
-        Date d = new Date(System.currentTimeMillis() - startTime);
-        String rest = "";
-        if (d.getHours() > 10) rest += "" + (d.getHours() - 1);
-        else rest += "0" + (d.getHours() - 1);
-        rest += ":";
-        if (d.getMinutes() > 9) rest += "" + (d.getMinutes());
-        else rest += "0" + (d.getMinutes());
-        rest += ":";
-        if (d.getSeconds() > 9) rest += "" + (d.getSeconds());
-        else rest += "0" + (d.getSeconds());
-        return (d.getDay() > 4 ? (d.getDay() - 4) + "" + ChatColor.GREEN + " Tage " + ChatColor.GRAY : "") + rest;
     }
 }

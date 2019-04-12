@@ -11,17 +11,20 @@ import com.legendsofvaleros.util.item.Model;
 import com.legendsofvaleros.util.title.TitleUtil;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Painting;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerCommandEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
+
+import java.util.Date;
 
 // TODO: Create subclass for listeners?
 @ModuleInfo(name = "Utilities", info = "")
@@ -31,8 +34,6 @@ public class Utilities extends ModuleListener {
     public static Utilities getInstance() {
         return instance;
     }
-
-    private boolean isShutdown = false;
 
     @Override
     public void onLoad() {
@@ -92,12 +93,12 @@ public class Utilities extends ModuleListener {
     }
 
     private void shutdown(CommandSender sender) {
-        if (isShutdown) {
+        if (LegendsOfValeros.getInstance().isShutdown()) {
             MessageUtil.sendError(sender, "The server is already shutting down!");
             return;
         }
 
-        isShutdown = true;
+        LegendsOfValeros.getInstance().setShutdown(true);
 
         for (Player p : Bukkit.getOnlinePlayers())
             try {
@@ -136,7 +137,7 @@ public class Utilities extends ModuleListener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onLoginServer(AsyncPlayerPreLoginEvent event) {
-        if (isShutdown) {
+        if (LegendsOfValeros.getInstance().isShutdown()) {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "Legends of Valeros is shutting down...");
         }
     }
@@ -144,43 +145,6 @@ public class Utilities extends ModuleListener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onLeaveServer(PlayerQuitEvent event) {
         DebugFlags.debug.remove(event.getPlayer().getUniqueId());
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onInteractEntity(PlayerInteractEntityEvent event) {
-        if (event.getRightClicked() instanceof ArmorStand) {
-            event.setCancelled(true);
-        } else if (event.getRightClicked() instanceof Painting) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onInteract(PlayerInteractEvent event) {
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.PHYSICAL) {
-            if (event.getClickedBlock().getType().name().endsWith("_SHULKER_BOX") ||
-                    event.getClickedBlock().getType().name().contains("DOOR")) {
-                event.setCancelled(true);
-            }
-            switch (event.getClickedBlock().getType()) {
-                case SOIL:
-                case CROPS:
-                case CHEST:
-                case HOPPER:
-                case FURNACE:
-                case WORKBENCH:
-                case ANVIL:
-                case ENDER_CHEST:
-                case ENCHANTMENT_TABLE:
-                case TRAPPED_CHEST:
-                case DISPENSER:
-                case DROPPER:
-                case ITEM_FRAME:
-                case BREWING_STAND:
-                case FLOWER_POT:
-                    event.setCancelled(true);
-            }
-        }
     }
 
     public static void playSound(Location loc, Sound sound, float pitch) {
@@ -215,6 +179,51 @@ public class Utilities extends ModuleListener {
                 return false;
         }
         return true;
+    }
+
+    /**
+     * Creates a progressbar for the given tps
+     * @param tps
+     * @return
+     */
+    public static String createTPSBar(double tps) {
+        ChatColor tpsc = ChatColor.GREEN;
+        if (tps < 14.5) tpsc = ChatColor.YELLOW;
+        if (tps < 9) tpsc = ChatColor.GOLD;
+        if (tps < 5.5) tpsc = ChatColor.RED;
+        if (tps < 2.7) tpsc = ChatColor.DARK_RED;
+        return ProgressBar.getBar((float) ((tps + 0.5) / 20F), 40, tpsc, ChatColor.GRAY, ChatColor.DARK_GREEN);
+    }
+
+    /**
+     * Returns the current uptime of the server
+     * @return
+     */
+    public static String getUptime() {
+        Date d = new Date(System.currentTimeMillis() - LegendsOfValeros.startTime);
+        String rest = "";
+        if (d.getHours() > 10) rest += "" + (d.getHours() - 1);
+        else rest += "0" + (d.getHours() - 1);
+        rest += ":";
+        if (d.getMinutes() > 9) rest += "" + (d.getMinutes());
+        else rest += "0" + (d.getMinutes());
+        rest += ":";
+        if (d.getSeconds() > 9) rest += "" + (d.getSeconds());
+        else rest += "0" + (d.getSeconds());
+        return (d.getDay() > 4 ? (d.getDay() - 4) + "" + ChatColor.GREEN + " Days " + ChatColor.GRAY : "") + rest;
+    }
+
+    /**
+     * Remove a potion with infinite duration.
+     * @param player
+     * @param types
+     */
+    public static void removeInfinitePotion(Player player, PotionEffectType... types) {
+        for (PotionEffectType type : types) {
+            PotionEffect pe = player.getPotionEffect(type);
+            if (pe != null && pe.getDuration() >= 30 * 60 * 20)
+                player.removePotionEffect(type);
+        }
     }
 
 }
