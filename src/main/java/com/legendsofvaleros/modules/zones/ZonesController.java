@@ -51,17 +51,22 @@ public class ZonesController extends ZonesAPI {
         registerEvents(new ZoneListener());
 
         //deactivate all zones that are without players for 5 minutes
-        for (Zone zone : getZones()) {
-            getInstance().getScheduler().executeInMyCircleTimer(new InternalTask(() -> {
-                if (zone.isActive) {
-                    //keep zone for 5 minutes active - this should prevent some memory-leaks
+        getInstance().getScheduler().executeInMyCircleTimer(new InternalTask(() -> {
+            for (Zone zone : getZones()) {
+                if (!zone.isActive) {
+                    continue;
+                }
+
+                //keep zone for 5 minutes active - this should prevent some memory-leaks
+                if (zone.timeWithoutPlayers > 0) {
                     if ((System.currentTimeMillis() / 1000L) - zone.timeWithoutPlayers >= 300) {
                         zone.setActive(false);
                         Bukkit.getServer().getPluginManager().callEvent(new ZoneDeactivateEvent(zone));
+                        MessageUtil.sendDebug(Bukkit.getConsoleSender(), "Zone de-activated: " + zone.name + " " + zone.subname);
                     }
                 }
-            }), 0, 5000);
-        }
+            }
+        }), 20L, 20L);
 
         registerEvents(new PlayerListener());
         registerEvents(this);
@@ -83,6 +88,7 @@ public class ZonesController extends ZonesAPI {
     public void onZoneEnter(ZoneEnterEvent event) {
         Zone zone = event.getZone();
         PlayerCharacter playerCharacter = Characters.getPlayerCharacter(event.getPlayer());
+        zone.timeWithoutPlayers = 0;
 
         if (!zone.isInZone(playerCharacter)) {
             zone.playersInZone.add(playerCharacter.getUniqueCharacterId());
@@ -90,6 +96,7 @@ public class ZonesController extends ZonesAPI {
             if (!zone.isActive) {
                 zone.setActive(true);
                 Bukkit.getServer().getPluginManager().callEvent(new ZoneActivateEvent(zone));
+                MessageUtil.sendDebug(Bukkit.getConsoleSender(), "Zone activated: " + zone.name + " " + zone.subname);
             }
         }
     }
@@ -146,6 +153,10 @@ public class ZonesController extends ZonesAPI {
             }
             if (zone.playersInZone.contains(e.getPlayerCharacter().getUniqueCharacterId())) {
                 zone.playersInZone.remove(e.getPlayerCharacter().getUniqueCharacterId());
+
+                if (zone.playersInZone.size() == 0) {
+                    zone.timeWithoutPlayers = System.currentTimeMillis() / 1000L;
+                }
             }
         }
     }
