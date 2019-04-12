@@ -38,6 +38,7 @@ public class AuctionAPI extends ModuleListener {
     @Override
     public void onPostLoad() {
         super.onPostLoad();
+        this.rpc = APIController.create(AuctionAPI.RPC.class);
 
         try {
             this.loadEntries().get();
@@ -50,7 +51,6 @@ public class AuctionAPI extends ModuleListener {
     public void onLoad() {
         super.onLoad();
 
-        this.rpc = APIController.create(AuctionAPI.RPC.class);
     }
 
     public Promise<List<Auction>> loadEntries() {

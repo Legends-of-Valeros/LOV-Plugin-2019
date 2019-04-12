@@ -85,7 +85,6 @@ public class MobListener implements Listener {
         }
     }
 
-
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityDeath(CombatEngineDeathEvent event) {
         if (event.getDied().isPlayer()) return;
