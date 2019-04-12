@@ -60,9 +60,8 @@ public class RestrictionsController extends ModuleListener {
         if (!evt.getChannel().equalsIgnoreCase("WDL|INIT")) {
             return;
         }
-        //TODO send message to discord
-        Discord.sendLogMessage(evt.getPlayer().getName() + " was kicked for using World Downloader!");
         evt.getPlayer().kickPlayer(ChatColor.RED + "Please disable World Downloader.");
+        Discord.sendLogMessage("**" + evt.getPlayer().getName() + "** was kicked for using World Downloader!");
     }
 
     @EventHandler
@@ -80,8 +79,7 @@ public class RestrictionsController extends ModuleListener {
                 .collect(Collectors.joining(", "));
         if (evt.getVehicle().getType() == EntityType.BOAT && !evt.getFrom().getBlock().isLiquid() && fly.length() > 0
                 && evt.getTo().getY() > evt.getFrom().getY() && evt.getVehicle().getVelocity().getY() <= 0) {
-            //TODO send discord message
-            Discord.sendLogMessage("[Anti-Cheat] " + ChatColor.GRAY + fly + " may be using BoatFly.");
+            Discord.sendLogMessage("**[Anti-Cheat]** " + ChatColor.GRAY + fly + " may be using BoatFly.");
         }
     }
 
@@ -94,7 +92,7 @@ public class RestrictionsController extends ModuleListener {
         if (LegendsOfValeros.getMode().equals(ServerMode.LIVE)) {
             if (evt.getNewGameMode() == GameMode.CREATIVE) {
                 evt.setCancelled(true);
-                Discord.sendLogMessage("**" + evt.getPlayer().getName() + "** entered " + evt.getNewGameMode().name().toLowerCase() + "! This should not happen.");
+                Discord.sendLogMessage("**" + evt.getPlayer().getName() + "** tried to enter " + evt.getNewGameMode().name().toLowerCase() + "! This should not happen.");
             }
         }
     }

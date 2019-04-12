@@ -40,6 +40,7 @@ import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.scheduler.InternalScheduler;
 import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -194,4 +195,5 @@ public class LegendsOfValeros extends JavaPlugin {
 
         Bukkit.getServer().getPluginManager().registerEvents(listener, this);
     }
+
 }
