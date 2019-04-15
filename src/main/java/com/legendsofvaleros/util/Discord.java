@@ -87,7 +87,7 @@ public class Discord {
             MessageUtil.sendSevereException("Discord", "Could not find the logs channel. Check the permission");
             return;
         }
-        logs.sendMessage(message);
+        logs.sendMessage(Discord.TAG + message);
     }
 
     /**
@@ -101,7 +101,7 @@ public class Discord {
             MessageUtil.sendException("Discord", "Could not find channel by id -" + channelId);
             return;
         }
-        channel.sendMessage(message);
+        channel.sendMessage(Discord.TAG + message);
     }
 
     /**
@@ -122,7 +122,7 @@ public class Discord {
             return;
         }
 
-        channelTo.sendMessage(message);
+        channelTo.sendMessage(Discord.TAG + message);
     }
 
     /**
