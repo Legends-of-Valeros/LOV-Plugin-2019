@@ -12,6 +12,8 @@ import com.legendsofvaleros.modules.characters.skill.SkillSet;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.cooldowns.CooldownsController;
 import com.legendsofvaleros.modules.cooldowns.api.Cooldowns;
+import com.legendsofvaleros.modules.zones.ZonesController;
+import com.legendsofvaleros.modules.zones.core.Zone;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -26,130 +28,134 @@ import java.util.UUID;
  */
 public class ReusablePlayerCharacter implements PlayerCharacter {
 
-	private final CharacterId id;
-	private final WeakReference<Player> player;
+    private final CharacterId id;
+    private final WeakReference<Player> player;
 
-	private final EntityRace playerRace;
-	private final RaceConfig configRace;
-	
-	private final EntityClass playerClass;
+    private final EntityRace playerRace;
+    private final RaceConfig configRace;
 
-	private Location savedLoc;
+    private final EntityClass playerClass;
 
-	private CharacterExperience experience;
-	private CharacterAbilityStats abilityStats;
+    private Location savedLoc;
 
-	private InventoryData inventoryData;
-	private SkillSet skillSet;
+    private CharacterExperience experience;
+    private CharacterAbilityStats abilityStats;
 
-	private volatile boolean current;
+    private InventoryData inventoryData;
+    private SkillSet skillSet;
 
-	ReusablePlayerCharacter(Player player, int characterNumber, EntityRace playerRace,
-			EntityClass playerClass, Location startingLocation, CharacterExperience experience, InventoryData inventoryData,
-			List<String> skillSet) {
-		if (player == null || playerRace == null || playerClass == null || startingLocation == null
-				|| experience == null) {
-			throw new IllegalArgumentException("params cannot be null!");
-		}
+    private volatile boolean current;
 
-		this.id = new CharacterId(player.getUniqueId(), characterNumber);
-		this.player = new WeakReference<>(player);
+    ReusablePlayerCharacter(Player player, int characterNumber, EntityRace playerRace,
+                            EntityClass playerClass, Location startingLocation, CharacterExperience experience, InventoryData inventoryData,
+                            List<String> skillSet) {
+        if (player == null || playerRace == null || playerClass == null || startingLocation == null
+                || experience == null) {
+            throw new IllegalArgumentException("params cannot be null!");
+        }
 
-		this.playerRace = playerRace;
-		this.configRace = Characters.getInstance().getCharacterConfig().getRaceConfig(playerRace);
-		this.playerClass = playerClass;
+        this.id = new CharacterId(player.getUniqueId(), characterNumber);
+        this.player = new WeakReference<>(player);
 
-		this.savedLoc = startingLocation;
+        this.playerRace = playerRace;
+        this.configRace = Characters.getInstance().getCharacterConfig().getRaceConfig(playerRace);
+        this.playerClass = playerClass;
 
-		this.experience = experience;
-		experience.setParent(this);
+        this.savedLoc = startingLocation;
 
-		this.inventoryData = inventoryData;
-		
-		this.skillSet = new PlayerSkillSet(this, skillSet);
-	}
+        this.experience = experience;
+        experience.setParent(this);
 
-	@Override
-	public boolean isNPC() {
-		return false;
-	}
-	
-	@Override
-	public CharacterId getUniqueCharacterId() {
-		return id;
-	}
+        this.inventoryData = inventoryData;
 
-	@Override
-	public int getCharacterNumber() {
-		return id.getCharacterNumber();
-	}
+        this.skillSet = new PlayerSkillSet(this, skillSet);
+    }
 
-	@Override
-	public UUID getPlayerId() {
-		return id.getPlayerId();
-	}
+    @Override
+    public boolean isNPC() {
+        return false;
+    }
 
-	@Override
-	public Player getPlayer() {
-		return player.get();
-	}
+    @Override
+    public CharacterId getUniqueCharacterId() {
+        return id;
+    }
 
-	@Override
-	public boolean isCurrent() {
-		return current;
-	}
+    @Override
+    public int getCharacterNumber() {
+        return id.getCharacterNumber();
+    }
 
-	@Override
-	public Location getLocation() {
-		Player p;
-		if (current && (p = player.get()) != null) {
-			return p.getLocation();
-		} else {
-			return savedLoc.clone();
-		}
-	}
+    @Override
+    public UUID getPlayerId() {
+        return id.getPlayerId();
+    }
 
-	@Override
-	public EntityRace getPlayerRace() {
-		return playerRace;
-	}
+    @Override
+    public Player getPlayer() {
+        return player.get();
+    }
 
-	@Override
-	public EntityClass getPlayerClass() {
-		return playerClass;
-	}
+    @Override
+    public boolean isCurrent() {
+        return current;
+    }
 
-	@Override
-	public CharacterExperience getExperience() {
-		return experience;
-	}
+    @Override
+    public Location getLocation() {
+        Player p;
+        if (current && (p = player.get()) != null) {
+            return p.getLocation();
+        } else {
+            return savedLoc.clone();
+        }
+    }
 
-	@Override
-	public AbilityStats getAbilityStats() {
-		return abilityStats;
-	}
+    @Override
+    public Zone getCurrentZone() {
+        return ZonesController.getInstance().getZone(getPlayer());
+    }
 
-	@Override
-	public InventoryData getInventoryData() {
-		return inventoryData;
-	}
+    @Override
+    public EntityRace getPlayerRace() {
+        return playerRace;
+    }
 
-	@Override
-	public SkillSet getSkillSet() {
-		return skillSet;
-	}
+    @Override
+    public EntityClass getPlayerClass() {
+        return playerClass;
+    }
 
-	@Override
-	public Cooldowns getCooldowns() {
-		return CooldownsController.getInstance().getCooldowns(id);
-	}
+    @Override
+    public CharacterExperience getExperience() {
+        return experience;
+    }
 
-	/**
-	 * Gets whether this object contains any differences from when it was constructed.
-	 * 
-	 * @return <code>true</code> if this has changes that should be written to the database, else
-	 *         <code>false</code>.
-	 */
+    @Override
+    public AbilityStats getAbilityStats() {
+        return abilityStats;
+    }
+
+    @Override
+    public InventoryData getInventoryData() {
+        return inventoryData;
+    }
+
+    @Override
+    public SkillSet getSkillSet() {
+        return skillSet;
+    }
+
+    @Override
+    public Cooldowns getCooldowns() {
+        return CooldownsController.getInstance().getCooldowns(id);
+    }
+
+    /**
+     * Gets whether this object contains any differences from when it was constructed.
+     * @return <code>true</code> if this has changes that should be written to the database, else
+     * <code>false</code>.
+     */
 	/*boolean hasChanged() {
 		if (experience.hasChanged()) {
 			return true;
@@ -159,55 +165,55 @@ public class ReusablePlayerCharacter implements PlayerCharacter {
 		return false;
 	}*/
 
-	void setCurrent(boolean current) {
-		if (this.current != current) {
-			this.current = current;
+    void setCurrent(boolean current) {
+        if (this.current != current) {
+            this.current = current;
 
-			Player p = player.get();
-			if (p == null) {
-				return;
-			}
+            Player p = player.get();
+            if (p == null) {
+                return;
+            }
 
-			if (current) { // on set to current
-				p.teleport(savedLoc);
+            if (current) { // on set to current
+                p.teleport(savedLoc);
 
-				// currently this happens before this character's CombatEntity is initialized, so we have
-				// nothing to pass in here. The class stats class will be given the CombatEntity when it is
-				// initialized.
-				this.abilityStats = new CharacterAbilityStats(this, null);
+                // currently this happens before this character's CombatEntity is initialized, so we have
+                // nothing to pass in here. The class stats class will be given the CombatEntity when it is
+                // initialized.
+                this.abilityStats = new CharacterAbilityStats(this, null);
 
-			} else { // on set to no longer current
-				if (abilityStats != null) {
-					this.abilityStats.onInvalidated();
-				}
-				if (inventoryData != null) {
-					inventoryData.onInvalidated(this);
-				}
+            } else { // on set to no longer current
+                if (abilityStats != null) {
+                    this.abilityStats.onInvalidated();
+                }
+                if (inventoryData != null) {
+                    inventoryData.onInvalidated(this);
+                }
 
-				savedLoc = p.getLocation();
-			}
-		}
-	}
+                savedLoc = p.getLocation();
+            }
+        }
+    }
 
-	void onCombatEntityCreate(CombatEntity combatEntity) {
-		if (abilityStats != null) {
-			abilityStats.onCombatEntityCreate(combatEntity);
-		}
-		
-		for(StatModifierModel mod : configRace.getModifiers()) {
-			combatEntity.getStats().newStatModifierBuilder(mod.getStat())
-										.setModifierType(mod.getModifierType())
-										.setValue(mod.getValue())
-									.build();
-		}
-	}
+    void onCombatEntityCreate(CombatEntity combatEntity) {
+        if (abilityStats != null) {
+            abilityStats.onCombatEntityCreate(combatEntity);
+        }
 
-	void onDeath(PlayerDeathEvent event) {
-		if (abilityStats != null) {
-			abilityStats.onDeath();
-		}
-		if (inventoryData != null) {
-			inventoryData.onDeath(this);
-		}
-	}
+        for (StatModifierModel mod : configRace.getModifiers()) {
+            combatEntity.getStats().newStatModifierBuilder(mod.getStat())
+                    .setModifierType(mod.getModifierType())
+                    .setValue(mod.getValue())
+                    .build();
+        }
+    }
+
+    void onDeath(PlayerDeathEvent event) {
+        if (abilityStats != null) {
+            abilityStats.onDeath();
+        }
+        if (inventoryData != null) {
+            inventoryData.onDeath(this);
+        }
+    }
 }
