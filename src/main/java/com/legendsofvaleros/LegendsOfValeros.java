@@ -40,7 +40,6 @@ import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.scheduler.InternalScheduler;
 import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -91,7 +90,6 @@ public class LegendsOfValeros extends JavaPlugin {
         instance = this;
 
         startTime = System.currentTimeMillis();
-
         mode = ServerMode.valueOf(getConfig().getString("server-mode", "LIVE"));
 
         getLogger().info("Server mode is set to: " + mode.name());
@@ -132,8 +130,9 @@ public class LegendsOfValeros extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        for (InternalScheduler scheduler : InternalScheduler.getAllSchedulers())
+        for (InternalScheduler scheduler : InternalScheduler.getAllSchedulers()) {
             scheduler.shutdown();
+        }
 
         Modules.unloadModules();
 

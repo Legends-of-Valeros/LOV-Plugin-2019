@@ -34,7 +34,7 @@ public class MessageUtil {
     }
 
     public static String resetColor(ChatColor c, String msg) {
-        if(msg == null) return msg;
+        if (msg == null) return msg;
         return msg.replace(ChatColor.RESET.toString(), c.toString());
     }
 
@@ -90,45 +90,87 @@ public class MessageUtil {
         sendDebug(sender, message);
     }
 
-    public static void sendException(Module module, String err) { sendException(module, null, new Exception(err)); }
-    public static void sendException(Module module, Throwable th) { sendException(module, null, th); }
-    public static void sendException(Module module, CommandSender sender, String err) { sendException(module, sender, new Exception(err)); }
-    public static void sendException(Module module, CommandSender sender, Throwable th) { sendException(module.getName(), sender, th, true); }
+    public static void sendException(Module module, String err) {
+        sendException(module, null, new Exception(err));
+    }
 
-    public static void sendException(String module, String err) { sendException(module, null, new Exception(err)); }
-    public static void sendException(String module, Throwable th) { sendException(module, null, th); }
-    public static void sendException(String module, CommandSender sender, String err) { sendException(module, sender, new Exception(err)); }
-    public static void sendException(String module, CommandSender sender, Throwable th) { sendException(module, sender, th, true); }
+    public static void sendException(Module module, Throwable th) {
+        sendException(module, null, th);
+    }
+
+    public static void sendException(Module module, CommandSender sender, String err) {
+        sendException(module, sender, new Exception(err));
+    }
+
+    public static void sendException(Module module, CommandSender sender, Throwable th) {
+        sendException(module.getName(), sender, th, true);
+    }
+
+    public static void sendException(String module, String err) {
+        sendException(module, null, new Exception(err));
+    }
+
+    public static void sendException(String module, Throwable th) {
+        sendException(module, null, th);
+    }
+
+    public static void sendException(String module, CommandSender sender, String err) {
+        sendException(module, sender, new Exception(err));
+    }
+
+    public static void sendException(String module, CommandSender sender, Throwable th) {
+        sendException(module, sender, th, true);
+    }
 
     private static void sendException(String module, CommandSender sender, Throwable th, boolean log) {
         String message = getThrowableMessage(th);
 
-        for(String line : pruneStackTrace(getStackTrace(th)).split("\n"))
+        for (String line : pruneStackTrace(getStackTrace(th)).split("\n"))
             LegendsOfValeros.getInstance().getLogger().severe(line);
 
         BaseComponent[] bc = new TextBuilder("[X" + (module != null ? ":" + module : "") + "] " + message).color(ChatColor.DARK_RED).create();
 
-        if(sender != null)
+        if (sender != null)
             sender.spigot().sendMessage(bc);
-        else{
+        else {
             for (Player p : Bukkit.getOnlinePlayers())
                 if (p.isOp()) {
                     p.spigot().sendMessage(bc);
                 }
         }
 
-        if(log && LegendsOfValeros.getMode().doLogSaving())
+        if (log && LegendsOfValeros.getMode().doLogSaving())
             sendExceptionToDiscord(module, sender, th, false);
     }
 
-    public static void sendSevereException(Module module, String err) { sendSevereException(module, null, new Exception(err)); }
-    public static void sendSevereException(Module module, Throwable th) { sendSevereException(module, null, th); }
-    public static void sendSevereException(Module module, CommandSender sender, String err) { sendSevereException(module, sender, new Exception(err)); }
-    public static void sendSevereException(Module module, CommandSender sender, Throwable th) { sendSevereException(module.getName(), sender, th); }
+    public static void sendSevereException(Module module, String err) {
+        sendSevereException(module, null, new Exception(err));
+    }
 
-    public static void sendSevereException(String module, String err) { sendSevereException(module, null, new Exception(err)); }
-    public static void sendSevereException(String module, Throwable th) { sendSevereException(module, null, th); }
-    public static void sendSevereException(String module, CommandSender sender, String err) { sendSevereException(module, sender, new Exception(err)); }
+    public static void sendSevereException(Module module, Throwable th) {
+        sendSevereException(module, null, th);
+    }
+
+    public static void sendSevereException(Module module, CommandSender sender, String err) {
+        sendSevereException(module, sender, new Exception(err));
+    }
+
+    public static void sendSevereException(Module module, CommandSender sender, Throwable th) {
+        sendSevereException(module.getName(), sender, th);
+    }
+
+    public static void sendSevereException(String module, String err) {
+        sendSevereException(module, null, new Exception(err));
+    }
+
+    public static void sendSevereException(String module, Throwable th) {
+        sendSevereException(module, null, th);
+    }
+
+    public static void sendSevereException(String module, CommandSender sender, String err) {
+        sendSevereException(module, sender, new Exception(err));
+    }
+
     public static void sendSevereException(String module, CommandSender sender, Throwable th) {
         sendException(module, sender, th, false);
 
@@ -185,9 +227,9 @@ public class MessageUtil {
         StringBuilder str = new StringBuilder();
 
         int i = -2;
-        for(String line : trace.split("\n")) {
-            if(i <= -1) {
-                if(i++ == -2)
+        for (String line : trace.split("\n")) {
+            if (i <= -1) {
+                if (i++ == -2)
                     str.append(line + "\n");
 
                 // Ignore non-LOV packages
@@ -204,7 +246,7 @@ public class MessageUtil {
             str.append(line + "\n");
 
             // Don't print too many lines. After an amount, it's just spam.
-            if(i > 6 && !line.contains("legendsofvaleros")) break;
+            if (i > 6 && !line.contains("legendsofvaleros")) break;
         }
 
         return str.toString();
@@ -217,32 +259,4 @@ public class MessageUtil {
             // ExceptionManager.add(null, null, th);
         });
     }
-
-    /*public static class ExceptionManager {
-        private static final String TABLE_NAME = "exceptions";
-
-        private static final String ID_FIELD = "exception_id";
-        private static final String PLUGIN_FIELD = "plugin";
-        private static final String TIME = "time";
-        private static final String PLAYER = "player";
-        private static final String TRACE = "stack_trace";
-
-        private static TableManager manager;
-
-        public static void onEnable(String dbPoolId) {
-
-        }
-
-        public static void add(String module, CommandSender sender, Throwable th) {
-            String trace = pruneStackTrace(getStackTrace(th));
-
-            manager.query()
-                    .insert()
-                    .values(PLUGIN_FIELD, module == null ? "Unknown" : module,
-                            PLAYER, sender == null ? "Unknown" : sender.getName(),
-                            TRACE, trace)
-                    .build()
-                    .execute(true);
-        }
-    }*/
 }

@@ -255,7 +255,7 @@ public class RestrictionsController extends ModuleListener {
      */
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent evt) {
-        if (LegendsOfValeros.getMode().equals(ServerMode.LIVE)) {
+        if (evt.getPlayer().getGameMode() != GameMode.CREATIVE) {
             evt.setCancelled(evt.getBlock().getWorld().getName().equalsIgnoreCase("valeros"));
         }
     }
