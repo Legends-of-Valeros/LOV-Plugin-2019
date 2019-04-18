@@ -4,13 +4,14 @@ import com.google.common.collect.ImmutableList;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.ModuleListener;
-import com.legendsofvaleros.modules.auction.Auction;
-import com.legendsofvaleros.modules.auction.AuctionController;
-import com.legendsofvaleros.modules.professions.mining.MiningNode;
+import com.legendsofvaleros.modules.professions.gathering.mining.MiningNode;
+import com.legendsofvaleros.modules.professions.gathering.mining.MiningTier;
+import com.legendsofvaleros.modules.zones.core.Zone;
 import com.legendsofvaleros.scheduler.InternalTask;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Crystall on 02/14/2019
@@ -18,50 +19,62 @@ import java.util.List;
 public class ProfessionsAPI extends ModuleListener {
 
     public interface RPC {
-        Promise<List<Auction>> getAllMiningNodes();
+        //mining
+        Promise<List<MiningNode>> getAllMiningNodes();
 
-        Promise<Auction> getMiningNode(int id);
+        Promise<List<MiningNode>> getAllMiningNodesByZoneId(String zoneId);
 
-        Promise<Boolean> saveMiningNode();
+        Promise<Boolean> saveMiningNode(MiningNode miningNode);
 
-        Promise<Boolean> deleteMiningNOde();
+        Promise<Boolean> deleteMiningNode(int id);
+
+        //herbalism
+
+        //skinning
     }
 
     private ProfessionsAPI.RPC rpc;
-    public ArrayList<MiningNode> miningNodes = new ArrayList<>();
+    public Map<String, List<MiningNode>> zoneMiningNodes = new HashMap<>();
+    Map<String, List<MiningNode>> zoneHerbalismnNodes = new HashMap<>();
+    Map<String, List<MiningNode>> zoneSkinningNodes = new HashMap<>();
+
 
     @Override
     public void onPostLoad() {
         super.onPostLoad();
-
-        try {
-            this.loadEntries().get();
-        } catch (Throwable th) {
-            th.printStackTrace();
-        }
+        this.rpc = APIController.create(ProfessionsAPI.RPC.class);
     }
 
     @Override
     public void onLoad() {
         super.onLoad();
-
-        this.rpc = APIController.create(ProfessionsAPI.RPC.class);
     }
 
-    public Promise<List<Auction>> loadEntries() {
-        miningNodes.clear();
+    public void loadNodesByZone(Zone zone) {
+        getScheduler().executeInMyCircle(new InternalTask(() -> {
+            rpc.getAllMiningNodesByZoneId(zone.id).onSuccess(val -> {
+                List<MiningNode> nodes = val.orElse(ImmutableList.of());
+                zoneMiningNodes.put(zone.id, nodes);
+                getLogger().info("[" + zone.name + " - " + zone.subname + "] Loaded " + nodes.size() + " mining nodes");
 
-        return rpc.getAllMiningNodes().onSuccess(val -> {
-            miningNodes.addAll(val.orElse(ImmutableList.of()));
-
-            AuctionController.getInstance().getLogger().info("Loaded " + miningNodes.size() + " miningNodes.");
-        }).onFailure(Throwable::printStackTrace);
+                //execute in spigot scheduler because of async block remove / place
+                getScheduler().executeInSpigotCircle(() -> {
+                    for (MiningNode node : nodes) {
+                        if (node.getLocation().getBlock().getType() != MiningTier.getTier(node.getTier()).getOreType()) {
+                            node.getLocation().getBlock().setType(MiningTier.getTier(node.getTier()).getOreType());
+                        }
+                    }
+                });
+            }).onFailure(Throwable::printStackTrace);
+        }));
     }
 
-    void addMiningNode(MiningNode miningNode) {
+    void saveMiningNode(MiningNode miningNode) {
         getScheduler().executeInMyCircle(new InternalTask(() -> {
             rpc.saveMiningNode(miningNode).onSuccess(() -> {
-                miningNodes.add(miningNode);
+                if (zoneMiningNodes.containsKey(miningNode.getZoneId())) {
+                    zoneMiningNodes.get(miningNode.getZoneId()).add(miningNode);
+                }
             }).onFailure(Throwable::printStackTrace);
         }));
     }
@@ -74,8 +87,8 @@ public class ProfessionsAPI extends ModuleListener {
 
     void removeMiningNode(MiningNode miningNode) {
         getScheduler().executeInMyCircle(new InternalTask(() -> {
-                    rpc.deleteAuction(auction.getId()).onSuccess(val -> {
-                        miningNodes.remove(auction);
+                    rpc.deleteMiningNode(miningNode.getId()).onSuccess(val -> {
+                        zoneMiningNodes.values().remove(miningNode);
                     }).onFailure(Throwable::printStackTrace);
                 })
         );
