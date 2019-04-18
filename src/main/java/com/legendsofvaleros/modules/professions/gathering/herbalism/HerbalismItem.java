@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.professions.herbalism;
+package com.legendsofvaleros.modules.professions.gathering.herbalism;
 
 import com.legendsofvaleros.modules.professions.ProfessionItem;
 
