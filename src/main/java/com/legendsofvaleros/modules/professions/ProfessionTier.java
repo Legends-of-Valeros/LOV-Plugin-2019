@@ -27,6 +27,6 @@ public interface ProfessionTier {
      * @return minLevel
      */
     default int getMinLevel() {
-        return Math.max(getId() * 20, 1);
+        return Math.max(getId() * 10, 1);
     }
 }

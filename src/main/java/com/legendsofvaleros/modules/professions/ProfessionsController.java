@@ -1,9 +1,13 @@
 package com.legendsofvaleros.modules.professions;
 
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
+import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
+import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
+import com.legendsofvaleros.modules.characters.loading.PhaseLock;
 import com.legendsofvaleros.modules.professions.commands.NodeEditCommand;
 import com.legendsofvaleros.modules.professions.gathering.mining.MiningNode;
 import com.legendsofvaleros.modules.professions.gathering.mining.MiningTier;
@@ -77,15 +81,15 @@ public class ProfessionsController extends ProfessionsAPI {
     @EventHandler
     public void onZoneActivate(ZoneActivateEvent event) {
         //Gathering stuff
-        if (!this.zoneMiningNodes.containsKey(event.getZone().id)) {
+        if (! this.zoneMiningNodes.containsKey(event.getZone().id)) {
             this.loadNodesByZone(event.getZone());
         }
 
-        if (!this.zoneHerbalismnNodes.containsKey(event.getZone().id)) {
+        if (! this.zoneHerbalismnNodes.containsKey(event.getZone().id)) {
 //            this.loadNodesByZone(event.getZone());
         }
 
-        if (!this.zoneSkinningNodes.containsKey(event.getZone().id)) {
+        if (! this.zoneSkinningNodes.containsKey(event.getZone().id)) {
 //            this.loadNodesByZone(event.getZone());
         }
     }
@@ -93,28 +97,22 @@ public class ProfessionsController extends ProfessionsAPI {
     @EventHandler
     public void onZoneDeactivate(ZoneDeactivateEvent event) {
         //Gathering stuff
-        if (this.zoneMiningNodes.containsKey(event.getZone().id)) {
-            this.zoneMiningNodes.remove(event.getZone().id);
-        }
+        this.zoneMiningNodes.remove(event.getZone().id);
 
-        if (this.zoneHerbalismnNodes.containsKey(event.getZone().id)) {
-            this.zoneHerbalismnNodes.remove(event.getZone().id);
-        }
+        this.zoneHerbalismnNodes.remove(event.getZone().id);
 
-        if (this.zoneSkinningNodes.containsKey(event.getZone().id)) {
-            this.zoneSkinningNodes.remove(event.getZone().id);
-        }
+        this.zoneSkinningNodes.remove(event.getZone().id);
     }
 
     @EventHandler
     public void onProfessionBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        if (!Characters.isPlayerCharacterLoaded(player)) {
+        if (! Characters.isPlayerCharacterLoaded(player)) {
             return;
         }
         PlayerCharacter playerCharacter = Characters.getPlayerCharacter(player);
         Block block = event.getBlock();
-        if (!MiningTier.getOreMaterials().contains(block.getType())) {
+        if (! MiningTier.getOreMaterials().contains(block.getType())) {
             return;
         }
         Zone zone = ZonesController.getInstance().getZone(playerCharacter);
@@ -146,13 +144,13 @@ public class ProfessionsController extends ProfessionsAPI {
     @EventHandler
     public void onProfessionBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
-        if (!Characters.isPlayerCharacterLoaded(player)) {
+        if (! Characters.isPlayerCharacterLoaded(player)) {
             return;
         }
         PlayerCharacter playerCharacter = Characters.getPlayerCharacter(player);
         if (editModePlayers.contains(playerCharacter)) {
             Block block = event.getBlock();
-            if (!MiningTier.getOreMaterials().contains(block.getType())) {
+            if (! MiningTier.getOreMaterials().contains(block.getType())) {
                 return;
             }
             MiningTier tier = MiningTier.getTier(block.getType());
@@ -166,20 +164,26 @@ public class ProfessionsController extends ProfessionsAPI {
         }
     }
 
+    private void onMininBlockbreak() {
+        //TODO
+    }
+
+    private void onHerbalismBlockbreak() {
+        //TODO
+    }
+
     @EventHandler
     public void onPlayerQuit(PlayerCharacterLogoutEvent event) {
-        if (editModePlayers.contains(event.getPlayerCharacter())) {
-            editModePlayers.remove(event.getPlayerCharacter());
-        }
+        editModePlayers.remove(event.getPlayerCharacter());
     }
 
     @EventHandler
     public void onZoneEnter(ZoneEnterEvent event) {
-        if (!LegendsOfValeros.getMode().allowEditing()) {
+        if (! LegendsOfValeros.getMode().allowEditing()) {
             return;
         }
         Player player = event.getPlayer();
-        if (!Characters.isPlayerCharacterLoaded(player)) {
+        if (! Characters.isPlayerCharacterLoaded(player)) {
             return;
         }
         PlayerCharacter playerCharacter = Characters.getPlayerCharacter(player);
@@ -192,11 +196,11 @@ public class ProfessionsController extends ProfessionsAPI {
 
     @EventHandler
     public void onZoneLeave(ZoneLeaveEvent event) {
-        if (!LegendsOfValeros.getMode().allowEditing()) {
+        if (! LegendsOfValeros.getMode().allowEditing()) {
             return;
         }
         Player player = event.getPlayer();
-        if (!Characters.isPlayerCharacterLoaded(player)) {
+        if (! Characters.isPlayerCharacterLoaded(player)) {
             return;
         }
         PlayerCharacter playerCharacter = Characters.getPlayerCharacter(player);
@@ -213,24 +217,49 @@ public class ProfessionsController extends ProfessionsAPI {
      */
     @EventHandler
     public void onEntityDamageEvent(EntityDamageByEntityEvent event) {
-        if (!(event.getDamager() instanceof Player)) {
+        if (! (event.getDamager() instanceof Player)) {
             return;
         }
         if (((Player) event.getDamager()).getGameMode() != GameMode.CREATIVE) {
             return;
         }
-        if (!(event.getEntity() instanceof Slime)) {
+        if (! (event.getEntity() instanceof Slime)) {
             return;
         }
-        if (!Characters.isPlayerCharacterLoaded((Player) event.getDamager())) {
+        if (! Characters.isPlayerCharacterLoaded((Player) event.getDamager())) {
             return;
         }
         PlayerCharacter playerCharacter = Characters.getPlayerCharacter((Player) event.getDamager());
-        if (!editModePlayers.contains(playerCharacter)) {
+        if (! editModePlayers.contains(playerCharacter)) {
             return;
         }
         slimes.remove(event.getEntity());
         event.getEntity().remove();
+    }
+
+
+    @EventHandler
+    public void onCharacterStartLoading(PlayerCharacterStartLoadingEvent event) {
+        PhaseLock lock = event.getLock("Bank");
+
+        onLogin(event.getPlayerCharacter().getUniqueCharacterId())
+                .onFailure((err) -> MessageUtil.sendSevereException(BankController.getInstance(), event.getPlayer(), err))
+                .on(lock::release);
+    }
+
+    @EventHandler
+    public void onCharacterLogout(PlayerCharacterLogoutEvent event) {
+        PhaseLock lock = event.getLock("Bank");
+
+        onLogout(event.getPlayerCharacter().getUniqueCharacterId())
+                .onFailure((err) -> MessageUtil.sendSevereException(BankController.getInstance(), event.getPlayer(), err))
+                .on(lock::release);
+    }
+
+    @EventHandler
+    public void onCharacterRemoved(PlayerCharacterRemoveEvent event) {
+        onDelete(event.getPlayerCharacter().getUniqueCharacterId())
+                .onFailure((err) -> MessageUtil.sendSevereException(BankController.getInstance(), event.getPlayer(), err));
     }
 
 }

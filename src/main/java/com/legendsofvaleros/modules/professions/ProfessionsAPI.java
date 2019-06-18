@@ -4,7 +4,8 @@ import com.google.common.collect.ImmutableList;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.ModuleListener;
-import com.legendsofvaleros.modules.professions.gathering.mining.MiningNode;
+import com.legendsofvaleros.modules.characters.api.CharacterId;
+import com.legendsofvaleros.modules.professions.gathering.GatheringNode;
 import com.legendsofvaleros.modules.professions.gathering.mining.MiningTier;
 import com.legendsofvaleros.modules.zones.core.Zone;
 import com.legendsofvaleros.scheduler.InternalTask;
@@ -13,30 +14,31 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 /**
  * Created by Crystall on 02/14/2019
  */
 public class ProfessionsAPI extends ModuleListener {
 
     public interface RPC {
-        //mining
-        Promise<List<MiningNode>> getAllMiningNodes();
+        Promise<List<GatheringNode>> getAllGatheringNodesByZoneId(String zoneId);
 
-        Promise<List<MiningNode>> getAllMiningNodesByZoneId(String zoneId);
+        Promise<Boolean> saveGatheringNode(GatheringNode gatheringNode);
 
-        Promise<Boolean> saveMiningNode(MiningNode miningNode);
+        Promise<Boolean> deleteGatheringNode(int id);
 
-        Promise<Boolean> deleteMiningNode(int id);
+        //Playerpfoessions
+        Promise<Boolean> savePlayerProfessions(PlayerProfession playerProfession);
 
-        //herbalism
+        Promise<Boolean> deletePlayerProfessions(CharacterId playerProfessions);
 
-        //skinning
+        Promise<PlayerProfession> getPlayerProfessions(CharacterId characterId);
+
     }
 
     private ProfessionsAPI.RPC rpc;
-    public Map<String, List<MiningNode>> zoneMiningNodes = new HashMap<>();
-    Map<String, List<MiningNode>> zoneHerbalismnNodes = new HashMap<>();
-    Map<String, List<MiningNode>> zoneSkinningNodes = new HashMap<>();
+    private Map<String, List<GatheringNode>> zoneGatheringNodes = new HashMap<>();
+    private final Map<CharacterId, PlayerProfession> playerProfessionsMap = new HashMap<>();
 
 
     @Override
@@ -52,15 +54,17 @@ public class ProfessionsAPI extends ModuleListener {
 
     public void loadNodesByZone(Zone zone) {
         getScheduler().executeInMyCircle(new InternalTask(() -> {
-            rpc.getAllMiningNodesByZoneId(zone.id).onSuccess(val -> {
-                List<MiningNode> nodes = val.orElse(ImmutableList.of());
-                zoneMiningNodes.put(zone.id, nodes);
-                getLogger().info("[" + zone.name + " - " + zone.subname + "] Loaded " + nodes.size() + " mining nodes");
+            rpc.getAllGatheringNodesByZoneId(zone.id).onSuccess(val -> {
+                List<GatheringNode> nodes = val.orElse(ImmutableList.of());
+                zoneGatheringNodes.put(zone.id, nodes);
+
+                //TODO specify which node got loaded?
+                getLogger().info("[" + zone.name + " - " + zone.subname + "] Loaded " + nodes.size() + " gathering nodes");
 
                 //execute in spigot scheduler because of async block remove / place
                 getScheduler().executeInSpigotCircle(() -> {
-                    for (MiningNode node : nodes) {
-                        if (node.getLocation().getBlock().getType() != MiningTier.getTier(node.getTier()).getOreType()) {
+                    for (GatheringNode node : nodes) {
+                        if (node.getLocation().getBlock().getType() != node.getNodeMaterial()) {
                             node.getLocation().getBlock().setType(MiningTier.getTier(node.getTier()).getOreType());
                         }
                     }
@@ -69,28 +73,61 @@ public class ProfessionsAPI extends ModuleListener {
         }));
     }
 
-    void saveMiningNode(MiningNode miningNode) {
+    public void saveGatheringNode(GatheringNode gatheringNode) {
         getScheduler().executeInMyCircle(new InternalTask(() -> {
-            rpc.saveMiningNode(miningNode).onSuccess(() -> {
-                if (zoneMiningNodes.containsKey(miningNode.getZoneId())) {
-                    zoneMiningNodes.get(miningNode.getZoneId()).add(miningNode);
+            rpc.saveGatheringNode(gatheringNode).onSuccess(() -> {
+                if (zoneGatheringNodes.containsKey(gatheringNode.getZoneId())) {
+                    zoneGatheringNodes.get(gatheringNode.getZoneId()).add(gatheringNode);
                 }
             }).onFailure(Throwable::printStackTrace);
         }));
     }
 
-    void updateMiningNode(MiningNode miningNode) {
+    public void updateGatheringNode(GatheringNode gatheringNode) {
         getScheduler().executeInMyCircle(new InternalTask(() -> {
-            rpc.saveMiningNode(miningNode).onFailure(Throwable::printStackTrace);
+            rpc.saveGatheringNode(gatheringNode).onFailure(Throwable::printStackTrace);
         }));
     }
 
-    void removeMiningNode(MiningNode miningNode) {
+    public void removeGatheringNode(GatheringNode gatheringNode) {
         getScheduler().executeInMyCircle(new InternalTask(() -> {
-                    rpc.deleteMiningNode(miningNode.getId()).onSuccess(val -> {
-                        zoneMiningNodes.values().remove(miningNode);
+                    rpc.deleteGatheringNode(gatheringNode.getId()).onSuccess(val -> {
+                        zoneGatheringNodes.values().remove(gatheringNode);
                     }).onFailure(Throwable::printStackTrace);
                 })
         );
+    }
+
+    /////////////////////////////////////////////////////////////
+    //      PlayerProfession                                  //
+    /////////////////////////////////////////////////////////////
+
+    public void loadPlayerProfessionsForCharacter(CharacterId characterId) {
+        getScheduler().executeInMyCircle(new InternalTask(() -> {
+            rpc.getPlayerProfessions(characterId).onSuccess(playerProfessions -> {
+                playerProfessionsMap.put(characterId, playerProfessions.orElse(new PlayerProfession()));
+            }).onFailure(Throwable::printStackTrace);
+        }));
+    }
+
+    public void savePlayerProfession(PlayerProfession playerProfession) {
+        getScheduler().executeInMyCircle(new InternalTask(() -> {
+            rpc.savePlayerProfessions(playerProfession).onSuccess(() -> {
+
+            }).onFailure(Throwable::printStackTrace);
+        }));
+    }
+
+    public void deletePlayerProfession(PlayerProfession playerProfession) {
+        getScheduler().executeInMyCircle(new InternalTask(() -> {
+                    rpc.deletePlayerProfessions(playerProfession.getCharacterId()).onSuccess(val -> {
+                        playerProfessionsMap.remove(playerProfession.getCharacterId());
+                    }).onFailure(Throwable::printStackTrace);
+                })
+        );
+    }
+
+    public void updatePlayerProfession() {
+
     }
 }

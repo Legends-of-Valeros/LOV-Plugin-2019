@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.professions.gathering.mining;
 
-import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.professions.ProfessionTier;
 import com.legendsofvaleros.util.TextUtils;
 import org.bukkit.ChatColor;
@@ -10,7 +9,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 /**
  * Created by Crystall on 02/13/2019
@@ -131,5 +129,13 @@ public enum MiningTier implements ProfessionTier {
 
     public Material getIngotType() {
         return ingotType;
+    }
+
+    public String getOreTitle() {
+        return oreTitle;
+    }
+
+    public String getTitle() {
+        return title;
     }
 }

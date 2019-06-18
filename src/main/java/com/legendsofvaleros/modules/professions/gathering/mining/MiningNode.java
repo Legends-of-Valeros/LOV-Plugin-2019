@@ -1,7 +1,8 @@
 package com.legendsofvaleros.modules.professions.gathering.mining;
 
+import com.legendsofvaleros.modules.professions.gathering.GatheringNode;
 import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Slime;
 import org.bukkit.potion.PotionEffect;
@@ -10,66 +11,20 @@ import org.bukkit.potion.PotionEffectType;
 /**
  * Created by Crystall on 03/25/2019
  */
-public class MiningNode {
-    private int id;
-    private World world;
-    private int x;
-    private int y;
-    private int z;
-    private String zoneId;
-    private int tier;
+public class MiningNode extends GatheringNode {
+
     private transient Slime glowing = null;
-    private transient double destroyedAt;
 
     public MiningNode(Location location, String zoneId, int tier) {
-        this.world = location.getWorld();
-        this.x = location.getBlockX();
-        this.y = location.getBlockY();
-        this.z = location.getBlockZ();
-        this.zoneId = zoneId;
-        this.tier = tier;
-    }
+        super(location, zoneId, tier);
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Location getLocation() {
-        return new Location(world, x, y, z);
-    }
-
-    public void setLocation(Location location) {
-        this.world = location.getWorld();
-        this.x = location.getBlockX();
-        this.y = location.getBlockY();
-        this.z = location.getBlockZ();
-    }
-
-    public String getZoneId() {
-        return zoneId;
-    }
-
-    public void setZoneId(String zoneId) {
-        this.zoneId = zoneId;
-    }
-
-    public int getTier() {
-        return tier;
-    }
-
-    public void setTier(int tier) {
-        this.tier = tier;
     }
 
     public void setGlowing() {
         if (isGlowing()) {
             return;
         }
-        Location slimePos = getLocation().add(.5, -.01, .5);
+        Location slimePos = getLocation().add(.5, - .01, .5);
         Slime slime = (Slime) slimePos.getWorld().spawnEntity(slimePos, EntityType.SLIME);
         slime.setAI(false); // Prevent slimes from doing anything.
         slime.setGravity(false); // Prevent slimes from moving by gravity.
@@ -100,11 +55,9 @@ public class MiningNode {
         super.finalize();
     }
 
-    public double getDestroyedAt() {
-        return destroyedAt;
+    @Override
+    public Material getNodeMaterial() {
+        return MiningTier.getTier(getTier()).getOreType();
     }
 
-    public void setDestroyedAt(double destroyedAt) {
-        this.destroyedAt = destroyedAt;
-    }
 }
