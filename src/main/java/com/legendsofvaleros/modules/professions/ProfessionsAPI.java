@@ -14,12 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * Created by Crystall on 02/14/2019
  */
 public class ProfessionsAPI extends ModuleListener {
-
     public interface RPC {
         Promise<List<GatheringNode>> getAllGatheringNodesByZoneId(String zoneId);
 
@@ -27,7 +25,7 @@ public class ProfessionsAPI extends ModuleListener {
 
         Promise<Boolean> deleteGatheringNode(int id);
 
-        //Playerpfoessions
+        //Playerprofessions
         Promise<Boolean> savePlayerProfessions(PlayerProfession playerProfession);
 
         Promise<Boolean> deletePlayerProfessions(CharacterId playerProfessions);
@@ -37,9 +35,8 @@ public class ProfessionsAPI extends ModuleListener {
     }
 
     private ProfessionsAPI.RPC rpc;
-    private Map<String, List<GatheringNode>> zoneGatheringNodes = new HashMap<>();
-    private final Map<CharacterId, PlayerProfession> playerProfessionsMap = new HashMap<>();
-
+    Map<String, List<GatheringNode>> zoneGatheringNodes = new HashMap<>();
+    final Map<CharacterId, PlayerProfession> playerProfessionsMap = new HashMap<>();
 
     @Override
     public void onPostLoad() {
@@ -52,6 +49,9 @@ public class ProfessionsAPI extends ModuleListener {
         super.onLoad();
     }
 
+    /**
+     * @param zone
+     */
     public void loadNodesByZone(Zone zone) {
         getScheduler().executeInMyCircle(new InternalTask(() -> {
             rpc.getAllGatheringNodesByZoneId(zone.id).onSuccess(val -> {
@@ -73,6 +73,9 @@ public class ProfessionsAPI extends ModuleListener {
         }));
     }
 
+    /**
+     * @param gatheringNode
+     */
     public void saveGatheringNode(GatheringNode gatheringNode) {
         getScheduler().executeInMyCircle(new InternalTask(() -> {
             rpc.saveGatheringNode(gatheringNode).onSuccess(() -> {
@@ -83,12 +86,18 @@ public class ProfessionsAPI extends ModuleListener {
         }));
     }
 
+    /**
+     * @param gatheringNode
+     */
     public void updateGatheringNode(GatheringNode gatheringNode) {
         getScheduler().executeInMyCircle(new InternalTask(() -> {
             rpc.saveGatheringNode(gatheringNode).onFailure(Throwable::printStackTrace);
         }));
     }
 
+    /**
+     * @param gatheringNode
+     */
     public void removeGatheringNode(GatheringNode gatheringNode) {
         getScheduler().executeInMyCircle(new InternalTask(() -> {
                     rpc.deleteGatheringNode(gatheringNode.getId()).onSuccess(val -> {
@@ -102,32 +111,48 @@ public class ProfessionsAPI extends ModuleListener {
     //      PlayerProfession                                  //
     /////////////////////////////////////////////////////////////
 
-    public void loadPlayerProfessionsForCharacter(CharacterId characterId) {
-        getScheduler().executeInMyCircle(new InternalTask(() -> {
-            rpc.getPlayerProfessions(characterId).onSuccess(playerProfessions -> {
-                playerProfessionsMap.put(characterId, playerProfessions.orElse(new PlayerProfession()));
-            }).onFailure(Throwable::printStackTrace);
-        }));
+
+    /**
+     * @param characterId
+     * @return
+     */
+    protected Promise<PlayerProfession> onLogin(CharacterId characterId) {
+        Promise<PlayerProfession> promise = rpc.getPlayerProfessions(characterId);
+
+        promise.onSuccess(playerProfessions -> {
+            playerProfessionsMap.put(characterId, playerProfessions.orElse(
+                    new PlayerProfession(characterId, 0, 0, 0, 0))
+            );
+        });
+
+        return promise;
     }
 
-    public void savePlayerProfession(PlayerProfession playerProfession) {
-        getScheduler().executeInMyCircle(new InternalTask(() -> {
-            rpc.savePlayerProfessions(playerProfession).onSuccess(() -> {
+    /**
+     * @param characterId
+     * @return
+     */
+    protected Promise<Boolean> onLogout(CharacterId characterId) {
+        Promise<Boolean> promise = new Promise<>();
+        PlayerProfession playerProfession = playerProfessionsMap.remove(characterId);
 
-            }).onFailure(Throwable::printStackTrace);
-        }));
+        if (playerProfession == null) {
+            promise.resolve(false);
+        } else {
+            rpc.savePlayerProfessions(playerProfession).on((err, val) -> {
+                if (err.isPresent()) promise.reject(err.get());
+                else promise.resolve(val.orElse(false));
+            });
+        }
+
+        return promise;
     }
 
-    public void deletePlayerProfession(PlayerProfession playerProfession) {
-        getScheduler().executeInMyCircle(new InternalTask(() -> {
-                    rpc.deletePlayerProfessions(playerProfession.getCharacterId()).onSuccess(val -> {
-                        playerProfessionsMap.remove(playerProfession.getCharacterId());
-                    }).onFailure(Throwable::printStackTrace);
-                })
-        );
-    }
-
-    public void updatePlayerProfession() {
-
+    /**
+     * @param characterId
+     * @return
+     */
+    protected Promise<Boolean> onDelete(CharacterId characterId) {
+        return rpc.deletePlayerProfessions(characterId);
     }
 }

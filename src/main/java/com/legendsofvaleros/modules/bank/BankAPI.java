@@ -82,7 +82,10 @@ public class BankAPI extends ModuleListener {
             PhaseLock lock = event.getLock("Bank");
 
             onLogin(event.getPlayerCharacter().getUniqueCharacterId())
-                    .onFailure((err) -> MessageUtil.sendSevereException(BankController.getInstance(), event.getPlayer(), err))
+                    .onFailure((err) -> {
+                        MessageUtil.sendSevereException(BankController.getInstance(), event.getPlayer(), err);
+                        event.getPlayer().kickPlayer("Failed loading PlayerBank - If this error persists, try contacting the support");
+                    })
                     .on(lock::release);
         }
 

@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.professions.gathering.mining;
 
 import com.legendsofvaleros.modules.professions.gathering.GatheringNode;
+import com.legendsofvaleros.modules.professions.gathering.GatheringType;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -13,18 +14,16 @@ import org.bukkit.potion.PotionEffectType;
  */
 public class MiningNode extends GatheringNode {
 
-    private transient Slime glowing = null;
-
     public MiningNode(Location location, String zoneId, int tier) {
-        super(location, zoneId, tier);
-
+        super(location, zoneId, tier, GatheringType.MINING);
     }
 
+    @Override
     public void setGlowing() {
         if (isGlowing()) {
             return;
         }
-        Location slimePos = getLocation().add(.5, - .01, .5);
+        Location slimePos = getLocation().add(.5, -.01, .5);
         Slime slime = (Slime) slimePos.getWorld().spawnEntity(slimePos, EntityType.SLIME);
         slime.setAI(false); // Prevent slimes from doing anything.
         slime.setGravity(false); // Prevent slimes from moving by gravity.
@@ -38,22 +37,6 @@ public class MiningNode extends GatheringNode {
         glowing = slime;
     }
 
-    public void removeGlowing() {
-        if (isGlowing()) {
-            this.glowing.remove();
-            this.glowing = null;
-        }
-    }
-
-    public boolean isGlowing() {
-        return this.glowing != null;
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        removeGlowing();
-        super.finalize();
-    }
 
     @Override
     public Material getNodeMaterial() {

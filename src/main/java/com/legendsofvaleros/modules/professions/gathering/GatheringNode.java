@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.professions.gathering;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.Slime;
 
 /**
  * Created by Crystall on 06/12/2019
@@ -16,14 +17,38 @@ public abstract class GatheringNode {
     private String zoneId;
     private int tier;
     private transient double destroyedAt;
+    protected transient Slime glowing = null;
+    private GatheringType type;
 
-    public GatheringNode(Location location, String zoneId, int tier) {
+    public GatheringNode(Location location, String zoneId, int tier, GatheringType type) {
         this.world = location.getWorld();
         this.x = location.getBlockX();
         this.y = location.getBlockY();
         this.z = location.getBlockZ();
         this.zoneId = zoneId;
         this.tier = tier;
+        this.type = type;
+    }
+
+    public void removeGlowing() {
+        if (isGlowing()) {
+            this.glowing.remove();
+            this.glowing = null;
+        }
+    }
+
+    public void setGlowing() {
+
+    }
+
+    public boolean isGlowing() {
+        return this.glowing != null;
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        removeGlowing();
+        super.finalize();
     }
 
     public int getId() {
@@ -69,7 +94,15 @@ public abstract class GatheringNode {
         this.destroyedAt = destroyedAt;
     }
 
-    public Material getNodeMaterial(){
+    public Material getNodeMaterial() {
         return null;
+    }
+
+    public GatheringType getType() {
+        return type;
+    }
+
+    public void setType(GatheringType type) {
+        this.type = type;
     }
 }
