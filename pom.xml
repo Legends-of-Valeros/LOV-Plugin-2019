@@ -10,7 +10,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spigot.version>1.14.2-R0.1-SNAPSHOT</spigot.version>
+        <spigot.version>1.14.3-R0.1-SNAPSHOT</spigot.version>
         <citizens.version>2.0.25-SNAPSHOT</citizens.version>
         <java.version>1.8</java.version>
         <aspectj.version>1.8.13</aspectj.version>
@@ -114,7 +114,7 @@
             <id>citizens-repo</id>
             <url>http://repo.citizensnpcs.co/</url>
         </repository>
-        <!---->
+        <!-- Libs disguises -->
         <repository>
             <id>aikar</id>
             <url>https://repo.aikar.co/content/groups/aikar/</url>
@@ -124,7 +124,7 @@
             <id>dmulloy2-repo</id>
             <url>http://repo.dmulloy2.net/nexus/repository/public/</url>
         </repository>
-        <!--        -->
+        <!--Multithread library for discord bots -->
         <repository>
             <id>javacord-repo</id>
             <url>http://repo.bastian-oppermann.de</url>

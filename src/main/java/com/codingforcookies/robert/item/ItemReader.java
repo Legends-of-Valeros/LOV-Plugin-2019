@@ -55,7 +55,6 @@ public class ItemReader {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public <T> T getTag(String name, Class<T> c) {
         if (nbt == null) return null;
         return (T) nbt.get(name);

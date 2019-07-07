@@ -44,12 +44,13 @@ public class EntityTracker implements UnsafePlayerInitializer {
     public EntityTracker(CombatProfile defaultProfile) {
         this.defaultProfile = defaultProfile;
 
-        TrackingListener listener;
-        CombatEngine.getInstance().registerEvents(listener = new TrackingListener());
-
-        combatEntities =
-                CacheBuilder.newBuilder().concurrencyLevel(1).weakValues().removalListener(listener)
-                        .build();
+        TrackingListener listener = new TrackingListener();
+        CombatEngine.getInstance().registerEvents(listener);
+        combatEntities = CacheBuilder.newBuilder()
+                .concurrencyLevel(1)
+                .weakValues()
+                .removalListener(listener)
+                .build();
 
         // TODO this would need to be configured if passive/aggressive initialization option is added
         // Run after all plugins are initialized
@@ -109,6 +110,7 @@ public class EntityTracker implements UnsafePlayerInitializer {
 
     private CombinedCombatEntity create(LivingEntity entity) {
         CombatEntityPreCreateEvent preEvent = new CombatEntityPreCreateEvent(entity, defaultProfile);
+
         Bukkit.getServer().getPluginManager().callEvent(preEvent);
 
         CombatProfile profile = preEvent.getCombatProfile();
@@ -208,6 +210,11 @@ public class EntityTracker implements UnsafePlayerInitializer {
                     CombinedCombatEntity cce = getCombatEntity((LivingEntity) entity);
                     // if the entity's CombatEntity object was still in the cache, its contained LivingEntity
                     // object needs to be set to the newly loaded version.
+                    if (cce == null) {
+                        //TODO remove debug?
+                        CombatEngine.getInstance().getLogger().warning("EntityTracker - CombinedCombatEntity is null");
+                        return;
+                    }
                     cce.refreshEntity((LivingEntity) entity);
                 }
             }

@@ -15,7 +15,7 @@ public class APIAspect {
     @Around("@annotation(com.legendsofvaleros.api.annotation.ModuleRPC) && execution(* *(..))")
     public Object wrapRPC(ProceedingJoinPoint joinPoint) {
         Module module = Modules.getModule(joinPoint.getThis().getClass());
-        Method method = ((MethodSignature)joinPoint.getSignature()).getMethod();
+        Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
         return RPCFunction.callMethod(module.getScheduler()::async, method, joinPoint.getArgs());
     }
 }

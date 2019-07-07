@@ -9,7 +9,6 @@ import com.legendsofvaleros.module.annotation.IntegratesWith;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.core.ReusablePlayerCharacter;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterFinishLoadingEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.chat.ChatController;
@@ -61,7 +60,9 @@ public class ZonesController extends ZonesAPI {
             for (Player p : Bukkit.getOnlinePlayers()) {
                 if (Characters.isPlayerCharacterLoaded(p)) {
                     try {
-                        updateZone(p);
+                        getInstance().getScheduler().executeInSpigotCircle(new InternalTask(() -> {
+                            updateZone(p);
+                        }));
                     } catch (Exception e) {
                         MessageUtil.sendSevereException(this, p, e);
                     }

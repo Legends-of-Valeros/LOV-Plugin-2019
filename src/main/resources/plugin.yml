@@ -3,6 +3,7 @@ name: "${project.name}"
 version: "${project.version}"
 author: "Crystall, Stumblinbear, Brutus"
 depend: [Citizens, Robert, ArmorEquipEvent]
+api-version: 1.14
 
 permissions:
     characters.slots.x:

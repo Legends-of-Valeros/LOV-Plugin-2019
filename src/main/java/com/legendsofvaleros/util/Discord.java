@@ -1,6 +1,7 @@
 package com.legendsofvaleros.util;
 
 import com.google.common.util.concurrent.FutureCallback;
+import com.legendsofvaleros.scheduler.InternalTask;
 import de.btobastian.javacord.DiscordAPI;
 import de.btobastian.javacord.Javacord;
 import de.btobastian.javacord.entities.Channel;
@@ -36,7 +37,9 @@ public class Discord {
                 LINKED = true;
                 SERVER = api.getServerById(config.getString("server"));
 
-                Bukkit.getServer().getPluginManager().callEvent(new Discord.ConnectedEvent(SERVER, api));
+                Utilities.getInstance().getScheduler().executeInSpigotCircle(new InternalTask(() -> {
+                    Bukkit.getServer().getPluginManager().callEvent(new Discord.ConnectedEvent(SERVER, api));
+                }));
             }
 
             @Override
