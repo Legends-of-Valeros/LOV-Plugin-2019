@@ -72,7 +72,7 @@ public class TraitHonorTrader extends LOVTrait {
             return;
         }
 
-        slot.set(new Slot(new ItemBuilder(Material.TOTEM).setName("Honor Trade").create(), (gui, p, event) -> {
+        slot.set(new Slot(new ItemBuilder(Material.TOTEM_OF_UNDYING).setName("Honor Trade").create(), (gui, p, event) -> {
             gui.close(p);
 
             new BuyGUI(p, gears, costs).open(p);

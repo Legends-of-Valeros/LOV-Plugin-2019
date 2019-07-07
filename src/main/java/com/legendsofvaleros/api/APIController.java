@@ -16,7 +16,7 @@ import io.deepstream.DeepstreamClient;
 import io.deepstream.InvalidDeepstreamConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 
 import java.io.IOException;
 import java.lang.reflect.Method;

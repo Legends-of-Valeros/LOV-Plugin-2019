@@ -19,6 +19,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
+
 import java.util.AbstractMap;
 import java.util.Map.Entry;
 
@@ -98,14 +99,14 @@ public class HotbarListener implements Runnable, Listener {
             String skillId = SkillsController.getInstance().getSkillBarSlot(pc, bar + i);
             Skill skill = Skill.getSkillById(skillId);
 
-            if(skill == null) {
+            if (skill == null) {
                 SkillsController.getInstance().updateSkillBar(pc, bar + i, null);
                 invStack = null;
             }
 
-            if(invStack == null)
+            if (invStack == null)
                 stack = Model.EMPTY_SLOT;
-            else{
+            else {
                 stack = SkillsController.getStackForSkillCooldown(pc,
                         new AbstractMap.SimpleImmutableEntry<>(
                                 skill,

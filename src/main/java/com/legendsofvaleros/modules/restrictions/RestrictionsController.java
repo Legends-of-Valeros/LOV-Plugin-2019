@@ -223,15 +223,16 @@ public class RestrictionsController extends ModuleListener {
                 event.setCancelled(true);
             }
             switch (event.getClickedBlock().getType()) {
-                case SOIL:
-                case CROPS:
+                //TODO replace legacy materials
+                case LEGACY_SOIL:
+                case LEGACY_CROPS:
                 case CHEST:
                 case HOPPER:
                 case FURNACE:
-                case WORKBENCH:
+                case LEGACY_WORKBENCH:
                 case ANVIL:
                 case ENDER_CHEST:
-                case ENCHANTMENT_TABLE:
+                case LEGACY_ENCHANTMENT_TABLE:
                 case TRAPPED_CHEST:
                 case DISPENSER:
                 case DROPPER:
@@ -275,7 +276,8 @@ public class RestrictionsController extends ModuleListener {
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onPortalDestroy(BlockPhysicsEvent evt) {
-        evt.setCancelled(evt.getBlock().getType() == Material.PORTAL && evt.getChangedType() != Material.PORTAL);
+        //TODO replace legacy materials
+        evt.setCancelled(evt.getBlock().getType() == Material.LEGACY_PORTAL && evt.getChangedType() != Material.LEGACY_PORTAL);
     }
 
     /**
@@ -342,7 +344,8 @@ public class RestrictionsController extends ModuleListener {
      */
     @EventHandler(ignoreCancelled = true)
     public void preventCropTrample(PlayerInteractEvent evt) {
-        evt.setCancelled(evt.getAction() == Action.PHYSICAL && (evt.getClickedBlock().getType() == Material.SOIL || evt.getClickedBlock().getType() == Material.CROPS));
+        //TODO replace legacy materials
+        evt.setCancelled(evt.getAction() == Action.PHYSICAL && (evt.getClickedBlock().getType() == Material.LEGACY_SOIL || evt.getClickedBlock().getType() == Material.LEGACY_CROPS));
     }
 
     /**
@@ -350,7 +353,9 @@ public class RestrictionsController extends ModuleListener {
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void ignoreTallGrass(PlayerInteractEvent evt) {
-        evt.setCancelled(evt.getAction() == Action.LEFT_CLICK_BLOCK && evt.getClickedBlock().getType() == Material.LONG_GRASS);
+        if (evt.getClickedBlock() != null) {
+            evt.setCancelled(evt.getAction() == Action.LEFT_CLICK_BLOCK && evt.getClickedBlock().getType() == Material.LEGACY_LONG_GRASS);
+        }
     }
 
     /**

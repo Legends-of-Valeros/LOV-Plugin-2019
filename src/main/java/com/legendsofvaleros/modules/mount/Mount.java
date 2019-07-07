@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.mount;
 
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 import org.bukkit.entity.*;
 import org.bukkit.entity.Horse.Color;
 import org.bukkit.entity.Horse.Style;
@@ -13,11 +13,13 @@ import java.util.UUID;
 
 public class Mount {
     private String id;
+
     public String getId() {
         return id;
     }
 
     private String name;
+
     public String getName() {
         return name;
     }
@@ -28,14 +30,17 @@ public class Mount {
      * A value representing the percentage faster a mount is compared to a player.
      */
     private float speed;
+
     public float getSpeed() {
         return speed;
     }
+
     public int getSpeedPercent() {
         return (int) (speed * 100);
     }
 
     private int minLevel;
+
     public int getMinimumLevel() {
         return minLevel;
     }
@@ -51,11 +56,13 @@ public class Mount {
     }
 
     private Material icon;
+
     public Material getIcon() {
         return icon;
     }
 
     private int cost;
+
     public int getCost() {
         return cost;
     }
@@ -71,7 +78,7 @@ public class Mount {
     }
 
     public void hopOn(Player p) {
-        net.minecraft.server.v1_12_R1.Entity entityCraft = null;
+        net.minecraft.server.v1_14_R1.Entity entityCraft = null;
         try {
             entityCraft = ((CraftWorld) p.getWorld()).createEntity(p.getLocation(), type.getEntityClass());
         } catch (Exception e) {

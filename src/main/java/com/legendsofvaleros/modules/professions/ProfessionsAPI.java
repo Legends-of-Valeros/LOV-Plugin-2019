@@ -35,8 +35,8 @@ public class ProfessionsAPI extends ModuleListener {
     }
 
     private ProfessionsAPI.RPC rpc;
-    Map<String, List<GatheringNode>> zoneGatheringNodes = new HashMap<>();
-    final Map<CharacterId, PlayerProfession> playerProfessionsMap = new HashMap<>();
+    public Map<String, List<GatheringNode>> zoneGatheringNodes = new HashMap<>();
+    private final Map<CharacterId, PlayerProfession> playerProfessionsMap = new HashMap<>();
 
     @Override
     public void onPostLoad() {
@@ -110,7 +110,6 @@ public class ProfessionsAPI extends ModuleListener {
     /////////////////////////////////////////////////////////////
     //      PlayerProfession                                  //
     /////////////////////////////////////////////////////////////
-
 
     /**
      * @param characterId

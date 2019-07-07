@@ -75,20 +75,20 @@ public class SkillSpikes extends Skill {
 
             b = world.getBlockAt(spikeLoc);
             if (b.getType() != Material.AIR) continue;
-            b.setType(Material.THIN_GLASS);
+            b.setType(Material.GLASS_PANE);
             successes.add(b);
 
             spikeLoc.add(0, 1, 0);
             b = world.getBlockAt(spikeLoc);
             if (b.getType() != Material.AIR) continue;
-            b.setType(Material.THIN_GLASS);
+            b.setType(Material.GLASS_PANE);
             successes.add(b);
 
             if (rand.nextBoolean()) {
                 spikeLoc.add(0, 1, 0);
                 b = world.getBlockAt(spikeLoc);
                 if (b.getType() != Material.AIR) continue;
-                b.setType(Material.THIN_GLASS);
+                b.setType(Material.GLASS_PANE);
                 successes.add(b);
             }
         }

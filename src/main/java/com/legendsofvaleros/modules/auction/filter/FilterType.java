@@ -1,11 +1,12 @@
 package com.legendsofvaleros.modules.auction.filter;
 
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.StringUtils;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Created by Crystall on 11/05/2018
@@ -14,7 +15,7 @@ import java.util.Arrays;
 public enum FilterType {
     PRICE("price", "price", Material.GOLD_NUGGET),
     CREATED_AT("created at", "created_at", Material.PAPER),
-    REMAINING_TIME("valid until", "valid_until", Material.WATCH),
+    REMAINING_TIME("valid until", "valid_until", Material.CLOCK),
     ITEM_ID("item id", "item_id", Material.IRON_NUGGET);
 
     private String name;
@@ -45,14 +46,13 @@ public enum FilterType {
 
     /**
      * Returns the gui item with all its properties
-     *
      * @return
      */
     public ItemStack toItemStack() {
         ItemStack is = new ItemStack(this.guiMaterial);
         ItemMeta im = is.getItemMeta();
         im.setDisplayName(StringUtils.capitalize(this.name));
-        im.setLore(Arrays.asList(this.getDescription()));
+        im.setLore(Collections.singletonList(this.getDescription()));
         is.setItemMeta(im);
         return is;
     }

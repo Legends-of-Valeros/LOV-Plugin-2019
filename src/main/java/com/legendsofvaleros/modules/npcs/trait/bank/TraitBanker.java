@@ -16,53 +16,51 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class TraitBanker extends LOVTrait {
-	@Override
-	public void onRightClick(Player player, SettableFuture<Slot> slot) {
-		if(!Characters.isPlayerCharacterLoaded(player)) {
-			slot.set(null);
-			return;
-		}
-		
-		slot.set(new Slot(new ItemBuilder(Material.IRON_FENCE).setName("Banking").create(), (gui, p, event) -> {
-			gui.close(p);
+    @Override
+    public void onRightClick(Player player, SettableFuture<Slot> slot) {
+        if (!Characters.isPlayerCharacterLoaded(player)) {
+            slot.set(null);
+            return;
+        }
 
-			new BankView(BankController.getBank(Characters.getPlayerCharacter(p))).open(p);
-		}));
-	}
-	
-	private class BankView extends GUI {
-		Bank bank;
-		
-		BankView(Bank bank) {
-			super("Bank");
-			
-			this.bank = bank;
-			
-			type(6);
+        slot.set(new Slot(new ItemBuilder(Material.IRON_BARS).setName("Banking").create(), (gui, p, event) -> {
+            gui.close(p);
 
-			for(int i = 0; i < 6 * 9; i++) {
-				Gear.Data item = bank.getContent().get(i);
+            new BankView(BankController.getBank(Characters.getPlayerCharacter(p))).open(p);
+        }));
+    }
 
-				int j = i;
-				slot(i, item != null ? item.toStack() : null, new SlotUsable() {
-					@Override
-					public void onPickup(GUI gui, Player p, ItemStack stack, InventoryClickEvent event) {
-						if(stack.getType() != Material.AIR)
-							bank.removeItem(j);
-					}
+    private class BankView extends GUI {
+        Bank bank;
 
-					@Override
-					public void onPlace(GUI gui, Player p, ItemStack stack, InventoryClickEvent event) {
-						Gear.Instance instance = Gear.Instance.fromStack(stack);
-						if(instance == null) {
-							event.setCancelled(true);
-							return;
-						}
+        BankView(Bank bank) {
+            super("Bank");
+            this.bank = bank;
+            type(6);
 
-						bank.setItem(j, instance.getData());
-					}
-				});
-			}
-		}
-	}
+            for (int i = 0; i < 6 * 9; i++) {
+                Gear.Data item = bank.getContent().get(i);
+
+                int j = i;
+                slot(i, item != null ? item.toStack() : null, new SlotUsable() {
+                    @Override
+                    public void onPickup(GUI gui, Player p, ItemStack stack, InventoryClickEvent event) {
+                        if (stack.getType() != Material.AIR)
+                            bank.removeItem(j);
+                    }
+
+                    @Override
+                    public void onPlace(GUI gui, Player p, ItemStack stack, InventoryClickEvent event) {
+                        Gear.Instance instance = Gear.Instance.fromStack(stack);
+                        if (instance == null) {
+                            event.setCancelled(true);
+                            return;
+                        }
+
+                        bank.setItem(j, instance.getData());
+                    }
+                });
+            }
+        }
+    }
 }

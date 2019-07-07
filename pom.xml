@@ -10,8 +10,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spigot.version>1.12.2-R0.1-SNAPSHOT</spigot.version>
-        <citizens.version>2.0.22-SNAPSHOT</citizens.version>
+        <spigot.version>1.14.2-R0.1-SNAPSHOT</spigot.version>
+        <citizens.version>2.0.25-SNAPSHOT</citizens.version>
         <java.version>1.8</java.version>
         <aspectj.version>1.8.13</aspectj.version>
     </properties>
@@ -58,9 +58,9 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <showWeaveInfo />
+                    <showWeaveInfo/>
                     <forceAjcCompile>true</forceAjcCompile>
-                    <sources />
+                    <sources/>
                     <weaveDirectories>
                         <weaveDirectory>${project.build.directory}/classes</weaveDirectory>
                     </weaveDirectories>
@@ -100,6 +100,7 @@
     </build>
 
     <repositories>
+        <!--        -->
         <repository>
             <id>jcenter</id>
             <url>https://jcenter.bintray.com/</url>
@@ -108,42 +109,61 @@
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/groups/snapshots/</url>
         </repository>
+        <!--Citizens -->
         <repository>
             <id>citizens-repo</id>
             <url>http://repo.citizensnpcs.co/</url>
         </repository>
-        <repository>
-            <id>md_5-public</id>
-            <url>http://repo.md-5.net/content/groups/public/</url>
-        </repository>
+        <!---->
         <repository>
             <id>aikar</id>
             <url>https://repo.aikar.co/content/groups/aikar/</url>
         </repository>
+        <!--Protocol lib-->
         <repository>
             <id>dmulloy2-repo</id>
             <url>http://repo.dmulloy2.net/nexus/repository/public/</url>
         </repository>
+        <!--        -->
         <repository>
             <id>javacord-repo</id>
             <url>http://repo.bastian-oppermann.de</url>
         </repository>
+        <!--Holographic displays-->
+        <repository>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.org/repository/maven-public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
+        <!--Protocol lib-->
+        <dependency>
+            <groupId>com.comphenix.protocol</groupId>
+            <artifactId>ProtocolLib</artifactId>
+            <version>4.4.0</version>
+        </dependency>
+        <!--Spigot -->
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
             <version>${spigot.version}</version>
             <scope>provided</scope>
         </dependency>
-
-        <!-- Shaded dependencies -->
+        <!--Spigot API-->
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>${spigot.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--Deepstream client java-->
         <dependency>
             <groupId>io.deepstream</groupId>
             <artifactId>deepstream.io-client-java</artifactId>
             <version>2.2.2</version>
         </dependency>
+        <!--        -->
         <dependency>
             <groupId>de.btobastian.javacord</groupId>
             <artifactId>javacord</artifactId>
@@ -156,13 +176,20 @@
             <version>2.8.1</version>
             <scope>compile</scope>
         </dependency>
+        <!--        -->
         <dependency>
             <groupId>co.aikar</groupId>
             <artifactId>acf-paper</artifactId>
             <version>0.5.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
-
+        <!-- Holographic displays -->
+        <dependency>
+            <groupId>com.gmail.filoghost.holographicdisplays</groupId>
+            <artifactId>holographicdisplays-api</artifactId>
+            <version>2.3.3-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- Plugin dependencies -->
         <dependency>
@@ -181,38 +208,17 @@
         <dependency>
             <groupId>LibsDisguises</groupId>
             <artifactId>LibsDisguises</artifactId>
-            <version>9.6.0-SNAPSHOT</version>
-            <optional>true</optional>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.comphenix.protocol</groupId>
-            <artifactId>ProtocolLib</artifactId>
-            <version>4.4.0</version>
+            <version>LATEST</version>
             <scope>provided</scope>
         </dependency>
 
         <!-- System dependencies -->
-        <dependency>
-            <groupId>com.gmail.filoghost</groupId>
-            <artifactId>holographic-displays-api</artifactId>
-            <version>2.0.2</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/HolographicDisplays.jar</systemPath>
-        </dependency>
         <dependency>
             <groupId>com.codingforcookies</groupId>
             <artifactId>ArmorEquipEvent</artifactId>
             <version>1.6.3</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/ArmorEquipEvent-1.6.3.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>com.codingforcookies</groupId>
-            <artifactId>robert</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/robert-0.0.1.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.codingforcookies</groupId>

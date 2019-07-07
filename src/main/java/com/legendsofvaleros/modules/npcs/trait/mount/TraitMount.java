@@ -28,7 +28,8 @@ public class TraitMount extends LOVTrait {
             return;
         }
 
-        slot.set(new Slot(new ItemBuilder(Material.IRON_BARDING).setName("Purchase Mounts").create(), (gui, p, event) -> {
+        //TODO REPLACE LEGACY MATERIAL
+        slot.set(new Slot(new ItemBuilder(Material.LEGACY_IRON_BARDING).setName("Purchase Mounts").create(), (gui, p, event) -> {
             gui.close(p);
 
             openGUI(p);

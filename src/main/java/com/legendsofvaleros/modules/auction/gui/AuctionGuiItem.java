@@ -13,7 +13,7 @@ import java.util.Arrays;
 public enum AuctionGuiItem {
     PREVIOUS_PAGE("Previous Page", Material.PAPER, "Go to previous page"),
     NEXT_PAGE("Next Page", Material.PAPER, "Go to next page"),
-    REFRESH("Refresh", Material.GREEN_RECORD, "Refresh all entries");
+    REFRESH("Refresh", Material.MUSIC_DISC_CAT, "Refresh all entries");
 
     public String title;
     public Material material;

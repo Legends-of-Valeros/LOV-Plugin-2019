@@ -14,10 +14,10 @@ import com.legendsofvaleros.modules.mobs.behavior.NodeStatus;
 import com.legendsofvaleros.modules.mobs.trait.MobTrait;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import net.citizensnpcs.api.npc.NPC;
-import net.minecraft.server.v1_12_R1.EntityPlayer;
-import net.minecraft.server.v1_12_R1.PacketPlayOutAnimation;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
+import net.minecraft.server.v1_14_R1.EntityPlayer;
+import net.minecraft.server.v1_14_R1.PacketPlayOutAnimation;
+import org.bukkit.craftbukkit.v1_14_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
 import org.bukkit.entity.LivingEntity;
 
 import javax.annotation.Nonnull;

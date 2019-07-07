@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.auction.filter;
 
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.StringUtils;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -43,7 +43,6 @@ public enum FilterDirection {
 
     /**
      * Returns the gui item with all its properties
-     *
      * @return
      */
     public ItemStack toItemStack() {

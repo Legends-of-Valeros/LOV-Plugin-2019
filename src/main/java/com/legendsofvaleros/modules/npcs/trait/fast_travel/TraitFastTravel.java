@@ -25,90 +25,91 @@ import java.util.HashMap;
 import java.util.List;
 
 public class TraitFastTravel extends LOVTrait {
-	public static class Data {
-		public int cost;
-		public String message;
-	}
-	
-	public String name;
+    public static class Data {
+        public int cost;
+        public String message;
+    }
 
-	public HashMap<String, TraitFastTravel.Data> connections;
+    public String name;
 
-	@Override
-	public void onRightClick(Player player, SettableFuture<Slot> slot) {
-		if(!Characters.isPlayerCharacterLoaded(player)) {
-			slot.set(null);
-			return;
-		}
-		
-		Collection<String> found = FastTravelController.getInstance().getDiscovered(Characters.getPlayerCharacter(player));
+    public HashMap<String, TraitFastTravel.Data> connections;
 
-		if(!found.contains(npc_id)) {
-			found.add(npc_id);
+    @Override
+    public void onRightClick(Player player, SettableFuture<Slot> slot) {
+        if (!Characters.isPlayerCharacterLoaded(player)) {
+            slot.set(null);
+            return;
+        }
 
-			FastTravelController.getInstance().addDiscovered(Characters.getPlayerCharacter(player), npc_id);
+        Collection<String> found = FastTravelController.getInstance().getDiscovered(Characters.getPlayerCharacter(player));
 
-			Title title = new Title("Discovered Location!", "You can now fast travel here!");
-			title.setTitleColor(ChatColor.GREEN);
-			title.setSubtitleColor(ChatColor.YELLOW);
-			TitleUtil.queueTitle(title, player);
-		}
+        if (!found.contains(npc_id)) {
+            found.add(npc_id);
 
-		List<String> available = new ArrayList<>();
+            FastTravelController.getInstance().addDiscovered(Characters.getPlayerCharacter(player), npc_id);
 
-		for(String id : found)
-			if(connections.containsKey(id))
-				available.add(id);
+            Title title = new Title("Discovered Location!", "You can now fast travel here!");
+            title.setTitleColor(ChatColor.GREEN);
+            title.setSubtitleColor(ChatColor.YELLOW);
+            TitleUtil.queueTitle(title, player);
+        }
 
-		if(available.size() == 0) {
-			slot.set(null);
-			return;
-		}
+        List<String> available = new ArrayList<>();
 
-		slot.set(new Slot(new ItemBuilder(Material.LEATHER_BOOTS).setName("Fast Travel").create(), (gui, p, event) -> openGUI(p, available)));
-	}
-	
-	private void openGUI(Player p, Collection<String> available) {
-		GUI gui = new GUI(npc.getName());
-		gui.type(InventoryType.DISPENSER);
-		
-		int i = 0;
-		for(String id : available) {
-			TraitFastTravel.Data data = connections.get(id);
-			
-			NPCData npcData = NPCsController.getInstance().getNPC(id);
-			if(npc == null) {
-				MessageUtil.sendError(p, "Unable to find NPC with that ID: " + id);
-				continue;
-			}
-			
-			TraitFastTravel trait = npcData.getTrait(TraitFastTravel.class);
-			if(trait == null) {
-				MessageUtil.sendError(p, "Destination NPC does not have fast travel name set: " + id);
-				continue;
-			}
-			
-			ItemBuilder ib = new ItemBuilder(Material.EYE_OF_ENDER);
+        for (String id : found)
+            if (connections.containsKey(id))
+                available.add(id);
 
-			if(trait.name == null || trait.name.length() == 0)
-				ib.setName("- Unnamed -");
-			else
-				ib.setName(trait.name);
-			ib.addLore("", "" + Money.Format.format(data.cost));
-			
-			gui.slot(i++, ib.create(), (gui1, p1, event) -> {
-                if(!Money.sub(Characters.getPlayerCharacter(p1), data.cost)) {
+        if (available.size() == 0) {
+            slot.set(null);
+            return;
+        }
+
+        slot.set(new Slot(new ItemBuilder(Material.LEATHER_BOOTS).setName("Fast Travel").create(), (gui, p, event) -> openGUI(p, available)));
+    }
+
+    private void openGUI(Player p, Collection<String> available) {
+        GUI gui = new GUI(npc.getName());
+        gui.type(InventoryType.DISPENSER);
+
+        int i = 0;
+        for (String id : available) {
+            TraitFastTravel.Data data = connections.get(id);
+
+            NPCData npcData = NPCsController.getInstance().getNPC(id);
+            if (npc == null) {
+                MessageUtil.sendError(p, "Unable to find NPC with that ID: " + id);
+                continue;
+            }
+
+            TraitFastTravel trait = npcData.getTrait(TraitFastTravel.class);
+            if (trait == null) {
+                MessageUtil.sendError(p, "Destination NPC does not have fast travel name set: " + id);
+                continue;
+            }
+
+            ItemBuilder ib = new ItemBuilder(Material.ENDER_EYE);
+
+            if (trait.name == null || trait.name.length() == 0) {
+                ib.setName("- Unnamed -");
+            } else {
+                ib.setName(trait.name);
+            }
+            ib.addLore("", "" + Money.Format.format(data.cost));
+
+            gui.slot(i++, ib.create(), (gui1, p1, event) -> {
+                if (!Money.sub(Characters.getPlayerCharacter(p1), data.cost)) {
                     NPCEmulator.speak(npc, p1, "You don't have enough crowns for that.");
                     return;
                 }
 
                 p1.teleport(npcData.getLocation());
 
-                if(data.message != null && data.message.length() > 0)
+                if (data.message != null && data.message.length() > 0)
                     NPCEmulator.speak(npc, p1, data.message);
             });
-		}
-		
-		gui.open(p);
-	}
+        }
+
+        gui.open(p);
+    }
 }

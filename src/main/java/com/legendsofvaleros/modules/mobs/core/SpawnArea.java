@@ -220,7 +220,7 @@ public class SpawnArea {
             updateStats();
             hologram.getVisibilityManager().setVisibleByDefault(LegendsOfValeros.getMode().allowEditing());
 
-            ItemLine touchLine = hologram.appendItemLine(new ItemStack(Material.EYE_OF_ENDER));
+            ItemLine touchLine = hologram.appendItemLine(new ItemStack(Material.ENDER_EYE));
             touchLine.setPickupHandler((p) -> {
                 if (p.isSneaking())
                     new SpawnEditorGUI(this).open(p, GUI.Flag.NO_PARENTS);

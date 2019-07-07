@@ -52,7 +52,7 @@ public class AttackForEffectsListener implements Listener {
         Utilities.spawnParticle(event.getDamaged().getLivingEntity().getLocation(), Particle.DAMAGE_INDICATOR, 3);
 
         if (event.getAttacker().isPlayer())
-            Utilities.playSound((Player) event.getAttacker().getLivingEntity(), Sound.BLOCK_NOTE_HARP, 1F);
+            Utilities.playSound((Player) event.getAttacker().getLivingEntity(), Sound.BLOCK_NOTE_BLOCK_HARP, 1F);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -60,6 +60,7 @@ public class AttackForEffectsListener implements Listener {
         if (event.getAttacker() == null) return;
 
         if (event.getAttacker().isPlayer())
-            Utilities.playSound((Player) event.getAttacker().getLivingEntity(), Sound.BLOCK_NOTE_BASEDRUM, 1F);
+            Utilities.playSound((Player) event.getAttacker().getLivingEntity(), Sound.BLOCK_NOTE_BLOCK_BASEDRUM, 1F);
+
     }
 }

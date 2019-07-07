@@ -9,7 +9,7 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.professions.ProfessionsController;
-import com.legendsofvaleros.modules.professions.gathering.mining.MiningNode;
+import com.legendsofvaleros.modules.professions.gathering.GatheringNode;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -37,17 +37,18 @@ public class NodeEditCommand extends BaseCommand {
             return;
         }
         PlayerCharacter playerCharacter = Characters.getPlayerCharacter((Player) sender);
+        //player is in edit mode - remove him from it and remove all glowing nodes
         if (ProfessionsController.getInstance().editModePlayers.contains(playerCharacter)) {
             MessageUtil.sendError(sender, "You are no longer in edit mode.");
             ProfessionsController.getInstance().editModePlayers.remove(playerCharacter);
-            for (MiningNode node : ProfessionsController.getInstance().zoneMiningNodes.get(playerCharacter.getCurrentZone().id)) {
+            for (GatheringNode node : ProfessionsController.getInstance().zoneGatheringNodes.get(playerCharacter.getCurrentZone().id)) {
                 node.removeGlowing();
             }
             return;
         }
-        ProfessionsController.getInstance().editModePlayers.add(playerCharacter);
 
-        for (MiningNode node : ProfessionsController.getInstance().zoneMiningNodes.get(playerCharacter.getCurrentZone().id)) {
+        ProfessionsController.getInstance().editModePlayers.add(playerCharacter);
+        for (GatheringNode node : ProfessionsController.getInstance().zoneGatheringNodes.get(playerCharacter.getCurrentZone().id)) {
             node.setGlowing();
         }
         MessageUtil.sendInfo(sender, "You are now in professions editing mode.");

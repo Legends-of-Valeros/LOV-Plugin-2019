@@ -20,6 +20,7 @@ import com.legendsofvaleros.modules.quests.event.QuestStartedEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
 import com.legendsofvaleros.util.item.Model;
+import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -79,7 +80,7 @@ public class TraitQuestGiver extends LOVTrait {
         }
 
         private static void update(TraitQuestGiver trait, PlayerCharacter pc) {
-            if(trait.quests == null) return;
+            if (trait.quests == null) return;
 
             for (IQuest quest : trait.quests) {
                 QuestStatus status = QuestController.getInstance().getStatus(pc, quest);
@@ -112,7 +113,7 @@ public class TraitQuestGiver extends LOVTrait {
         }
 
         Promise.collect(promises).onSuccess(val -> {
-            quests = val.orElseGet(() -> new ArrayList<>());
+            quests = val.orElseGet(ArrayList::new);
             Marker.update(this);
         });
     }
@@ -162,8 +163,8 @@ public class TraitQuestGiver extends LOVTrait {
             if (playerQuests.size() == 1) {
                 Entry<IQuest, QuestStatus> quest = playerQuests.entrySet().iterator().next();
                 player.performCommand("quests talk " + quest.getKey().getId());
-            } else if (playerQuests.size() != 0) {
-                slot.set(new Slot(new ItemBuilder(Material.BOOK_AND_QUILL).setName("Quests").create(), (gui, p, event) -> {
+            } else {
+                slot.set(new Slot(new ItemBuilder(Material.WRITABLE_BOOK).setName("Quests").create(), (gui, p, event) -> {
                     gui.close(p);
 
                     openGUI(player, playerQuests);
@@ -175,10 +176,10 @@ public class TraitQuestGiver extends LOVTrait {
         AtomicInteger left = new AtomicInteger(questIDs.length);
         for (String questId : questIDs) {
             QuestController.getInstance().getQuest(questId).on((err, val) -> {
-                if(val.isPresent()) {
+                if (val.isPresent()) {
                     IQuest quest = val.get();
                     quests.add(quest);
-                }else
+                } else
                     throw new Exception("Failed to load quest on NPC! Offender: " + questId + " on " + trait.npcId);
 
                 if (left.decrementAndGet() == 0)
@@ -198,10 +199,11 @@ public class TraitQuestGiver extends LOVTrait {
         tb.append("\n\n");
 
         for (final Entry<IQuest, QuestStatus> quest : playerQuests.entrySet()) {
-            if (StringUtil.getStringWidth(quest.getKey().getName()) > Book.WIDTH)
+            if (StringUtil.getStringWidth(quest.getKey().getName()) > Book.WIDTH) {
                 tb.append("[" + quest.getKey().getName() + "]" + "\n\n");
-            else
+            } else {
                 tb.append(StringUtil.center(Book.WIDTH, "[" + quest.getKey().getName() + "]") + "\n\n");
+            }
 
             // TODO: Switch to using "temporary" commands, as anyone who knows the secret command can accept any gear.
             tb.color(quest.getValue() == QuestStatus.NEITHER ? ChatColor.DARK_PURPLE : ChatColor.DARK_RED)

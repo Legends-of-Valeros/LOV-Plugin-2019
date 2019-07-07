@@ -7,10 +7,10 @@ import org.bukkit.Sound;
  */
 public enum PhysicalType {
 
-	OTHER(Sound.BLOCK_NOTE_BASS),
-	MELEE(Sound.BLOCK_NOTE_BASS),
-	BOW(Sound.BLOCK_NOTE_BASS),
-	MISC_PROJECTILE(Sound.BLOCK_NOTE_BASS);
+	OTHER(Sound.BLOCK_NOTE_BLOCK_BASS),
+	MELEE(Sound.BLOCK_NOTE_BLOCK_BASS),
+	BOW(Sound.BLOCK_NOTE_BLOCK_BASS),
+	MISC_PROJECTILE(Sound.BLOCK_NOTE_BLOCK_BASS);
 
 	private Sound hitSound;
 

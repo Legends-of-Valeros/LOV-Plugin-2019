@@ -13,13 +13,13 @@ import com.legendsofvaleros.modules.npcs.NPCsController;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-
-import static org.bukkit.Sound.ENTITY_ENDERMEN_TELEPORT;
 
 
 public class ThreatBehavior {
@@ -28,7 +28,7 @@ public class ThreatBehavior {
     public static final ITest NEAR = (ce) -> HAS.isSuccess(ce) && ce.getLivingEntity().getLocation().distance(ce.getThreat().getTarget().getLivingEntity().getLocation()) < 2D;
 
     public static final BehaviorAction FIND = new BehaviorAction() {
-        @Override
+        @NotNull @Override
         public NodeStatus onStep(CombatEntity ce, long ticks) {
             NPC npc = NPCsController.getInstance().getNPC(ce.getLivingEntity());
             MobTrait trait = npc.getTrait(MobTrait.class);
@@ -41,7 +41,7 @@ public class ThreatBehavior {
                         }
                         if (((Player) entity).isSneaking()) {
                             // Sneaking players have a halved detection distance
-                            if (entity.getLocation().distance(ce.getLivingEntity().getLocation()) > trait.instance.mob.getOptions().distance.detection / 2) {
+                            if (entity.getLocation().distance(ce.getLivingEntity().getLocation()) > Math.round(trait.instance.mob.getOptions().distance.detection / 2)) {
                                 continue;
                             }
                         }
@@ -59,8 +59,7 @@ public class ThreatBehavior {
     };
 
     public static final BehaviorAction NAVIGATE = new BehaviorAction() {
-
-        @Override
+        @NotNull @Override
         public NodeStatus onStep(CombatEntity ce, long ticks) {
             NPC npc = NPCsController.getInstance().getNPC(ce.getLivingEntity());
             MobTrait trait = npc.getTrait(MobTrait.class);
@@ -86,11 +85,11 @@ public class ThreatBehavior {
 
                             if ((System.currentTimeMillis() / 1000L) - since > 3) {
                                 // Safespotting where the mob cannot reach the player's Y level. Teleport this mob to the player.
-                                ce.getLivingEntity().teleport(((LivingEntity) target).getEyeLocation());
+                                ce.getLivingEntity().teleport(target.getEyeLocation());
 
                                 //visual and sound effects for teleporting
                                 ce.getLivingEntity().getWorld().playEffect(ce.getLivingEntity().getLocation(), Effect.ENDEREYE_LAUNCH, 1);
-                                ce.getLivingEntity().getWorld().playSound(ce.getLivingEntity().getLocation(), ENTITY_ENDERMEN_TELEPORT, 1, 1);
+                                ce.getLivingEntity().getWorld().playSound(ce.getLivingEntity().getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 1);
 
                                 //reset the timer
                                 trait.instance.mob.getOptions().leashed.put(characterId, System.currentTimeMillis() / 1000L);

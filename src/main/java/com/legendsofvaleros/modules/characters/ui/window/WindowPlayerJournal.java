@@ -27,8 +27,9 @@ public class WindowPlayerJournal extends GUI {
 				.create(), null);
 		slot(1, 4, new ItemBuilder(Material.LEATHER_BOOTS)
 				.create(), null);
-		
-		slot(4, 2, new ItemBuilder(Material.SKULL_ITEM)
+
+		//TODO REPLACE LEGACY Material
+		slot(4, 2, new ItemBuilder(Material.LEGACY_SKULL_ITEM)
 				.setName(pc.getPlayerRace().getUserFriendlyName() + " " + pc.getPlayerClass().getUserFriendlyName())
 				.addLore("",
 						ChatColor.YELLOW + AbilityStat.STRENGTH.getUserFriendlyName() + ChatColor.GRAY + ": " + pc.getAbilityStats().getAbilityStat(AbilityStat.STRENGTH),
@@ -37,7 +38,7 @@ public class WindowPlayerJournal extends GUI {
 						ChatColor.YELLOW + AbilityStat.ENDURANCE.getUserFriendlyName() + ChatColor.GRAY + ": " + pc.getAbilityStats().getAbilityStat(AbilityStat.ENDURANCE),
 						ChatColor.YELLOW + AbilityStat.INTELLIGENCE.getUserFriendlyName() + ChatColor.GRAY + ": " + pc.getAbilityStats().getAbilityStat(AbilityStat.INTELLIGENCE))
 				.create(), null);
-		slot(4, 3, new ItemBuilder(Material.EYE_OF_ENDER)
+		slot(4, 3, new ItemBuilder(Material.ENDER_EYE)
 				.addLore("You follow " + ChatColor.GOLD + "" + ChatColor.BOLD + "Robert",
 						" +10% XP",
 						" +1 Instant heal per day",
@@ -46,7 +47,7 @@ public class WindowPlayerJournal extends GUI {
 				.create(), (gui, p1, event) -> {
                     // TODO: GOD STUFF
                 });
-		slot(7, 2, new ItemBuilder(Material.EXP_BOTTLE)
+		slot(7, 2, new ItemBuilder(Material.EXPERIENCE_BOTTLE)
 				.addLore(ChatColor.YELLOW + "Level: " + ChatColor.GRAY + pc.getExperience().getLevel(),
 						ChatColor.YELLOW + "XP: " + ChatColor.GRAY + pc.getExperience().getExperienceTowardsNextLevel())
 				.create(), null);
