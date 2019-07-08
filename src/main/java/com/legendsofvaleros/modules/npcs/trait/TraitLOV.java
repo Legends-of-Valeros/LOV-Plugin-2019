@@ -163,7 +163,6 @@ public class TraitLOV extends Trait implements CommandConfigurable {
         }
 
         npcId = npcData.id;
-
         traits = npcData.traits;
 
         super.onSpawn();

@@ -88,10 +88,10 @@ public class InternalScheduler extends Thread {
 
     @Override
     public void run() {
-        if (all.containsKey(name))
-            throw new IllegalStateException("A scheduler with that name is already running!");
+        if (all.containsKey(name)) {
+            throw new IllegalStateException("A scheduler with the name " + name + " is already running!");
+        }
         all.put(name, this);
-
         this.setName(name);
 
         try {
@@ -105,8 +105,9 @@ public class InternalScheduler extends Thread {
                 if (shutdown && tick % SHUTDOWN_NOTIFY == 0) {
                     LegendsOfValeros.getInstance().getLogger().warning("'" + name + "' is waiting for " + list.size() + " tasks to complete...");
                     for (InternalTask task : list) {
-                        if (!task.getName().contains("com.legendsofvaleros"))
+                        if (!task.getName().contains("com.legendsofvaleros")) {
                             LegendsOfValeros.getInstance().getLogger().warning("  - " + task.getName());
+                        }
                     }
                 }
 
@@ -122,12 +123,14 @@ public class InternalScheduler extends Thread {
 
                     if (shutdown) {
                         // Ignore repeating tasks on shutdown
-                        if (curr.getRepeating())
+                        if (curr.getRepeating()) {
                             continue;
+                        }
 
                         // Ignore long delayed tasks on shutdown
-                        if (tick - curr.nextExecuteTick() > SHUTDOWN_DUMP)
+                        if (tick - curr.nextExecuteTick() > SHUTDOWN_DUMP) {
                             continue;
+                        }
                     }
 
                     if (curr.nextExecuteTick() == tick) {
@@ -143,17 +146,19 @@ public class InternalScheduler extends Thread {
                             curr.setNextExecuteTick(tick + curr.getRepeatingInterval());
                         }
                     } else {
-                        if (curr.nextExecuteTick() > tick) requeue.add(curr);
+                        if (curr.nextExecuteTick() > tick) {
+                            requeue.add(curr);
+                        }
                     }
                 }
 
-                for (InternalTask r : requeue) list.add(r);
-
+                list.addAll(requeue);
                 long timeTaken = System.currentTimeMillis() - lastTime;
 
                 timings.add(timeTaken);
-                while (timings.size() > TIMINGS_COUNT)
+                while (timings.size() > TIMINGS_COUNT) {
                     timings.remove(0);
+                }
 
                 long timeToSync = TICK_TIME - timeTaken;
 
@@ -177,19 +182,24 @@ public class InternalScheduler extends Thread {
                             for (String line : task.getTrace().split("\n")) {
                                 if (i == -1) {
                                     // Ignore non-LOV packages
-                                    if (!line.contains("com.legendsofvaleros")) continue;
+                                    if (!line.contains("com.legendsofvaleros")) {
+                                        continue;
+                                    }
                                     // Ignore scheduler package
-                                    if (line.contains("com.legendsofvaleros.scheduler")) continue;
+                                    if (line.contains("com.legendsofvaleros.scheduler")) {
+                                        continue;
+                                    }
 
                                     LegendsOfValeros.getInstance().getLogger().warning(task.getName());
                                 }
 
                                 i++;
-
                                 LegendsOfValeros.getInstance().getLogger().warning(line);
 
                                 // Don't print too many lines. After an amount, it's just spam.
-                                if (i > 6 && !line.contains("legendsofvaleros")) break;
+                                if (i > 6 && !line.contains("legendsofvaleros")) {
+                                    break;
+                                }
                             }
                         }
                         LegendsOfValeros.getInstance().getLogger().warning("----------------------------------------");
@@ -251,8 +261,9 @@ public class InternalScheduler extends Thread {
     }
 
     public void executeInMyCircleTimer(InternalTask task, long delay, long interval) {
-        if (!isAlive() && shutdown)
+        if (!isAlive() && shutdown) {
             throw new IllegalStateException("Cannot add a task to a scheduler that has shut down!");
+        }
 
         task.setExecutor(this);
         task.setNextExecuteTick(tick + (delay <= 0 ? 1 : delay));
@@ -269,8 +280,9 @@ public class InternalScheduler extends Thread {
     }
 
     public void executeInSpigotCircle(final InternalTask task) {
-        if (!isAlive() && shutdown)
+        if (!isAlive() && shutdown) {
             throw new IllegalStateException("Cannot add a task to a scheduler that has shut down!");
+        }
 
         task.setExecutor(this);
         task.setSync(true);
@@ -289,8 +301,9 @@ public class InternalScheduler extends Thread {
     }
 
     public void executeInSpigotCircleLater(final InternalTask task, long delay) {
-        if (!isAlive() && shutdown)
+        if (!isAlive() && shutdown) {
             throw new IllegalStateException("Cannot add a task to a scheduler that has shut down!");
+        }
 
         task.setExecutor(this);
         task.setSync(true);
@@ -330,22 +343,26 @@ public class InternalScheduler extends Thread {
     }
 
     public synchronized Long getAverageTiming() {
-        if (timings.size() == 0) return null;
+        if (timings.size() == 0) {
+            return null;
+        }
 
         long time = 0;
-        for (Long timing : timings)
+        for (Long timing : timings) {
             time += timing;
+        }
         return time / timings.size();
     }
 
     public synchronized double getLastTiming() {
-        if (timings.size() == 0) return 0;
-        return timings.get(timings.size() - 1);
+        return timings.size() == 0 ? 0 : timings.get(timings.size()) - 1;
     }
 
     public double getAverageTPSUsage() {
         Long timing = getAverageTiming();
-        if (timing == null) return 0;
+        if (timing == null) {
+            return 0;
+        }
         double avg = timing / (1000D / 20D);
         return (int) (avg * 10000) / 10000D;
     }

@@ -31,6 +31,7 @@ public class GraveyardAPI extends ModuleListener {
         Promise<List<Graveyard>> findGraveyards();
 
         Promise<Boolean> saveGraveyard(Graveyard yard);
+
         Promise<Boolean> deleteGraveyard(Graveyard yard);
     }
 
@@ -45,36 +46,37 @@ public class GraveyardAPI extends ModuleListener {
         this.rpc = APIController.create(RPC.class);
 
         APIController.getInstance().getGsonBuilder()
-            .registerTypeAdapter(RangedValue.class, RangedValue.JSON)
-            .registerTypeAdapter(ComponentMap.class, (JsonDeserializer<ComponentMap>) (json, typeOfT, context) -> {
-                JsonObject obj = json.getAsJsonObject();
-                ComponentMap components = new ComponentMap();
-                for (Map.Entry<String, JsonElement> entry : obj.entrySet()) {
-                    try {
-                        Class<? extends GearComponent<?>> comp = GearRegistry.getComponent(entry.getKey());
-                        if (comp == null)
-                            throw new RuntimeException("Unknown component on item: Offender: " + entry.getKey());
-                        components.put(entry.getKey(), context.deserialize(entry.getValue(), comp));
-                    } catch (Exception e) {
-                        MessageUtil.sendException(GearController.getInstance(), new Exception(e + ". Offender: " + entry.getKey() + " " + entry.getValue().toString()));
+                .registerTypeAdapter(RangedValue.class, RangedValue.JSON)
+                .registerTypeAdapter(ComponentMap.class, (JsonDeserializer<ComponentMap>) (json, typeOfT, context) -> {
+                    JsonObject obj = json.getAsJsonObject();
+                    ComponentMap components = new ComponentMap();
+                    for (Map.Entry<String, JsonElement> entry : obj.entrySet()) {
+                        try {
+                            Class<? extends GearComponent<?>> comp = GearRegistry.getComponent(entry.getKey());
+                            if (comp == null) {
+                                throw new RuntimeException("Unknown component on item: Offender: " + entry.getKey());
+                            }
+                            components.put(entry.getKey(), context.deserialize(entry.getValue(), comp));
+                        } catch (Exception e) {
+                            MessageUtil.sendException(GearController.getInstance(), new Exception(e + ". Offender: " + entry.getKey() + " " + entry.getValue().toString()));
+                        }
                     }
-                }
-                return components;
-            })
-            .registerTypeAdapter(PersistMap.class, (JsonDeserializer<PersistMap>) (json, typeOfT, context) -> {
-            JsonObject obj = json.getAsJsonObject();
-            PersistMap persists = new PersistMap();
-            for (Map.Entry<String, JsonElement> entry : obj.entrySet()) {
-                Type c = GearRegistry.getPersist(entry.getKey());
-                try {
-                    persists.put(entry.getKey(), context.deserialize(entry.getValue(), c));
-                } catch (Exception e) {
-                    GearController.getInstance().getLogger().warning("Error thrown when decoding persist data. Offender: " + entry.getKey() + " as " + c);
-                    e.printStackTrace();
-                }
-            }
-            return persists;
-        });
+                    return components;
+                })
+                .registerTypeAdapter(PersistMap.class, (JsonDeserializer<PersistMap>) (json, typeOfT, context) -> {
+                    JsonObject obj = json.getAsJsonObject();
+                    PersistMap persists = new PersistMap();
+                    for (Map.Entry<String, JsonElement> entry : obj.entrySet()) {
+                        Type c = GearRegistry.getPersist(entry.getKey());
+                        try {
+                            persists.put(entry.getKey(), context.deserialize(entry.getValue(), c));
+                        } catch (Exception e) {
+                            GearController.getInstance().getLogger().warning("Error thrown when decoding persist data. Offender: " + entry.getKey() + " as " + c);
+                            e.printStackTrace();
+                        }
+                    }
+                    return persists;
+                });
     }
 
     @Override
@@ -93,7 +95,7 @@ public class GraveyardAPI extends ModuleListener {
             graveyards.clear();
 
             val.orElse(ImmutableList.of()).stream()
-                .filter(yard -> yard.getZone() != null).forEach(yard ->
+                    .filter(yard -> yard.getZone() != null).forEach(yard ->
                     graveyards.put(yard.getZone().channel, yard));
 
             getLogger().info("Loaded " + graveyards.size() + " graveyards.");
@@ -121,7 +123,7 @@ public class GraveyardAPI extends ModuleListener {
         graveyards.put(yard.getZone().channel, yard);
 
         // If editing is enabled, generate the hologram right away.
-        if(LegendsOfValeros.getMode().allowEditing())
+        if (LegendsOfValeros.getMode().allowEditing())
             getScheduler().sync(yard::getHologram);
 
         return rpc.saveGraveyard(yard);
