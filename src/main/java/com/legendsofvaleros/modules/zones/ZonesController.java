@@ -31,7 +31,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerMoveEvent;
 
 @DependsOn(PvPController.class)
 @DependsOn(PlayerMenu.class)
@@ -53,22 +53,9 @@ public class ZonesController extends ZonesAPI {
         instance = this;
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new ZoneCommands());
-        registerEvents(new PlayerListener());
 
         //deactivate all zones that are without players for 5 minutes
         getInstance().getScheduler().executeInMyCircleTimer(new InternalTask(() -> {
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                if (Characters.isPlayerCharacterLoaded(p)) {
-                    try {
-                        getInstance().getScheduler().executeInSpigotCircle(new InternalTask(() -> {
-                            updateZone(p);
-                        }));
-                    } catch (Exception e) {
-                        MessageUtil.sendSevereException(this, p, e);
-                    }
-                }
-            }
-
             for (Zone zone : getZones()) {
                 if (!zone.isActive) {
                     continue;
@@ -83,8 +70,30 @@ public class ZonesController extends ZonesAPI {
                     }
                 }
             }
-        }), 20L, 20L);
+        }), 20L, 30 * 20L);
     }
+
+    /**
+     * Updates the zone and fires aa zone leave or enter event
+     * @param p
+     */
+    private void updateZone(Player p) {
+        for (Zone zone : getZones()) {
+            if (zone.isInZone(p.getLocation())) {
+                Zone previousZone = getZone(p);
+                if (zone == previousZone) {
+                    return;
+                }
+
+                if (previousZone != null) {
+                    Bukkit.getServer().getPluginManager().callEvent(new ZoneLeaveEvent(p, previousZone));
+                }
+
+                Bukkit.getServer().getPluginManager().callEvent(new ZoneEnterEvent(p, zone));
+            }
+        }
+    }
+
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onZoneEnter(ZoneEnterEvent event) {
@@ -137,40 +146,31 @@ public class ZonesController extends ZonesAPI {
         }
     }
 
-    private void updateZone(Player p) {
-        for (Zone zone : getZones()) {
-            if (zone.isInZone(p.getLocation())) {
-                Zone previousZone = getZone(p);
-                if (zone == previousZone)
-                    return;
-
-                if (previousZone != null) {
-                    Bukkit.getServer().getPluginManager().callEvent(new ZoneLeaveEvent(p, previousZone));
-                }
-
-                Bukkit.getServer().getPluginManager().callEvent(new ZoneEnterEvent(p, zone));
-            }
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event) {
+        Player p = event.getPlayer();
+        if (!Characters.isPlayerCharacterLoaded(p)) {
+            return;
         }
+        updateZone(p);
     }
 
-    private class PlayerListener implements Listener {
-        @EventHandler(priority = EventPriority.LOWEST)
-        public void playerJoin(PlayerCharacterFinishLoadingEvent e) {
-            updateZone(e.getPlayer());
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void playerJoin(PlayerCharacterFinishLoadingEvent e) {
+        updateZone(e.getPlayer());
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void playerQuit(PlayerCharacterLogoutEvent e) {
+        Zone zone = getZone(e.getPlayerCharacter());
+        if (zone == null) {
+            return;
         }
+        if (zone.playersInZone.contains(e.getPlayerCharacter().getUniqueCharacterId())) {
+            zone.playersInZone.remove(e.getPlayerCharacter().getUniqueCharacterId());
 
-        @EventHandler(priority = EventPriority.HIGHEST)
-        public void playerQuit(PlayerCharacterLogoutEvent e) {
-            Zone zone = getZone(e.getPlayerCharacter());
-            if (zone == null) {
-                return;
-            }
-            if (zone.playersInZone.contains(e.getPlayerCharacter().getUniqueCharacterId())) {
-                zone.playersInZone.remove(e.getPlayerCharacter().getUniqueCharacterId());
-
-                if (zone.playersInZone.size() == 0) {
-                    zone.timeWithoutPlayers = System.currentTimeMillis() / 1000L;
-                }
+            if (zone.playersInZone.size() == 0) {
+                zone.timeWithoutPlayers = System.currentTimeMillis() / 1000L;
             }
         }
     }

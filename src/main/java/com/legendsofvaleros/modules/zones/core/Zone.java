@@ -23,7 +23,6 @@ public class Zone {
     public boolean isActive = false;
     public long timeWithoutPlayers = 0;
 
-    @SuppressWarnings("deprecation")
     public boolean isInZone(Location loc) {
         if (loc == null) return false;
         Block b = loc.getWorld().getBlockAt(loc.getBlockX(), 0, loc.getBlockZ());
