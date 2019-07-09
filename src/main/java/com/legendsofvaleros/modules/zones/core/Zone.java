@@ -26,8 +26,10 @@ public class Zone {
     public boolean isInZone(Location loc) {
         if (loc == null) return false;
         Block b = loc.getWorld().getBlockAt(loc.getBlockX(), 0, loc.getBlockZ());
-        return b.getType() == material.type
-                && (material.data != null && b.getData() == material.data);
+        if (b == null) {
+            return false;
+        }
+        return b.getType() == material.type && (material.data != null && b.getData() == material.data);
     }
 
     public boolean isInZone(PlayerCharacter playerCharacter) {
