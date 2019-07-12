@@ -115,10 +115,10 @@
             <url>http://repo.citizensnpcs.co/</url>
         </repository>
         <!-- Libs disguises -->
-<!--        <repository>-->
-<!--            <id>aikar</id>-->
-<!--            <url>https://repo.aikar.co/content/groups/aikar/</url>-->
-<!--        </repository>-->
+        <repository>
+            <id>aikar</id>
+            <url>https://repo.aikar.co/content/groups/aikar/</url>
+        </repository>
         <!--Protocol lib-->
         <repository>
             <id>dmulloy2-repo</id>
@@ -205,12 +205,12 @@
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>LibsDisguises</groupId>-->
-<!--            <artifactId>LibsDisguises</artifactId>-->
-<!--            <version>LATEST</version>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>LibsDisguises</groupId>
+            <artifactId>LibsDisguises</artifactId>
+            <version>LATEST</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- System dependencies -->
         <dependency>
