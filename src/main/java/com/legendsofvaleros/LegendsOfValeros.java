@@ -2,6 +2,7 @@ package com.legendsofvaleros;
 
 import co.aikar.commands.BukkitCommandManager;
 import co.aikar.commands.PaperCommandManager;
+import com.codingforcookies.robert.core.Robert;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.legendsofvaleros.api.APIController;
@@ -140,6 +141,7 @@ public class LegendsOfValeros extends JavaPlugin {
     }
 
     private void registerModules() throws Exception {
+        Robert.enablePortable(this);
         // TODO add config file and add check if module should be enabled or not
         // TODO add commands to disable single modules (&change the config?)
         // These are not optional modules EVER. In fact, no modules should ever
@@ -158,7 +160,7 @@ public class LegendsOfValeros extends JavaPlugin {
         Modules.registerModule(FastTravelController.class);
         Modules.registerModule(GearController.class);
         Modules.registerModule(GraveyardController.class);
-        // Modules.registerModule(GuildController.class);
+//         Modules.registerModule(GuildController.class);
         Modules.registerModule(HearthstoneController.class);
         Modules.registerModule(Hotswitch.class);
         Modules.registerModule(KeepOutOfOcean.class);

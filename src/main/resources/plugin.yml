@@ -2,7 +2,7 @@ main: com.legendsofvaleros.LegendsOfValeros
 name: "${project.name}"
 version: "${project.version}"
 author: "Crystall, Stumblinbear, Brutus"
-depend: [Citizens, Robert, ArmorEquipEvent]
+depend: [Citizens, ArmorEquipEvent]
 api-version: 1.14
 
 permissions:
