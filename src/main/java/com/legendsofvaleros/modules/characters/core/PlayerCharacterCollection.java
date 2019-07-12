@@ -28,182 +28,183 @@ import java.util.*;
  */
 public class PlayerCharacterCollection implements PlayerCharacters {
 
-	// TODO test character ordering. if it does not work, use an ordered map and let characterid
-	// implement comparable on the basis of character number
+    // TODO test character ordering. if it does not work, use an ordered map and let characterid
+    // implement comparable on the basis of character number
 
-	private final UUID playerId;
-	private final WeakReference<Player> player;
-	private CharactersConfig config;
+    private final UUID playerId;
+    private final WeakReference<Player> player;
+    private CharactersConfig config;
 
-	private int maxCharacters = 0;
-	private ReusablePlayerCharacter current;
-	private Map<CharacterId, ReusablePlayerCharacter> characters;
+    private int maxCharacters = 6;
+    private ReusablePlayerCharacter current;
+    private Map<CharacterId, ReusablePlayerCharacter> characters;
 
-	private boolean hasQuit;
+    private boolean hasQuit;
 
-	PlayerCharacterCollection(Player player, List<ReusablePlayerCharacter> charactersFromDb) {
-		this.playerId = player.getUniqueId();
-		this.player = new WeakReference<>(player);
-		this.config = Characters.getInstance().getCharacterConfig();
-		
-		for(PermissionAttachmentInfo entry : player.getEffectivePermissions()) {
-			if(entry.getPermission().startsWith("character.slots.")) {
-				int i = Integer.parseInt(entry.getPermission().split("character.slots.", 2)[1]);
-				if(i > maxCharacters)
-					maxCharacters = i;
-			}
-		}
+    PlayerCharacterCollection(Player player, List<ReusablePlayerCharacter> charactersFromDb) {
+        this.playerId = player.getUniqueId();
+        this.player = new WeakReference<>(player);
+        this.config = Characters.getInstance().getCharacterConfig();
 
-		this.characters = new LinkedHashMap<>();
+        for (PermissionAttachmentInfo entry : player.getEffectivePermissions()) {
+            if (entry.getPermission().startsWith("character.slots.")) {
+                int i = Integer.parseInt(entry.getPermission().split("character.slots.", 2)[1]);
+                if (i > maxCharacters) {
+                    maxCharacters = i;
+                }
+            }
+        }
 
-		for (ReusablePlayerCharacter pc : charactersFromDb) {
-			characters.put(pc.getUniqueCharacterId(), pc);
-		}
+        this.characters = new LinkedHashMap<>();
 
-		Characters.getInstance().registerEvents(new PlayerListener());
-	}
+        for (ReusablePlayerCharacter pc : charactersFromDb) {
+            characters.put(pc.getUniqueCharacterId(), pc);
+        }
 
-	@Override
-	public UUID getPlayerId() {
-		return playerId;
-	}
+        Characters.getInstance().registerEvents(new PlayerListener());
+    }
 
-	@Override
-	public Player getPlayer() {
-		return player.get();
-	}
-	
-	@Override
-	public int getMaxCharacters() {
-		return maxCharacters;
-	}
-	
-	@Override
-	public PlayerCharacter getCurrentCharacter() {
-		if(current != null)
-			return current;
-		throw new RuntimeException("User " + player.get().getName() + " does not have a Character loaded.");
-	}
-	
-	@Override
-	public boolean isCharacterLoaded() {
-		return current != null;
-	}
+    @Override
+    public UUID getPlayerId() {
+        return playerId;
+    }
 
-	@Override
-	public int size() {
-		return characters.size();
-	}
+    @Override
+    public Player getPlayer() {
+        return player.get();
+    }
 
-	@Override
-	public Set<PlayerCharacter> getCharacterSet() {
-		return new LinkedHashSet<>(characters.values());
-	}
+    @Override
+    public int getMaxCharacters() {
+        return maxCharacters;
+    }
 
-	public boolean removeCharacter(int characterNumber) {
-		PlayerCharacter pc = getForNumber(characterNumber);
-		if(pc == null) return false;
+    @Override
+    public PlayerCharacter getCurrentCharacter() {
+        if (current != null)
+            return current;
+        throw new RuntimeException("User " + player.get().getName() + " does not have a Character loaded.");
+    }
 
-		characters.remove(new CharacterId(playerId, characterNumber));
-		PlayerCharacterData.remove(playerId, characterNumber);
+    @Override
+    public boolean isCharacterLoaded() {
+        return current != null;
+    }
 
-		return !characters.containsKey(new CharacterId(playerId, characterNumber));
-	}
+    @Override
+    public int size() {
+        return characters.size();
+    }
 
-	@Override
-	public PlayerCharacter getForNumber(int characterNumber) {
-		return characters.get(new CharacterId(playerId, characterNumber));
-	}
+    @Override
+    public Set<PlayerCharacter> getCharacterSet() {
+        return new LinkedHashSet<>(characters.values());
+    }
 
-	@Override
-	public PlayerCharacter getForId(CharacterId id) {
-		return characters.get(id);
-	}
+    public boolean removeCharacter(int characterNumber) {
+        PlayerCharacter pc = getForNumber(characterNumber);
+        if (pc == null) return false;
 
-	/**
-	 * Adds a newly created character to this collection.
-	 * 
-	 * @param playerRace The selected race of the new character.
-	 * @param playerClass The selected class of the new character.
-	 * @return The newly created character.
-	 */
-	public PlayerCharacter addNewCharacter(int number, EntityRace playerRace, EntityClass playerClass) {
-		ReusablePlayerCharacter ret =
-				new ReusablePlayerCharacter(player.get(), number, playerRace, playerClass,
-						player.get().getLocation(),
-						new CharacterExperience(0, 0L), new PlayerInventoryData(), new ArrayList<>());
+        characters.remove(new CharacterId(playerId, characterNumber));
+        PlayerCharacterData.remove(playerId, characterNumber);
 
-		characters.put(ret.getUniqueCharacterId(), ret);
-		PlayerCharacterData.save(ret);
+        return !characters.containsKey(new CharacterId(playerId, characterNumber));
+    }
 
-		return ret;
-	}
+    @Override
+    public PlayerCharacter getForNumber(int characterNumber) {
+        return characters.get(new CharacterId(playerId, characterNumber));
+    }
 
-	/**
-	 * Listens to events that affect this player's characters.
-	 */
-	private class PlayerListener implements Listener {
+    @Override
+    public PlayerCharacter getForId(CharacterId id) {
+        return characters.get(id);
+    }
 
-		@EventHandler(priority = EventPriority.LOWEST)
-		public void onPlayerCharacterDoneLoading(PlayerCharacterFinishLoadingEvent event) {
-			if (event.getPlayer().getUniqueId().equals(playerId)) {
+    /**
+     * Adds a newly created character to this collection.
+     * @param playerRace  The selected race of the new character.
+     * @param playerClass The selected class of the new character.
+     * @return The newly created character.
+     */
+    public PlayerCharacter addNewCharacter(int number, EntityRace playerRace, EntityClass playerClass) {
+        ReusablePlayerCharacter ret =
+                new ReusablePlayerCharacter(player.get(), number, playerRace, playerClass,
+                        player.get().getLocation(),
+                        new CharacterExperience(0, 0L), new PlayerInventoryData(), new ArrayList<>());
 
-				ReusablePlayerCharacter pc =
-						characters.get(event.getPlayerCharacter().getUniqueCharacterId());
+        characters.put(ret.getUniqueCharacterId(), ret);
+        PlayerCharacterData.save(ret);
 
-				if (pc != null) {
-					pc.setCurrent(true);
-					current = pc;
-				}
-			}
-		}
+        return ret;
+    }
 
-		@EventHandler(priority = EventPriority.HIGHEST)
-		public void onPlayerCharacterLogout(PlayerCharacterLogoutEvent event) {
-			if (event.getPlayer().getUniqueId().equals(playerId)) {
+    /**
+     * Listens to events that affect this player's characters.
+     */
+    private class PlayerListener implements Listener {
 
-				ReusablePlayerCharacter pc =
-						characters.get(event.getPlayerCharacter().getUniqueCharacterId());
+        @EventHandler(priority = EventPriority.LOWEST)
+        public void onPlayerCharacterDoneLoading(PlayerCharacterFinishLoadingEvent event) {
+            if (event.getPlayer().getUniqueId().equals(playerId)) {
 
-				if (pc != null) {
-					pc.setCurrent(false);
-					if (pc.equals(current)) {
-						current = null;
-					}
-				}
+                ReusablePlayerCharacter pc =
+                        characters.get(event.getPlayerCharacter().getUniqueCharacterId());
 
-				if (event.isServerLogout())
-					HandlerList.unregisterAll(this);
-			}
-		}
+                if (pc != null) {
+                    pc.setCurrent(true);
+                    current = pc;
+                }
+            }
+        }
 
-		@EventHandler(priority = EventPriority.LOWEST)
-		public void onCombatEntityCreate(CombatEntityCreateEvent event) {
-			if (event.getCombatEntity().getUniqueId().equals(playerId) && current != null) {
-				current.onCombatEntityCreate(event.getCombatEntity());
-			}
-		}
+        @EventHandler(priority = EventPriority.HIGHEST)
+        public void onPlayerCharacterLogout(PlayerCharacterLogoutEvent event) {
+            if (event.getPlayer().getUniqueId().equals(playerId)) {
 
-		@EventHandler
-		public void onCombatEntityPreCreate(CombatEntityPreCreateEvent event) {
-			if (event.getLivingEntity().getUniqueId().equals(playerId) && current != null) {
-				try {
-					Archetype arch = config.getClassConfig(current.getPlayerClass()).getArchetype();
-					CombatProfile profile = arch.getCombatProfile(current.getExperience().getLevel());
-					event.setCombatProfile(profile);
-				} catch (Exception e) {
-					Characters.getInstance().getLogger()
-					.severe("Encountered an issue while initializing a player's combat entity.");
-				}
-			}
-		}
+                ReusablePlayerCharacter pc =
+                        characters.get(event.getPlayerCharacter().getUniqueCharacterId());
 
-		@EventHandler
-		public void onPlayerDeath(PlayerDeathEvent event) {
-			if (event.getEntity().getUniqueId().equals(playerId) && current != null) {
-				current.onDeath(event);
-			}
-		}
-	}
+                if (pc != null) {
+                    pc.setCurrent(false);
+                    if (pc.equals(current)) {
+                        current = null;
+                    }
+                }
+
+                if (event.isServerLogout()) {
+                    HandlerList.unregisterAll(this);
+                }
+            }
+        }
+
+        @EventHandler(priority = EventPriority.LOWEST)
+        public void onCombatEntityCreate(CombatEntityCreateEvent event) {
+            if (event.getCombatEntity().getUniqueId().equals(playerId) && current != null) {
+                current.onCombatEntityCreate(event.getCombatEntity());
+            }
+        }
+
+        @EventHandler
+        public void onCombatEntityPreCreate(CombatEntityPreCreateEvent event) {
+            if (event.getLivingEntity().getUniqueId().equals(playerId) && current != null) {
+                try {
+                    Archetype arch = config.getClassConfig(current.getPlayerClass()).getArchetype();
+                    CombatProfile profile = arch.getCombatProfile(current.getExperience().getLevel());
+                    event.setCombatProfile(profile);
+                } catch (Exception e) {
+                    Characters.getInstance().getLogger()
+                            .severe("Encountered an issue while initializing a player's combat entity.");
+                }
+            }
+        }
+
+        @EventHandler
+        public void onPlayerDeath(PlayerDeathEvent event) {
+            if (event.getEntity().getUniqueId().equals(playerId) && current != null) {
+                current.onDeath(event);
+            }
+        }
+    }
 
 }

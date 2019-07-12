@@ -385,13 +385,16 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
             locks.put(event.getPlayer().getUniqueId(), PlayerLock.lockPlayer(event.getPlayer()));
 
             PlayerCharacterData.onLogin(event.getPlayer().getUniqueId()).onSuccess(val -> {
-                if (!val.isPresent()) return;
+                if (!val.isPresent()) {
+                    return;
+                }
 
                 PlayerCharacters characters = val.get();
 
                 Player player = characters.getPlayer();
-                if (player == null || !player.isOnline())
+                if (player == null || !player.isOnline()) {
                     return;
+                }
 
                 if (characters.size() > 0) {
                     Characters.getInstance().getUiManager().forceCharacterSelection(characters, outer);

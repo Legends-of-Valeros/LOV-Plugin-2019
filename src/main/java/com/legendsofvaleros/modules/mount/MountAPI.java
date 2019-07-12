@@ -26,7 +26,9 @@ public class MountAPI extends ModuleListener {
         Promise<List<Mount>> findMounts();
 
         Promise<List<String>> getPlayerMounts(CharacterId characterId);
+
         Promise<Boolean> savePlayerMounts(CharacterId characterId, Collection<String> strings);
+
         Promise<Boolean> deletePlayerMounts(CharacterId characterId);
     }
 
@@ -69,6 +71,7 @@ public class MountAPI extends ModuleListener {
     public Mount getMount(String mountId) {
         return mounts.get(mountId);
     }
+
     public Collection<Mount> getMounts(PlayerCharacter pc) {
         return playerMounts.get(pc.getUniqueCharacterId()).stream()
                 .map(mountId -> mounts.get(mountId))
@@ -88,14 +91,13 @@ public class MountAPI extends ModuleListener {
 
     private Promise<List<String>> onLogin(CharacterId characterId) {
         return rpc.getPlayerMounts(characterId).onSuccess(val -> {
-            val.orElse(ImmutableList.of()).stream().forEach(mount ->
+            val.orElse(ImmutableList.of()).forEach(mount ->
                     playerMounts.put(characterId, mount));
         });
     }
 
     private Promise<Boolean> onLogout(CharacterId characterId) {
         Promise<Boolean> promise = rpc.savePlayerMounts(characterId, playerMounts.get(characterId));
-
         promise.on(() -> playerMounts.removeAll(characterId));
 
         return promise;

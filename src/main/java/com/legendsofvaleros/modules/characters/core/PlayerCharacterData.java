@@ -25,7 +25,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PlayerCharacterData {
     private interface RPC {
         Promise<List<CharacterData>> getPlayerCharacters(UUID uuid);
+
         Promise<Boolean> savePlayerCharacter(UUID uuid, CharacterData character);
+
         Promise<Boolean> deletePlayerCharacter(UUID uuid, int number);
     }
 
@@ -66,7 +68,6 @@ public class PlayerCharacterData {
      */
     static Promise<PlayerCharacters> onLogin(final UUID playerId) {
         Promise<PlayerCharacters> promise = new Promise<>();
-
         rpc.getPlayerCharacters(playerId).onSuccess(val -> {
             Player player = Bukkit.getPlayer(playerId);
             if (player != null && player.isOnline()) {
@@ -74,15 +75,10 @@ public class PlayerCharacterData {
 
                 for (CharacterData datum : val.orElse(ImmutableList.of())) {
                     try {
-                        CharacterExperience experience =
-                                new CharacterExperience(datum.level, datum.progress);
-
+                        CharacterExperience experience = new CharacterExperience(datum.level, datum.progress);
                         Location loc = new Location(datum.world, datum.x, datum.y, datum.z, datum.yaw, datum.pitch);
-
-                        ReusablePlayerCharacter character =
-                                new ReusablePlayerCharacter(player, datum.number, datum.race,
-                                        datum.clazz, loc, experience, new PlayerInventoryData(datum.inventory), datum.skills);
-
+                        ReusablePlayerCharacter character = new ReusablePlayerCharacter(player, datum.number, datum.race,
+                                datum.clazz, loc, experience, new PlayerInventoryData(datum.inventory), datum.skills);
                         characters.add(character);
                     } catch (Exception e) {
                         Characters.getInstance().getLogger().severe("could not load character " + datum.number + " for player " + player.getName());
@@ -90,8 +86,7 @@ public class PlayerCharacterData {
                     }
                 }
 
-                PlayerCharacterCollection coll =
-                        new PlayerCharacterCollection(player, characters);
+                PlayerCharacterCollection coll = new PlayerCharacterCollection(player, characters);
                 dataMap.put(player.getUniqueId(), coll);
 
                 promise.resolve(coll);
@@ -166,10 +161,11 @@ public class PlayerCharacterData {
             this.skills = new ArrayList<>();
 
             for (Entry<Skill, Integer> skillPair : skills) {
-                if(skillPair.getValue() > 1)
+                if (skillPair.getValue() > 1) {
                     this.skills.add(skillPair.getKey().getId() + ":" + skillPair.getValue());
-                else
+                } else {
                     this.skills.add(skillPair.getKey().getId());
+                }
             }
         }
     }

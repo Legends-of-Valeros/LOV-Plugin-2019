@@ -15,7 +15,10 @@ public class RPCFunction<T> {
     private final Executor executor;
 
     private final String func;
-    public String getName() { return func; }
+
+    public String getName() {
+        return func;
+    }
 
     private final TypeToken<T> result;
 
@@ -38,9 +41,10 @@ public class RPCFunction<T> {
     }
 
     /*
-    * For RPC methods proxied or created on demand, there's no point to create an object.
-    * These static functions are used if you have no way to store the RPCFunction object.
-    * */
+     * For RPC methods proxied or created on demand, there's no point to create an object.
+     * These static functions are used if you have no way to store the RPCFunction object.
+     *
+     */
 
     public static <T> Promise<T> oneShotAsync(Executor exec, String func, TypeToken<T> result, Object... args) {
         return Promise.make(() -> oneShotSync(func, result, args), exec);
@@ -55,32 +59,37 @@ public class RPCFunction<T> {
             // This is a hack so we can use our own Gson parser.
             // TODO: Fix when deepstream supports passing our own data.
             Gson gson = APIController.getInstance().getGson();
-            if (gson == null)
+            if (gson == null) {
                 throw new IllegalStateException("Must wait until onPostLoad() before using RPC functions!");
+            }
 
             RpcResult res = APIController.getInstance().getClient().rpc.make(func,
                     arg != null ? gson.fromJson(gson.toJson(arg), JsonElement.class) : null);
 
             if (res.success()) {
                 // Decode result into T using Gson
-                if (res.getData() instanceof JsonElement)
-                    return APIController.getInstance().getGson().fromJson((JsonElement)res.getData(), result.getType());
+                if (res.getData() instanceof JsonElement) {
+                    return APIController.getInstance().getGson().fromJson((JsonElement) res.getData(), result.getType());
+                }
 
-                if (res.getData() instanceof String)
-                    return APIController.getInstance().getGson().fromJson((String)res.getData(), result.getType());
+                if (res.getData() instanceof String) {
+                    return APIController.getInstance().getGson().fromJson((String) res.getData(), result.getType());
+                }
 
                 return (T) res.getData();
             }
 
             throw new RuntimeException("" + res.getData());
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(func + "() -> " + result.getType().getTypeName() + " failure!", e);
         }
     }
 
     public static Object callMethod(Executor ifAsync, Method m, Object... args) {
-        if(Promise.class.isAssignableFrom(m.getReturnType()))
+        if (Promise.class.isAssignableFrom(m.getReturnType())) {
             return oneShotAsync(ifAsync, getMethodName(m), getMethodResultType(m), args);
+        }
+
         return oneShotSync(getMethodName(m), TypeToken.of(m.getReturnType()), args);
     }
 
@@ -92,27 +101,30 @@ public class RPCFunction<T> {
 
         Class<?> c = m.getDeclaringClass();
 
-        if(c.getAnnotation(ModuleRPC.class) != null) {
+        if (c.getAnnotation(ModuleRPC.class) != null) {
             name.append(c.getAnnotation(ModuleRPC.class).value());
-            if (name.length() > 0) name.append(":");
+            if (name.length() > 0) {
+                name.append(":");
+            }
         }
 
-        if(m.getAnnotation(ModuleRPC.class) != null)
+        if (m.getAnnotation(ModuleRPC.class) != null) {
             name.append(m.getAnnotation(ModuleRPC.class).value());
-        else
+        } else {
             name.append(m.getName());
+        }
 
         return name.toString();
     }
 
     /**
      * Get the current decode class type from the method.
-     *
+     * <p>
      * For example: Float from Promise<Float>
      */
     public static TypeToken<?> getMethodResultType(Method m) {
-        if(Promise.class.isAssignableFrom(m.getReturnType())) {
-            Type type = ((ParameterizedType)m.getGenericReturnType()).getActualTypeArguments()[0];
+        if (Promise.class.isAssignableFrom(m.getReturnType())) {
+            Type type = ((ParameterizedType) m.getGenericReturnType()).getActualTypeArguments()[0];
 
             return TypeToken.of(type);
         }

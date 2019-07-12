@@ -91,21 +91,6 @@ public class ChatController extends ModuleListener {
             }
         }
 
-        /*ListenableFuture<PlayerSettings> future = PlayerSettings.get(event.getPlayer());
-        future.addListener(() -> {
-            try {
-                PlayerSettings settings = future.get();
-                if (settings.containsKey("chat.selected") && settings.get("chat.selected") != null)
-                    data.channel = settings.get("chat.selected").charAt(0);
-
-                if (settings.containsKey("chat.off") && settings.get("chat.off") != null)
-                    for (char c : settings.get("chat.off").toCharArray())
-                        data.offChannels.add(c);
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-        }, ChatController.getInstance().getScheduler()::sync);*/
-
         players.put(event.getPlayer().getUniqueId(), data);
     }
 

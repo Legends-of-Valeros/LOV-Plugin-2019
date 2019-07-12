@@ -66,7 +66,9 @@ public class EntityTracker implements UnsafePlayerInitializer {
     }
 
     public CombinedCombatEntity getCombatEntity(LivingEntity entity) {
-        if (NPCsController.getInstance().isStaticNPC(entity)) return null;
+        if (NPCsController.getInstance().isStaticNPC(entity)) {
+            return null;
+        }
 
         UUID uid = entity.getUniqueId();
         CombinedCombatEntity ce = combatEntities.getIfPresent(uid);
@@ -74,7 +76,6 @@ public class EntityTracker implements UnsafePlayerInitializer {
         // creates on access, unless using a manual player initializer and the entity is a player
         if (ce == null && (!usePlayerInitializer || entity.getType() != EntityType.PLAYER || NPCsController.getInstance().isNPC(entity))) {
             ce = create(entity);
-
         } else if (ce != null) {
             // refreshes the LivingEntity object in the CombatEntity object, in case a new one is being
             // used
@@ -156,7 +157,8 @@ public class EntityTracker implements UnsafePlayerInitializer {
         // invalidates player's combat data on logout
         @EventHandler(priority = EventPriority.MONITOR)
         public void onPlayerQuit(final PlayerQuitEvent event) {
-            Bukkit.getServer().getScheduler().runTaskLater(LegendsOfValeros.getInstance(), () -> combatEntities.invalidate(event.getPlayer().getUniqueId()), 1L);
+            Bukkit.getServer().getScheduler().runTaskLater(LegendsOfValeros.getInstance(), () ->
+                    combatEntities.invalidate(event.getPlayer().getUniqueId()), 1L);
         }
 
         // notifies the combat object of death
@@ -167,7 +169,8 @@ public class EntityTracker implements UnsafePlayerInitializer {
                 ce.onDeath();
 
                 if (!ce.isPlayer()) {
-                    Bukkit.getServer().getScheduler().runTaskLater(LegendsOfValeros.getInstance(), () -> combatEntities.invalidate(event.getEntity().getUniqueId()), 1L);
+                    Bukkit.getServer().getScheduler().runTaskLater(LegendsOfValeros.getInstance(), ()
+                            -> combatEntities.invalidate(event.getEntity().getUniqueId()), 1L);
                 }
             }
         }
@@ -211,8 +214,6 @@ public class EntityTracker implements UnsafePlayerInitializer {
                     // if the entity's CombatEntity object was still in the cache, its contained LivingEntity
                     // object needs to be set to the newly loaded version.
                     if (cce == null) {
-                        //TODO remove debug?
-                        CombatEngine.getInstance().getLogger().warning("EntityTracker - CombinedCombatEntity is null");
                         return;
                     }
                     cce.refreshEntity((LivingEntity) entity);
