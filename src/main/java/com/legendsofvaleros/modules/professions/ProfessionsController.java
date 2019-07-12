@@ -17,6 +17,7 @@ import com.legendsofvaleros.modules.zones.event.ZoneActivateEvent;
 import com.legendsofvaleros.modules.zones.event.ZoneDeactivateEvent;
 import com.legendsofvaleros.modules.zones.event.ZoneEnterEvent;
 import com.legendsofvaleros.modules.zones.event.ZoneLeaveEvent;
+import com.legendsofvaleros.scheduler.InternalTask;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -224,7 +225,9 @@ public class ProfessionsController extends ProfessionsAPI {
         onLogin(event.getPlayerCharacter().getUniqueCharacterId())
                 .onFailure((err) -> {
                     MessageUtil.sendSevereException(ProfessionsController.getInstance(), event.getPlayer(), err);
-                    event.getPlayer().kickPlayer("Failed loading PlayerProfession - If this error persists, try contacting the support");
+                    getScheduler().executeInSpigotCircle(new InternalTask(() -> {
+                        event.getPlayer().kickPlayer("Failed loading PlayerProfession - If this error persists, try contacting the support");
+                    }));
                 })
                 .on(lock::release);
     }

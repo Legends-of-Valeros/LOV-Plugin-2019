@@ -9,6 +9,7 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
+import com.legendsofvaleros.scheduler.InternalTask;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -84,7 +85,9 @@ public class BankAPI extends ModuleListener {
             onLogin(event.getPlayerCharacter().getUniqueCharacterId())
                     .onFailure((err) -> {
                         MessageUtil.sendSevereException(BankController.getInstance(), event.getPlayer(), err);
-                        event.getPlayer().kickPlayer("Failed loading PlayerBank - If this error persists, try contacting the support");
+                        getScheduler().executeInSpigotCircle(new InternalTask(() -> {
+                            event.getPlayer().kickPlayer("Failed loading PlayerBank - If this error persists, try contacting the support");
+                        }));
                     })
                     .on(lock::release);
         }

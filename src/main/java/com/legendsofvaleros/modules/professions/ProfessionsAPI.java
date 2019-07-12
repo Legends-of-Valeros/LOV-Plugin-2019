@@ -122,7 +122,7 @@ public class ProfessionsAPI extends ModuleListener {
             playerProfessionsMap.put(characterId, playerProfessions.orElse(
                     new PlayerProfession(characterId, 0, 0, 0, 0))
             );
-        });
+        }).onFailure(Throwable::printStackTrace);
 
         return promise;
     }
