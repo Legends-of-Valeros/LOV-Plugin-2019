@@ -17,6 +17,7 @@ import com.legendsofvaleros.modules.cooldowns.CooldownsController;
 import com.legendsofvaleros.modules.dueling.DuelingController;
 import com.legendsofvaleros.modules.factions.FactionController;
 import com.legendsofvaleros.modules.fast_travel.FastTravelController;
+import com.legendsofvaleros.modules.friends.FriendsController;
 import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.graveyard.GraveyardController;
 import com.legendsofvaleros.modules.hearthstones.HearthstoneController;
@@ -178,6 +179,7 @@ public class LegendsOfValeros extends JavaPlugin {
         Modules.registerModule(MailboxController.class);
         Modules.registerModule(ProfessionsController.class);
         Modules.registerModule(RestrictionsController.class);
+        Modules.registerModule(FriendsController.class);
     }
 
     public void registerEvents(Listener listener, Module module) {
