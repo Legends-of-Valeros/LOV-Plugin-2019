@@ -50,11 +50,12 @@ public class Mailbox {
      * Notifies the owner of the mailbox
      */
     public void notifyOwner() {
-        Player p = Characters.getPlayerCharacter(characterId).getPlayer();
-        if (Characters.isPlayerCharacterLoaded(p)) {
-            // TODO make pretty like a princess
-            MessageUtil.sendInfo(p, "You have " + ChatColor.BOLD + getUnreadMails() + ChatColor.RESET + " unread mails!");
+        if (!Characters.isPlayerCharacterLoaded(characterId)) {
+            return;
         }
+
+        Player p = Characters.getPlayerCharacter(characterId).getPlayer();
+        MessageUtil.sendInfo(p, "You have " + ChatColor.BOLD + getUnreadMails() + ChatColor.RESET + " unread mails!");
     }
 
     public ArrayList<Mail> getMails() {

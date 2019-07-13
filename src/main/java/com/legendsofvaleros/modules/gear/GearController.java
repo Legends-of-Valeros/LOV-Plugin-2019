@@ -29,15 +29,17 @@ import com.legendsofvaleros.modules.skills.SkillsController;
 @ModuleInfo(name = "Gear", info = "")
 public class GearController extends GearAPI {
     private static GearController instance;
-    public static GearController getInstance() { return instance; }
+
+    public static GearController getInstance() {
+        return instance;
+    }
 
     public static Gear ERROR_ITEM;
 
     @Override
     public void onLoad() {
         super.onLoad();
-
-        this.instance = this;
+        instance = this;
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new ItemCommands());
 

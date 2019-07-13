@@ -16,11 +16,9 @@ import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
 import com.legendsofvaleros.util.MessageUtil;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.MemoryNPCDataStore;
-import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
 import net.citizensnpcs.api.trait.TraitInfo;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,21 +28,17 @@ import java.util.Map;
 public class NPCsAPI extends ModuleListener {
     public interface RPC {
         Promise<List<NPCData>> findNPCs();
+
         Promise<List<Skin>> findSkins();
 
         Promise<Boolean> saveNPC(NPCData npc);
     }
 
-    private RPC rpc;
-
-    private NPCRegistry registry;
-
-    private HashMap<String, Class<? extends LOVTrait>> traitTypes = new HashMap<>();
-
-    private HashMap<String, NPCData> npcs = new HashMap<>();
-
-    private Map<String, Skin> skins = new HashMap<>();
-    public Skin getSkin(String id) { return skins.get(id); }
+    protected RPC rpc;
+    protected HashMap<String, NPCData> npcs = new HashMap<>();
+    NPCRegistry registry;
+    HashMap<String, Class<? extends LOVTrait>> traitTypes = new HashMap<>();
+    Map<String, Skin> skins = new HashMap<>();
 
     @Override
     public void onLoad() {
@@ -93,51 +87,36 @@ public class NPCsAPI extends ModuleListener {
     }
 
     public Promise loadAll() {
-        return rpc.findNPCs().onSuccess(val -> {
-            npcs.clear();
+        return rpc.findNPCs()
+                .onSuccess(val -> {
+                    npcs.clear();
 
-            val.orElse(ImmutableList.of()).stream().forEach(npc ->
-                    npcs.put(npc.id, npc));
+                    val.orElse(ImmutableList.of()).forEach(npc -> {
+                        npcs.put(npc.id, npc);
+                    });
 
-            LootController.getInstance().getLogger().info("Loaded " + npcs.size() + " NPCs.");
-        }).onFailure(Throwable::printStackTrace)
-        .next(rpc::findSkins)
-        .onSuccess(val -> {
-            skins.clear();
+                    LootController.getInstance().getLogger().info("Loaded " + npcs.size() + " NPCs.");
+                })
+                .onFailure(Throwable::printStackTrace)
+                .next(rpc::findSkins)
+                .onSuccess(val -> {
+                    skins.clear();
 
-            val.orElse(ImmutableList.of()).stream().forEach(skin ->
-                    skins.put(skin.id, skin));
+                    val.orElse(ImmutableList.of()).forEach(skin -> {
+                        skins.put(skin.id, skin);
+                    });
 
-            LootController.getInstance().getLogger().info("Loaded " + skins.size() + " skins.");
-        }).onFailure(Throwable::printStackTrace);
+                    LootController.getInstance().getLogger().info("Loaded " + skins.size() + " skins.");
+                })
+                .onFailure(Throwable::printStackTrace);
     }
 
-    public Promise<Boolean> saveNPC(TraitLOV traitLOV) {
-        return rpc.saveNPC(traitLOV.npcData);
+    public void saveNPC(TraitLOV traitLOV) {
+        getScheduler().executeInMyCircle(() -> {
+            rpc.saveNPC(traitLOV.npcData).onSuccess(() -> {
+                MessageUtil.sendInfo(Bukkit.getConsoleSender(), "Successfully saved npc " + traitLOV.npcId);
+            }).onFailure(Throwable::printStackTrace);
+        });
     }
 
-    public void registerTrait(String id, Class<? extends LOVTrait> trait) {
-        traitTypes.put(id, trait);
-    }
-
-    public NPC createNPC(EntityType type, String s) {
-        return registry.createNPC(type, s);
-    }
-
-    public boolean isNPC(String id) {
-        return npcs.containsKey(id);
-    }
-
-    public NPCData getNPC(String id) {
-        return npcs.get(id);
-    }
-
-    public NPC getNPC(LivingEntity entity) { return CitizensAPI.getNPCRegistry().getNPC(entity); }
-
-    public boolean isNPC(LivingEntity entity) { return CitizensAPI.getNPCRegistry().isNPC(entity); }
-
-    public boolean isStaticNPC(LivingEntity entity) {
-        NPC npc = CitizensAPI.getNPCRegistry().getNPC(entity);
-        return npc != null && npc.getOwningRegistry() == CitizensAPI.getNPCRegistry();
-    }
 }

@@ -10,14 +10,21 @@ import com.legendsofvaleros.modules.hearthstones.HearthstoneController;
 import com.legendsofvaleros.modules.mailbox.MailboxController;
 import com.legendsofvaleros.modules.mount.MountsController;
 import com.legendsofvaleros.modules.npcs.commands.NPCCommands;
+import com.legendsofvaleros.modules.npcs.core.NPCData;
+import com.legendsofvaleros.modules.npcs.core.Skin;
 import com.legendsofvaleros.modules.npcs.integration.*;
+import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
 import com.legendsofvaleros.modules.npcs.trait.core.TraitTitle;
 import com.legendsofvaleros.modules.pvp.PvPController;
 import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.skills.SkillsController;
+import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
+import net.citizensnpcs.api.npc.NPC;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
@@ -33,7 +40,10 @@ import org.bukkit.event.EventPriority;
 @ModuleInfo(name = "NPCs", info = "")
 public class NPCsController extends NPCsAPI {
     private static NPCsController instance;
-    public static NPCsController getInstance() { return instance; }
+
+    public static NPCsController getInstance() {
+        return instance;
+    }
 
     @Override
     public void onLoad() {
@@ -56,5 +66,38 @@ public class NPCsController extends NPCsAPI {
     public void onRightClick(NPCRightClickEvent event) {
         if (!event.getNPC().hasTrait(TraitLOV.class)) return;
         event.getNPC().getTrait(TraitLOV.class).onRightClick(event.getClicker());
+    }
+
+    public void registerTrait(String id, Class<? extends LOVTrait> trait) {
+        traitTypes.put(id, trait);
+    }
+
+    public NPC createNPC(EntityType type, String s) {
+        return registry.createNPC(type, s);
+    }
+
+    public boolean isNPC(String id) {
+        return npcs.containsKey(id);
+    }
+
+    public NPCData getNPC(String id) {
+        return npcs.get(id);
+    }
+
+    public NPC getNPC(LivingEntity entity) {
+        return CitizensAPI.getNPCRegistry().getNPC(entity);
+    }
+
+    public boolean isNPC(LivingEntity entity) {
+        return CitizensAPI.getNPCRegistry().isNPC(entity);
+    }
+
+    public boolean isStaticNPC(LivingEntity entity) {
+        NPC npc = CitizensAPI.getNPCRegistry().getNPC(entity);
+        return npc != null && npc.getOwningRegistry() == CitizensAPI.getNPCRegistry();
+    }
+
+    public Skin getSkin(String id) {
+        return skins.get(id);
     }
 }
