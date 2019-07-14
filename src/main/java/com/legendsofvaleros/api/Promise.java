@@ -194,7 +194,13 @@ public class Promise<R> {
 
     public Promise<R> onFailure(Consumer<Throwable> cb, Executor ex) {
         return addListener((err, val) -> {
-            if (val.isPresent()) return;
+            if (val.isPresent()) {
+                return;
+            }
+            if (!err.isPresent()) {
+                cb.accept(new Throwable("No error - still failed"));
+                return;
+            }
             cb.accept(err.get());
         }, ex);
     }
