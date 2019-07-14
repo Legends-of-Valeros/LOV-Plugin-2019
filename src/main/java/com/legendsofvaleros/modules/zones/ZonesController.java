@@ -97,7 +97,9 @@ public class ZonesController extends ZonesAPI {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onZoneEnter(ZoneEnterEvent event) {
-        if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
+        if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) {
+            return;
+        }
 
         //display zone warning
         boolean pvp = PvPController.getInstance().isPvPEnabled() && event.getZone().pvp;
@@ -152,6 +154,7 @@ public class ZonesController extends ZonesAPI {
         if (!Characters.isPlayerCharacterLoaded(p)) {
             return;
         }
+
         updateZone(p);
     }
 

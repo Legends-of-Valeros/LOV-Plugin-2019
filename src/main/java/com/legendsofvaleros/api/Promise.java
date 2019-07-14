@@ -219,11 +219,11 @@ public class Promise<R> {
     }
 
     public <V> Promise<V> then(FunctionAlone<V> func) {
-        return then(() -> func.run(), this.executor);
+        return then(func, this.executor);
     }
 
     public <V> Promise<V> then(FunctionAlone<V> func, Executor exec) {
-        return then(() -> func.run(), exec);
+        return then(func, exec);
     }
 
     public <V> Promise<V> then(Function<V, R> func) {
@@ -258,7 +258,7 @@ public class Promise<R> {
         onSuccess(val -> {
             // When the promise returns, propagate it up to the proxy promise.
             try {
-                func.run(Optional.ofNullable(val.orElse(null))).on((err, val2) -> {
+                func.run(val).on((err, val2) -> {
                     if (err.isPresent()) {
                         promise.reject(err.get());
                         return;
@@ -293,7 +293,9 @@ public class Promise<R> {
                 throw new InterruptedException();
         }
 
-        if (this.value instanceof Throwable) throw (Throwable) this.value;
+        if (this.value instanceof Throwable) {
+            throw (Throwable) this.value;
+        }
         return (R) this.value;
     }
 
@@ -325,9 +327,13 @@ public class Promise<R> {
         for (String line : trace.split("\n")) {
             if (i == -1) {
                 // Ignore non-LOV packages
-                if (!line.contains("com.legendsofvaleros")) continue;
+                if (!line.contains("com.legendsofvaleros")) {
+                    continue;
+                }
                 // Ignore api package
-                if (line.contains("com.legendsofvaleros.api")) continue;
+//                if (line.contains("com.legendsofvaleros.api")) {
+//                    continue;
+//                }
             }
 
             i++;
@@ -335,7 +341,9 @@ public class Promise<R> {
             LegendsOfValeros.getInstance().getLogger().warning(line);
 
             // Don't print too many lines. After an amount, it's just spam.
-            if (i > 6 && !line.contains("legendsofvaleros")) break;
+            if (i > 6 && !line.contains("legendsofvaleros")) {
+                break;
+            }
         }
 
         // Print the actual reason for rejection

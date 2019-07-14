@@ -15,73 +15,71 @@ import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 
 public class Graveyard {
-	/**
-	 * Used for debugging.
-	 */
-	private Hologram hologram;
-	private TextLine textZone, textRadius;
-
-    private String zoneId;
-
+    /**
+     * Used for debugging.
+     */
+    private transient Hologram hologram;
+    private transient TextLine textZone, textRadius;
+    private transient Location location;
     private transient Zone zone;
-	public Zone getZone() {
-	    if(this.zone == null)
-	        this.zone = ZonesController.getInstance().getZone(this.zoneId);
-	    return this.zone;
-	}
-	
-	public World world;
-	public World getWorld() {
-		return world;
-	}
+    private String zoneId;
+    public World world;
+    public int x;
+    public int y;
+    public int z;
+    public int radius;
 
-	public int x;
-	public int y;
-	public int z;
+    public Graveyard(Zone zone, Location location, int radius) {
+        this.zone = zone;
+        this.world = location.getWorld();
+        this.x = location.getBlockX();
+        this.y = location.getBlockY();
+        this.z = location.getBlockZ();
+        this.radius = radius;
+    }
 
-	public int radius;
-	public int getRadius() {
-		return radius;
-	}
+    public Hologram getHologram() {
+        if (hologram == null) {
+            hologram = HologramsAPI.createHologram(LegendsOfValeros.getInstance(), getLocation());
+            textZone = hologram.appendTextLine(ChatColor.GOLD + "" + ChatColor.BOLD + getZone().name);
+            textRadius = hologram.appendTextLine("Radius: " + getRadius());
+            hologram.getVisibilityManager().setVisibleByDefault(LegendsOfValeros.getMode().allowEditing());
 
-	public Graveyard(Zone zone, Location location, int radius) {
-		this.zone = zone;
-		this.world = location.getWorld();
-		this.x = location.getBlockX();
-		this.y = location.getBlockY();
-		this.z = location.getBlockZ();
-		this.radius = radius;
-	}
+            ItemLine touchLine = hologram.appendItemLine(new ItemStack(Material.BRICK));
+            touchLine.setPickupHandler((p) -> {
+                if (p.isSneaking())
+                    new GraveyardEditorGUI(this).open(p, GUI.Flag.NO_PARENTS);
+            });
 
-	private Location location;
+            hologram.teleport(hologram.getLocation().add(0, hologram.getHeight(), 0));
+        }
 
-	public Location getLocation() {
-		if (location == null)
-			location = new Location(world, x, y, z);
-		return location;
-	}
+        return hologram;
+    }
 
-	public Hologram getHologram() {
-		if(hologram == null) {
-			hologram = HologramsAPI.createHologram(LegendsOfValeros.getInstance(), getLocation());
-			textZone = hologram.appendTextLine(ChatColor.GOLD + "" + ChatColor.BOLD + getZone().name);
-			textRadius = hologram.appendTextLine("Radius: " + getRadius());
-			hologram.getVisibilityManager().setVisibleByDefault(LegendsOfValeros.getMode().allowEditing());
+    @Override
+    public String toString() {
+        return "Graveyard(id=" + zoneId + ", location=" + getLocation() + ")";
+    }
 
-			ItemLine touchLine = hologram.appendItemLine(new ItemStack(Material.BRICK));
-			touchLine.setPickupHandler((p) -> {
-				if (p.isSneaking())
-					new GraveyardEditorGUI(this).open(p, GUI.Flag.NO_PARENTS);
-			});
+    public Zone getZone() {
+        if (this.zone == null)
+            this.zone = ZonesController.getInstance().getZone(this.zoneId);
+        return this.zone;
+    }
 
-			hologram.teleport(hologram.getLocation().add(0, hologram.getHeight(), 0));
-		}
+    public World getWorld() {
+        return world;
+    }
 
-		return hologram;
-	}
+    public int getRadius() {
+        return radius;
+    }
 
-	@Override
-	public String toString() {
-		return "Graveyard(id=" + zoneId + ", location=" + getLocation() + ")";
-	}
+    public Location getLocation() {
+        if (location == null) {
+            location = new Location(world, x, y, z);
+        }
+        return location;
+    }
 }

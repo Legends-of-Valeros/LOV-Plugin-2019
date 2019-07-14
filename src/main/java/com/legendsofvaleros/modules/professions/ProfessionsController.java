@@ -234,11 +234,8 @@ public class ProfessionsController extends ProfessionsAPI {
 
     @EventHandler
     public void onCharacterLogout(PlayerCharacterLogoutEvent event) {
-        PhaseLock lock = event.getLock("Profession");
-
         onLogout(event.getPlayerCharacter().getUniqueCharacterId())
-                .onFailure((err) -> MessageUtil.sendSevereException(ProfessionsController.getInstance(), event.getPlayer(), err))
-                .on(lock::release);
+                .onFailure((err) -> MessageUtil.sendSevereException(ProfessionsController.getInstance(), event.getPlayer(), err));
     }
 
     @EventHandler

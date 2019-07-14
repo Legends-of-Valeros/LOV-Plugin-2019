@@ -160,7 +160,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
                 || npcData.world != getNPC().getEntity().getLocation().getWorld()
                 || getNPC().getEntity().getLocation().distance(npcData.getLocation()) > 2) {
             npcData.setLocation(getNPC());
-            NPCsController.getInstance().saveNPC(this);
+//            NPCsController.getInstance().saveNPC(this);
         }
 
         npcId = npcData.id;
@@ -172,14 +172,15 @@ public class TraitLOV extends Trait implements CommandConfigurable {
             trait.npc_id = npcId;
             trait.npc = getNPC();
             trait.trait = this;
-            trait.onSpawn();
+//            trait.onSpawn();
         }
     }
 
     @Override
     public void onDespawn() {
-        for (LOVTrait trait : traits)
+        for (LOVTrait trait : traits) {
             trait.onDespawn();
+        }
 
         if (nameplates != null) {
             nameplates.remove();

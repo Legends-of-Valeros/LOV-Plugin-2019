@@ -132,19 +132,13 @@ public class ProfessionsAPI extends ModuleListener {
      * @return
      */
     protected Promise<Boolean> onLogout(CharacterId characterId) {
-        Promise<Boolean> promise = new Promise<>();
         PlayerProfession playerProfession = playerProfessionsMap.remove(characterId);
 
         if (playerProfession == null) {
-            promise.resolve(false);
-        } else {
-            rpc.savePlayerProfessions(playerProfession).on((err, val) -> {
-                if (err.isPresent()) promise.reject(err.get());
-                else promise.resolve(val.orElse(false));
-            });
+            return Promise.make(false);
         }
 
-        return promise;
+        return rpc.savePlayerProfessions(playerProfession);
     }
 
     /**

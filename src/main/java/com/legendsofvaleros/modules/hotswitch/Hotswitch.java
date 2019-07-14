@@ -26,7 +26,10 @@ import java.util.UUID;
 @ModuleInfo(name = "Hotswitch", info = "")
 public class Hotswitch extends ModuleListener {
     private static Hotswitch instance;
-    public static Hotswitch getInstance() { return instance; }
+
+    public static Hotswitch getInstance() {
+        return instance;
+    }
 
     public static final int SWITCHER_SLOT = 5;
     public static final int HELD_SLOT = 6;
@@ -60,8 +63,9 @@ public class Hotswitch extends ModuleListener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onLogoutEvent(PlayerCharacterLogoutEvent e) {
-        for (int i = 0; i <= SWITCHER_SLOT; i++)
+        for (int i = 0; i <= SWITCHER_SLOT; i++) {
             e.getPlayer().getInventory().setItem(i, null);
+        }
 
         heldItems.remove(e.getPlayer().getUniqueId());
         currentHotbar.remove(e.getPlayer().getUniqueId());
@@ -117,7 +121,9 @@ public class Hotswitch extends ModuleListener {
     }
 
     private void fireHotswitch(Player p) {
-        if (!Characters.isPlayerCharacterLoaded(p)) return;
+        if (!Characters.isPlayerCharacterLoaded(p)) {
+            return;
+        }
 
         PlayerSwitchHotbarEvent event = new PlayerSwitchHotbarEvent(p, currentHotbar.get(p.getUniqueId()));
         Bukkit.getServer().getPluginManager().callEvent(event);

@@ -33,11 +33,11 @@ public class RPCFunction<T> {
     }
 
     public Promise<T> call(Object... args) {
-        return this.oneShotAsync(this.executor, this.func, this.result, args);
+        return oneShotAsync(this.executor, this.func, this.result, args);
     }
 
     public T callSync(Object... args) {
-        return this.oneShotSync(this.func, this.result, args);
+        return oneShotSync(this.func, this.result, args);
     }
 
     /*
@@ -53,8 +53,11 @@ public class RPCFunction<T> {
     public static <T> T oneShotSync(String func, TypeToken<T> result, Object... args) {
         try {
             Object arg = null;
-            if (args.length == 1) arg = args[0];
-            else if (args.length > 1) arg = args;
+            if (args.length == 1) {
+                arg = args[0];
+            } else if (args.length > 1) {
+                arg = args;
+            }
 
             // This is a hack so we can use our own Gson parser.
             // TODO: Fix when deepstream supports passing our own data.
@@ -63,8 +66,8 @@ public class RPCFunction<T> {
                 throw new IllegalStateException("Must wait until onPostLoad() before using RPC functions!");
             }
 
-            RpcResult res = APIController.getInstance().getClient().rpc.make(func,
-                    arg != null ? gson.fromJson(gson.toJson(arg), JsonElement.class) : null);
+            RpcResult res = APIController.getInstance().getClient()
+                    .rpc.make(func, arg != null ? gson.fromJson(gson.toJson(arg), JsonElement.class) : null);
 
             if (res.success()) {
                 // Decode result into T using Gson
