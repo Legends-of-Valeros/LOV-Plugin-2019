@@ -10,6 +10,7 @@ import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.graveyard.commands.GraveyardCommands;
 import com.legendsofvaleros.modules.graveyard.core.Graveyard;
 import com.legendsofvaleros.modules.zones.ZonesController;
+import com.legendsofvaleros.modules.zones.core.Zone;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,24 +19,30 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
+import java.util.List;
+
 @DependsOn(CombatEngine.class)
 @DependsOn(Characters.class)
 @DependsOn(GearController.class)
 @DependsOn(ZonesController.class)
-// TODO: Create subclass for listeners?
 @ModuleInfo(name = "Graveyards", info = "")
 public class GraveyardController extends GraveyardAPI {
     private static GraveyardController instance;
-    public static GraveyardController getInstance() { return instance; }
+
+    public static GraveyardController getInstance() {
+        return instance;
+    }
 
     @Override
     public void onLoad() {
         super.onLoad();
 
-        this.instance = this;
+        instance = this;
 
         LegendsOfValeros.getInstance().getCommand("suicide").setExecutor((sender, arg1, arg2, arg3) -> {
-            if(CombatEngine.getEntity((Player)sender) == null) return false;
+            if (CombatEngine.getEntity((Player) sender) == null) {
+                return false;
+            }
 
             CombatEngine.getInstance().causeTrueDamage((Player) sender, null, CombatEngine.getEntity((Player) sender).getStats().getStat(Stat.MAX_HEALTH), ((Player) sender).getLocation());
             return true;
@@ -51,7 +58,7 @@ public class GraveyardController extends GraveyardAPI {
             Location loc = event.getPlayer().getLocation();
             MessageUtil.sendException(this, event.getPlayer(), "Failed to locate graveyard at " + loc.getBlockX() + ", " + loc.getBlockZ() + "!");
             event.setRespawnLocation(event.getPlayer().getLocation());
-        }else{
+        } else {
             Location loc = new Location(data.getWorld(), data.x + (Math.random() * (data.radius * 2) - data.radius), data.y, data.z + (Math.random() * (data.radius * 2) - data.radius));
             while (loc.getBlock().getType() != Material.AIR)
                 loc.add(0, 1, 0);
@@ -92,4 +99,24 @@ public class GraveyardController extends GraveyardAPI {
 				getLogger().severe("Attempt to break broken offhand item. Offender: " + p.getName());
 		}*/
     }
+
+    public Graveyard getNearestGraveyard(Zone zone, Location loc) {
+        if (graveyards == null || graveyards.size() == 0
+                || zone == null || !graveyards.containsKey(zone.channel)) {
+            return null;
+        }
+
+        List<Graveyard> yards = graveyards.get(zone.channel);
+
+        Graveyard closest = null;
+        double distance = Double.MAX_VALUE;
+        for (Graveyard data : yards) {
+            if (loc.distance(data.getLocation()) < distance) {
+                closest = data;
+            }
+        }
+
+        return closest;
+    }
+
 }

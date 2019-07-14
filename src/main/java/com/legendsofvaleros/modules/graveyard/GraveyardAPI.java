@@ -1,17 +1,14 @@
 package com.legendsofvaleros.modules.graveyard;
 
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Multimap;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.modules.graveyard.core.Graveyard;
-import com.legendsofvaleros.modules.zones.core.Zone;
-import org.bukkit.Location;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class GraveyardAPI extends ModuleListener {
@@ -24,18 +21,17 @@ public class GraveyardAPI extends ModuleListener {
     }
 
     private RPC rpc;
-    private Multimap<String, Graveyard> graveyards = HashMultimap.create();
+    HashMap<String, List<Graveyard>> graveyards = new HashMap<>();
 
     @Override
     public void onLoad() {
         super.onLoad();
-
-        this.rpc = APIController.create(RPC.class);
     }
 
     @Override
     public void onPostLoad() {
         super.onPostLoad();
+        this.rpc = APIController.create(GraveyardAPI.RPC.class);
 
         try {
             this.loadAll().get();
@@ -49,43 +45,34 @@ public class GraveyardAPI extends ModuleListener {
             graveyards.clear();
 
             val.orElse(ImmutableList.of()).stream()
-                    .filter(yard -> yard.getZone() != null).forEach(yard ->
-                    graveyards.put(yard.getZone().channel, yard));
+                    .filter(yard -> yard.getZone() != null).forEach(yard -> {
+                if (graveyards.containsKey(yard.getZone().channel)) {
+                    graveyards.get(yard.getZone().channel).add(yard);
+                    return;
+                }
+                ArrayList<Graveyard> yards = new ArrayList<>();
+                yards.add(yard);
+                graveyards.put(yard.getZone().channel, yards);
+            });
 
             getLogger().info("Loaded " + graveyards.size() + " graveyards.");
         }).onFailure(Throwable::printStackTrace);
     }
 
-    public Graveyard getNearestGraveyard(Zone zone, Location loc) {
-        if (graveyards == null || graveyards.size() == 0
-                || zone == null || !graveyards.containsKey(zone.channel))
-            return null;
-
-        Collection<Graveyard> yards = graveyards.get(zone.channel);
-
-        Graveyard closest = null;
-        double distance = Double.MAX_VALUE;
-        for (Graveyard data : yards) {
-            if (loc.distance(data.getLocation()) < distance)
-                closest = data;
-        }
-
-        return closest;
-    }
-
     public Promise<Boolean> addGraveyard(Graveyard yard) {
-        graveyards.put(yard.getZone().channel, yard);
+        graveyards.get(yard.getZone().channel).add(yard);
 
         // If editing is enabled, generate the hologram right away.
-        if (LegendsOfValeros.getMode().allowEditing())
+        if (LegendsOfValeros.getMode().allowEditing()) {
             getScheduler().sync(yard::getHologram);
+        }
 
         return rpc.saveGraveyard(yard);
     }
 
-    public Promise<Boolean> removeGraveyard(Graveyard yard) {
-        graveyards.remove(yard.getZone().channel, yard);
-
-        return rpc.deleteGraveyard(yard);
+    public void removeGraveyard(Graveyard yard) {
+        rpc.deleteGraveyard(yard).onSuccess(() -> {
+            graveyards.remove(yard.getZone().channel, yard);
+        }).onFailure(Throwable::printStackTrace);
     }
 }

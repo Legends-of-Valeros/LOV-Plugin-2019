@@ -24,11 +24,10 @@ public class Zone {
     public long timeWithoutPlayers = 0;
 
     public boolean isInZone(Location loc) {
-        if (loc == null) return false;
-        Block b = loc.getWorld().getBlockAt(loc.getBlockX(), 0, loc.getBlockZ());
-        if (b == null) {
+        if (loc == null) {
             return false;
         }
+        Block b = loc.getWorld().getBlockAt(loc.getBlockX(), 0, loc.getBlockZ());
         return b.getType() == material.type && (material.data != null && b.getData() == material.data);
     }
 

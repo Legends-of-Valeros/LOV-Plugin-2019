@@ -15,36 +15,35 @@ import org.bukkit.entity.Player;
 
 @CommandAlias("graveyards|lov graveyards")
 public class GraveyardCommands extends BaseCommand {
-	@Subcommand("reload")
-	@Description("Reload the graveyard cache.")
-	@CommandPermission("graveyards.reload")
-	public void cmdReload(CommandSender sender) {
-		GraveyardController.getInstance().loadAll();
+    @Subcommand("reload")
+    @Description("Reload the graveyard cache.")
+    @CommandPermission("graveyards.reload")
+    public void cmdReload(CommandSender sender) {
+        GraveyardController.getInstance().loadAll();
 
-		MessageUtil.sendUpdate(sender, "Zones reloaded.");
-	}
+        MessageUtil.sendUpdate(sender, "Zones reloaded.");
+    }
 
-	@Subcommand("create")
-	@Description("Create a new graveyard.")
-	@CommandPermission("graveyards.create")
-	public void cmdCreate(Player player, int radius) {
-		if(!LegendsOfValeros.getMode().allowEditing()) return;
+    @Subcommand("create")
+    @Description("Create a new graveyard.")
+    @CommandPermission("graveyards.create")
+    public void cmdCreate(Player player, int radius) {
+        if (!LegendsOfValeros.getMode().allowEditing()) return;
 
-		Zone zone = ZonesController.getInstance().getZone(player);
-		if(zone == null) {
-			MessageUtil.sendError(player, "You are not within a zone.");
-			return;
-		}
+        Zone zone = ZonesController.getInstance().getZone(player);
+        if (zone == null) {
+            MessageUtil.sendError(player, "You are not within a zone.");
+            return;
+        }
 
-		Graveyard yard = new Graveyard(zone, player.getLocation(), radius);
-		
-		GraveyardController.getInstance().addGraveyard(yard);
+        Graveyard yard = new Graveyard(zone, player.getLocation(), radius);
+        GraveyardController.getInstance().addGraveyard(yard);
 
-		MessageUtil.sendUpdate(player, ChatColor.YELLOW + "Created graveyards with radius " + yard.radius + " blocks in zone '" + zone.name + "'.");
-	}
+        MessageUtil.sendUpdate(player, ChatColor.YELLOW + "Created graveyards with radius " + yard.radius + " blocks in zone '" + zone.name + "'.");
+    }
 
-	@Default
-	public void cmdHelp(CommandSender sender, CommandHelp help) {
-		help.showHelp();
-	}
+    @Default
+    public void cmdHelp(CommandSender sender, CommandHelp help) {
+        help.showHelp();
+    }
 }

@@ -99,23 +99,23 @@ public class Characters extends Module implements CharactersAPI {
         new Test();
     }
 
-    /*@Override
+    @Override
     public void onUnload() {
         super.onUnload();
 
-        // saves regenerating stat levels
-        instance.persistentRegenStats.onDisable();
-
-        // saves persistent effects on player-characters
-        PersistingEffects.onDisable();
-
-        // cleanup for player locks
-        PlayerLock.onDisable();
-
-        // Saves core player-character data. This should go last, to preserve the core of Characters
-        // long enough for other disabling modules to use them
-        PlayerCharacterData.onDisable();
-    }*/
+//        // saves regenerating stat levels
+//        instance.persistentRegenStats.onDisable();
+//
+//        // saves persistent effects on player-characters
+//        PersistingEffects.onDisable();
+//
+//        // cleanup for player locks
+//        PlayerLock.onDisable();
+//
+//        // Saves core player-character data. This should go last, to preserve the core of Characters
+//        // long enough for other disabling modules to use them
+//        PlayerCharacterData.onDisable();
+    }
 
     public static void openCharacterSelection(Player p) {
         getInstance().uiManager.openCharacterSelection(getInstance().getCharacters(p), getInstance().loader);
