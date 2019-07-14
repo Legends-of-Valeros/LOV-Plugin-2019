@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.npcs.trait.bank.repair;
+package com.legendsofvaleros.modules.gear.event;
 
 import com.legendsofvaleros.modules.gear.core.Gear;
 import org.bukkit.entity.Player;

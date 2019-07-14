@@ -3,7 +3,7 @@ package com.legendsofvaleros.modules.quests.objective.bank;
 import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.gear.core.Gear;
-import com.legendsofvaleros.modules.npcs.trait.bank.repair.RepairItemEvent;
+import com.legendsofvaleros.modules.gear.event.RepairItemEvent;
 import com.legendsofvaleros.modules.quests.objective.AbstractQuestObjective;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.event.Event;

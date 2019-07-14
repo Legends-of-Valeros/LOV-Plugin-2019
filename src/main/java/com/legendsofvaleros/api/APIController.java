@@ -138,48 +138,10 @@ public class APIController extends Module {
                 }
             }
 
-            if (!err)
+            if (!err) {
                 getLogger().info("No issues! All registered RPC functions exist!");
-        });
-
-        /*Promise<?> promise = api.ping().on((err, val) -> {
-            if(err != null) {
-                err.printStackTrace();
-                return;
             }
-
-            System.out.println("async ping");
         });
-
-        promise = promise.then(() -> false)
-                .onSuccess((val) -> System.out.println("1: " + val))
-                .onFailure((err) -> err.printStackTrace());
-
-        promise = promise.then(() -> {
-            return api.ping()
-                    .onSuccess((val) -> System.out.println("2: " + val))
-                    .onFailure((err) -> err.printStackTrace());
-        });
-
-        promise = promise.next(api::ping)
-                .onSuccess((val) -> System.out.println("3: " + val))
-                .onFailure((err) -> err.printStackTrace());
-
-        promise = promise.next(() -> this.api.find(UUID.randomUUID()))
-                    .onSuccess((val) -> System.out.println("UUID: " + val))
-                    .onFailure((err) -> err.printStackTrace());
-
-        try {
-            System.out.println("4: " + Promise.collect(Promise.make(() -> 0), Promise.make(() -> 1)).get());
-        } catch (Throwable th) {
-            th.printStackTrace();
-        }
-
-        Promise.collect(Promise.make(() -> 0), Promise.make(() -> {
-            throw new Exception("test");
-        })).onFailure((err) -> {
-            err.printStackTrace();
-        });*/
     }
 
     public static <T> T create(Class<T> clazz) {

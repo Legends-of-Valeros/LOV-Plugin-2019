@@ -136,8 +136,9 @@ public class TraitLOV extends Trait implements CommandConfigurable {
 
             try {
                 Skin skin = NPCsController.getInstance().getSkin(npcData.skin);
-                if (skin == null)
+                if (skin == null) {
                     throw new Exception("No skin with that ID. Offender: " + npcData.skin + " on " + npcData.id);
+                }
 
                 npc.data().setPersistent("cached-skin-uuid", skin.uuid);
                 npc.data().setPersistent("cached-skin-uuid-name", skin.username.toLowerCase());
@@ -195,31 +196,4 @@ public class TraitLOV extends Trait implements CommandConfigurable {
     public void onRightClick(Player player) {
         TraitHelper.onRightClick(getNPC().getName(), player, traits);
     }
-	
-	/*private ListenableFuture<List<LOVTrait>> getActiveTraits(Player player) {
-		SettableFuture<List<LOVTrait>> future = SettableFuture.create();
-		
-		List<LOVTrait> activeTraits = new ArrayList<LOVTrait>();
-		AtomicInteger futuresLeft = new AtomicInteger(traits.length);
-		
-		for(LOVTrait trait : traits) {
-			SettableFuture<Boolean> isActive = SettableFuture.create();
-			
-			trait.isActive(player, isActive);
-
-			isActive.addListener(() -> {
-				try {
-					if(isActive.get())
-						activeTraits.add(trait);
-				} catch (Exception e) {
-					MessageUtil.sendException(NPCs.getInstance(), player, e, true);
-				}
-
-				if(futuresLeft.decrementAndGet() == 0)
-					future.set(activeTraits);
-			}, Utilities.asyncExecutor());
-		}
-		
-		return future;
-	}*/
 }
