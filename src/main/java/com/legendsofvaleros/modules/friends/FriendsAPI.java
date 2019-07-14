@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.ModuleListener;
-import com.legendsofvaleros.scheduler.InternalTask;
 
 import java.util.*;
 
@@ -34,16 +33,18 @@ public class FriendsAPI extends ModuleListener {
         super.onLoad();
     }
 
-    public void getAllFriendsForPlayer(UUID uuid) {
-        getScheduler().executeInMyCircle(new InternalTask(() -> {
-            rpc.getAllFriends(uuid).onSuccess(val -> {
-                playerFriendsMap.put(uuid, val.orElse(ImmutableList.of()));
-            }).onFailure(Throwable::printStackTrace);
-        }));
+    public Promise<List<UUID>> onLogin(UUID uuid) {
+        Promise<List<UUID>> promise = rpc.getAllFriends(uuid);
+
+        promise.onSuccess(val -> {
+            playerFriendsMap.put(uuid, val.orElse(ImmutableList.of()));
+        });
+
+        return promise;
     }
 
     public void saveFriend(FriendRequest friendRequest) {
-        getScheduler().executeInMyCircle(new InternalTask(() -> {
+        getScheduler().executeInMyCircle(() -> {
             // Save a friends entry for the sender
             rpc.saveFriend(friendRequest.getSenderID(), friendRequest.getReceiverID(), new Date()).onSuccess(() -> {
                 playerFriendsMap.get(friendRequest.getSenderID()).add(friendRequest.getReceiverID());
@@ -53,7 +54,7 @@ public class FriendsAPI extends ModuleListener {
             rpc.saveFriend(friendRequest.getReceiverID(), friendRequest.getSenderID(), new Date()).onSuccess(() -> {
                 playerFriendsMap.get(friendRequest.getReceiverID()).add(friendRequest.getSenderID());
             }).onFailure(Throwable::printStackTrace);
-        }));
+        });
     }
 
     public Promise<Boolean> deleteFriend(UUID uuid, UUID friend) {

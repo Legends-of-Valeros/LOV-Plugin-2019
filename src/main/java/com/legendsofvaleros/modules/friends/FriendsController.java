@@ -3,10 +3,10 @@ package com.legendsofvaleros.modules.friends;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.events.PlayerCharacterFinishLoadingEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
+import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
+import com.legendsofvaleros.modules.characters.loading.PhaseLock;
 import com.legendsofvaleros.modules.friends.commands.FriendCommands;
-import com.legendsofvaleros.modules.gear.commands.ItemCommands;
 import com.legendsofvaleros.scheduler.InternalTask;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.ChatColor;
@@ -101,8 +101,19 @@ public class FriendsController extends FriendsAPI {
     }
 
     @EventHandler
-    public void onCharacterLoad(PlayerCharacterFinishLoadingEvent event) {
-        sendFriendStatus(event.getPlayer(), "joined");
+    public void onCharacterStartLoading(PlayerCharacterStartLoadingEvent ev) {
+        PhaseLock lock = ev.getLock("Friends");
+        onLogin(ev.getPlayer().getUniqueId())
+                .onFailure((err) -> {
+                    MessageUtil.sendSevereException(FriendsController.getInstance(), ev.getPlayer(), err);
+                    getScheduler().executeInSpigotCircle(() -> {
+                        ev.getPlayer().kickPlayer("Failed loading Friends - If this error persists, try contacting the support");
+                    });
+                })
+                .on(() -> {
+                    lock.release();
+                    sendFriendStatus(ev.getPlayer(), "joined");
+                });
     }
 
     @EventHandler
