@@ -105,9 +105,10 @@
             <id>jcenter</id>
             <url>https://jcenter.bintray.com/</url>
         </repository>
+        <!-- PaperMC Repository-->
         <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/groups/snapshots/</url>
+            <id>destroystokyo-repo</id>
+            <url>https://repo.destroystokyo.com/content/repositories/snapshots/</url>
         </repository>
         <!--Citizens -->
         <repository>
@@ -143,17 +144,10 @@
             <artifactId>ProtocolLib</artifactId>
             <version>4.4.0</version>
         </dependency>
-        <!--Spigot -->
+        <!-- PaperMC -->
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
-            <version>${spigot.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <!--Spigot API-->
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
+            <groupId>com.destroystokyo.paper</groupId>
+            <artifactId>paper-api</artifactId>
             <version>${spigot.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -202,6 +196,13 @@
             <groupId>LibsDisguises</groupId>
             <artifactId>LibsDisguises</artifactId>
             <version>LATEST</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--  Craftbukkit  -->
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>craftbukkit</artifactId>
+            <version>${spigot.version}</version>
             <scope>provided</scope>
         </dependency>
 
