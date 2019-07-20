@@ -25,20 +25,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TraitLOV extends Trait implements CommandConfigurable {
-    public static String TRAIT_NAME = "lov";
-
+    public static final String TRAIT_NAME = "lov";
     public static final List<TraitLOV> all = new ArrayList<>();
-
     private boolean updatedSkin = false;
 
     @Persist(required = true)
     public String npcId;
 
-    public NPCData npcData;
+    private NPCData npcData;
     private LOVTrait[] traits = new LOVTrait[0];
 
-    public transient Nameplates nameplates;
-    public transient TextLine nameLine;
+    public Nameplates nameplates;
+//    public TextLine nameLine;
 
     public TraitLOV() {
         super(TRAIT_NAME);
@@ -67,15 +65,15 @@ public class TraitLOV extends Trait implements CommandConfigurable {
             return;
         }
 
-        String npcId = ctx.getString(1).toLowerCase();
+        String id = ctx.getString(1).toLowerCase();
 
-        if (!NPCsController.getInstance().isNPC(npcId)) {
-            MessageUtil.sendException(NPCsController.getInstance(), p, new Exception("No NPC with that ID exists in the cache. Offender: " + npcId));
+        if (!NPCsController.getInstance().isNPC(id)) {
+            MessageUtil.sendException(NPCsController.getInstance(), p, new Exception("No NPC with that ID exists in the cache. Offender: " + id));
             return;
         }
 
-        this.npcId = npcId;
-        MessageUtil.sendUpdate(p, "Setting NPC LOV ID to '" + npcId + "'.");
+        this.npcId = id;
+        MessageUtil.sendUpdate(p, "Setting NPC LOV ID to '" + id + "'.");
     }
 
     @Override
@@ -87,16 +85,20 @@ public class TraitLOV extends Trait implements CommandConfigurable {
 
     @Override
     public void onRemove() {
-        super.onRemove();
-
         all.remove(this);
 
         traits = new LOVTrait[0];
+        super.onRemove();
+
     }
 
     @Override
     public void onSpawn() {
-        if (npcId == null) return;
+        super.onSpawn();
+
+        if (npcId == null) {
+            return;
+        }
 
         getNPC().data().setPersistent(NPC.SHOULD_SAVE_METADATA, true);
 
@@ -128,8 +130,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
         }
 
         nameplates = Nameplates.get(getNPC());
-
-        nameLine = nameplates.getOrAdd(Nameplates.BASE).appendTextLine(npcData.name);
+//        nameLine = nameplates.getOrAdd(Nameplates.BASE).appendTextLine(npcData.name);
 
         if (npcData.skin != null && npcData.skin.trim().length() > 0 && !updatedSkin && getNPC().getEntity() instanceof SkinnableEntity) {
             updatedSkin = true;
@@ -160,19 +161,17 @@ public class TraitLOV extends Trait implements CommandConfigurable {
                 || npcData.world != getNPC().getEntity().getLocation().getWorld()
                 || getNPC().getEntity().getLocation().distance(npcData.getLocation()) > 2) {
             npcData.setLocation(getNPC());
-//            NPCsController.getInstance().saveNPC(this);
+            NPCsController.getInstance().saveNPC(this);
         }
 
         npcId = npcData.id;
         traits = npcData.traits;
 
-        super.onSpawn();
-
         for (LOVTrait trait : traits) {
             trait.npc_id = npcId;
             trait.npc = getNPC();
             trait.trait = this;
-//            trait.onSpawn();
+            trait.onSpawn();
         }
     }
 
@@ -196,5 +195,13 @@ public class TraitLOV extends Trait implements CommandConfigurable {
 
     public void onRightClick(Player player) {
         TraitHelper.onRightClick(getNPC().getName(), player, traits);
+    }
+
+    public NPCData getNpcData() {
+        return npcData;
+    }
+
+    public String getNpcId() {
+        return npcId;
     }
 }

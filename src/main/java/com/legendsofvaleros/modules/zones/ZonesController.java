@@ -62,12 +62,10 @@ public class ZonesController extends ZonesAPI {
                 }
 
                 //keep zone for 5 minutes active - this should prevent some memory-leaks
-                if (zone.timeWithoutPlayers > 0) {
-                    if ((System.currentTimeMillis() / 1000L) - zone.timeWithoutPlayers >= 300) {
-                        zone.setActive(false);
-                        Bukkit.getServer().getPluginManager().callEvent(new ZoneDeactivateEvent(zone));
-                        MessageUtil.sendDebug(Bukkit.getConsoleSender(), "Zone de-activated: " + zone.name + " " + zone.subname);
-                    }
+                if (zone.timeWithoutPlayers > 0 && (System.currentTimeMillis() / 1000L) - zone.timeWithoutPlayers >= 300) {
+                    zone.setActive(false);
+                    Bukkit.getServer().getPluginManager().callEvent(new ZoneDeactivateEvent(zone));
+                    MessageUtil.sendDebug(Bukkit.getConsoleSender(), "Zone de-activated: " + zone.name + " " + zone.subname);
                 }
             }
         }), 20L, 30 * 20L);
@@ -169,10 +167,11 @@ public class ZonesController extends ZonesAPI {
         if (zone == null) {
             return;
         }
+
         if (zone.playersInZone.contains(e.getPlayerCharacter().getUniqueCharacterId())) {
             zone.playersInZone.remove(e.getPlayerCharacter().getUniqueCharacterId());
 
-            if (zone.playersInZone.size() == 0) {
+            if (zone.playersInZone.isEmpty()) {
                 zone.timeWithoutPlayers = System.currentTimeMillis() / 1000L;
             }
         }

@@ -137,9 +137,6 @@ public class EntityTracker implements UnsafePlayerInitializer {
      * Also initiates the construction of combat objects for certain entities.
      */
     public class TrackingListener implements Listener, RemovalListener<UUID, CombinedCombatEntity> {
-        public TrackingListener() {
-        }
-
         // notifies combat object and server of the object's invalidation
         @Override
         public void onRemoval(RemovalNotification<UUID, CombinedCombatEntity> notification) {

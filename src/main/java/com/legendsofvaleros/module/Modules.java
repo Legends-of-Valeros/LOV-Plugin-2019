@@ -8,6 +8,7 @@ import com.legendsofvaleros.scheduler.InternalScheduler;
 
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -32,20 +33,18 @@ public class Modules {
      * Attempt to load all modules that are marked as "enabled."
      */
     public static void loadModules() {
-        // TODO: Check config file to enable/disable modules.
         long enabled = modules.values().stream().filter(InternalModule::isEnabled).count();
 
-        getLogger().info("Attempting to load " + enabled + " enabled modules...");
-
-        int i = 0;
+        getLogger().log(Level.INFO, "Attempting to load {0} enabled modules...", enabled);
 
         List<InternalModule> items = modules.values().stream()
                 .filter(InternalModule::isEnabled)
                 .filter(im -> !im.isLoaded)
                 .collect(Collectors.toList());
 
+        int i = 0;
         // While we still have modules waiting to be enabled
-        while (items.size() > 0) {
+        while (!items.isEmpty()) {
             // Filter out dependencies that
             List<InternalModule> remaining = new ArrayList<>();
             boolean emitted = false;
@@ -97,8 +96,9 @@ public class Modules {
 
         getLogger().info("Loaded " + modules.values().stream().filter(InternalModule::isLoaded).count() + " modules");
 
-        if (enabled > modules.size())
+        if (enabled > modules.size()) {
             getLogger().severe("Failed to load " + (enabled - modules.size()) + " modules!");
+        }
 
         getLogger().info("");
 
@@ -122,9 +122,9 @@ public class Modules {
 
     @Deprecated
     public static void loadModuleBypass(Class<? extends Module> clazz) throws InstantiationException, IllegalAccessException {
-        InternalModule im;
+        InternalModule im = new InternalModule(clazz);
 
-        modules.put(clazz, im = new InternalModule(clazz));
+        modules.put(clazz, im);
         packages.put(getModulePackage(clazz), clazz);
 
         im.load();

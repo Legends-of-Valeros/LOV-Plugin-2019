@@ -1,8 +1,8 @@
 package com.legendsofvaleros.modules.mobs.core;
 
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.mobs.MobsController;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -44,8 +44,11 @@ public class MobSpawner {
         Collection<SpawnArea> loaded = MobsController.getInstance().getLoadedSpawns();
 
         int block = (int) (time % allUpdateInterval);
-        int blockSize = (int) Math.ceil((double) loaded.size() / allUpdateInterval);
+        long blockSize = (long) Math.ceil((double) loaded.size() / allUpdateInterval);
 
+        if (loaded.isEmpty()) {
+            return; //return to save the skip execution
+        }
         loaded.stream()
                 .skip(block * blockSize).limit(blockSize)
                 .forEach(spawn -> {
@@ -55,7 +58,7 @@ public class MobSpawner {
                     Location spawnLocation = spawn.getLocation();
 
                     if (!spawnLocation.getChunk().isLoaded()) {
-                        if (spawn.getEntities().size() > 0) {
+                        if (!spawn.getEntities().isEmpty()) {
                             MobsController.getInstance().getLogger().info("Clearing spawn due to unloaded chunk.");
                             unloaded++;
 
@@ -71,13 +74,14 @@ public class MobSpawner {
 
                     List<org.bukkit.entity.Entity> entities = new ArrayList<>(
                             world.getNearbyEntities(spawnLocation,
-                                    spawn.getRadius() + 25,
-                                    spawn.getRadius() + 20,
-                                    spawn.getRadius() + 25));
-                    CombatEntity ce;
+                                    (double) spawn.getRadius() + 25,
+                                    (double) spawn.getRadius() + 20,
+                                    (double) spawn.getRadius() + 25));
                     for (org.bukkit.entity.Entity e : entities) {
-                        if (!(e instanceof Player)) continue;
-                        ce = CombatEngine.getEntity((Player) e);
+                        if (!(e instanceof Player)) {
+                            continue;
+                        }
+                        CombatEntity ce = CombatEngine.getEntity((Player) e);
                         if (ce != null && ce.isPlayer()) {
                             playerNearby = true;
                             break;
@@ -85,7 +89,7 @@ public class MobSpawner {
                     }
 
                     if (!playerNearby) {
-                        if (spawn.getEntities().size() > 0) {
+                        if (!spawn.getEntities().isEmpty()) {
                             distance++;
                             spawn.clear();
                         }
@@ -119,8 +123,9 @@ public class MobSpawner {
                         spawn.markInterval();
 
                         int entityCount = spawn.getCount() - spawn.getEntities().size();
-                        while (entityCount-- > 0 && rand.nextInt(100) < spawn.getChance())
+                        while (entityCount-- > 0 && rand.nextInt(100) < spawn.getChance()) {
                             spawn.spawn(mob);
+                        }
 
                         spawn.setDebugInfo("No problems");
                     }

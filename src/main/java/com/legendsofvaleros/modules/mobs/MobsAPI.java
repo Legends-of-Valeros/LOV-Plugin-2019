@@ -25,21 +25,28 @@ public class MobsAPI extends ModuleListener {
         Promise<List<Mob>> findMobs();
 
         Promise<List<SpawnArea>> findSpawns();
+
         Promise<Boolean> saveSpawn(SpawnArea spawn);
+
         Promise<Boolean> deleteSpawn(Integer spawn);
     }
 
     private RPC rpc;
 
     private Map<String, Mob> entities = new HashMap<>();
-    public Mob getEntity(String id) { return entities.get(id); }
+
+    public Mob getEntity(String id) {
+        return entities.get(id);
+    }
 
     private Multimap<String, SpawnArea> spawns = HashMultimap.create();
+
     public Collection<SpawnArea> getSpawns() {
         return spawns.values();
     }
 
     private Multimap<String, SpawnArea> spawnsLoaded = HashMultimap.create();
+
     public Collection<SpawnArea> getLoadedSpawns() {
         return spawnsLoaded.values();
     }
@@ -64,31 +71,31 @@ public class MobsAPI extends ModuleListener {
         }
     }
 
-    public Promise<?> loadAll() {
+    public Promise loadAll() {
         return rpc.findMobs().onSuccess(val -> {
-                entities.clear();
+            entities.clear();
 
-                for(Mob mob : val.orElse(ImmutableList.of()))
-                    entities.put(mob.getId(), mob);
+            for (Mob mob : val.orElse(ImmutableList.of()))
+                entities.put(mob.getId(), mob);
 
-                getLogger().info("Loaded " + entities.size() + " mobs.");
-            }).onFailure(Throwable::printStackTrace)
-            .next(rpc::findSpawns).onSuccess(val -> {
-                spawns.clear();
+            getLogger().info("Loaded " + entities.size() + " mobs.");
+        }).onFailure(Throwable::printStackTrace)
+                .next(rpc::findSpawns).onSuccess(val -> {
+                    spawns.clear();
 
-                // Return to the spigot thread to allow fetching chunk objects.
-                // We could remove all of this, basically, if we just make a way
-                // to get the chunk ID from a block location, this can be async.
-                getScheduler().executeInSpigotCircle(() -> {
-                    for(SpawnArea spawn : val.orElse(ImmutableList.of())) {
-                        spawns.put(getId(spawn.getLocation().getChunk()), spawn);
+                    // Return to the spigot thread to allow fetching chunk objects.
+                    // We could remove all of this, basically, if we just make a way
+                    // to get the chunk ID from a block location, this can be async.
+                    getScheduler().executeInSpigotCircle(() -> {
+                        for (SpawnArea spawn : val.orElse(ImmutableList.of())) {
+                            spawns.put(getId(spawn.getLocation().getChunk()), spawn);
 
-                        addSpawn(spawn);
-                    }
+                            addSpawn(spawn);
+                        }
 
-                    getLogger().info("Loaded " + spawns.size() + " spawns.");
-                });
-            }).onFailure(Throwable::printStackTrace);
+                        getLogger().info("Loaded " + spawns.size() + " spawns.");
+                    });
+                }).onFailure(Throwable::printStackTrace);
     }
 
     public void addSpawn(SpawnArea spawn) {
@@ -98,7 +105,7 @@ public class MobsAPI extends ModuleListener {
         spawnsLoaded.put(getId(chunk), spawn);
 
         // If editing is enabled, generate the hologram right away.
-        if(LegendsOfValeros.getMode().allowEditing())
+        if (LegendsOfValeros.getMode().allowEditing())
             getScheduler().sync(spawn::getHologram);
 
         if (spawn.getMob() != null)
@@ -137,6 +144,10 @@ public class MobsAPI extends ModuleListener {
 
         @EventHandler
         public void onChunkUnload(ChunkUnloadEvent event) {
+            String chunkId = getId(event.getChunk());
+
+            if (!spawns.containsKey(chunkId)) return;
+
             spawnsLoaded.removeAll(getId(event.getChunk()));
         }
     }

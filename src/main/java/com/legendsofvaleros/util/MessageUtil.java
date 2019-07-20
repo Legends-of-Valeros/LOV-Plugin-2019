@@ -229,24 +229,31 @@ public class MessageUtil {
         int i = -2;
         for (String line : trace.split("\n")) {
             if (i <= -1) {
-                if (i++ == -2)
+                if (i++ == -2) {
                     str.append(line + "\n");
+                }
 
                 // Ignore non-LOV packages
-                if (!line.contains("com.legendsofvaleros")) continue;
+                if (!line.contains("com.legendsofvaleros")) {
+                    continue;
+                }
                 // Ignore scheduler package
-                if (line.contains("com.legendsofvaleros.scheduler")) continue;
+                if (line.contains("com.legendsofvaleros.scheduler")) {
+                    continue;
+                }
                 // Ignore this class
-                if (line.contains("com.legendsofvaleros.util.MessageUtil")) continue;
+                if (line.contains("com.legendsofvaleros.util.MessageUtil")) {
+                    continue;
+                }
             }
 
             i++;
-
-            // LegendsOfValeros.getInstance().getLogger().warning(line);
             str.append(line + "\n");
 
             // Don't print too many lines. After an amount, it's just spam.
-            if (i > 6 && !line.contains("legendsofvaleros")) break;
+            if (i > 6 && !line.contains("legendsofvaleros")) {
+                break;
+            }
         }
 
         return str.toString();

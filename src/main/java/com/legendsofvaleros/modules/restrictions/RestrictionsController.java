@@ -5,7 +5,10 @@ import com.legendsofvaleros.ServerMode;
 import com.legendsofvaleros.module.ModuleListener;
 import com.legendsofvaleros.util.Discord;
 import com.legendsofvaleros.util.Utilities;
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -19,26 +22,14 @@ import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
-import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by Crystall on 04/11/2019
  */
 public class RestrictionsController extends ModuleListener {
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-    }
-
-    @Override
-    public void onUnload() {
-        super.onUnload();
-    }
 
     /**
      * Removes endless potions in case they have some
@@ -64,11 +55,6 @@ public class RestrictionsController extends ModuleListener {
         Discord.sendLogMessage("**" + evt.getPlayer().getName() + "** was kicked for using World Downloader!");
     }
 
-    @EventHandler
-    public void onChunkLoad(ChunkLoadEvent evt) {
-        Stream.of(evt.getChunk().getEntities()).filter(Creature.class::isInstance).forEach(Entity::remove); // Remove creatures that weren't cleaned up and items on chunk load.
-    }
-
     /**
      * Warn staff of people that may be using boat fly
      * @param evt
@@ -89,25 +75,23 @@ public class RestrictionsController extends ModuleListener {
      */
     @EventHandler
     public void onPlayerGameModeChange(PlayerGameModeChangeEvent evt) {
-        if (LegendsOfValeros.getMode().equals(ServerMode.LIVE)) {
-            if (evt.getNewGameMode() == GameMode.CREATIVE) {
-                evt.setCancelled(true);
-                Discord.sendLogMessage("**" + evt.getPlayer().getName() + "** tried to enter " + evt.getNewGameMode().name().toLowerCase() + "! This should not happen.");
-            }
+        if (LegendsOfValeros.getMode().equals(ServerMode.LIVE) && evt.getNewGameMode() == GameMode.CREATIVE) {
+            evt.setCancelled(true);
+            Discord.sendLogMessage("**" + evt.getPlayer().getName() + "** tried to enter " + evt.getNewGameMode().name().toLowerCase() + "! This should not happen.");
         }
     }
 
     @EventHandler(ignoreCancelled = true)
     public void preventBucketEmpty(PlayerBucketEmptyEvent evt) {
         if (LegendsOfValeros.getMode().equals(ServerMode.LIVE)) {
-            evt.setCancelled(evt.getBlockClicked().getWorld().getName().equalsIgnoreCase("valeros"));
+            evt.setCancelled(evt.getBlockClicked().getWorld().getName().equalsIgnoreCase(LegendsOfValeros.WORLD_NAME));
         }
     }
 
     @EventHandler(ignoreCancelled = true)
     public void preventBucketFill(PlayerBucketFillEvent evt) {
         if (LegendsOfValeros.getMode().equals(ServerMode.LIVE)) {
-            evt.setCancelled(evt.getBlockClicked().getWorld().getName().equalsIgnoreCase("valeros"));
+            evt.setCancelled(evt.getBlockClicked().getWorld().getName().equalsIgnoreCase(LegendsOfValeros.WORLD_NAME));
         }
     }
 
@@ -208,9 +192,8 @@ public class RestrictionsController extends ModuleListener {
      */
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onInteractEntity(PlayerInteractEntityEvent event) {
-        if (event.getRightClicked() instanceof ArmorStand) {
-            event.setCancelled(true);
-        } else if (event.getRightClicked() instanceof Painting) {
+        if (event.getRightClicked() instanceof ArmorStand ||
+                event.getRightClicked() instanceof Painting) {
             event.setCancelled(true);
         }
     }
@@ -239,6 +222,9 @@ public class RestrictionsController extends ModuleListener {
                 case BREWING_STAND:
                 case FLOWER_POT:
                     event.setCancelled(true);
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -257,7 +243,7 @@ public class RestrictionsController extends ModuleListener {
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent evt) {
         if (evt.getPlayer().getGameMode() != GameMode.CREATIVE) {
-            evt.setCancelled(evt.getBlock().getWorld().getName().equalsIgnoreCase("valeros"));
+            evt.setCancelled(evt.getBlock().getWorld().getName().equalsIgnoreCase(LegendsOfValeros.WORLD_NAME));
         }
     }
 
@@ -267,7 +253,7 @@ public class RestrictionsController extends ModuleListener {
     @EventHandler(ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent evt) {
         if (LegendsOfValeros.getMode().equals(ServerMode.LIVE)) {
-            evt.setCancelled(evt.getBlock().getWorld().getName().equalsIgnoreCase("valeros"));
+            evt.setCancelled(evt.getBlock().getWorld().getName().equalsIgnoreCase(LegendsOfValeros.WORLD_NAME));
         }
     }
 
@@ -325,7 +311,7 @@ public class RestrictionsController extends ModuleListener {
      */
     @EventHandler(ignoreCancelled = true)
     public void onWeather(WeatherChangeEvent evt) {
-        if (evt.getWorld().getName().equalsIgnoreCase("valeros")) {
+        if (evt.getWorld().getName().equalsIgnoreCase(LegendsOfValeros.WORLD_NAME)) {
             evt.setCancelled(evt.toWeatherState());
         }
     }

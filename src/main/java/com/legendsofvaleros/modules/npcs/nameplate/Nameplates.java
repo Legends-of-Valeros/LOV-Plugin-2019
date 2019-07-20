@@ -39,7 +39,7 @@ public class Nameplates {
     public final Map<String, Hologram> holograms = new LinkedHashMap<>();
 
     public Hologram add(String id) {
-        if(entity.get() == null)
+        if (entity.get() == null)
             throw new IllegalStateException("Entity is gone.");
 
         Hologram holo = HologramsAPI.createHologram(LegendsOfValeros.getInstance(), entity.get().getLocation().add(0, entity.get().getHeight() + .25D, 0));
@@ -75,21 +75,19 @@ public class Nameplates {
                     return;
                 }
 
-                Entity entity = Nameplates.this.entity.get();
+                Entity ent = Nameplates.this.entity.get();
 
                 try {
-                    double y = entity.getHeight() + .25D;
+                    double y = ent.getHeight() + .25D;
                     for (Hologram holo : holograms.values()) {
                         y += holo.getHeight();
 
-                        holo.teleport(entity.getLocation().add(0, y, 0));
+                        holo.teleport(ent.getLocation().add(0, y, 0));
                     }
-                } catch(IllegalArgumentException e) {
+                } catch (IllegalArgumentException e) {
                     // Something happened. Log it and destroy the hologram.
-                    MessageUtil.sendException(MobsController.getInstance(), "Nameplate error. Offender: " + uuid + " or " + entity.getName());
-
+                    MessageUtil.sendException(MobsController.getInstance(), "Nameplate error. Offender: " + uuid + " or " + ent.getName());
                     e.printStackTrace();
-
                     remove();
                     cancel();
                 }
@@ -111,7 +109,6 @@ public class Nameplates {
         }
 
         holograms.clear();
-
         bound.remove(uuid);
     }
 }

@@ -20,7 +20,6 @@ import com.legendsofvaleros.modules.quests.event.QuestStartedEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
 import com.legendsofvaleros.util.item.Model;
-import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -37,66 +36,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class TraitQuestGiver extends LOVTrait {
     private static final String MARKER = "quest";
 
-    public static class Marker implements Listener {
-        @EventHandler
-        public void onQuestStarted(QuestStartedEvent event) {
-            update(event.getPlayerCharacter());
-        }
-
-        @EventHandler
-        public void onQuestComplete(QuestCompletedEvent event) {
-            update(event.getPlayerCharacter());
-        }
-
-		/*@EventHandler
-		public void onObjectivesComplete(QuestObjectivesCompletedEvent event) {
-			update(event.getPlayerCharacter());
-		}*/
-
-        @EventHandler
-        public void onCharacterFinishLoading(PlayerCharacterFinishLoadingEvent event) {
-            update(event.getPlayerCharacter());
-        }
-
-        @EventHandler
-        public void onCharacterLogout(PlayerCharacterLogoutEvent event) {
-            for (TraitQuestGiver trait : all)
-                trait.available.getVisibilityManager().hideTo(event.getPlayer());
-        }
-
-        public static void update(TraitQuestGiver trait) {
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                if (!Characters.isPlayerCharacterLoaded(p)) continue;
-
-                update(trait, Characters.getPlayerCharacter(p));
-            }
-        }
-
-        public static void update(PlayerCharacter pc) {
-            if (pc == null || !pc.isCurrent()) return;
-
-            for (TraitQuestGiver trait : all)
-                update(trait, pc);
-        }
-
-        private static void update(TraitQuestGiver trait, PlayerCharacter pc) {
-            if (trait.quests == null) return;
-
-            for (IQuest quest : trait.quests) {
-                QuestStatus status = QuestController.getInstance().getStatus(pc, quest);
-
-                // If the quest can be accepted, the marker should be active.
-                if (status.canAccept()) {
-                    trait.available.getVisibilityManager().showTo(pc.getPlayer());
-                    return;
-                }
-            }
-
-            trait.available.getVisibilityManager().hideTo(pc.getPlayer());
-        }
-    }
-
     public static List<TraitQuestGiver> all = new ArrayList<>();
+
+    public String introText;
+    public String[] questIDs;
+    public Hologram available;
+
+    public transient List<IQuest> quests;
 
     @Override
     public void onSpawn() {
@@ -124,12 +70,6 @@ public class TraitQuestGiver extends LOVTrait {
 
         available.delete();
     }
-
-    public String introText;
-    public String[] questIDs;
-    public Hologram available;
-
-    public transient List<IQuest> quests;
 
     @Override
     public void onRightClick(Player player, SettableFuture<Slot> slot) {
@@ -214,4 +154,67 @@ public class TraitQuestGiver extends LOVTrait {
 
         book.open(player, false);
     }
+
+    public static class Marker implements Listener {
+        @EventHandler
+        public void onQuestStarted(QuestStartedEvent event) {
+            update(event.getPlayerCharacter());
+        }
+
+        @EventHandler
+        public void onQuestComplete(QuestCompletedEvent event) {
+            update(event.getPlayerCharacter());
+        }
+
+        @EventHandler
+        public void onCharacterFinishLoading(PlayerCharacterFinishLoadingEvent event) {
+            update(event.getPlayerCharacter());
+        }
+
+        @EventHandler
+        public void onCharacterLogout(PlayerCharacterLogoutEvent event) {
+            for (TraitQuestGiver trait : all) {
+                trait.available.getVisibilityManager().hideTo(event.getPlayer());
+            }
+        }
+
+        public static void update(TraitQuestGiver trait) {
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                if (!Characters.isPlayerCharacterLoaded(p)) {
+                    continue;
+                }
+
+                update(trait, Characters.getPlayerCharacter(p));
+            }
+        }
+
+        public static void update(PlayerCharacter pc) {
+            if (pc == null || !pc.isCurrent()) {
+                return;
+            }
+
+            for (TraitQuestGiver trait : all) {
+                update(trait, pc);
+            }
+        }
+
+        private static void update(TraitQuestGiver trait, PlayerCharacter pc) {
+            if (trait.quests == null) {
+                return;
+            }
+
+            for (IQuest quest : trait.quests) {
+                QuestStatus status = QuestController.getInstance().getStatus(pc, quest);
+
+                // If the quest can be accepted, the marker should be active.
+                if (status.canAccept()) {
+                    trait.available.getVisibilityManager().showTo(pc.getPlayer());
+                    return;
+                }
+            }
+
+            trait.available.getVisibilityManager().hideTo(pc.getPlayer());
+        }
+    }
+
 }

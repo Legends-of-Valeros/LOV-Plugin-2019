@@ -39,6 +39,7 @@ import com.legendsofvaleros.modules.restrictions.RestrictionsController;
 import com.legendsofvaleros.modules.skills.SkillsController;
 import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.scheduler.InternalScheduler;
+import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
@@ -47,43 +48,25 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 /**
  * Created by Crystall on 11/15/2018
  */
 public class LegendsOfValeros extends JavaPlugin {
+    public static final String WORLD_NAME = "valeros";
+    public static long startTime = 0;
+
     private static LegendsOfValeros instance;
     private boolean isShutdown = false;
-    public static long startTime = 0;
     private ServerMode mode;
     private PaperCommandManager manager;
-
-    public boolean isShutdown() {
-        return isShutdown;
-    }
-
-    public void setShutdown(boolean shutdown) {
-        isShutdown = shutdown;
-    }
-
-    public static LegendsOfValeros getInstance() {
-        return instance;
-    }
-
-    public static ServerMode getMode() {
-        return instance.mode;
-    }
-
-
-    public PaperCommandManager getCommandManager() {
-        return manager;
-    }
 
     private Map<Integer, String> loadedEventClassesName = new HashMap<>();
     private Cache<Integer, Listener> loadedEventClasses = CacheBuilder.newBuilder()
             .weakValues()
             .removalListener(entry -> {
-                instance.getLogger().severe("Event listener GC'd: " + loadedEventClassesName.remove(entry.getKey()));
+                getLogger().severe("Event listener GC'd: " + loadedEventClassesName.remove(entry.getKey()));
             }).build();
 
     @Override
@@ -93,12 +76,19 @@ public class LegendsOfValeros extends JavaPlugin {
         startTime = System.currentTimeMillis();
         mode = ServerMode.valueOf(getConfig().getString("server-mode", "LIVE"));
 
-        getLogger().info("Server mode is set to: " + mode.name());
-        if (mode.isVerbose()) getLogger().info("  - Verbosity enabled");
-        if (mode.doLogSaving()) getLogger().info("  - Log saving enabled");
-        if (mode.allowEditing())
+        getLogger().log(Level.INFO, "Server mode is set to: {0}", mode.name());
+        if (mode.isVerbose()) {
+            getLogger().info("  - Verbosity enabled");
+        }
+        if (mode.doLogSaving()) {
+            getLogger().info("  - Log saving enabled");
+        }
+        if (mode.allowEditing()) {
             getLogger().warning("  - Editing enabled: THIS SHOULD NOT BE ENABLED ON A LIVE SERVER");
-        if (mode.isLenient()) getLogger().warning("  - Leniency enabled: THIS SHOULD NOT BE ENABLED ON A LIVE SERVER");
+        }
+        if (mode.isLenient()) {
+            getLogger().warning("  - Leniency enabled: THIS SHOULD NOT BE ENABLED ON A LIVE SERVER");
+        }
 
         manager = new PaperCommandManager(LegendsOfValeros.getInstance());
         manager.enableUnstableAPI("help");
@@ -111,20 +101,19 @@ public class LegendsOfValeros extends JavaPlugin {
             field.setAccessible(true);
             field.set(manager, getLogger());
         } catch (Exception e) {
-            e.printStackTrace();
+            getLogger().severe(e.getMessage());
         }
 
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
-            // This is done so we get almost-live updates on GC'd listeners.
-            loadedEventClasses.cleanUp();
-        }, 0L, 20L);
+        // This is done so we get almost-live updates on GC'd listeners.
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () ->
+                loadedEventClasses.cleanUp(), 0L, 20L);
 
         try {
             registerModules();
 
             Modules.loadModules();
         } catch (Exception e) {
-            e.printStackTrace();
+            MessageUtil.sendException(LegendsOfValeros.class.getName(), e);
             System.exit(1);
         }
     }
@@ -136,14 +125,11 @@ public class LegendsOfValeros extends JavaPlugin {
         }
 
         Modules.unloadModules();
-
         loadedEventClasses.invalidateAll();
     }
 
-    private void registerModules() throws Exception {
+    private void registerModules() throws IllegalAccessException, InstantiationException {
         Robert.enablePortable(this);
-        // TODO add config file and add check if module should be enabled or not
-        // TODO add commands to disable single modules (&change the config?)
         // These are not optional modules EVER. In fact, no modules should ever
         // have define them as a dependency. Load them immediately.
         Modules.loadModuleBypass(APIController.class);
@@ -185,15 +171,35 @@ public class LegendsOfValeros extends JavaPlugin {
     public void registerEvents(Listener listener, Module module) {
         String listenerName = listener.getClass().getName().replace("com.legendsofvaleros.modules.", "") + "@" + Integer.toHexString(listener.hashCode());
 
-        module.getLogger().info("Registered listener: " + listenerName + ".");
+        module.getLogger().log(Level.INFO, "Registered listener: {0}.", listenerName);
 
         // Is it possible to have hashCode collisions for non-similar classes?
         if (loadedEventClasses.getIfPresent(listener.hashCode()) != null)
-            module.getLogger().severe(listenerName + " has already been registered as an event listener! This may cause unintended side effects!");
+            module.getLogger().log(Level.SEVERE, "{0} has already been registered as an event listener! This may cause unintended side effects!", listenerName);
         loadedEventClasses.put(listener.hashCode(), listener);
         loadedEventClassesName.put(listener.hashCode(), listenerName);
 
         Bukkit.getServer().getPluginManager().registerEvents(listener, this);
+    }
+
+    public boolean isShutdown() {
+        return isShutdown;
+    }
+
+    public void setShutdown(boolean shutdown) {
+        isShutdown = shutdown;
+    }
+
+    public static LegendsOfValeros getInstance() {
+        return instance;
+    }
+
+    public static ServerMode getMode() {
+        return instance.mode;
+    }
+
+    public PaperCommandManager getCommandManager() {
+        return manager;
     }
 
 }
