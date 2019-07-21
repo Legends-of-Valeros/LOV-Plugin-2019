@@ -40,8 +40,9 @@ public class ActiveTracker {
     }
 
     public static String getActive(PlayerCharacter pc) {
-        if(!active.containsKey(pc.getUniqueCharacterId()))
+        if (!active.containsKey(pc.getUniqueCharacterId())) {
             return null;
+        }
         return active.get(pc.getUniqueCharacterId());
     }
 
@@ -51,11 +52,12 @@ public class ActiveTracker {
 
     public static Promise<IQuest> getActiveQuest(PlayerCharacter pc) {
         String activeId = getActive(pc);
-        if(activeId == null) {
+        if (activeId == null) {
             return Promise.make(() -> {
                 Collection<IQuest> quests = QuestController.getInstance().getPlayerQuests(pc);
-                if(quests == null || quests.size() == 0)
+                if (quests == null || quests.isEmpty()) {
                     return null;
+                }
 
                 IQuest active = quests.iterator().next();
 
@@ -63,39 +65,46 @@ public class ActiveTracker {
 
                 return active;
             });
-        }else{
+        } else {
             return QuestController.getInstance().getQuest(getActive(pc)).then(val -> {
-                if(!val.isPresent()) return null;
+                if (!val.isPresent()) {
+                    return null;
+                }
 
                 IQuest quest = val.get();
-                if(QuestController.getInstance().getStatus(pc, quest) == QuestStatus.ACCEPTED)
+                if (QuestController.getInstance().getStatus(pc, quest) == QuestStatus.ACCEPTED) {
                     return quest;
+                }
 
                 setActive(pc, null);
 
                 return null;
             }).next(v -> {
-                if(v.isPresent()) return Promise.make(v.orElse(null));
+                if (v.isPresent()) {
+                    return Promise.make(v.orElse(null));
+                }
                 return getActiveQuest(pc);
             });
         }
     }
 
     private static void onTick(long time) {
-        int block = (int)(time % allUpdateInterval);
-        int blockSize = (int)Math.ceil((double)Bukkit.getOnlinePlayers().size() / allUpdateInterval);
+        int block = (int) (time % allUpdateInterval);
+        int blockSize = (int) Math.ceil((double) Bukkit.getOnlinePlayers().size() / allUpdateInterval);
 
         Bukkit.getOnlinePlayers().stream()
                 .skip(block * blockSize).limit(blockSize)
                 .forEach(p -> {
-                    if(!Characters.isPlayerCharacterLoaded(p)) return;
+                    if (!Characters.isPlayerCharacterLoaded(p)) {
+                        return;
+                    }
 
                     PlayerCharacter pc = Characters.getPlayerCharacter(p);
 
                     getActiveQuest(pc).on((err, val) -> {
                         boolean invalid = true;
 
-                        if(err != null && val.isPresent()) {
+                        if (err != null && val.isPresent()) {
                             IQuest active = val.get();
                             if (active != null) {
                                 IQuestObjective<?>[] group = active.getObjectiveGroup(pc);
@@ -113,7 +122,7 @@ public class ActiveTracker {
                             }
                         }
 
-                        if(invalid) {
+                        if (invalid) {
                             pc.getPlayer().setCompassTarget(new Location(pc.getPlayer().getWorld(),
                                     pc.getPlayer().getLocation().getX() + RAND.nextInt(100) - 50,
                                     0,

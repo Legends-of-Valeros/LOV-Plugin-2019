@@ -87,15 +87,16 @@ public class TraitQuestGiver extends LOVTrait {
                 PlayerCharacter pc = Characters.getPlayerCharacter(player);
                 for (IQuest quest : future.get()) {
                     QuestStatus status = QuestController.getInstance().getStatus(pc, quest);
-                    if (status.canAccept())
+                    if (status.canAccept()) {
                         playerQuests.put(quest, status);
+                    }
                 }
             } catch (Exception e) {
                 MessageUtil.sendSevereException(QuestController.getInstance(), player, e);
                 return;
             }
 
-            if (playerQuests.size() == 0) {
+            if (playerQuests.isEmpty()) {
                 slot.set(null);
                 return;
             }

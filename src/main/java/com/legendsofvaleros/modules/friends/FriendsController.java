@@ -9,6 +9,7 @@ import com.legendsofvaleros.modules.characters.loading.PhaseLock;
 import com.legendsofvaleros.modules.friends.commands.FriendCommands;
 import com.legendsofvaleros.scheduler.InternalTask;
 import com.legendsofvaleros.util.MessageUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -53,6 +54,11 @@ public class FriendsController extends FriendsAPI {
 
     private void sendFriendStatus(Player p, String state) {
         String message = ChatColor.UNDERLINE + p.getDisplayName() + ChatColor.AQUA + " has " + state;
+        if (!playerFriendsMap.containsKey(p.getUniqueId())) {
+            //TODO remove this and check why the API is not putting an entry on player login
+            MessageUtil.sendInfo(Bukkit.getConsoleSender(), " Playerfriendsmap doesnt contains playeruuid - this should not happen");
+            return;
+        }
         for (UUID uuid : playerFriendsMap.get(p.getUniqueId())) {
             if (Characters.isPlayerCharacterLoaded(uuid)) {
                 PlayerCharacter friendPC = Characters.getPlayerCharacter(uuid);

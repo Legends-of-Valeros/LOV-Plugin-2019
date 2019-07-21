@@ -25,49 +25,62 @@ import java.util.concurrent.TimeUnit;
 
 public class Gear implements IGear {
     private final String id;
-    @Override public String getId() {
+    private String group;
+    private final int version;
+    private String name;
+    private GearType type;
+    private String modelId;
+    private byte maxAmount = 1;
+    private GearRarity rarity;
+    private ComponentMap components;
+
+    @Override
+    public String getId() {
         return id;
     }
 
-    private String group;
     public String getGroup() {
         return group;
     }
 
-    private final int version;
-    @Override public int getVersion() {
+
+    @Override
+    public int getVersion() {
         return version;
     }
 
-    private String name;
-    @Override public String getName() {
+
+    @Override
+    public String getName() {
         return name;
     }
 
-    private GearType type;
-    @Override public GearType getType() {
+
+    @Override
+    public GearType getType() {
         return type;
     }
 
-    private String modelId;
-    @Override public String getModelId() {
+
+    @Override
+    public String getModelId() {
         return modelId;
     }
+
     public Model getModel() {
         return Model.get(modelId);
     }
 
-    private byte maxAmount = 1;
-    @Override public byte getMaxAmount() {
+
+    @Override
+    public byte getMaxAmount() {
         return maxAmount;
     }
 
-    private GearRarity rarity;
-    @Override public GearRarity getRarityLevel() {
+    @Override
+    public GearRarity getRarityLevel() {
         return rarity;
     }
-
-    private ComponentMap components;
 
     public Gear(int version, String id) {
         this.version = version;
@@ -77,8 +90,9 @@ public class Gear implements IGear {
     @Override
     public int getSeed() {
         int seed = 0;
-        for (int i = 0; i < id.length(); i++)
+        for (int i = 0; i < id.length(); i++) {
             seed += (int) id.charAt(i);
+        }
         return seed;
     }
 
@@ -150,19 +164,54 @@ public class Gear implements IGear {
             this.uuid = uuid;
         }
 
-        @Override public String getId() { return gear.getId(); }
-        @Override public int getVersion() { return gear.getVersion(); }
-        @Override public String getName() { return gear.getName(); }
-        @Override public GearType getType() { return gear.getType(); }
-        @Override public String getModelId() { return gear.getModelId(); }
-        @Override public Model getModel() { return gear.getModel(); }
-        @Override public byte getMaxAmount() { return gear.getMaxAmount(); }
-        @Override public GearRarity getRarityLevel() { return gear.getRarityLevel(); }
-        @Override public int getSeed() { return gear.getSeed(); }
+        @Override
+        public String getId() {
+            return gear.getId();
+        }
+
+        @Override
+        public int getVersion() {
+            return gear.getVersion();
+        }
+
+        @Override
+        public String getName() {
+            return gear.getName();
+        }
+
+        @Override
+        public GearType getType() {
+            return gear.getType();
+        }
+
+        @Override
+        public String getModelId() {
+            return gear.getModelId();
+        }
+
+        @Override
+        public Model getModel() {
+            return gear.getModel();
+        }
+
+        @Override
+        public byte getMaxAmount() {
+            return gear.getMaxAmount();
+        }
+
+        @Override
+        public GearRarity getRarityLevel() {
+            return gear.getRarityLevel();
+        }
+
+        @Override
+        public int getSeed() {
+            return gear.getSeed();
+        }
 
         /**
          * Needed when creating two instances of an item from one instance. This prevents
-         * their "amounts" from being syncronized when making copies.
+         * their "amounts" from being synchronized when making copies.
          * <p>
          * This should only be used where ABSOLUTELY needed. It bypasses the instance
          * caching system. And doesn't understand instanciating persist data.
@@ -236,8 +285,9 @@ public class Gear implements IGear {
 
             NBTEditor nbt = new NBTEditor(stack);
 
-            if (nbt.getString("lov.name") == null)
+            if (nbt.getString("lov.name") == null) {
                 return null;
+            }
 
             if (nbt.getString("lov.cache") != null) {
                 Gear.Instance data = cache.getIfPresent(nbt.getString("lov.cache"));
@@ -248,8 +298,9 @@ public class Gear implements IGear {
             }
 
             Gear gear = Gear.fromId(nbt.getString("lov.name"));
-            if (gear == null)
+            if (gear == null) {
                 return null;
+            }
 
             Gear.Instance data = new Gear.Instance(gear, nbt.getString("lov.cache") == null ? UUID.randomUUID() : UUID.fromString(nbt.getString("lov.cache")));
             data.version = nbt.getInteger("lov.version");
@@ -270,7 +321,9 @@ public class Gear implements IGear {
         }
 
         public ItemStack toStack() {
-            if (amount <= 0) return new ItemStack(Material.AIR);
+            if (amount <= 0) {
+                return new ItemStack(Material.AIR);
+            }
 
             try {
                 ItemBuilder builder = gear.getModel().toStack();
@@ -279,19 +332,24 @@ public class Gear implements IGear {
                     builder.addLore(gear.rarity.getChatColor() + gear.rarity.getUserFriendlyName());
 
                 if (gear.components != null && gear.components.size() > 0) {
-                    if (version != gear.version)
+                    if (version != gear.version) {
                         persists.clear();
+                    }
 
-                    for (Entry<String, GearComponent<?>> entry : gear.components.entrySet())
-                        if (!persists.containsKey(entry.getKey()) || persists.get(entry.getKey()) == null)
+                    for (Entry<String, GearComponent<?>> entry : gear.components.entrySet()) {
+                        if (!persists.containsKey(entry.getKey()) || persists.get(entry.getKey()) == null) {
                             persists.put(entry.getKey(), entry.getValue().onInit());
+                        }
+                    }
 
                     for (GearComponentOrder currentOrder : GearComponentOrder.values()) {
                         boolean added = false;
                         int loreSize = builder.getLore().size();
 
                         for (Entry<String, GearComponent<?>> entry : gear.components.entrySet()) {
-                            if (entry.getValue().getOrder() != currentOrder) continue;
+                            if (entry.getValue().getOrder() != currentOrder) {
+                                continue;
+                            }
 
                             entry.getValue().doGenerate(this, persists.get(entry.getKey()), builder);
 
@@ -301,13 +359,14 @@ public class Gear implements IGear {
                             }
                         }
 
-                        if (added || currentOrder.shouldForceSpace())
+                        if (added || currentOrder.shouldForceSpace()) {
                             builder.addLore("");
+                        }
                     }
 
                     builder.trimLore();
 
-                    if(LegendsOfValeros.getMode().isVerbose()) {
+                    if (LegendsOfValeros.getMode().isVerbose()) {
                         builder.addLore("");
                         builder.addLore(ChatColor.GOLD + "" + ChatColor.ITALIC + this.getValue() + " V");
                     }
@@ -315,24 +374,21 @@ public class Gear implements IGear {
 
                 //lore.add(String.format(ChatColor.GOLD + "%siP", (int)(statItem.getItemPower() * 100) / 100D));
 
-                if (!gear.type.isTradable())
+                if (!gear.type.isTradable()) {
                     builder.addLore(ChatColor.RED + "Untradable");
+                }
 
                 builder.setTag("lov.name", gear.id);
-
                 builder.setTag("lov.cache", uuid.toString());
-
                 String json = APIController.getInstance().getGson().toJson(persists);
+
                 builder.setTag("lov.persist", json);
-
                 builder.hideAttributes();
-
                 builder.setName((gear.rarity != null ? gear.rarity.getChatColor() : ChatColor.RESET) + gear.name);
                 builder.unbreakable();
+                builder.setAmount(amount);
 
                 cache.put(uuid.toString(), this);
-
-                builder.setAmount(amount);
 
                 return builder.create();
             } catch (Exception e) {

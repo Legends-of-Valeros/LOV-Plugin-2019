@@ -64,6 +64,7 @@ public class Utilities extends ModuleListener {
         super.onPostLoad();
 
         Model.onPostLoad();
+
     }
 
     @EventHandler(priority = EventPriority.LOWEST)

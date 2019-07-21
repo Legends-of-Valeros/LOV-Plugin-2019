@@ -137,7 +137,9 @@ public class MobsAPI extends ModuleListener {
         public void onChunkLoad(ChunkLoadEvent event) {
             String chunkId = getId(event.getChunk());
 
-            if (!spawns.containsKey(chunkId)) return;
+            if (!spawns.containsKey(chunkId)){
+                return;
+            }
 
             spawnsLoaded.putAll(chunkId, spawns.get(chunkId));
         }
@@ -146,7 +148,9 @@ public class MobsAPI extends ModuleListener {
         public void onChunkUnload(ChunkUnloadEvent event) {
             String chunkId = getId(event.getChunk());
 
-            if (!spawns.containsKey(chunkId)) return;
+            if (!spawns.containsKey(chunkId)){
+                return;
+            }
 
             spawnsLoaded.removeAll(getId(event.getChunk()));
         }
