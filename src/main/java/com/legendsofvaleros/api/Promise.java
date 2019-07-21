@@ -198,7 +198,6 @@ public class Promise<R> {
                 return;
             }
             if (!err.isPresent()) {
-                cb.accept(new Throwable("No error - still failed"));
                 return;
             }
             cb.accept(err.get());

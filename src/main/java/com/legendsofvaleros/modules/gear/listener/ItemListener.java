@@ -61,7 +61,9 @@ public class ItemListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDropItem(PlayerDropItemEvent event) {
-        if (event.isCancelled()) return;
+        if (event.isCancelled()){
+            return;
+        }
 
         Gear.Instance instance = Gear.Instance.fromStack(event.getItemDrop().getItemStack());
 
@@ -69,7 +71,9 @@ public class ItemListener implements Listener {
         event.getItemDrop().setItemStack(null);
         event.getItemDrop().remove();
 
-        if (instance == null) return;
+        if (instance == null) {
+            return;
+        }
 
         int amount = instance.amount;
         ItemUtil.giveItem(Characters.getPlayerCharacter(event.getPlayer()), instance);

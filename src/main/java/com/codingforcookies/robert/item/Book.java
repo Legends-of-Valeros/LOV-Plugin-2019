@@ -54,13 +54,14 @@ public class Book {
 		org.bukkit.inventory.ItemStack hand = p.getInventory().getItemInMainHand();
 		try {
 			p.getInventory().setItemInMainHand(CraftItemStack.asBukkitCopy(book));
-			((CraftPlayer)p).getHandle().a(book, EnumHand.MAIN_HAND);
+			((CraftPlayer)p).getHandle().openBook(book, EnumHand.MAIN_HAND);
 		} catch(Exception ex) {
 			ex.printStackTrace();
 		} finally {
 			p.getInventory().setItemInMainHand(hand);
 		}
-		//if(addStats)
-			//player.b(StatisticList.USE_ITEM_COUNT[387]);
+//		if(addStats){
+//			player.b(StatisticList.USE_ITEM_COUNT[387]);
+//		}
 	}
 }
