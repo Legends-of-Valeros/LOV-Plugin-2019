@@ -28,7 +28,7 @@ public class Zone {
             return false;
         }
         Block b = loc.getWorld().getBlockAt(loc.getBlockX(), 0, loc.getBlockZ());
-        return b.getType() == material.type && (material.data != null && b.getData() == material.data);
+        return b.getType() == material.type;
     }
 
     public boolean isInZone(PlayerCharacter playerCharacter) {

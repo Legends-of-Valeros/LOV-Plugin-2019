@@ -11,6 +11,8 @@ import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.zones.core.MaterialWithData;
 import com.legendsofvaleros.modules.zones.core.Zone;
+import com.legendsofvaleros.util.MessageUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
@@ -45,6 +47,8 @@ public class ZonesAPI extends ModuleListener {
                 return zone;
             }
         }
+        MessageUtil.sendInfo(Bukkit.getConsoleSender(), "WARNING - " + p.getDisplayName() + " is not in a zone");
+
         return null;
     }
 
@@ -57,6 +61,7 @@ public class ZonesAPI extends ModuleListener {
                 return zone;
             }
         }
+        MessageUtil.sendInfo(Bukkit.getConsoleSender(), "WARNING - " + playerCharacter.getPlayer().getDisplayName() + " is not in a zone");
         return null;
     }
 
