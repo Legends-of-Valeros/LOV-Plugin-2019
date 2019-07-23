@@ -6,10 +6,6 @@ import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifier;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder.ModifierType;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
-import me.libraryaddict.disguise.DisguiseAPI;
-import me.libraryaddict.disguise.disguisetypes.Disguise;
-import me.libraryaddict.disguise.disguisetypes.DisguiseType;
-import me.libraryaddict.disguise.disguisetypes.MobDisguise;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -53,22 +49,22 @@ public class Polymorph {
                     .setModifierType(ModifierType.MULTIPLIER).setValue(HIT_MULTIPLIER).build());
 
             if (libsFound) {
-                Disguise disguise = new MobDisguise(DisguiseType.getType(DISGUISE_TYPE));
-
-                String name =
-                        (le.getType() == EntityType.PLAYER ? le.getName() : le.getCustomName());
-
-                if (name != null && disguise.getWatcher() != null) {
-                    disguise.getWatcher().setCustomName(name);
-                    disguise.getWatcher().setCustomNameVisible(true);
-                }
-
-                if (le.getType() == EntityType.PLAYER) {
-                    disguise.setViewSelfDisguise(true);
-                }
-
-                DISGUISES.put(entity.getUniqueId(), disguise);
-                DisguiseAPI.disguiseEntity(le, disguise);
+//                Disguise disguise = new MobDisguise(DisguiseType.getType(DISGUISE_TYPE));
+//
+//                String name =
+//                        (le.getType() == EntityType.PLAYER ? le.getName() : le.getCustomName());
+//
+//                if (name != null && disguise.getWatcher() != null) {
+//                    disguise.getWatcher().setCustomName(name);
+//                    disguise.getWatcher().setCustomNameVisible(true);
+//                }
+//
+//                if (le.getType() == EntityType.PLAYER) {
+//                    disguise.setViewSelfDisguise(true);
+//                }
+//
+//                DISGUISES.put(entity.getUniqueId(), disguise);
+//                DisguiseAPI.disguiseEntity(le, disguise);
             }
         }
     }
@@ -86,7 +82,7 @@ public class Polymorph {
             if (!mods.isEmpty() && libsFound) {
                 Object disguise = DISGUISES.remove(entity.getUniqueId());
                 if (disguise != null) {
-                    ((Disguise) disguise).removeDisguise();
+//                    ((Disguise) disguise).removeDisguise();
                 }
             }
         }
