@@ -135,9 +135,9 @@ public class RegionController extends RegionsAPI {
             return;
 
         List<Region> toRegions = findRegions(event.getTo());
-        if (toRegions.size() > 0) {
+        if (!toRegions.isEmpty()) {
             if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) {
-                MessageUtil.sendError(event.getPlayer(), toRegions.get(0).msgFailure);
+                MessageUtil.sendError(event.getPlayer(), toRegions.get(0).msgError);
                 event.getPlayer().teleport(event.getFrom());
                 return;
             }
@@ -147,7 +147,7 @@ public class RegionController extends RegionsAPI {
                 if (!region.allowAccess) {
                     if (!playerAccess.contains(pc.getUniqueCharacterId(), region.id)
                             || !playerAccess.get(pc.getUniqueCharacterId(), region.id)) {
-                        MessageUtil.sendError(event.getPlayer(), region.msgFailure);
+                        MessageUtil.sendError(event.getPlayer(), region.msgError);
                         event.getPlayer().teleport(event.getFrom());
                         return;
                     }
@@ -158,7 +158,7 @@ public class RegionController extends RegionsAPI {
         List<Region> discrepancies = findRegions(event.getFrom());
 
         for (Region region : toRegions) {
-            if (discrepancies.size() > 0) {
+            if (!discrepancies.isEmpty()) {
                 discrepancies.remove(region);
             }
 

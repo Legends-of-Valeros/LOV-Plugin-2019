@@ -77,8 +77,9 @@ public class RegionsAPI extends ModuleListener {
 
     public List<Region> findRegions(Location location) {
         String chunkId = location.getChunk().getX() + "," + location.getChunk().getZ();
-        if (!regionChunks.containsKey(chunkId))
+        if (!regionChunks.containsKey(chunkId)) {
             return EMPTY_LIST;
+        }
 
         List<Region> foundRegions = new ArrayList<>();
 

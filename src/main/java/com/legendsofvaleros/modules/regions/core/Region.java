@@ -17,7 +17,7 @@ public class Region {
 
     public String msgEnter;
     public String msgExit;
-    public String msgFailure = "You cannot go there, yet.";
+    public String msgError = "You cannot go there, yet.";
 
     public Region(String id, World world, RegionBounds bounds) {
         this.id = id;
