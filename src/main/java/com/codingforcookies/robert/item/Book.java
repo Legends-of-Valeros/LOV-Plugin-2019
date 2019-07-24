@@ -33,8 +33,8 @@ public class Book {
     }
 
     public ItemStack build() {
-        @SuppressWarnings("deprecation")
-        ItemStack book = new ItemStack(Item.getById(Material.LEGACY_WRITTEN_BOOK.getId()));
+        org.bukkit.inventory.ItemStack is = new org.bukkit.inventory.ItemStack(Material.WRITTEN_BOOK);
+        ItemStack book = CraftItemStack.asNMSCopy(is);
         NBTTagCompound tag = new NBTTagCompound();
         tag.setString("author", author);
         tag.setString("title", title);
