@@ -61,22 +61,19 @@ public class ItemListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDropItem(PlayerDropItemEvent event) {
-        if (event.isCancelled()){
+        if (event.isCancelled()) {
             return;
         }
 
         Gear.Instance instance = Gear.Instance.fromStack(event.getItemDrop().getItemStack());
 
         // We should never drop items on the ground.
-        event.getItemDrop().setItemStack(null);
-        event.getItemDrop().remove();
+        event.setCancelled(true);
+        //TODO test if the drops should be removed from the event
 
         if (instance == null) {
             return;
         }
-
-        int amount = instance.amount;
-        ItemUtil.giveItem(Characters.getPlayerCharacter(event.getPlayer()), instance);
 
         if (instance.getType().isTradable()) {
             GearController.getInstance().getScheduler().executeInSpigotCircle(() -> {
@@ -85,7 +82,7 @@ public class ItemListener implements Listener {
                     public void onAccept(GUI gui, Player p) {
                         gui.close(p);
 
-                        if (!ItemUtil.removeItem(event.getPlayer(), instance.gear, amount))
+                        if (!ItemUtil.removeItem(event.getPlayer(), instance.gear, instance.amount))
                             MessageUtil.sendError(event.getPlayer(), "Unable to remove that, for some reason...");
                         else
                             MessageUtil.sendUpdate(event.getPlayer(), instance.getName() + " has been destroyed.");

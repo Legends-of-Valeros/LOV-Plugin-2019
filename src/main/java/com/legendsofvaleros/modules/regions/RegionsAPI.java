@@ -86,8 +86,9 @@ public class RegionsAPI extends ModuleListener {
         for (String regionId : regionChunks.get(chunkId)) {
             Region region = regions.get(regionId);
 
-            if (region.isInside(location))
+            if (region.isInside(location)) {
                 foundRegions.add(region);
+            }
         }
 
         return foundRegions;
@@ -109,14 +110,18 @@ public class RegionsAPI extends ModuleListener {
         regions.put(region.id, region);
         RegionBounds bounds = region.getBounds();
 
-        for (int x = bounds.getStartX(); x <= bounds.getEndX(); x++)
-            for (int y = bounds.getStartY(); y <= bounds.getEndY(); y++)
+        for (int x = bounds.getStartX(); x <= bounds.getEndX(); x++) {
+            for (int y = bounds.getStartY(); y <= bounds.getEndY(); y++) {
                 for (int z = bounds.getStartZ(); z <= bounds.getEndZ(); z++) {
                     Chunk chunk = region.world.getChunkAt(new Location(region.world, x, y, z));
                     String chunkId = chunk.getX() + "," + chunk.getZ();
-                    if (!regionChunks.containsEntry(chunkId, region.id))
+
+                    if (!regionChunks.containsEntry(chunkId, region.id)) {
                         regionChunks.put(chunkId, region.id);
+                    }
                 }
+            }
+        }
     }
 
     public void deleteRegion(Region region) {
@@ -129,8 +134,7 @@ public class RegionsAPI extends ModuleListener {
 
     public Promise<Map<String, Boolean>> onLogin(PlayerCharacter pc) {
         return rpc.getPlayerRegionAccess(pc.getUniqueCharacterId()).onSuccess(val -> {
-            val.orElse(ImmutableMap.of()).entrySet().forEach(entry ->
-                    playerAccess.put(pc.getUniqueCharacterId(), entry.getKey(), entry.getValue()));
+            val.orElse(ImmutableMap.of()).forEach((key, value) -> playerAccess.put(pc.getUniqueCharacterId(), key, value));
         });
     }
 

@@ -126,7 +126,9 @@ public class RespawnListener implements Listener {
 
 
     private void onDead(Player player) {
-        if (!dying.contains(player.getUniqueId())) return;
+        if (!dying.contains(player.getUniqueId())){
+            return;
+        }
 
         // cleanup
         dying.remove(player.getUniqueId());

@@ -340,7 +340,7 @@ public class Promise<R> {
             LegendsOfValeros.getInstance().getLogger().warning(line);
 
             // Don't print too many lines. After an amount, it's just spam.
-            if (i > 6 && !line.contains("legendsofvaleros")) {
+            if (i > 15 && !line.contains("legendsofvaleros")) {
                 break;
             }
         }

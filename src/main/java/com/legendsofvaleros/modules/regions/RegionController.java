@@ -144,13 +144,11 @@ public class RegionController extends RegionsAPI {
 
             PlayerCharacter pc = Characters.getPlayerCharacter(event.getPlayer());
             for (Region region : toRegions) {
-                if (!region.allowAccess) {
-                    if (!playerAccess.contains(pc.getUniqueCharacterId(), region.id)
-                            || !playerAccess.get(pc.getUniqueCharacterId(), region.id)) {
-                        MessageUtil.sendError(event.getPlayer(), region.msgError);
-                        event.getPlayer().teleport(event.getFrom());
-                        return;
-                    }
+                if (!region.allowAccess && (!playerAccess.contains(pc.getUniqueCharacterId(), region.id)
+                        || !playerAccess.get(pc.getUniqueCharacterId(), region.id))) {
+                    MessageUtil.sendError(event.getPlayer(), region.msgError);
+                    event.getPlayer().teleport(event.getFrom());
+                    return;
                 }
             }
         }

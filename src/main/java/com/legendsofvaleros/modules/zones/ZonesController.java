@@ -55,7 +55,7 @@ public class ZonesController extends ZonesAPI {
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new ZoneCommands());
 
         //deactivate all zones that are without players for 5 minutes
-        getInstance().getScheduler().executeInMyCircleTimer(new InternalTask(() -> {
+        getScheduler().executeInMyCircleTimer(new InternalTask(() -> {
             for (Zone zone : getZones()) {
                 if (!zone.isActive) {
                     continue;
@@ -64,7 +64,11 @@ public class ZonesController extends ZonesAPI {
                 //keep zone for 5 minutes active - this should prevent some memory-leaks
                 if (zone.timeWithoutPlayers > 0 && (System.currentTimeMillis() / 1000L) - zone.timeWithoutPlayers >= 300) {
                     zone.setActive(false);
-                    Bukkit.getServer().getPluginManager().callEvent(new ZoneDeactivateEvent(zone));
+
+                    getScheduler().executeInSpigotCircle(() -> {
+                        Bukkit.getServer().getPluginManager().callEvent(new ZoneDeactivateEvent(zone));
+                    });
+
                     MessageUtil.sendDebug(Bukkit.getConsoleSender(), "Zone de-activated: " + zone.name + " " + zone.subname);
                 }
             }

@@ -39,9 +39,9 @@ public class MobListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onEntitySpawn(CreatureSpawnEvent event) {
-        if (event.getEntity() instanceof Player)
-            if (!NPCsController.getInstance().isNPC(event.getEntity()))
-                return;
+        if (event.getEntity() instanceof Player && !NPCsController.getInstance().isNPC(event.getEntity())) {
+            return;
+        }
 
         switch (event.getSpawnReason()) {
             case CUSTOM:
@@ -56,7 +56,9 @@ public class MobListener implements Listener {
     @EventHandler
     public void onCombatEntityPreCreate(CombatEntityPreCreateEvent event) {
         Mob.Instance instance = Mob.Instance.get(event.getLivingEntity());
-        if (instance == null) return;
+        if (instance == null) {
+            return;
+        }
 
         Archetype archetype = LevelArchetypes.getInstance().getArchetype(instance.mob.getArchetype());
         if (archetype != null) {
@@ -70,14 +72,17 @@ public class MobListener implements Listener {
     public void onCreate(CombatEntityCreateEvent event) {
         Mob.Instance instance = Mob.Instance.get(event.getCombatEntity().getLivingEntity());
 
-        if (instance == null) return;
+        if (instance == null) {
+            return;
+        }
 
         if (instance.mob.getStats() != null) {
-            for (Entry<Object, Integer> stat : instance.mob.getStats().entrySet())
+            for (Entry<Object, Integer> stat : instance.mob.getStats().entrySet()) {
                 event.getCombatEntity().getStats().newStatModifierBuilder((Stat) stat.getKey())
                         .setModifierType(ValueModifierBuilder.ModifierType.FLAT_EDIT_IGNORES_MULTIPLIERS)
                         .setValue(stat.getValue())
                         .build();
+            }
 
             for (RegeneratingStat stat : RegeneratingStat.values()) {
                 event.getCombatEntity().getStats().editRegeneratingStat(stat, event.getCombatEntity().getStats().getStat(stat.getMaxStat()));
@@ -87,7 +92,9 @@ public class MobListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityDeath(CombatEngineDeathEvent event) {
-        if (event.getDied().isPlayer()) return;
+        if (event.getDied().isPlayer()) {
+            return;
+        }
 
         Location loc = event.getDied().getLivingEntity().getLocation().clone().add(0, .5, 0);
         loc.getWorld().spawnParticle(Particle.CLOUD, loc, 8, .5D, 2D, .5D, 0D);

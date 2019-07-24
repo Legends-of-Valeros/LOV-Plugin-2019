@@ -114,7 +114,7 @@ public class NPCsAPI extends ModuleListener {
     public void saveNPC(TraitLOV traitLOV) {
         getScheduler().executeInMyCircle(() -> {
             rpc.saveNPC(traitLOV.getNpcData()).onSuccess(() -> {
-                MessageUtil.sendInfo(Bukkit.getConsoleSender(), "Successfully saved npc " + traitLOV.npcId);
+                MessageUtil.sendInfo(Bukkit.getConsoleSender(), "Successfully saved npc " + traitLOV.npcId + " at " + traitLOV.getNPC().getStoredLocation());
             }).onFailure(Throwable::printStackTrace);
         });
     }
