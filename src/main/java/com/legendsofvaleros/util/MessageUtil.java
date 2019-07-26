@@ -196,26 +196,21 @@ public class MessageUtil {
      * @param sender
      */
     private static void sendExceptionToDiscord(String module, CommandSender sender, Throwable th, boolean includeTrace) {
-        if (Discord.SERVER != null) {
-            // TODO: Make this channel configurable
-            Channel channel = Discord.SERVER.getChannelById("358612310731915264");
-
-            if (channel != null) {
-                String message = getThrowableMessage(th);
-                String trace = includeTrace ? pruneStackTrace(getStackTrace(th)) : null;
-
-                Utilities.getInstance().getScheduler().executeInMyCircle(() -> {
-                    try {
-                        channel.sendMessage("`[" + Discord.TAG + (module != null ? ":" + module : "") + "]` **"
-                                + (sender != null ? " **__" + sender.getName() + "__ triggered an exception: " : "")
-                                + message + "**"
-                                + (trace != null ? "```" + trace + "```" : "")).get();
-                    } catch (InterruptedException | ExecutionException _e) {
-                        _e.printStackTrace();
-                    }
-                });
-            }
+        if (! Discord.isLinked()) {
+            return;
         }
+
+        String message = getThrowableMessage(th);
+        String trace = includeTrace ? pruneStackTrace(getStackTrace(th)) : null;
+
+        Utilities.getInstance().getScheduler().executeInMyCircle(() -> {
+            try {
+                Discord.sendLogMessage(module, (sender != null ? " **__" + sender.getName() + "__ triggered an exception: " : "")
+                        + message + "**" + (trace != null ? "```" + trace + "```" : "")).get();
+            } catch (InterruptedException | ExecutionException _e) {
+                _e.printStackTrace();
+            }
+        });
     }
 
     private static String getThrowableMessage(Throwable th) {

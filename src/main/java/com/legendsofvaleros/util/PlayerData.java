@@ -18,6 +18,15 @@ public class PlayerData {
 
     private static RPC rpc;
 
+    public final UUID uuid;
+    public String username;
+    public String resourcePack;
+    public boolean resourcePackForced;
+
+    PlayerData(UUID uuid) {
+        this.uuid = uuid;
+    }
+
     public static final Cache<UUID, PlayerData> cache = CacheBuilder.newBuilder()
             .concurrencyLevel(4)
             .expireAfterAccess(10, TimeUnit.MINUTES)
@@ -42,12 +51,4 @@ public class PlayerData {
         return rpc.savePlayer(data);
     }
 
-    public final UUID uuid;
-    public String username;
-    public String resourcePack;
-    public boolean resourcePackForced;
-
-    PlayerData(UUID uuid) {
-        this.uuid = uuid;
-    }
 }
