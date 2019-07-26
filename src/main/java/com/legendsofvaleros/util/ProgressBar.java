@@ -7,16 +7,31 @@ import org.bukkit.ChatColor;
  * Helper class for indicating a progress bar
  */
 public class ProgressBar {
+
+    /**
+     * Builds a bar for the given percentage
+     * @param percentage
+     * @param length
+     * @param content1
+     * @param content2
+     * @param wrap
+     * @return
+     */
     public static String getBar(float percentage, int length, ChatColor content1, ChatColor content2, ChatColor wrap) {
-        String ret = wrap + "[" + content1;
-        int i = 0;
-        for (; i < percentage * length; i++)
-            ret += "▬";
-        ret += content2;
-        for (; i <= length; i++)
-            ret += "▬";
-        ret += wrap + "]";
-        return ret;
+        StringBuilder builder = new StringBuilder(wrap + "[" + content1);
+        for (int i = 0; i < percentage * length; i++) {
+            builder.append("▬");
+        }
+
+        builder.append(content2);
+
+        for (int i = 0; i <= length; i++) {
+            builder.append("▬");
+        }
+
+        builder.append(wrap).append("]");
+
+        return builder.toString();
     }
 }
 
