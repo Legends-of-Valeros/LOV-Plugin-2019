@@ -22,22 +22,22 @@ public class PlayerMenuListener implements Listener {
         event.addSlot(new ItemBuilder(Material.IRON_SWORD).setName("Duel").create(), (gui, p, ice) -> {
             gui.close(p);
 
-            if(dueling.getDuel(p) != null) {
+            if (dueling.getDuel(p) != null) {
                 MessageUtil.sendError(p, "You are already in a duel.");
                 return;
             }
 
-            if(dueling.getDuel(event.getClicked()) != null) {
+            if (dueling.getDuel(event.getClicked()) != null) {
                 MessageUtil.sendError(p, "That player is already in a duel.");
                 return;
             }
 
-            if(Characters.getInstance().isInCombat(p)) {
+            if (Characters.getInstance().isInCombat(p)) {
                 MessageUtil.sendError(p, "You cannot start a duel while currently in combat.");
                 return;
             }
 
-            if(Characters.getInstance().isInCombat(event.getClicked())) {
+            if (Characters.getInstance().isInCombat(event.getClicked())) {
                 MessageUtil.sendError(p, "You cannot start a duel with a player that is currently in combat.");
                 return;
             }

@@ -5,6 +5,7 @@ import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import com.legendsofvaleros.modules.dueling.DuelingController;
 import com.legendsofvaleros.modules.dueling.core.Duel;
+import com.legendsofvaleros.modules.pvp.event.PvPCheckEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -16,20 +17,27 @@ public class DuelListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onLogout(PlayerCharacterLogoutEvent event) {
         Duel d = dueling.getDuel(event.getPlayer());
-        if (d != null)
+        if (d != null) {
             d.onDeath(event.getPlayer());
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDeath(CombatEngineDamageEvent event) {
         // We don't care about cancelled damage events.
-        if(event.isCancelled()) return;
-
-        if (!(event.getDamaged().getLivingEntity() instanceof Player) || !(event.getAttacker() != null && event.getAttacker().getLivingEntity() instanceof Player))
+        if (event.isCancelled()) {
             return;
+        }
 
-        Duel d = dueling.getDuel((Player)event.getDamaged().getLivingEntity(), (Player) event.getAttacker().getLivingEntity());
-        if(d == null) return;
+        if (! (event.getDamaged().getLivingEntity() instanceof Player) ||
+                ! (event.getAttacker() != null && event.getAttacker().getLivingEntity() instanceof Player)) {
+            return;
+        }
+
+        Duel d = dueling.getDuel((Player) event.getDamaged().getLivingEntity(), (Player) event.getAttacker().getLivingEntity());
+        if (d == null) {
+            return;
+        }
 
         // Prevent death and end the duel
         if (event.getDamaged().getStats().getRegeneratingStat(RegeneratingStat.HEALTH) - event.getFinalDamage() <= 0) {
@@ -39,5 +47,22 @@ public class DuelListener implements Listener {
         } else {
             d.onDamage(event);
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void isPvPAllowed(PvPCheckEvent event) {
+        // A duel should override every other PvP setting. Tis a fight
+        // to the death, regardless of kinship.
+
+        Duel d = dueling.getDuel(event.getAttacker(), event.getDamaged());
+        if (d == null) {
+            // If either player is in a duel, cancel damage.
+            if (dueling.getDuel(event.getAttacker()) != null || dueling.getDuel(event.getDamaged()) != null)
+                event.setCancelled(true);
+            return;
+        }
+
+        // These two players are dueling. Allow PvP.
+        event.setCancelled(false);
     }
 }

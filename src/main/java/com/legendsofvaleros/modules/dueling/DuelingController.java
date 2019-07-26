@@ -8,7 +8,6 @@ import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.IntegratesWith;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.dueling.core.Duel;
-import com.legendsofvaleros.modules.dueling.integration.PvPIntegration;
 import com.legendsofvaleros.modules.dueling.listener.DuelListener;
 import com.legendsofvaleros.modules.dueling.listener.PlayerMenuListener;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
@@ -19,11 +18,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 @DependsOn(PlayerMenu.class)
-@IntegratesWith(module = PvPController.class, integration = PvPIntegration.class)
+@IntegratesWith(module = PvPController.class)
 @ModuleInfo(name = "Dueling", info = "")
 public class DuelingController extends Module {
     private static DuelingController instance;
-    public static DuelingController getInstance() { return instance; }
+
+    public static DuelingController getInstance() {
+        return instance;
+    }
 
     public Table<Player, Player, Duel> duels = HashBasedTable.create();
 
@@ -39,42 +41,60 @@ public class DuelingController extends Module {
 
     @Override
     public void onUnload() {
-        super.onUnload();
-
-        for (Cell<Player, Player, Duel> c : duels.cellSet())
+        for (Cell<Player, Player, Duel> c : duels.cellSet()) {
             c.getValue().cancel();
+        }
+
+        super.onUnload();
     }
 
+    /**
+     * Creates a duel with the two given players
+     * @param p1
+     * @param p2
+     */
     public void createDuel(Player p1, Player p2) {
         duels.put(p1, p2, new Duel(p1, p2));
 
         Title title = new Title("", "Ready.... Fight!", 10, 40, 10);
         title.setTimingsToTicks();
         title.setSubtitleColor(ChatColor.GOLD);
+
         TitleUtil.queueTitle(title, p1);
         TitleUtil.queueTitle(title, p2);
     }
 
+    /**
+     * Returns a duel both given players are in
+     * @param p1
+     * @param p2
+     * @return
+     */
     public Duel getDuel(Player p1, Player p2) {
         Duel duel = null;
 
-        if (duels.contains(p1, p2))
+        if (duels.contains(p1, p2)) {
             duel = duels.get(p1, p2);
-
-        else if (duels.contains(p2, p1))
+        } else if (duels.contains(p2, p1)) {
             duel = duels.get(p2, p1);
+        }
 
         return duel;
     }
 
+    /**
+     * Returns the duel a player is in
+     * @param p
+     * @return
+     */
     public Duel getDuel(Player p) {
         Duel duel = null;
 
-        if (duels.row(p).size() != 0)
+        if (! duels.row(p).isEmpty()) {
             duel = duels.row(p).values().iterator().next();
-
-        else if (duels.column(p).size() != 0)
+        } else if (duels.column(p).size() != 0) {
             duel = duels.column(p).values().iterator().next();
+        }
 
         return duel;
     }
