@@ -10,43 +10,44 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class PlayerData {
-	private interface RPC {
-		Promise<PlayerData> getPlayer(UUID uuid);
-		Promise<Boolean> savePlayer(PlayerData data);
-	}
+    private interface RPC {
+        Promise<PlayerData> getPlayer(UUID uuid);
 
-	private static RPC rpc;
+        Promise<Boolean> savePlayer(PlayerData data);
+    }
 
-	public static final Cache<UUID, PlayerData> cache = CacheBuilder.newBuilder()
-			.concurrencyLevel(4)
-			.expireAfterAccess(10, TimeUnit.MINUTES)
-			.build();
+    private static RPC rpc;
 
-	static void onEnable() {
-		rpc = APIController.create(RPC.class);
-	}
+    public static final Cache<UUID, PlayerData> cache = CacheBuilder.newBuilder()
+            .concurrencyLevel(4)
+            .expireAfterAccess(10, TimeUnit.MINUTES)
+            .build();
 
-	public static Promise<PlayerData> get(UUID uuid) {
-		return rpc.getPlayer(uuid).onSuccess(player -> {
-			if (player.isPresent()) {
-				String currentName = Bukkit.getOfflinePlayer(uuid).getName();
-				if (currentName != null && !currentName.equals(player.get().username)) {
-					player.get().username = currentName;
-				}
-			}
-		});
-	}
+    static void onEnable() {
+        rpc = APIController.create(RPC.class);
+    }
 
-	public static Promise<Boolean> save(PlayerData data) {
-		return rpc.savePlayer(data);
-	}
+    public static Promise<PlayerData> get(UUID uuid) {
+        return rpc.getPlayer(uuid).onSuccess(player -> {
+            if (player.isPresent()) {
+                String currentName = Bukkit.getOfflinePlayer(uuid).getName();
+                if (currentName != null && ! currentName.equals(player.get().username)) {
+                    player.get().username = currentName;
+                }
+            }
+        });
+    }
 
-	public final UUID uuid;
-	public String username;
-	public String resourcePack;
-	public boolean resourcePackForced;
+    public static Promise<Boolean> save(PlayerData data) {
+        return rpc.savePlayer(data);
+    }
 
-	PlayerData(UUID uuid) {
-		this.uuid = uuid;
-	}
+    public final UUID uuid;
+    public String username;
+    public String resourcePack;
+    public boolean resourcePackForced;
+
+    PlayerData(UUID uuid) {
+        this.uuid = uuid;
+    }
 }

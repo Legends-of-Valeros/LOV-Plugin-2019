@@ -11,7 +11,6 @@ import com.legendsofvaleros.modules.parties.core.PlayerParty;
 import com.legendsofvaleros.modules.playermenu.InventoryManager;
 import com.legendsofvaleros.modules.playermenu.PlayerMenuOpenEvent;
 import com.legendsofvaleros.modules.playermenu.options.PlayerOptionsOpenEvent;
-import com.legendsofvaleros.util.ActionBar;
 import com.legendsofvaleros.util.CustomEntityFirework;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.item.Model;
@@ -48,7 +47,7 @@ public class TestListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerMenuOpen(PlayerMenuOpenEvent event) {
-        if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) {
+        if (! Characters.isPlayerCharacterLoaded(event.getPlayer())) {
             event.setCancelled(true);
             return;
         }
@@ -60,7 +59,7 @@ public class TestListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onCharacterOptionsOpen(PlayerOptionsOpenEvent event) {
-        if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) {
+        if (! Characters.isPlayerCharacterLoaded(event.getPlayer())) {
             event.setCancelled(true);
             return;
         }
@@ -75,23 +74,13 @@ public class TestListener implements Listener {
 
     @EventHandler
     public void onPlayerCharacterStartLoading(PlayerCharacterStartLoadingEvent event) {
-        if (event.getPlayer().hasPotionEffect(PotionEffectType.BLINDNESS))
+        if (event.getPlayer().hasPotionEffect(PotionEffectType.BLINDNESS)) {
             event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 1), true);
+        }
 
         event.getPlayer().setLevel(0);
         event.getPlayer().setExp(0F);
 
-		/*event.registerLockingTask(new Runnable() {
-				@Override
-				public void run() {
-					try {
-
-						Thread.sleep(fSleep);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			});*/
     }
 
     @EventHandler
@@ -107,30 +96,41 @@ public class TestListener implements Listener {
 
     @EventHandler
     public void onRegenHealth(CombatEngineRegenEvent event) {
-        if (!event.getCombatEntity().isPlayer()) return;
-        if (event.getRegenerating() != RegeneratingStat.HEALTH) return;
+        if (! event.getCombatEntity().isPlayer()) {
+            return;
+        }
+        if (event.getRegenerating() != RegeneratingStat.HEALTH) {
+            return;
+        }
 
-        if (Characters.getInstance().isInCombat((Player) event.getCombatEntity().getLivingEntity()))
+        if (Characters.getInstance().isInCombat((Player) event.getCombatEntity().getLivingEntity())) {
             event.setCancelled(true);
+        }
     }
 
     @EventHandler
     public void onNPCLeftClick(NPCLeftClickEvent event) {
-        if (!event.getNPC().hasTrait(TraitLOV.class)) return;
-        if (!Characters.getInstance().isInCombat(event.getClicker())) return;
+        if (! event.getNPC().hasTrait(TraitLOV.class)) {
+            return;
+        }
+        if (! Characters.getInstance().isInCombat(event.getClicker())) {
+            return;
+        }
 
         MessageUtil.sendError(event.getClicker(), "You cannot do that while in combat!");
-
         event.setCancelled(true);
     }
 
     @EventHandler
     public void onNPCRightClick(NPCRightClickEvent event) {
-        if (!event.getNPC().hasTrait(TraitLOV.class)) return;
-        if (!Characters.getInstance().isInCombat(event.getClicker())) return;
+        if (! event.getNPC().hasTrait(TraitLOV.class)) {
+            return;
+        }
+        if (! Characters.getInstance().isInCombat(event.getClicker())) {
+            return;
+        }
 
         MessageUtil.sendError(event.getClicker(), "You cannot do that while in combat!");
-
         event.setCancelled(true);
     }
 
@@ -147,7 +147,7 @@ public class TestListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onValerosExperienceChange(PlayerCharacterExperienceChangeEvent event) {
         Player player = event.getPlayer();
-        ActionBar.set(player, ChatColor.AQUA + "+" + event.getChange() + "xp");
+        MessageUtil.sendActionBar(player, ChatColor.AQUA + "+" + event.getChange() + "xp");
 
         Characters.getInstance().getScheduler().executeInSpigotCircle(() -> {
             player.setExp((float) event.getPlayerCharacter().getExperience().getPercentageTowardsNextLevel());
@@ -157,7 +157,7 @@ public class TestListener implements Listener {
     @EventHandler
     public void onValerosLevelUp(PlayerCharacterLevelChangeEvent event) {
         Player player = event.getPlayer();
-        ActionBar.set(player, ChatColor.YELLOW + "You have leveled up!");
+        MessageUtil.sendActionBar(player, ChatColor.YELLOW + "You have leveled up!");
 
         player.setLevel(event.getNewLevel());
         player.setExp(0F);
@@ -179,119 +179,5 @@ public class TestListener implements Listener {
         CustomEntityFirework.spawn(player.getLocation(), effect);
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1F, 1F);
     }
-
-	/*
-	@EventHandler
-	public void onPlayerInteract(PlayerInteractEvent event) {
-		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			final Player player = event.getPlayer();
-			PlayerCharacter pc = Characters.getPlayerCharacter(player);
-			if (pc != null) {
-				if (event.getClickedBlock().getType() == Material.GRASS) {
-					AbilityStats stats = Characters.getPlayerCharacter(player).getAbilityStats();
-
-					for (AbilityStat abilityStat : AbilityStat.values())
-						Bukkit.broadcastMessage(ChatColor.GREEN + "" + abilityStat + ": " + stats.getAbilityStat(abilityStat));
-				} else if (event.getClickedBlock().getType() == Material.LEAVES) {
-					Bukkit.broadcastMessage(ChatColor.GREEN + "Refreshing listener...");
-					final ListenableFuture<Experience> fut = pc.getExperience().refresh();
-					fut.addListener(new Runnable() {
-						@Override
-						public void run() {
-							Bukkit.getScheduler().runTask(Characters.getPlugin(), new Runnable() {
-								@Override
-								public void run() {
-									try {
-										Experience exp = fut.get();
-										Bukkit.broadcastMessage(ChatColor.GREEN + "Experience was refreshed. Level: "
-												+ exp.getLevel() + ", Exp: " + exp.getExperienceTowardsNextLevel()
-												+ ", percentage: " + exp.getPercentageTowardsNextLevel());
-									} catch (Exception e) {
-										Bukkit.broadcastMessage(ChatColor.RED
-												+ "There was a problem refreshing listener");
-										e.printStackTrace();
-									}
-								}
-							});
-						}
-					}, Utilities.asyncExecutor());
-
-				} else if (event.getClickedBlock().getType() == Material.DIRT) {
-					player.sendMessage("");
-					player.sendMessage(ChatColor.GREEN + "Your skill-effects:");
-					for (SkillEffect<? extends Object> effect : Characters.getInstance()
-							.getSkillEffectManager().getActiveEffects(player)) {
-						player.sendMessage(ChatColor.GREEN + " " + effect.getUserFriendlyName(player));
-						for (String detail : effect.getUserFriendlyDetails(player)) {
-							player.sendMessage(ChatColor.GREEN + "  " + detail);
-						}
-						player.sendMessage(ChatColor.GREEN
-								+ "  Remaining duration: "
-								+ TimeStrings.getTimeFromMilliseconds(effect.getEntityInstance(player)
-										.getRemainingDurationMillis(), 4, false));
-					}
-					player.sendMessage("");
-
-
-				} else if (event.getClickedBlock().getType() == Material.SAND) {
-					int level = ThreadLocalRandom.current().nextInt(5);
-					player.sendMessage(ChatColor.GREEN + "Casting max-health buff "
-							+ RomanNumeral.convertToRoman(level) + " on you!");
-					boolean succeeded =
-							Characters.getInstance().getSkillEffectManager().getSkillEffect("MaxHealthBuff")
-							.apply(player, player, level);
-					if (succeeded) {
-						player.sendMessage(ChatColor.GREEN + "Succeeded.");
-					} else {
-						player.sendMessage(ChatColor.RED + "Failed to override the previous effect");
-					}
-
-					level = ThreadLocalRandom.current().nextInt(1) + 1;
-			          player.sendMessage(ChatColor.GREEN + "Casting percentage poison "
-			              + RomanNumeral.convertToRoman(level) + " on you!");
-			          succeeded =
-			              Characters.getInstance().getSkillEffectManager().getSkillEffect("PercentagePoison")
-			                  .apply(player, player, level);
-			          if (succeeded) {
-			            player.sendMessage(ChatColor.GREEN + "Succeeded.");
-			          } else {
-			            player.sendMessage(ChatColor.RED + "Failed to override the previous effect");
-			          }
-
-					CombatEntity ce = CombatEngine.getInstance().getCombatEntity(player);
-					ce.getStatusEffects().addStatusEffect(StatusEffectType.BLINDNESS, 400);
-				}
-			}
-		}
-	}
-
-	@EventHandler
-	public void onCombatEngineDamage(CombatEngineDamageEvent event) {
-		SkillEffect<? extends Object> effect =
-				Characters.getInstance().getSkillEffectManager().getSkillEffect("PercentagePoison");
-		if (event.getAttacker() != null && event.getAttacker().isPlayer()
-				&& !event.getAttacker().equals(event.getDamaged())
-				&& !effect.isAffected(event.getDamaged().getLivingEntity())) {
-			int level = ThreadLocalRandom.current().nextInt(1) + 1;
-			Player player = (Player) event.getAttacker().getLivingEntity();
-			player.sendMessage(ChatColor.GREEN + "Casting percentage poison "
-					+ RomanNumeral.convertToRoman(level) + " on your target!");
-			boolean succeeded = effect.apply(event.getDamaged().getLivingEntity(), player, level);
-			if (succeeded) {
-				player.sendMessage(ChatColor.GREEN + "Succeeded.");
-			} else {
-				player.sendMessage(ChatColor.RED + "Failed to override the previous effect");
-			}
-		}
-	}
-
-	private void printCooldown(String prefix, Cooldown cd) {
-		if (cd != null) {
-			System.out.println(prefix + " key: " + cd.getKey() + ", type: " + cd.getCooldownType().name()
-					+ ", remaining milliseconds " + cd.getRemainingDurationMillis());
-		} else {
-			System.out.println(prefix + " cd = null");
-		}
-	}*/
 
 }

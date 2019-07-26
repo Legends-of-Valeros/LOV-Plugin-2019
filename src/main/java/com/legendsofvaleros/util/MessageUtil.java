@@ -3,7 +3,9 @@ package com.legendsofvaleros.util;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.Module;
 import de.btobastian.javacord.entities.Channel;
+import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -72,19 +74,23 @@ public class MessageUtil {
         sender.spigot().sendMessage(prepend(message, new TextBuilder("[d] ").color(ChatColor.GOLD).create()));
     }
 
+    public static void sendActionBar(Player p, String message) {
+        p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(message));
+    }
+
     public static void sendDebugVerbose(CommandSender sender, String message) {
-        if (sender == null || !(sender instanceof Player)
-                || !DebugFlags.is((Player) sender)
-                || !DebugFlags.get((Player) sender).verbose) {
+        if (sender == null || ! (sender instanceof Player)
+                || ! DebugFlags.is((Player) sender)
+                || ! DebugFlags.get((Player) sender).verbose) {
             return;
         }
         sendDebug(sender, message);
     }
 
     public static void sendDebugVerboseComponent(CommandSender sender, BaseComponent[] message) {
-        if (sender == null || !(sender instanceof Player)
-                || !DebugFlags.is((Player) sender)
-                || !DebugFlags.get((Player) sender).verbose) {
+        if (sender == null || ! (sender instanceof Player)
+                || ! DebugFlags.is((Player) sender)
+                || ! DebugFlags.get((Player) sender).verbose) {
             return;
         }
         sendDebug(sender, message);
@@ -226,15 +232,15 @@ public class MessageUtil {
     public static String pruneStackTrace(String trace) {
         StringBuilder str = new StringBuilder();
 
-        int i = -2;
+        int i = - 2;
         for (String line : trace.split("\n")) {
-            if (i <= -1) {
-                if (i++ == -2) {
+            if (i <= - 1) {
+                if (i++ == - 2) {
                     str.append(line + "\n");
                 }
 
                 // Ignore non-LOV packages
-                if (!line.contains("com.legendsofvaleros")) {
+                if (! line.contains("com.legendsofvaleros")) {
                     continue;
                 }
                 // Ignore scheduler package
@@ -251,7 +257,7 @@ public class MessageUtil {
             str.append(line + "\n");
 
             // Don't print too many lines. After an amount, it's just spam.
-            if (i > 6 && !line.contains("legendsofvaleros")) {
+            if (i > 6 && ! line.contains("legendsofvaleros")) {
                 break;
             }
         }
