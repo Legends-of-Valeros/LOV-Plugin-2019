@@ -54,7 +54,7 @@ public class FriendsController extends FriendsAPI {
 
     private void sendFriendStatus(Player p, String state) {
         String message = ChatColor.UNDERLINE + p.getDisplayName() + ChatColor.AQUA + " has " + state;
-        if (!playerFriendsMap.containsKey(p.getUniqueId())) {
+        if (! playerFriendsMap.containsKey(p.getUniqueId())) {
             //TODO remove this and check why the API is not putting an entry on player login
             MessageUtil.sendInfo(Bukkit.getConsoleSender(), " Playerfriendsmap doesnt contains playeruuid - this should not happen");
             return;

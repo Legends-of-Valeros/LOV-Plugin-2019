@@ -14,7 +14,10 @@ import com.legendsofvaleros.modules.npcs.NPCsController;
 @ModuleInfo(name = "FastTravel", info = "")
 public class FastTravelController extends FastTravelAPI {
     private static FastTravelController instance;
-    public static FastTravelController getInstance() { return instance; }
+
+    public static FastTravelController getInstance() {
+        return instance;
+    }
 
     @Override
     public void onLoad() {

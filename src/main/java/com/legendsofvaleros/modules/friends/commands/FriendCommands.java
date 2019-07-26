@@ -9,8 +9,6 @@ import com.legendsofvaleros.modules.friends.FriendRequest;
 import com.legendsofvaleros.modules.friends.FriendsController;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 /**
@@ -21,19 +19,15 @@ public class FriendCommands extends BaseCommand {
 
     @Subcommand("add")
     @Description("Sends a friend request do another player.")
-    public void cmdAdd(CommandSender sender, Player target) {
-        if (sender instanceof ConsoleCommandSender) {
-            MessageUtil.sendError(sender, "You can't execute this command in the console");
-            return;
-        }
-        if (!Characters.isPlayerCharacterLoaded((Player) sender)) {
+    public void cmdAdd(Player sender, Player target) {
+        if (! Characters.isPlayerCharacterLoaded(sender)) {
             return;
         }
         if (Characters.isPlayerCharacterLoaded(target)) {
             MessageUtil.sendError(sender, target.getDisplayName() + " is not online.");
             return;
         }
-        if (FriendsController.getInstance().areFriends(((Player) sender), target)) {
+        if (FriendsController.getInstance().areFriends(sender, target)) {
             MessageUtil.sendError(sender, "You are already friends with " + ChatColor.UNDERLINE + target.getDisplayName());
             return;
         }
@@ -44,60 +38,48 @@ public class FriendCommands extends BaseCommand {
 
         MessageUtil.sendInfo(sender, "Friend request sent to " + ChatColor.UNDERLINE + target.getDisplayName());
         MessageUtil.sendInfo(target, "You received a friend request from " + ChatColor.UNDERLINE + target.getDisplayName());
-        FriendsController.getPending().add(new FriendRequest((Player) sender, target));
+        FriendsController.getPending().add(new FriendRequest(sender, target));
     }
 
     @Subcommand("remove")
     @Description("Removes a friend.")
-    public void cmdRemove(CommandSender sender, Player target) {
-        if (sender instanceof ConsoleCommandSender) {
-            MessageUtil.sendError(sender, "You can't execute this command in the console");
-            return;
-        }
-        if (!FriendsController.getInstance().areFriends((Player) sender, target)) {
+    public void cmdRemove(Player sender, Player target) {
+        if (! FriendsController.getInstance().areFriends(sender, target)) {
             MessageUtil.sendError(sender, "You are not befriend with " + ChatColor.UNDERLINE + target.getDisplayName());
             return;
         }
 
-        FriendsController.getInstance().deleteFriend(((Player) sender).getUniqueId(), target.getUniqueId()).onSuccess(() -> {
+        FriendsController.getInstance().deleteFriend(sender.getUniqueId(), target.getUniqueId()).onSuccess(() -> {
 
         }).onFailure(Throwable::printStackTrace);
     }
 
     @Subcommand("accept")
     @Description("Accepts a pending friend request")
-    public void cmdAccept(CommandSender sender) {
-        if (sender instanceof ConsoleCommandSender) {
-            MessageUtil.sendError(sender, "You can't execute this command in the console!");
+    public void cmdAccept(Player sender) {
+        if (! Characters.isPlayerCharacterLoaded(sender.getUniqueId())) {
             return;
         }
-        if (!Characters.isPlayerCharacterLoaded(((Player) sender).getUniqueId())) {
-            return;
-        }
-        if (FriendsController.hasPendingRequest((Player) sender)) {
+        if (FriendsController.hasPendingRequest(sender)) {
             MessageUtil.sendError(sender, "You don't have any pending friend requests.");
             return;
         }
 
-        FriendsController.getRequest((Player) sender).success();
+        FriendsController.getRequest(sender).success();
     }
 
     @Subcommand("deny")
     @Description("Denies a pending friend request")
-    public void cmdDeny(CommandSender sender) {
-        if (sender instanceof ConsoleCommandSender) {
-            MessageUtil.sendError(sender, "You can't execute this command in the console");
+    public void cmdDeny(Player sender) {
+        if (! Characters.isPlayerCharacterLoaded((sender).getUniqueId())) {
             return;
         }
-        if (!Characters.isPlayerCharacterLoaded(((Player) sender).getUniqueId())) {
-            return;
-        }
-        if (FriendsController.hasPendingRequest((Player) sender)) {
+        if (FriendsController.hasPendingRequest(sender)) {
             MessageUtil.sendError(sender, "You don't have any pending friend requests.");
             return;
         }
 
-        FriendsController.getRequest((Player) sender).deny();
+        FriendsController.getRequest(sender).deny();
     }
 
 }
