@@ -111,7 +111,6 @@
     </build>
 
     <repositories>
-        <!--        -->
         <repository>
             <id>jcenter</id>
             <url>https://jcenter.bintray.com/</url>
@@ -121,7 +120,7 @@
             <id>papermc</id>
             <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
-        <!--Citizens -->
+        <!-- Citizens -->
         <repository>
             <id>citizens-repo</id>
             <url>http://repo.citizensnpcs.co/</url>
@@ -131,20 +130,25 @@
             <id>aikar</id>
             <url>https://repo.aikar.co/content/groups/aikar/</url>
         </repository>
-        <!--Protocol lib-->
+        <!-- Protocol lib-->
         <repository>
             <id>dmulloy2-repo</id>
             <url>http://repo.dmulloy2.net/nexus/repository/public/</url>
         </repository>
-        <!--Multithread library for discord bots -->
+        <!-- Multithread library for discord bots -->
         <repository>
             <id>javacord-repo</id>
             <url>http://repo.bastian-oppermann.de</url>
         </repository>
-        <!--Holographic displays-->
+        <!-- Holographic displays-->
         <repository>
             <id>codemc-repo</id>
             <url>https://repo.codemc.org/repository/maven-public/</url>
+        </repository>
+        <!-- BungeeTabListPlus-->
+        <repository>
+            <id>codecrafter47-repo</id>
+            <url>http://nexus.codecrafter47.de/content/repositories/public/</url>
         </repository>
     </repositories>
 
@@ -231,6 +235,14 @@
             <version>0.0.1-SNAPSHOT</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/ambience-0.0.1.jar</systemPath>
+        </dependency>
+
+        <!-- BungeeTabListPlus-->
+        <dependency>
+            <groupId>codecrafter47.bungeetablistplus</groupId>
+            <artifactId>bungeetablistplus-api-bukkit</artifactId>
+            <version>2.7.0</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Compiler dependencies -->
