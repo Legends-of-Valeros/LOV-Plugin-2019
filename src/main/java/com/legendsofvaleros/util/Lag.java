@@ -1,45 +1,16 @@
 package com.legendsofvaleros.util;
 
+import org.bukkit.ChatColor;
+
 import java.text.DecimalFormat;
 
 /**
  * Created by Crystall on 10/10/2018
  * Helper class to determine the possible lag on the server
  */
-public class Lag implements Runnable {
-    public static int TICK_COUNT = 0;
-    public static long[] TICKS = new long[600];
-    public static long LAST_TICK = 0L;
+public class Lag {
 
-    public static double getTPS() {
-        double tps = getTPS(100);
-        if (tps > 20) return 20;
-        if (tps < 0) return 0;
-        return tps;
-    }
-
-    public static double getTPS(int ticks) {
-        if (TICK_COUNT < ticks) {
-            return 20.0D;
-        }
-        int target = (TICK_COUNT - 1 - ticks) % TICKS.length;
-        long elapsed = System.currentTimeMillis() - TICKS[target];
-
-        return ticks / (elapsed / 1000.0D);
-    }
-
-    public static long getElapsed(int tickID) {
-        if (TICK_COUNT - tickID >= TICKS.length) {
-        }
-
-        long time = TICKS[(tickID % TICKS.length)];
-        return System.currentTimeMillis() - time;
-    }
-
-    public void run() {
-        TICKS[(TICK_COUNT % TICKS.length)] = System.currentTimeMillis();
-
-        TICK_COUNT += 1;
+    private Lag() {
     }
 
     public static String readableByteSize(long size) {
@@ -47,5 +18,45 @@ public class Lag implements Runnable {
         final String[] units = new String[]{"B", "kB", "MB", "GB", "TB"};
         int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
         return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
+    }
+
+    /**
+     * Builds a bar for the given percentage
+     * @param percentage
+     * @param length
+     * @param content1
+     * @param content2
+     * @param wrap
+     * @return
+     */
+    public static String getBar(float percentage, int length, ChatColor content1, ChatColor content2, ChatColor wrap) {
+        StringBuilder builder = new StringBuilder(wrap + "[" + content1);
+        for (int i = 0; i < percentage * length; i++) {
+            builder.append("▬");
+        }
+
+        builder.append(content2);
+
+        for (int i = 0; i <= length; i++) {
+            builder.append("▬");
+        }
+
+        builder.append(wrap).append("]");
+
+        return builder.toString();
+    }
+
+    /**
+     * Creates a progressbar for the given tps
+     * @param tps
+     * @return
+     */
+    public static String createTPSBar(double tps) {
+        ChatColor tpsc = ChatColor.GREEN;
+        if (tps < 14.5) tpsc = ChatColor.YELLOW;
+        if (tps < 9) tpsc = ChatColor.GOLD;
+        if (tps < 5.5) tpsc = ChatColor.RED;
+        if (tps < 2.7) tpsc = ChatColor.DARK_RED;
+        return getBar((float) ((tps + 0.5) / 20F), 40, tpsc, ChatColor.GRAY, ChatColor.DARK_GREEN);
     }
 }

@@ -18,6 +18,7 @@ public class Advancements {
 		Iterator<Advancement> i = Bukkit.advancementIterator();
 		i.forEachRemaining((a) -> {
 			Bukkit.getUnsafe().removeAdvancement(a.getKey());
+
 		});
 
 		PARENT = AdvancementAPI.builder(new NamespacedKey(LegendsOfValeros.getInstance(), "lov/parent"))

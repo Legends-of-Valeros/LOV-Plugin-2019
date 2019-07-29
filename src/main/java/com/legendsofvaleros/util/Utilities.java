@@ -182,19 +182,7 @@ public class Utilities extends ModuleListener {
         return true;
     }
 
-    /**
-     * Creates a progressbar for the given tps
-     * @param tps
-     * @return
-     */
-    public static String createTPSBar(double tps) {
-        ChatColor tpsc = ChatColor.GREEN;
-        if (tps < 14.5) tpsc = ChatColor.YELLOW;
-        if (tps < 9) tpsc = ChatColor.GOLD;
-        if (tps < 5.5) tpsc = ChatColor.RED;
-        if (tps < 2.7) tpsc = ChatColor.DARK_RED;
-        return ProgressBar.getBar((float) ((tps + 0.5) / 20F), 40, tpsc, ChatColor.GRAY, ChatColor.DARK_GREEN);
-    }
+
 
     /**
      * Returns the current uptime of the server

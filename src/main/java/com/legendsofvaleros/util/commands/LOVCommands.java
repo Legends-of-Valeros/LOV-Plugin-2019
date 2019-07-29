@@ -8,8 +8,8 @@ import com.legendsofvaleros.module.ModuleEventTimings;
 import com.legendsofvaleros.module.Modules;
 import com.legendsofvaleros.scheduler.InternalScheduler;
 import com.legendsofvaleros.util.Lag;
-import com.legendsofvaleros.util.ProgressBar;
 import com.legendsofvaleros.util.Utilities;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Event;
@@ -20,10 +20,10 @@ public class LOVCommands extends BaseCommand {
     @Description("Shows the current load of all schedulers.")
     @CommandPermission("performance.tps")
     public void cmdTps(CommandSender sender) {
-        double mainTPS = (int) (Lag.getTPS() * 10D) / 10D;
+        double[] mainTPS = Bukkit.getTPS();
         long memory = Runtime.getRuntime().totalMemory();
-        long memory_used = memory - Runtime.getRuntime().freeMemory();
-        float memp = (memory_used + 0F) / (memory + 0F);
+        long memoryUsed = memory - Runtime.getRuntime().freeMemory();
+        float memp = (memoryUsed + 0F) / (memory + 0F);
 
         ChatColor memc = ChatColor.GREEN;
 
@@ -37,18 +37,22 @@ public class LOVCommands extends BaseCommand {
         sender.sendMessage(ChatColor.GRAY + line);
         sender.sendMessage(ChatColor.DARK_GREEN + "Uptime: " + ChatColor.GRAY + Utilities.getUptime());
 
-        sender.sendMessage(ChatColor.DARK_GREEN + "Main Server TPS: " + ChatColor.GRAY + mainTPS + "/20.0");
-        sender.sendMessage("  " + Utilities.createTPSBar(mainTPS));
+        sender.sendMessage(ChatColor.DARK_GREEN + "Main Server TPS (1m): " + ChatColor.GRAY + mainTPS[0] + "/20.0");
+        sender.sendMessage("  " + Lag.createTPSBar(mainTPS[0]));
+        sender.sendMessage(ChatColor.DARK_GREEN + "Main Server TPS (5m): " + ChatColor.GRAY + mainTPS[1] + "/20.0");
+        sender.sendMessage("  " + Lag.createTPSBar(mainTPS[1]));
+        sender.sendMessage(ChatColor.DARK_GREEN + "Main Server TPS (15m): " + ChatColor.GRAY + mainTPS[2] + "/20.0");
+        sender.sendMessage("  " + Lag.createTPSBar(mainTPS[2]));
 
-        sender.sendMessage(ChatColor.DARK_GREEN + "Memory: " + ChatColor.GRAY + Lag.readableByteSize(memory_used) + "/" + Lag.readableByteSize(memory));
-        sender.sendMessage("  " + ProgressBar.getBar(memp, 40, memc, ChatColor.GRAY, ChatColor.DARK_GREEN));
+        sender.sendMessage(ChatColor.DARK_GREEN + "Memory: " + ChatColor.GRAY + Lag.readableByteSize(memoryUsed) + "/" + Lag.readableByteSize(memory));
+        sender.sendMessage("  " + Lag.getBar(memp, 40, memc, ChatColor.GRAY, ChatColor.DARK_GREEN));
 
         sender.sendMessage(ChatColor.GRAY + line);
 
         for (InternalScheduler scheduler : Modules.getSchedulers()) {
             double tps = scheduler.getAverageTPS();
             sender.sendMessage((scheduler.isAlive() ? ChatColor.DARK_GRAY : ChatColor.RED) + scheduler.getName() + ": " + ChatColor.GRAY + tps + "/20.0 (A: " + scheduler.getAsyncTasksFired() + " | S: " + scheduler.getSyncTasksFired() + " | +" + scheduler.getTotalBehind() + "ms)");
-            sender.sendMessage("  " + Utilities.createTPSBar(tps));
+            sender.sendMessage("  " + Lag.createTPSBar(tps));
         }
 
         sender.sendMessage(ChatColor.GRAY + line);

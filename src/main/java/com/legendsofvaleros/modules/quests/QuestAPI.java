@@ -21,7 +21,7 @@ import com.legendsofvaleros.modules.quests.core.*;
 import com.legendsofvaleros.modules.quests.objective.QuestObjectiveFactory;
 import com.legendsofvaleros.scheduler.InternalTask;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.PromiseCache;
+import com.legendsofvaleros.api.PromiseCache;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;

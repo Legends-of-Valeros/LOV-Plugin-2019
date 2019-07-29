@@ -1,4 +1,4 @@
-package com.legendsofvaleros.util;
+package com.legendsofvaleros.api;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheStats;
