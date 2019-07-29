@@ -72,7 +72,6 @@ public class MinecraftHealthHandler {
 
         noKnockbackStandIn = new AttackStandIn(EntityType.SNOWBALL);
 
-        CombatEngine.getInstance().registerEvents(new DeathAnimationFixListener());
         CombatEngine.getInstance().registerEvents(new DamageListener());
     }
 
@@ -174,45 +173,6 @@ public class MinecraftHealthHandler {
 
             standIn.causeDamage(target, vanillaDamage);
         }
-    }
-
-    /**
-     * Not 100% sure why dead entities are removed immediately. This delays their death for a
-     * few moments so the animation can play out
-     */
-    private class DeathAnimationFixListener implements Listener {
-		/*private List<UUID> ignore = new ArrayList<>();
-		
-		@EventHandler(priority = EventPriority.LOWEST)
-		public void onNonPlayerDeath(CombatEngineDamageEvent event) {
-			if(event.getDamaged().isPlayer()) return;
-			
-			if(ignore.contains(event.getDamaged().getLivingEntity().getUniqueId())) {
-				event.setDamageMultiplier(0);
-				return;
-			}
-		}
-		
-		@EventHandler(priority = EventPriority.HIGHEST)
-		public void onNonPlayerDeathStart(CombatEngineDamageEvent event) {
-			if(event.getDamaged().isPlayer()) return;
-			
-			if(event.getDamaged().getStats().getRegeneratingStat(RegeneratingStat.HEALTH) - event.getFinalDamage() <= 0) {
-				event.setDamageMultiplier(0);
-
-				ignore.add(event.getDamaged().getUniqueId());
-				
-				event.getDamaged().getLivingEntity().playEffect(EntityEffect.DEATH);
-				
-				new BukkitRunnable() {
-					@Override
-					public void run() {
-						ignore.remove(event.getDamaged().getUniqueId());
-						CombatEngine.getInstance().killEntity(event.getDamaged().getLivingEntity());
-					}
-				}.runTaskLater(CombatEngine.getPlugin(), CombatEngine.getPlugin().getCharacterConfig().getInt("death-destroy-timer", 15));
-			}
-		}*/
     }
 
     /**
