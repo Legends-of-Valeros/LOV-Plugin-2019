@@ -1,5 +1,6 @@
 package com.legendsofvaleros.modules.bank.core;
 
+import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.bank.event.PlayerCurrencyChangeEvent;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -13,11 +14,13 @@ public class Bank {
     public CharacterId characterId;
 
     private Map<String, Long> currencies = new HashMap<>();
+
     public Map<String, Long> getCurrencies() {
         return currencies;
     }
 
     private Map<Integer, Gear.Data> content = new HashMap<>();
+
     public Map<Integer, Gear.Data> getContent() {
         return content;
     }
@@ -27,21 +30,24 @@ public class Bank {
     }
 
     public long getCurrency(String currencyId) {
-        if (!currencies.containsKey(currencyId))
+        if (! currencies.containsKey(currencyId))
             currencies.put(currencyId, 0L);
         return currencies.get(currencyId);
     }
 
     public void setCurrency(String currencyId, long amount) {
-        if(Characters.isPlayerCharacterLoaded(characterId)) {
+        if (Characters.isPlayerCharacterLoaded(characterId)) {
             PlayerCurrencyChangeEvent bcce = new PlayerCurrencyChangeEvent(Characters.getPlayerCharacter(characterId), currencyId, amount);
-            Bukkit.getPluginManager().callEvent(bcce);
+            BankController.getInstance().getScheduler().executeInSpigotCircle(() -> Bukkit.getPluginManager().callEvent(bcce));
 
-            if(bcce.isCancelled()) return;
+            if (bcce.isCancelled()) {
+                return;
+            }
         }
 
-        if (!currencies.containsKey(currencyId))
+        if (! currencies.containsKey(currencyId)) {
             currencies.put(currencyId, 0L);
+        }
         currencies.put(currencyId, amount);
     }
 
@@ -59,11 +65,11 @@ public class Bank {
 
     public void setItem(Gear.Data item) {
         int i = 0;
-        for(Integer j : content.keySet())
-            if(j > i) {
+        for (Integer j : content.keySet())
+            if (j > i) {
                 setItem(i, item);
                 return;
-            }else
+            } else
                 i = j;
     }
 
