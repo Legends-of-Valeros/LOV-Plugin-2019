@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.pvp.integration;
 
-import com.destroystokyo.paper.Title;
 import com.legendsofvaleros.module.Integration;
 import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
@@ -36,9 +35,14 @@ public class BankIntegration extends Integration {
         CombatEntity killer = event.getKiller();
         CombatEntity target = event.getDied();
 
-        if (killer == null || ! killer.isPlayer() || target == null || ! target.isPlayer()) return;
-        if (! Characters.isPlayerCharacterLoaded(killer.getUniqueId())) return;
-        if (! Characters.isPlayerCharacterLoaded(target.getUniqueId())) return;
+        if (killer == null
+                || ! killer.isPlayer()
+                || target == null
+                || ! target.isPlayer()
+                || ! Characters.isPlayerCharacterLoaded(killer.getUniqueId())
+                || ! Characters.isPlayerCharacterLoaded(target.getUniqueId())) {
+            return;
+        }
 
         PlayerCharacter killerPC = Characters.getPlayerCharacter(killer.getUniqueId());
         PlayerCharacter targetPC = Characters.getPlayerCharacter(target.getUniqueId());
@@ -50,6 +54,5 @@ public class BankIntegration extends Integration {
                 BankController.getBank(killerPC).addCurrency(PvPController.HONOR_ID, honorReward);
             }
         }
-        Title
     }
 }
