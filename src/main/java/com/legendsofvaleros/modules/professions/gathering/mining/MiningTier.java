@@ -1,9 +1,9 @@
 package com.legendsofvaleros.modules.professions.gathering.mining;
 
 import com.legendsofvaleros.modules.professions.ProfessionTier;
-import com.legendsofvaleros.util.TextUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.text.WordUtils;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -65,7 +65,7 @@ public enum MiningTier implements ProfessionTier {
      * @return oreName
      */
     public String getOreName() {
-        return TextUtils.capitalize(getOreType().name().split("_")[0]);
+        return WordUtils.capitalizeFully(getOreType().name().split("_")[0]);
     }
 
     /**
