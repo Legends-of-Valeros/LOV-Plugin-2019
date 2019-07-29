@@ -14,13 +14,13 @@ import org.bukkit.entity.Player;
 /**
  * Created by Crystall on 07/12/2019
  */
-@CommandAlias("friends")
+@CommandAlias("friends|f")
 public class FriendCommands extends BaseCommand {
 
     @Subcommand("add")
     @Description("Sends a friend request do another player.")
     public void cmdAdd(Player sender, Player target) {
-        if (! Characters.isPlayerCharacterLoaded(sender)) {
+        if (!Characters.isPlayerCharacterLoaded(sender)) {
             return;
         }
         if (Characters.isPlayerCharacterLoaded(target)) {
@@ -44,7 +44,7 @@ public class FriendCommands extends BaseCommand {
     @Subcommand("remove")
     @Description("Removes a friend.")
     public void cmdRemove(Player sender, Player target) {
-        if (! FriendsController.getInstance().areFriends(sender, target)) {
+        if (!FriendsController.getInstance().areFriends(sender, target)) {
             MessageUtil.sendError(sender, "You are not befriend with " + ChatColor.UNDERLINE + target.getDisplayName());
             return;
         }
@@ -57,7 +57,7 @@ public class FriendCommands extends BaseCommand {
     @Subcommand("accept")
     @Description("Accepts a pending friend request")
     public void cmdAccept(Player sender) {
-        if (! Characters.isPlayerCharacterLoaded(sender.getUniqueId())) {
+        if (!Characters.isPlayerCharacterLoaded(sender.getUniqueId())) {
             return;
         }
         if (FriendsController.hasPendingRequest(sender)) {
@@ -71,7 +71,7 @@ public class FriendCommands extends BaseCommand {
     @Subcommand("deny")
     @Description("Denies a pending friend request")
     public void cmdDeny(Player sender) {
-        if (! Characters.isPlayerCharacterLoaded((sender).getUniqueId())) {
+        if (!Characters.isPlayerCharacterLoaded((sender).getUniqueId())) {
             return;
         }
         if (FriendsController.hasPendingRequest(sender)) {

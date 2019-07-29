@@ -29,7 +29,7 @@ public class ItemCommands extends BaseCommand {
     @Description("Spawn an item.")
     @CommandPermission("gear.spawn")
     public void cmdSpawn(Player player, String itemId, @Optional Integer amount) {
-        if(!LegendsOfValeros.getMode().allowEditing()) return;
+        if (!LegendsOfValeros.getMode().allowEditing()) return;
 
         Gear gear = Gear.fromId(itemId);
 
@@ -39,9 +39,7 @@ public class ItemCommands extends BaseCommand {
         }
 
         Gear.Instance instance = gear.newInstance();
-
         instance.amount = amount != null ? amount : 1;
-
         ItemUtil.giveItem(Characters.getPlayerCharacter(player), instance);
 
         MessageUtil.sendUpdate(player, "Spawned: " + gear.getName());

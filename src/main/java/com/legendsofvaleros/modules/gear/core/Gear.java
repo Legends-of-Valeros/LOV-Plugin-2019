@@ -243,6 +243,11 @@ public class Gear implements IGear {
             return result;
         }
 
+        /**
+         * TODO DESCRIPTION @Bear
+         * @param trigger
+         * @return
+         */
         public GearTrigger.TriggerEvent doFire(GearTrigger trigger) {
             boolean changed = false;
 
@@ -258,10 +263,16 @@ public class Gear implements IGear {
                 }
             }
 
-            if (amount != this.amount) changed = true;
+            if (amount != this.amount) {
+                changed = true;
+            }
 
-            if (trigger.shouldRefreshStack()) return GearTrigger.TriggerEvent.REFRESH_STACK;
-            if (changed) return GearTrigger.TriggerEvent.NBT_UPDATED;
+            if (trigger.shouldRefreshStack()) {
+                return GearTrigger.TriggerEvent.REFRESH_STACK;
+            }
+            if (changed) {
+                return GearTrigger.TriggerEvent.NBT_UPDATED;
+            }
             return GearTrigger.TriggerEvent.NOTHING;
         }
 

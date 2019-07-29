@@ -78,21 +78,25 @@ public class ItemUtil {
      * this function.
      */
     public static void giveItem(PlayerCharacter pc, Gear.Instance instance) {
-        if (instance == null) return;
+        if (instance == null) {
+            return;
+        }
 
         PickupTrigger trigger = new PickupTrigger(pc);
-
         instance.doFire(trigger);
-
         ItemStack stack = instance.toStack();
 
-        if (stack.getType() == Material.AIR) return;
+        if (stack.getType() == Material.AIR) {
+            return;
+        }
 
         ItemStack[] contents = pc.getPlayer().getInventory().getContents();
         Gear.Instance item;
         // First pass for similar stacking
         for (int i = 9; i < 9 + 9 * 3; i++) {
-            if (InventoryManager.hasFixedItem(i)) continue;
+            if (InventoryManager.hasFixedItem(i)) {
+                continue;
+            }
 
             item = Gear.Instance.fromStack(contents[i]);
             if (instance.gear.isSimilar(item)) {
@@ -105,13 +109,16 @@ public class ItemUtil {
 
                 pc.getPlayer().getInventory().setItem(i, item.toStack());
 
-                if (instance.amount == 0)
+                if (instance.amount == 0) {
                     break;
+                }
             }
         }
 
         for (int i = 9; i < contents.length; i++) {
-            if (InventoryManager.hasFixedItem(i)) continue;
+            if (InventoryManager.hasFixedItem(i)) {
+                continue;
+            }
 
             item = Gear.Instance.fromStack(contents[i]);
             if (item == null) {
@@ -143,7 +150,9 @@ public class ItemUtil {
         ItemStack[] contents = p.getInventory().getContents();
         Gear.Instance item;
         for (int i = 9; i < 9 + 9 * 3; i++) {
-            if (InventoryManager.hasFixedItem(i)) continue;
+            if (InventoryManager.hasFixedItem(i)) {
+                continue;
+            }
 
             item = Gear.Instance.fromStack(contents[i]);
             if (gear.isSimilar(item)) {

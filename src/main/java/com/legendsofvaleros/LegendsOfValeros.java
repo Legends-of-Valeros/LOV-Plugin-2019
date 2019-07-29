@@ -37,6 +37,7 @@ import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.regions.RegionController;
 import com.legendsofvaleros.modules.restrictions.RestrictionsController;
 import com.legendsofvaleros.modules.skills.SkillsController;
+import com.legendsofvaleros.modules.tabmenu.TabMenuController;
 import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.scheduler.InternalScheduler;
 import com.legendsofvaleros.util.MessageUtil;
@@ -166,6 +167,7 @@ public class LegendsOfValeros extends JavaPlugin {
         Modules.registerModule(ProfessionsController.class);
         Modules.registerModule(RestrictionsController.class);
         Modules.registerModule(FriendsController.class);
+        Modules.registerModule(TabMenuController.class);
     }
 
     public void registerEvents(Listener listener, Module module) {
