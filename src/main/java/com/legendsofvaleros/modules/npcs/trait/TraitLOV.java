@@ -130,7 +130,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
         }
 
         nameplates = Nameplates.get(getNPC());
-//        nameLine = nameplates.getOrAdd(Nameplates.BASE).appendTextLine(npcData.name);
+        nameplates.getOrAdd(Nameplates.BASE).appendTextLine(npcData.name);
 
         if (npcData.skin != null && npcData.skin.trim().length() > 0 && !updatedSkin && getNPC().getEntity() instanceof SkinnableEntity) {
             updatedSkin = true;
