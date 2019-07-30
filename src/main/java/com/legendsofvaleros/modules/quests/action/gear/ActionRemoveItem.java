@@ -9,18 +9,20 @@ import com.legendsofvaleros.util.TextBuilder;
 import org.bukkit.ChatColor;
 
 public class ActionRemoveItem extends AbstractQuestAction {
-	String itemId;
-	Integer amount;
-	
-	@Override
-	public void play(PlayerCharacter pc, Next next) {
-		Gear item = Gear.fromId(itemId);
-		MessageUtil.sendUpdate(pc.getPlayer(), new TextBuilder("[").color(ChatColor.YELLOW)
-				.append(item.getName()).color(ChatColor.GREEN)
-				.append("] was removed from your inventory!").color(ChatColor.YELLOW).create());
+    String itemId;
+    Integer amount;
 
-		ItemUtil.removeItem(pc.getPlayer(), item, amount);
+    @Override
+    public void play(PlayerCharacter pc, Next next) {
+        Gear item = Gear.fromId(itemId);
+        MessageUtil.sendUpdate(pc.getPlayer(), new TextBuilder("[").color(ChatColor.YELLOW)
+                .append(item.getName()).color(ChatColor.GREEN)
+                .append("] was removed from your inventory!").color(ChatColor.YELLOW).create());
 
-		next.go();
-	}
+        Gear.Instance instance = item.newInstance();
+        instance.amount = amount;
+        ItemUtil.removeItem(pc.getPlayer(), instance);
+
+        next.go();
+    }
 }

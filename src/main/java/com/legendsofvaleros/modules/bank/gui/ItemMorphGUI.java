@@ -151,16 +151,22 @@ public abstract class ItemMorphGUI extends GUI {
                 slot(x, y, Material.AIR, getSlot(x, y));
         }
 
-        if (view != null)
+        if (view != null) {
             ItemUtil.giveItem(pc, Gear.Instance.fromStack(view.getCursor()));
+        }
         for (Gear.Instance instance : items)
-            if (instance != null)
+            if (instance != null) {
                 ItemUtil.giveItem(pc, instance);
+            }
     }
 
-	public abstract boolean isBuy();
-	public abstract boolean isValid(Gear.Instance item);
-	public abstract long getWorth(Gear.Instance item);
-	public abstract void executeMorph(PlayerCharacter pc, Gear.Instance item);
-	public abstract void onCompleted(PlayerCharacter pc);
+    public abstract boolean isBuy();
+
+    public abstract boolean isValid(Gear.Instance item);
+
+    public abstract long getWorth(Gear.Instance item);
+
+    public abstract void executeMorph(PlayerCharacter pc, Gear.Instance item);
+
+    public abstract void onCompleted(PlayerCharacter pc);
 }

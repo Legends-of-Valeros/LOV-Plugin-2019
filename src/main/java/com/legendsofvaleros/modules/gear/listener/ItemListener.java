@@ -82,10 +82,11 @@ public class ItemListener implements Listener {
                     public void onAccept(GUI gui, Player p) {
                         gui.close(p);
 
-                        if (!ItemUtil.removeItem(event.getPlayer(), instance.gear, instance.amount))
+                        if (!ItemUtil.removeItem(event.getPlayer(), instance)) {
                             MessageUtil.sendError(event.getPlayer(), "Unable to remove that, for some reason...");
-                        else
+                        } else {
                             MessageUtil.sendUpdate(event.getPlayer(), instance.getName() + " has been destroyed.");
+                        }
                     }
 
                     @Override

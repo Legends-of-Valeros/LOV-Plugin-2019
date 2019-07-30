@@ -15,6 +15,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Random;
@@ -63,6 +64,15 @@ public class ItemUtil {
         return count >= amount;
     }
 
+    /**
+     * Is an item equivalent to not existing?
+     * @param itemStack
+     * @return isAir
+     */
+    public static boolean isAir(ItemStack itemStack) {
+        return itemStack == null || itemStack.getType() == Material.AIR;
+    }
+
     public static void dropItem(Location dieLoc, Gear.Instance instance, PlayerCharacter owner) {
         Item item = dieLoc.getWorld().dropItemNaturally(dieLoc, instance.toStack());
         ItemListener.itemOwner.put(item.getUniqueId(), owner.getPlayerId());
@@ -72,102 +82,84 @@ public class ItemUtil {
     }
 
     /**
-     * Gives the gear to the player. This function directly alters the amount field
-     * in the passed instance object, so if you want to know how much COULDN'T be
-     * put into the user's inventory, just read the instance amount after calling
-     * this function.
+     * Remove an ItemStack from the player's inventory.
+     * @param player
+     * @param gear
+     * @return wasRemoved
      */
-    public static void giveItem(PlayerCharacter pc, Gear.Instance instance) {
+    public static boolean removeItem(Player player, Gear.Instance gear) {
+        ItemStack itemStack = gear.toStack();
+        for (int i = 0; i < player.getInventory().getSize(); i++) {
+            // Check if a fixed item is on the current slot
+            if (InventoryManager.hasFixedItem(i)) {
+                continue;
+            }
+
+            ItemStack itm = player.getInventory().getItem(i);
+            if (itemStack.equals(itm)) {
+                itm.setAmount(itm.getAmount() - itemStack.getAmount());
+                if (itm.getAmount() <= 0) {
+                    itm.setType(Material.AIR);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Give an item to a player if their inventory is not full.
+     * @param pc
+     * @param instance
+     * @return isDropped
+     */
+    public static boolean giveItem(PlayerCharacter pc, Gear.Instance instance) {
         if (instance == null) {
-            return;
+            return false;
         }
 
+        Player player = pc.getPlayer();
         PickupTrigger trigger = new PickupTrigger(pc);
         instance.doFire(trigger);
-        ItemStack stack = instance.toStack();
+        ItemStack itemStack = instance.toStack();
 
-        if (stack.getType() == Material.AIR) {
-            return;
+        if (isAir(itemStack)) {
+            return false; // Can't give empty item.
         }
 
-        ItemStack[] contents = pc.getPlayer().getInventory().getContents();
-        Gear.Instance item;
-        // First pass for similar stacking
-        for (int i = 9; i < 9 + 9 * 3; i++) {
-            if (InventoryManager.hasFixedItem(i)) {
+
+        Inventory inv = player.getInventory();
+        for (int i = 0; i < inv.getSize(); i++) { // Add the possible items to the player's inventory.
+            ItemStack item = inv.getItem(i);
+            if (isAir(item) || !item.isSimilar(itemStack) || InventoryManager.hasFixedItem(i)) {
                 continue;
             }
 
-            item = Gear.Instance.fromStack(contents[i]);
-            if (instance.gear.isSimilar(item)) {
-                if (instance == item)
-                    instance = instance.copy();
-
-                int newSize = Math.min(item.getMaxAmount(), instance.amount + item.amount);
-                instance.amount -= newSize - item.amount;
-                item.amount = newSize;
-
-                pc.getPlayer().getInventory().setItem(i, item.toStack());
-
-                if (instance.amount == 0) {
-                    break;
-                }
+            int deposit = Math.min(item.getMaxStackSize(), item.getAmount() + itemStack.getAmount()) - item.getAmount();
+            if (item.getAmount() + deposit > item.getMaxStackSize()) {
+                continue; //respect the custom max amount of custom items
             }
+            itemStack.setAmount(itemStack.getAmount() - deposit);
+            item.setAmount(item.getAmount() + deposit);
         }
 
-        for (int i = 9; i < contents.length; i++) {
-            if (InventoryManager.hasFixedItem(i)) {
-                continue;
-            }
-
-            item = Gear.Instance.fromStack(contents[i]);
-            if (item == null) {
-                pc.getPlayer().getInventory().setItem(i, instance.toStack());
-                instance.amount = 0;
-                break;
-            }
+        if (itemStack.getAmount() == 0) {
+            Bukkit.getPluginManager().callEvent(new GearPickupEvent(pc, instance));
+            return true;
         }
 
+        if (inv.firstEmpty() == -1) {
+            MessageUtil.sendError(player, "Your inventory is full. Dropping item on the ground ...");
+            dropItem(player.getLocation(), instance, pc);
+            Bukkit.getPluginManager().callEvent(new InventoryFullEvent(pc, instance));
+            return false;
+        }
+
+        // There is an open stack, we can add it with bukkit.
+        inv.addItem(itemStack);
         Bukkit.getPluginManager().callEvent(new GearPickupEvent(pc, instance));
 
-        if (instance.amount > 0) {
-            InventoryFullEvent event = new InventoryFullEvent(pc, instance);
-            Bukkit.getPluginManager().callEvent(event);
-
-            if (!event.isCancelled()) {
-                MessageUtil.sendError(pc.getPlayer(), "No more space in inventory! It disappeared!");
-            }
-        }
-    }
-
-    public static boolean removeItem(Player p, Gear.Instance inst) {
-        return removeItem(p, inst.gear, inst.amount);
-    }
-
-    public static boolean removeItem(Player p, Gear gear, int amount) {
-        if (gear == null || amount <= 0) return false;
-
-        ItemStack[] contents = p.getInventory().getContents();
-        Gear.Instance item;
-        for (int i = 9; i < 9 + 9 * 3; i++) {
-            if (InventoryManager.hasFixedItem(i)) {
-                continue;
-            }
-
-            item = Gear.Instance.fromStack(contents[i]);
-            if (gear.isSimilar(item)) {
-                int newSize = Math.max(0, item.amount - amount);
-                amount -= item.amount - newSize;
-                item.amount = newSize;
-
-                p.getInventory().setItem(i, item.toStack());
-
-                if (amount <= 0)
-                    break;
-            }
-        }
-
-        return amount <= 0;
+        return true;
     }
 
     public static double getAverageDPS(Gear.Instance item) {
@@ -182,29 +174,4 @@ public class ItemUtil {
         return avg;
     }
 
-	/*public static double calculateWeaponDamage(CombatEntity attacker) {
-		if(attacker == null || attacker.getLivingEntity() == null || attacker.getLivingEntity().getEquipment() == null)
-			return 0;
-
-		ItemStack mainHand = attacker.getLivingEntity().getEquipment().getItemInMainHand();
-		if(mainHand.getType() == Material.AIR)
-			return 0;
-		
-		GearController heldItem = ItemHandler.toStatItem(mainHand);
-		if(heldItem != null)
-			if(heldItem.getCurrentDurability() > 0) {
-				int damage = heldItem.getMaximumDamage() - heldItem.getMinimumDamage();
-				if(damage > 0) {
-					attacker.getLivingEntity().getEquipment().setItemInMainHand(ItemHandler.hurtItem(heldItem, 1));
-					damage = (heldItem.getMinimumDamage() + new Random().nextInt(heldItem.getMaximumDamage() - heldItem.getMinimumDamage()));
-				}
-				return damage;
-			}
-		
-		return 0;
-	}
-
-	public static double calculateDamageTaken(double damage, CombatEntity defender) {		
-		return 0;
-	}*/
 }

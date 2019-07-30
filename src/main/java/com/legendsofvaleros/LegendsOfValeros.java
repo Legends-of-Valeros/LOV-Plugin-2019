@@ -176,8 +176,9 @@ public class LegendsOfValeros extends JavaPlugin {
         module.getLogger().log(Level.INFO, "Registered listener: {0}.", listenerName);
 
         // Is it possible to have hashCode collisions for non-similar classes?
-        if (loadedEventClasses.getIfPresent(listener.hashCode()) != null)
+        if (loadedEventClasses.getIfPresent(listener.hashCode()) != null) {
             module.getLogger().log(Level.SEVERE, "{0} has already been registered as an event listener! This may cause unintended side effects!", listenerName);
+        }
         loadedEventClasses.put(listener.hashCode(), listener);
         loadedEventClassesName.put(listener.hashCode(), listenerName);
 

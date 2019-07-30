@@ -51,7 +51,7 @@ public class InteractBlockObjective extends AbstractQuestObjective<Boolean> {
 
     @Override
     public Class<? extends Event>[] getRequestedEvents() {
-        return new Class[]{ PlayerInteractEvent.class };
+        return new Class[]{PlayerInteractEvent.class};
     }
 
     @Override
@@ -76,11 +76,13 @@ public class InteractBlockObjective extends AbstractQuestObjective<Boolean> {
     }
 
     @Override
-    public int getUpdateTimer() { return 4; }
+    public int getUpdateTimer() {
+        return 4;
+    }
 
     @Override
     public Boolean onUpdate(PlayerCharacter pc, Boolean progress, int ticks) {
-        if(!progress) {
+        if (!progress) {
             pc.getPlayer().spawnParticle(Particle.VILLAGER_HAPPY, loc.clone().add(RAND.nextDouble(), RAND.nextDouble(), RAND.nextDouble()), 1);
         }
 

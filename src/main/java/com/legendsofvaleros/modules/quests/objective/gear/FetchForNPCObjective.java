@@ -69,21 +69,33 @@ public class FetchForNPCObjective extends AbstractQuestObjective<Boolean> {
 
     @Override
     public Boolean onEvent(Event event, PlayerCharacter pc, Boolean progress) {
-        if (id == null || item == null) return progress;
+        if (id == null || item == null) {
+            return progress;
+        }
 
-        if (npcId == null || npc.name == null) return progress;
+        if (npcId == null || npc.name == null) {
+            return progress;
+        }
 
-        if (progress) return progress;
+        if (progress) {
+            return progress;
+        }
 
         NPCRightClickEvent e = (NPCRightClickEvent) event;
 
-        if (!e.getNPC().hasTrait(TraitLOV.class)) return progress;
+        if (!e.getNPC().hasTrait(TraitLOV.class)) {
+            return progress;
+        }
 
         TraitLOV lov = e.getNPC().getTrait(TraitLOV.class);
         if (lov.npcId != null && lov.npcId.equals(npcId)) {
-            if (!ItemUtil.hasItem(pc.getPlayer(), item, amount)) return progress;
+            if (!ItemUtil.hasItem(pc.getPlayer(), item, amount)) {
+                return progress;
+            }
 
-            ItemUtil.removeItem(pc.getPlayer(), item, amount);
+            Gear.Instance instance = item.newInstance();
+            instance.amount = amount;
+            ItemUtil.removeItem(pc.getPlayer(), instance);
 
             return true;
         }

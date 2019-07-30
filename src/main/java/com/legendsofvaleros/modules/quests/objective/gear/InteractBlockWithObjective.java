@@ -16,7 +16,10 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import java.util.Random;
 
 public class InteractBlockWithObjective extends AbstractQuestObjective<InteractBlockWithObjective.State> {
-    enum State { HELD, DONE }
+    enum State {
+        HELD,
+        DONE
+    }
 
     private static final Random RAND = new Random();
 
@@ -46,7 +49,7 @@ public class InteractBlockWithObjective extends AbstractQuestObjective<InteractB
 
     @Override
     public Class<? extends Event>[] getRequestedEvents() {
-        return new Class[] {
+        return new Class[]{
                 PlayerInteractEvent.class,
                 PlayerItemHeldEvent.class
         };
@@ -55,24 +58,24 @@ public class InteractBlockWithObjective extends AbstractQuestObjective<InteractB
     @Override
     public InteractBlockWithObjective.State onStart(PlayerCharacter pc) {
         Gear.Instance instance = Gear.Instance.fromStack(pc.getPlayer().getInventory().getItemInMainHand());
-        if(instance == null || !item.isSimilar(instance)) return null;
+        if (instance == null || !item.isSimilar(instance)) return null;
 
         return State.HELD;
     }
 
     @Override
     public InteractBlockWithObjective.State onEvent(Event event, PlayerCharacter pc, InteractBlockWithObjective.State state) {
-        if(state == State.DONE) return state;
+        if (state == State.DONE) return state;
 
-        if(event instanceof PlayerItemHeldEvent) {
-            Gear.Instance instance = Gear.Instance.fromStack(pc.getPlayer().getInventory().getItem(((PlayerItemHeldEvent)event).getNewSlot()));
+        if (event instanceof PlayerItemHeldEvent) {
+            Gear.Instance instance = Gear.Instance.fromStack(pc.getPlayer().getInventory().getItem(((PlayerItemHeldEvent) event).getNewSlot()));
             return item != null && item.isSimilar(instance) ? State.HELD : null;
-        }else if(event instanceof PlayerInteractEvent) {
+        } else if (event instanceof PlayerInteractEvent) {
             PlayerInteractEvent e = (PlayerInteractEvent) event;
 
             if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return state;
 
-            if(state != State.HELD) return state;
+            if (state != State.HELD) return state;
 
             Gear.Instance instance = Gear.Instance.fromStack(pc.getPlayer().getInventory().getItemInMainHand());
             if (instance == null || !item.isSimilar(instance)) return state;
@@ -100,7 +103,7 @@ public class InteractBlockWithObjective extends AbstractQuestObjective<InteractB
 
     @Override
     public String getProgressText(PlayerCharacter pc, InteractBlockWithObjective.State state) {
-        if(state == null)
+        if (state == null)
             return "Get " + (item == null ? "UNKNOWN" : item.getName());
         else
             return "Right click at " + x + ", " + y + ", " + z;
@@ -112,11 +115,13 @@ public class InteractBlockWithObjective extends AbstractQuestObjective<InteractB
     }
 
     @Override
-    public int getUpdateTimer() { return 4; }
+    public int getUpdateTimer() {
+        return 4;
+    }
 
     @Override
     public InteractBlockWithObjective.State onUpdate(PlayerCharacter pc, InteractBlockWithObjective.State state, int ticks) {
-        if(state == State.HELD)
+        if (state == State.HELD)
             pc.getPlayer().spawnParticle(Particle.VILLAGER_HAPPY, loc.clone().add(RAND.nextDouble(), RAND.nextDouble(), RAND.nextDouble()), 1);
         return state;
     }
