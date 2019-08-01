@@ -3,7 +3,7 @@ package com.legendsofvaleros.modules.parties.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
-import co.aikar.commands.contexts.OnlinePlayer;
+import co.aikar.commands.bukkit.contexts.OnlinePlayer;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;

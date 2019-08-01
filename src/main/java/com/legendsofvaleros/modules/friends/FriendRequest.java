@@ -29,8 +29,7 @@ public class FriendRequest {
 
     public void cancel(Player left) {
         FriendsController.getPending().remove(this);
-        MessageUtil.sendInfo(sender, ChatColor.AQUA + "Request cancelled, " + left.getName() + " disconnected.");
-        MessageUtil.sendInfo(receiver, ChatColor.AQUA + "Request cancelled," + left.getName() + " disconnected.");
+        MessageUtil.sendInfo(sender.equals(left) ? receiver : sender, ChatColor.AQUA + "Request cancelled, " + left.getName() + " disconnected.");
     }
 
     /**
@@ -61,8 +60,8 @@ public class FriendRequest {
      */
     public void deny() {
         FriendsController.getPending().remove(this);
-        MessageUtil.sendInfo(sender, "You successfully denied the friend request from " + ChatColor.UNDERLINE + receiver.getDisplayName() + ".");
-        MessageUtil.sendInfo(receiver, "You are now friends with " + ChatColor.UNDERLINE + sender.getDisplayName() + ".");
+        MessageUtil.sendInfo(receiver, "You denied the friend request of " + ChatColor.UNDERLINE + receiver.getDisplayName() + ".");
+        MessageUtil.sendInfo(sender, ChatColor.UNDERLINE + sender.getDisplayName() + " denied your friend request.");
     }
 
     public UUID getSenderID() {

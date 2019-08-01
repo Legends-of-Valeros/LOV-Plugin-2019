@@ -103,7 +103,9 @@ public class TraitQuestGiver extends LOVTrait {
 
             if (playerQuests.size() == 1) {
                 Entry<IQuest, QuestStatus> quest = playerQuests.entrySet().iterator().next();
-                player.performCommand("quests talk " + quest.getKey().getId());
+                QuestController.getInstance().getScheduler().executeInSpigotCircle(() -> {
+                    player.performCommand("quests talk " + quest.getKey().getId());
+                });
             } else {
                 slot.set(new Slot(new ItemBuilder(Material.WRITABLE_BOOK).setName("Quests").create(), (gui, p, event) -> {
                     gui.close(p);

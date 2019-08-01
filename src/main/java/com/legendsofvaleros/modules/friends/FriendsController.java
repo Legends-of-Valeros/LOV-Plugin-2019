@@ -1,5 +1,6 @@
 package com.legendsofvaleros.modules.friends;
 
+import com.google.common.collect.ImmutableList;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -9,7 +10,6 @@ import com.legendsofvaleros.modules.characters.loading.PhaseLock;
 import com.legendsofvaleros.modules.friends.commands.FriendCommands;
 import com.legendsofvaleros.scheduler.InternalTask;
 import com.legendsofvaleros.util.MessageUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -53,10 +53,8 @@ public class FriendsController extends FriendsAPI {
     }
 
     private void sendFriendStatus(Player p, String state) {
-        String message = ChatColor.UNDERLINE + p.getDisplayName() + ChatColor.AQUA + " has " + state;
+        String message = ChatColor.UNDERLINE + p.getDisplayName() + ChatColor.RESET + " has " + state;
         if (!playerFriendsMap.containsKey(p.getUniqueId())) {
-            //TODO remove this and check why the API is not putting an entry on player login
-            MessageUtil.sendInfo(Bukkit.getConsoleSender(), " Playerfriendsmap doesnt contains playeruuid - this should not happen");
             return;
         }
         for (UUID uuid : playerFriendsMap.get(p.getUniqueId())) {
@@ -106,20 +104,32 @@ public class FriendsController extends FriendsAPI {
         return playerFriendsMap.get(p1.getUniqueId()).contains(p2.getUniqueId()) || playerFriendsMap.get(p2.getUniqueId()).contains(p1.getUniqueId());
     }
 
+
+    /**
+     * Checks if two online players are friends.
+     * @param p1 - Player 1
+     * @param p2 - Player 2
+     * @return areFriends
+     */
+    public boolean areFriends(UUID p1, UUID p2) {
+        return playerFriendsMap.get(p1).contains(p2) || playerFriendsMap.get(p2).contains(p1);
+    }
+
     @EventHandler
     public void onCharacterStartLoading(PlayerCharacterStartLoadingEvent ev) {
         PhaseLock lock = ev.getLock("Friends");
         onLogin(ev.getPlayer().getUniqueId())
-                .onFailure((err) -> {
+                .onSuccess(val -> {
+                    playerFriendsMap.put(ev.getPlayer().getUniqueId(), val.orElse(ImmutableList.of()));
+                    sendFriendStatus(ev.getPlayer(), "joined");
+                })
+                .onFailure(err -> {
                     MessageUtil.sendSevereException(FriendsController.getInstance(), ev.getPlayer(), err);
                     getScheduler().executeInSpigotCircle(() -> {
                         ev.getPlayer().kickPlayer("Failed loading Friends - If this error persists, try contacting the support");
                     });
                 })
-                .on(() -> {
-                    lock.release();
-                    sendFriendStatus(ev.getPlayer(), "joined");
-                });
+                .on(lock::release);
     }
 
     @EventHandler

@@ -4,12 +4,16 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.bukkit.contexts.OnlinePlayer;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.friends.FriendRequest;
 import com.legendsofvaleros.modules.friends.FriendsController;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+
+import java.util.UUID;
 
 /**
  * Created by Crystall on 07/12/2019
@@ -19,11 +23,9 @@ public class FriendCommands extends BaseCommand {
 
     @Subcommand("add")
     @Description("Sends a friend request do another player.")
-    public void cmdAdd(Player sender, Player target) {
+    public void cmdAdd(Player sender, OnlinePlayer player) {
+        Player target = player.getPlayer();
         if (!Characters.isPlayerCharacterLoaded(sender)) {
-            return;
-        }
-        if (Characters.isPlayerCharacterLoaded(target)) {
             MessageUtil.sendError(sender, target.getDisplayName() + " is not online.");
             return;
         }
@@ -37,20 +39,28 @@ public class FriendCommands extends BaseCommand {
         }
 
         MessageUtil.sendInfo(sender, "Friend request sent to " + ChatColor.UNDERLINE + target.getDisplayName());
-        MessageUtil.sendInfo(target, "You received a friend request from " + ChatColor.UNDERLINE + target.getDisplayName());
+        MessageUtil.sendInfo(target, "You received a friend request from " + ChatColor.UNDERLINE + sender.getDisplayName());
         FriendsController.getPending().add(new FriendRequest(sender, target));
     }
 
     @Subcommand("remove")
     @Description("Removes a friend.")
-    public void cmdRemove(Player sender, Player target) {
-        if (!FriendsController.getInstance().areFriends(sender, target)) {
-            MessageUtil.sendError(sender, "You are not befriend with " + ChatColor.UNDERLINE + target.getDisplayName());
+    public void cmdRemove(Player sender, OfflinePlayer offlinePlayer) {
+        UUID target = offlinePlayer.getUniqueId();
+        if (!FriendsController.getInstance().areFriends(sender.getUniqueId(), target)) {
+            MessageUtil.sendError(sender, "You are not befriend with " + ChatColor.UNDERLINE + offlinePlayer.getName());
             return;
         }
 
-        FriendsController.getInstance().deleteFriend(sender.getUniqueId(), target.getUniqueId()).onSuccess(() -> {
+        FriendsController.getInstance().deleteFriend(sender.getUniqueId(), target).onSuccess(() -> {
+            FriendsController.getInstance().getFriends(sender.getUniqueId()).remove(target);
+            MessageUtil.sendError(sender, "You are no longer befriend with " + ChatColor.UNDERLINE + offlinePlayer.getName());
+            if (offlinePlayer.getPlayer() != null) {
+                MessageUtil.sendError(offlinePlayer.getPlayer(), "You are no longer befriend with " + ChatColor.UNDERLINE + sender.getDisplayName());
+            }
 
+            FriendsController.getInstance().getFriends(sender.getUniqueId()).remove(target);
+            FriendsController.getInstance().getFriends(target).remove(sender.getUniqueId());
         }).onFailure(Throwable::printStackTrace);
     }
 
@@ -60,7 +70,7 @@ public class FriendCommands extends BaseCommand {
         if (!Characters.isPlayerCharacterLoaded(sender.getUniqueId())) {
             return;
         }
-        if (FriendsController.hasPendingRequest(sender)) {
+        if (!FriendsController.hasPendingRequest(sender)) {
             MessageUtil.sendError(sender, "You don't have any pending friend requests.");
             return;
         }
@@ -74,7 +84,7 @@ public class FriendCommands extends BaseCommand {
         if (!Characters.isPlayerCharacterLoaded((sender).getUniqueId())) {
             return;
         }
-        if (FriendsController.hasPendingRequest(sender)) {
+        if (!FriendsController.hasPendingRequest(sender)) {
             MessageUtil.sendError(sender, "You don't have any pending friend requests.");
             return;
         }

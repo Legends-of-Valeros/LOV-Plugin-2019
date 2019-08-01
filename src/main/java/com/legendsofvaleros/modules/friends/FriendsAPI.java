@@ -34,24 +34,13 @@ public class FriendsAPI extends ModuleListener {
     }
 
     public Promise<List<UUID>> onLogin(UUID uuid) {
-        Promise<List<UUID>> promise = rpc.getAllFriends(uuid);
-
-        promise.onSuccess(val -> {
-            playerFriendsMap.put(uuid, val.orElse(ImmutableList.of()));
-        });
-
-        return promise;
+        return rpc.getAllFriends(uuid);
     }
 
     public void saveFriend(FriendRequest friendRequest) {
         getScheduler().executeInMyCircle(() -> {
-            // Save a friends entry for the sender
             rpc.saveFriend(friendRequest.getSenderID(), friendRequest.getReceiverID(), new Date()).onSuccess(() -> {
                 playerFriendsMap.get(friendRequest.getSenderID()).add(friendRequest.getReceiverID());
-            }).onFailure(Throwable::printStackTrace);
-
-            //Save a friends entry for the receiver
-            rpc.saveFriend(friendRequest.getReceiverID(), friendRequest.getSenderID(), new Date()).onSuccess(() -> {
                 playerFriendsMap.get(friendRequest.getReceiverID()).add(friendRequest.getSenderID());
             }).onFailure(Throwable::printStackTrace);
         });
