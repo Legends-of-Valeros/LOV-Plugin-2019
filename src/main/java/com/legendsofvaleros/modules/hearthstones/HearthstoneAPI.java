@@ -4,7 +4,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
-import com.legendsofvaleros.module.ModuleListener;
+import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
@@ -17,7 +17,7 @@ import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class HearthstoneAPI extends ModuleListener {
+public class HearthstoneAPI extends ListenerModule {
     public interface RPC {
         Promise<HomePoint> getPlayerHearthstone(CharacterId characterId);
         Promise<Boolean> savePlayerHearthstone(HomePoint point);

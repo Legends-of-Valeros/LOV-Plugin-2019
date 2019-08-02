@@ -3,7 +3,7 @@ package com.legendsofvaleros.modules.professions;
 import com.google.common.collect.ImmutableList;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
-import com.legendsofvaleros.module.ModuleListener;
+import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.professions.gathering.GatheringNode;
 import com.legendsofvaleros.modules.professions.gathering.mining.MiningTier;
@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * Created by Crystall on 02/14/2019
  */
-public class ProfessionsAPI extends ModuleListener {
+public class ProfessionsAPI extends ListenerModule {
     public interface RPC {
         Promise<List<GatheringNode>> getAllGatheringNodesByZoneId(String zoneId);
 

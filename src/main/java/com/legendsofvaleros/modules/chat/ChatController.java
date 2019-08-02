@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.chat;
 
-import com.legendsofvaleros.module.ModuleListener;
+import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -22,7 +22,7 @@ import java.util.UUID;
 @DependsOn(PlayerMenu.class)
 @DependsOn(Characters.class)
 @ModuleInfo(name = "Chat", info = "")
-public class ChatController extends ModuleListener {
+public class ChatController extends ListenerModule {
     private static ChatController instance;
 
     public static ChatController getInstance() {

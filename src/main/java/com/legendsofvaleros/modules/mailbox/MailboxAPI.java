@@ -3,7 +3,7 @@ package com.legendsofvaleros.modules.mailbox;
 import com.google.common.collect.ImmutableList;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
-import com.legendsofvaleros.module.ModuleListener;
+import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * Created by Crystall on 02/15/2019
  */
-public class MailboxAPI extends ModuleListener {
+public class MailboxAPI extends ListenerModule {
 
     public interface RPC {
         Promise<List<Mail>> getMails(CharacterId characterId);

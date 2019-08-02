@@ -6,7 +6,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
-import com.legendsofvaleros.module.ModuleListener;
+import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.zones.core.MaterialWithData;
@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-public class ZonesAPI extends ModuleListener {
+public class ZonesAPI extends ListenerModule {
     public interface RPC {
         Promise<List<Zone>> findZones();
     }

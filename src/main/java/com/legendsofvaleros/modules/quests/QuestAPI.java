@@ -5,7 +5,7 @@ import com.google.common.collect.*;
 import com.google.gson.*;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
-import com.legendsofvaleros.module.ModuleListener;
+import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -35,7 +35,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class QuestAPI extends ModuleListener {
+public class QuestAPI extends ListenerModule {
     public interface RPC {
         Promise<IQuest> getQuest(String questId);
 

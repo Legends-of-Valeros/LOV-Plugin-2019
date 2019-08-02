@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.hotswitch;
 
-import com.legendsofvaleros.module.ModuleListener;
+import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -24,7 +24,7 @@ import java.util.UUID;
 @DependsOn(Characters.class)
 // TODO: Create subclass for listeners?
 @ModuleInfo(name = "Hotswitch", info = "")
-public class Hotswitch extends ModuleListener {
+public class Hotswitch extends ListenerModule {
     private static Hotswitch instance;
 
     public static Hotswitch getInstance() {

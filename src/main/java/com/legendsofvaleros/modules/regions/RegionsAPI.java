@@ -3,7 +3,7 @@ package com.legendsofvaleros.modules.regions;
 import com.google.common.collect.*;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
-import com.legendsofvaleros.module.ModuleListener;
+import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.regions.core.Region;
@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RegionsAPI extends ModuleListener {
+public class RegionsAPI extends ListenerModule {
     public interface RPC {
         Promise<List<Region>> findRegions();
 

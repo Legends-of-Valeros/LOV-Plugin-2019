@@ -17,7 +17,10 @@ public class LootAPI extends Module {
     private RPC rpc;
 
     private Map<String, LootTable> tables = new HashMap<>();
-    public LootTable getTable(String id) { return tables.get(id); }
+
+    public LootTable getTable(String id) {
+        return tables.get(id);
+    }
 
     @Override
     public void onLoad() {
@@ -41,7 +44,7 @@ public class LootAPI extends Module {
         return rpc.findLootTables().onSuccess(val -> {
             tables.clear();
 
-            val.orElse(ImmutableList.of()).stream().forEach(table ->
+            val.orElse(ImmutableList.of()).forEach(table ->
                     tables.put(table.id, table));
 
             LootController.getInstance().getLogger().info("Loaded " + tables.size() + " loot tables.");

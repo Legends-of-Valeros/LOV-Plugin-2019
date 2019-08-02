@@ -21,10 +21,11 @@ public class LootTable {
 
         public ItemStack getStack() {
             ItemStack stack = Gear.fromId(id).newInstance().toStack();
-            if (stack.getType() != Material.AIR)
+            if (stack.getType() != Material.AIR) {
                 return stack;
-            else
+            } else {
                 LootController.getInstance().getLogger().severe("Attempt to use loot table item with unknown item name. Offender: " + id);
+            }
             return null;
         }
 
@@ -37,13 +38,14 @@ public class LootTable {
     public Item nextItem() {
         if (totalWeight == Double.MIN_VALUE) {
             totalWeight = 0D;
-            for (Item i : items)
+            for (Item i : items) {
                 totalWeight += i.weight;
+            }
         }
 
-        int index = -1;
+        int index = - 1;
         double random = Math.random() * totalWeight;
-        for (int i = 0; i < items.length; ++i) {
+        for (int i = 0; i < items.length; ++ i) {
             random -= items[i].weight;
             if (random <= 0D) {
                 index = i;

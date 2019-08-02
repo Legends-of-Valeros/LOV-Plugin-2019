@@ -8,7 +8,10 @@ import com.legendsofvaleros.modules.gear.GearController;
 @ModuleInfo(name = "Loot", info = "")
 public class LootController extends LootAPI {
     private static LootController instance;
-    public static LootController getInstance() { return instance; }
+
+    public static LootController getInstance() {
+        return instance;
+    }
 
     @Override
     public void onLoad() {

@@ -15,43 +15,43 @@ import java.util.UUID;
  */
 public class LoggingOut {
 
-	// prevents accidental construction
-	private LoggingOut() {}
+    // prevents accidental construction
+    private LoggingOut() {
+    }
 
-	private static Set<UUID> loggingOut;
+    private static Set<UUID> loggingOut;
 
-	/**
-	 * Starts this listening to player logouts.
-	 */
-	public static void onEnable() {
-		loggingOut = new HashSet<>();
-		Utilities.getInstance().registerEvents(new QuitListener());
-	}
+    /**
+     * Starts this listening to player logouts.
+     */
+    public static void onEnable() {
+        loggingOut = new HashSet<>();
+        Utilities.getInstance().registerEvents(new QuitListener());
+    }
 
-	/**
-	 * Gets whether a given player is currently in the process of logging out.
-	 * 
-	 * @param playerId The name of the player that is logging out.
-	 * @return <code>true</code> if the player is currently logging out. <code>false</code> if they
-	 *         are not logging out or have already finished logging out.
-	 */
-	public static boolean isLoggingOut(UUID playerId) {
-		return loggingOut.contains(playerId);
-	}
+    /**
+     * Gets whether a given player is currently in the process of logging out.
+     * @param playerId The name of the player that is logging out.
+     * @return <code>true</code> if the player is currently logging out. <code>false</code> if they
+     * are not logging out or have already finished logging out.
+     */
+    public static boolean isLoggingOut(UUID playerId) {
+        return loggingOut.contains(playerId);
+    }
 
-	private static class QuitListener implements Listener {
+    private static class QuitListener implements Listener {
 
-		// tracks players who are in the process of logging off
-		@EventHandler(priority = EventPriority.LOWEST)
-		public void onPlayerQuitLowest(PlayerQuitEvent event) {
-			loggingOut.add(event.getPlayer().getUniqueId());
-		}
+        // tracks players who are in the process of logging off
+        @EventHandler(priority = EventPriority.LOWEST)
+        public void onPlayerQuitLowest(PlayerQuitEvent event) {
+            loggingOut.add(event.getPlayer().getUniqueId());
+        }
 
-		// cleans up players who are in the process of logging off
-		@EventHandler(priority = EventPriority.MONITOR)
-		public void onPlayerQuitMonitor(PlayerQuitEvent event) {
-			loggingOut.remove(event.getPlayer().getUniqueId());
-		}
-	}
+        // cleans up players who are in the process of logging off
+        @EventHandler(priority = EventPriority.MONITOR)
+        public void onPlayerQuitMonitor(PlayerQuitEvent event) {
+            loggingOut.remove(event.getPlayer().getUniqueId());
+        }
+    }
 
 }

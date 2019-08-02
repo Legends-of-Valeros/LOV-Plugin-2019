@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.bank;
 
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
-import com.legendsofvaleros.module.ModuleListener;
+import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.modules.bank.core.Bank;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
@@ -17,7 +17,7 @@ import org.bukkit.event.Listener;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BankAPI extends ModuleListener {
+public class BankAPI extends ListenerModule {
     public interface RPC {
         Promise<Bank> getPlayerBank(CharacterId characterId);
 

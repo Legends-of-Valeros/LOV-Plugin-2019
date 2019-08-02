@@ -1,16 +1,15 @@
 package com.legendsofvaleros.modules.friends;
 
-import com.google.common.collect.ImmutableList;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
-import com.legendsofvaleros.module.ModuleListener;
+import com.legendsofvaleros.module.ListenerModule;
 
 import java.util.*;
 
 /**
  * Created by Crystall on 07/12/2019
  */
-public class FriendsAPI extends ModuleListener {
+public class FriendsAPI extends ListenerModule {
     public interface RPC {
         Promise<List<UUID>> getAllFriends(UUID uuid);
 

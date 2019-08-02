@@ -4,14 +4,14 @@ import com.google.common.collect.ImmutableList;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
-import com.legendsofvaleros.module.ModuleListener;
+import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.modules.graveyard.core.Graveyard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class GraveyardAPI extends ModuleListener {
+public class GraveyardAPI extends ListenerModule {
     public interface RPC {
         Promise<List<Graveyard>> findGraveyards();
 

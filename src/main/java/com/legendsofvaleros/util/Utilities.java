@@ -1,7 +1,7 @@
 package com.legendsofvaleros.util;
 
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.module.ModuleListener;
+import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.scheduler.InternalScheduler;
 import com.legendsofvaleros.scheduler.InternalTask;
@@ -28,7 +28,7 @@ import java.util.Date;
 
 // TODO: Create subclass for listeners?
 @ModuleInfo(name = "Utilities", info = "")
-public class Utilities extends ModuleListener {
+public class Utilities extends ListenerModule {
     private static Utilities instance;
 
     public static Utilities getInstance() {

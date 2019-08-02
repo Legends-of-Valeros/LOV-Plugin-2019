@@ -5,7 +5,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
-import com.legendsofvaleros.module.ModuleListener;
+import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.scheduler.InternalTask;
 
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by Crystall on 02/14/2019
  */
-public class AuctionAPI extends ModuleListener {
+public class AuctionAPI extends ListenerModule {
 
     public interface RPC {
         Promise<List<Auction>> getAllAuctions();

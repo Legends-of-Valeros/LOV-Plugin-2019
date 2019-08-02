@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.restrictions;
 
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.ServerMode;
-import com.legendsofvaleros.module.ModuleListener;
+import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.util.Discord;
 import com.legendsofvaleros.util.Utilities;
 import org.bukkit.ChatColor;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 /**
  * Created by Crystall on 04/11/2019
  */
-public class RestrictionsController extends ModuleListener {
+public class RestrictionsController extends ListenerModule {
 
     /**
      * Removes endless potions in case they have some
