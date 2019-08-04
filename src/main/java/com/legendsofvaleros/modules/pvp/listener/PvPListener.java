@@ -18,58 +18,68 @@ public class PvPListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerDamagePlayer(CombatEngineDamageEvent event) {
-        if(event.isCancelled()) return;
+        if (event.isCancelled()) {
+            return;
+        }
 
-        if(event.getAttacker() == null) return;
+        if (event.getAttacker() == null) {
+            return;
+        }
 
-        if (!event.getAttacker().isPlayer() || !event.getDamaged().isPlayer()) return;
+        if (!event.getAttacker().isPlayer() || !event.getDamaged().isPlayer()) {
+            return;
+        }
 
-        if (!Characters.isPlayerCharacterLoaded((Player)event.getDamaged().getLivingEntity())) return;
-        if (!Characters.isPlayerCharacterLoaded((Player)event.getAttacker().getLivingEntity())) return;
+        if (!Characters.isPlayerCharacterLoaded((Player) event.getDamaged().getLivingEntity())) {
+            return;
+        }
+        if (!Characters.isPlayerCharacterLoaded((Player) event.getAttacker().getLivingEntity())) {
+            return;
+        }
 
         // If PvP is disabled, cancel it. Duh.
-        if(!pvp.isPvPEnabled()) { event.setCancelled(true); }
+        if (!pvp.isPvPEnabled()) {
+            event.setCancelled(true);
+        }
 
         // We still need to check if PvP is allowed. (For duels and such)
-        PvPCheckEvent pvp = new PvPCheckEvent((Player)event.getAttacker().getLivingEntity(), (Player)event.getDamaged().getLivingEntity(), null);
-        Bukkit.getPluginManager().callEvent(pvp);
+        PvPCheckEvent pvpCE = new PvPCheckEvent((Player) event.getAttacker().getLivingEntity(), (Player) event.getDamaged().getLivingEntity(), null);
+        Bukkit.getPluginManager().callEvent(pvpCE);
 
-        if(pvp.isCancelled())
+        if (pvpCE.isCancelled()) {
             event.setCancelled(true);
-        else{
+        } else {
             // If the damage event is not cancelled, add the PvP modifier.
             event.newDamageModifierBuilder("PvP")
                     .setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
                     .setValue(PvPController.DAMAGE_MULTIPLIER)
                     .build();
         }
-
-        /*if(!attackerToggle.isEnabled() || !targetToggle.isEnabled() || attackerToggle.getPriority() != targetToggle.getPriority()) {
-            event.setCancelled(true);
-            return;
-        }*/
     }
 
     @EventHandler
-    public void onEntityTargetted(SkillTargetEvent event) {
+    public void onEntityTargeted(SkillTargetEvent event) {
         // Ignore "good" spells. We only care about harmful attacks.
-        if(event.getSkill().getType() != Skill.Type.HARMFUL)
+        if (event.getSkill().getType() != Skill.Type.HARMFUL)
             return;
 
         if (!event.getUser().isPlayer() || !event.getTarget().isPlayer()) return;
 
-        if (!Characters.isPlayerCharacterLoaded((Player)event.getUser().getLivingEntity())) return;
-        if (!Characters.isPlayerCharacterLoaded((Player)event.getTarget().getLivingEntity())) return;
+        if (!Characters.isPlayerCharacterLoaded((Player) event.getUser().getLivingEntity())) return;
+        if (!Characters.isPlayerCharacterLoaded((Player) event.getTarget().getLivingEntity())) return;
 
         // If PvP is disabled, cancel it. Duh.
-        if(!pvp.isPvPEnabled()) { event.setCancelled(true); }
+        if (!pvp.isPvPEnabled()) {
+            event.setCancelled(true);
+        }
 
         // We still need to check if PvP is allowed. (For duels and such)
-        PvPCheckEvent pvp = new PvPCheckEvent((Player)event.getUser().getLivingEntity(), (Player)event.getTarget().getLivingEntity(), event.getSkill());
-        Bukkit.getPluginManager().callEvent(pvp);
+        PvPCheckEvent pvpCE = new PvPCheckEvent((Player) event.getUser().getLivingEntity(), (Player) event.getTarget().getLivingEntity(), event.getSkill());
+        Bukkit.getPluginManager().callEvent(pvpCE);
 
         // PvP is disabled! Don't target the player!
-        if(pvp.isCancelled())
+        if (pvpCE.isCancelled()) {
             event.setCancelled(true);
+        }
     }
 }

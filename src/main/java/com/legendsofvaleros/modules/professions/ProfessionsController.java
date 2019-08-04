@@ -39,7 +39,7 @@ import java.util.List;
 public class ProfessionsController extends ProfessionsAPI {
 
     private static ProfessionsController instance;
-    public ArrayList<PlayerCharacter> editModePlayers = new ArrayList<>();
+    public List<PlayerCharacter> editModePlayers = new ArrayList<>();
 
     public static ProfessionsController getInstance() {
         if (instance == null) {
@@ -50,8 +50,8 @@ public class ProfessionsController extends ProfessionsAPI {
 
     @Override
     public void onLoad() {
-        instance = this;
         super.onLoad();
+        instance = this;
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new NodeEditCommand());
 
@@ -72,9 +72,9 @@ public class ProfessionsController extends ProfessionsAPI {
                 node.removeGlowing();
             }
         }
-        super.onUnload();
-
         instance = null;
+
+        super.onUnload();
     }
 
     @EventHandler
@@ -218,12 +218,13 @@ public class ProfessionsController extends ProfessionsAPI {
         event.getEntity().remove();
     }
 
+
     @EventHandler
-    public void onCharacterStartLoading(PlayerCharacterStartLoadingEvent event) {
-        PhaseLock lock = event.getLock("Profession");
+    public void onCharacterLoad(PlayerCharacterStartLoadingEvent event) {
+        PhaseLock lock = event.getLock("sdsdadsad");
 
         onLogin(event.getPlayerCharacter().getUniqueCharacterId())
-                .onFailure((err) -> {
+                .onFailure(err -> {
                     MessageUtil.sendSevereException(ProfessionsController.getInstance(), event.getPlayer(), err);
                     getScheduler().executeInSpigotCircle(new InternalTask(() -> {
                         event.getPlayer().kickPlayer("Failed loading PlayerProfession - If this error persists, try contacting the support");
@@ -235,13 +236,13 @@ public class ProfessionsController extends ProfessionsAPI {
     @EventHandler
     public void onCharacterLogout(PlayerCharacterLogoutEvent event) {
         onLogout(event.getPlayerCharacter().getUniqueCharacterId())
-                .onFailure((err) -> MessageUtil.sendSevereException(ProfessionsController.getInstance(), event.getPlayer(), err));
+                .onFailure(err -> MessageUtil.sendSevereException(ProfessionsController.getInstance(), event.getPlayer(), err));
     }
 
     @EventHandler
     public void onCharacterRemoved(PlayerCharacterRemoveEvent event) {
         onDelete(event.getPlayerCharacter().getUniqueCharacterId())
-                .onFailure((err) -> MessageUtil.sendSevereException(ProfessionsController.getInstance(), event.getPlayer(), err));
+                .onFailure(err -> MessageUtil.sendSevereException(ProfessionsController.getInstance(), event.getPlayer(), err));
     }
 
 }

@@ -34,19 +34,14 @@ public class ProfessionsAPI extends ListenerModule {
 
     }
 
-    private ProfessionsAPI.RPC rpc;
+    private RPC rpc;
     public Map<String, List<GatheringNode>> zoneGatheringNodes = new HashMap<>();
     private final Map<CharacterId, PlayerProfession> playerProfessionsMap = new HashMap<>();
 
     @Override
-    public void onPostLoad() {
-        super.onPostLoad();
-        this.rpc = APIController.create(ProfessionsAPI.RPC.class);
-    }
-
-    @Override
     public void onLoad() {
         super.onLoad();
+        this.rpc = APIController.create(RPC.class);
     }
 
     /**
@@ -115,7 +110,7 @@ public class ProfessionsAPI extends ListenerModule {
      * @param characterId
      * @return
      */
-    protected Promise<PlayerProfession> onLogin(CharacterId characterId) {
+    public Promise<PlayerProfession> onLogin(CharacterId characterId) {
         Promise<PlayerProfession> promise = rpc.getPlayerProfessions(characterId);
 
         promise.onSuccess(playerProfessions -> {
@@ -131,7 +126,7 @@ public class ProfessionsAPI extends ListenerModule {
      * @param characterId
      * @return
      */
-    protected Promise<Boolean> onLogout(CharacterId characterId) {
+    public Promise<Boolean> onLogout(CharacterId characterId) {
         PlayerProfession playerProfession = playerProfessionsMap.remove(characterId);
 
         if (playerProfession == null) {
@@ -145,7 +140,7 @@ public class ProfessionsAPI extends ListenerModule {
      * @param characterId
      * @return
      */
-    protected Promise<Boolean> onDelete(CharacterId characterId) {
+    public Promise<Boolean> onDelete(CharacterId characterId) {
         return rpc.deletePlayerProfessions(characterId);
     }
 }

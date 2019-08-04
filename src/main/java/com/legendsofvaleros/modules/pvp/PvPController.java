@@ -22,7 +22,11 @@ public class PvPController extends Module {
 
     public static String HONOR_ID = "honor";
     public static Currency HONOR = new Currency() {
-        @Override public String getName() { return "Honor"; }
+        @Override
+        public String getName() {
+            return " Honor";
+        }
+
         @Override
         public String getDisplay(long amount) {
             return (amount == 0 ? null : ChatColor.BOLD + "" + ChatColor.BLUE + "✝ " + amount);
@@ -30,10 +34,16 @@ public class PvPController extends Module {
     };
 
     private static PvPController instance;
-    public static PvPController getInstance() { return instance; }
+
+    public static PvPController getInstance() {
+        return instance;
+    }
 
     private boolean enabled;
-    public boolean isPvPEnabled() { return enabled; }
+
+    public boolean isPvPEnabled() {
+        return enabled;
+    }
 
     @Override
     public void onLoad() {
