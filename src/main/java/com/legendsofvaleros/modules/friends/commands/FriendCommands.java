@@ -29,6 +29,10 @@ public class FriendCommands extends BaseCommand {
             MessageUtil.sendError(sender, target.getDisplayName() + " is not online.");
             return;
         }
+        if (player.getPlayer().equals(sender)) {
+            MessageUtil.sendError(sender, "You can't send yourself a friend request!");
+            return;
+        }
         if (FriendsController.getInstance().areFriends(sender, target)) {
             MessageUtil.sendError(sender, "You are already friends with " + ChatColor.UNDERLINE + target.getDisplayName());
             return;

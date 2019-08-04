@@ -101,7 +101,7 @@ public class FriendsController extends FriendsAPI {
      * @return areFriends
      */
     public boolean areFriends(Player p1, Player p2) {
-        return playerFriendsMap.get(p1.getUniqueId()).contains(p2.getUniqueId()) || playerFriendsMap.get(p2.getUniqueId()).contains(p1.getUniqueId());
+        return areFriends(p1.getUniqueId(), p2.getUniqueId());
     }
 
 
@@ -112,7 +112,18 @@ public class FriendsController extends FriendsAPI {
      * @return areFriends
      */
     public boolean areFriends(UUID p1, UUID p2) {
-        return playerFriendsMap.get(p1).contains(p2) || playerFriendsMap.get(p2).contains(p1);
+        if (playerFriendsMap.containsKey(p1) && playerFriendsMap.containsKey(p2)) {
+            return playerFriendsMap.get(p1).contains(p2) || playerFriendsMap.get(p2).contains(p1);
+        }
+
+        if (playerFriendsMap.containsKey(p1)) {
+            return playerFriendsMap.get(p1).contains(p2);
+        }
+
+        if (playerFriendsMap.containsKey(p2)) {
+            return playerFriendsMap.get(p2).contains(p1);
+        }
+        return false;
     }
 
     @EventHandler
