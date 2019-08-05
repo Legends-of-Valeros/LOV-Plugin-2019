@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.queue;
 
 import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.modules.arena.Arena;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.entity.Player;
 
@@ -29,7 +30,8 @@ public class QueueController extends ListenerModule {
         super.onUnload();
     }
 
-    public <T> boolean registerQueue(Queue<T> queue) {
+    public <T> boolean registerQueue(Class<T> cl, int minPlayer) {
+        Queue queue = new Queue<T>(minPlayer);
         if (queues.contains(queue)) {
             MessageUtil.sendException(this, "Could not add queue " + queue.getQueueName() + ". Queue already exists!");
             return false;
@@ -37,39 +39,53 @@ public class QueueController extends ListenerModule {
         return queues.add(queue);
     }
 
-    public boolean joinQueue(Class clazz) {
+    public boolean joinQueue(Class clazz, Player player) {
         // TODO
         return true;
     }
 
-    public boolean joinQueue(Queue queue) {
+    public boolean joinQueue(Queue queue, Player player) {
         // TODO
         return true;
     }
 
-    public boolean joinQueue(String queueName) {
+    public boolean joinQueue(String queueName, Player player) {
         // TODO
         return true;
     }
 
-    public boolean leaveQueue(Class clazz) {
+    public boolean leaveQueue(Class clazz, Player player) {
         // TODO
         return true;
     }
 
-    public boolean leaveQueue(Queue queue) {
+    public boolean leaveQueue(Queue queue, Player player) {
         // TODO
         return true;
     }
 
-    public boolean leaveQueue(String queueName) {
+    public boolean leaveQueue(String queueName, Player player) {
         // TODO
         return true;
     }
 
-    public boolean isInQueue(Player player) {
-        // TODO
-        return true;
+    /**
+     * Returns if a player is in the given queue
+     * @param player
+     * @param queueName
+     * @return
+     */
+    public boolean isInQueue(Player player, String queueName) {
+        return queues.stream().filter(q -> q.getQueuedPlayers().contains(player)).filter(queue1 -> queue1.getQueueName().equals(queueName)).findAny().orElse(null) != null;
+    }
+
+    /**
+     * Returns a player's queue, null otherwise
+     * @param player
+     * @return
+     */
+    public Queue getPlayerQueue(Player player) {
+        return queues.stream().filter(q -> q.getQueuedPlayers().contains(player)).findAny().orElse(null);
     }
 
 
