@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.professions;
 
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
@@ -36,6 +37,7 @@ import java.util.List;
 /**
  * Created by Crystall on 02/12/2019
  */
+@DependsOn(ZonesController.class)
 public class ProfessionsController extends ProfessionsAPI {
 
     private static ProfessionsController instance;
@@ -55,14 +57,14 @@ public class ProfessionsController extends ProfessionsAPI {
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new NodeEditCommand());
 
-        getScheduler().executeInMyCircleTimer(() -> {
-            for (List<GatheringNode> nodes : this.zoneGatheringNodes.values()) {
-                for (GatheringNode node : nodes) {
-                    node.removeGlowing();
-                }
-            }
-            //TODO get the nodes that got destroyed and respawn them
-        }, 20L, 20L);
+//        getScheduler().executeInMyCircleTimer(() -> {
+//            for (List<GatheringNode> nodes : this.zoneGatheringNodes.values()) {
+//                for (GatheringNode node : nodes) {
+//                    node.removeGlowing();
+//                }
+//            }
+//            //TODO get the nodes that got destroyed and respawn them
+//        }, 20L, 20L);
     }
 
     @Override
@@ -73,7 +75,6 @@ public class ProfessionsController extends ProfessionsAPI {
             }
         }
         instance = null;
-
         super.onUnload();
     }
 
@@ -221,7 +222,7 @@ public class ProfessionsController extends ProfessionsAPI {
 
     @EventHandler
     public void onCharacterLoad(PlayerCharacterStartLoadingEvent event) {
-        PhaseLock lock = event.getLock("sdsdadsad");
+        PhaseLock lock = event.getLock("Professions");
 
         onLogin(event.getPlayerCharacter().getUniqueCharacterId())
                 .onFailure(err -> {

@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.zones.event;
 import com.legendsofvaleros.modules.zones.core.Zone;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 public class ZoneDeactivateEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
@@ -17,6 +18,7 @@ public class ZoneDeactivateEvent extends Event {
         this.zone = zone;
     }
 
+    @Override @NotNull
     public HandlerList getHandlers() {
         return handlers;
     }

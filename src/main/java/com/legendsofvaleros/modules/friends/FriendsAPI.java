@@ -18,13 +18,13 @@ public class FriendsAPI extends ListenerModule {
         Promise<Boolean> deleteFriend(UUID player, UUID friend);
     }
 
-    private FriendsAPI.RPC rpc;
+    private RPC rpc;
     Map<UUID, List<UUID>> playerFriendsMap = new HashMap<>();
 
     @Override
     public void onPostLoad() {
         super.onPostLoad();
-        this.rpc = APIController.create(FriendsAPI.RPC.class);
+        this.rpc = APIController.create(RPC.class);
     }
 
     @Override

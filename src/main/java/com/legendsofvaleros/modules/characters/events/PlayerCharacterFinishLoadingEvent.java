@@ -14,26 +14,26 @@ import org.bukkit.event.HandlerList;
  */
 public class PlayerCharacterFinishLoadingEvent extends PlayerCharacterEvent {
 
-	private static final HandlerList handlers = new HandlerList();
+    private static final HandlerList handlers = new HandlerList();
 
-	private final boolean firstLogin;
+    private final boolean firstLogin;
 
-	public PlayerCharacterFinishLoadingEvent(PlayerCharacter playerCharacter, boolean firstLogin) {
-		super(playerCharacter);
-		this.firstLogin = firstLogin;
-	}
+    public PlayerCharacterFinishLoadingEvent(PlayerCharacter playerCharacter, boolean firstLogin) {
+        super(playerCharacter);
+        this.firstLogin = firstLogin;
+    }
 
-	public boolean isFirstLogin() {
-		return firstLogin;
-	}
+    public boolean isFirstLogin() {
+        return firstLogin;
+    }
 
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
 }

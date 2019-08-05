@@ -6,16 +6,26 @@ import com.legendsofvaleros.modules.gear.core.Gear;
 import org.bukkit.event.HandlerList;
 
 public class GearPickupEvent extends PlayerCharacterEvent {
-	private static final HandlerList handlers = new HandlerList();
-	@Override public HandlerList getHandlers() { return handlers; }
-	public static HandlerList getHandlerList() { return handlers; }
-	
-	private final Gear.Instance instance;
-	public Gear.Instance getItem() { return instance; }
-	
-	public GearPickupEvent(PlayerCharacter who, Gear.Instance instance) {
-		super(who);
-		
-		this.instance = instance;
-	}
+    private static final HandlerList handlers = new HandlerList();
+
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
+    private final Gear.Instance instance;
+
+    public Gear.Instance getItem() {
+        return instance;
+    }
+
+    public GearPickupEvent(PlayerCharacter who, Gear.Instance instance) {
+        super(who);
+
+        this.instance = instance;
+    }
 }

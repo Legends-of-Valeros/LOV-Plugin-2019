@@ -7,19 +7,43 @@ import org.bukkit.event.HandlerList;
 
 public class SkillTargetEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
-    @Override public HandlerList getHandlers() { return handlers; }
-    public static HandlerList getHandlerList() { return handlers; }
+
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
     private boolean cancelled = false;
-    @Override public boolean isCancelled() { return cancelled; }
-    @Override public void setCancelled(boolean cancel) { cancelled = cancel; }
+
+    @Override
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void setCancelled(boolean cancel) {
+        cancelled = cancel;
+    }
 
     final Skill skill;
-    public Skill getSkill() { return skill; }
+
+    public Skill getSkill() {
+        return skill;
+    }
 
     final CombatEntity user, target;
-    public CombatEntity getUser() { return user; }
-    public CombatEntity getTarget() { return target; }
+
+    public CombatEntity getUser() {
+        return user;
+    }
+
+    public CombatEntity getTarget() {
+        return target;
+    }
 
     public SkillTargetEvent(Skill skill, CombatEntity user, CombatEntity target) {
         this.skill = skill;

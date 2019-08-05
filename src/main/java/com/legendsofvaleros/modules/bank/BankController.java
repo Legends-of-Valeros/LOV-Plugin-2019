@@ -20,13 +20,21 @@ import java.util.Set;
 @ModuleInfo(name = "Banks", info = "")
 public class BankController extends BankAPI {
     private static BankController instance;
-    public static BankController getInstance() { return instance; }
+
+    public static BankController getInstance() {
+        return instance;
+    }
 
     private static final Map<String, Currency> currencies = new HashMap<>();
+
     public Currency getCurrency(String id) {
         return currencies.get(id);
     }
-    public Set<Map.Entry<String, Currency>> getCurrencies() { return currencies.entrySet(); }
+
+    public Set<Map.Entry<String, Currency>> getCurrencies() {
+        return currencies.entrySet();
+    }
+
     public static void registerCurrency(String id, Currency currency) {
         if (currencies.containsKey(id))
             throw new RuntimeException("A currency with that ID is already registered.");

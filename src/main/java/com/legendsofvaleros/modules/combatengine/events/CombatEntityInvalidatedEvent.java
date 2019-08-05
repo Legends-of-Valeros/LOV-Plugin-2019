@@ -21,52 +21,49 @@ import java.util.UUID;
  */
 public class CombatEntityInvalidatedEvent extends Event {
 
-  private static final HandlerList handlers = new HandlerList();
+    private static final HandlerList handlers = new HandlerList();
 
-  private final UUID uid;
-  private final CombatEntity entity;
+    private final UUID uid;
+    private final CombatEntity entity;
 
-  /**
-   * Class constructor.
-   * 
-   * @param uid The unique name of the entity whose combat object was invalidated.
-   * @param entity The object that was invalidated.
-   */
-  public CombatEntityInvalidatedEvent(UUID uid, CombatEntity entity) {
-    if (uid == null || entity == null) {
-      throw new IllegalArgumentException("uid and combatentity cannot be null");
+    /**
+     * Class constructor.
+     * @param uid    The unique name of the entity whose combat object was invalidated.
+     * @param entity The object that was invalidated.
+     */
+    public CombatEntityInvalidatedEvent(UUID uid, CombatEntity entity) {
+        if (uid == null || entity == null) {
+            throw new IllegalArgumentException("uid and combatentity cannot be null");
+        }
+        this.uid = uid;
+        this.entity = entity;
     }
-    this.uid = uid;
-    this.entity = entity;
-  }
 
-  /**
-   * Gets the unique name of the entity whose combat object was invalidated.
-   * 
-   * @return The invalidated combat object's unique name.
-   */
-  public UUID getInvalidatedUuid() {
-    return uid;
-  }
+    /**
+     * Gets the unique name of the entity whose combat object was invalidated.
+     * @return The invalidated combat object's unique name.
+     */
+    public UUID getInvalidatedUuid() {
+        return uid;
+    }
 
-  /**
-   * Gets the object that was invalidated.
-   * <p>
-   * This object should no longer be used or stored after this point.
-   * 
-   * @return The invalidated object.
-   */
-  public CombatEntity getInvalidated() {
-    return entity;
-  }
+    /**
+     * Gets the object that was invalidated.
+     * <p>
+     * This object should no longer be used or stored after this point.
+     * @return The invalidated object.
+     */
+    public CombatEntity getInvalidated() {
+        return entity;
+    }
 
-  @Override
-  public HandlerList getHandlers() {
-    return handlers;
-  }
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 
-  public static HandlerList getHandlerList() {
-    return handlers;
-  }
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
 }

@@ -16,74 +16,71 @@ import org.bukkit.event.HandlerList;
  */
 public class PlayerCharacterCombatLogoutEvent extends PlayerCharacterEvent implements Cancellable {
 
-  private static final HandlerList handlers = new HandlerList();
+    private static final HandlerList handlers = new HandlerList();
 
-  private final boolean pvp;
-  private final boolean pve;
+    private final boolean pvp;
+    private final boolean pve;
 
-  private boolean cancelled;
+    private boolean cancelled;
 
-  /**
-   * Class constructor.
-   * 
-   * @param combatLogged The player-character that logged out during combat.
-   * @param fromPvp <code>true</code> if the player-character logged out during PvP combat. Else
-   *        <code>false</code>.
-   * @param fromPve <code>true</code> if the player-character logged out during PvE combat. Else
-   *        <code>false</code>.
-   */
-  public PlayerCharacterCombatLogoutEvent(PlayerCharacter combatLogged, boolean fromPvp,
-      boolean fromPve) {
-    super(combatLogged);
-    this.pvp = fromPvp;
-    this.pve = fromPve;
-  }
+    /**
+     * Class constructor.
+     * @param combatLogged The player-character that logged out during combat.
+     * @param fromPvp      <code>true</code> if the player-character logged out during PvP combat. Else
+     *                     <code>false</code>.
+     * @param fromPve      <code>true</code> if the player-character logged out during PvE combat. Else
+     *                     <code>false</code>.
+     */
+    public PlayerCharacterCombatLogoutEvent(PlayerCharacter combatLogged, boolean fromPvp,
+                                            boolean fromPve) {
+        super(combatLogged);
+        this.pvp = fromPvp;
+        this.pve = fromPve;
+    }
 
-  /**
-   * Gets whether the player-character that logged out was in PvP combat at the time they combat
-   * logged.
-   * <p>
-   * It is possible for a player-character to be considered in <i>both</i> PvP and PvE combat at the
-   * time they logged out.
-   * 
-   * @return <code>true</code> if the player-character that logged out was recently fighting a
-   *         player.
-   */
-  public boolean wasInPvp() {
-    return pvp;
-  }
+    /**
+     * Gets whether the player-character that logged out was in PvP combat at the time they combat
+     * logged.
+     * <p>
+     * It is possible for a player-character to be considered in <i>both</i> PvP and PvE combat at the
+     * time they logged out.
+     * @return <code>true</code> if the player-character that logged out was recently fighting a
+     * player.
+     */
+    public boolean wasInPvp() {
+        return pvp;
+    }
 
-  /**
-   * Gets whether the player-character that logged out was in PvE combat at the time they combat
-   * logged.
-   * <p>
-   * It is possible for a player-character to be considered in <i>both</i> PvP and PvE combat at the
-   * time they logged out.
-   * 
-   * @return <code>true</code> if the player-character that logged out was recently in combat with a
-   *         mob or the environment.
-   */
-  public boolean wasInPve() {
-    return pve;
-  }
+    /**
+     * Gets whether the player-character that logged out was in PvE combat at the time they combat
+     * logged.
+     * <p>
+     * It is possible for a player-character to be considered in <i>both</i> PvP and PvE combat at the
+     * time they logged out.
+     * @return <code>true</code> if the player-character that logged out was recently in combat with a
+     * mob or the environment.
+     */
+    public boolean wasInPve() {
+        return pve;
+    }
 
-  @Override
-  public boolean isCancelled() {
-    return cancelled;
-  }
+    @Override
+    public boolean isCancelled() {
+        return cancelled;
+    }
 
-  @Override
-  public void setCancelled(boolean cancel) {
-    this.cancelled = cancel;
-  }
+    @Override
+    public void setCancelled(boolean cancel) {
+        this.cancelled = cancel;
+    }
 
-  @Override
-  public HandlerList getHandlers() {
-    return handlers;
-  }
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 
-  public static HandlerList getHandlerList() {
-    return handlers;
-  }
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
 }

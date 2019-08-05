@@ -115,8 +115,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
     public boolean onCharacterSelected(Player player, CharacterId characterId) {
         PlayerCharacters characters = Characters.getInstance().getCharacters(player);
         if (characters == null) {
-            Characters.getInstance().getLogger()
-                    .severe("A player tried to select a character but no character data was found for them");
+            Characters.getInstance().getLogger().severe("A player tried to select a character but no character data was found for them");
             return false;
         }
 
@@ -237,8 +236,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
                 tp.start(load.getUniqueCharacterId(), loadingCallback);
 
                 // locks the player during the loading process and clears any previous locks
-                PlayerLock previousLock =
-                        locks.put(load.getPlayerId(), PlayerLock.lockPlayer(load.getPlayer()));
+                PlayerLock previousLock = locks.put(load.getPlayerId(), PlayerLock.lockPlayer(load.getPlayer()));
                 if (previousLock != null) {
                     previousLock.release();
                 }
