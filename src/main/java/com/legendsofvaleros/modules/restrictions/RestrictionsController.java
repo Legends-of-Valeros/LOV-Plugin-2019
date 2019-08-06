@@ -48,7 +48,7 @@ public class RestrictionsController extends ListenerModule {
      */
     @EventHandler
     public void onChannelRegister(PlayerRegisterChannelEvent evt) {
-        if (! evt.getChannel().equalsIgnoreCase("WDL|INIT")) {
+        if (!evt.getChannel().equalsIgnoreCase("WDL|INIT")) {
             return;
         }
         evt.getPlayer().kickPlayer(ChatColor.RED + "Please disable World Downloader.");
@@ -63,7 +63,7 @@ public class RestrictionsController extends ListenerModule {
     public void onVehicleMove(VehicleMoveEvent evt) {
         String fly = evt.getVehicle().getPassengers().stream().filter(Player.class::isInstance).map(Entity::getName)
                 .collect(Collectors.joining(", "));
-        if (evt.getVehicle().getType() == EntityType.BOAT && ! evt.getFrom().getBlock().isLiquid() && fly.length() > 0
+        if (evt.getVehicle().getType() == EntityType.BOAT && !evt.getFrom().getBlock().isLiquid() && fly.length() > 0
                 && evt.getTo().getY() > evt.getFrom().getY() && evt.getVehicle().getVelocity().getY() <= 0) {
             Discord.sendLogMessage(getName(), "**[Anti-Cheat]** " + ChatColor.GRAY + fly + " may be using BoatFly.");
         }
@@ -79,6 +79,16 @@ public class RestrictionsController extends ListenerModule {
             evt.setCancelled(true);
             Discord.sendLogMessage(getName(), "**" + evt.getPlayer().getName() + "** tried to enter " + evt.getNewGameMode().name().toLowerCase() + "! This should not happen.");
         }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerSwimming(EntityToggleSwimEvent event) {
+        event.setCancelled(true);
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerGlide(EntityToggleGlideEvent event) {
+        event.setCancelled(true);
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -350,7 +360,7 @@ public class RestrictionsController extends ListenerModule {
      */
     @EventHandler(ignoreCancelled = true)
     public void onPortal(EntityPortalEvent evt) {
-        evt.setCancelled(! (evt.getEntity() instanceof Player));
+        evt.setCancelled(!(evt.getEntity() instanceof Player));
     }
 
     /**
