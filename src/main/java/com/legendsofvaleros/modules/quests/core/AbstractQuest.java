@@ -28,25 +28,50 @@ public abstract class AbstractQuest implements IQuest {
      * Due to quests being instantiated once, we need to make sure the players progress is saved.
      */
     private transient HashMap<CharacterId, QuestProgressPack> progress = new HashMap<>();
-    @Override public Set<Map.Entry<CharacterId, QuestProgressPack>> getProgressions() { return progress.entrySet(); }
-    @Override public QuestProgressPack getProgress(PlayerCharacter pc) { return progress.get(pc.getUniqueCharacterId()); }
-    @Override public void loadProgress(PlayerCharacter pc, QuestProgressPack pack) { progress.put(pc.getUniqueCharacterId(), pack); }
+
+    @Override public Set<Map.Entry<CharacterId, QuestProgressPack>> getProgressions() {
+        return progress.entrySet();
+    }
+
+    @Override public QuestProgressPack getProgress(PlayerCharacter pc) {
+        return progress.get(pc.getUniqueCharacterId());
+    }
+
+    @Override public void loadProgress(PlayerCharacter pc, QuestProgressPack pack) {
+        progress.put(pc.getUniqueCharacterId(), pack);
+    }
+
     @Override public boolean hasProgress(PlayerCharacter pc) {
         return progress.containsKey(pc.getUniqueCharacterId());
     }
-    @Override public void clearProgress(PlayerCharacter pc) { progress.remove(pc.getUniqueCharacterId()); }
+
+    @Override public void clearProgress(PlayerCharacter pc) {
+        progress.remove(pc.getUniqueCharacterId());
+    }
 
     private String id;
-    @Override public String getId() { return id; }
+
+    @Override public String getId() {
+        return id;
+    }
 
     private String type;
-    @Override public String getType() { return type; }
+
+    @Override public String getType() {
+        return type;
+    }
 
     private final List<IQuestPrerequisite> prerequisites = new ArrayList<>();
-    @Override public List<IQuestPrerequisite> getPrerequisites() { return prerequisites; }
+
+    @Override public List<IQuestPrerequisite> getPrerequisites() {
+        return prerequisites;
+    }
 
     private QuestActions actions;
-    @Override public QuestActions getActions() { return actions; }
+
+    @Override public QuestActions getActions() {
+        return actions;
+    }
 
     @Override
     public void testResumeActions(PlayerCharacter pc) {
@@ -57,21 +82,37 @@ public abstract class AbstractQuest implements IQuest {
     }
 
     private boolean forced = false;
-    @Override public boolean isForced() { return forced; }
+
+    @Override public boolean isForced() {
+        return forced;
+    }
 
     private boolean repeatable = false;
-    @Override public boolean isRepeatable() { return repeatable; }
+
+    @Override public boolean isRepeatable() {
+        return repeatable;
+    }
 
     private String name;
-    @Override public String getName() { return name; }
+
+    @Override public String getName() {
+        return name;
+    }
 
     private String description;
-    @Override public String getDescription() { return description; }
+
+    @Override public String getDescription() {
+        return description;
+    }
 
     private QuestObjectives objectives;
-    public QuestObjectives getObjectives() { return objectives; }
 
-    public AbstractQuest() { }
+    public QuestObjectives getObjectives() {
+        return objectives;
+    }
+
+    public AbstractQuest() {
+    }
 
     @Override
     public void onAccept(PlayerCharacter pc) {
@@ -98,8 +139,8 @@ public abstract class AbstractQuest implements IQuest {
     @Override
     public IQuestAction[] getActionGroup(PlayerCharacter pc) {
         Integer i = getActionGroupI(pc);
-        if(i == null) return null;
-        if(i == -1) return actions.accept;
+        if (i == null) return null;
+        if (i == -1) return actions.accept;
         return actions.groups[i];
     }
 
@@ -113,7 +154,7 @@ public abstract class AbstractQuest implements IQuest {
     @Override
     public IQuestObjective<?>[] getObjectiveGroup(PlayerCharacter pc) {
         Integer i = getObjectiveGroupI(pc);
-        if(i == null) return null;
+        if (i == null) return null;
         return objectives.groups[i];
     }
 
@@ -122,7 +163,7 @@ public abstract class AbstractQuest implements IQuest {
         QuestController.getInstance().getScheduler().executeInSpigotCircle(() -> {
             Integer currentGroup = getObjectiveGroupI(pc);
 
-            if(currentGroup == null && group != null)
+            if (currentGroup == null && group != null)
                 throw new IllegalStateException(pc.getPlayer().getName() + "(" + pc.getUniqueCharacterId() + ") attempted to go to group " + group + " from " + currentGroup + " in quest '" + getId() + "'! This should never happen!");
 
             // If the player is just now starting the quest
@@ -168,8 +209,9 @@ public abstract class AbstractQuest implements IQuest {
             clearProgress(pc);
             onCompleted(pc);
 
-            Bukkit.getPluginManager().callEvent(new QuestCompletedEvent(pc, this));
-
+            QuestController.getInstance().getScheduler().executeInSpigotCircle(() -> {
+                Bukkit.getPluginManager().callEvent(new QuestCompletedEvent(pc, this));
+            });
             return;
         }
 
@@ -189,7 +231,9 @@ public abstract class AbstractQuest implements IQuest {
             }
         }
 
-        Bukkit.getPluginManager().callEvent(new QuestObjectivesStartedEvent(pc, this, nextGroup == 0));
+        QuestController.getInstance().getScheduler().executeInSpigotCircle(() -> {
+            Bukkit.getPluginManager().callEvent(new QuestObjectivesStartedEvent(pc, this, nextGroup == 0));
+        });
 
         // Check if the new objective is already completed
         checkCompleted(pc);
