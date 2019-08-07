@@ -10,25 +10,26 @@ import org.bukkit.event.Event;
 
 @Aspect
 public class EventsAspect {
+
     @Around("@annotation(org.bukkit.event.EventHandler) && execution(* *(..))")
     public Object wrapEvents(ProceedingJoinPoint joinPoint) throws Throwable {
         long startTime = System.currentTimeMillis();
 
-        Event event = (Event)joinPoint.getArgs()[0];
+        Event event = (Event) joinPoint.getArgs()[0];
         Module module = Modules.getModule(joinPoint.getThis().getClass());
 
         Object returnObject;
 
         try {
             returnObject = joinPoint.proceed();
-        } catch(Throwable th) {
-            MessageUtil.sendSevereException(module, th);
+        } catch (Throwable th) {
+            MessageUtil.sendSevereException(module != null ? module.getName() : "", th);
             throw th;
         } finally {
             long tookTime = System.currentTimeMillis() - startTime;
 
-            if(module != null) {
-                if(module.getTimings() == null)
+            if (module != null) {
+                if (module.getTimings() == null)
                     module.getLogger().warning("Event timings for '" + module.getName() + "' is null!");
                 else
                     module.getTimings().calledEvent(event, tookTime);
