@@ -216,16 +216,17 @@ public class RestrictionsController extends ListenerModule {
                 event.setCancelled(true);
             }
             switch (event.getClickedBlock().getType()) {
-                //TODO replace legacy materials
-                case LEGACY_SOIL:
-                case LEGACY_CROPS:
+                case WHEAT:
+                case FARMLAND:
                 case CHEST:
                 case HOPPER:
                 case FURNACE:
-                case LEGACY_WORKBENCH:
+                case CRAFTING_TABLE:
                 case ANVIL:
+                case CHIPPED_ANVIL:
+                case DAMAGED_ANVIL:
                 case ENDER_CHEST:
-                case LEGACY_ENCHANTMENT_TABLE:
+                case ENCHANTING_TABLE:
                 case TRAPPED_CHEST:
                 case DISPENSER:
                 case DROPPER:
