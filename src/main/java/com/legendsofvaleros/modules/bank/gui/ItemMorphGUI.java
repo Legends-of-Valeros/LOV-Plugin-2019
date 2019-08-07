@@ -90,9 +90,12 @@ public abstract class ItemMorphGUI extends GUI {
                             return;
                         }
 
-                        items[event.getSlot()] = null;
-
                         Gear.Instance instance = Gear.Instance.fromStack(stack);
+                        items[event.getSlot()] = null;
+                        if (instance == null || !isValid(instance)) {
+                            event.setCancelled(true);
+                            return;
+                        }
                         cost -= getWorth(instance);
 
                         updateCost();
@@ -112,7 +115,6 @@ public abstract class ItemMorphGUI extends GUI {
                         }
 
                         items[event.getSlot()] = instance;
-
                         cost += getWorth(instance);
 
                         updateCost();
