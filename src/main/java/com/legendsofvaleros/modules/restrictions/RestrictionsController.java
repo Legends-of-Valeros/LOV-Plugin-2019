@@ -61,8 +61,7 @@ public class RestrictionsController extends ListenerModule {
      */
     @EventHandler
     public void onVehicleMove(VehicleMoveEvent evt) {
-        String fly = evt.getVehicle().getPassengers().stream().filter(Player.class::isInstance).map(Entity::getName)
-                .collect(Collectors.joining(", "));
+        String fly = evt.getVehicle().getPassengers().stream().filter(Player.class::isInstance).map(Entity::getName).collect(Collectors.joining(", "));
         if (evt.getVehicle().getType() == EntityType.BOAT && !evt.getFrom().getBlock().isLiquid() && fly.length() > 0
                 && evt.getTo().getY() > evt.getFrom().getY() && evt.getVehicle().getVelocity().getY() <= 0) {
             Discord.sendLogMessage(getName(), "**[Anti-Cheat]** " + ChatColor.GRAY + fly + " may be using BoatFly.");
@@ -77,14 +76,16 @@ public class RestrictionsController extends ListenerModule {
     public void onPlayerGameModeChange(PlayerGameModeChangeEvent evt) {
         if (LegendsOfValeros.getMode().equals(ServerMode.LIVE) && evt.getNewGameMode() == GameMode.CREATIVE) {
             evt.setCancelled(true);
-            Discord.sendLogMessage(getName(), "**" + evt.getPlayer().getName() + "** tried to enter " + evt.getNewGameMode().name().toLowerCase() + "! This should not happen.");
+            Discord.sendLogMessage(getName(), "" + evt.getPlayer().getName() + " tried to enter " + evt.getNewGameMode().name().toLowerCase() + "! This should not happen.");
         }
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerSwimming(EntityToggleSwimEvent event) {
         event.setCancelled(true);
+        ((Player) event.getEntity()).setSwimming(false);
     }
+
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerGlide(EntityToggleGlideEvent event) {
@@ -211,8 +212,7 @@ public class RestrictionsController extends ListenerModule {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onInteract(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.PHYSICAL) {
-            if (event.getClickedBlock().getType().name().endsWith("_SHULKER_BOX") ||
-                    event.getClickedBlock().getType().name().contains("DOOR")) {
+            if (event.getClickedBlock().getType().name().endsWith("_SHULKER_BOX")) {
                 event.setCancelled(true);
             }
             switch (event.getClickedBlock().getType()) {
