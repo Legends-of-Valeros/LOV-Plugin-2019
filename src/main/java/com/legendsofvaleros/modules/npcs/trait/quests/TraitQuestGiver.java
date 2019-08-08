@@ -19,7 +19,7 @@ import com.legendsofvaleros.modules.quests.event.QuestCompletedEvent;
 import com.legendsofvaleros.modules.quests.event.QuestStartedEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
-import com.legendsofvaleros.util.item.Model;
+import com.legendsofvaleros.util.model.Model;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

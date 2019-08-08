@@ -195,13 +195,10 @@ public class ItemListener implements Listener {
             if (gear == null) {
                 MessageUtil.sendError(e.getWhoClicked(), "Your item has morphed into... something.");
 
-                e.setCancelled(true);
                 Gear.Instance instance = GearController.ERROR_ITEM.newInstance();
                 instance.amount = e.getView().getCursor().getAmount();
                 e.getView().setCursor(instance.toStack());
-
                 e.setCancelled(true);
-
                 return;
             }
 

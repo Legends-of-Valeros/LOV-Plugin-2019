@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.playermenu;
+package com.legendsofvaleros.modules.playermenu.events;
 
 import com.codingforcookies.robert.slot.ISlotAction;
 import com.codingforcookies.robert.slot.Slot;
@@ -11,11 +11,11 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayerMenuOpenEvent extends PlayerEvent implements Cancellable {
+public class PlayerOptionsOpenEvent extends PlayerEvent implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
 
     @Override
-	public HandlerList getHandlers() {
+    public HandlerList getHandlers() {
         return handlers;
     }
 
@@ -26,19 +26,13 @@ public class PlayerMenuOpenEvent extends PlayerEvent implements Cancellable {
     boolean cancelled = false;
 
     @Override
-	public boolean isCancelled() {
+    public boolean isCancelled() {
         return cancelled;
     }
 
     @Override
-	public void setCancelled(boolean cancel) {
+    public void setCancelled(boolean cancel) {
         cancelled = cancel;
-    }
-
-    private final Player against;
-
-    public Player getClicked() {
-        return against;
     }
 
     private List<Slot> slots = new ArrayList<>();
@@ -51,8 +45,7 @@ public class PlayerMenuOpenEvent extends PlayerEvent implements Cancellable {
         slots.add(new Slot(stack, action));
     }
 
-    public PlayerMenuOpenEvent(Player player, Player against) {
+    public PlayerOptionsOpenEvent(Player player) {
         super(player);
-        this.against = against;
     }
 }

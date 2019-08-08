@@ -5,7 +5,7 @@ import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
 import com.legendsofvaleros.modules.characters.ui.CharacterSelectionListener;
-import com.legendsofvaleros.util.item.Model;
+import com.legendsofvaleros.util.model.Model;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;

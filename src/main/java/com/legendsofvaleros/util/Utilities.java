@@ -7,7 +7,7 @@ import com.legendsofvaleros.scheduler.InternalScheduler;
 import com.legendsofvaleros.scheduler.InternalTask;
 import com.legendsofvaleros.util.commands.LOVCommands;
 import com.legendsofvaleros.util.commands.TemporaryCommand;
-import com.legendsofvaleros.util.item.Model;
+import com.legendsofvaleros.util.model.Model;
 import com.legendsofvaleros.util.title.TitleUtil;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;

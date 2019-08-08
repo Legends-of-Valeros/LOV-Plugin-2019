@@ -9,7 +9,7 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.parties.PartiesController;
 import com.legendsofvaleros.modules.parties.commands.PartyCommands;
 import com.legendsofvaleros.modules.parties.core.PlayerParty;
-import com.legendsofvaleros.modules.playermenu.PlayerMenuOpenEvent;
+import com.legendsofvaleros.modules.playermenu.events.PlayerMenuOpenEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

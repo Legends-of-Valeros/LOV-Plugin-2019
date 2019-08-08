@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.skills.core.admin;
 
 import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.util.item.Model;
+import com.legendsofvaleros.util.model.Model;
 import org.bukkit.Material;
 
 public abstract class AdminSkill extends Skill {

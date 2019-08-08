@@ -10,9 +10,9 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
-import com.legendsofvaleros.modules.playermenu.options.PlayerOptionsOpenEvent;
+import com.legendsofvaleros.modules.playermenu.events.PlayerOptionsOpenEvent;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.item.Model;
+import com.legendsofvaleros.util.model.Model;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;

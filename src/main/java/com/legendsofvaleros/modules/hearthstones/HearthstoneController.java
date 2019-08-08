@@ -7,8 +7,8 @@ import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.hearthstones.core.HomePoint;
 import com.legendsofvaleros.modules.hearthstones.core.HomeTeleporter;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
-import com.legendsofvaleros.modules.playermenu.options.PlayerOptionsOpenEvent;
-import com.legendsofvaleros.util.item.Model;
+import com.legendsofvaleros.modules.playermenu.events.PlayerOptionsOpenEvent;
+import com.legendsofvaleros.util.model.Model;
 import org.bukkit.event.EventHandler;
 
 @DependsOn(CombatEngine.class)

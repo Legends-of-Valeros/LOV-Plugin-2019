@@ -4,7 +4,7 @@ import com.gmail.filoghost.holographicdisplays.api.line.ItemLine;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.npcs.nameplate.Nameplates;
-import com.legendsofvaleros.util.item.Model;
+import com.legendsofvaleros.util.model.Model;
 import net.citizensnpcs.api.trait.Trait;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;

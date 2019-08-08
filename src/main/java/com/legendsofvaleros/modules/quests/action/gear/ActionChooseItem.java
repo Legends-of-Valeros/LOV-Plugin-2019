@@ -9,7 +9,7 @@ import com.legendsofvaleros.modules.gear.core.ItemUtil;
 import com.legendsofvaleros.modules.quests.action.AbstractQuestAction;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
-import com.legendsofvaleros.util.item.Model;
+import com.legendsofvaleros.util.model.Model;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;

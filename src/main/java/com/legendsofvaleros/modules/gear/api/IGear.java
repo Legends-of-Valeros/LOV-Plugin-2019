@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.gear.api;
 
 import com.legendsofvaleros.modules.gear.core.GearRarity;
 import com.legendsofvaleros.modules.gear.core.GearType;
-import com.legendsofvaleros.util.item.Model;
+import com.legendsofvaleros.util.model.Model;
 
 public interface IGear {
     /**

@@ -9,7 +9,7 @@ import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.modules.skills.SkillsController;
 import com.legendsofvaleros.modules.skills.core.admin.AdminSkills;
 import com.legendsofvaleros.modules.skills.event.BindSkillEvent;
-import com.legendsofvaleros.util.item.Model;
+import com.legendsofvaleros.util.model.Model;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

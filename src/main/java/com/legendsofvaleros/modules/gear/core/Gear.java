@@ -14,7 +14,7 @@ import com.legendsofvaleros.modules.gear.component.GearComponentOrder;
 import com.legendsofvaleros.modules.gear.component.PersistMap;
 import com.legendsofvaleros.modules.gear.trigger.GearTrigger;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.item.Model;
+import com.legendsofvaleros.util.model.Model;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.graveyard.core;
 
 import com.codingforcookies.robert.core.GUI;
 import com.legendsofvaleros.modules.graveyard.GraveyardController;
-import com.legendsofvaleros.util.item.Model;
+import com.legendsofvaleros.util.model.Model;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;

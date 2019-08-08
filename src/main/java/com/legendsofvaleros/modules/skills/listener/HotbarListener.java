@@ -10,7 +10,7 @@ import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.modules.hotswitch.event.PlayerSwitchHotbarEvent;
 import com.legendsofvaleros.modules.hotswitch.event.PlayerUseHotbarEvent;
 import com.legendsofvaleros.modules.skills.SkillsController;
-import com.legendsofvaleros.util.item.Model;
+import com.legendsofvaleros.util.model.Model;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

@@ -10,7 +10,7 @@ import com.legendsofvaleros.modules.gear.component.skills.GearCharge;
 import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.gear.core.ItemUtil;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
-import com.legendsofvaleros.util.item.Model;
+import com.legendsofvaleros.util.model.Model;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
