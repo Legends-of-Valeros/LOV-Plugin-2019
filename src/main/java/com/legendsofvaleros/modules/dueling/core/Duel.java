@@ -134,6 +134,12 @@ public class Duel extends BukkitRunnable {
             player2CE.getStats().setRegeneratingStat(stat, p2Stats[stat.ordinal()]);
         }
 
+        //make sure player has max hunger
+        player1.setSaturation(20F);
+        player1.setFoodLevel(20);
+        player2.setSaturation(20F);
+        player2.setFoodLevel(20);
+
         hideBorder();
 
         DuelingController.getInstance().duels.remove(player1, player2);
