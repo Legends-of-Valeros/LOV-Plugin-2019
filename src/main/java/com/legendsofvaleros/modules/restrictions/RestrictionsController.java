@@ -212,10 +212,17 @@ public class RestrictionsController extends ListenerModule {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onInteract(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.PHYSICAL) {
-            if (event.getClickedBlock().getType().name().endsWith("_SHULKER_BOX")) {
-                event.setCancelled(true);
+            if (event.getClickedBlock() == null) {
+                return;
             }
-            switch (event.getClickedBlock().getType()) {
+            Material clickedType = event.getClickedBlock().getType();
+            if (clickedType.toString().endsWith("BUTTON") || clickedType.toString().endsWith("TRAPDOOR")
+                    || clickedType.toString().endsWith("PRESSURE_PLATE")
+                    || clickedType.name().endsWith("_SHULKER_BOX")) {
+                event.setCancelled(true);
+                return;
+            }
+            switch (clickedType) {
                 case WHEAT:
                 case FARMLAND:
                 case CHEST:
@@ -232,6 +239,8 @@ public class RestrictionsController extends ListenerModule {
                 case DROPPER:
                 case BREWING_STAND:
                 case FLOWER_POT:
+                case POTTED_CORNFLOWER:
+                case LEVER:
                     event.setCancelled(true);
                     break;
                 default:
@@ -257,6 +266,7 @@ public class RestrictionsController extends ListenerModule {
             evt.setCancelled(evt.getBlock().getWorld().getName().equalsIgnoreCase(LegendsOfValeros.WORLD_NAME));
         }
     }
+
 
     /**
      * @param evt
