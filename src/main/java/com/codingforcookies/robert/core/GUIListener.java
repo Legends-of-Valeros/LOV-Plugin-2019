@@ -54,11 +54,6 @@ public class GUIListener implements Listener {
     }
 
     @EventHandler
-    public void oninteract(InventoryInteractEvent event){
-        event.g
-    }
-
-    @EventHandler
     public void onInventoryDrag(InventoryDragEvent event) {
         if (!isGUI((Player) event.getWhoClicked(), event.getInventory())) {
             return;
