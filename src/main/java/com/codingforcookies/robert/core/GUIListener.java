@@ -55,25 +55,22 @@ public class GUIListener implements Listener {
 
     @EventHandler
     public void onInventoryDrag(InventoryDragEvent event) {
-        if (!isGUI((Player) event.getWhoClicked(), event.getInventory())) {
+        if (!isGUI((Player) event.getWhoClicked(), event.getInventory()))
             return;
-        }
 
         // Drag events are evil. Only allow """dragging""" if only one slot exists. Re-fire it as a normal click event.
         // TODO: Make drag events work like vanilla MC.
         if (event.getInventorySlots().size() == 1) {
             event.getView().setCursor(event.getOldCursor());
 
-            InventoryClickEvent ice = new InventoryClickEvent(event.getView(),
+            InventoryClickEvent ice;
+            onInventoryClick(ice = new InventoryClickEvent(event.getView(),
                     InventoryType.SlotType.CONTAINER,
                     event.getInventorySlots().iterator().next(),
-                    ClickType.LEFT, InventoryAction.PLACE_ALL);
-
-            onInventoryClick(ice);
+                    ClickType.LEFT, InventoryAction.PLACE_ALL));
             event.setCancelled(ice.isCancelled());
-        } else {
+        } else
             event.setCancelled(true);
-        }
     }
 
     @EventHandler
