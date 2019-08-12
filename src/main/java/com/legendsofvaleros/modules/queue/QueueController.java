@@ -1,8 +1,11 @@
 package com.legendsofvaleros.modules.queue;
 
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.modules.arena.Arena;
+import com.legendsofvaleros.modules.queue.commands.QueueCommands;
 import com.legendsofvaleros.util.MessageUtil;
+import com.legendsofvaleros.util.commands.TemporaryCommand;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -22,7 +25,10 @@ public class QueueController extends ListenerModule {
     @Override
     public void onLoad() {
         super.onLoad();
+
         instance = this;
+
+        LegendsOfValeros.getInstance().getCommandManager().registerCommand(new QueueCommands());
     }
 
     @Override

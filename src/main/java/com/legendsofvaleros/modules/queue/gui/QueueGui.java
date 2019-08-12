@@ -13,8 +13,15 @@ public class QueueGui extends GUI implements Listener {
 
     public QueueGui() {
         super("Queues");
+
         QueueController.getInstance().registerEvents(this);
+
         type(1);
+        this.init();
+    }
+
+    private void init() {
+
     }
 
     @Override
