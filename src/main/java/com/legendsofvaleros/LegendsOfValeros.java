@@ -33,7 +33,7 @@ import com.legendsofvaleros.modules.parties.PartiesController;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.professions.ProfessionsController;
 import com.legendsofvaleros.modules.pvp.PvPController;
-import com.legendsofvaleros.modules.quests.QuestController;
+import com.legendsofvaleros.modules.questsold.QuestController;
 import com.legendsofvaleros.modules.queue.QueueController;
 import com.legendsofvaleros.modules.regions.RegionController;
 import com.legendsofvaleros.modules.restrictions.RestrictionsController;

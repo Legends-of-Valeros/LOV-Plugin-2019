@@ -17,7 +17,7 @@ import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
 import com.legendsofvaleros.modules.npcs.trait.core.TraitTitle;
 import com.legendsofvaleros.modules.pvp.PvPController;
-import com.legendsofvaleros.modules.quests.QuestController;
+import com.legendsofvaleros.modules.questsold.QuestController;
 import com.legendsofvaleros.modules.skills.SkillsController;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;

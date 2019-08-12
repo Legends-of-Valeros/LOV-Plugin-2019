@@ -12,11 +12,11 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterFinishLoadingEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
-import com.legendsofvaleros.modules.quests.QuestController;
-import com.legendsofvaleros.modules.quests.api.IQuest;
-import com.legendsofvaleros.modules.quests.core.QuestStatus;
-import com.legendsofvaleros.modules.quests.event.QuestCompletedEvent;
-import com.legendsofvaleros.modules.quests.event.QuestStartedEvent;
+import com.legendsofvaleros.modules.questsold.QuestController;
+import com.legendsofvaleros.modules.questsold.api.IQuest;
+import com.legendsofvaleros.modules.questsold.core.QuestStatus;
+import com.legendsofvaleros.modules.questsold.event.QuestCompletedEvent;
+import com.legendsofvaleros.modules.questsold.event.QuestStartedEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
 import com.legendsofvaleros.util.item.Model;
@@ -49,7 +49,7 @@ public class TraitQuestGiver extends LOVTrait {
         all.add(this);
 
         available = trait.nameplates.getOrAdd(MARKER);
-        available.appendItemLine(Model.stack("marker-gear-available").create());
+        available.appendItemLine(Model.stack("marker-quest-available").create());
         available.getVisibilityManager().setVisibleByDefault(false);
 
         List<Promise<IQuest>> promises = new ArrayList<>();
@@ -148,7 +148,7 @@ public class TraitQuestGiver extends LOVTrait {
                 tb.append(StringUtil.center(Book.WIDTH, "[" + quest.getKey().getName() + "]") + "\n\n");
             }
 
-            // TODO: Switch to using "temporary" commands, as anyone who knows the secret command can accept any gear.
+            // TODO: Switch to using "temporary" commands, as anyone who knows the secret command can accept any quest.
             tb.color(quest.getValue() == QuestStatus.NEITHER ? ChatColor.DARK_PURPLE : ChatColor.DARK_RED)
                     .command("/quests talk " + quest.getKey().getId());
         }

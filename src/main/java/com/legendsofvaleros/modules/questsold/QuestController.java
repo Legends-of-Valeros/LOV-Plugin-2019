@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.quests;
+package com.legendsofvaleros.modules.questsold;
 
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.api.Promise;
@@ -17,9 +17,6 @@ import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.npcs.trait.quests.TraitQuestGiver;
 import com.legendsofvaleros.modules.playermenu.InventoryManager;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
-import com.legendsofvaleros.modules.questsold.ActiveTracker;
-import com.legendsofvaleros.modules.questsold.QuestAPI;
-import com.legendsofvaleros.modules.questsold.QuestCommands;
 import com.legendsofvaleros.modules.questsold.action.QuestActionFactory;
 import com.legendsofvaleros.modules.questsold.action.core.*;
 import com.legendsofvaleros.modules.questsold.api.IQuest;
