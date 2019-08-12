@@ -22,6 +22,7 @@ import com.legendsofvaleros.modules.quests.objective.QuestObjectiveFactory;
 import com.legendsofvaleros.scheduler.InternalTask;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.api.PromiseCache;
+import com.mojang.brigadier.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -421,15 +422,26 @@ public class QuestAPI extends ListenerModule {
             if(progress == null) continue;
 
             for (IQuestEventReceiver receiver : entry.getValue()) {
-                if(receiver instanceof IQuestObjective)
-                    if(progress.group == null || ((IQuestObjective)receiver).getGroupIndex() != progress.group)
+                if(receiver instanceof IQuestObjective) {
+                    if (progress.group == null
+                        || ((IQuestObjective) receiver).getGroupIndex() != progress.group){
                         continue;
-                    else if(receiver instanceof IQuestAction) {
-                        if(progress.group == null || ((IQuestAction) receiver).getGroupIndex() != progress.group)
+                    }else if (receiver instanceof IQuestAction) {
+                        if (progress.group == null
+                            || ((IQuestAction) receiver).getGroupIndex() != progress.group){
                             continue;
-                        if(progress.actionI == null || ((IQuestAction) receiver).getActionIndex() != progress.actionI)
+                        }
+                        if (progress.actionI == null
+                            || ((IQuestAction) receiver).getActionIndex() != progress.actionI){
                             continue;
+                        }
                     }
+
+                    //send the player an update text
+                    if (!quest.isCompleted(pc)) {
+                        MessageUtil.sendUpdate(pc.getPlayer(), ((IQuestObjective) receiver).getProgressText(pc));
+                    }
+                }
 
                 receiver.onEvent(event, pc);
             }

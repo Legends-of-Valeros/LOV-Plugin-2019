@@ -19,14 +19,15 @@ public class ActionGiveItem extends AbstractQuestAction {
     protected void onInit() {
         item = Gear.fromId(itemId);
 
-        if (item == null)
+        if (item == null){
             MessageUtil.sendException(GearController.getInstance(), "No item with that ID in quest. Offender: " + itemId + " in " + getQuest().getId());
+        }
     }
 
     @Override
     public void play(PlayerCharacter pc, Next next) {
         Gear.Instance instance = item.newInstance();
-        instance.amount = amount == null ? 1 : amount;
+        instance.amount = (amount == null) ? 1 : amount;
 
         MessageUtil.sendUpdate(pc.getPlayer(), new TextBuilder("You received " + (instance.amount == 1 ? "a " : instance.amount + "x") + "[").color(ChatColor.AQUA)
                 .append(instance.getName()).color(ChatColor.GREEN)
