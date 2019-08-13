@@ -75,8 +75,10 @@ public class ItemListener implements Listener {
             return;
         }
 
+        // Only allow item destruction if the item is tradable
         if (instance.getType().isTradable()) {
             GearController.getInstance().getScheduler().executeInSpigotCircle(() -> {
+                // ?Should this be moved to its own class?
                 new WindowYesNo("Destroy Item") {
                     @Override
                     public void onAccept(GUI gui, Player p) {
@@ -117,21 +119,29 @@ public class ItemListener implements Listener {
 
         PlayerCharacter pc = Characters.getPlayerCharacter((Player) event.getEntity());
         UUID player = itemOwner.getIfPresent(event.getItem().getUniqueId());
+
+        // Make sure the current owner of the item entity is the same as the entity attempting to pick up said item.
         if (player == null || player.compareTo(pc.getPlayerId()) == 0) {
             event.getItem().remove();
 
             Gear.Instance instance = Gear.Instance.fromStack(event.getItem().getItemStack());
             if (instance != null) {
                 ItemUtil.giveItem(pc, instance);
-                //dont log currency drops since they are logged on their own
+                // Dont log currency drops since they are logged on their own.
+                // TODO: this should made cleaner
                 if (instance.getModelId().toLowerCase().contains("crown")) {
                     return;
                 }
+
                 MessageUtil.sendUpdate(pc.getPlayer(), "Picked up " + ChatColor.WHITE + ChatColor.BOLD + instance.getName());
             }
         }
     }
 
+    /**
+     * This listens for the vanilla cancellation, rather than the Combat Engine event, so that we can entirely
+     * prevent Combat Engine from doing any computations at all.
+     */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerAttack(VanillaDamageCancelledEvent vEvent) {
         EntityDamageEvent dEvent = vEvent.getCancelledEvent();
@@ -148,11 +158,13 @@ public class ItemListener implements Listener {
         CombatEntity dce = CombatEngine.getEntity((LivingEntity) e.getEntity());
         if (dce == null) return;
 
+        // Disallow doing damage to any entity if the player is not over their equipped item slot.
         if (((Player) ace.getLivingEntity()).getInventory().getHeldItemSlot() != Hotswitch.HELD_SLOT) {
             vEvent.setCancelled(true);
 
-            //prevent message being sent when left clicking while holding a spell
-            if (((Player) ace.getLivingEntity()).getInventory().getHeldItemSlot() > Hotswitch.HELD_SLOT) {
+            // Prevent a message being sent when left clicking while holding a spell
+            if (((Player) ace.getLivingEntity()).getInventory().getHeldItemSlot() < Hotswitch.HELD_SLOT) {
+                // ?Do we even need a message to be sent?
                 MessageUtil.sendError(ace.getLivingEntity(), "You may only attack using your equipped item slot!");
             }
         }
@@ -168,8 +180,11 @@ public class ItemListener implements Listener {
         Gear.Instance base = Gear.Instance.fromStack(e.getCurrentItem());
         if (base == null) return;
 
+        // Combine is triggered when an item is held on the cursor and another item is clicked in the inventory.
+
         CombineTrigger trigger = new CombineTrigger(CombatEngine.getEntity(e.getWhoClicked()), base, agent);
 
+        // Disable the event if and only if the trigger has a state of True
         if (Boolean.TRUE.equals(agent.doTest(trigger))) {
             if (agent.doFire(trigger).didChange()) {
                 e.setCurrentItem(base.toStack());
@@ -180,6 +195,11 @@ public class ItemListener implements Listener {
         }
     }
 
+    /**
+     * This click event only handles the events for offhand and the held equip slot.
+     *
+     * ?Should this be moved to a dedicated class?
+     */
     @EventHandler(priority = EventPriority.LOW)
     public void onInventoryMove(InventoryClickEvent e) {
         if (e.getClickedInventory() != e.getWhoClicked().getInventory()) return;
@@ -193,6 +213,8 @@ public class ItemListener implements Listener {
         if (e.getCursor() != null && e.getCursor().getType() != Material.AIR) {
             gear = Gear.Instance.fromStack(e.getCursor());
             if (gear == null) {
+                // If the item did not decode successfully into a Gear instance, then it no longer exists.
+                // Replace it with the error item instance.
                 MessageUtil.sendError(e.getWhoClicked(), "Your item has morphed into... something.");
 
                 e.setCancelled(true);
@@ -205,6 +227,8 @@ public class ItemListener implements Listener {
                 return;
             }
 
+            // If the offhand slot is clicked, only allow shields there.
+            // If the equip slot is clicked, only allow weapons there.
             if ((!offhand && gear.getType() != GearType.WEAPON)
                     || (offhand && gear.getType() != GearType.SHIELD)) {
                 MessageUtil.sendError(e.getWhoClicked(), "You can't wield that item there.");
@@ -226,6 +250,8 @@ public class ItemListener implements Listener {
         if (e.getCurrentItem() != null && e.getCurrentItem().getType() != Material.AIR) {
             gear = Gear.Instance.fromStack(e.getCurrentItem());
             if (gear == null) {
+                // If the item did not decode successfully into a Gear instance, then it no longer exists.
+                // Replace it with the error item instance.
                 MessageUtil.sendError(e.getWhoClicked(), "Your item has morphed into.. something.");
 
                 e.setCancelled(true);
@@ -244,6 +270,7 @@ public class ItemListener implements Listener {
 
     @EventHandler
     public void onEquipItem(ItemEquipEvent event) {
+        // Fire the equip trigger in the gear.
         EquipTrigger e = new EquipTrigger(CombatEngine.getEntity(event.getPlayer()));
         if (Boolean.FALSE.equals(event.getGear().doTest(e))) {
             event.setCancelled(true);
@@ -254,6 +281,8 @@ public class ItemListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onUnEquipItem(ItemUnEquipEvent event) {
+        // Fire the unequip trigger in the gear.
+        // ?This event cannot currently be cancelled. Do we want it to be?
         event.getGear().doFire(new UnEquipTrigger(event));
     }
 
@@ -279,7 +308,9 @@ public class ItemListener implements Listener {
         }
     }
 
-
+    /**
+     * Fires the defend event for all worn armor on damage. This does not include shields.
+     */
     @EventHandler(priority = EventPriority.MONITOR)
     public void onLivingEntityDamaged(CombatEngineDamageEvent event) {
         DefendTrigger e = new DefendTrigger(event);
@@ -297,6 +328,9 @@ public class ItemListener implements Listener {
         event.getDamaged().getLivingEntity().getEquipment().setArmorContents(armor);
     }
 
+    /**
+     * Handles the item usage trigger for gear.
+     */
     @EventHandler
     public void onItemUse(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
@@ -307,6 +341,7 @@ public class ItemListener implements Listener {
 
             Boolean test = gear.doTest(e);
             if (test == null) return;
+
             if (test) {
                 if (gear.doFire(e) == TriggerEvent.REFRESH_STACK) {
                     if (event.getHand() == EquipmentSlot.HAND)
@@ -318,6 +353,9 @@ public class ItemListener implements Listener {
         }
     }
 
+    /**
+     * Fires the respective trigger for all armor equipped or unequipped.
+     */
     @EventHandler
     public void onArmorEquip(ArmorEquipEvent event) {
         if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
@@ -340,6 +378,9 @@ public class ItemListener implements Listener {
             Bukkit.getPluginManager().callEvent(new ItemUnEquipEvent(Characters.getPlayerCharacter(event.getPlayer()), gear, null));
     }
 
+    /**
+     * Fires the equip triggers when an entity is created, should they be wearing or holding equipment.
+     */
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityCreated(CombatEntityCreateEvent event) {
         if (!event.getCombatEntity().isPlayer()) return;
@@ -360,6 +401,9 @@ public class ItemListener implements Listener {
         if (instance != null) instance.doFire(e);
     }
 
+    /**
+     * Fires the unequip triggers when a player character logs out.
+     */
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerLogout(PlayerCharacterLogoutEvent event) {
         CombatEntity ce = CombatEngine.getEntity(event.getPlayer());

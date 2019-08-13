@@ -33,38 +33,6 @@ public class GearAPI extends Module {
         super.onLoad();
 
         this.rpc = APIController.create(RPC.class);
-
-        APIController.getInstance().getGsonBuilder()
-            .registerTypeAdapter(RangedValue.class, RangedValue.JSON)
-            .registerTypeAdapter(ComponentMap.class, (JsonDeserializer<ComponentMap>) (json, typeOfT, context) -> {
-                JsonObject obj = json.getAsJsonObject();
-                ComponentMap components = new ComponentMap();
-                for (Map.Entry<String, JsonElement> entry : obj.entrySet()) {
-                    try {
-                        Class<? extends GearComponent<?>> comp = GearRegistry.getComponent(entry.getKey());
-                        if (comp == null)
-                            throw new RuntimeException("Unknown component on item: Offender: " + entry.getKey());
-                        components.put(entry.getKey(), context.deserialize(entry.getValue(), comp));
-                    } catch (Exception e) {
-                        MessageUtil.sendException(GearController.getInstance(), new Exception(e + ". Offender: " + entry.getKey() + " " + entry.getValue().toString()));
-                    }
-                }
-                return components;
-            })
-            .registerTypeAdapter(PersistMap.class, (JsonDeserializer<PersistMap>) (json, typeOfT, context) -> {
-            JsonObject obj = json.getAsJsonObject();
-            PersistMap persists = new PersistMap();
-            for (Map.Entry<String, JsonElement> entry : obj.entrySet()) {
-                Type c = GearRegistry.getPersist(entry.getKey());
-                try {
-                    persists.put(entry.getKey(), context.deserialize(entry.getValue(), c));
-                } catch (Exception e) {
-                    getLogger().warning("Error thrown when decoding persist data. Offender: " + entry.getKey() + " as " + c);
-                    e.printStackTrace();
-                }
-            }
-            return persists;
-        });
     }
 
     @Override
@@ -91,7 +59,7 @@ public class GearAPI extends Module {
     }
 
     public Gear getGear(String id) {
-        if(!gear.containsKey(id)) return GearController.ERROR_ITEM;
+        if (!gear.containsKey(id)) return GearController.ERROR_ITEM;
         return gear.get(id);
     }
 }

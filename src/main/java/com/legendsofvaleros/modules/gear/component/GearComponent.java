@@ -9,6 +9,7 @@ public abstract class GearComponent<T> {
 		return getValue(item, (T)persist);
 	}
 
+	// TODO: Figure a way to prevent the need for this garbage.
 	public final void doGenerate(Gear.Instance item, Object persist, ItemBuilder builder) {
 		onGenerateItem(item, (T)persist, builder);
 	}
@@ -33,9 +34,12 @@ public abstract class GearComponent<T> {
 	protected abstract void onGenerateItem(Gear.Instance item, T persist, ItemBuilder builder);
 	
 	/**
-	 * This should return true if, for the defined trigger, it should be allowed to fire().
-	 * 
+	 * This should return true if, for the defined trigger, it should be allowed to fire(). Note that if any component
+     * on an item returns False, NONE of them are allowed to fire.
+	 * <p/>
 	 * You MUST make sure to return null on any trigger that is not affected by this component.
+	 * <p/>
+	 * TODO: Can we swap to a cleaner system of testing?
 	 */
 	protected Boolean test(Gear.Instance item, T persist, GearTrigger trigger) { return null; }
 	

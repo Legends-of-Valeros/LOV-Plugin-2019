@@ -65,7 +65,6 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 @IntegratesWith(module = RegionController.class, integration = RegionIntegration.class)
 @IntegratesWith(module = SkillsController.class, integration = SkillsIntegration.class)
 @IntegratesWith(module = ZonesController.class, integration = ZonesIntegration.class)
-// TODO: Create subclass for listeners?
 @ModuleInfo(name = "Quests", info = "")
 public class QuestController extends QuestAPI {
     public static AdvancementAPI NEW_OBJECTIVES;

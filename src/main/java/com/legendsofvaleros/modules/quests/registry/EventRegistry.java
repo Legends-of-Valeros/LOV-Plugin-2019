@@ -24,21 +24,19 @@ public class EventRegistry {
 
     public Optional<IQuestEventHandler> getHandler(Class<?> c) {
         // If no handler is explicitly defined, check the map for superclass matches.
-        // TODO: Do we need to check for closest superclass match?
         if (!handlers.containsKey(c)) {
-            Optional<IQuestEventHandler> eh = null;
+            Optional<IQuestEventHandler> eh = Optional.empty();
 
-            for (Map.Entry<Class<?>, Optional<IQuestEventHandler>> e : handlers.entrySet()) {
-                if (e.getKey().isAssignableFrom(c)) {
-                    eh = e.getValue();
+            Class<?> sc = c;
+            while((sc = sc.getSuperclass()) != null) {
+                if(handlers.containsKey(sc)) {
+                    eh = handlers.get(sc);
                     break;
                 }
             }
 
-            if (eh != null)
-                handlers.put(c, eh);
-            else
-                handlers.put(c, Optional.empty());
+            // Cache the class match to the handler list.
+            handlers.put(c, eh);
         }
 
         return handlers.get(c);
