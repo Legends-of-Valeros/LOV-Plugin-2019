@@ -10,9 +10,7 @@ import java.util.Optional;
  * Used by quests to filter the player object from events so the quest system can route events to the
  * correct nodes. Note that registered events are inheritance-aware; registering a PlayerEvent handler
  * will be able to handle player objects from any object extending.
- *
- * <br><br>
- *
+ * <p>
  * All things should be registered before the plugin is completely loaded, else the internal cache for extended
  * objects may be outdated.
  */
@@ -27,17 +25,17 @@ public class EventRegistry {
     public Optional<IQuestEventHandler> getHandler(Class<?> c) {
         // If no handler is explicitly defined, check the map for superclass matches.
         // TODO: Do we need to check for closest superclass match?
-        if(!handlers.containsKey(c)) {
+        if (!handlers.containsKey(c)) {
             Optional<IQuestEventHandler> eh = null;
 
-            for(Map.Entry<Class<?>, Optional<IQuestEventHandler>> e : handlers.entrySet()) {
-                if(e.getKey().isAssignableFrom(c)) {
+            for (Map.Entry<Class<?>, Optional<IQuestEventHandler>> e : handlers.entrySet()) {
+                if (e.getKey().isAssignableFrom(c)) {
                     eh = e.getValue();
                     break;
                 }
             }
 
-            if(eh != null)
+            if (eh != null)
                 handlers.put(c, eh);
             else
                 handlers.put(c, Optional.empty());

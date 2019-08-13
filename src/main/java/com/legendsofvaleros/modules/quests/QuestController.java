@@ -71,7 +71,10 @@ public class QuestController extends QuestAPI {
     public static AdvancementAPI NEW_OBJECTIVES;
 
     private static QuestController instance;
-    public static QuestController getInstance() { return instance; }
+
+    public static QuestController getInstance() {
+        return instance;
+    }
 
     private String introQuestId;
 
@@ -135,14 +138,14 @@ public class QuestController extends QuestAPI {
 
         getLogger().info("is registering advancements.");
         NEW_OBJECTIVES = AdvancementAPI.builder(new NamespacedKey(LegendsOfValeros.getInstance(), "quests/new_objectives"))
-                    .title("New Objectives")
-                    .description("See quest book for details.")
-                    .icon("minecraft:paper")
-                    .trigger(Trigger.builder(Trigger.TriggerType.IMPOSSIBLE, "impossible"))
-                    .hidden(true)
-                    .toast(true)
-                    .background("minecraft:textures/gui/advancements/backgrounds/stone.png")
-                    .frame(FrameType.TASK)
+                .title("New Objectives")
+                .description("See quest book for details.")
+                .icon("minecraft:paper")
+                .trigger(Trigger.builder(Trigger.TriggerType.IMPOSSIBLE, "impossible"))
+                .hidden(true)
+                .toast(true)
+                .background("minecraft:textures/gui/advancements/backgrounds/stone.png")
+                .frame(FrameType.TASK)
                 .build();
         NEW_OBJECTIVES.add();
     }
@@ -160,9 +163,9 @@ public class QuestController extends QuestAPI {
                     MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' can be accepted!");
 
                     return true;
-                }else
+                } else
                     MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' cannot be accepted! Status: " + status.name());
-            }else{
+            } else {
                 MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' doesn't exist!");
             }
 
@@ -185,8 +188,8 @@ public class QuestController extends QuestAPI {
 
     @EventHandler
     public void onNewObjectives(QuestObjectivesStartedEvent event) {
-        if(NEW_OBJECTIVES != null)
-        	NEW_OBJECTIVES.show(event.getPlayer());
+        if (NEW_OBJECTIVES != null)
+            NEW_OBJECTIVES.show(event.getPlayer());
     }
 
     @EventHandler
@@ -197,7 +200,7 @@ public class QuestController extends QuestAPI {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onNPCRightClick(NPCRightClickEvent event) {
-        if(event.isCancelled()) return;
+        if (event.isCancelled()) return;
 
         if (!Characters.isPlayerCharacterLoaded(event.getClicker())) return;
 
@@ -206,7 +209,7 @@ public class QuestController extends QuestAPI {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onInteractBock(PlayerInteractEvent event) {
-        if(event.isCancelled()) return;
+        if (event.isCancelled()) return;
 
         if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
 
@@ -215,7 +218,7 @@ public class QuestController extends QuestAPI {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerItemHeldEvent(PlayerItemHeldEvent event) {
-        if(event.isCancelled()) return;
+        if (event.isCancelled()) return;
 
         if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
 

@@ -4,7 +4,7 @@ import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 
 /**
  * Instantiated for every player who has started, or, in some cases, merely interacted with, the quest.
- *
+ * <p>
  * Any included functions that are annotated using bukkit's @EventHandler must have IQuestInstance as
  * its first parameter. You do not need to register the events with bukkit, only include them in the
  * node definition.

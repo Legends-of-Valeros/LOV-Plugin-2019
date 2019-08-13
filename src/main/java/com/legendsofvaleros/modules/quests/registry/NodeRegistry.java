@@ -22,15 +22,11 @@ public class NodeRegistry {
     }
 
     public Optional<INode> createNode(String id) {
-        if(!hasType(id)) return Optional.empty();
+        if (!hasType(id)) {
+            return Optional.empty();
+        }
 
         // TODO: Create node object
-
-        return null;
-    }
-
-    public <T> Optional<T> loadNodeData(INode<T> _, String data) {
-        // TODO: Decode data into T
 
         return null;
     }

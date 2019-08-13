@@ -12,6 +12,7 @@ public interface INodeInput<T extends INodeOutput> {
 
     /**
      * Returns the node ports connected to this port.
+     *
      * @return
      */
     Optional<T> getConnected();
