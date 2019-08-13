@@ -6,7 +6,7 @@ public interface INodeOutput<T extends INodeInput> {
     /**
      * This is an internal function and should never be used during a quest.
      */
-    void addConnection(T output);
+    void addConnection(T port);
 
     /**
      * Returns the node ports connected to this port.

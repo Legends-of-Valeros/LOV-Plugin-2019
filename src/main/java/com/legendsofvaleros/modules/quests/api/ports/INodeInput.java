@@ -1,5 +1,9 @@
 package com.legendsofvaleros.modules.quests.api.ports;
 
+import com.legendsofvaleros.modules.quests.core.ports.INodeOutputValue;
+
+import java.util.Optional;
+
 public interface INodeInput<T extends INodeOutput> {
     /**
      * This is an internal function and should never be used during a quest.
@@ -8,6 +12,7 @@ public interface INodeInput<T extends INodeOutput> {
 
     /**
      * Returns the node ports connected to this port.
+     * @return
      */
-    T getConnected();
+    Optional<T> getConnected();
 }

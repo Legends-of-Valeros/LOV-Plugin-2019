@@ -1,17 +1,12 @@
 package com.legendsofvaleros.modules.quests.api;
 
-import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.questsold.action.QuestActions;
-import com.legendsofvaleros.modules.questsold.api.IQuestAction;
-import com.legendsofvaleros.modules.questsold.api.IQuestObjective;
+import com.legendsofvaleros.modules.quests.core.QuestInstance;
 import com.legendsofvaleros.modules.questsold.api.IQuestPrerequisite;
-import com.legendsofvaleros.modules.questsold.core.QuestObjectives;
-import com.legendsofvaleros.modules.questsold.core.QuestProgressPack;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface IQuest {
@@ -43,49 +38,13 @@ public interface IQuest {
 	void getRepeatOptions();
 
 	/**
-	 * @return A map of Nodes and their respective UUIDs.
+	 * @return A map of from Node output UUIDs to Node input UUIDs.
 	 */
-	Map<UUID, INode> getNodes();
+	Map<UUID, UUID> getConnections();
 
+	void newInstance(PlayerCharacter player);
 
-	QuestActions getActions();
-	Integer getActionGroupI(PlayerCharacter pc);
-	IQuestAction[] getActionGroup(PlayerCharacter pc);
+	void loadInstance(PlayerCharacter player, QuestInstance instance);
 
-	void testResumeActions(PlayerCharacter pc);
-
-	QuestObjectives getObjectives();
-	Integer getObjectiveGroupI(PlayerCharacter pc);
-	IQuestObjective<?>[] getObjectiveGroup(PlayerCharacter pc);
-
-
-	/**
-	 * Called when a player starts a gear.
-	 */
-	void onStart(PlayerCharacter pc);
-	
-	/**
-	 * Called when the quest is declined.
-	 */
-	void onDecline(PlayerCharacter pc);
-	
-	/**
-	 * Called when the quest is began.
-	 */
-	void onAccept(PlayerCharacter pc);
-	
-	/**
-	 * Called when the quest is completed.
-	 */
-	void onCompleted(PlayerCharacter pc);
-
-	boolean isCompleted(PlayerCharacter pc);
-	void checkCompleted(PlayerCharacter pc);
-
-	Set<Map.Entry<CharacterId, QuestProgressPack>> getProgressions();
-
-	boolean hasProgress(PlayerCharacter pc);
-	QuestProgressPack getProgress(PlayerCharacter pc);
-	void loadProgress(PlayerCharacter pc, QuestProgressPack progress);
-	void clearProgress(PlayerCharacter pc);
+	Optional<IQuestInstance> getInstance(PlayerCharacter player);
 }

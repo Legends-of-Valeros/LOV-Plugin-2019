@@ -2,7 +2,9 @@ package com.legendsofvaleros.modules.quests.api;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 
-import java.util.Set;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * A quest instance is created for each player with the quest currently active, and is
@@ -19,12 +21,7 @@ public interface IQuestInstance {
      */
     PlayerCharacter getPlayerCharacter();
 
-    /**
-     * Proxies a request to the quest to return all available nodes.
-     */
-    Set<INode<?>> getNodes();
+    Map<UUID, INode> getNodeMap();
 
-    <T> T getData(INode<T> node);
-
-    <T> void setData(INode<T> node, T data);
+    Optional<INode> getNode(UUID uuid);
 }

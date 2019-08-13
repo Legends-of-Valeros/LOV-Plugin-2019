@@ -7,9 +7,9 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Used by quests to pull the player object from events so that nodes can use events more easily. Note
- * that registered events are inheritance-aware; registering a PlayerEvent handler will be able to
- * pull player objects from any object extending.
+ * Used by quests to filter the player object from events so the quest system can route events to the
+ * correct nodes. Note that registered events are inheritance-aware; registering a PlayerEvent handler
+ * will be able to handle player objects from any object extending.
  *
  * <br><br>
  *
