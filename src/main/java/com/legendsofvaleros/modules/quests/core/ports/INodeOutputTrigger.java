@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.quests.core.ports;
 
-import com.legendsofvaleros.modules.quests.api.INode;
+import com.legendsofvaleros.modules.quests.api.IQuestNode;
 import com.legendsofvaleros.modules.quests.api.ports.INodeOutput;
 import com.legendsofvaleros.modules.quests.api.ports.INodeRunnable;
 
@@ -9,20 +9,20 @@ import java.util.Optional;
 import java.util.Set;
 
 public class INodeOutputTrigger<V> implements INodeOutput<INodeInputTrigger<V>> {
-    final INode node;
+    final IQuestNode node;
 
     final Set<INodeInputTrigger<V>> ports;
 
     final Optional<INodeRunnable> runnable;
 
-    public INodeOutputTrigger(INode node) {
+    public INodeOutputTrigger(IQuestNode node) {
         this.node = node;
         this.runnable = Optional.empty();
 
         this.ports = new HashSet<>();
     }
 
-    public INodeOutputTrigger(INode node, INodeRunnable runnable) {
+    public INodeOutputTrigger(IQuestNode node, INodeRunnable runnable) {
         this.node = node;
         this.runnable = Optional.of(runnable);
 

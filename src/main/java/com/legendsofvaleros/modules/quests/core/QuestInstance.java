@@ -1,30 +1,30 @@
 package com.legendsofvaleros.modules.quests.core;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.quests.api.INode;
-import com.legendsofvaleros.modules.quests.api.IQuest;
-import com.legendsofvaleros.modules.quests.api.IQuestInstance;
-import com.legendsofvaleros.modules.quests.api.ports.INodeInput;
-import com.legendsofvaleros.modules.quests.api.ports.INodeOutput;
+import com.legendsofvaleros.modules.quests.api.*;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
 
 public class QuestInstance implements IQuestInstance {
+    final PlayerCharacter player;
+
     final IQuest quest;
-    final PlayerCharacter pc;
 
-    final Map<UUID, INode> nodeMap;
+    private QuestState state = QuestState.INACTIVE;
 
-    final Multimap<INodeOutput, INodeInput> connectionMap;
+    final QuestNodeInstanceMap nodes;
 
-    public QuestInstance(IQuest quest, PlayerCharacter pc) {
+    public QuestInstance(PlayerCharacter player, IQuest quest) {
         this.quest = quest;
-        this.pc = pc;
+        this.player = player;
 
-        this.nodeMap = new HashMap<>();
-        this.connectionMap = HashMultimap.create();
+        this.nodes = new QuestNodeInstanceMap();
+    }
+
+    @Override
+    public PlayerCharacter getPlayerCharacter() {
+        return this.player;
     }
 
     @Override
@@ -33,17 +33,63 @@ public class QuestInstance implements IQuestInstance {
     }
 
     @Override
-    public PlayerCharacter getPlayerCharacter() {
-        return this.pc;
+    public QuestState getState() {
+        return state;
     }
 
     @Override
-    public Map<UUID, INode> getNodeMap() {
-        return this.nodeMap;
+    public QuestNodeInstanceMap getNodeInstances() {
+        return this.nodes;
+    }
+
+    public <T> void setNodeInstance(IQuestNode<T> node, T instance) {
+        nodes.putInstance(node, instance);
     }
 
     @Override
-    public Optional<INode> getNode(UUID uuid) {
-        return Optional.ofNullable(this.nodeMap.get(uuid));
+    public <T> T getNodeInstance(IQuestNode<T> node) {
+        if(!this.nodes.hasInstance(node))
+            this.nodes.putInstance(node, node.newInstance());
+        return this.nodes.getInstance(node);
+    }
+
+    @Override
+    public void addHistory(IQuestHistory... event) {
+
+    }
+
+    @Override
+    public Collection<IQuestHistory> getHistory() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public void resetNodes() {
+        this.nodes.clear();
+    }
+
+    @Override
+    public void setState(QuestState state) {
+        if(this.state.isNextStateAllowed(state)) throw new IllegalStateException("Quest instance cannot be set to '" + state.name() + "' while currently in '" + this.state.name() + "'!");
+
+        if(state.isActive()) {
+            this.quest.onActivated(this);
+        }else{
+            this.quest.onDeactivated(this);
+        }
+
+        this.state = state;
+    }
+
+    @Override
+    public void onActivated() {
+        for(IQuestNode node : quest.getNodes())
+            node.onActivated(this, this.nodes.getInstance(node));
+    }
+
+    @Override
+    public void onDeactivated() {
+        for(IQuestNode node : quest.getNodes())
+            node.onDeactivated(this, this.nodes.getInstance(node));
     }
 }

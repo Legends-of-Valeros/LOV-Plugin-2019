@@ -1,15 +1,18 @@
 package com.legendsofvaleros.modules.quests.registry;
 
-import com.legendsofvaleros.modules.quests.api.INode;
+import com.legendsofvaleros.modules.quests.api.IQuestNode;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 public class NodeRegistry {
-    private Map<String, Class<INode>> types = new HashMap<>();
+    private Map<String, Class<? extends IQuestNode>> types = new HashMap<>();
+    private static final HashMap<Object, Type> instanceType = new HashMap<>();
 
-    public Optional<Class<INode>> getType(String id) {
+    public Optional<Class<? extends IQuestNode>> getType(String id) {
         return Optional.ofNullable(types.get(id));
     }
 
@@ -17,17 +20,14 @@ public class NodeRegistry {
         return getType(id).isPresent();
     }
 
-    public void addType(String id, Class<INode> type) {
+    public void addType(String id, Class<? extends IQuestNode> type) {
         types.put(id, type);
+
+        instanceType.put(id, ((ParameterizedType)type.getGenericSuperclass()).getActualTypeArguments()[0]);
+        instanceType.put(type, ((ParameterizedType)type.getGenericSuperclass()).getActualTypeArguments()[0]);
     }
 
-    public Optional<INode> createNode(String id) {
-        if (!hasType(id)) {
-            return Optional.empty();
-        }
-
-        // TODO: Create node object
-
-        return null;
+    public static Type getInstanceType(Object key) {
+        return instanceType.get(key);
     }
 }

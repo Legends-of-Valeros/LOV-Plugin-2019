@@ -22,7 +22,7 @@ import com.legendsofvaleros.modules.questsold.action.core.*;
 import com.legendsofvaleros.modules.questsold.api.IQuest;
 import com.legendsofvaleros.modules.questsold.core.BasicQuest;
 import com.legendsofvaleros.modules.questsold.core.QuestFactory;
-import com.legendsofvaleros.modules.questsold.core.QuestStatus;
+import com.legendsofvaleros.modules.quests.api.QuestStatus;
 import com.legendsofvaleros.modules.questsold.event.QuestCompletedEvent;
 import com.legendsofvaleros.modules.questsold.event.QuestObjectivesStartedEvent;
 import com.legendsofvaleros.modules.questsold.event.QuestStartedEvent;

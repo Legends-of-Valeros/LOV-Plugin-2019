@@ -1,16 +1,16 @@
 package com.legendsofvaleros.modules.quests.core.ports;
 
-import com.legendsofvaleros.modules.quests.api.INode;
+import com.legendsofvaleros.modules.quests.api.IQuestNode;
 import com.legendsofvaleros.modules.quests.api.ports.INodeInput;
 
 import java.util.Optional;
 
 public class INodeInputValue<V> implements INodeInput<INodeOutputValue<V>> {
-    final INode node;
+    final IQuestNode node;
 
     INodeOutputValue<V> port;
 
-    public INodeInputValue(INode node) {
+    public INodeInputValue(IQuestNode node) {
         this.node = node;
     }
 

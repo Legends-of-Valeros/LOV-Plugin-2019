@@ -14,7 +14,7 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import com.legendsofvaleros.modules.questsold.QuestController;
 import com.legendsofvaleros.modules.questsold.api.IQuest;
-import com.legendsofvaleros.modules.questsold.core.QuestStatus;
+import com.legendsofvaleros.modules.quests.api.QuestStatus;
 import com.legendsofvaleros.modules.questsold.event.QuestCompletedEvent;
 import com.legendsofvaleros.modules.questsold.event.QuestStartedEvent;
 import com.legendsofvaleros.util.MessageUtil;

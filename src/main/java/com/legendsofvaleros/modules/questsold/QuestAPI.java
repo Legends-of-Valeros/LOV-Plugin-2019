@@ -14,6 +14,7 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
+import com.legendsofvaleros.modules.quests.api.QuestStatus;
 import com.legendsofvaleros.modules.questsold.action.QuestActionFactory;
 import com.legendsofvaleros.modules.questsold.action.QuestActions;
 import com.legendsofvaleros.modules.questsold.api.*;
@@ -394,7 +395,7 @@ public class QuestAPI extends ListenerModule {
 
         if (completedQuests.contains(pc.getUniqueCharacterId(), quest.getId()))
             if (!quest.isRepeatable()) {
-                return QuestStatus.COMPLETED;
+                return QuestStatus.ENDED;
             } else {
                 for (IQuestPrerequisite prereq : quest.getPrerequisites())
                     if (!prereq.canRepeat(quest, pc))
@@ -403,7 +404,7 @@ public class QuestAPI extends ListenerModule {
             }
 
         if (quest.hasProgress(pc))
-            return QuestStatus.ACCEPTED;
+            return QuestStatus.ACTIVE;
 
         for (IQuestPrerequisite prereq : quest.getPrerequisites())
             if (!prereq.canAccept(quest, pc))

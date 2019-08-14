@@ -81,7 +81,7 @@ public class PromiseCache<K, V> {
         return cache.stats();
     }
 
-    public ConcurrentMap asMap() {
+    public ConcurrentMap<K, V> asMap() {
         return cache.asMap();
     }
 

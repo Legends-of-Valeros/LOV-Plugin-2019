@@ -7,7 +7,7 @@ import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.questsold.api.IQuest;
 import com.legendsofvaleros.modules.questsold.api.IQuestObjective;
-import com.legendsofvaleros.modules.questsold.core.QuestStatus;
+import com.legendsofvaleros.modules.quests.api.QuestStatus;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -72,7 +72,7 @@ public class ActiveTracker {
                 }
 
                 IQuest quest = val.get();
-                if (QuestController.getInstance().getStatus(pc, quest) == QuestStatus.ACCEPTED) {
+                if (QuestController.getInstance().getStatus(pc, quest) == QuestStatus.ACTIVE) {
                     return quest;
                 }
 

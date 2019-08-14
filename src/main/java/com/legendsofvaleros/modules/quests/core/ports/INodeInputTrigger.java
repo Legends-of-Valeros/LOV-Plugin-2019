@@ -1,24 +1,24 @@
 package com.legendsofvaleros.modules.quests.core.ports;
 
-import com.legendsofvaleros.modules.quests.api.INode;
+import com.legendsofvaleros.modules.quests.api.IQuestNode;
 import com.legendsofvaleros.modules.quests.api.ports.INodeInput;
 import com.legendsofvaleros.modules.quests.api.ports.INodeRunnable;
 
 import java.util.Optional;
 
 public class INodeInputTrigger<V> implements INodeInput<INodeOutputTrigger<V>> {
-    final INode node;
+    final IQuestNode node;
 
     INodeOutputTrigger<V> port;
 
     final Optional<INodeRunnable> runnable;
 
-    public INodeInputTrigger(INode node) {
+    public INodeInputTrigger(IQuestNode node) {
         this.node = node;
         this.runnable = Optional.empty();
     }
 
-    public INodeInputTrigger(INode node, INodeRunnable runnable) {
+    public INodeInputTrigger(IQuestNode node, INodeRunnable runnable) {
         this.node = node;
         this.runnable = Optional.of(runnable);
     }
