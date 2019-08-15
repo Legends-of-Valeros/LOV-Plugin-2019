@@ -1,11 +1,11 @@
-package com.legendsofvaleros.modules.questsold.event;
+package com.legendsofvaleros.modules.quests.events;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterEvent;
 import com.legendsofvaleros.modules.questsold.api.IQuest;
 import org.bukkit.event.HandlerList;
 
-public class QuestObjectivesCompletedEvent extends PlayerCharacterEvent {
+public class QuestStartedEvent extends PlayerCharacterEvent {
 	private static final HandlerList handlers = new HandlerList();
 	@Override public HandlerList getHandlers() { return handlers; }
 	public static HandlerList getHandlerList() { return handlers; }
@@ -13,7 +13,7 @@ public class QuestObjectivesCompletedEvent extends PlayerCharacterEvent {
 	private final IQuest quest;
 	public IQuest getQuest() { return quest; }
 	
-	public QuestObjectivesCompletedEvent(PlayerCharacter pc, IQuest quest) {
+	public QuestStartedEvent(PlayerCharacter pc, IQuest quest) {
 		super(pc);
 		
 		this.quest = quest;

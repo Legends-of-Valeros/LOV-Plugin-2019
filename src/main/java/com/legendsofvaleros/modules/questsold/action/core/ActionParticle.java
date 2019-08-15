@@ -1,7 +1,6 @@
 package com.legendsofvaleros.modules.questsold.action.core;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.questsold.action.AbstractQuestAction;
 import org.bukkit.Particle;
 
 public class ActionParticle extends AbstractQuestAction {

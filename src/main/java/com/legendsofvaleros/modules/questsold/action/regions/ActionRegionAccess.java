@@ -1,7 +1,6 @@
 package com.legendsofvaleros.modules.questsold.action.regions;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.questsold.action.AbstractQuestAction;
 import com.legendsofvaleros.modules.regions.RegionController;
 
 public class ActionRegionAccess extends AbstractQuestAction {

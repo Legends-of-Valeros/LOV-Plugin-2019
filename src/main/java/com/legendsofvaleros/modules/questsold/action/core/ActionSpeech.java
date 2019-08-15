@@ -9,7 +9,6 @@ import com.legendsofvaleros.modules.npcs.core.NPCEmulator;
 import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
 import com.legendsofvaleros.modules.questsold.QuestController;
 import com.legendsofvaleros.modules.questsold.QuestUtil;
-import com.legendsofvaleros.modules.questsold.action.AbstractQuestAction;
 import com.legendsofvaleros.modules.questsold.api.IQuestEventReceiver;
 import com.legendsofvaleros.scheduler.InternalTask;
 import com.legendsofvaleros.util.MessageUtil;

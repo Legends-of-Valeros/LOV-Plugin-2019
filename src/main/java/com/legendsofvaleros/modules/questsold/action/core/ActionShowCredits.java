@@ -6,7 +6,6 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.questsold.action.AbstractQuestAction;
 import net.minecraft.server.v1_14_R1.EntityPlayer;
 import net.minecraft.server.v1_14_R1.PacketPlayOutGameStateChange;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;

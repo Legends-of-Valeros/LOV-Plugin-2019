@@ -24,8 +24,8 @@ public class TestNode extends AbstractQuestNode<TestNode.Data> {
 
     private static final Map<CharacterId, BukkitTask> TIMER = new HashMap<>();
 
-    @SerializedName("Activate")
-    public INodeInputTrigger<TestNode.Data> onActivate = new INodeInputTrigger<>(this, (instance, data) -> {
+    @SerializedName("Start")
+    public INodeInputTrigger<TestNode.Data> onStart = new INodeInputTrigger<>(this, (instance, data) -> {
         if(data.started) throw new IllegalStateException("Timer already activated.");
 
         data.started = true;

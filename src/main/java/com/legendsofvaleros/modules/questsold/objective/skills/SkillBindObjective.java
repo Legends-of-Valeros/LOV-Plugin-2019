@@ -3,7 +3,6 @@ package com.legendsofvaleros.modules.questsold.objective.skills;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.questsold.QuestController;
-import com.legendsofvaleros.modules.questsold.objective.AbstractQuestObjective;
 import com.legendsofvaleros.modules.skills.event.BindSkillEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.event.Event;

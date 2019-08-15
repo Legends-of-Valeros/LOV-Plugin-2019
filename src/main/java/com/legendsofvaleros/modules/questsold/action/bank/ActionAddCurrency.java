@@ -2,7 +2,6 @@ package com.legendsofvaleros.modules.questsold.action.bank;
 
 import com.legendsofvaleros.modules.bank.core.Money;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.questsold.action.AbstractQuestAction;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
 import org.bukkit.ChatColor;

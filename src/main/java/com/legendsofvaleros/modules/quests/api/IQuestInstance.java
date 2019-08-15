@@ -1,8 +1,8 @@
 package com.legendsofvaleros.modules.quests.api;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
+import com.legendsofvaleros.modules.quests.core.QuestLogEntry;
 import com.legendsofvaleros.modules.quests.core.QuestNodeInstanceMap;
-import org.bukkit.event.Event;
 
 import java.util.*;
 
@@ -35,6 +35,17 @@ public interface IQuestInstance {
     <T> T getNodeInstance(IQuestNode<T> node);
 
     <T> void setNodeInstance(IQuestNode<T> node, T instance);
+
+    Map<Integer, QuestLogEntry> getLogEntries();
+
+    /**
+     * Returns an int identifier for the log entry. This is to be used to edit the state of the entry.
+     */
+    int addLogEntry(QuestLogEntry entry);
+
+    Optional<QuestLogEntry> getLogEntry(int id);
+
+    void removeLogEntry(int id);
 
     void addHistory(IQuestHistory... event);
 

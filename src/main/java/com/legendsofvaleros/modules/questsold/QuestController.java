@@ -17,17 +17,15 @@ import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.npcs.trait.quests.TraitQuestGiver;
 import com.legendsofvaleros.modules.playermenu.InventoryManager;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
-import com.legendsofvaleros.modules.questsold.action.QuestActionFactory;
 import com.legendsofvaleros.modules.questsold.action.core.*;
 import com.legendsofvaleros.modules.questsold.api.IQuest;
 import com.legendsofvaleros.modules.questsold.core.BasicQuest;
 import com.legendsofvaleros.modules.questsold.core.QuestFactory;
 import com.legendsofvaleros.modules.quests.api.QuestStatus;
-import com.legendsofvaleros.modules.questsold.event.QuestCompletedEvent;
+import com.legendsofvaleros.modules.quests.events.QuestEndedEvent;
 import com.legendsofvaleros.modules.questsold.event.QuestObjectivesStartedEvent;
-import com.legendsofvaleros.modules.questsold.event.QuestStartedEvent;
+import com.legendsofvaleros.modules.quests.events.QuestStartedEvent;
 import com.legendsofvaleros.modules.questsold.integration.*;
-import com.legendsofvaleros.modules.questsold.objective.QuestObjectiveFactory;
 import com.legendsofvaleros.modules.questsold.objective.core.DummyObjective;
 import com.legendsofvaleros.modules.questsold.objective.core.InteractBlockObjective;
 import com.legendsofvaleros.modules.questsold.objective.core.ReturnObjective;
@@ -176,7 +174,7 @@ public class QuestController extends QuestAPI {
     }
 
     @EventHandler
-    public void onQuestComplete(QuestCompletedEvent event) {
+    public void onQuestComplete(QuestEndedEvent event) {
         event.getPlayer().playSound(event.getPlayer().getLocation(), "misc.questcomplete", 1F, 1F);
     }
 

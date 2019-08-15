@@ -14,18 +14,11 @@ public class INodeOutputValue<T, V> implements INodeOutput<INodeInputValue<?, V>
 
     final Set<INodeInputValue<?, V>> ports;
 
-    final Optional<INodeReturn<T, V>> runnable;
-
-    public INodeOutputValue(IQuestNode node) {
-        this.node = node;
-        this.runnable = Optional.empty();
-
-        this.ports = new HashSet<>();
-    }
+    final INodeReturn<T, V> runnable;
 
     public INodeOutputValue(IQuestNode node, INodeReturn runnable) {
         this.node = node;
-        this.runnable = Optional.of(runnable);
+        this.runnable = runnable;
 
         this.ports = new HashSet<>();
     }
@@ -40,7 +33,7 @@ public class INodeOutputValue<T, V> implements INodeOutput<INodeInputValue<?, V>
         return this.ports;
     }
 
-    public Optional<V> get(IQuestInstance instance) {
-        return this.runnable.isPresent() ? this.runnable.get().run(instance, instance.getNodeInstance(node)) : Optional.empty();
+    public V get(IQuestInstance instance) {
+        return this.runnable.run(instance, instance.getNodeInstance(node));
     }
 }

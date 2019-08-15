@@ -7,7 +7,6 @@ import com.legendsofvaleros.modules.gear.core.ItemUtil;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.npcs.core.NPCData;
 import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
-import com.legendsofvaleros.modules.questsold.objective.AbstractQuestObjective;
 import com.legendsofvaleros.util.MessageUtil;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import org.bukkit.Location;

@@ -1,7 +1,6 @@
 package com.legendsofvaleros.modules.questsold.action.core;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.questsold.action.AbstractQuestAction;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
 import com.legendsofvaleros.util.commands.TemporaryCommand;

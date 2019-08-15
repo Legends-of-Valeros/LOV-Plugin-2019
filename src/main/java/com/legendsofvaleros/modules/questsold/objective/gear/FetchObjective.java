@@ -4,7 +4,6 @@ import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.gear.event.GearPickupEvent;
-import com.legendsofvaleros.modules.questsold.objective.AbstractQuestObjective;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerDropItemEvent;

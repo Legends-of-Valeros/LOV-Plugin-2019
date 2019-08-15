@@ -7,7 +7,6 @@ import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.gear.core.GearType;
 import com.legendsofvaleros.modules.gear.event.ItemEquipEvent;
 import com.legendsofvaleros.modules.gear.event.ItemUnEquipEvent;
-import com.legendsofvaleros.modules.questsold.objective.AbstractQuestObjective;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.event.Event;
 

@@ -8,8 +8,8 @@ import com.legendsofvaleros.modules.quests.core.ports.INodeOutputTrigger;
 import java.util.UUID;
 
 public class StartedNode extends AbstractQuestNode<Boolean> {
-    @SerializedName("Completed")
-    public INodeOutputTrigger onComplete = new INodeOutputTrigger(this);
+    @SerializedName("Triggered")
+    public INodeOutputTrigger onTriggered = new INodeOutputTrigger(this);
 
     public StartedNode(UUID id) {
         super(id);
@@ -25,7 +25,7 @@ public class StartedNode extends AbstractQuestNode<Boolean> {
         if(!started) {
             instance.setNodeInstance(this, true);
 
-            onComplete.run(instance);
+            onTriggered.run(instance);
         }
     }
 }

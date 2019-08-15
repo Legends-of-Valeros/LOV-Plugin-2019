@@ -1,7 +1,6 @@
 package com.legendsofvaleros.modules.questsold.objective.core;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.questsold.objective.AbstractQuestObjective;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;

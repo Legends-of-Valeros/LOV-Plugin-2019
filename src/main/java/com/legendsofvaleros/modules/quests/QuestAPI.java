@@ -19,9 +19,7 @@ import com.legendsofvaleros.modules.characters.loading.PhaseLock;
 import com.legendsofvaleros.modules.quests.api.*;
 import com.legendsofvaleros.modules.quests.api.ports.INodeInput;
 import com.legendsofvaleros.modules.quests.api.ports.INodeOutput;
-import com.legendsofvaleros.modules.quests.core.Quest;
-import com.legendsofvaleros.modules.quests.core.QuestInstance;
-import com.legendsofvaleros.modules.quests.core.QuestNodeMap;
+import com.legendsofvaleros.modules.quests.core.*;
 import com.legendsofvaleros.modules.quests.core.ports.INodeInputValue;
 import com.legendsofvaleros.modules.quests.registry.EventRegistry;
 import com.legendsofvaleros.modules.quests.registry.NodeRegistry;
@@ -34,8 +32,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -126,10 +122,17 @@ public class QuestAPI extends ListenerModule {
 
         APIController.getInstance().getGsonBuilder()
                 .registerTypeAdapter(IQuest.class, (JsonDeserializer<IQuest>) (json, typeOfT, context) -> {
-                    try {
-                        return decodeQuest(json.getAsJsonObject(), context);
-                    } catch (NoSuchFieldException | IllegalAccessException e) {
-                        throw new RuntimeException(e);
+                    // If it's an object, then we're decoding the actual quest.
+                    if(json.isJsonObject()) {
+                        try {
+                            return decodeQuest(json.getAsJsonObject(), context);
+                        } catch (NoSuchFieldException | IllegalAccessException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }else{
+                        // If it's not an object, then it's a reference to the quest.
+                        // Note: the quest must already be loaded, or the value will be null.
+                        return quests.getIfPresent(json.getAsString());
                     }
                 })
                 .registerTypeAdapter(Duration.class, (JsonDeserializer<Duration>) (json, typeOfT, context) -> Duration.parse(json.getAsString()));
@@ -167,9 +170,7 @@ public class QuestAPI extends ListenerModule {
                 getQuest(k).onSuccess(q -> {
                     if (q.isPresent()) {
                         try {
-                            IQuest quest = q.get();
-
-                            IQuestInstance instance = decodeQuestInstance(pc, quest, v);
+                            IQuestInstance instance = APIController.getInstance().getGson().fromJson(v, QuestInstance.class);
 
                             // Store the instance in a temporary map for safety, as we don't act like it's ready until
                             // the player is completely loaded.
@@ -374,8 +375,14 @@ public class QuestAPI extends ListenerModule {
     /**
      * Theoretically we don't need to <i>encode</i> the resulting object for it to be savable, only decode.
      */
-    private IQuestInstance decodeQuestInstance(PlayerCharacter pc, IQuest quest, JsonObject jo) {
+    /*private IQuestInstance decodeQuestInstance(PlayerCharacter pc, IQuest quest, JsonObject jo) {
         QuestInstance instance = new QuestInstance(pc, quest);
+
+        // If quest log data exists for this quest, decode it.
+        if (jo.has("log")) {
+            for(Map.Entry<Integer, QuestLogEntry> entry : APIController.getInstance().getGson().fromJson(jo.get("log"), QuestLogMap.class).entrySet())
+                instance.setLogEntry(entry.getKey(), entry.getValue());
+        }
 
         // If historical data exists for this quest, decode it.
         if (jo.has("history")) {
@@ -407,7 +414,7 @@ public class QuestAPI extends ListenerModule {
         }
 
         return instance;
-    }
+    }*/
 
     private class PlayerListener implements Listener {
         @EventHandler

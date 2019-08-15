@@ -165,7 +165,7 @@ public class QuestController extends QuestAPI {
     }
 
     @EventHandler
-    public void onQuestComplete(QuestCompletedEvent event) {
+    public void onQuestComplete(QuestEndedEvent event) {
         event.getPlayer().playSound(event.getPlayer().getLocation(), "misc.questcomplete", 1F, 1F);
     }
 

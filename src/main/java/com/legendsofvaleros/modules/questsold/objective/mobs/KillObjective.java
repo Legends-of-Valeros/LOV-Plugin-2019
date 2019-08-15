@@ -5,7 +5,6 @@ import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.mobs.core.SpawnArea;
-import com.legendsofvaleros.modules.questsold.objective.AbstractQuestObjective;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

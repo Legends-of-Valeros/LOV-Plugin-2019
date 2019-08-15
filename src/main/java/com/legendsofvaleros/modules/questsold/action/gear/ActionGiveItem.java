@@ -4,7 +4,6 @@ import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.gear.core.ItemUtil;
-import com.legendsofvaleros.modules.questsold.action.AbstractQuestAction;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
 import org.bukkit.ChatColor;

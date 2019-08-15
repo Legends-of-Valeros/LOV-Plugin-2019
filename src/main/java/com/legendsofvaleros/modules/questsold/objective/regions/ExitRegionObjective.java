@@ -1,7 +1,6 @@
 package com.legendsofvaleros.modules.questsold.objective.regions;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.questsold.objective.AbstractQuestObjective;
 import com.legendsofvaleros.modules.regions.RegionController;
 import com.legendsofvaleros.modules.regions.core.Region;
 import com.legendsofvaleros.modules.regions.event.RegionEnterEvent;

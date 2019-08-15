@@ -1,7 +1,6 @@
 package com.legendsofvaleros.modules.questsold.objective.zones;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.questsold.objective.AbstractQuestObjective;
 import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.modules.zones.core.Zone;
 import com.legendsofvaleros.modules.zones.event.ZoneEnterEvent;

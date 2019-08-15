@@ -4,20 +4,22 @@ import com.legendsofvaleros.modules.quests.api.IQuestInstance;
 import com.legendsofvaleros.modules.quests.api.IQuestNode;
 import com.legendsofvaleros.modules.quests.api.ports.INodeInput;
 import com.legendsofvaleros.modules.quests.api.ports.INodeOutput;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.Set;
 
-public class INodeInputValue<T, V> implements INodeInput<INodeOutputValue<?, V>> {
-    final IQuestNode<T> node;
+public class INodeInputValue<V> implements INodeInput<INodeOutputValue<?, V>> {
+    final IQuestNode node;
 
     Class<V> valClass;
     V defaultValue;
     INodeOutputValue<?, V> port;
 
-    public INodeInputValue(Class<V> valClass, IQuestNode<T> node) {
+    public INodeInputValue(Class<V> valClass, IQuestNode node, @NotNull V defaultValue) {
         this.valClass = valClass;
         this.node = node;
+        this.defaultValue = defaultValue;
     }
 
     public Class<V> getValueClass() {
@@ -38,9 +40,9 @@ public class INodeInputValue<T, V> implements INodeInput<INodeOutputValue<?, V>>
         return Optional.ofNullable(this.port);
     }
 
-    public Optional<V> get(IQuestInstance instance) {
+    public V get(IQuestInstance instance) {
         Optional<INodeOutputValue<?, V>> conn = this.getConnected();
 
-        return conn.isPresent() ? conn.get().get(instance) : Optional.ofNullable(defaultValue);
+        return conn.isPresent() ? conn.get().get(instance) : defaultValue;
     }
 }

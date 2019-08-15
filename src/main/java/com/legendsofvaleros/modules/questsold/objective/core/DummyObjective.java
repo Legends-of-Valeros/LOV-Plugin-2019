@@ -2,7 +2,6 @@ package com.legendsofvaleros.modules.questsold.objective.core;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.questsold.api.IQuestObjective;
-import com.legendsofvaleros.modules.questsold.objective.AbstractQuestObjective;
 import org.bukkit.event.Event;
 
 public class DummyObjective extends AbstractQuestObjective<Boolean> {

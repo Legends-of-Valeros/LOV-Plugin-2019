@@ -3,7 +3,6 @@ package com.legendsofvaleros.modules.questsold.objective.gear;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.gear.core.Gear;
-import com.legendsofvaleros.modules.questsold.objective.AbstractQuestObjective;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

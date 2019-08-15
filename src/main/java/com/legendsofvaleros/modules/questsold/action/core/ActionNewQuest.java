@@ -2,7 +2,6 @@ package com.legendsofvaleros.modules.questsold.action.core;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.questsold.QuestController;
-import com.legendsofvaleros.modules.questsold.action.AbstractQuestAction;
 import com.legendsofvaleros.util.MessageUtil;
 
 public class ActionNewQuest extends AbstractQuestAction {

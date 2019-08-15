@@ -3,8 +3,7 @@ package com.legendsofvaleros.modules.quests.core;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.api.*;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
 public class QuestInstance implements IQuestInstance {
     final PlayerCharacter player;
@@ -13,11 +12,20 @@ public class QuestInstance implements IQuestInstance {
 
     private QuestState state = QuestState.INACTIVE;
 
+    final QuestLogMap logs;
+    transient int highestEntry;
+
+    final List<Void> history;
+
     final QuestNodeInstanceMap nodes;
 
     public QuestInstance(PlayerCharacter player, IQuest quest) {
         this.quest = quest;
         this.player = player;
+
+        this.history = new ArrayList<>();
+
+        this.logs = new QuestLogMap();
 
         this.nodes = new QuestNodeInstanceMap();
     }
@@ -45,6 +53,35 @@ public class QuestInstance implements IQuestInstance {
     @Override
     public <T> void setNodeInstance(IQuestNode<T> node, T instance) {
         nodes.putInstance(node, instance);
+    }
+
+    @Override
+    public Map<Integer, QuestLogEntry> getLogEntries() {
+        return logs;
+    }
+
+    @Override
+    public int addLogEntry(QuestLogEntry entry) {
+        int id = highestEntry;
+
+        setLogEntry(highestEntry, entry);
+
+        return id;
+    }
+
+    @Override
+    public Optional<QuestLogEntry> getLogEntry(int id) {
+        return Optional.ofNullable(logs.get(id));
+    }
+
+    public void setLogEntry(int id, QuestLogEntry entry) {
+        if(highestEntry < id) highestEntry = id + 1;
+        logs.put(id, entry);
+    }
+
+    @Override
+    public void removeLogEntry(int id) {
+        logs.remove(id);
     }
 
     @Override

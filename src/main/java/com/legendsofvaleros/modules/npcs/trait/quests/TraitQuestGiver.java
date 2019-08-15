@@ -15,8 +15,8 @@ import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import com.legendsofvaleros.modules.questsold.QuestController;
 import com.legendsofvaleros.modules.questsold.api.IQuest;
 import com.legendsofvaleros.modules.quests.api.QuestStatus;
-import com.legendsofvaleros.modules.questsold.event.QuestCompletedEvent;
-import com.legendsofvaleros.modules.questsold.event.QuestStartedEvent;
+import com.legendsofvaleros.modules.quests.events.QuestEndedEvent;
+import com.legendsofvaleros.modules.quests.events.QuestStartedEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
 import com.legendsofvaleros.util.item.Model;
@@ -165,7 +165,7 @@ public class TraitQuestGiver extends LOVTrait {
         }
 
         @EventHandler
-        public void onQuestComplete(QuestCompletedEvent event) {
+        public void onQuestComplete(QuestEndedEvent event) {
             update(event.getPlayerCharacter());
         }
 
