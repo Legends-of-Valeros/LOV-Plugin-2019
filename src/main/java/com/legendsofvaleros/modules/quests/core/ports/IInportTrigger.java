@@ -7,30 +7,30 @@ import com.legendsofvaleros.modules.quests.api.ports.INodeRunnable;
 
 import java.util.Optional;
 
-public class INodeInputTrigger<T> implements INodeInput<INodeOutputTrigger<?>> {
+public class IInportTrigger<T> implements INodeInput<IOutportTrigger<?>> {
     final IQuestNode<T> node;
 
-    INodeOutputTrigger<?> port;
+    IOutportTrigger<?> port;
 
     final Optional<INodeRunnable<T>> runnable;
 
-    public INodeInputTrigger(IQuestNode<T> node) {
+    public IInportTrigger(IQuestNode<T> node) {
         this.node = node;
         this.runnable = Optional.empty();
     }
 
-    public INodeInputTrigger(IQuestNode<T> node, INodeRunnable<T> runnable) {
+    public IInportTrigger(IQuestNode<T> node, INodeRunnable<T> runnable) {
         this.node = node;
         this.runnable = Optional.of(runnable);
     }
 
     @Override
-    public void setConnection(INodeOutputTrigger<?> port) {
+    public void setConnection(IOutportTrigger<?> port) {
         this.port = port;
     }
 
     @Override
-    public Optional<INodeOutputTrigger<?>> getConnected() {
+    public Optional<IOutportTrigger<?>> getConnected() {
         return Optional.ofNullable(this.port);
     }
 

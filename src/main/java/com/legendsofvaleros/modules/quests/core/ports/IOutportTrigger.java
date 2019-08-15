@@ -9,21 +9,21 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-public class INodeOutputTrigger<T> implements INodeOutput<INodeInputTrigger<?>> {
+public class IOutportTrigger<T> implements INodeOutput<IInportTrigger<?>> {
     final IQuestNode<T> node;
 
-    final Set<INodeInputTrigger<?>> ports;
+    final Set<IInportTrigger<?>> ports;
 
     final Optional<INodeRunnable<T>> runnable;
 
-    public INodeOutputTrigger(IQuestNode<T> node) {
+    public IOutportTrigger(IQuestNode<T> node) {
         this.node = node;
         this.runnable = Optional.empty();
 
         this.ports = new HashSet<>();
     }
 
-    public INodeOutputTrigger(IQuestNode<T> node, INodeRunnable runnable) {
+    public IOutportTrigger(IQuestNode<T> node, INodeRunnable runnable) {
         this.node = node;
         this.runnable = Optional.of(runnable);
 
@@ -31,12 +31,12 @@ public class INodeOutputTrigger<T> implements INodeOutput<INodeInputTrigger<?>> 
     }
 
     @Override
-    public void addConnection(INodeInputTrigger<?> port) {
+    public void addConnection(IInportTrigger<?> port) {
         this.ports.add(port);
     }
 
     @Override
-    public Set<INodeInputTrigger<?>> getConnected() {
+    public Set<IInportTrigger<?>> getConnected() {
         return this.ports;
     }
 

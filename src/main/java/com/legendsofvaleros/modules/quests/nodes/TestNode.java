@@ -5,8 +5,8 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.quests.api.IQuestInstance;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
-import com.legendsofvaleros.modules.quests.core.ports.INodeInputTrigger;
-import com.legendsofvaleros.modules.quests.core.ports.INodeOutputTrigger;
+import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
+import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -25,7 +25,7 @@ public class TestNode extends AbstractQuestNode<TestNode.Data> {
     private static final Map<CharacterId, BukkitTask> TIMER = new HashMap<>();
 
     @SerializedName("Start")
-    public INodeInputTrigger<TestNode.Data> onStart = new INodeInputTrigger<>(this, (instance, data) -> {
+    public IInportTrigger<Data> onStart = new IInportTrigger<>(this, (instance, data) -> {
         if(data.started) throw new IllegalStateException("Timer already activated.");
 
         data.started = true;
@@ -34,7 +34,7 @@ public class TestNode extends AbstractQuestNode<TestNode.Data> {
     });
 
     @SerializedName("Completed")
-    public INodeOutputTrigger onComplete = new INodeOutputTrigger(this);
+    public IOutportTrigger onComplete = new IOutportTrigger(this);
 
     public TestNode(UUID id) {
         super(id);

@@ -4,8 +4,8 @@ import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
 import com.legendsofvaleros.modules.quests.core.QuestLogEntry;
-import com.legendsofvaleros.modules.quests.core.ports.INodeInputTrigger;
-import com.legendsofvaleros.modules.quests.core.ports.INodeInputValue;
+import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
+import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
@@ -16,13 +16,13 @@ public class QuestLogNode extends AbstractQuestNode<Integer> {
     private static final Map<CharacterId, BukkitTask> TIMER = new HashMap<>();
 
     @SerializedName("Text")
-    public INodeInputValue<Object> text = new INodeInputValue<>(Object.class, this, "N/A");
+    public IInportValue<Object> text = new IInportValue<>(Object.class, this, "N/A");
 
     @SerializedName("Strike")
-    public INodeInputValue<Boolean> strikethrough = new INodeInputValue<>(Boolean.class, this, false);
+    public IInportValue<Boolean> strikethrough = new IInportValue<>(Boolean.class, this, false);
 
     @SerializedName("Update")
-    public INodeInputTrigger<Integer> onUpdate = new INodeInputTrigger<>(this, (instance, logEntry) -> {
+    public IInportTrigger<Integer> onUpdate = new IInportTrigger<>(this, (instance, logEntry) -> {
         if(logEntry == null)
             logEntry = instance.addLogEntry(new QuestLogEntry("N/A", false));
 
@@ -34,7 +34,7 @@ public class QuestLogNode extends AbstractQuestNode<Integer> {
     });
 
     @SerializedName("Remove")
-    public INodeInputTrigger<Integer> onRemove = new INodeInputTrigger<>(this, (instance, logEntry) -> {
+    public IInportTrigger<Integer> onRemove = new IInportTrigger<>(this, (instance, logEntry) -> {
         if(logEntry == null)
             throw new IllegalStateException("Log entry is already removed!");
 

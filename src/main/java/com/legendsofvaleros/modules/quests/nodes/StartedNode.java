@@ -3,13 +3,13 @@ package com.legendsofvaleros.modules.quests.nodes;
 import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.quests.api.IQuestInstance;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
-import com.legendsofvaleros.modules.quests.core.ports.INodeOutputTrigger;
+import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
 
 import java.util.UUID;
 
 public class StartedNode extends AbstractQuestNode<Boolean> {
     @SerializedName("Triggered")
-    public INodeOutputTrigger onTriggered = new INodeOutputTrigger(this);
+    public IOutportTrigger onTriggered = new IOutportTrigger(this);
 
     public StartedNode(UUID id) {
         super(id);

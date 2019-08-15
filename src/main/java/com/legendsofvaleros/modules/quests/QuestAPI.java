@@ -20,7 +20,7 @@ import com.legendsofvaleros.modules.quests.api.*;
 import com.legendsofvaleros.modules.quests.api.ports.INodeInput;
 import com.legendsofvaleros.modules.quests.api.ports.INodeOutput;
 import com.legendsofvaleros.modules.quests.core.*;
-import com.legendsofvaleros.modules.quests.core.ports.INodeInputValue;
+import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.registry.EventRegistry;
 import com.legendsofvaleros.modules.quests.registry.NodeRegistry;
 import com.legendsofvaleros.modules.quests.registry.PrerequisiteRegistry;
@@ -299,7 +299,7 @@ public class QuestAPI extends ListenerModule {
 
                 // Decode default input interface values
                 for(Map.Entry<String, JsonElement> optionEntry : obj.getAsJsonObject("interfaces").entrySet()) {
-                    INodeInputValue in = (INodeInputValue)findField(INodeInputValue.class, nodeClass, optionEntry.getKey()).get(node);
+                    IInportValue in = (IInportValue)findField(IInportValue.class, nodeClass, optionEntry.getKey()).get(node);
                     in.setDefaultValue(APIController.getInstance().getGson().fromJson(optionEntry.getValue(), in.getValueClass()));
                 }
 
