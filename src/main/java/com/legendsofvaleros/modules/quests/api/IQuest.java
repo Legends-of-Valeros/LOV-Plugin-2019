@@ -2,7 +2,6 @@ package com.legendsofvaleros.modules.quests.api;
 
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.quests.core.QuestInstance;
 import org.bukkit.event.Event;
 
 import java.lang.reflect.Method;
@@ -13,9 +12,10 @@ import java.util.UUID;
 
 public interface IQuest {
     /**
-     * @return The unique name used to identify this gear.
+     * @return The unique ID used to identify this quest.
      */
     String getId();
+
     /**
      * @return The unique slug used to identify this gear with a human readable identifier.
      */
@@ -64,8 +64,9 @@ public interface IQuest {
 
     /**
      * Remove the instance from the quest. This is called on anything ranging from quest deletion to just a log out.
+     * Should return the instance that was removed, if there was one.
      */
-    void removeInstance(CharacterId characterId);
+    Optional<IQuestInstance> removeInstance(CharacterId characterId);
 
     /**
      * Fired when a quest's nodes are to be made active for an instance. This may be for any reason between creation, or

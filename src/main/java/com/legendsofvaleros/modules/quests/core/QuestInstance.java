@@ -13,7 +13,6 @@ public class QuestInstance implements IQuestInstance {
     private QuestState state = QuestState.INACTIVE;
 
     final QuestLogMap logs;
-    transient int highestEntry;
 
     final List<Void> history;
 
@@ -62,11 +61,16 @@ public class QuestInstance implements IQuestInstance {
 
     @Override
     public int addLogEntry(QuestLogEntry entry) {
-        int id = highestEntry;
+        // Should we fire an new entry event, here?
 
-        setLogEntry(highestEntry, entry);
+        return logs.add(entry);
+    }
 
-        return id;
+    @Override
+    public void updateLogEntry(int id, QuestLogEntry entry) {
+        logs.put(id, entry);
+
+        // Should we fire an updated entry event, here?
     }
 
     @Override
@@ -74,14 +78,10 @@ public class QuestInstance implements IQuestInstance {
         return Optional.ofNullable(logs.get(id));
     }
 
-    public void setLogEntry(int id, QuestLogEntry entry) {
-        if(highestEntry < id) highestEntry = id + 1;
-        logs.put(id, entry);
-    }
-
     @Override
     public void removeLogEntry(int id) {
         logs.remove(id);
+        // Should we fire an updated entry event, here?
     }
 
     @Override
@@ -102,7 +102,9 @@ public class QuestInstance implements IQuestInstance {
     }
 
     @Override
-    public void resetNodes() {
+    public void reset() {
+        this.logs.clear();
+
         this.nodes.clear();
     }
 

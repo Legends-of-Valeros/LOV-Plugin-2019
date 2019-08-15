@@ -6,7 +6,6 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.event.GearPickupEvent;
 import com.legendsofvaleros.modules.gear.event.ItemEquipEvent;
 import com.legendsofvaleros.modules.gear.event.ItemUnEquipEvent;
-import com.legendsofvaleros.modules.questsold.QuestController;
 import com.legendsofvaleros.modules.questsold.action.gear.ActionChooseItem;
 import com.legendsofvaleros.modules.questsold.action.gear.ActionGiveItem;
 import com.legendsofvaleros.modules.questsold.action.gear.ActionRemoveItem;

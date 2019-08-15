@@ -8,10 +8,10 @@ import com.codingforcookies.robert.item.Book;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.questsold.ActiveTracker;
-import com.legendsofvaleros.modules.questsold.QuestController;
-import com.legendsofvaleros.modules.questsold.api.IQuest;
-import com.legendsofvaleros.modules.questsold.api.IQuestObjective;
+import com.legendsofvaleros.modules.quests.api.IQuest;
+import com.legendsofvaleros.modules.quests.api.IQuestInstance;
+import com.legendsofvaleros.modules.quests.api.QuestState;
+import com.legendsofvaleros.modules.quests.core.QuestLogEntry;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -19,7 +19,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Collection;
+import java.util.*;
 
 @CommandAlias("quests|lov quests")
 public class QuestCommands extends BaseCommand {
@@ -49,73 +49,45 @@ public class QuestCommands extends BaseCommand {
         });
     }
 
-    @Subcommand("uncomplete")
-    @Description("Remove a completed quest. Using * will target all quests.")
-    @CommandPermission("quests.uncomplete")
+    @Subcommand("delete")
+    @Description("Remove a quest instance from a player complete. Using * will target all quests.")
+    @CommandPermission("quests.delete")
     public void cmdUncomplete(Player player, String questId) {
         if(!LegendsOfValeros.getMode().allowEditing()) return;
 
         PlayerCharacter pc = Characters.getPlayerCharacter(player);
 
-        QuestController.getInstance().removeQuestProgress(questId, pc);
-        MessageUtil.sendUpdate(player, "Quest uncompleted.");
+        QuestController.getInstance().getQuest(questId).onSuccess(val -> {
+            QuestController.getInstance().removeQuestProgress(val.get(), pc);
+            MessageUtil.sendUpdate(player, "Quest uncompleted.");
+        });
     }
 
-    @Subcommand("talk")
+    @Subcommand("info")
     @Private
-    public void cmdQuestTalk(Player player, String questId) {
-        PlayerCharacter pc = Characters.getPlayerCharacter(player);
-
-        player.closeInventory();
-        QuestController.getInstance().attemptGiveQuest(pc, questId);
-    }
-
-    @Subcommand("accept")
-    @Private
-    public void cmdQuestAccept(Player player, String questId) {
+    public void cmdQuestInfo(Player player, String questId) {
         PlayerCharacter pc = Characters.getPlayerCharacter(player);
 
         player.closeInventory();
 
         QuestController.getInstance().getQuest(questId).onSuccess(val -> {
-            if(!val.isPresent()) {
-                MessageUtil.sendUpdate(player, "Unknown quest.");
-                return;
-            }
-
-            IQuest quest = val.get();
-            quest.onAccept(pc);
-
-            MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' accepted!");
+            QuestController.getInstance().startQuest(val.get(), pc);
         });
     }
 
-    @Subcommand("decline")
+    @Subcommand("start")
     @Private
-    public void cmdQuestDecline(Player player, String questId) {
+    public void cmdQuestStart(Player player, String questId) {
         PlayerCharacter pc = Characters.getPlayerCharacter(player);
 
         player.closeInventory();
 
         QuestController.getInstance().getQuest(questId).onSuccess(val -> {
-            if(!val.isPresent()) {
-                MessageUtil.sendUpdate(player, "Unknown quest.");
-                return;
-            }
-
-            val.get().onDecline(pc);
-
-            MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' declined!");
+            QuestController.getInstance().startQuest(val.get(), pc);
         });
     }
 
-    @Subcommand("close")
-    @Private
-    public void cmdQuestClose(Player player) {
-        player.closeInventory();
-    }
-
-    @Subcommand("active")
+    /*@Subcommand("active")
     public void cmdQuestActive(Player player, String questId) {
         PlayerCharacter pc = Characters.getPlayerCharacter(player);
 
@@ -127,7 +99,7 @@ public class QuestCommands extends BaseCommand {
             else
                 MessageUtil.sendUpdate(pc.getPlayer(), "You are now tracking '" + val.get().getName() + "'.");
         }, QuestController.getInstance().getScheduler()::async);
-    }
+    }*/
 
     @Subcommand("gui")
     @Description("Show the quest book.")
@@ -136,24 +108,30 @@ public class QuestCommands extends BaseCommand {
 
         PlayerCharacter pc = Characters.getPlayerCharacter(player);
 
-        String activeId = ActiveTracker.getActive(pc);
+        //String activeId = ActiveTracker.getActive(pc);
+        int activeId = 0;
 
-        Collection<IQuest> quests = QuestController.getInstance().getPlayerQuests(pc);
+        Collection<IQuestInstance> instances = QuestController.getInstance().getPlayerQuests(pc);
+
+        int active = instances.stream().mapToInt(v -> v.getState() == QuestState.ACTIVE ? 1 : 0).sum();
+        int completed = instances.stream().mapToInt(v -> v.getState().wasCompleted() ? 1 : 0).sum();
 
         Book book = new Book("Quest Journal", "Acolyte");
 
         book.addPage(
                 new TextBuilder("\n\n\n" + StringUtil.center(Book.WIDTH, "Quest Journal")).color(ChatColor.BLACK)
                         .append("\n\n\n" + StringUtil.center(Book.WIDTH, "Current Quests:") + "\n").color(ChatColor.DARK_AQUA)
-                        .append(StringUtil.center(Book.WIDTH, quests.size() + "") + "\n").color(ChatColor.BLACK)
+                        .append(StringUtil.center(Book.WIDTH, active + "") + "\n").color(ChatColor.BLACK)
                         .append(StringUtil.center(Book.WIDTH, "Completed Quests:") + "\n").color(ChatColor.DARK_PURPLE)
-                        .append(StringUtil.center(Book.WIDTH, QuestController.getInstance().completedQuests.row(pc.getUniqueCharacterId()).size() + "")).color(ChatColor.BLACK)
+                        .append(StringUtil.center(Book.WIDTH, completed + "")).color(ChatColor.BLACK)
                         .create()
         );
 
         TextBuilder tb;
 
-        for (IQuest quest : quests) {
+        IQuest quest;
+        for (IQuestInstance instance : instances) {
+            quest = instance.getQuest();
             tb = new TextBuilder("");
 
             tb.append(StringUtil.center(Book.WIDTH, quest.getId().equals(activeId) ? "[ " + quest.getName() + " ]" : quest.getName()) + "\n").color(ChatColor.BLACK).underlined(true)
@@ -167,30 +145,16 @@ public class QuestCommands extends BaseCommand {
 
             tb.append("\nObjectives:\n").color(ChatColor.DARK_GRAY);
 
-            Integer currentI = quest.getObjectiveGroupI(pc);
-            if (currentI == null) {
-                tb.append("*No objectives, yet\n").color(ChatColor.DARK_RED);
-            } else
-                for (int i = currentI; i >= 0; i--) {
-                    IQuestObjective<?>[] objs = quest.getObjectives().groups[i];
-                    if (objs.length == 0)
-                        tb.append("*An error occurred\n").color(ChatColor.DARK_RED);
-                    else
-                        for (IQuestObjective<?> obj : objs) {
-                            try {
-                                boolean completed = currentI != i || obj.isCompleted(pc);
-                                if (obj.isVisible()) {
-                                    tb.append("*" + (completed ? obj.getCompletedText(pc) : obj.getProgressText(pc)) + "\n").color(ChatColor.BLACK);
-                                    if (completed) tb.strikethrough(true);
-                                }
-                            } catch (Exception e) {
-                                MessageUtil.sendException(QuestController.getInstance(), player, e);
-                                tb.append("*Plugin error\n").color(ChatColor.DARK_RED);
-                            }
-                        }
-                    if (i != 0 && currentI != 0)
-                        tb.append(StringUtil.center(Book.WIDTH, "------") + "\n").color(ChatColor.DARK_GRAY);
-                }
+            List<Map.Entry<Integer, QuestLogEntry>> entries = new ArrayList<>();
+            entries.addAll(instance.getLogEntries().entrySet());
+            Collections.sort(entries, (o1, o2) -> o2.getKey() - o1.getKey());
+
+            for(QuestLogEntry entry : entries.stream().map(v -> v.getValue()).toArray(QuestLogEntry[]::new)) {
+                tb.append("[" + (entry.success ? "⦿" : "⦾") + "]")
+                        .color(ChatColor.BLACK)
+                    .append((entry.optional ? "(Optional)" : "") + entry.text + "\n")
+                        .color(ChatColor.BLACK).strikethrough(entry.disabled);
+            }
 
             book.addPage(tb.create());
         }

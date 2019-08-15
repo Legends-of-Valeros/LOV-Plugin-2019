@@ -13,7 +13,7 @@ public class SkillStealth extends Skill {
 	private static final double[] COOLDOWN = new double[] { 60 };
 	private static final int[] TIME = new int[] { 8 * 60 };
 	private static final Object[] DESCRIPTION = new Object[] {
-			"Toggles sneaking, invisibility for ", new TimePart().seconds(TIME), ", cancelled by attacking or taking damage."
+			"Toggles sneaking, invisibility for ", new TimePart().seconds(TIME), ", disabled by attacking or taking damage."
 		};
 
 	public SkillStealth() { super(ID, Type.BENEFICIAL, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }

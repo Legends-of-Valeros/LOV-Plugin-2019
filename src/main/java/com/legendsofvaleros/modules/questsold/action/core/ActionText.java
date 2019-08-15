@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.questsold.action.core;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.questsold.QuestUtil;
+import com.legendsofvaleros.modules.quests.QuestUtil;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.ChatColor;
 

@@ -18,25 +18,55 @@ public class QuestLogNode extends AbstractQuestNode<Integer> {
     @SerializedName("Text")
     public IInportValue<Object> text = new IInportValue<>(Object.class, this, "N/A");
 
-    @SerializedName("Strike")
-    public IInportValue<Boolean> strikethrough = new IInportValue<>(Boolean.class, this, false);
+    @SerializedName("Add")
+    public IInportTrigger<Integer> onAdd = new IInportTrigger<>(this, (instance, logEntry) -> {
+        QuestLogEntry entry = new QuestLogEntry();
 
-    @SerializedName("Update")
-    public IInportTrigger<Integer> onUpdate = new IInportTrigger<>(this, (instance, logEntry) -> {
-        if(logEntry == null)
-            logEntry = instance.addLogEntry(new QuestLogEntry("N/A", false));
-
-        QuestLogEntry entry = instance.getLogEntry(logEntry).get();
         entry.text = text.get(instance).toString();
-        entry.strikethrough = strikethrough.get(instance);
+
+        if(logEntry == null) {
+            logEntry = instance.addLogEntry(entry);
+        }
 
         instance.setNodeInstance(this, logEntry);
     });
 
+    @SerializedName("Success")
+    public IInportTrigger<Integer> onSuccess = new IInportTrigger<>(this, (instance, logEntry) -> {
+        if(logEntry == null) {
+            throw new IllegalStateException("Cannot edit a log entry before its been added!");
+        }
+
+        QuestLogEntry entry = instance.getLogEntry(logEntry).get();
+
+        if(entry.disabled) {
+            throw new IllegalStateException("Cannot edit a disabled log entry!");
+        }
+
+        entry.success = true;
+        entry.disabled = true;
+    });
+
+    @SerializedName("Fail")
+    public IInportTrigger<Integer> onFail = new IInportTrigger<>(this, (instance, logEntry) -> {
+        if(logEntry == null) {
+            throw new IllegalStateException("Cannot edit a log entry before its been added!");
+        }
+
+        QuestLogEntry entry = instance.getLogEntry(logEntry).get();
+
+        if(entry.disabled) {
+            throw new IllegalStateException("Cannot edit a disabled log entry!");
+        }
+
+        entry.disabled = true;
+    });
+
     @SerializedName("Remove")
     public IInportTrigger<Integer> onRemove = new IInportTrigger<>(this, (instance, logEntry) -> {
-        if(logEntry == null)
+        if(logEntry == null) {
             throw new IllegalStateException("Log entry is already removed!");
+        }
 
         instance.removeLogEntry(logEntry);
 

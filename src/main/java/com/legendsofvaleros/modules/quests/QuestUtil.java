@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.questsold;
+package com.legendsofvaleros.modules.quests;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;

@@ -21,7 +21,7 @@ public class SkillPolymorph extends Skill {
 				public void meta(int level, MetaEffectInstance<Double> meta) {
 					meta.level = getEarliest(MORPH_LEVEL, level);
 				}
-			}, " to target, cancelled when receiving damage, heals enemy 200% rate."
+			}, " to target, disabled when receiving damage, heals enemy 200% rate."
 		};
 
 	public SkillPolymorph() { super(ID, Type.NEUTRAL, EntityClass.MAGE, LEVELS, COST, COOLDOWN, DESCRIPTION); }

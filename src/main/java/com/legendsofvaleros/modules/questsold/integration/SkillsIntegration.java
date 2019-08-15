@@ -2,7 +2,6 @@ package com.legendsofvaleros.modules.questsold.integration;
 
 import com.legendsofvaleros.module.Integration;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.questsold.QuestController;
 import com.legendsofvaleros.modules.questsold.objective.skills.SkillBindObjective;
 import com.legendsofvaleros.modules.questsold.objective.skills.SkillUseObjective;
 import com.legendsofvaleros.modules.regions.RegionController;

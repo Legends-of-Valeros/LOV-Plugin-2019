@@ -152,6 +152,13 @@ public class QuestAPI extends ListenerModule {
         playerQuests.put(pc.getUniqueCharacterId(), instance);
     }
 
+    public void removeQuestProgress(IQuest quest, PlayerCharacter pc) {
+        Optional<IQuestInstance> instance = quest.removeInstance(pc.getUniqueCharacterId());
+
+        if(instance.isPresent())
+            playerQuests.remove(pc.getUniqueCharacterId(), instance.get());
+    }
+
     private Promise<Void> onLogin(final PlayerCharacter pc) {
         Promise<Void> promise = new Promise<>();
 

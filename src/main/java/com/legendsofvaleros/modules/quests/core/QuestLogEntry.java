@@ -1,11 +1,10 @@
 package com.legendsofvaleros.modules.quests.core;
 
 public class QuestLogEntry {
-    public String text;
-    public boolean strikethrough;
+    public String text = "N/A";
 
-    public QuestLogEntry(String text, boolean strikethrough) {
-        this.text = text;
-        this.strikethrough = strikethrough;
-    }
+    public boolean success = false;
+    public boolean disabled = false;
+
+    public boolean optional = false;
 }

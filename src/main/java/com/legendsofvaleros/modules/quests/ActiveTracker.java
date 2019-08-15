@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.questsold;
+package com.legendsofvaleros.modules.quests;
 
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.api.Promise;
@@ -25,9 +25,9 @@ public class ActiveTracker {
     private static final Map<CharacterId, String> active = new HashMap<>();
 
     public static void onEnable() {
-        allUpdateInterval = QuestController.getInstance().getConfig().getInt("compass-tracker-update-smear", 20 * 5);
+        allUpdateInterval = com.legendsofvaleros.modules.questsold.QuestController.getInstance().getConfig().getInt("compass-tracker-update-smear", 20 * 5);
 
-        QuestController.getInstance().getLogger().info("Smearing compass tracker updates across " + allUpdateInterval + " ticks.");
+        com.legendsofvaleros.modules.questsold.QuestController.getInstance().getLogger().info("Smearing compass tracker updates across " + allUpdateInterval + " ticks.");
 
         new BukkitRunnable() {
             private long time = 0;
@@ -54,7 +54,7 @@ public class ActiveTracker {
         String activeId = getActive(pc);
         if (activeId == null) {
             return Promise.make(() -> {
-                Collection<IQuest> quests = QuestController.getInstance().getPlayerQuests(pc);
+                Collection<IQuest> quests = com.legendsofvaleros.modules.questsold.QuestController.getInstance().getPlayerQuests(pc);
                 if (quests == null || quests.isEmpty()) {
                     return null;
                 }
@@ -66,13 +66,13 @@ public class ActiveTracker {
                 return active;
             });
         } else {
-            return QuestController.getInstance().getQuest(getActive(pc)).then(val -> {
+            return com.legendsofvaleros.modules.questsold.QuestController.getInstance().getQuest(getActive(pc)).then(val -> {
                 if (!val.isPresent()) {
                     return null;
                 }
 
                 IQuest quest = val.get();
-                if (QuestController.getInstance().getStatus(pc, quest) == QuestStatus.ACTIVE) {
+                if (com.legendsofvaleros.modules.questsold.QuestController.getInstance().getStatus(pc, quest) == QuestStatus.ACTIVE) {
                     return quest;
                 }
 

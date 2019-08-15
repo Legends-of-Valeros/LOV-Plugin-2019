@@ -25,7 +25,7 @@ public enum QuestStatus {
 	/**
 	 * If the quest is not yet ready to be accepted. Typically used by repeatable quests.
 	 */
-	NOT_READY(true);
+	NOT_READY(false);
 	
 	boolean canAccept;
 	

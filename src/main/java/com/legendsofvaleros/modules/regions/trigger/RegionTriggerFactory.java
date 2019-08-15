@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.regions.trigger;
 
-import com.legendsofvaleros.modules.questsold.QuestController;
 import com.legendsofvaleros.modules.regions.api.IRegionTrigger;
 
 import java.util.HashMap;

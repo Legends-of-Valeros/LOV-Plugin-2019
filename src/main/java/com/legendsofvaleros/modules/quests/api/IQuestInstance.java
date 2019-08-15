@@ -43,6 +43,14 @@ public interface IQuestInstance {
      */
     int addLogEntry(QuestLogEntry entry);
 
+    /**
+     * This updates the log entry. We don't allow editing directly so that we can fire an event when the log is updated.
+     */
+    void updateLogEntry(int id, QuestLogEntry entry);
+
+    /**
+     * This should return a copy of the log entry.
+     */
     Optional<QuestLogEntry> getLogEntry(int id);
 
     void removeLogEntry(int id);
@@ -52,11 +60,11 @@ public interface IQuestInstance {
     Collection<IQuestHistory> getHistory();
 
     /**
-     * Deletes all node data.
+     * Deletes all instancing data.
      */
-    void resetNodes();
+    void reset();
 
-    void setState(QuestState state);
+    void setState(QuestState state) throws IllegalStateException;
 
     void onActivated();
 

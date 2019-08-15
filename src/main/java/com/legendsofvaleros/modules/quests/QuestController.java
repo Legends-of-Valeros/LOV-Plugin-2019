@@ -7,6 +7,7 @@ import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterCreateEvent;
+import com.legendsofvaleros.modules.characters.events.PlayerCharacterEvent;
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.npcs.trait.quests.TraitQuestGiver;
@@ -30,6 +31,8 @@ import net.citizensnpcs.api.event.NPCClickEvent;
 import org.bukkit.NamespacedKey;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerEvent;
+
+import java.util.Optional;
 
 @DependsOn(NPCsController.class)
 @DependsOn(CombatEngine.class)
@@ -128,32 +131,44 @@ public class QuestController extends QuestAPI {
         NEW_OBJECTIVES.add();
     }
 
-    private Promise<Boolean> attemptAcceptQuest(PlayerCharacter pc, String questId) {
-        return getQuest(questId).then(val -> {
-            if (val.isPresent()) {
-                IQuest quest = val.get();
+    public Boolean startQuest(IQuest quest, PlayerCharacter pc) {
+        QuestStatus status = quest.getStatus(pc);
 
-                QuestStatus status = quest.getStatus(pc);
+        if (status.canAccept()) {
+            IQuestInstance instance = quest.getInstance(pc);
 
-                if (status.canAccept()) {
-                    MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' can be accepted!");
+            // Track the instance
+            quest.setInstance(pc.getUniqueCharacterId(), instance);
+            addPlayerQuest(pc, instance);
 
-                    IQuestInstance instance = quest.getInstance(pc);
+            // Activate the instance. This works for inactive and repeatable quests.
+            instance.setState(QuestState.ACTIVE);
 
-                    quest.setInstance(pc.getUniqueCharacterId(), instance);
+            MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + quest.getId() + "' accepted!");
 
-                    // Activate the instance. This works for inactive and repeatable quests.
-                    instance.setState(QuestState.ACTIVE);
+            return true;
+        } else
+            MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + quest.getId() + "' cannot be accepted! Status: " + status.name());
 
-                    return true;
-                } else
-                    MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' cannot be accepted! Status: " + status.name());
-            } else {
-                MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' doesn't exist!");
-            }
+        return false;
+    }
 
-            return false;
-        });
+    public void finishQuest(IQuest quest, PlayerCharacter pc) {
+        IQuestInstance instance = quest.getInstance(pc);
+
+        instance.setState(QuestState.SUCCESS);
+    }
+
+    public void failQuest(IQuest quest, PlayerCharacter pc) {
+        IQuestInstance instance = quest.getInstance(pc);
+
+        instance.setState(QuestState.FAILED);
+    }
+
+    public void abandonQuest(IQuest quest, PlayerCharacter pc) {
+        IQuestInstance instance = quest.getInstance(pc);
+
+        instance.setState(QuestState.ABANDONED);
     }
 
     /*@EventHandler
@@ -181,6 +196,12 @@ public class QuestController extends QuestAPI {
     @EventHandler
     public void onCharacterCreated(PlayerCharacterCreateEvent event) {
         // Give the intro quest to all new characters created
-        attemptAcceptQuest(event.getPlayerCharacter(), introQuestId);
+        getQuest(introQuestId).onSuccess(val -> {
+            if(val.isPresent()) {
+                startQuest(val.get(), event.getPlayerCharacter());
+            }else{
+                MessageUtil.sendException(this, event.getPlayer(), new NullPointerException("Intro quest '" + introQuestId + "' not found!"));
+            }
+        });
     }
 }

@@ -176,7 +176,9 @@ public class Quest implements IQuest {
     }
 
     @Override
-    public void removeInstance(CharacterId characterId) {
+    public Optional<IQuestInstance> removeInstance(CharacterId characterId) {
+        if(!instances.containsKey(characterId)) return Optional.empty();
+
         IQuestInstance instance = instances.get(characterId);
 
         // If the instance is currently active, fire the deactivate function.
@@ -184,6 +186,8 @@ public class Quest implements IQuest {
             this.onDeactivated(instance);
 
         instances.remove(characterId);
+
+        return Optional.of(instance);
     }
 
     @Override

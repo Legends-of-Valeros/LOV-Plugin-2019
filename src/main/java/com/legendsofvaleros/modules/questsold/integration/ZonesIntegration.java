@@ -2,7 +2,6 @@ package com.legendsofvaleros.modules.questsold.integration;
 
 import com.legendsofvaleros.module.Integration;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.questsold.QuestController;
 import com.legendsofvaleros.modules.questsold.objective.zones.EnterZoneObjective;
 import com.legendsofvaleros.modules.questsold.objective.zones.ExitZoneObjective;
 import com.legendsofvaleros.modules.zones.event.ZoneEnterEvent;

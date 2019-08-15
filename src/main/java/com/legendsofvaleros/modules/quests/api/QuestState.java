@@ -21,7 +21,7 @@ public enum QuestState {
     /**
      * This state is set when the quest was not completed successfully.
      */
-    FAILED(false, true),
+    FAILED(false, false),
 
     /**
      * This state is set when the quest was abandoned.
