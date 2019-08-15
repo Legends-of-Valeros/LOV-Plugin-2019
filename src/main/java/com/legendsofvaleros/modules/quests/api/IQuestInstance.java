@@ -34,6 +34,8 @@ public interface IQuestInstance {
      */
     <T> T getNodeInstance(IQuestNode<T> node);
 
+    <T> void setNodeInstance(IQuestNode<T> node, T instance);
+
     void addHistory(IQuestHistory... event);
 
     Collection<IQuestHistory> getHistory();

@@ -30,22 +30,22 @@ public abstract class AbstractQuestNode<T> implements IQuestNode<T> {
     }
 
     @Override
-    public void onSetup(IQuestInstance quest, T instance) {
+    public void onWake() {
 
     }
 
     @Override
-    public void onPause(IQuestInstance quest, T instance) {
+    public void onActivated(IQuestInstance instance, T data) {
 
     }
 
     @Override
-    public void onResume(IQuestInstance quest, T instance) {
+    public void onDeactivated(IQuestInstance instance, T data) {
 
     }
 
     @Override
-    public void onTeardown(IQuestInstance quest, T instance) {
+    public void onSleep() {
 
     }
 }

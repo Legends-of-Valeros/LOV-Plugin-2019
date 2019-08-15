@@ -133,7 +133,7 @@ public class Quest implements IQuest {
 
         if (instance != null) {
             // If the player is currently running the quest
-            if (instance.getState() == QuestState.ACTIVE)
+            if (instance.getState().isActive())
                 return QuestStatus.ACTIVE;
 
             if(instance.getState().wasCompleted()) {

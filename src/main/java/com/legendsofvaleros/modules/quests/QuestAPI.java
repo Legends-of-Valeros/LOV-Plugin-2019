@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.quests;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.*;
 import com.google.gson.*;
+import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.api.PromiseCache;
@@ -16,9 +17,12 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
 import com.legendsofvaleros.modules.quests.api.*;
+import com.legendsofvaleros.modules.quests.api.ports.INodeInput;
+import com.legendsofvaleros.modules.quests.api.ports.INodeOutput;
 import com.legendsofvaleros.modules.quests.core.Quest;
 import com.legendsofvaleros.modules.quests.core.QuestInstance;
 import com.legendsofvaleros.modules.quests.core.QuestNodeMap;
+import com.legendsofvaleros.modules.quests.core.ports.INodeInputValue;
 import com.legendsofvaleros.modules.quests.registry.EventRegistry;
 import com.legendsofvaleros.modules.quests.registry.NodeRegistry;
 import com.legendsofvaleros.modules.quests.registry.PrerequisiteRegistry;
@@ -29,6 +33,9 @@ import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -118,7 +125,13 @@ public class QuestAPI extends ListenerModule {
         }, 0L, 20L);
 
         APIController.getInstance().getGsonBuilder()
-                .registerTypeAdapter(IQuest.class, (JsonDeserializer<IQuest>) (json, typeOfT, context) -> decodeQuest(json.getAsJsonObject(), context))
+                .registerTypeAdapter(IQuest.class, (JsonDeserializer<IQuest>) (json, typeOfT, context) -> {
+                    try {
+                        return decodeQuest(json.getAsJsonObject(), context);
+                    } catch (NoSuchFieldException | IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .registerTypeAdapter(Duration.class, (JsonDeserializer<Duration>) (json, typeOfT, context) -> Duration.parse(json.getAsString()));
 
         registerEvents(new PlayerListener());
@@ -248,7 +261,7 @@ public class QuestAPI extends ListenerModule {
      * @param jo
      * @param context
      */
-    private IQuest decodeQuest(JsonObject jo, JsonDeserializationContext context) {
+    private IQuest decodeQuest(JsonObject jo, JsonDeserializationContext context) throws NoSuchFieldException, IllegalAccessException {
         IQuestPrerequisite[] prerequisites = new IQuestPrerequisite[0];
         {
             // TODO: Decode prerequisites
@@ -261,9 +274,9 @@ public class QuestAPI extends ListenerModule {
 
         QuestNodeMap nodes = new QuestNodeMap();
         if (jo.has("nodes")) {
-            for (Map.Entry<String, JsonElement> entry : jo.getAsJsonObject("nodes").entrySet()) {
-                UUID id = UUID.fromString(entry.getKey());
-                JsonObject obj = entry.getValue().getAsJsonObject();
+            for (Map.Entry<String, JsonElement> nodeEntry : jo.getAsJsonObject("nodes").entrySet()) {
+                UUID id = UUID.fromString(nodeEntry.getKey());
+                JsonObject obj = nodeEntry.getValue().getAsJsonObject();
 
                 Optional<Class<? extends IQuestNode>> clazz = this.getNodeRegistry().getType(
                         obj.get("type").getAsString()
@@ -273,13 +286,48 @@ public class QuestAPI extends ListenerModule {
                     throw new IllegalArgumentException("Unknown node type '" + obj.get("type").getAsString() + "' in quest '" + jo.get("_id").getAsString() + "'!");
                 }
 
-                try {
-                    IQuestNode node = clazz.get().getDeclaredConstructor(UUID.class).newInstance();
 
-                    nodes.put(id, node);
+                Class<? extends IQuestNode> nodeClass = clazz.get();
+                IQuestNode node = null;
+
+                try {
+                    node = nodeClass.getDeclaredConstructor(UUID.class).newInstance();
                 } catch (Exception e) {
                     // Silence intellij. There will never be a time that this constructor is not defined.
                 }
+
+                // Decode default input interface values
+                for(Map.Entry<String, JsonElement> optionEntry : obj.getAsJsonObject("interfaces").entrySet()) {
+                    INodeInputValue in = (INodeInputValue)findField(INodeInputValue.class, nodeClass, optionEntry.getKey()).get(node);
+                    in.setDefaultValue(APIController.getInstance().getGson().fromJson(optionEntry.getValue(), in.getValueClass()));
+                }
+
+                // Decode options
+                for(Map.Entry<String, JsonElement> optionEntry : obj.getAsJsonObject("options").entrySet()) {
+                    Field f = findField(Object.class, nodeClass, optionEntry.getKey());
+                    f.set(node, APIController.getInstance().getGson().fromJson(optionEntry.getValue(), f.getType()));
+                }
+
+                nodes.put(id, node);
+            }
+        }
+
+        // Decode connections
+        if(jo.has("connections")) {
+            for(JsonElement con : jo.getAsJsonArray("connections")) {
+                JsonObject pair = con.getAsJsonObject();
+
+                JsonArray from = pair.getAsJsonArray("from");
+                JsonArray to = pair.getAsJsonArray("to");
+
+                IQuestNode fromNode = nodes.get(UUID.fromString(from.get(0).getAsString()));
+                IQuestNode toNode = nodes.get(UUID.fromString(to.get(0).getAsString()));
+
+                INodeOutput out = (INodeOutput)findField(INodeOutput.class, fromNode.getClass(), from.get(1).getAsString()).get(fromNode);
+                INodeInput in = (INodeInput)findField(INodeInput.class, toNode.getClass(), to.get(1).getAsString()).get(fromNode);
+
+                out.addConnection(in);
+                in.setConnection(out);
             }
         }
 
@@ -289,6 +337,38 @@ public class QuestAPI extends ListenerModule {
                 jo.get("description").getAsString(),
                 jo.get("forced").getAsBoolean(),
                 prerequisites, repeat, nodes);
+    }
+
+    private Field findField(Class<?> type, Class<?> clazz, String name) throws NoSuchFieldException, IllegalAccessException {
+        Field field = null;
+        try {
+            field = clazz.getField(name);
+
+            if(type.isAssignableFrom(field.getType())) {
+                field = null;
+            }
+        } catch (NoSuchFieldException e) {
+
+        }
+
+        if(field == null) {
+            for(Field f : clazz.getFields()) {
+                if(!type.isAssignableFrom(f.getType())) continue;
+
+                SerializedName serializedName = f.getAnnotation(SerializedName.class);
+                if(serializedName != null) {
+                    if(serializedName.value().equals(name)) {
+                        field = f;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if(field == null)
+            throw new NoSuchFieldException(name);
+        
+        return field;
     }
 
     /**

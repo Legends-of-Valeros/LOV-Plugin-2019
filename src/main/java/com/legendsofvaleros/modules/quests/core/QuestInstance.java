@@ -42,6 +42,7 @@ public class QuestInstance implements IQuestInstance {
         return this.nodes;
     }
 
+    @Override
     public <T> void setNodeInstance(IQuestNode<T> node, T instance) {
         nodes.putInstance(node, instance);
     }

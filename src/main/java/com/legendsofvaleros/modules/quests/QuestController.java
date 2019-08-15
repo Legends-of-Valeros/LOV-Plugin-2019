@@ -16,29 +16,20 @@ import com.legendsofvaleros.modules.quests.api.IQuest;
 import com.legendsofvaleros.modules.quests.api.IQuestInstance;
 import com.legendsofvaleros.modules.quests.api.QuestState;
 import com.legendsofvaleros.modules.quests.api.QuestStatus;
-import com.legendsofvaleros.modules.quests.core.QuestInstance;
 import com.legendsofvaleros.modules.quests.core.prerequisites.ClassPrerequisite;
 import com.legendsofvaleros.modules.quests.core.prerequisites.LevelPrerequisite;
 import com.legendsofvaleros.modules.quests.core.prerequisites.QuestsPrerequisite;
 import com.legendsofvaleros.modules.quests.core.prerequisites.RacePrerequisite;
-import com.legendsofvaleros.modules.quests.registry.EventRegistry;
-import com.legendsofvaleros.modules.quests.registry.NodeRegistry;
-import com.legendsofvaleros.modules.quests.registry.PrerequisiteRegistry;
+import com.legendsofvaleros.modules.quests.nodes.StartedNode;
+import com.legendsofvaleros.modules.quests.nodes.TestNode;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.title.Title;
-import com.legendsofvaleros.util.title.TitleUtil;
 import io.chazza.advancementapi.AdvancementAPI;
 import io.chazza.advancementapi.FrameType;
 import io.chazza.advancementapi.Trigger;
 import net.citizensnpcs.api.event.NPCClickEvent;
-import net.citizensnpcs.api.event.NPCRightClickEvent;
-import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
 
 @DependsOn(NPCsController.class)
 @DependsOn(CombatEngine.class)
@@ -90,6 +81,8 @@ public class QuestController extends QuestAPI {
         // PrerequisiteRegistry.addType("time", TimePrerequisite.class);
 
         getLogger().info("is registering nodes");
+        getNodeRegistry().addType("event_started", StartedNode.class);
+        getNodeRegistry().addType("test", TestNode.class);
         /*NodeRegistry.addType("dummy", DummyObjective.class);
         NodeRegistry.addType("talk", TalkObjective.class);
         NodeRegistry.addType("return", ReturnObjective.class);
@@ -135,15 +128,7 @@ public class QuestController extends QuestAPI {
         NEW_OBJECTIVES.add();
     }
 
-    public Promise<Boolean> attemptAcceptQuest(PlayerCharacter pc, String questId) {
-        return this.attemptRunQuest(pc, questId, true);
-    }
-
-    public Promise<Boolean> attemptDeclineQuest(PlayerCharacter pc, String questId) {
-        return this.attemptRunQuest(pc, questId, false);
-    }
-
-    private Promise<Boolean> attemptRunQuest(PlayerCharacter pc, String questId, boolean accept) {
+    private Promise<Boolean> attemptAcceptQuest(PlayerCharacter pc, String questId) {
         return getQuest(questId).then(val -> {
             if (val.isPresent()) {
                 IQuest quest = val.get();
@@ -158,7 +143,7 @@ public class QuestController extends QuestAPI {
                     quest.setInstance(pc.getUniqueCharacterId(), instance);
 
                     // Activate the instance. This works for inactive and repeatable quests.
-                    instance.setState(accept ? QuestState.ACCEPTED : QuestState.DECLINED);
+                    instance.setState(QuestState.ACTIVE);
 
                     return true;
                 } else

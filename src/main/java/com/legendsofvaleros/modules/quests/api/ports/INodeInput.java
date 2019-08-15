@@ -1,7 +1,5 @@
 package com.legendsofvaleros.modules.quests.api.ports;
 
-import com.legendsofvaleros.modules.quests.core.ports.INodeOutputValue;
-
 import java.util.Optional;
 
 public interface INodeInput<T extends INodeOutput> {

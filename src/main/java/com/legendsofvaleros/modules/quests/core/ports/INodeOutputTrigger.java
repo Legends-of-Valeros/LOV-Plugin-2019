@@ -1,5 +1,6 @@
 package com.legendsofvaleros.modules.quests.core.ports;
 
+import com.legendsofvaleros.modules.quests.api.IQuestInstance;
 import com.legendsofvaleros.modules.quests.api.IQuestNode;
 import com.legendsofvaleros.modules.quests.api.ports.INodeOutput;
 import com.legendsofvaleros.modules.quests.api.ports.INodeRunnable;
@@ -8,21 +9,21 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-public class INodeOutputTrigger<V> implements INodeOutput<INodeInputTrigger<V>> {
-    final IQuestNode node;
+public class INodeOutputTrigger<T> implements INodeOutput<INodeInputTrigger<?>> {
+    final IQuestNode<T> node;
 
-    final Set<INodeInputTrigger<V>> ports;
+    final Set<INodeInputTrigger<?>> ports;
 
-    final Optional<INodeRunnable> runnable;
+    final Optional<INodeRunnable<T>> runnable;
 
-    public INodeOutputTrigger(IQuestNode node) {
+    public INodeOutputTrigger(IQuestNode<T> node) {
         this.node = node;
         this.runnable = Optional.empty();
 
         this.ports = new HashSet<>();
     }
 
-    public INodeOutputTrigger(IQuestNode node, INodeRunnable runnable) {
+    public INodeOutputTrigger(IQuestNode<T> node, INodeRunnable runnable) {
         this.node = node;
         this.runnable = Optional.of(runnable);
 
@@ -30,18 +31,18 @@ public class INodeOutputTrigger<V> implements INodeOutput<INodeInputTrigger<V>> 
     }
 
     @Override
-    public void addConnection(INodeInputTrigger<V> port) {
+    public void addConnection(INodeInputTrigger<?> port) {
         this.ports.add(port);
     }
 
     @Override
-    public Set<INodeInputTrigger<V>> getConnected() {
+    public Set<INodeInputTrigger<?>> getConnected() {
         return this.ports;
     }
 
-    public void run() {
-        this.runnable.ifPresent(INodeRunnable::run);
+    public void run(IQuestInstance instance) {
+        this.runnable.ifPresent(run -> run.run(instance, instance.getNodeInstance(node)));
 
-        this.getConnected().stream().forEach(INodeInputTrigger::run);
+        this.getConnected().stream().forEach(port -> port.run(instance));
     }
 }

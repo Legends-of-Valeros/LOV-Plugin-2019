@@ -11,12 +11,7 @@ public enum QuestState {
     /**
      * This state is set when the quest is currently active.
      */
-    ACCEPTED(true, false),
-
-    /**
-     * This state is set when the quest is currently active.
-     */
-    DECLINED(true, false),
+    ACTIVE(true, false),
 
     /**
      * This state is set when the quest was completed successfully.

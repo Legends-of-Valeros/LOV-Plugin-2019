@@ -31,14 +31,14 @@ public interface IQuestNode<T> {
      * Fired when an instance of the quest is activated. This may be called when the quest is started, loaded after being
      * unloaded, or any other reason. However, it will not be called more than once, unless it is deactivated, first.
      */
-    void onActivated(IQuestInstance quest, T instance);
+    void onActivated(IQuestInstance instance, T data);
 
     /**
      * Fired when an instance of the quest is deactivated. This may be called when the quest is completed, failed, abandoned,
      * unloaded after being loaded, or any other reason. However, it will not be called more than once, unless it is
      * activated, first.
      */
-    void onDeactivated(IQuestInstance quest, T instance);
+    void onDeactivated(IQuestInstance instance, T data);
 
     /**
      * Fired when the last instance of a quest is deactivated.

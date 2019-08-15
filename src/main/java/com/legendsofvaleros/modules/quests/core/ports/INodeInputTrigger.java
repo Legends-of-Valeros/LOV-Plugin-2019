@@ -1,39 +1,40 @@
 package com.legendsofvaleros.modules.quests.core.ports;
 
+import com.legendsofvaleros.modules.quests.api.IQuestInstance;
 import com.legendsofvaleros.modules.quests.api.IQuestNode;
 import com.legendsofvaleros.modules.quests.api.ports.INodeInput;
 import com.legendsofvaleros.modules.quests.api.ports.INodeRunnable;
 
 import java.util.Optional;
 
-public class INodeInputTrigger<V> implements INodeInput<INodeOutputTrigger<V>> {
-    final IQuestNode node;
+public class INodeInputTrigger<T> implements INodeInput<INodeOutputTrigger<?>> {
+    final IQuestNode<T> node;
 
-    INodeOutputTrigger<V> port;
+    INodeOutputTrigger<?> port;
 
-    final Optional<INodeRunnable> runnable;
+    final Optional<INodeRunnable<T>> runnable;
 
-    public INodeInputTrigger(IQuestNode node) {
+    public INodeInputTrigger(IQuestNode<T> node) {
         this.node = node;
         this.runnable = Optional.empty();
     }
 
-    public INodeInputTrigger(IQuestNode node, INodeRunnable runnable) {
+    public INodeInputTrigger(IQuestNode<T> node, INodeRunnable<T> runnable) {
         this.node = node;
         this.runnable = Optional.of(runnable);
     }
 
     @Override
-    public void setConnection(INodeOutputTrigger<V> port) {
+    public void setConnection(INodeOutputTrigger<?> port) {
         this.port = port;
     }
 
     @Override
-    public Optional<INodeOutputTrigger<V>> getConnected() {
+    public Optional<INodeOutputTrigger<?>> getConnected() {
         return Optional.ofNullable(this.port);
     }
 
-    public void run() {
-        this.runnable.ifPresent(INodeRunnable::run);
+    public void run(IQuestInstance instance) {
+        this.runnable.ifPresent(run -> run.run(instance, instance.getNodeInstance(node)));
     }
 }
