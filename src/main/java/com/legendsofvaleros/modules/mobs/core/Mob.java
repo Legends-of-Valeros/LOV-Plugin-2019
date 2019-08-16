@@ -81,7 +81,7 @@ public class Mob {
 
     public StatsMap getStats() {
         if (stats == null)
-            stats = new StatsMap(new StatsMap.StatData[0]);
+            stats = new StatsMap();
         return stats;
     }
 
@@ -120,66 +120,8 @@ public class Mob {
         return false;
     }
 
-    public static class StatsMap extends HashMap<Object, Integer> {
-        private boolean locked;
-        private final StatData[] stats;
-
-        public static class StatData {
-            public String id;
-            public double change;
-        }
-
-        public StatData[] getData() {
-            return stats;
-        }
-
-        public StatsMap(StatData[] stats) {
-            this.stats = stats;
-
-            for (StatData stat : stats) {
-                Object s = null;
-
-                for (Stat sstat : Stat.values()) {
-                    if (sstat.name().equals(stat.id)) {
-                        s = sstat;
-                        break;
-                    }
-                }
-
-                if (s == null)
-                    for (RegeneratingStat rstat : RegeneratingStat.values()) {
-                        if (rstat.name().equals(stat.id)) {
-                            s = rstat;
-                            break;
-                        }
-                    }
-
-                if (s == null)
-                    for (AbilityStat astat : AbilityStat.values()) {
-                        if (astat.name().equals(stat.id)) {
-                            s = astat;
-                            break;
-                        }
-                    }
-
-                if (s != null) {
-                    put(s, (int) stat.change);
-                }
-            }
-
-            locked = true;
-        }
-
-        @Override
-        public Integer put(Object key, Integer value) {
-            if (locked)
-                throw new RuntimeException("Mob stats are immutable.");
-            return super.put(key, value);
-        }
-    }
-
-    public static class EquipmentMap extends HashMap<Equipment.EquipmentSlot, Item[]> {
-    }
+    public static class StatsMap extends HashMap<Object, Integer> { }
+    public static class EquipmentMap extends HashMap<Equipment.EquipmentSlot, Item[]> { }
 
     public static class Options {
         public LootData[] loot;
