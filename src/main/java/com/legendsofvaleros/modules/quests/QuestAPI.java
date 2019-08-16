@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class QuestAPI extends ListenerModule {
     public interface RPC {
-        Promise<IQuest> getQuest(String questId);
+        Promise<IQuest> getQuestNew(String questId);
 
         /**
          * Quest progress is stored in a way that cannot be decoded by Gson. We, unfortunately, must do it manually,
@@ -59,11 +59,11 @@ public class QuestAPI extends ListenerModule {
          * }
          * }
          */
-        Promise<Map<String, JsonObject>> getPlayerQuestsProgress(CharacterId characterId);
+        Promise<Map<String, JsonObject>> getPlayerQuestsProgressNew(CharacterId characterId);
 
-        Promise<Boolean> savePlayerQuestsProgress(CharacterId characterId, Map<String, Object> map);
+        Promise<Boolean> savePlayerQuestsProgressNew(CharacterId characterId, Map<String, Object> map);
 
-        Promise<Boolean> deletePlayerQuestsProgress(CharacterId characterId);
+        Promise<Boolean> deletePlayerQuestsProgressNew(CharacterId characterId);
     }
 
     private EventRegistry eventRegistry;
@@ -113,7 +113,7 @@ public class QuestAPI extends ListenerModule {
                 .removalListener(entry -> {
                     getLogger().warning("Quest '" + entry.getKey() + "' removed from the cache: " + entry.getCause());
                 })
-                .build(), questId -> rpc.getQuest(questId));
+                .build(), questId -> rpc.getQuestNew(questId));
 
         getScheduler().executeInMyCircleTimer(() -> {
             // This is done so we get almost-live updates on GC'd listeners.
@@ -162,7 +162,7 @@ public class QuestAPI extends ListenerModule {
     private Promise<Void> onLogin(final PlayerCharacter pc) {
         Promise<Void> promise = new Promise<>();
 
-        rpc.getPlayerQuestsProgress(pc.getUniqueCharacterId())
+        rpc.getPlayerQuestsProgressNew(pc.getUniqueCharacterId())
                 .onFailure(promise::reject).onSuccess(val -> {
             Map<String, JsonObject> map = val.orElse(ImmutableMap.of());
 
@@ -221,7 +221,7 @@ public class QuestAPI extends ListenerModule {
         for (IQuestInstance instance : playerQuests.removeAll(pc.getUniqueCharacterId()))
             map.put(instance.getQuest().getId(), instance);
 
-        return this.rpc.savePlayerQuestsProgress(pc.getUniqueCharacterId(), map);
+        return this.rpc.savePlayerQuestsProgressNew(pc.getUniqueCharacterId(), map);
     }
 
     private Promise<Boolean> onDelete(final PlayerCharacter pc) {
@@ -230,7 +230,7 @@ public class QuestAPI extends ListenerModule {
 
         playerQuests.removeAll(pc.getUniqueCharacterId());
 
-        return this.rpc.deletePlayerQuestsProgress(pc.getUniqueCharacterId());
+        return this.rpc.deletePlayerQuestsProgressNew(pc.getUniqueCharacterId());
     }
 
     public void reloadQuests() throws Throwable {
@@ -283,7 +283,7 @@ public class QuestAPI extends ListenerModule {
         QuestNodeMap nodes = new QuestNodeMap();
         if (jo.has("nodes")) {
             for (Map.Entry<String, JsonElement> nodeEntry : jo.getAsJsonObject("nodes").entrySet()) {
-                UUID id = UUID.fromString(nodeEntry.getKey());
+                String id = nodeEntry.getKey();
                 JsonObject obj = nodeEntry.getValue().getAsJsonObject();
 
                 Optional<Class<? extends IQuestNode>> clazz = this.getNodeRegistry().getType(
@@ -299,13 +299,13 @@ public class QuestAPI extends ListenerModule {
                 IQuestNode node = null;
 
                 try {
-                    node = nodeClass.getDeclaredConstructor(UUID.class).newInstance();
+                    node = nodeClass.getDeclaredConstructor(String.class).newInstance(id);
                 } catch (Exception e) {
                     // Silence intellij. There will never be a time that this constructor is not defined.
                 }
 
                 // Decode default input interface values
-                for(Map.Entry<String, JsonElement> optionEntry : obj.getAsJsonObject("interfaces").entrySet()) {
+                for(Map.Entry<String, JsonElement> optionEntry : obj.getAsJsonObject("inputs").entrySet()) {
                     IInportValue in = (IInportValue)findField(IInportValue.class, nodeClass, optionEntry.getKey()).get(node);
                     in.setDefaultValue(APIController.getInstance().getGson().fromJson(optionEntry.getValue(), in.getValueClass()));
                 }

@@ -20,7 +20,7 @@ import java.util.Optional;
  * All things should be registered before the plugin is completely loaded, else the internal cache for extended
  * objects may be outdated.
  */
-public class EventRegistry {
+public class EventRegistry implements Listener {
     @FunctionalInterface
     public interface IQuestEventHandler<T extends Event> {
         Player getPlayer(T event);
@@ -55,7 +55,7 @@ public class EventRegistry {
     public <T extends Event> void addHandler(Class<T> c, IQuestEventHandler<T> handler) {
         handlers.put(c, handler);
 
-        Bukkit.getServer().getPluginManager().registerEvent(c, null, EventPriority.MONITOR, (listener, event) -> {
+        Bukkit.getServer().getPluginManager().registerEvent(c, this, EventPriority.MONITOR, (listener, event) -> {
             Player p = handler.getPlayer(c.cast(event));
             if(!Characters.isPlayerCharacterLoaded(p)) return;
 

@@ -5,6 +5,6 @@ import com.legendsofvaleros.modules.quests.api.IQuestNode;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class QuestNodeMap extends HashMap<UUID, IQuestNode> {
+public class QuestNodeMap extends HashMap<String, IQuestNode> {
     private static final long serialVersionUID = 1L;
 }

@@ -36,6 +36,11 @@ public class IInportTrigger<T> implements INodeInput<IOutportTrigger<?>> {
     }
 
     public void run(IQuestInstance instance) {
+        // Respect inactive quests
+        if(!instance.getState().isActive()) {
+            return;
+        }
+
         this.runnable.run(instance, instance.getNodeInstance(node));
     }
 }

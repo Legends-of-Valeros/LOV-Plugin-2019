@@ -36,7 +36,7 @@ public class TestNode extends AbstractQuestNode<TestNode.Data> {
     @SerializedName("Completed")
     public IOutportTrigger onComplete = new IOutportTrigger(this);
 
-    public TestNode(UUID id) {
+    public TestNode(String id) {
         super(id);
     }
 

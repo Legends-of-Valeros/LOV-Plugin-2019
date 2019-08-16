@@ -110,7 +110,7 @@ public class Quest implements IQuest {
     }
 
     @Override
-    public Optional<IQuestNode> getNode(UUID id) {
+    public Optional<IQuestNode> getNode(String id) {
         return Optional.ofNullable(this.nodes.get(id));
     }
 

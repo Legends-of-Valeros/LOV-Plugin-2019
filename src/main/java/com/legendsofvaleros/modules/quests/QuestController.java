@@ -1,13 +1,11 @@
 package com.legendsofvaleros.modules.quests;
 
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterCreateEvent;
-import com.legendsofvaleros.modules.characters.events.PlayerCharacterEvent;
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.npcs.trait.quests.TraitQuestGiver;
@@ -21,7 +19,9 @@ import com.legendsofvaleros.modules.quests.core.prerequisites.ClassPrerequisite;
 import com.legendsofvaleros.modules.quests.core.prerequisites.LevelPrerequisite;
 import com.legendsofvaleros.modules.quests.core.prerequisites.QuestsPrerequisite;
 import com.legendsofvaleros.modules.quests.core.prerequisites.RacePrerequisite;
-import com.legendsofvaleros.modules.quests.nodes.StartedNode;
+import com.legendsofvaleros.modules.quests.nodes.MessageNode;
+import com.legendsofvaleros.modules.quests.nodes.QuestSuccessNode;
+import com.legendsofvaleros.modules.quests.nodes.QuestStartedNode;
 import com.legendsofvaleros.modules.quests.nodes.TestNode;
 import com.legendsofvaleros.util.MessageUtil;
 import io.chazza.advancementapi.AdvancementAPI;
@@ -31,8 +31,6 @@ import net.citizensnpcs.api.event.NPCClickEvent;
 import org.bukkit.NamespacedKey;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerEvent;
-
-import java.util.Optional;
 
 @DependsOn(NPCsController.class)
 @DependsOn(CombatEngine.class)
@@ -73,8 +71,8 @@ public class QuestController extends QuestAPI {
 
         // Register some basic event handlers.
         getLogger().info("is registering event handlers");
-        getEventRegistry().addHandler(NPCClickEvent.class, (event) -> event.getClicker());
-        getEventRegistry().addHandler(PlayerEvent.class, (event) -> event.getPlayer());
+        //getEventRegistry().addHandler(NPCClickEvent.class, (event) -> event.getClicker());
+        //getEventRegistry().addHandler(PlayerEvent.class, (event) -> event.getPlayer());
 
         getLogger().info("is registering prerequisites");
         getPrerequisiteRegistry().addType("class", ClassPrerequisite.class);
@@ -84,7 +82,9 @@ public class QuestController extends QuestAPI {
         // PrerequisiteRegistry.addType("time", TimePrerequisite.class);
 
         getLogger().info("is registering nodes");
-        getNodeRegistry().addType("event_started", StartedNode.class);
+        getNodeRegistry().addType("event_started", QuestStartedNode.class);
+        getNodeRegistry().addType("trigger_success", QuestSuccessNode.class);
+        getNodeRegistry().addType("message", MessageNode.class);
         getNodeRegistry().addType("test", TestNode.class);
         /*NodeRegistry.addType("dummy", DummyObjective.class);
         NodeRegistry.addType("talk", TalkObjective.class);

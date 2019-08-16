@@ -10,7 +10,7 @@ import java.util.UUID;
  * The generic T defines the instance storage object for the node.
  */
 public interface IQuestNode<T> {
-    UUID getID();
+    String getID();
 
     T newInstance();
 

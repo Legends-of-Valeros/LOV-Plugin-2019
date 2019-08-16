@@ -5,7 +5,7 @@ import com.legendsofvaleros.modules.quests.api.IQuestNode;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class QuestNodeInstanceMap extends HashMap<UUID, Object> {
+public class QuestNodeInstanceMap extends HashMap<String, Object> {
     private static final long serialVersionUID = 1L;
 
     public boolean hasInstance(IQuestNode node) {

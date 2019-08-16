@@ -73,7 +73,7 @@ public class QuestLogNode extends AbstractQuestNode<Integer> {
         instance.setNodeInstance(this, null);
     });
 
-    public QuestLogNode(UUID id) {
+    public QuestLogNode(String id) {
         super(id);
     }
 

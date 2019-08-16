@@ -43,7 +43,7 @@ public interface IQuest {
      */
     Object getRepeatOptions();
 
-    Optional<IQuestNode> getNode(UUID id);
+    Optional<IQuestNode> getNode(String id);
 
     Collection<IQuestNode> getNodes();
 

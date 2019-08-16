@@ -13,7 +13,6 @@
         <spigot.version>1.14.4-R0.1-SNAPSHOT</spigot.version>
         <citizens.version>2.0.25-SNAPSHOT</citizens.version>
         <java.version>1.8</java.version>
-        <aspectj.version>1.8.13</aspectj.version>
         <dir>${project.build.directory}</dir>
     </properties>
 
@@ -42,42 +41,6 @@
                     <compilerArgs>
                         <arg>-parameters</arg>
                     </compilerArgs>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>aspectj-maven-plugin</artifactId>
-                <version>1.11</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.aspectj</groupId>
-                        <artifactId>aspectjrt</artifactId>
-                        <version>${aspectj.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.aspectj</groupId>
-                        <artifactId>aspectjtools</artifactId>
-                        <version>${aspectj.version}</version>
-                    </dependency>
-                </dependencies>
-                <executions>
-                    <execution>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <showWeaveInfo/>
-                    <forceAjcCompile>true</forceAjcCompile>
-                    <sources/>
-                    <weaveDirectories>
-                        <weaveDirectory>${project.build.directory}/classes</weaveDirectory>
-                    </weaveDirectories>
-                    <complianceLevel>${java.version}</complianceLevel>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -243,14 +206,6 @@
             <artifactId>bungeetablistplus-api-bukkit</artifactId>
             <version>2.7.0</version>
             <scope>provided</scope>
-        </dependency>
-
-        <!-- Compiler dependencies -->
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-            <version>${aspectj.version}</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

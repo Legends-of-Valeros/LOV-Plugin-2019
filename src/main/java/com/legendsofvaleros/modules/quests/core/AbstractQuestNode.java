@@ -6,16 +6,16 @@ import com.legendsofvaleros.modules.quests.api.IQuestNode;
 import java.util.UUID;
 
 public abstract class AbstractQuestNode<T> implements IQuestNode<T> {
-    private final UUID id;
+    private final String id;
 
     private float[] position;
 
-    public AbstractQuestNode(UUID id) {
+    public AbstractQuestNode(String id) {
         this.id = id;
     }
 
     @Override
-    public UUID getID() {
+    public String getID() {
         return id;
     }
 

@@ -5,8 +5,6 @@ import com.legendsofvaleros.modules.quests.api.IQuestPrerequisite;
 import com.legendsofvaleros.modules.quests.api.IQuest;
 
 public class ClassPrerequisite implements IQuestPrerequisite {
-	@Override public boolean canRepeat(IQuest quest, PlayerCharacter pc) { return true; }
-	
 	public String is = "";
 
 	@Override
