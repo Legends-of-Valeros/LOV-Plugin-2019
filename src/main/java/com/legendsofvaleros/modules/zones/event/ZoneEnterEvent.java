@@ -6,24 +6,31 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 public class ZoneEnterEvent extends Event {
-	private static final HandlerList handlers = new HandlerList();
-	
-	private Player player;
-	public Player getPlayer() { return player; }
-	
-	private Zone zone;
-	public Zone getZone() { return zone; }
+    private static final HandlerList handlers = new HandlerList();
 
-	public ZoneEnterEvent(Player player, Zone zone) {
-		this.player = player;
-		this.zone = zone;
-	}
+    private Player player;
 
-	public HandlerList getHandlers() {
-		return handlers;
-	}
+    public Player getPlayer() {
+        return player;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    private Zone zone;
+
+    public Zone getZone() {
+        return zone;
+    }
+
+    public ZoneEnterEvent(Player player, Zone zone) {
+        this.player = player;
+        this.zone = zone;
+    }
+
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 }

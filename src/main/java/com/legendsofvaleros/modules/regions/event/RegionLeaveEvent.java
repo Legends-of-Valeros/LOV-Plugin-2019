@@ -9,7 +9,9 @@ public class RegionLeaveEvent extends Event {
 	private static final HandlerList handlers = new HandlerList();
 	
 	private Player player;
-	public Player getPlayer() { return player; }
+	public Player getPlayer() {
+		return player;
+	}
 	
 	private Region region;
 	public Region getRegion() { return region; }

@@ -379,50 +379,6 @@ public class QuestAPI extends ListenerModule {
         return field;
     }
 
-    /**
-     * Theoretically we don't need to <i>encode</i> the resulting object for it to be savable, only decode.
-     */
-    /*private IQuestInstance decodeQuestInstance(PlayerCharacter pc, IQuest quest, JsonObject jo) {
-        QuestInstance instance = new QuestInstance(pc, quest);
-
-        // If quest log data exists for this quest, decode it.
-        if (jo.has("log")) {
-            for(Map.Entry<Integer, QuestLogEntry> entry : APIController.getInstance().getGson().fromJson(jo.get("log"), QuestLogMap.class).entrySet())
-                instance.setLogEntry(entry.getKey(), entry.getValue());
-        }
-
-        // If historical data exists for this quest, decode it.
-        if (jo.has("history")) {
-            instance.addHistory(APIController.getInstance().getGson().fromJson(jo.get("history"), IQuestHistory[].class));
-        }
-
-        // If this quest has node instances saved, decode them.
-        if (jo.has("nodes")) {
-            JsonObject obj = jo.getAsJsonObject("nodes");
-
-            for (Map.Entry<String, JsonElement> entry : obj.entrySet()) {
-                // Get the node information from the quest using the UUID key
-                Optional<IQuestNode> ret = quest.getNode(UUID.fromString(entry.getKey()));
-
-                // Node gone. Ignore it.
-                if (!ret.isPresent())
-                    continue;
-
-                IQuestNode node = ret.get();
-
-                // Decode the node instance using the value
-                Object nodeInstance = APIController.getInstance().getGson().fromJson(
-                        entry.getValue(),
-                        this.getNodeRegistry().getInstanceType(node.getClass())
-                );
-
-                instance.setNodeInstance(node, nodeInstance);
-            }
-        }
-
-        return instance;
-    }*/
-
     private class PlayerListener implements Listener {
         @EventHandler
         public void onCharacterStartLoading(PlayerCharacterStartLoadingEvent event) {

@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.zones.event;
 import com.legendsofvaleros.modules.zones.core.Zone;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by Crystall on 04/07/2019
@@ -21,6 +22,11 @@ public class ZoneActivateEvent extends Event {
         this.zone = zone;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
+    @NotNull @Override
     public HandlerList getHandlers() {
         return handlers;
     }

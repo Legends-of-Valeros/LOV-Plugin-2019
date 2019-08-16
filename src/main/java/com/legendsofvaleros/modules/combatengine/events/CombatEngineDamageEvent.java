@@ -16,152 +16,152 @@ import java.util.Map;
  * An event called when damage is dealt through the combat engine.
  */
 public class CombatEngineDamageEvent extends Event implements Cancellable {
-	private static final HandlerList handlers = new HandlerList();
-	@Override public HandlerList getHandlers() {
-		return handlers;
-	}
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    private static final HandlerList handlers = new HandlerList();
 
-	private final CombatEntity damaged;
-	private final CombatEntity attacker;
-	private Location origin;
+    @Override
+	public HandlerList getHandlers() {
+        return handlers;
+    }
 
-	private final boolean isCrit;
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
-	private ModifiableDouble damage;
-	private Map<String, ValueModifier> modifiers;
+    private final CombatEntity damaged;
+    private final CombatEntity attacker;
+    private Location origin;
 
-	private boolean cancelled;
+    private final boolean isCrit;
 
-	/**
-	 * Class constructor.
-	 * 
-	 * @param damaged The entity that is being damaged.
-	 * @param attacker The entity that is causing the damage. Can be <code>null</code> if the cause is
-	 *        ambiguous or no entity caused it directly.
-	 * @param damageOrigin The location the damage is coming from. The entity will be knocked
-	 *        backwards from this location. Can be <code>null</code> for no knockback to take place.
-	 * @param rawDamage The raw amount of damage being applied.
-	 * @param isCrit <code>true</code> if this is a critical hit, else <code>false</code>.
-	 * @throws IllegalArgumentException On a <code>null</code> damaged entity.
-	 */
-	protected CombatEngineDamageEvent(CombatEntity damaged, CombatEntity attacker,
-			Location damageOrigin, double rawDamage, boolean isCrit)
-					throws IllegalArgumentException {
-		if (damaged == null) {
-			throw new IllegalArgumentException("damaged entity cannot be null");
-		}
+    private ModifiableDouble damage;
+    private Map<String, ValueModifier> modifiers;
 
-		this.damaged = damaged;
-		this.attacker = attacker;
-		this.origin = damageOrigin;
+    private boolean cancelled;
 
-		this.damage = new ModifiableDouble() {
-			@Override protected double sanitizeValue(double sanitize) { return sanitize < 0 ? 0 : sanitize; }
-			@Override protected void onChange(double newValue, double previousValue) { }
-		};
-		this.damage.flatEdit(rawDamage, false);
+    /**
+     * Class constructor.
+     * @param damaged      The entity that is being damaged.
+     * @param attacker     The entity that is causing the damage. Can be <code>null</code> if the cause is
+     *                     ambiguous or no entity caused it directly.
+     * @param damageOrigin The location the damage is coming from. The entity will be knocked
+     *                     backwards from this location. Can be <code>null</code> for no knockback to take place.
+     * @param rawDamage    The raw amount of damage being applied.
+     * @param isCrit       <code>true</code> if this is a critical hit, else <code>false</code>.
+     * @throws IllegalArgumentException On a <code>null</code> damaged entity.
+     */
+    protected CombatEngineDamageEvent(CombatEntity damaged, CombatEntity attacker,
+                                      Location damageOrigin, double rawDamage, boolean isCrit)
+            throws IllegalArgumentException {
+        if (damaged == null) {
+            throw new IllegalArgumentException("damaged entity cannot be null");
+        }
 
-		this.isCrit = isCrit;
-	}
+        this.damaged = damaged;
+        this.attacker = attacker;
+        this.origin = damageOrigin;
 
-	@Override
-	public boolean isCancelled() {
-		return cancelled;
-	}
+        this.damage = new ModifiableDouble() {
+            @Override protected double sanitizeValue(double sanitize) {
+                return sanitize < 0 ? 0 : sanitize;
+            }
 
-	@Override
-	public void setCancelled(boolean cancel) {
-		cancelled = cancel;
-	}
+            @Override protected void onChange(double newValue, double previousValue) {
+            }
+        };
+        this.damage.flatEdit(rawDamage, false);
 
-	/**
-	 * Gets the entity that was damaged.
-	 * 
-	 * @return The damaged entity.
-	 */
-	public CombatEntity getDamaged() {
-		return damaged;
-	}
+        this.isCrit = isCrit;
+    }
 
-	/**
-	 * The entity that caused the damage, if any.
-	 * 
-	 * @return The damaging entity. <code>null</code> if the damage's cause was ambiguous or not
-	 *         caused by another entity.
-	 */
-	public CombatEntity getAttacker() {
-		return attacker;
-	}
+    @Override
+    public boolean isCancelled() {
+        return cancelled;
+    }
 
-	/**
-	 * Gets the location this damage is emanating from.
-	 * <p>
-	 * The damaged entity will be knocked backwards from this location upon taking damage.
-	 * 
-	 * @return The origin point of the damage. <code>null</code> if there is no defined origin and the
-	 *         entity will not be knocked back upon receiving the damage.
-	 */
-	public Location getDamageOrigin() {
-		return origin;
-	}
+    @Override
+    public void setCancelled(boolean cancel) {
+        cancelled = cancel;
+    }
 
-	public Map<String, ValueModifier> getModifiers() {
-		return modifiers;
-	}
+    /**
+     * Gets the entity that was damaged.
+     * @return The damaged entity.
+     */
+    public CombatEntity getDamaged() {
+        return damaged;
+    }
 
-	public ValueModifierBuilder newDamageModifierBuilder(String name) throws IllegalArgumentException {
-		return new ValueModifierBuilder(damage, null) {
-			@Override
-			public ValueModifier build() {
-				ValueModifier mod = super.build();
+    /**
+     * The entity that caused the damage, if any.
+     * @return The damaging entity. <code>null</code> if the damage's cause was ambiguous or not
+     * caused by another entity.
+     */
+    public CombatEntity getAttacker() {
+        return attacker;
+    }
 
-				if(modifiers == null)
-					modifiers = new HashMap<>();
+    /**
+     * Gets the location this damage is emanating from.
+     * <p>
+     * The damaged entity will be knocked backwards from this location upon taking damage.
+     * @return The origin point of the damage. <code>null</code> if there is no defined origin and the
+     * entity will not be knocked back upon receiving the damage.
+     */
+    public Location getDamageOrigin() {
+        return origin;
+    }
 
-				modifiers.put(name, mod);
+    public Map<String, ValueModifier> getModifiers() {
+        return modifiers;
+    }
 
-				return mod;
-			}
-		};
-	}
+    public ValueModifierBuilder newDamageModifierBuilder(String name) throws IllegalArgumentException {
+        return new ValueModifierBuilder(damage, null) {
+            @Override
+            public ValueModifier build() {
+                ValueModifier mod = super.build();
 
-	/**
-	 * The final amount of damage, after it has been affected by defensive stats and other modifiers.
-	 * 
-	 * @return The final amount of damage that will the damaged entity will actually take.
-	 */
-	public double getFinalDamage() {
-		return damage.getFinalValue();
-	}
+                if (modifiers == null)
+                    modifiers = new HashMap<>();
 
-	/**
-	 * Gets whether the damage represents a critical hit.
-	 * <p>
-	 * Some attacks have a random percentage chance to "crit", which increases the damage of that
-	 * instance of damage.
-	 * 
-	 * @return <code>true</code> if the damage is a critical hit, else <code>false</code>.
-	 */
-	public boolean isCriticalHit() {
-		return isCrit;
-	}
+                modifiers.put(name, mod);
 
-	/**
-	 * Sets the location this damage is emanating from.
-	 * <p>
-	 * The damaged entity will be knocked backwards from this location upon taking damage.
-	 * 
-	 * @param origin The origin point of the damage. <code>null</code> for the entity not to be
-	 *        knocked back upon receiving the damage.
-	 */
-	public void setDamageOrigin(Location origin) {
-		this.origin = origin;
-	}
+                return mod;
+            }
+        };
+    }
 
-	public double getBaseDamage() {
-	    return this.damage.getBaseValue();
-	}
+    /**
+     * The final amount of damage, after it has been affected by defensive stats and other modifiers.
+     * @return The final amount of damage that will the damaged entity will actually take.
+     */
+    public double getFinalDamage() {
+        return damage.getFinalValue();
+    }
+
+    /**
+     * Gets whether the damage represents a critical hit.
+     * <p>
+     * Some attacks have a random percentage chance to "crit", which increases the damage of that
+     * instance of damage.
+     * @return <code>true</code> if the damage is a critical hit, else <code>false</code>.
+     */
+    public boolean isCriticalHit() {
+        return isCrit;
+    }
+
+    /**
+     * Sets the location this damage is emanating from.
+     * <p>
+     * The damaged entity will be knocked backwards from this location upon taking damage.
+     * @param origin The origin point of the damage. <code>null</code> for the entity not to be
+     *               knocked back upon receiving the damage.
+     */
+    public void setDamageOrigin(Location origin) {
+        this.origin = origin;
+    }
+
+    public double getBaseDamage() {
+        return this.damage.getBaseValue();
+    }
 }

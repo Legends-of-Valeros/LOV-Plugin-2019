@@ -22,8 +22,11 @@ public class QueueDenyEvent extends Event {
         this.queue = queue;
     }
 
-    @NotNull
-    @Override
+    public HandlerList getHandlerList() {
+        return handlers;
+    }
+
+    @NotNull @Override
     public HandlerList getHandlers() {
         return handlers;
     }

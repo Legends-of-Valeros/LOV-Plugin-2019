@@ -8,7 +8,7 @@ import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.skills.SkillsController;
 import com.legendsofvaleros.modules.skills.core.SkillTree;
 import com.legendsofvaleros.modules.skills.core.SkillTree.SpecializedTree;
-import com.legendsofvaleros.util.item.Model;
+import com.legendsofvaleros.util.model.Model;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

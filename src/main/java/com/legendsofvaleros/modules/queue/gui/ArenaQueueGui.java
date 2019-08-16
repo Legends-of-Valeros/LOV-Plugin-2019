@@ -7,8 +7,8 @@ import com.codingforcookies.robert.core.GUI;
  */
 public class ArenaQueueGui extends GUI {
 
-    public ArenaQueueGui(String title) {
-        super(title);
+    public ArenaQueueGui() {
+        super("Arena");
         // TODO
     }
 }

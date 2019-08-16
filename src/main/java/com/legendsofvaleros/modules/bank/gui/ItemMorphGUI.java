@@ -11,7 +11,7 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.gear.core.ItemUtil;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.item.Model;
+import com.legendsofvaleros.util.model.Model;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -51,30 +51,32 @@ public abstract class ItemMorphGUI extends GUI {
                 if (gui.getView(p) == null)
                     returnItems(pc, event.getView());
             } else {
-                for (int y = 0; y < 2; y++)
-                    for (int x = 0; x < 3; x++)
+                for (int y = 0; y < 2; y++) {
+                    for (int x = 0; x < 3; x++) {
                         gui.getInventory().setItem(x + y * 3, null);
+                    }
+                }
 
                 for (int i = 0; i < items.length; i++) {
-                    if (items[i] == null) continue;
+                    if (items[i] == null) {
+                        continue;
+                    }
 
                     executeMorph(pc, items[i]);
-
                     items[i] = null;
                 }
 
-                if (isBuy())
+                if (isBuy()) {
                     Money.sub(pc, cost);
-                else
+                } else {
                     Money.add(pc, cost);
+                }
 
                 onCompleted(pc);
-
                 cost = 0;
             }
 
             updateCost();
-
             canInteract = true;
         };
 
@@ -90,9 +92,12 @@ public abstract class ItemMorphGUI extends GUI {
                             return;
                         }
 
-                        items[event.getSlot()] = null;
-
                         Gear.Instance instance = Gear.Instance.fromStack(stack);
+                        items[event.getSlot()] = null;
+                        if (instance == null || !isValid(instance)) {
+                            event.setCancelled(true);
+                            return;
+                        }
                         cost -= getWorth(instance);
 
                         updateCost();
@@ -112,7 +117,6 @@ public abstract class ItemMorphGUI extends GUI {
                         }
 
                         items[event.getSlot()] = instance;
-
                         cost += getWorth(instance);
 
                         updateCost();
@@ -136,28 +140,30 @@ public abstract class ItemMorphGUI extends GUI {
                 break;
             }
 
-        if (hasOne)
+        if (hasOne) {
             ACCEPT_BUTTON.addLore(Money.Format.format(cost), "");
+        }
 
         ACCEPT_BUTTON.addLore(StringUtil.splitForStackLore(ChatColor.DARK_GRAY + "[" + ChatColor.GRAY + "Left Click" + ChatColor.DARK_GRAY + "] " + ChatColor.GRAY + "to complete."));
-
         slot(1, 2, ACCEPT_BUTTON.create(), acceptAction);
     }
 
     private void returnItems(PlayerCharacter pc, InventoryView view) {
         // Clear out the slots just in case
         for (int y = 0; y < 2; y++) {
-            for (int x = 0; x < 3; x++)
+            for (int x = 0; x < 3; x++) {
                 slot(x, y, Material.AIR, getSlot(x, y));
+            }
         }
 
         if (view != null) {
             ItemUtil.giveItem(pc, Gear.Instance.fromStack(view.getCursor()));
         }
-        for (Gear.Instance instance : items)
+        for (Gear.Instance instance : items) {
             if (instance != null) {
                 ItemUtil.giveItem(pc, instance);
             }
+        }
     }
 
     public abstract boolean isBuy();

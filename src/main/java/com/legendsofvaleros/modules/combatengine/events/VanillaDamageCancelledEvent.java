@@ -13,58 +13,63 @@ import org.bukkit.event.entity.EntityDamageEvent;
  * Called during the <code>EventPriority.MONITOR</code> phase of the cancelled event.
  */
 public class VanillaDamageCancelledEvent extends Event implements Cancellable {
-	private boolean cancelled = false;
-	@Override public boolean isCancelled() { return cancelled; }
-	@Override public void setCancelled(boolean cancel) { cancelled = cancel; }
+    private boolean cancelled = false;
 
-	private static final HandlerList handlers = new HandlerList();
+    @Override
+    public boolean isCancelled() {
+        return cancelled;
+    }
 
-	private final EntityDamageEvent event;
-	private final boolean byEntity;
+    @Override
+    public void setCancelled(boolean cancel) {
+        cancelled = cancel;
+    }
 
-	/**
-	 * Class constructor.
-	 * 
-	 * @param event The cancelled damage event.
-	 * @throws IllegalArgumentException On a <code>null</code> event.
-	 */
-	public VanillaDamageCancelledEvent(EntityDamageEvent event) throws IllegalArgumentException {
-		if (event == null) {
-			throw new IllegalArgumentException("event cannot be null");
-		}
-		this.event = event;
-		this.byEntity = event instanceof EntityDamageByEntityEvent;
-	}
+    private static final HandlerList handlers = new HandlerList();
 
-	/**
-	 * Gets the damage event cancelled because it was not caused by CombatEngine.
-	 * <p>
-	 * Can be used to translate vanilla damage instances to CombatEngine damage through the
-	 * CombatEngine API.
-	 * 
-	 * @return The cancelled event.
-	 */
-	public EntityDamageEvent getCancelledEvent() {
-		return event;
-	}
+    private final EntityDamageEvent event;
+    private final boolean byEntity;
 
-	/**
-	 * Gets whether the cancelled damage event was directly caused by an entity.
-	 * 
-	 * @return <code>true</code> if the cancelled damage event was an instance of
-	 *         <code>EntityDamageByEntityEvent</code>, else <code>false</code>.
-	 */
-	public boolean isDamageByEntity() {
-		return byEntity;
-	}
+    /**
+     * Class constructor.
+     * @param event The cancelled damage event.
+     * @throws IllegalArgumentException On a <code>null</code> event.
+     */
+    public VanillaDamageCancelledEvent(EntityDamageEvent event) throws IllegalArgumentException {
+        if (event == null) {
+            throw new IllegalArgumentException("event cannot be null");
+        }
+        this.event = event;
+        this.byEntity = event instanceof EntityDamageByEntityEvent;
+    }
 
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
+    /**
+     * Gets the damage event cancelled because it was not caused by CombatEngine.
+     * <p>
+     * Can be used to translate vanilla damage instances to CombatEngine damage through the
+     * CombatEngine API.
+     * @return The cancelled event.
+     */
+    public EntityDamageEvent getCancelledEvent() {
+        return event;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    /**
+     * Gets whether the cancelled damage event was directly caused by an entity.
+     * @return <code>true</code> if the cancelled damage event was an instance of
+     * <code>EntityDamageByEntityEvent</code>, else <code>false</code>.
+     */
+    public boolean isDamageByEntity() {
+        return byEntity;
+    }
+
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
 }

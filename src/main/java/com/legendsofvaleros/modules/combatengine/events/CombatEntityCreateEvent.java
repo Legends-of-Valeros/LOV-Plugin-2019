@@ -13,50 +13,47 @@ import org.bukkit.event.HandlerList;
  */
 public class CombatEntityCreateEvent extends Event {
 
-  private static final HandlerList handlers = new HandlerList();
+    private static final HandlerList handlers = new HandlerList();
 
-  private final LivingEntity entity;
-  private final CombatEntity combatEntity;
+    private final LivingEntity entity;
+    private final CombatEntity combatEntity;
 
-  /**
-   * Class constructor.
-   * 
-   * @param combatEntity The created combat data object.
-   * @throws IllegalArgumentException On a <code>null</code> parameter.
-   */
-  public CombatEntityCreateEvent(CombatEntity combatEntity) throws IllegalArgumentException {
-    if (combatEntity == null) {
-      throw new IllegalArgumentException("combat entity cannot be null");
+    /**
+     * Class constructor.
+     * @param combatEntity The created combat data object.
+     * @throws IllegalArgumentException On a <code>null</code> parameter.
+     */
+    public CombatEntityCreateEvent(CombatEntity combatEntity) throws IllegalArgumentException {
+        if (combatEntity == null) {
+            throw new IllegalArgumentException("combat entity cannot be null");
+        }
+        this.entity = combatEntity.getLivingEntity();
+        this.combatEntity = combatEntity;
     }
-    this.entity = combatEntity.getLivingEntity();
-    this.combatEntity = combatEntity;
-  }
 
-  /**
-   * Gets the entity that the combat data was created for.
-   * 
-   * @return The entity this event is for.
-   */
-  public LivingEntity getLivingEntity() {
-    return entity;
-  }
+    /**
+     * Gets the entity that the combat data was created for.
+     * @return The entity this event is for.
+     */
+    public LivingEntity getLivingEntity() {
+        return entity;
+    }
 
-  /**
-   * Gets the combat data object that was created for the entity.
-   * 
-   * @return The entity's combat data.
-   */
-  public CombatEntity getCombatEntity() {
-    return combatEntity;
-  }
+    /**
+     * Gets the combat data object that was created for the entity.
+     * @return The entity's combat data.
+     */
+    public CombatEntity getCombatEntity() {
+        return combatEntity;
+    }
 
-  @Override
-  public HandlerList getHandlers() {
-    return handlers;
-  }
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 
-  public static HandlerList getHandlerList() {
-    return handlers;
-  }
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
 }

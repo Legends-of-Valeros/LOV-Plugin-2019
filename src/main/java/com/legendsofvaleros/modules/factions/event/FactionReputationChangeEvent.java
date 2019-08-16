@@ -6,23 +6,38 @@ import com.legendsofvaleros.modules.factions.core.Faction;
 import org.bukkit.event.HandlerList;
 
 public class FactionReputationChangeEvent extends PlayerCharacterEvent {
-	private static final HandlerList handlers = new HandlerList();
-	public HandlerList getHandlers() { return handlers; }
-	public static HandlerList getHandlerList() { return handlers; }
+    private static final HandlerList handlers = new HandlerList();
 
-	private final Faction faction;
-	public Faction getFaction() { return faction; }
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 
-	private final int reputation;
-	public int getReputation() { return reputation; }
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
-	private final int change;
-	public int getChange() { return change; }
+    private final Faction faction;
 
-	public FactionReputationChangeEvent(PlayerCharacter pc, Faction faction, int reputation, int change) {
-		super(pc);
-		this.faction = faction;
-		this.reputation = reputation;
-		this.change = change;
-	}
+    public Faction getFaction() {
+        return faction;
+    }
+
+    private final int reputation;
+
+    public int getReputation() {
+        return reputation;
+    }
+
+    private final int change;
+
+    public int getChange() {
+        return change;
+    }
+
+    public FactionReputationChangeEvent(PlayerCharacter pc, Faction faction, int reputation, int change) {
+        super(pc);
+        this.faction = faction;
+        this.reputation = reputation;
+        this.change = change;
+    }
 }

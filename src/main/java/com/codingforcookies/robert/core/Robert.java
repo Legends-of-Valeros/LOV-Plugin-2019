@@ -7,9 +7,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
- * 
+ *
  * Plugin container class.
- * 
+ *
  * @author Stumblinbear
  *
  */
@@ -19,17 +19,17 @@ public class Robert implements Listener {
 
 	private static JavaPlugin plugin;
 	public static JavaPlugin plugin() { return plugin; }
-	
+
 	public static void enablePortable(JavaPlugin p) {
 		if(robert != null)
 			return;
-		
+
 		robert = new Robert();
 		plugin = p;
 
 		plugin.getServer().getPluginManager().registerEvents(robert, plugin);
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerLogout(PlayerQuitEvent e) {
 		RobertStack.clear(e.getPlayer());

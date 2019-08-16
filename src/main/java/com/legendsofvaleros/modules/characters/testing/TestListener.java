@@ -9,11 +9,11 @@ import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
 import com.legendsofvaleros.modules.parties.PartiesController;
 import com.legendsofvaleros.modules.parties.core.PlayerParty;
 import com.legendsofvaleros.modules.playermenu.InventoryManager;
-import com.legendsofvaleros.modules.playermenu.PlayerMenuOpenEvent;
-import com.legendsofvaleros.modules.playermenu.options.PlayerOptionsOpenEvent;
+import com.legendsofvaleros.modules.playermenu.events.PlayerMenuOpenEvent;
+import com.legendsofvaleros.modules.playermenu.events.PlayerOptionsOpenEvent;
 import com.legendsofvaleros.util.CustomEntityFirework;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.item.Model;
+import com.legendsofvaleros.util.model.Model;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import org.bukkit.ChatColor;
@@ -47,7 +47,7 @@ public class TestListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerMenuOpen(PlayerMenuOpenEvent event) {
-        if (! Characters.isPlayerCharacterLoaded(event.getPlayer())) {
+        if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) {
             event.setCancelled(true);
             return;
         }
@@ -59,7 +59,7 @@ public class TestListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onCharacterOptionsOpen(PlayerOptionsOpenEvent event) {
-        if (! Characters.isPlayerCharacterLoaded(event.getPlayer())) {
+        if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) {
             event.setCancelled(true);
             return;
         }
@@ -96,7 +96,7 @@ public class TestListener implements Listener {
 
     @EventHandler
     public void onRegenHealth(CombatEngineRegenEvent event) {
-        if (! event.getCombatEntity().isPlayer()) {
+        if (!event.getCombatEntity().isPlayer()) {
             return;
         }
         if (event.getRegenerating() != RegeneratingStat.HEALTH) {
@@ -110,10 +110,10 @@ public class TestListener implements Listener {
 
     @EventHandler
     public void onNPCLeftClick(NPCLeftClickEvent event) {
-        if (! event.getNPC().hasTrait(TraitLOV.class)) {
+        if (!event.getNPC().hasTrait(TraitLOV.class)) {
             return;
         }
-        if (! Characters.getInstance().isInCombat(event.getClicker())) {
+        if (!Characters.getInstance().isInCombat(event.getClicker())) {
             return;
         }
 
@@ -123,10 +123,10 @@ public class TestListener implements Listener {
 
     @EventHandler
     public void onNPCRightClick(NPCRightClickEvent event) {
-        if (! event.getNPC().hasTrait(TraitLOV.class)) {
+        if (!event.getNPC().hasTrait(TraitLOV.class)) {
             return;
         }
-        if (! Characters.getInstance().isInCombat(event.getClicker())) {
+        if (!Characters.getInstance().isInCombat(event.getClicker())) {
             return;
         }
 
@@ -137,6 +137,8 @@ public class TestListener implements Listener {
     @EventHandler
     public void onFoodLoss(FoodLevelChangeEvent event) {
         event.setCancelled(true);
+        event.setFoodLevel(20);
+        ((Player) event.getEntity()).setSaturation(20F);
     }
 
     @EventHandler(ignoreCancelled = true)

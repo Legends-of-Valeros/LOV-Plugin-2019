@@ -1,16 +1,14 @@
 package com.legendsofvaleros.modules.playermenu;
 
+import java.util.HashMap;
+import java.util.Map.Entry;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.HashMap;
-import java.util.Map.Entry;
 
 public class InventoryManager implements Listener {
     public static class InventoryItem {
@@ -49,11 +47,6 @@ public class InventoryManager implements Listener {
                 player.getInventory().setItem(item.getKey(), item.getValue().stack);
             }
         }
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onInventoryCraft(CraftItemEvent event) {
-        event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)

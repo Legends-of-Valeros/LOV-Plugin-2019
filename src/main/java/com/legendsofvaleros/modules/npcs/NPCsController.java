@@ -18,6 +18,7 @@ import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
 import com.legendsofvaleros.modules.npcs.trait.core.TraitTitle;
 import com.legendsofvaleros.modules.pvp.PvPController;
 import com.legendsofvaleros.modules.quests.QuestController;
+import com.legendsofvaleros.modules.queue.QueueController;
 import com.legendsofvaleros.modules.skills.SkillsController;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
@@ -28,6 +29,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
+@IntegratesWith(module = QueueController.class, integration = QueueIntegration.class)
 @IntegratesWith(module = AuctionController.class, integration = AuctionsIntegration.class)
 @IntegratesWith(module = BankController.class, integration = BankIntegration.class)
 @IntegratesWith(module = FastTravelController.class, integration = FastTravelIntegration.class)

@@ -1,8 +1,11 @@
 package com.legendsofvaleros.modules.queue;
 
+import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Crystall on 08/02/2019
@@ -21,7 +24,6 @@ public class Queue<T> {
     }
 
     private ArrayList<Player> queuedPlayers = new ArrayList<>();
-    private ArrayList<T> existingGame = new ArrayList<>();
 
     private int maxPlayers; //maximum players allowed to be in one game
     private int minPlayersRequired; // minimum players required for the queue to start
@@ -29,22 +31,13 @@ public class Queue<T> {
     private String queueName;
 
 
-    public Queue(T t, ArrayList<Player> queuedPlayers, ArrayList<T> existingGame, int maxPlayers,
-                 int minPlayersRequired, String queueName) {
-        this.t = t;
-        this.queuedPlayers = queuedPlayers;
-        this.existingGame = existingGame;
-        this.maxPlayers = maxPlayers;
+    public Queue(int minPlayersRequired) {
         this.minPlayersRequired = minPlayersRequired;
-        this.queueName = queueName;
+        this.queueName = get().getClass().getCanonicalName();
     }
 
-    public ArrayList<Player> getQueuedPlayers() {
+    public List<Player> getQueuedPlayers() {
         return queuedPlayers;
-    }
-
-    public ArrayList<T> getExistingGame() {
-        return existingGame;
     }
 
     public int getMaxPlayers() {
@@ -57,6 +50,11 @@ public class Queue<T> {
 
     public String getQueueName() {
         return queueName;
+    }
+
+    @EventHandler
+    public void onPlayerUnloadEvent(PlayerCharacterLogoutEvent ev) {
+        queuedPlayers.remove(ev.getPlayer());
     }
 
 }

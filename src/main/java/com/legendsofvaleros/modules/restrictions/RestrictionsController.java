@@ -5,26 +5,57 @@ import com.legendsofvaleros.ServerMode;
 import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.util.Discord;
 import com.legendsofvaleros.util.Utilities;
+
+import java.util.stream.Collectors;
+
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.*;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Hanging;
+import org.bukkit.entity.Painting;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.block.*;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockFadeEvent;
+import org.bukkit.event.block.BlockFormEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.BlockSpreadEvent;
+import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
-import org.bukkit.event.entity.*;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.EntityPortalEvent;
+import org.bukkit.event.entity.EntityTeleportEvent;
+import org.bukkit.event.entity.EntityToggleGlideEvent;
+import org.bukkit.event.entity.EntityToggleSwimEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerPickupArrowEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRegisterChannelEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.potion.PotionEffect;
-
-import java.util.stream.Collectors;
 
 /**
  * Created by Crystall on 04/11/2019
@@ -39,7 +70,8 @@ public class RestrictionsController extends ListenerModule {
     public void onEndlessPotionEffect(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         player.closeInventory();
-        player.getActivePotionEffects().stream().map(PotionEffect::getType).forEach(t -> Utilities.removeInfinitePotion(player, t));
+        player.getActivePotionEffects().stream().map(PotionEffect::getType)
+                .forEach(t -> Utilities.removeInfinitePotion(player, t));
     }
 
     /**
@@ -48,11 +80,12 @@ public class RestrictionsController extends ListenerModule {
      */
     @EventHandler
     public void onChannelRegister(PlayerRegisterChannelEvent evt) {
-        if (! evt.getChannel().equalsIgnoreCase("WDL|INIT")) {
+        if (!evt.getChannel().equalsIgnoreCase("WDL|INIT")) {
             return;
         }
         evt.getPlayer().kickPlayer(ChatColor.RED + "Please disable World Downloader.");
-        Discord.sendLogMessage(getName(), "**" + evt.getPlayer().getName() + "** was kicked for using World Downloader!");
+        Discord.sendLogMessage(getName(),
+                "**" + evt.getPlayer().getName() + "** was kicked for using World Downloader!");
     }
 
     /**
@@ -61,11 +94,14 @@ public class RestrictionsController extends ListenerModule {
      */
     @EventHandler
     public void onVehicleMove(VehicleMoveEvent evt) {
-        String fly = evt.getVehicle().getPassengers().stream().filter(Player.class::isInstance).map(Entity::getName)
-                .collect(Collectors.joining(", "));
-        if (evt.getVehicle().getType() == EntityType.BOAT && ! evt.getFrom().getBlock().isLiquid() && fly.length() > 0
-                && evt.getTo().getY() > evt.getFrom().getY() && evt.getVehicle().getVelocity().getY() <= 0) {
-            Discord.sendLogMessage(getName(), "**[Anti-Cheat]** " + ChatColor.GRAY + fly + " may be using BoatFly.");
+        String fly = evt.getVehicle().getPassengers().stream().filter(Player.class::isInstance)
+                .map(Entity::getName).collect(Collectors.joining(", "));
+        if (evt.getVehicle().getType() == EntityType.BOAT && !evt.getFrom().getBlock().isLiquid()
+                && fly.length() > 0
+                && evt.getTo().getY() > evt.getFrom().getY()
+                && evt.getVehicle().getVelocity().getY() <= 0) {
+            Discord.sendLogMessage(getName(),
+                    "**[Anti-Cheat]** " + ChatColor.GRAY + fly + " may be using BoatFly.");
         }
     }
 
@@ -75,23 +111,40 @@ public class RestrictionsController extends ListenerModule {
      */
     @EventHandler
     public void onPlayerGameModeChange(PlayerGameModeChangeEvent evt) {
-        if (LegendsOfValeros.getMode().equals(ServerMode.LIVE) && evt.getNewGameMode() == GameMode.CREATIVE) {
+        if (LegendsOfValeros.getMode().equals(ServerMode.LIVE)
+                && evt.getNewGameMode() == GameMode.CREATIVE) {
             evt.setCancelled(true);
-            Discord.sendLogMessage(getName(), "**" + evt.getPlayer().getName() + "** tried to enter " + evt.getNewGameMode().name().toLowerCase() + "! This should not happen.");
+            Discord.sendLogMessage(getName(),
+                    "" + evt.getPlayer().getName() + " tried to enter " + evt.getNewGameMode().name()
+                            .toLowerCase() + "! This should not happen.");
         }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerSwimming(EntityToggleSwimEvent event) {
+        event.setCancelled(true);
+        ((Player) event.getEntity()).setSwimming(false);
+    }
+
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerGlide(EntityToggleGlideEvent event) {
+        event.setCancelled(true);
     }
 
     @EventHandler(ignoreCancelled = true)
     public void preventBucketEmpty(PlayerBucketEmptyEvent evt) {
         if (LegendsOfValeros.getMode().equals(ServerMode.LIVE)) {
-            evt.setCancelled(evt.getBlockClicked().getWorld().getName().equalsIgnoreCase(LegendsOfValeros.WORLD_NAME));
+            evt.setCancelled(
+                    evt.getBlockClicked().getWorld().getName().equalsIgnoreCase(LegendsOfValeros.WORLD_NAME));
         }
     }
 
     @EventHandler(ignoreCancelled = true)
     public void preventBucketFill(PlayerBucketFillEvent evt) {
         if (LegendsOfValeros.getMode().equals(ServerMode.LIVE)) {
-            evt.setCancelled(evt.getBlockClicked().getWorld().getName().equalsIgnoreCase(LegendsOfValeros.WORLD_NAME));
+            evt.setCancelled(
+                    evt.getBlockClicked().getWorld().getName().equalsIgnoreCase(LegendsOfValeros.WORLD_NAME));
         }
     }
 
@@ -164,8 +217,11 @@ public class RestrictionsController extends ListenerModule {
     public void onHangingExplode(HangingBreakEvent evt) {
         evt.setCancelled(evt.getCause() == HangingBreakEvent.RemoveCause.EXPLOSION);
         Hanging ent = evt.getEntity();
-        if (evt.getCause() == HangingBreakEvent.RemoveCause.PHYSICS && ent.getLocation().getBlock().getRelative(evt.getEntity().getFacing().getOppositeFace()).getType() == Material.AIR)
+        if (evt.getCause() == HangingBreakEvent.RemoveCause.PHYSICS &&
+                ent.getLocation().getBlock().getRelative(evt.getEntity().getFacing().getOppositeFace())
+                        .getType() == Material.AIR) {
             ent.remove();
+        }
     }
 
     /**
@@ -190,7 +246,7 @@ public class RestrictionsController extends ListenerModule {
      * Extra check for interaction with prohibited entities
      * @param event
      */
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInteractEntity(PlayerInteractEntityEvent event) {
         if (event.getRightClicked() instanceof ArmorStand ||
                 event.getRightClicked() instanceof Painting) {
@@ -201,26 +257,34 @@ public class RestrictionsController extends ListenerModule {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onInteract(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.PHYSICAL) {
-            if (event.getClickedBlock().getType().name().endsWith("_SHULKER_BOX") ||
-                    event.getClickedBlock().getType().name().contains("DOOR")) {
-                event.setCancelled(true);
+            if (event.getClickedBlock() == null) {
+                return;
             }
-            switch (event.getClickedBlock().getType()) {
-                //TODO replace legacy materials
-                case LEGACY_SOIL:
-                case LEGACY_CROPS:
+            Material clickedType = event.getClickedBlock().getType();
+            if (clickedType.name().endsWith("BUTTON") || clickedType.name().endsWith("TRAPDOOR")
+                    || clickedType.name().endsWith("PRESSURE_PLATE")
+                    || clickedType.name().endsWith("_SHULKER_BOX")
+                    || clickedType.name().contains("ANVIL")
+                    || clickedType.name().endsWith("FENCE_GATE")) {
+                event.setCancelled(true);
+                return;
+            }
+            switch (clickedType) {
+                case WHEAT:
+                case FARMLAND:
                 case CHEST:
                 case HOPPER:
                 case FURNACE:
-                case LEGACY_WORKBENCH:
-                case ANVIL:
+                case CRAFTING_TABLE:
                 case ENDER_CHEST:
-                case LEGACY_ENCHANTMENT_TABLE:
+                case ENCHANTING_TABLE:
                 case TRAPPED_CHEST:
                 case DISPENSER:
                 case DROPPER:
                 case BREWING_STAND:
                 case FLOWER_POT:
+                case POTTED_CORNFLOWER:
+                case LEVER:
                     event.setCancelled(true);
                     break;
                 default:
@@ -232,7 +296,7 @@ public class RestrictionsController extends ListenerModule {
     /**
      * @param evt
      */
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onTNT(EntityExplodeEvent evt) {
         evt.setCancelled(true);
     }
@@ -247,13 +311,15 @@ public class RestrictionsController extends ListenerModule {
         }
     }
 
+
     /**
      * @param evt
      */
     @EventHandler(ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent evt) {
         if (LegendsOfValeros.getMode().equals(ServerMode.LIVE)) {
-            evt.setCancelled(evt.getBlock().getWorld().getName().equalsIgnoreCase(LegendsOfValeros.WORLD_NAME));
+            evt.setCancelled(
+                    evt.getBlock().getWorld().getName().equalsIgnoreCase(LegendsOfValeros.WORLD_NAME));
         }
     }
 
@@ -262,14 +328,16 @@ public class RestrictionsController extends ListenerModule {
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onPortalDestroy(BlockPhysicsEvent evt) {
-        //TODO replace legacy materials
-        evt.setCancelled(evt.getBlock().getType() == Material.LEGACY_PORTAL && evt.getChangedType() != Material.LEGACY_PORTAL);
+        evt.setCancelled((evt.getBlock().getType() == Material.NETHER_PORTAL
+                && evt.getChangedType() != Material.NETHER_PORTAL)
+                || (evt.getBlock().getType().equals(Material.END_PORTAL)
+                && evt.getChangedType() != Material.END_PORTAL));
     }
 
     /**
      * @param evt
      */
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void preventSpread(BlockSpreadEvent evt) {
         evt.setCancelled(true);
     }
@@ -321,8 +389,9 @@ public class RestrictionsController extends ListenerModule {
      */
     @EventHandler(ignoreCancelled = true) // Prevent thunder since rain is allowed in realms.
     public void onThunderChange(ThunderChangeEvent evt) {
-        if (evt.toThunderState())
+        if (evt.toThunderState()) {
             evt.setCancelled(true);
+        }
     }
 
     /**
@@ -330,8 +399,9 @@ public class RestrictionsController extends ListenerModule {
      */
     @EventHandler(ignoreCancelled = true)
     public void preventCropTrample(PlayerInteractEvent evt) {
-        //TODO replace legacy materials
-        evt.setCancelled(evt.getAction() == Action.PHYSICAL && (evt.getClickedBlock().getType() == Material.LEGACY_SOIL || evt.getClickedBlock().getType() == Material.LEGACY_CROPS));
+        evt.setCancelled(evt.getAction() == Action.PHYSICAL && (
+                evt.getClickedBlock().getType() == Material.FARMLAND
+                        || evt.getClickedBlock().getType() == Material.WHEAT));
     }
 
     /**
@@ -340,7 +410,8 @@ public class RestrictionsController extends ListenerModule {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void ignoreTallGrass(PlayerInteractEvent evt) {
         if (evt.getClickedBlock() != null) {
-            evt.setCancelled(evt.getAction() == Action.LEFT_CLICK_BLOCK && evt.getClickedBlock().getType() == Material.LEGACY_LONG_GRASS);
+            evt.setCancelled(evt.getAction() == Action.LEFT_CLICK_BLOCK
+                    && evt.getClickedBlock().getType() == Material.TALL_GRASS);
         }
     }
 
@@ -350,14 +421,14 @@ public class RestrictionsController extends ListenerModule {
      */
     @EventHandler(ignoreCancelled = true)
     public void onPortal(EntityPortalEvent evt) {
-        evt.setCancelled(! (evt.getEntity() instanceof Player));
+        evt.setCancelled(!(evt.getEntity() instanceof Player));
     }
 
     /**
      * Prevent picking up arrows
      * @param evt
      */
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onArrowPickup(PlayerPickupArrowEvent evt) {
         evt.setCancelled(true);
         evt.getArrow().remove();
@@ -367,8 +438,17 @@ public class RestrictionsController extends ListenerModule {
      * Prevent vanilla enchants in case player are somehow able to use anvils / enchanting tables
      * @param evt
      */
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onVanillaEnchant(EnchantItemEvent evt) {
+        evt.setCancelled(true);
+    }
+
+    /**
+     * prevent crafting of vanilla items
+     * @param evt
+     */
+    @EventHandler(ignoreCancelled = true)
+    public void onItemCraft(CraftItemEvent evt) {
         evt.setCancelled(true);
     }
 

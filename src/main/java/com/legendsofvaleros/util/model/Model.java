@@ -1,4 +1,4 @@
-package com.legendsofvaleros.util.item;
+package com.legendsofvaleros.util.model;
 
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.google.common.collect.ImmutableList;

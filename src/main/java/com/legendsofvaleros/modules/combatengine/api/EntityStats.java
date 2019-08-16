@@ -11,7 +11,7 @@ import com.legendsofvaleros.modules.combatengine.stat.Stat;
  * 
  * @see CombatEngineAPI
  */
-public interface EntityStats {
+public interface  EntityStats {
 
   /**
    * Gets the combat data these stats are a part of.

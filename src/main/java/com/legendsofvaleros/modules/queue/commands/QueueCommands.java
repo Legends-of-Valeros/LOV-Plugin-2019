@@ -1,15 +1,17 @@
 package com.legendsofvaleros.modules.queue.commands;
 
+import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
+import com.legendsofvaleros.modules.queue.gui.QueueGui;
 import org.bukkit.entity.Player;
 
 /**
  * Created by Crystall on 08/02/2019
  */
 @CommandAlias("queue")
-public class QueueCommands {
+public class QueueCommands extends BaseCommand {
 
     @Subcommand("accept")
     @Description("Accepts a queue invite on enough players")
@@ -39,6 +41,12 @@ public class QueueCommands {
     @Description("Requests how many people are in the current queue / ahead of you")
     public void onAmountRequest(Player player) {
         //TODO
+    }
+
+    @Subcommand("show")
+    @Description("")
+    public void onShow(Player player) {
+        new QueueGui().open(player);
     }
 
 

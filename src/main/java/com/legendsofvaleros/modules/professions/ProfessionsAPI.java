@@ -41,6 +41,7 @@ public class ProfessionsAPI extends ListenerModule {
     @Override
     public void onLoad() {
         super.onLoad();
+
         this.rpc = APIController.create(RPC.class);
     }
 
