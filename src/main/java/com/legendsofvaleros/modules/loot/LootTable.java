@@ -6,7 +6,6 @@ import org.bukkit.inventory.ItemStack;
 
 public class LootTable {
     public String id;
-    public double chance;
     public Item[] items;
 
     public transient double totalWeight = Double.MIN_VALUE;
@@ -19,23 +18,13 @@ public class LootTable {
             return Gear.fromId(id);
         }
 
-        public ItemStack getStack() {
-            ItemStack stack = Gear.fromId(id).newInstance().toStack();
-            if (stack.getType() != Material.AIR) {
-                return stack;
-            } else {
-                LootController.getInstance().getLogger().severe("Attempt to use loot table item with unknown item name. Offender: " + id);
-            }
-            return null;
-        }
-
         @Override
         public String toString() {
             return "LootTable(id=" + id + ", weight=" + weight + ")";
         }
     }
 
-    public Item nextItem() {
+    public Gear nextItem() {
         if (totalWeight == Double.MIN_VALUE) {
             totalWeight = 0D;
             for (Item i : items) {
@@ -53,6 +42,6 @@ public class LootTable {
             }
         }
 
-        return items[index];
+        return items[index].getItem();
     }
 }

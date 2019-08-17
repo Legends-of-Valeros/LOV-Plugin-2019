@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class QuestAPI extends ListenerModule {
     public interface RPC {
-        Promise<IQuest> getQuestNew(String questId);
+        Promise<IQuest> getQuest(String questId);
 
         /**
          * Quest progress is stored in a way that cannot be decoded by Gson. We, unfortunately, must do it manually,
@@ -113,7 +113,7 @@ public class QuestAPI extends ListenerModule {
                 .removalListener(entry -> {
                     getLogger().warning("Quest '" + entry.getKey() + "' removed from the cache: " + entry.getCause());
                 })
-                .build(), questId -> rpc.getQuestNew(questId));
+                .build(), questId -> rpc.getQuest(questId));
 
         getScheduler().executeInMyCircleTimer(() -> {
             // This is done so we get almost-live updates on GC'd listeners.

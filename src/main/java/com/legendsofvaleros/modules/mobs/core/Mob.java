@@ -9,6 +9,7 @@ import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import com.legendsofvaleros.modules.gear.core.Gear;
+import com.legendsofvaleros.modules.loot.LootTable;
 import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.modules.mobs.ai.AIStuckAction;
 import com.legendsofvaleros.modules.mobs.behavior.StaticAI;
@@ -31,17 +32,29 @@ public class Mob {
     private String id;
     private String group;
     private String name;
+
     private EntityType type;
+    public String skin;
+
     private EntityRarity rarity;
     private String archetype;
     @SerializedName("class")
     private EntityClass entityClass;
-    private int experience = 0;
-    private boolean invincible = false;
-    private Mob.StatsMap stats;
-    private Mob.Options options;
-    private Set<SpawnArea> spawns;
+
     private Mob.EquipmentMap equipment;
+    private Mob.StatsMap stats;
+    private boolean invincible = false;
+
+    private int experience = 0;
+    public Loot[] loot;
+
+    public String riding;
+    public Boolean ghost = false;
+    public Distance distance = new Distance();
+
+    public transient Map<CharacterId, Long> leashed = new HashMap<>();
+
+    private transient Set<SpawnArea> spawns;
 
     public String getGroup() {
         return group;
@@ -95,12 +108,6 @@ public class Mob {
         return equipment;
     }
 
-    public Options getOptions() {
-        if (options == null)
-            options = new Options();
-        return options;
-    }
-
     public Set<SpawnArea> getSpawns() {
         if (spawns == null)
             spawns = new HashSet<>();
@@ -123,25 +130,85 @@ public class Mob {
     public static class StatsMap extends HashMap<Object, Integer> { }
     public static class EquipmentMap extends HashMap<Equipment.EquipmentSlot, Item[]> { }
 
-    public static class Options {
-        public LootData[] loot;
-        public String riding;
-        public String skin;
-        public Distance distance = new Distance();
-        public Boolean ghost = false;
-        public Map<CharacterId, Long> leashed = new HashMap<>();
+    public static class Loot {
+        public int tries;
+        public double chance;
+        public Table[] tables;
 
-        public static class LootData {
-            public String id;
-            public Double chance;
+        public static class Table {
+            public LootTable table;
+            public double weight;
             public int amount;
-            public String connect;
         }
 
-        public static class Distance {
-            public Integer detection = 5;
-            public Integer chase = 10;
+        public Instance newInstance() {
+            return new Instance(this);
         }
+
+        /**
+         * An instance is created whenever a query for this drop occurs. i.e. on death.
+         */
+        public static class Instance {
+            final Loot loot;
+
+            double totalWeight = 0D;
+
+            /**
+             * Keeps track of how much each table has dropped.
+             */
+            byte[] dropped;
+
+            /**
+             * A dead table is one that is not allowed to drop anymore.
+             */
+            byte dead = 0;
+
+            public Instance(Loot loot) {
+                this.loot = loot;
+
+                for (Mob.Loot.Table table : loot.tables) {
+                    this.totalWeight += table.weight;
+                }
+
+                this.dropped = new byte[loot.tables.length];
+            }
+
+            public Optional<LootTable> nextTable() {
+                // If chance fails, return.
+                if(Math.random() > loot.chance) return Optional.empty();
+
+                // If all tables are dead, return.
+                if(this.dead == this.loot.tables.length) return Optional.empty();
+
+                double random = Math.random() * this.totalWeight;
+
+                for (int i = 0; i < this.loot.tables.length; i++) {
+                    // If more has dropped from this than allowed, skip it.
+                    if(this.dropped[i] >= this.loot.tables[i].amount) continue;
+
+                    random -= this.loot.tables[i].weight;
+
+                    if (random <= 0D) {
+                        this.dropped[i]++;
+
+                        if(this.dropped[i] >= this.loot.tables[i].amount) {
+                            // Subtract the weight or we get incorrect chances next time 'round.
+                            this.totalWeight -= this.loot.tables[i].weight;
+                            this.dead++;
+                        }
+
+                        return Optional.of(this.loot.tables[i].table);
+                    }
+                }
+
+                return Optional.empty();
+            }
+        }
+    }
+
+    public static class Distance {
+        public Integer detection = 5;
+        public Integer chase = 10;
     }
 
     public static class Item {
@@ -209,11 +276,11 @@ public class Mob {
             npc.data().setPersistent(NPC.COLLIDABLE_METADATA, true);
 
             if (mob.type == EntityType.PLAYER) {
-                if (mob.getOptions().skin != null) {
+                if (mob.skin != null) {
                     try {
-                        Skin skin = NPCsController.getInstance().getSkin(mob.getOptions().skin);
+                        Skin skin = NPCsController.getInstance().getSkin(mob.skin);
                         if (skin == null)
-                            throw new Exception("No skin with that ID. Offender: " + mob.getOptions().skin + " on " + mob.id);
+                            throw new Exception("No skin with that ID. Offender: " + mob.skin + " on " + mob.id);
 
                         npc.data().setPersistent("cached-skin-uuid", skin.uuid);
                         npc.data().setPersistent("cached-skin-uuid-name", skin.username.toLowerCase());

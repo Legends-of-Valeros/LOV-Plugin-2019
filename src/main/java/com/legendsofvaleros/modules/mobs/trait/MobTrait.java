@@ -40,7 +40,7 @@ public class MobTrait extends Trait {
 			}
 		}
 
-		if(instance.mob.getOptions().ghost) {
+		if(instance.mob.ghost) {
 			entity.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, Integer.MAX_VALUE, 1));
 			entity.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
 		}

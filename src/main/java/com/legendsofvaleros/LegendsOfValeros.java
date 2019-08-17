@@ -165,7 +165,7 @@ public class LegendsOfValeros extends JavaPlugin {
         Modules.registerModule(ZonesController.class);
         Modules.registerModule(AuctionController.class);
         Modules.registerModule(MailboxController.class);
-        Modules.registerModule(ProfessionsController.class);
+        //Modules.registerModule(ProfessionsController.class);
         Modules.registerModule(RestrictionsController.class);
         //Modules.registerModule(FriendsController.class);
         Modules.registerModule(TabMenuController.class);
