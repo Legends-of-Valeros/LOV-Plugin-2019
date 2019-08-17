@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.zones.core;
 
 import com.codingforcookies.ambience.Sound;
+import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import org.bukkit.Location;
@@ -9,6 +10,7 @@ import org.bukkit.block.Block;
 import java.util.ArrayList;
 
 public class Zone {
+    @SerializedName("_id")
     public String id;
 
     public String channel;
