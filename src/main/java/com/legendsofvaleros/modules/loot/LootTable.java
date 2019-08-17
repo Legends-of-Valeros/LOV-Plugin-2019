@@ -1,11 +1,14 @@
 package com.legendsofvaleros.modules.loot;
 
+import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.gear.core.Gear;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
+import com.legendsofvaleros.modules.loot.api.ILootTable;
 
-public class LootTable {
-    public String id;
+public class LootTable implements ILootTable {
+    @SerializedName("_id")
+    private String id;
+    private String slug;
+
     public Item[] items;
 
     public transient double totalWeight = Double.MIN_VALUE;
@@ -24,6 +27,12 @@ public class LootTable {
         }
     }
 
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
     public Gear nextItem() {
         if (totalWeight == Double.MIN_VALUE) {
             totalWeight = 0D;

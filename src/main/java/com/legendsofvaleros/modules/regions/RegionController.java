@@ -14,6 +14,7 @@ import com.legendsofvaleros.modules.characters.loading.PhaseLock;
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.hearthstones.HearthstoneController;
 import com.legendsofvaleros.modules.regions.commands.RegionCommands;
+import com.legendsofvaleros.modules.regions.core.IRegion;
 import com.legendsofvaleros.modules.regions.core.Region;
 import com.legendsofvaleros.modules.regions.core.RegionBounds;
 import com.legendsofvaleros.modules.regions.core.RegionSelector;
@@ -61,23 +62,23 @@ public class RegionController extends RegionsAPI {
             return;
         }
 
-        Region region = regions.get(region_id);
+        IRegion region = regions.get(region_id);
         RegionBounds bounds = region.getBounds();
 
         for (int x = bounds.getStartX(); x < bounds.getEndX(); x++) {
             for (int y = bounds.getStartY(); y < bounds.getEndY(); y++) {
                 for (int z = bounds.getStartZ(); z < bounds.getEndZ(); z++) {
-                    Chunk chunk = region.world.getChunkAt(new Location(region.world, x, y, z));
+                    Chunk chunk = region.getWorld().getChunkAt(new Location(region.getWorld(), x, y, z));
                     String chunkId = chunk.getX() + "," + chunk.getZ();
-                    if (regionChunks.containsEntry(chunkId, region.id)) {
-                        regionChunks.remove(chunkId, region.id);
+                    if (regionChunks.containsEntry(chunkId, region.getId())) {
+                        regionChunks.remove(chunkId, region.getId());
                     }
                 }
             }
         }
 
         for (Map.Entry<Player, String> e : playerRegions.entries()) {
-            if (region.id.equals(e.getValue())) {
+            if (region.getId().equals(e.getValue())) {
                 playerRegions.remove(e.getKey(), e.getValue());
             }
         }
@@ -95,7 +96,7 @@ public class RegionController extends RegionsAPI {
         playerAccess.put(pc.getUniqueCharacterId(), region, accessible);
     }
 
-    public Region getRegion(String region_id) {
+    public IRegion getRegion(String region_id) {
         return regions.get(region_id);
     }
 
@@ -134,59 +135,59 @@ public class RegionController extends RegionsAPI {
         if (event.getFrom().getBlock().getLocation().equals(event.getTo().getBlock().getLocation()))
             return;
 
-        List<Region> toRegions = findRegions(event.getTo());
+        List<IRegion> toRegions = findRegions(event.getTo());
         if (!toRegions.isEmpty()) {
             if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) {
-                MessageUtil.sendError(event.getPlayer(), toRegions.get(0).msgError);
+                MessageUtil.sendError(event.getPlayer(), toRegions.get(0).getErrorMessage());
                 event.getPlayer().teleport(event.getFrom());
                 return;
             }
 
             PlayerCharacter pc = Characters.getPlayerCharacter(event.getPlayer());
-            for (Region region : toRegions) {
-                if (!region.allowAccess && (!playerAccess.contains(pc.getUniqueCharacterId(), region.id)
-                        || !playerAccess.get(pc.getUniqueCharacterId(), region.id))) {
-                    MessageUtil.sendError(event.getPlayer(), region.msgError);
+            for (IRegion region : toRegions) {
+                if (!region.isAllowedByDefault() && (!playerAccess.contains(pc.getUniqueCharacterId(), region.getId())
+                        || !playerAccess.get(pc.getUniqueCharacterId(), region.getId()))) {
+                    MessageUtil.sendError(event.getPlayer(), region.getErrorMessage());
                     event.getPlayer().teleport(event.getFrom());
                     return;
                 }
             }
         }
 
-        List<Region> discrepancies = findRegions(event.getFrom());
+        List<IRegion> discrepancies = findRegions(event.getFrom());
 
-        for (Region region : toRegions) {
+        for (IRegion region : toRegions) {
             if (!discrepancies.isEmpty()) {
                 discrepancies.remove(region);
             }
 
-            if (playerRegions.containsEntry(event.getPlayer(), region.id)) {
+            if (playerRegions.containsEntry(event.getPlayer(), region.getId())) {
                 continue;
             }
 
             if (RegionController.REGION_DEBUG) {
-                event.getPlayer().sendMessage("Entered regions: " + region.id);
+                event.getPlayer().sendMessage("Entered regions: " + region.getId());
             }
 
-            if (region.msgEnter != null && region.msgEnter.length() > 0) {
-                MessageUtil.sendInfo(event.getPlayer(), region.msgEnter);
+            if (region.getEnterMessage() != null && region.getEnterMessage().length() > 0) {
+                MessageUtil.sendInfo(event.getPlayer(), region.getEnterMessage());
             }
 
-            playerRegions.put(event.getPlayer(), region.id);
+            playerRegions.put(event.getPlayer(), region.getId());
             Bukkit.getServer().getPluginManager().callEvent(new RegionEnterEvent(event.getPlayer(), region));
         }
 
         // Lessens checks for users in no regions
-        for (Region region : discrepancies) {
+        for (IRegion region : discrepancies) {
             if (RegionController.REGION_DEBUG) {
-                event.getPlayer().sendMessage("Left regions: " + region.id);
+                event.getPlayer().sendMessage("Left regions: " + region.getId());
             }
 
-            if (region.msgExit != null && region.msgExit.length() > 0) {
-                MessageUtil.sendInfo(event.getPlayer(), region.msgExit);
+            if (region.getExitMessage() != null && region.getExitMessage().length() > 0) {
+                MessageUtil.sendInfo(event.getPlayer(), region.getExitMessage());
             }
 
-            playerRegions.remove(event.getPlayer(), region.id);
+            playerRegions.remove(event.getPlayer(), region.getId());
             Bukkit.getServer().getPluginManager().callEvent(new RegionLeaveEvent(event.getPlayer(), region));
         }
     }

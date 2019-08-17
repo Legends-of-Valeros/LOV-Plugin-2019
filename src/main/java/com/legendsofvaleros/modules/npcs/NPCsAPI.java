@@ -9,6 +9,8 @@ import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.modules.loot.LootController;
+import com.legendsofvaleros.modules.loot.api.ILootTable;
+import com.legendsofvaleros.modules.npcs.api.ISkin;
 import com.legendsofvaleros.modules.npcs.core.NPCData;
 import com.legendsofvaleros.modules.npcs.core.Skin;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
@@ -67,12 +69,18 @@ public class NPCsAPI extends ListenerModule {
             return traits.toArray(new LOVTrait[0]);
         });
 
-        APIController.getInstance().getGsonBuilder().registerTypeAdapter(LOVTrait[].class, (JsonSerializer<LOVTrait[]>) (val, typeOfT, context) -> {
-            JsonObject obj = new JsonObject();
-            for (LOVTrait trait : val)
-                obj.add(trait.id, context.serialize(trait));
-            return obj;
-        });
+        APIController.getInstance().getGsonBuilder()
+                .registerTypeAdapter(LOVTrait[].class, (JsonSerializer<LOVTrait[]>) (val, typeOfT, context) -> {
+                    JsonObject obj = new JsonObject();
+                    for (LOVTrait trait : val)
+                        obj.add(trait.id, context.serialize(trait));
+                    return obj;
+                })
+                .registerTypeAdapter(ISkin.class, (JsonDeserializer<ISkin>) (json, typeOfT, context) -> {
+                    // If we reference the interface, then the type should be a string, and we return the stored object.
+                    // Note: it must be loaded already, else this returns null.
+                    return skins.get(json.getAsString());
+                });
     }
 
     @Override
@@ -92,7 +100,7 @@ public class NPCsAPI extends ListenerModule {
                     npcs.clear();
 
                     val.orElse(ImmutableList.of()).forEach(npc -> {
-                        npcs.put(npc.id, npc);
+                        npcs.put(npc.getId(), npc);
                     });
 
                     LootController.getInstance().getLogger().info("Loaded " + npcs.size() + " NPCs.");
@@ -103,7 +111,7 @@ public class NPCsAPI extends ListenerModule {
                     skins.clear();
 
                     val.orElse(ImmutableList.of()).forEach(skin -> {
-                        skins.put(skin.id, skin);
+                        skins.put(skin.getId(), skin);
                     });
 
                     LootController.getInstance().getLogger().info("Loaded " + skins.size() + " skins.");

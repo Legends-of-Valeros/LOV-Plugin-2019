@@ -40,7 +40,7 @@ public class QuestUtil {
 
 					String name = npcs.group(1);
 					if(data != null)
-						name = data.name;
+						name = data.getName();
 
 					npcs.appendReplacement(sb, ChatColor.GREEN + name + ChatColor.RESET);
 				} while(npcs.find());

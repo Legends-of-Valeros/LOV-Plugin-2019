@@ -2,6 +2,7 @@ package com.legendsofvaleros.modules.npcs.trait;
 
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.legendsofvaleros.modules.npcs.NPCsController;
+import com.legendsofvaleros.modules.npcs.api.ISkin;
 import com.legendsofvaleros.modules.npcs.core.NPCData;
 import com.legendsofvaleros.modules.npcs.core.Skin;
 import com.legendsofvaleros.modules.npcs.nameplate.Nameplates;
@@ -120,9 +121,9 @@ public class TraitLOV extends Trait implements CommandConfigurable {
             getNPC().getEntity().addPassenger(s);
         }
 
-        if (npcData.name != null) {
-            if (!getNPC().getName().equals(npcData.name)) {
-                getNPC().setName(npcData.name);
+        if (npcData.getName() != null) {
+            if (!getNPC().getName().equals(npcData.getName())) {
+                getNPC().setName(npcData.getName());
                 return;
             }
         } else {
@@ -130,22 +131,19 @@ public class TraitLOV extends Trait implements CommandConfigurable {
         }
 
         nameplates = Nameplates.get(getNPC());
-        nameplates.getOrAdd(Nameplates.BASE).appendTextLine(npcData.name);
+        nameplates.getOrAdd(Nameplates.BASE).appendTextLine(npcData.getName());
 
-        if (npcData.skin != null && npcData.skin.trim().length() > 0 && !updatedSkin && getNPC().getEntity() instanceof SkinnableEntity) {
+        if (npcData.getSkin() != null && !updatedSkin && getNPC().getEntity() instanceof SkinnableEntity) {
             updatedSkin = true;
 
             try {
-                Skin skin = NPCsController.getInstance().getSkin(npcData.skin);
-                if (skin == null) {
-                    throw new Exception("No skin with that ID. Offender: " + npcData.skin + " on " + npcData.id);
-                }
+                ISkin skin = npcData.getSkin();
 
-                npc.data().setPersistent("cached-skin-uuid", skin.uuid);
-                npc.data().setPersistent("cached-skin-uuid-name", skin.username.toLowerCase());
-                npc.data().setPersistent(NPC.PLAYER_SKIN_UUID_METADATA, skin.username.toLowerCase());
-                npc.data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA, skin.signature);
-                npc.data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA, skin.data);
+                npc.data().setPersistent("cached-skin-uuid", skin.getUUID());
+                npc.data().setPersistent("cached-skin-uuid-name", skin.getUsername().toLowerCase());
+                npc.data().setPersistent(NPC.PLAYER_SKIN_UUID_METADATA, skin.getUsername().toLowerCase());
+                npc.data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA, skin.getSignature());
+                npc.data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA, skin.getData());
                 npc.data().setPersistent(NPC.PLAYER_SKIN_USE_LATEST, false);
 
                 SkinnableEntity se = (SkinnableEntity) getNPC().getEntity();
@@ -164,7 +162,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
             NPCsController.getInstance().saveNPC(this);
         }
 
-        npcId = npcData.id;
+        npcId = npcData.getId();
         traits = npcData.traits;
 
         for (LOVTrait trait : traits) {

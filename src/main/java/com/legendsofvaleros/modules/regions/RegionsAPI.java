@@ -6,6 +6,7 @@ import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
+import com.legendsofvaleros.modules.regions.core.IRegion;
 import com.legendsofvaleros.modules.regions.core.Region;
 import com.legendsofvaleros.modules.regions.core.RegionBounds;
 import com.legendsofvaleros.util.MessageUtil;
@@ -22,7 +23,7 @@ public class RegionsAPI extends ListenerModule {
     public interface RPC {
         Promise<List<Region>> findRegions();
 
-        Promise<Boolean> saveRegion(Region region);
+        Promise<Boolean> saveRegion(IRegion region);
 
         Promise<Boolean> deleteRegion(String id);
 
@@ -36,8 +37,8 @@ public class RegionsAPI extends ListenerModule {
     }
 
     private RPC rpc;
-    private static final List<Region> EMPTY_LIST = ImmutableList.of();
-    protected HashMap<String, Region> regions = new HashMap<>();
+    private static final List<IRegion> EMPTY_LIST = ImmutableList.of();
+    protected HashMap<String, IRegion> regions = new HashMap<>();
 
     /**
      * A map who's key is a chunk x,y pair and the regions inside it. Allows for extremely fast regions searching.
@@ -75,16 +76,16 @@ public class RegionsAPI extends ListenerModule {
         }, RegionController.getInstance().getScheduler()::sync).onFailure(Throwable::printStackTrace);
     }
 
-    public List<Region> findRegions(Location location) {
+    public List<IRegion> findRegions(Location location) {
         String chunkId = location.getChunk().getX() + "," + location.getChunk().getZ();
         if (!regionChunks.containsKey(chunkId)) {
             return EMPTY_LIST;
         }
 
-        List<Region> foundRegions = new ArrayList<>();
+        List<IRegion> foundRegions = new ArrayList<>();
 
         for (String regionId : regionChunks.get(chunkId)) {
-            Region region = regions.get(regionId);
+            IRegion region = regions.get(regionId);
 
             if (region.isInside(location)) {
                 foundRegions.add(region);
@@ -94,40 +95,40 @@ public class RegionsAPI extends ListenerModule {
         return foundRegions;
     }
 
-    public Promise<Boolean> saveRegion(Region region) {
+    public Promise<Boolean> saveRegion(IRegion region) {
         return rpc.saveRegion(region);
     }
 
-    public void addRegion(Region region) {
-        if (regions.containsKey(region.id))
+    public void addRegion(IRegion region) {
+        if (regions.containsKey(region.getId()))
             return;
 
-        if (region.world == null) {
-            MessageUtil.sendException(RegionController.getInstance(), "Region has a null world. Offender: " + region.id);
+        if (region.getWorld() == null) {
+            MessageUtil.sendException(RegionController.getInstance(), "Region has a null world. Offender: " + region.getId());
             return;
         }
 
-        regions.put(region.id, region);
+        regions.put(region.getId(), region);
         RegionBounds bounds = region.getBounds();
 
         for (int x = bounds.getStartX(); x <= bounds.getEndX(); x++) {
             for (int y = bounds.getStartY(); y <= bounds.getEndY(); y++) {
                 for (int z = bounds.getStartZ(); z <= bounds.getEndZ(); z++) {
-                    Chunk chunk = region.world.getChunkAt(new Location(region.world, x, y, z));
+                    Chunk chunk = region.getWorld().getChunkAt(new Location(region.getWorld(), x, y, z));
                     String chunkId = chunk.getX() + "," + chunk.getZ();
 
-                    if (!regionChunks.containsEntry(chunkId, region.id)) {
-                        regionChunks.put(chunkId, region.id);
+                    if (!regionChunks.containsEntry(chunkId, region.getId())) {
+                        regionChunks.put(chunkId, region.getId());
                     }
                 }
             }
         }
     }
 
-    public void deleteRegion(Region region) {
+    public void deleteRegion(IRegion region) {
         getScheduler().executeInMyCircle(() -> {
-            rpc.deleteRegion(region.id).onSuccess(() -> {
-                regions.remove(region.id);
+            rpc.deleteRegion(region.getId()).onSuccess(() -> {
+                regions.remove(region.getId());
             }).onFailure(Throwable::printStackTrace);
         });
     }

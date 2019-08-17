@@ -10,11 +10,13 @@ import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.loot.LootTable;
+import com.legendsofvaleros.modules.loot.api.ILootTable;
 import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.modules.mobs.ai.AIStuckAction;
 import com.legendsofvaleros.modules.mobs.behavior.StaticAI;
 import com.legendsofvaleros.modules.mobs.trait.MobTrait;
 import com.legendsofvaleros.modules.npcs.NPCsController;
+import com.legendsofvaleros.modules.npcs.api.ISkin;
 import com.legendsofvaleros.modules.npcs.core.Skin;
 import com.legendsofvaleros.util.MessageUtil;
 import net.citizensnpcs.api.npc.NPC;
@@ -29,12 +31,13 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 
 public class Mob {
+    @SerializedName("_id")
     private String id;
-    private String group;
-    private String name;
+    private String slug;
 
+    private String name;
     private EntityType type;
-    public String skin;
+    private ISkin skin;
 
     private EntityRarity rarity;
     private String archetype;
@@ -55,10 +58,6 @@ public class Mob {
     public transient Map<CharacterId, Long> leashed = new HashMap<>();
 
     private transient Set<SpawnArea> spawns;
-
-    public String getGroup() {
-        return group;
-    }
 
     public String getId() {
         return id;
@@ -136,7 +135,7 @@ public class Mob {
         public Table[] tables;
 
         public static class Table {
-            public LootTable table;
+            public ILootTable table;
             public double weight;
             public int amount;
         }
@@ -173,7 +172,7 @@ public class Mob {
                 this.dropped = new byte[loot.tables.length];
             }
 
-            public Optional<LootTable> nextTable() {
+            public Optional<ILootTable> nextTable() {
                 // If chance fails, return.
                 if(Math.random() > loot.chance) return Optional.empty();
 
@@ -278,15 +277,13 @@ public class Mob {
             if (mob.type == EntityType.PLAYER) {
                 if (mob.skin != null) {
                     try {
-                        Skin skin = NPCsController.getInstance().getSkin(mob.skin);
-                        if (skin == null)
-                            throw new Exception("No skin with that ID. Offender: " + mob.skin + " on " + mob.id);
+                        ISkin skin = mob.skin;
 
-                        npc.data().setPersistent("cached-skin-uuid", skin.uuid);
-                        npc.data().setPersistent("cached-skin-uuid-name", skin.username.toLowerCase());
-                        npc.data().setPersistent(NPC.PLAYER_SKIN_UUID_METADATA, skin.username.toLowerCase());
-                        npc.data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA, skin.signature);
-                        npc.data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA, skin.data);
+                        npc.data().setPersistent("cached-skin-uuid", skin.getUUID());
+                        npc.data().setPersistent("cached-skin-uuid-name", skin.getUsername().toLowerCase());
+                        npc.data().setPersistent(NPC.PLAYER_SKIN_UUID_METADATA, skin.getUsername().toLowerCase());
+                        npc.data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA, skin.getSignature());
+                        npc.data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA, skin.getData());
                         npc.data().setPersistent(NPC.PLAYER_SKIN_USE_LATEST, false);
                     } catch (Exception e) {
                         MessageUtil.sendException(MobsController.getInstance(), e);

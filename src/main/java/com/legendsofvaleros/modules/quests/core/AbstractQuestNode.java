@@ -15,7 +15,7 @@ public abstract class AbstractQuestNode<T> implements IQuestNode<T> {
     }
 
     @Override
-    public String getID() {
+    public String getId() {
         return id;
     }
 

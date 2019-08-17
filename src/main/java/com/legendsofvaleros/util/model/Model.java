@@ -2,6 +2,7 @@ package com.legendsofvaleros.util.model;
 
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.google.common.collect.ImmutableList;
+import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.util.Utilities;
@@ -26,10 +27,12 @@ public class Model {
 
     private static final Map<String, Model> models = new HashMap<>();
 
-    //model values
-    private final String id;
+    // Model values
+    @SerializedName("_id")
+    private String id;
+    private String slug;
+
     private final String name;
-    private final String group;
     private final Material material;
     private final short metadata;
 
@@ -100,7 +103,6 @@ public class Model {
 
     public Model(String id, String name, Material material, int metadata) {
         this.id = id;
-        this.group = null;
         this.name = name;
         this.material = material;
         this.metadata = (short) metadata;
@@ -112,15 +114,11 @@ public class Model {
 
     @Override
     public String toString() {
-        return "Model(id=" + id + ", group=" + group + ", name=" + name + ", material=" + material + ", metadata=" + metadata + ")";
+        return "Model(id=" + id + ", name=" + name + ", material=" + material + ", metadata=" + metadata + ")";
     }
 
     public String getId() {
         return id;
-    }
-
-    public String getGroup() {
-        return group;
     }
 
     public String getName() {

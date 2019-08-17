@@ -8,6 +8,7 @@ import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.gear.core.ItemUtil;
 import com.legendsofvaleros.modules.loot.LootController;
 import com.legendsofvaleros.modules.loot.LootTable;
+import com.legendsofvaleros.modules.loot.api.ILootTable;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
@@ -57,7 +58,7 @@ public class LootListener implements Listener {
             Mob.Loot.Instance instance = loot.newInstance();
 
             for(int t = 0; t < loot.tries; t++) {
-                Optional<LootTable> table = instance.nextTable();
+                Optional<ILootTable> table = instance.nextTable();
                 if(table.isPresent()) {
                     ItemUtil.dropItem(dieLoc, table.get().nextItem().newInstance(), pc);
                 }

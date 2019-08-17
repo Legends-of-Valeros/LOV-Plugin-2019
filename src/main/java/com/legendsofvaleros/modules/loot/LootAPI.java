@@ -1,9 +1,13 @@
 package com.legendsofvaleros.modules.loot;
 
 import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.internal.bind.ObjectTypeAdapter;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.Module;
+import com.legendsofvaleros.modules.loot.api.ILootTable;
+import com.legendsofvaleros.modules.quests.api.IQuest;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +31,13 @@ public class LootAPI extends Module {
         super.onLoad();
 
         this.rpc = APIController.create(RPC.class);
+
+        APIController.getInstance().getGsonBuilder()
+                .registerTypeAdapter(ILootTable.class, (JsonDeserializer<ILootTable>) (json, typeOfT, context) -> {
+                    // If we reference the interface, then the type should be a string, and we return the stored object.
+                    // Note: it must be loaded already, else this returns null.
+                    return tables.get(json.getAsString());
+                });
     }
 
     @Override
@@ -45,7 +56,7 @@ public class LootAPI extends Module {
             tables.clear();
 
             val.orElse(ImmutableList.of()).forEach(table ->
-                    tables.put(table.id, table));
+                    tables.put(table.getId(), table));
 
             LootController.getInstance().getLogger().info("Loaded " + tables.size() + " loot tables.");
         }).onFailure(Throwable::printStackTrace);

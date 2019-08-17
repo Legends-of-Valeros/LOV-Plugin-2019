@@ -38,9 +38,9 @@ public class NPCCommands extends BaseCommand {
 		NPCData npc = NPCsController.getInstance().getNPC(npcId);
 
 		if(side.equalsIgnoreCase("left"))
-			TraitHelper.onLeftClick(npc.name, player, npc.traits);
+			TraitHelper.onLeftClick(npc.getName(), player, npc.traits);
 		else if(side.equalsIgnoreCase("right"))
-			TraitHelper.onRightClick(npc.name, player, npc.traits);
+			TraitHelper.onRightClick(npc.getName(), player, npc.traits);
 		else
 			MessageUtil.sendError(player, "Side argument must be 'left' or 'right'!");
 	}

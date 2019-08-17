@@ -17,7 +17,6 @@ import java.util.logging.Logger;
  * mobs.
  */
 public class LevelArchetype implements Archetype {
-
     private final String id;
     private Map<String, LevelingValue> levelingStats;
     private CombatProfileGenerator cpGen;

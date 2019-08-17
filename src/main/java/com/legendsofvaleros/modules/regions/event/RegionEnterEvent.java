@@ -1,5 +1,6 @@
 package com.legendsofvaleros.modules.regions.event;
 
+import com.legendsofvaleros.modules.regions.core.IRegion;
 import com.legendsofvaleros.modules.regions.core.Region;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -14,13 +15,13 @@ public class RegionEnterEvent extends Event {
         return player;
     }
 
-    private Region region;
+    private IRegion region;
 
-    public Region getRegion() {
+    public IRegion getRegion() {
         return region;
     }
 
-    public RegionEnterEvent(Player player, Region region) {
+    public RegionEnterEvent(Player player, IRegion region) {
         this.player = player;
         this.region = region;
     }

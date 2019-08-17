@@ -4,6 +4,7 @@ import com.codingforcookies.robert.item.ItemBuilder;
 import com.codingforcookies.robert.item.NBTEditor;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.modules.gear.GearController;
@@ -24,8 +25,12 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class Gear implements IGear {
-    private final String id;
+    @SerializedName("_id")
+    private String id;
+    private String slug;
+
     private final int version;
+
     private String name;
     private GearType type;
     private String modelId;
@@ -464,8 +469,11 @@ public class Gear implements IGear {
      * a database.
      */
     public static class Data {
+        @SerializedName("_id")
+        private String id;
+        private String slug;
+
         public int version;
-        public String id;
         public int amount;
         public PersistMap persist = new PersistMap();
 

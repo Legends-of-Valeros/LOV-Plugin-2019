@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.quests.core;
 
 import com.google.common.collect.HashBasedTable;
+import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.QuestController;
@@ -15,6 +16,7 @@ public class Quest implements IQuest {
     private final Map<CharacterId, IQuestInstance> instances = new HashMap<>();
     private int instancesActive = 0;
 
+    @SerializedName("_id")
     private final String id;
     private final String slug;
 
