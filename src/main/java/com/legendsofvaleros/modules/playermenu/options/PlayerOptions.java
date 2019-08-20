@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.playermenu.options;
 
-import com.codingforcookies.robert.core.GUI.Flag;
+import com.codingforcookies.robert.core.GuiFlag;
 import com.codingforcookies.robert.window.ExpandingGUI;
 import com.legendsofvaleros.modules.playermenu.events.PlayerOptionsOpenEvent;
 import com.legendsofvaleros.util.model.Model;
@@ -31,6 +31,6 @@ public class PlayerOptions {
                 p.getInventory().setItem(17, stack);
             }
         };
-        gui.open(p, Flag.NO_PARENTS);
+        gui.open(p, GuiFlag.NO_PARENTS);
     }
 }

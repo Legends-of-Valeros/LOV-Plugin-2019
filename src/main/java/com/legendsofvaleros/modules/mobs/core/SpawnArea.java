@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.mobs.core;
 
-import com.codingforcookies.robert.core.GUI;
+import com.codingforcookies.robert.core.GuiFlag;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.ItemLine;
@@ -28,17 +28,14 @@ public class SpawnArea {
     private transient Hologram hologram;
     private transient TextLine textEntityId, textLevel, textRadius, textPadding, textEntities, textInfo, textInterval;
 
+    /**
+     * The radius that defines the length of this spawn point. Entities will spawn in this
+     * radius around the point.
+     */
+    private int radius;
+
     private int id;
-
-    public int getId() {
-        return id;
-    }
-
     private World world;
-
-    public World getWorld() {
-        return world;
-    }
 
     private int x;
     private int y;
@@ -46,21 +43,15 @@ public class SpawnArea {
 
     private transient Location location;
 
-    public Location getLocation() {
-        if (location == null)
-            location = new Location(getWorld(), x, y, z);
-        return location;
-    }
+    private transient Mob mob;
 
-    /**
-     * The radius that defines the length of this spawn point. Entities will spawn in this
-     * radius around the point.
-     */
-    private int radius;
-
-    public int getRadius() {
-        return radius;
-    }
+    private short count = 1;
+    private int interval = 60;
+    private byte chance = 100;
+    private transient long lastInterval = 0;
+    private transient int despawnedEnemies = 0;
+    private transient List<Mob.Instance> entities;
+    private transient Location ground;
 
     /**
      * Used by AI. This defines how much further past the spawn radius that they can exist
@@ -68,26 +59,10 @@ public class SpawnArea {
      */
     private int padding;
 
-    public int getPadding() {
-        return padding;
-    }
-
     /**
      * The ID of the entities that spawn here.
      */
     private String entityId;
-
-    public String getEntityId() {
-        return entityId;
-    }
-
-    private transient Mob mob;
-
-    public Mob getMob() {
-        if (mob == null)
-            mob = MobsController.getInstance().getEntity(entityId);
-        return mob;
-    }
 
     /**
      * Tells the spawn point what level to set the spawned entities.
@@ -96,90 +71,6 @@ public class SpawnArea {
      */
     private String level;
     private int[] levels;
-
-    public int[] getLevelRange() {
-        if (levels == null)
-            levels = new int[]{
-                    level != null ? Integer.parseInt(level.split("-")[0]) : 0,
-                    level != null ? Integer.parseInt(level.split("-")[1]) : 0};
-        return levels;
-    }
-
-    public int getLevel() {
-        int[] levels = getLevelRange();
-        return levels[0] + rand.nextInt(levels[1] - levels[0] + 1);
-    }
-
-    private short count = 1;
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(short count) {
-        this.count = count;
-    }
-
-    private int interval = 60;
-
-    public int getInterval() {
-        return interval;
-    }
-
-    public void setInterval(int interval) {
-        this.interval = interval;
-    }
-
-    private byte chance = 100;
-
-    public byte getChance() {
-        return chance;
-    }
-
-    public void setChance(byte chance) {
-        this.chance = chance;
-    }
-
-    private transient long lastInterval = 0;
-
-    public long getLastInterval() {
-        return lastInterval;
-    }
-
-    public void markInterval() {
-        lastInterval = System.currentTimeMillis();
-    }
-
-    private transient int despawnedEnemies = 0;
-
-    public int getDespawnedEnemies() {
-        return despawnedEnemies;
-    }
-
-    public void repopulated() {
-        despawnedEnemies = 0;
-    }
-
-    private transient List<Mob.Instance> entities;
-
-    public List<Mob.Instance> getEntities() {
-        if (entities == null)
-            entities = new ArrayList<>();
-        return entities;
-    }
-
-    private transient Location ground;
-
-    public Location getGround() {
-        if (ground == null) {
-            World world = getWorld();
-            Location position = getLocation();
-            ground = position.clone();
-            while (world.getBlockAt(ground.getBlockX(), ground.getBlockY() - 1, ground.getBlockZ()).getType().isTransparent())
-                ground.subtract(0, 1, 0);
-        }
-        return ground;
-    }
 
     public SpawnArea(Location loc, String entityId, int radius, int padding, int[] levels) {
         this.world = loc.getWorld();
@@ -223,7 +114,7 @@ public class SpawnArea {
             ItemLine touchLine = hologram.appendItemLine(new ItemStack(Material.ENDER_EYE));
             touchLine.setPickupHandler((p) -> {
                 if (p.isSneaking())
-                    new SpawnEditorGUI(this).open(p, GUI.Flag.NO_PARENTS);
+                    new SpawnEditorGUI(this).open(p, GuiFlag.NO_PARENTS);
             });
 
             hologram.teleport(hologram.getLocation().add(0, hologram.getHeight(), 0));
@@ -235,7 +126,9 @@ public class SpawnArea {
     public void clear() {
         despawnedEnemies = 0;
 
-        if (entities == null || entities.size() == 0) return;
+        if (entities == null || entities.isEmpty()) {
+            return;
+        }
         Mob.Instance instance;
 
         int i = 0;
@@ -251,7 +144,7 @@ public class SpawnArea {
             despawnedEnemies++;
         }
 
-        if (entities.size() == 0) {
+        if (entities.isEmpty()) {
             entities = null;
         }
     }
@@ -272,7 +165,7 @@ public class SpawnArea {
         );
 
         // Move up until loc is a transparent block
-        while (!world.getBlockAt(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()).getType().isTransparent())
+        while (! world.getBlockAt(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()).getType().isTransparent())
             loc.add(0, 1, 0);
 
         // Move down until the block below is solid
@@ -296,4 +189,117 @@ public class SpawnArea {
             hologram = null;
         }
     }
+
+    public int[] getLevelRange() {
+        if (levels == null)
+            levels = new int[] {
+                    level != null ? Integer.parseInt(level.split("-")[0]) : 0,
+                    level != null ? Integer.parseInt(level.split("-")[1]) : 0};
+        return levels;
+    }
+
+    public int getLevel() {
+        int[] levels = getLevelRange();
+        return levels[0] + rand.nextInt(levels[1] - levels[0] + 1);
+    }
+
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(short count) {
+        this.count = count;
+    }
+
+    public int getInterval() {
+        return interval;
+    }
+
+    public void setInterval(int interval) {
+        this.interval = interval;
+    }
+
+
+    public byte getChance() {
+        return chance;
+    }
+
+    public void setChance(byte chance) {
+        this.chance = chance;
+    }
+
+
+    public long getLastInterval() {
+        return lastInterval;
+    }
+
+    public void markInterval() {
+        lastInterval = System.currentTimeMillis();
+    }
+
+    public int getDespawnedEnemies() {
+        return despawnedEnemies;
+    }
+
+    public void repopulated() {
+        despawnedEnemies = 0;
+    }
+
+    public List<Mob.Instance> getEntities() {
+        if (entities == null)
+            entities = new ArrayList<>();
+        return entities;
+    }
+
+    public Location getGround() {
+        if (ground == null) {
+            World world = getWorld();
+            Location position = getLocation();
+            ground = position.clone();
+            while (world.getBlockAt(ground.getBlockX(), ground.getBlockY() - 1, ground.getBlockZ()).getType().isTransparent())
+                ground.subtract(0, 1, 0);
+        }
+        return ground;
+    }
+
+
+    public int getId() {
+        return id;
+    }
+
+
+    public World getWorld() {
+        return world;
+    }
+
+
+    public Location getLocation() {
+        if (location == null) {
+            location = new Location(getWorld(), x, y, z);
+        }
+        return location;
+    }
+
+
+    public int getRadius() {
+        return radius;
+    }
+
+
+    public int getPadding() {
+        return padding;
+    }
+
+
+    public String getEntityId() {
+        return entityId;
+    }
+
+    public Mob getMob() {
+        if (mob == null)
+            mob = MobsController.getInstance().getEntity(entityId);
+        return mob;
+    }
+
 }

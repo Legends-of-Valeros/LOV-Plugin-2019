@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.skills.gui;
 
 import com.codingforcookies.robert.core.GUI;
+import com.codingforcookies.robert.core.GuiFlag;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.codingforcookies.robert.slot.ISlotAction;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
@@ -43,7 +44,7 @@ public class GUISkillsSpecialized extends GUI {
 		slot(startLeft ? 0 : 8, 0, Model.stack(startLeft ? "menu-arrow-left-button" : "menu-arrow-right-button")
 				.setName("Core Skills")
 				.setEnchanted(true)
-				.create(), (gui, p, clickType) -> new GUISkillsCore(pc).open(p, Flag.REPLACE));
+				.create(), (gui, p, clickType) -> new GUISkillsCore(pc).open(p, GuiFlag.REPLACE));
 
 		slot(4, new ItemBuilder(Material.BOOK)
 				.setName(null)
@@ -59,7 +60,7 @@ public class GUISkillsSpecialized extends GUI {
 		for(int i = 0; i < tree.skills.length; i++) {
 			Skill skill = Skill.getSkillById(tree.skills[i]);
 			int level = pc.getSkillSet().getLevel(tree.skills[i]);
-			Entry<ItemStack, ISlotAction> stack = SkillTree.buildStack(pointCount, pc, new SimpleImmutableEntry<>(skill, level), previousOwned, (gui, p, button) -> new GUISkillsSpecialized(pc, startLeft, tree).open(p, Flag.REPLACE));
+			Entry<ItemStack, ISlotAction> stack = SkillTree.buildStack(pointCount, pc, new SimpleImmutableEntry<>(skill, level), previousOwned, (gui, p, button) -> new GUISkillsSpecialized(pc, startLeft, tree).open(p, GuiFlag.REPLACE));
 			slot(SLOTS[i * 4], SLOTS[i * 4 + 1], stack.getKey(), stack.getValue());
 			previousOwned = level > 0;
 		}

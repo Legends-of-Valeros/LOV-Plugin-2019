@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.graveyard.core;
 
-import com.codingforcookies.robert.core.GUI;
+import com.codingforcookies.robert.core.GuiFlag;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.ItemLine;
@@ -48,7 +48,7 @@ public class Graveyard {
             ItemLine touchLine = hologram.appendItemLine(new ItemStack(Material.BRICK));
             touchLine.setPickupHandler((p) -> {
                 if (p.isSneaking())
-                    new GraveyardEditorGUI(this).open(p, GUI.Flag.NO_PARENTS);
+                    new GraveyardEditorGUI(this).open(p, GuiFlag.NO_PARENTS);
             });
 
             hologram.teleport(hologram.getLocation().add(0, hologram.getHeight(), 0));

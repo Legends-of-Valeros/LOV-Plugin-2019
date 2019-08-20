@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.characters.ui.window;
 
 import com.codingforcookies.robert.core.GUI;
+import com.codingforcookies.robert.core.GuiFlag;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.codingforcookies.robert.window.WindowYesNo;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
@@ -59,7 +60,7 @@ public class WindowCharacterInformation extends GUI {
             public void onAccept(GUI gui, Player p) {
                 listener.onCharacterRemoved(p, new CharacterId(p.getUniqueId(), characterId));
 
-                gui.close(p, Flag.NO_PARENTS);
+                gui.close(p, GuiFlag.NO_PARENTS);
 
                 new WindowCharacterSelect(0, Characters.getInstance().getCharacters(p), listener, forced).open(p);
             }
