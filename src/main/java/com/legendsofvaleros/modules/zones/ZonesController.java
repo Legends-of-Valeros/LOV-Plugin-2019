@@ -57,7 +57,7 @@ public class ZonesController extends ZonesAPI {
         //deactivate all zones that are without players for 5 minutes
         getScheduler().executeInMyCircleTimer(new InternalTask(() -> {
             for (Zone zone : getZones()) {
-                if (!zone.isActive) {
+                if (! zone.isActive) {
                     continue;
                 }
 
@@ -99,7 +99,7 @@ public class ZonesController extends ZonesAPI {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onZoneEnter(ZoneEnterEvent event) {
-        if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) {
+        if (! Characters.isPlayerCharacterLoaded(event.getPlayer())) {
             return;
         }
 
@@ -125,10 +125,10 @@ public class ZonesController extends ZonesAPI {
         PlayerCharacter playerCharacter = Characters.getPlayerCharacter(event.getPlayer());
         zone.timeWithoutPlayers = 0;
 
-        if (!zone.isInZone(playerCharacter)) {
+        if (! zone.isInZone(playerCharacter)) {
             zone.playersInZone.add(playerCharacter.getUniqueCharacterId());
 
-            if (!zone.isActive) {
+            if (! zone.isActive) {
                 zone.setActive(true);
                 Bukkit.getServer().getPluginManager().callEvent(new ZoneActivateEvent(zone));
                 MessageUtil.sendDebug(Bukkit.getConsoleSender(), "Zone activated: " + zone.name + " " + zone.subname);
@@ -144,7 +144,7 @@ public class ZonesController extends ZonesAPI {
         if (zone.isInZone(playerCharacter)) {
             zone.playersInZone.remove(playerCharacter.getUniqueCharacterId());
 
-            if (zone.playersInZone.size() == 0) {
+            if (zone.playersInZone.isEmpty()) {
                 zone.timeWithoutPlayers = System.currentTimeMillis() / 1000L;
             }
         }
@@ -153,7 +153,7 @@ public class ZonesController extends ZonesAPI {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player p = event.getPlayer();
-        if (!Characters.isPlayerCharacterLoaded(p)) {
+        if (! Characters.isPlayerCharacterLoaded(p)) {
             return;
         }
 
@@ -172,12 +172,6 @@ public class ZonesController extends ZonesAPI {
             return;
         }
 
-        if (zone.playersInZone.contains(e.getPlayerCharacter().getUniqueCharacterId())) {
-            zone.playersInZone.remove(e.getPlayerCharacter().getUniqueCharacterId());
-
-            if (zone.playersInZone.isEmpty()) {
-                zone.timeWithoutPlayers = System.currentTimeMillis() / 1000L;
-            }
-        }
+        Bukkit.getServer().getPluginManager().callEvent(new ZoneLeaveEvent(e.getPlayer(), zone));
     }
 }
