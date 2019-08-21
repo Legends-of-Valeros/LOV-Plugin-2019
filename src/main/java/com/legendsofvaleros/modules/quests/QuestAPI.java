@@ -436,9 +436,7 @@ public class QuestAPI extends ListenerModule {
                 if(!type.isAssignableFrom(f.getType())) continue;
 
                 SerializedName serializedName = f.getAnnotation(SerializedName.class);
-                getLogger().info("  " + serializedName);
                 if(serializedName != null) {
-                    getLogger().info("  " + serializedName.value());
                     if(serializedName.value().equals(name)) {
                         field = f;
                         break;

@@ -19,15 +19,20 @@ import com.legendsofvaleros.modules.quests.core.prerequisites.ClassPrerequisite;
 import com.legendsofvaleros.modules.quests.core.prerequisites.LevelPrerequisite;
 import com.legendsofvaleros.modules.quests.core.prerequisites.QuestsPrerequisite;
 import com.legendsofvaleros.modules.quests.core.prerequisites.RacePrerequisite;
+import com.legendsofvaleros.modules.quests.events.QuestEndedEvent;
+import com.legendsofvaleros.modules.quests.events.QuestStartedEvent;
 import com.legendsofvaleros.modules.quests.nodes.MessageNode;
 import com.legendsofvaleros.modules.quests.nodes.QuestSuccessNode;
 import com.legendsofvaleros.modules.quests.nodes.QuestStartedNode;
 import com.legendsofvaleros.modules.quests.nodes.TestNode;
 import com.legendsofvaleros.util.MessageUtil;
+import com.legendsofvaleros.util.title.Title;
+import com.legendsofvaleros.util.title.TitleUtil;
 import io.chazza.advancementapi.AdvancementAPI;
 import io.chazza.advancementapi.FrameType;
 import io.chazza.advancementapi.Trigger;
 import net.citizensnpcs.api.event.NPCClickEvent;
+import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerEvent;
@@ -171,7 +176,7 @@ public class QuestController extends QuestAPI {
         instance.setState(QuestState.ABANDONED);
     }
 
-    /*@EventHandler
+    @EventHandler
     public void onQuestStarted(QuestStartedEvent event) {
         Title title = new Title("New Quest", event.getQuest().getName(), 10, 40, 10);
         title.setTimingsToTicks();
@@ -186,7 +191,7 @@ public class QuestController extends QuestAPI {
 
     // TODO: add quest failure listener
 
-    @EventHandler
+    /*@EventHandler
     public void onNewObjectives(QuestObjectivesStartedEvent event) {
         // TODO: Update to new stage event listener or objective updated listener?
         if (NEW_OBJECTIVES != null)

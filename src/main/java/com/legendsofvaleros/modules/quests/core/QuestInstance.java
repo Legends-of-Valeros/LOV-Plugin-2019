@@ -2,6 +2,7 @@ package com.legendsofvaleros.modules.quests.core;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.api.*;
+import org.bukkit.Bukkit;
 
 import java.util.*;
 
@@ -110,15 +111,20 @@ public class QuestInstance implements IQuestInstance {
 
     @Override
     public void setState(QuestState state) {
-        if(this.state.isNextStateAllowed(state)) throw new IllegalStateException("Quest instance cannot be set to '" + state.name() + "' while currently in '" + this.state.name() + "'!");
+        if(!Bukkit.getServer().isPrimaryThread())
+            throw new IllegalStateException("State can only be set synchronously.");
+
+        if(!this.state.isNextStateAllowed(state)) {
+            throw new IllegalStateException("Quest instance cannot be set to '" + state.name() + "' while currently in '" + this.state.name() + "'!");
+        }
+
+        this.state = state;
 
         if(state.isActive()) {
             this.quest.onActivated(this);
         }else{
             this.quest.onDeactivated(this);
         }
-
-        this.state = state;
     }
 
     @Override

@@ -71,7 +71,9 @@ public class QuestCommands extends BaseCommand {
         player.closeInventory();
 
         QuestController.getInstance().getQuest(questId).onSuccess(val -> {
-            QuestController.getInstance().startQuest(val.get(), pc);
+            QuestController.getInstance().getScheduler().sync(() -> {
+                QuestController.getInstance().startQuest(val.get(), pc);
+            });
         });
     }
 
@@ -83,7 +85,9 @@ public class QuestCommands extends BaseCommand {
         player.closeInventory();
 
         QuestController.getInstance().getQuestBySlug(questId).onSuccess(val -> {
-            QuestController.getInstance().startQuest(val.get(), pc);
+            QuestController.getInstance().getScheduler().sync(() -> {
+                QuestController.getInstance().startQuest(val.get(), pc);
+            });
         });
     }
 
