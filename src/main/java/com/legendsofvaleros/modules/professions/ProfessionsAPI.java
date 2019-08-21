@@ -55,7 +55,7 @@ public class ProfessionsAPI extends ListenerModule {
                 zoneGatheringNodes.put(zone.id, nodes);
 
                 //TODO specify which node got loaded?
-                getLogger().info("[" + zone.name + " - " + zone.subname + "] Loaded " + nodes.size() + " gathering nodes");
+                getLogger().info("[" + zone.name + "] Loaded " + nodes.size() + " gathering nodes");
 
                 //execute in spigot scheduler because of async block remove / place
                 getScheduler().executeInSpigotCircle(() -> {

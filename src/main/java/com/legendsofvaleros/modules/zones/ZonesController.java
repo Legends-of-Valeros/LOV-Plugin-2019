@@ -3,10 +3,14 @@ package com.legendsofvaleros.modules.zones;
 import com.codingforcookies.ambience.Ambience;
 import com.codingforcookies.ambience.PlayerAmbience;
 import com.codingforcookies.ambience.Sound;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.Multimap;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.IntegratesWith;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
+import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterFinishLoadingEvent;
@@ -17,10 +21,7 @@ import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.pvp.PvPController;
 import com.legendsofvaleros.modules.zones.commands.ZoneCommands;
 import com.legendsofvaleros.modules.zones.core.Zone;
-import com.legendsofvaleros.modules.zones.event.ZoneActivateEvent;
-import com.legendsofvaleros.modules.zones.event.ZoneDeactivateEvent;
-import com.legendsofvaleros.modules.zones.event.ZoneEnterEvent;
-import com.legendsofvaleros.modules.zones.event.ZoneLeaveEvent;
+import com.legendsofvaleros.modules.zones.event.*;
 import com.legendsofvaleros.modules.zones.integration.PvPIntegration;
 import com.legendsofvaleros.scheduler.InternalTask;
 import com.legendsofvaleros.util.MessageUtil;
@@ -32,6 +33,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerMoveEvent;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @DependsOn(PvPController.class)
 @DependsOn(PlayerMenu.class)
@@ -47,6 +52,9 @@ public class ZonesController extends ZonesAPI {
         return instance;
     }
 
+    // Store a player's current zone so we don't have to loop through every one to find it, again
+    private Cache<Player, Zone.Section> playerZone = CacheBuilder.newBuilder().weakKeys().build();
+
     @Override
     public void onLoad() {
         super.onLoad();
@@ -54,7 +62,7 @@ public class ZonesController extends ZonesAPI {
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new ZoneCommands());
 
-        //deactivate all zones that are without players for 5 minutes
+        // Deactivate all zones that are without players for 5 minutes
         getScheduler().executeInMyCircleTimer(new InternalTask(() -> {
             for (Zone zone : getZones()) {
                 if (!zone.isActive) {
@@ -69,10 +77,33 @@ public class ZonesController extends ZonesAPI {
                         Bukkit.getServer().getPluginManager().callEvent(new ZoneDeactivateEvent(zone));
                     });
 
-                    MessageUtil.sendDebug(Bukkit.getConsoleSender(), "Zone de-activated: " + zone.name + " " + zone.subname);
+                    MessageUtil.sendDebug(Bukkit.getConsoleSender(), "Zone de-activated: " + zone.name);
                 }
             }
         }), 20L, 30 * 20L);
+    }
+
+    public Zone.Section getZone(Player p) {
+        if (!Characters.isPlayerCharacterLoaded(p)) {
+            return null;
+        }
+
+        return getZone(Characters.getPlayerCharacter(p));
+    }
+
+    public Zone.Section getZone(PlayerCharacter playerCharacter) {
+        if (!playerCharacter.isCurrent()) {
+            return null;
+        }
+
+        Zone.Section section = playerZone.getIfPresent(playerCharacter.getPlayerId());
+
+        if(section != null)
+            return section;
+
+        MessageUtil.sendInfo(Bukkit.getConsoleSender(), "WARNING - " + playerCharacter.getPlayer().getDisplayName() + " is not in a zone");
+
+        return null;
     }
 
     /**
@@ -80,59 +111,52 @@ public class ZonesController extends ZonesAPI {
      * @param p
      */
     private void updateZone(Player p) {
+        Zone.Section oldSection = playerZone.getIfPresent(p.getUniqueId());
+        Zone oldZone = oldSection != null ? oldSection.getZone() : null;
+
         for (Zone zone : getZones()) {
-            if (zone.isInZone(p.getLocation())) {
-                Zone previousZone = getZone(p);
-                if (zone == previousZone) {
-                    return;
+            Optional<Zone.Section> section = zone.getSection(p.getLocation());
+
+            if(section.isPresent()) {
+                if (zone != oldZone) {
+                    if (oldZone != null) {
+                        Bukkit.getServer().getPluginManager().callEvent(new ZoneLeaveEvent(p, oldZone));
+                    }
                 }
 
-                if (previousZone != null) {
-                    Bukkit.getServer().getPluginManager().callEvent(new ZoneLeaveEvent(p, previousZone));
+                if(oldSection != null) {
+                    Bukkit.getServer().getPluginManager().callEvent(new ZoneSectionLeaveEvent(p, oldSection));
                 }
 
-                Bukkit.getServer().getPluginManager().callEvent(new ZoneEnterEvent(p, zone));
+                if(zone != oldZone) {
+                    Bukkit.getServer().getPluginManager().callEvent(new ZoneEnterEvent(p, zone));
+                }
+
+                Bukkit.getServer().getPluginManager().callEvent(new ZoneSectionEnterEvent(p, section.get()));
+
+                return;
             }
         }
-    }
 
+        // We should never reach this point, as bedrock is registered as a zone.
+        MessageUtil.sendInfo(Bukkit.getConsoleSender(), "WARNING - " + p.getDisplayName() + " has is in an area with no zone at all! This is heckin bad!");
+    }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onZoneEnter(ZoneEnterEvent event) {
-        if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) {
-            return;
-        }
-
-        //display zone warning
-        boolean pvp = PvPController.getInstance().isPvPEnabled() && event.getZone().pvp;
-        Title title = new Title(event.getZone().name, event.getZone().subname + (pvp ? ChatColor.RED + "(pvp enabled)" : ""));
-        title.setTitleColor(org.bukkit.ChatColor.GOLD);
-        title.setSubtitleColor(org.bukkit.ChatColor.WHITE);
-        TitleUtil.queueTitle(title, event.getPlayer());
-
-        //play zone sound
-        PlayerAmbience a = Ambience.get(event.getPlayer());
-        a.clear();
-
-        if (event.getZone().ambience != null) {
-            for (Sound s : event.getZone().ambience) {
-                a.queueSound(s);
-            }
-        }
-
-        //Handle zone activation
+        // Handle zone activation
         Zone zone = event.getZone();
         PlayerCharacter playerCharacter = Characters.getPlayerCharacter(event.getPlayer());
         zone.timeWithoutPlayers = 0;
 
-        if (!zone.isInZone(playerCharacter)) {
-            zone.playersInZone.add(playerCharacter.getUniqueCharacterId());
+        zone.playersInZone.add(playerCharacter.getUniqueCharacterId());
 
-            if (!zone.isActive) {
-                zone.setActive(true);
-                Bukkit.getServer().getPluginManager().callEvent(new ZoneActivateEvent(zone));
-                MessageUtil.sendDebug(Bukkit.getConsoleSender(), "Zone activated: " + zone.name + " " + zone.subname);
-            }
+        if (!zone.isActive) {
+            zone.setActive(true);
+
+            Bukkit.getServer().getPluginManager().callEvent(new ZoneActivateEvent(zone));
+
+            MessageUtil.sendDebug(Bukkit.getConsoleSender(), "Zone activated: " + zone.name);
         }
     }
 
@@ -141,11 +165,33 @@ public class ZonesController extends ZonesAPI {
         Zone zone = event.getZone();
         PlayerCharacter playerCharacter = Characters.getPlayerCharacter(event.getPlayer());
 
-        if (zone.isInZone(playerCharacter)) {
-            zone.playersInZone.remove(playerCharacter.getUniqueCharacterId());
+        zone.playersInZone.remove(playerCharacter.getUniqueCharacterId());
 
-            if (zone.playersInZone.size() == 0) {
-                zone.timeWithoutPlayers = System.currentTimeMillis() / 1000L;
+        if (zone.playersInZone.size() == 0) {
+            zone.timeWithoutPlayers = System.currentTimeMillis() / 1000L;
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onZoneSectionEnter(ZoneSectionEnterEvent event) {
+        if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) {
+            return;
+        }
+
+        // Display zone warning
+        boolean pvp = PvPController.getInstance().isPvPEnabled() && event.getSection().pvp;
+        Title title = new Title(event.getZone().name, event.getSection().name + (pvp ? ChatColor.RED + "(pvp enabled)" : ""));
+        title.setTitleColor(org.bukkit.ChatColor.GOLD);
+        title.setSubtitleColor(org.bukkit.ChatColor.WHITE);
+        TitleUtil.queueTitle(title, event.getPlayer());
+
+        // Play area sound
+        PlayerAmbience a = Ambience.get(event.getPlayer());
+        a.clear();
+
+        if (event.getSection().ambience != null) {
+            for (Sound s : event.getSection().ambience) {
+                a.queueSound(s);
             }
         }
     }
@@ -167,10 +213,12 @@ public class ZonesController extends ZonesAPI {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void playerQuit(PlayerCharacterLogoutEvent e) {
-        Zone zone = getZone(e.getPlayerCharacter());
-        if (zone == null) {
+        Zone.Section section = getZone(e.getPlayerCharacter());
+        if (section == null) {
             return;
         }
+
+        Zone zone = section.getZone();
 
         if (zone.playersInZone.contains(e.getPlayerCharacter().getUniqueCharacterId())) {
             zone.playersInZone.remove(e.getPlayerCharacter().getUniqueCharacterId());

@@ -54,7 +54,7 @@ public class TraitQuestGiver extends LOVTrait {
         List<Promise<IQuest>> promises = new ArrayList<>();
 
         for (String id : questIDs) {
-            promises.add(QuestController.getInstance().getQuest(id));
+            promises.add(QuestController.getInstance().getQuestBySlug(id));
         }
 
         Promise.collect(promises).onSuccess(val -> {
@@ -117,7 +117,7 @@ public class TraitQuestGiver extends LOVTrait {
         List<IQuest> quests = new ArrayList<>();
         AtomicInteger left = new AtomicInteger(questIDs.length);
         for (String questId : questIDs) {
-            QuestController.getInstance().getQuest(questId).on((err, val) -> {
+            QuestController.getInstance().getQuestBySlug(questId).on((err, val) -> {
                 if (val.isPresent()) {
                     IQuest quest = val.get();
                     quests.add(quest);

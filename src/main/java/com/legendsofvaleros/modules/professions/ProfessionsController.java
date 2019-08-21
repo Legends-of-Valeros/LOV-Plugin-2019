@@ -105,7 +105,7 @@ public class ProfessionsController extends ProfessionsAPI {
         if (!MiningTier.getOreMaterials().contains(block.getType())) {
             return;
         }
-        Zone zone = ZonesController.getInstance().getZone(playerCharacter);
+        Zone zone = ZonesController.getInstance().getZone(playerCharacter).getZone();
         GatheringNode destroyedNode = null;
         for (GatheringNode node : this.zoneGatheringNodes.get(zone.id)) {
             if (node.getLocation().equals(block.getLocation())) {
@@ -149,7 +149,7 @@ public class ProfessionsController extends ProfessionsAPI {
                 MessageUtil.sendError(Bukkit.getConsoleSender(), "Could not find mining tier of block type: " + block.getType());
                 return;
             }
-            this.saveGatheringNode(new MiningNode(block.getLocation(), ZonesController.getInstance().getZone(playerCharacter).id, tier.ordinal()));
+            this.saveGatheringNode(new MiningNode(block.getLocation(), ZonesController.getInstance().getZone(playerCharacter).getZone().id, tier.ordinal()));
             MessageUtil.sendInfo(player, "Successfully saved node!");
         }
     }

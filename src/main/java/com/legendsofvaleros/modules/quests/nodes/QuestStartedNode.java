@@ -8,7 +8,7 @@ import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
 import java.util.UUID;
 
 public class QuestStartedNode extends AbstractQuestNode<Boolean> {
-    @SerializedName("Triggered")
+    @SerializedName("Trigger")
     public IOutportTrigger onTriggered = new IOutportTrigger(this);
 
     public QuestStartedNode(String id) {

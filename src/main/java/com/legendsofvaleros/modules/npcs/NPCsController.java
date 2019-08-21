@@ -70,22 +70,6 @@ public class NPCsController extends NPCsAPI {
         event.getNPC().getTrait(TraitLOV.class).onRightClick(event.getClicker());
     }
 
-    public void registerTrait(String id, Class<? extends LOVTrait> trait) {
-        traitTypes.put(id, trait);
-    }
-
-    public NPC createNPC(EntityType type, String s) {
-        return registry.createNPC(type, s);
-    }
-
-    public boolean isNPC(String id) {
-        return npcs.containsKey(id);
-    }
-
-    public NPCData getNPC(String id) {
-        return npcs.get(id);
-    }
-
     public NPC getNPC(LivingEntity entity) {
         return CitizensAPI.getNPCRegistry().getNPC(entity);
     }

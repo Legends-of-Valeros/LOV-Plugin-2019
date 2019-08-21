@@ -1,6 +1,9 @@
 package com.legendsofvaleros.modules.zones;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
@@ -9,7 +12,9 @@ import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.zones.core.MaterialWithData;
+import com.legendsofvaleros.modules.npcs.api.ISkin;
+import com.legendsofvaleros.modules.quests.api.IQuest;
+import com.legendsofvaleros.modules.zones.api.IZone;
 import com.legendsofvaleros.modules.zones.core.Zone;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
@@ -28,7 +33,6 @@ public class ZonesAPI extends ListenerModule {
     private RPC rpc;
     private HashMap<String, Zone> zones = new HashMap<>();
 
-
     public Collection<Zone> getZones() {
         return zones.values();
     }
@@ -37,53 +41,27 @@ public class ZonesAPI extends ListenerModule {
         return zones.get(id);
     }
 
-    public Zone getZone(Player p) {
-        if (!Characters.isPlayerCharacterLoaded(p)) {
-            return null;
-        }
-        PlayerCharacter playerCharacter = Characters.getPlayerCharacter(p);
-        for (Zone zone : getZones()) {
-            if (zone.playersInZone.contains(playerCharacter.getUniqueCharacterId())) {
-                return zone;
-            }
-        }
-        MessageUtil.sendInfo(Bukkit.getConsoleSender(), "WARNING - " + p.getDisplayName() + " is not in a zone");
-
-        return null;
-    }
-
-    public Zone getZone(PlayerCharacter playerCharacter) {
-        if (!playerCharacter.isCurrent()) {
-            return null;
-        }
-        for (Zone zone : getZones()) {
-            if (zone.playersInZone.contains(playerCharacter.getUniqueCharacterId())) {
-                return zone;
-            }
-        }
-        MessageUtil.sendInfo(Bukkit.getConsoleSender(), "WARNING - " + playerCharacter.getPlayer().getDisplayName() + " is not in a zone");
-        return null;
-    }
-
     @Override
     public void onLoad() {
         super.onLoad();
 
         this.rpc = APIController.create(RPC.class);
 
+
         APIController.getInstance().getGsonBuilder()
-                .registerTypeAdapter(MaterialWithData.class, new TypeAdapter<MaterialWithData>() {
+                .registerTypeAdapter(IZone.class, new TypeAdapter<IZone>() {
                     @Override
-                    public void write(JsonWriter jsonWriter, MaterialWithData mat) throws IOException {
-                        jsonWriter.value(mat.type.name() + (mat.data != null ? ":" + mat.data : ""));
+                    public void write(JsonWriter write, IZone zone) throws IOException {
+                        write.value(zone.getId());
                     }
 
                     @Override
-                    public MaterialWithData read(JsonReader jsonReader) throws IOException {
-                        return new MaterialWithData(jsonReader.nextString());
+                    public IZone read(JsonReader read) throws IOException {
+                        // If we reference the interface, then the type should be a string, and we return the stored object.
+                        // Note: it must be loaded already, else this returns null.
+                        return zones.get(read.nextString());
                     }
                 });
-
     }
 
     @Override

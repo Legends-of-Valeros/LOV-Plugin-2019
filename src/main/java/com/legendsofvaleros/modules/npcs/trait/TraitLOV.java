@@ -103,7 +103,8 @@ public class TraitLOV extends Trait implements CommandConfigurable {
 
         getNPC().data().setPersistent(NPC.SHOULD_SAVE_METADATA, true);
 
-        npcData = NPCsController.getInstance().getNPC(npcId);
+        // TODO: When binding an NPC, we should translate the slug in the command to the database ID. getNPCBySlug should quickly be refactored out.
+        npcData = NPCsController.getInstance().getNPCBySlug(npcId);
         if (npcData == null) {
             getNPC().data().setPersistent(NPC.NAMEPLATE_VISIBLE_METADATA, true);
             getNPC().getEntity().setCustomNameVisible(true);
@@ -163,13 +164,16 @@ public class TraitLOV extends Trait implements CommandConfigurable {
         }
 
         npcId = npcData.getId();
-        traits = npcData.traits;
 
-        for (LOVTrait trait : traits) {
-            trait.npc_id = npcId;
-            trait.npc = getNPC();
-            trait.trait = this;
-            trait.onSpawn();
+        if(npcData.traits != null) {
+            traits = npcData.traits;
+
+            for (LOVTrait trait : traits) {
+                trait.npc_id = npcId;
+                trait.npc = getNPC();
+                trait.trait = this;
+                trait.onSpawn();
+            }
         }
     }
 

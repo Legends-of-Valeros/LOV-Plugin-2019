@@ -17,8 +17,8 @@ public class PvPIntegration extends Integration implements Listener {
         // Zones should never override a PvP check.
         if(event.isCancelled()) return;
 
-        Zone aZone = ZonesController.getInstance().getZone(event.getAttacker());
-        Zone dZone = ZonesController.getInstance().getZone(event.getDamaged());
+        Zone.Section aZone = ZonesController.getInstance().getZone(event.getAttacker());
+        Zone.Section dZone = ZonesController.getInstance().getZone(event.getDamaged());
 
         if((aZone != null && !aZone.pvp)
                 || (dZone != null && !dZone.pvp)) {

@@ -25,6 +25,10 @@ public class NPCData {
     	return id;
 	}
 
+	public String getSlug() {
+    	return slug;
+	}
+
 	public String getName() {
     	return name;
 	}

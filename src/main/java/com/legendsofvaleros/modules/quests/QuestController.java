@@ -196,7 +196,7 @@ public class QuestController extends QuestAPI {
     @EventHandler
     public void onCharacterCreated(PlayerCharacterCreateEvent event) {
         // Give the intro quest to all new characters created
-        getQuest(introQuestId).onSuccess(val -> {
+        getQuestBySlug(introQuestId).onSuccess(val -> {
             if(val.isPresent()) {
                 startQuest(val.get(), event.getPlayerCharacter());
             }else{

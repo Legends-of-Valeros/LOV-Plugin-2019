@@ -4,6 +4,9 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.*;
 import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.JsonWriter;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.api.PromiseCache;
@@ -26,11 +29,13 @@ import com.legendsofvaleros.modules.quests.registry.NodeRegistry;
 import com.legendsofvaleros.modules.quests.registry.PrerequisiteRegistry;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.time.Duration;
 import java.util.*;
@@ -38,7 +43,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class QuestAPI extends ListenerModule {
     public interface RPC {
-        Promise<IQuest> getQuest(String questId);
+        Promise<Quest> getQuest(Object query);
 
         /**
          * Quest progress is stored in a way that cannot be decoded by Gson. We, unfortunately, must do it manually,
@@ -95,7 +100,7 @@ public class QuestAPI extends ListenerModule {
      */
     private Multimap<CharacterId, IQuestInstance> playerQuests = HashMultimap.create();
 
-    private PromiseCache<String, IQuest> quests;
+    private PromiseCache<String, Quest> quests;
 
     @Override
     public void onLoad() {
@@ -121,18 +126,24 @@ public class QuestAPI extends ListenerModule {
         }, 0L, 20L);
 
         APIController.getInstance().getGsonBuilder()
-                .registerTypeAdapter(IQuest.class, (JsonDeserializer<IQuest>) (json, typeOfT, context) -> {
-                    // If it's an object, then we're decoding the actual quest.
-                    if(json.isJsonObject()) {
-                        try {
-                            return decodeQuest(json.getAsJsonObject(), context);
-                        } catch (NoSuchFieldException | IllegalAccessException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }else{
-                        // If it's not an object, then it's a reference to the quest.
-                        // Note: the quest must already be loaded, or the value will be null.
-                        return quests.getIfPresent(json.getAsString());
+                .registerTypeAdapter(Quest.class, (JsonDeserializer<Quest>) (json, typeOfT, context) -> {
+                    try {
+                        return decodeQuest(json.getAsJsonObject(), context);
+                    } catch (NoSuchFieldException | IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .registerTypeAdapter(IQuest.class, new TypeAdapter<IQuest>() {
+                    @Override
+                    public void write(JsonWriter write, IQuest quest) throws IOException {
+                        write.value(quest.getId());
+                    }
+
+                    @Override
+                    public IQuest read(JsonReader read) throws IOException {
+                        // If we reference the interface, then the type should be a string, and we return the stored object.
+                        // Note: it must be loaded already, else this returns null.
+                        return quests.getIfPresent(read.nextString());
                     }
                 })
                 .registerTypeAdapter(Duration.class, (JsonDeserializer<Duration>) (json, typeOfT, context) -> Duration.parse(json.getAsString()));
@@ -145,7 +156,29 @@ public class QuestAPI extends ListenerModule {
     }
 
     public Promise<IQuest> getQuest(String quest_id) {
-        return quests.get(quest_id);
+        // Turn the Promise<Quest> into Promise<IQuest>
+        return quests.get(quest_id).next(p -> Promise.make(p.orElse(null)));
+    }
+
+    // REFACTOR THIS OUT ASAP
+    public Promise<IQuest> getQuestBySlug(String slug) {
+        // Turn the Promise<Quest> into Promise<IQuest>
+        Optional<Quest> quest = quests.asMap().values().stream().filter(v -> v.getSlug().equals(slug)).findFirst();
+
+        if(quest.isPresent())
+            return Promise.make(quest.get());
+
+        JsonObject jo = new JsonObject();
+        jo.add("slug", new JsonPrimitive(slug));
+        return rpc.getQuest(jo).next(p -> {
+            Quest q = p.orElse(null);
+
+            if(q != null && quests.getIfPresent(q.getId()) == null) {
+                quests.put(q.getId(), q);
+            }
+
+            return Promise.make(q);
+        });
     }
 
     public void addPlayerQuest(PlayerCharacter pc, IQuestInstance instance) {
@@ -269,7 +302,7 @@ public class QuestAPI extends ListenerModule {
      * @param jo
      * @param context
      */
-    private IQuest decodeQuest(JsonObject jo, JsonDeserializationContext context) throws NoSuchFieldException, IllegalAccessException {
+    private Quest decodeQuest(JsonObject jo, JsonDeserializationContext context) throws NoSuchFieldException, IllegalAccessException {
         IQuestPrerequisite[] prerequisites = new IQuestPrerequisite[0];
         {
             // TODO: Decode prerequisites

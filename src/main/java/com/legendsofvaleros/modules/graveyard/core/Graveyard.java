@@ -7,6 +7,7 @@ import com.gmail.filoghost.holographicdisplays.api.line.ItemLine;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.zones.ZonesController;
+import com.legendsofvaleros.modules.zones.api.IZone;
 import com.legendsofvaleros.modules.zones.core.Zone;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -21,8 +22,9 @@ public class Graveyard {
     private transient Hologram hologram;
     private transient TextLine textZone, textRadius;
     private transient Location location;
-    private transient Zone zone;
-    private String zoneId;
+
+    private IZone zone;
+
     public World world;
     public int x;
     public int y;
@@ -41,7 +43,7 @@ public class Graveyard {
     public Hologram getHologram() {
         if (hologram == null) {
             hologram = HologramsAPI.createHologram(LegendsOfValeros.getInstance(), getLocation());
-            textZone = hologram.appendTextLine(ChatColor.GOLD + "" + ChatColor.BOLD + getZone().name);
+            textZone = hologram.appendTextLine(ChatColor.GOLD + "" + ChatColor.BOLD + getZone().getName());
             textRadius = hologram.appendTextLine("Radius: " + getRadius());
             hologram.getVisibilityManager().setVisibleByDefault(LegendsOfValeros.getMode().allowEditing());
 
@@ -59,12 +61,10 @@ public class Graveyard {
 
     @Override
     public String toString() {
-        return "Graveyard(id=" + zoneId + ", location=" + getLocation() + ")";
+        return "Graveyard(id=" + zone.getId() + ", location=" + getLocation() + ")";
     }
 
-    public Zone getZone() {
-        if (this.zone == null)
-            this.zone = ZonesController.getInstance().getZone(this.zoneId);
+    public IZone getZone() {
         return this.zone;
     }
 

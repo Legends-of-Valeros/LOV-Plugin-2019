@@ -19,8 +19,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
+import java.util.Collection;
 import java.util.List;
 
+// Currently graveyards search the entire zone for the nearest. Should we make it search for nearest graveyards in the Section, first?
 @DependsOn(CombatEngine.class)
 @DependsOn(Characters.class)
 @DependsOn(GearController.class)
@@ -53,7 +55,7 @@ public class GraveyardController extends GraveyardAPI {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDeath(PlayerRespawnEvent event) {
-        Graveyard data = getNearestGraveyard(ZonesController.getInstance().getZone(event.getPlayer()), event.getPlayer().getLocation());
+        Graveyard data = getNearestGraveyard(ZonesController.getInstance().getZone(event.getPlayer()).getZone(), event.getPlayer().getLocation());
         if (data == null) {
             Location loc = event.getPlayer().getLocation();
             MessageUtil.sendException(this, event.getPlayer(), "Failed to locate graveyard at " + loc.getBlockX() + ", " + loc.getBlockZ() + "!");
@@ -102,11 +104,11 @@ public class GraveyardController extends GraveyardAPI {
 
     public Graveyard getNearestGraveyard(Zone zone, Location loc) {
         if (graveyards == null || graveyards.size() == 0
-                || zone == null || !graveyards.containsKey(zone.channel)) {
+                || zone == null || !graveyards.containsKey(zone.getId())) {
             return null;
         }
 
-        List<Graveyard> yards = graveyards.get(zone.channel);
+        Collection<Graveyard> yards = graveyards.get(zone.getId());
 
         Graveyard closest = null;
         double distance = Double.MAX_VALUE;

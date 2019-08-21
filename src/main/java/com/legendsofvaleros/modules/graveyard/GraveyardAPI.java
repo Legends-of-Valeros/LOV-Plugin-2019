@@ -1,6 +1,8 @@
 package com.legendsofvaleros.modules.graveyard;
 
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Multimap;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
@@ -11,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+// TODO: Implement zone activation?
 public class GraveyardAPI extends ListenerModule {
     public interface RPC {
         Promise<List<Graveyard>> findGraveyards();
@@ -21,7 +24,7 @@ public class GraveyardAPI extends ListenerModule {
     }
 
     private RPC rpc;
-    HashMap<String, List<Graveyard>> graveyards = new HashMap<>();
+    Multimap<String, Graveyard> graveyards = HashMultimap.create();
 
     @Override
     public void onLoad() {
@@ -46,13 +49,7 @@ public class GraveyardAPI extends ListenerModule {
 
             val.orElse(ImmutableList.of()).stream()
                     .filter(yard -> yard.getZone() != null).forEach(yard -> {
-                if (graveyards.containsKey(yard.getZone().channel)) {
-                    graveyards.get(yard.getZone().channel).add(yard);
-                    return;
-                }
-                ArrayList<Graveyard> yards = new ArrayList<>();
-                yards.add(yard);
-                graveyards.put(yard.getZone().channel, yards);
+                graveyards.put(yard.getZone().getId(), yard);
             });
 
             getLogger().info("Loaded " + graveyards.size() + " graveyards.");
@@ -60,7 +57,7 @@ public class GraveyardAPI extends ListenerModule {
     }
 
     public Promise<Boolean> addGraveyard(Graveyard yard) {
-        graveyards.get(yard.getZone().channel).add(yard);
+        graveyards.put(yard.getZone().getId(), yard);
 
         // If editing is enabled, generate the hologram right away.
         if (LegendsOfValeros.getMode().allowEditing()) {
@@ -72,7 +69,7 @@ public class GraveyardAPI extends ListenerModule {
 
     public void removeGraveyard(Graveyard yard) {
         rpc.deleteGraveyard(yard).onSuccess(() -> {
-            graveyards.remove(yard.getZone().channel, yard);
+            graveyards.remove(yard.getZone().getId(), yard);
         }).onFailure(Throwable::printStackTrace);
     }
 }

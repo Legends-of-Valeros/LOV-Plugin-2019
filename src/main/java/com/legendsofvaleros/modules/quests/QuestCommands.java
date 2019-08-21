@@ -38,7 +38,7 @@ public class QuestCommands extends BaseCommand {
     public void cmdComplete(Player player, String questId) {
         PlayerCharacter pc = Characters.getPlayerCharacter(player);
 
-        QuestController.getInstance().getQuest(questId).onSuccess(val -> {
+        QuestController.getInstance().getQuestBySlug(questId).onSuccess(val -> {
             if(!val.isPresent()) {
                 MessageUtil.sendUpdate(player, "Unknown quest.");
                 return;
@@ -57,7 +57,7 @@ public class QuestCommands extends BaseCommand {
 
         PlayerCharacter pc = Characters.getPlayerCharacter(player);
 
-        QuestController.getInstance().getQuest(questId).onSuccess(val -> {
+        QuestController.getInstance().getQuestBySlug(questId).onSuccess(val -> {
             QuestController.getInstance().removeQuestProgress(val.get(), pc);
             MessageUtil.sendUpdate(player, "Quest uncompleted.");
         });
@@ -82,7 +82,7 @@ public class QuestCommands extends BaseCommand {
 
         player.closeInventory();
 
-        QuestController.getInstance().getQuest(questId).onSuccess(val -> {
+        QuestController.getInstance().getQuestBySlug(questId).onSuccess(val -> {
             QuestController.getInstance().startQuest(val.get(), pc);
         });
     }

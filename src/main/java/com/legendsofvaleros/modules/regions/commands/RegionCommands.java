@@ -132,7 +132,7 @@ public class RegionCommands extends BaseCommand {
             return;
         }
 
-        QuestController.getInstance().getQuest(questId).onSuccess(quest -> {
+        QuestController.getInstance().getQuestBySlug(questId).onSuccess(quest -> {
             region.quests.add(quest.get());
 
             RegionController.getInstance().saveRegion(region);

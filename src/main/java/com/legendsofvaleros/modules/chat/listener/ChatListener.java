@@ -180,18 +180,19 @@ public class ChatListener implements Listener {
                 }
                 break;
             case ZONE:
-                Zone zone = ZonesController.getInstance().getZone(sender);
+                Zone.Section zone = ZonesController.getInstance().getZone(sender);
                 if (zone == null) {
                     MessageUtil.sendError(sender, "Unable to send message. You are not in a zone!");
                     return;
                 }
 
-                for (CharacterId characterId : zone.playersInZone) {
+                for (CharacterId characterId : zone.getZone().playersInZone) {
                     PlayerCharacter playerCharacter = Characters.getPlayerCharacter(characterId);
                     if (playerCharacter.isCurrent()) {
                         if (!ChatController.getInstance().isChannelOn(playerCharacter.getPlayer(), 'Z')) {
                             continue;
                         }
+                        // Including auction stuff in the chat module seems... wrong.
                         if (AuctionController.getInstance().isPrompted(playerCharacter.getPlayer())) {
                             continue;
                         }

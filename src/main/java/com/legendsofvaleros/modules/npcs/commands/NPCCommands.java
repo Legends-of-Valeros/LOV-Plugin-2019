@@ -35,7 +35,7 @@ public class NPCCommands extends BaseCommand {
 	public void cmdActivateNPC(Player player, String npcId, String side) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		NPCData npc = NPCsController.getInstance().getNPC(npcId);
+		NPCData npc = NPCsController.getInstance().getNPCBySlug(npcId);
 
 		if(side.equalsIgnoreCase("left"))
 			TraitHelper.onLeftClick(npc.getName(), player, npc.traits);
@@ -51,7 +51,7 @@ public class NPCCommands extends BaseCommand {
 	public void cmdBindNPC(Player player, String npcId) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		NPCData npcData = NPCsController.getInstance().getNPC(npcId);
+		NPCData npcData = NPCsController.getInstance().getNPCBySlug(npcId);
 		if(npcData == null) {
 			MessageUtil.sendError(player, "NPC with that ID does not exist.");
 			return;
