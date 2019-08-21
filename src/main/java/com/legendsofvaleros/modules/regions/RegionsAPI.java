@@ -23,13 +23,13 @@ public class RegionsAPI extends ListenerModule {
     public interface RPC {
         Promise<List<Region>> findRegions();
 
-        Promise<Boolean> saveRegion(IRegion region);
+        Promise<Object> saveRegion(IRegion region);
 
         Promise<Boolean> deleteRegion(String id);
 
         Promise<Map<String, Boolean>> getPlayerRegionAccess(CharacterId characterId);
 
-        Promise<Boolean> savePlayerRegionAccess(CharacterId characterId, Map<String, Boolean> map);
+        Promise<Object> savePlayerRegionAccess(CharacterId characterId, Map<String, Boolean> map);
 
         Promise<Boolean> deletePlayerRegionAccess(CharacterId characterId);
 
@@ -73,7 +73,7 @@ public class RegionsAPI extends ListenerModule {
             val.orElse(ImmutableList.of()).forEach(this::addRegion);
 
             getLogger().info("Loaded " + regions.size() + " regions.");
-        }, RegionController.getInstance().getScheduler()::sync).onFailure(Throwable::printStackTrace);
+        }, RegionController.getInstance().getScheduler()::sync);
     }
 
     public List<IRegion> findRegions(Location location) {
@@ -95,7 +95,7 @@ public class RegionsAPI extends ListenerModule {
         return foundRegions;
     }
 
-    public Promise<Boolean> saveRegion(IRegion region) {
+    public Promise saveRegion(IRegion region) {
         return rpc.saveRegion(region);
     }
 
@@ -129,7 +129,7 @@ public class RegionsAPI extends ListenerModule {
         getScheduler().executeInMyCircle(() -> {
             rpc.deleteRegion(region.getId()).onSuccess(() -> {
                 regions.remove(region.getId());
-            }).onFailure(Throwable::printStackTrace);
+            });
         });
     }
 
@@ -139,7 +139,7 @@ public class RegionsAPI extends ListenerModule {
         });
     }
 
-    public Promise<Boolean> onLogout(PlayerCharacter pc) {
+    public Promise onLogout(PlayerCharacter pc) {
         return rpc.savePlayerRegionAccess(pc.getUniqueCharacterId(), playerAccess.row(pc.getUniqueCharacterId())).on(() -> {
             playerRegions.removeAll(pc.getPlayer());
 

@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 public class PersistingEffects {
 	private interface RPC {
 		Promise<List<SavedPersistentEffect>> getPlayerPersistingEffects(CharacterId characterId);
-		Promise<Boolean> savePlayerPersistingEffects(CharacterId characterId, List<SavedPersistentEffect> effects);
+		Promise<Object> savePlayerPersistingEffects(CharacterId characterId, List<SavedPersistentEffect> effects);
 		Promise<Boolean> deletePlayerPersistingEffects(CharacterId characterId);
 	}
 
@@ -106,7 +106,7 @@ public class PersistingEffects {
 		return promise;
 	}
 
-	private static Promise<Boolean> onLogout(PlayerCharacter pc) {
+	private static Promise onLogout(PlayerCharacter pc) {
 		List<SavedPersistentEffect> effects = new ArrayList<>();
 
 		dataMap.get(pc.getUniqueCharacterId()).stream()
@@ -116,7 +116,7 @@ public class PersistingEffects {
 		return rpc.savePlayerPersistingEffects(pc.getUniqueCharacterId(), effects);
 	}
 
-	private static Promise<Boolean> onDelete(PlayerCharacter pc) {
+	private static Promise onDelete(PlayerCharacter pc) {
 		return rpc.deletePlayerPersistingEffects(pc.getUniqueCharacterId());
 	}
 

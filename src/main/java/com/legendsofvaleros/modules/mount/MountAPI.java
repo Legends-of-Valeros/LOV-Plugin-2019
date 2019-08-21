@@ -12,6 +12,8 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
+import com.legendsofvaleros.modules.quests.QuestAPI;
+import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -19,6 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class MountAPI extends ListenerModule {
@@ -27,7 +30,7 @@ public class MountAPI extends ListenerModule {
 
         Promise<List<String>> getPlayerMounts(CharacterId characterId);
 
-        Promise<Boolean> savePlayerMounts(CharacterId characterId, Collection<String> strings);
+        Promise<Object> savePlayerMounts(CharacterId characterId, Collection<String> strings);
 
         Promise<Boolean> deletePlayerMounts(CharacterId characterId);
     }
@@ -65,7 +68,7 @@ public class MountAPI extends ListenerModule {
                     mounts.put(mount.getId(), mount));
 
             getLogger().info("Loaded " + mounts.size() + " mounts.");
-        }).onFailure(Throwable::printStackTrace);
+        });
     }
 
     public Mount getMount(String mountId) {
@@ -96,11 +99,9 @@ public class MountAPI extends ListenerModule {
         });
     }
 
-    private Promise<Boolean> onLogout(CharacterId characterId) {
-        Promise<Boolean> promise = rpc.savePlayerMounts(characterId, playerMounts.get(characterId));
-        promise.on(() -> playerMounts.removeAll(characterId));
-
-        return promise;
+    private Promise onLogout(CharacterId characterId) {
+        return rpc.savePlayerMounts(characterId, playerMounts.get(characterId))
+                .on(() -> playerMounts.removeAll(characterId));
     }
 
     public Promise<Boolean> onDelete(CharacterId characterId) {
@@ -119,12 +120,15 @@ public class MountAPI extends ListenerModule {
         public void onPlayerLeave(PlayerCharacterLogoutEvent event) {
             PhaseLock lock = event.getLock("Mounts");
 
-            onLogout(event.getPlayerCharacter().getUniqueCharacterId()).on(lock::release);
+            onLogout(event.getPlayerCharacter().getUniqueCharacterId())
+                    .onFailure((Consumer<Throwable>) err -> MessageUtil.sendSevereException(MountAPI.this, event.getPlayer(), err))
+                    .on(lock::release);
         }
 
         @EventHandler
         public void onPlayerRemoved(PlayerCharacterRemoveEvent event) {
-            onDelete(event.getPlayerCharacter().getUniqueCharacterId());
+            onDelete(event.getPlayerCharacter().getUniqueCharacterId())
+                    .onFailure((Consumer<Throwable>) err -> MessageUtil.sendSevereException(MountAPI.this, event.getPlayer(), err));
         }
     }
 }

@@ -26,7 +26,7 @@ public class PlayerCharacterData {
     private interface RPC {
         Promise<List<CharacterData>> getPlayerCharacters(UUID uuid);
 
-        Promise<Boolean> savePlayerCharacter(UUID uuid, CharacterData character);
+        Promise<Object> savePlayerCharacter(UUID uuid, CharacterData character);
 
         Promise<Boolean> deletePlayerCharacter(UUID uuid, int number);
     }
@@ -110,7 +110,7 @@ public class PlayerCharacterData {
         return rpc.deletePlayerCharacter(playerId, characterId);
     }
 
-    public static Promise<Boolean> save(PlayerCharacter pc) {
+    public static Promise save(PlayerCharacter pc) {
         return rpc.savePlayerCharacter(pc.getPlayerId(), new CharacterData(pc));
     }
 

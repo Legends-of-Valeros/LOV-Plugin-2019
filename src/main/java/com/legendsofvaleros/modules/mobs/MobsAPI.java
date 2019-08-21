@@ -26,7 +26,7 @@ public class MobsAPI extends ListenerModule {
 
         Promise<List<SpawnArea>> findSpawns();
 
-        Promise<Boolean> saveSpawn(SpawnArea spawn);
+        Promise<Object> saveSpawn(SpawnArea spawn);
 
         Promise<Boolean> deleteSpawn(Integer spawn);
     }
@@ -79,23 +79,22 @@ public class MobsAPI extends ListenerModule {
                 entities.put(mob.getId(), mob);
 
             getLogger().info("Loaded " + entities.size() + " mobs.");
-        }).onFailure(Throwable::printStackTrace)
-                .next(rpc::findSpawns).onSuccess(val -> {
-                    spawns.clear();
+        }).next(rpc::findSpawns).onSuccess(val -> {
+            spawns.clear();
 
-                    // Return to the spigot thread to allow fetching chunk objects.
-                    // We could remove all of this, basically, if we just make a way
-                    // to get the chunk ID from a block location, this can be async.
-                    getScheduler().executeInSpigotCircle(() -> {
-                        for (SpawnArea spawn : val.orElse(ImmutableList.of())) {
-                            spawns.put(getId(spawn.getLocation().getChunk()), spawn);
+            // Return to the spigot thread to allow fetching chunk objects.
+            // We could remove all of this, basically, if we just make a way
+            // to get the chunk ID from a block location, this can be async.
+            getScheduler().executeInSpigotCircle(() -> {
+                for (SpawnArea spawn : val.orElse(ImmutableList.of())) {
+                    spawns.put(getId(spawn.getLocation().getChunk()), spawn);
 
-                            addSpawn(spawn);
-                        }
+                    addSpawn(spawn);
+                }
 
-                        getLogger().info("Loaded " + spawns.size() + " spawns.");
-                    });
-                }).onFailure(Throwable::printStackTrace);
+                getLogger().info("Loaded " + spawns.size() + " spawns.");
+            });
+        });
     }
 
     public void addSpawn(SpawnArea spawn) {
@@ -137,7 +136,7 @@ public class MobsAPI extends ListenerModule {
         public void onChunkLoad(ChunkLoadEvent event) {
             String chunkId = getId(event.getChunk());
 
-            if (!spawns.containsKey(chunkId)){
+            if (!spawns.containsKey(chunkId)) {
                 return;
             }
 
@@ -148,7 +147,7 @@ public class MobsAPI extends ListenerModule {
         public void onChunkUnload(ChunkUnloadEvent event) {
             String chunkId = getId(event.getChunk());
 
-            if (!spawns.containsKey(chunkId)){
+            if (!spawns.containsKey(chunkId)) {
                 return;
             }
 

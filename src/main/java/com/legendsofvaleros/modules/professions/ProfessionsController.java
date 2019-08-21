@@ -236,14 +236,12 @@ public class ProfessionsController extends ProfessionsAPI {
 
     @EventHandler
     public void onCharacterLogout(PlayerCharacterLogoutEvent event) {
-        onLogout(event.getPlayerCharacter().getUniqueCharacterId())
-                .onFailure(err -> MessageUtil.sendSevereException(ProfessionsController.getInstance(), event.getPlayer(), err));
+        onLogout(event.getPlayerCharacter().getUniqueCharacterId());
     }
 
     @EventHandler
     public void onCharacterRemoved(PlayerCharacterRemoveEvent event) {
-        onDelete(event.getPlayerCharacter().getUniqueCharacterId())
-                .onFailure(err -> MessageUtil.sendSevereException(ProfessionsController.getInstance(), event.getPlayer(), err));
+        onDelete(event.getPlayerCharacter().getUniqueCharacterId());
     }
 
 }

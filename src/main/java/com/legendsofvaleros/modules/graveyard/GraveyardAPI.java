@@ -18,7 +18,7 @@ public class GraveyardAPI extends ListenerModule {
     public interface RPC {
         Promise<List<Graveyard>> findGraveyards();
 
-        Promise<Boolean> saveGraveyard(Graveyard yard);
+        Promise<Object> saveGraveyard(Graveyard yard);
 
         Promise<Boolean> deleteGraveyard(Graveyard yard);
     }
@@ -53,10 +53,10 @@ public class GraveyardAPI extends ListenerModule {
             });
 
             getLogger().info("Loaded " + graveyards.size() + " graveyards.");
-        }).onFailure(Throwable::printStackTrace);
+        });
     }
 
-    public Promise<Boolean> addGraveyard(Graveyard yard) {
+    public Promise addGraveyard(Graveyard yard) {
         graveyards.put(yard.getZone().getId(), yard);
 
         // If editing is enabled, generate the hologram right away.
@@ -70,6 +70,6 @@ public class GraveyardAPI extends ListenerModule {
     public void removeGraveyard(Graveyard yard) {
         rpc.deleteGraveyard(yard).onSuccess(() -> {
             graveyards.remove(yard.getZone().getId(), yard);
-        }).onFailure(Throwable::printStackTrace);
+        });
     }
 }

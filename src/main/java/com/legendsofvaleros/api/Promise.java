@@ -2,6 +2,7 @@ package com.legendsofvaleros.api;
 
 import com.google.common.collect.ImmutableList;
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.util.MessageUtil;
 import sun.misc.Unsafe;
 
@@ -320,13 +321,12 @@ public class Promise<R> {
         }
 
         // Always show rejected promises in the console
-        LegendsOfValeros.getInstance().getLogger().warning("Promise rejected!");
-        LegendsOfValeros.getInstance().getLogger().warning("----------------------------------------");
+        LegendsOfValeros.getInstance().getLogger().warning("------------PROMISE REJECTED------------");
         int i = -1;
         for (String line : trace.split("\n")) {
             if (i == -1) {
                 // Ignore non-LOV packages
-                if (!line.contains("com.legendsofvaleros")) {
+                if (!line.contains("com.legendsofvaleros") || line.contains("com.legendsofvaleros.api.")) {
                     continue;
                 }
                 // Ignore api package
@@ -345,10 +345,12 @@ public class Promise<R> {
             }
         }
 
+        LegendsOfValeros.getInstance().getLogger().warning("-----------------TRACE------------------");
+
         // Print the actual reason for rejection
         th.printStackTrace();
 
-        LegendsOfValeros.getInstance().getLogger().warning("----------------------------------------");
+        LegendsOfValeros.getInstance().getLogger().warning("------------------END-------------------");
 
         this.value = th;
         this.state = State.REJECTED;

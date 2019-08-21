@@ -36,15 +36,15 @@ public class PlayerInventoryData implements InventoryData {
     }
 
     @Override
-    public Promise<Boolean> onInvalidated(PlayerCharacter pc) {
+    public Promise onInvalidated(PlayerCharacter pc) {
         return saveInventory(pc);
     }
 
     @Override
-    public Promise<Boolean> saveInventory(PlayerCharacter pc) {
+    public Promise saveInventory(PlayerCharacter pc) {
         return method.encode(pc.getPlayer().getInventory().getContents()).onSuccess(val -> {
             inventoryData = val.orElseGet(null);
-        }).next(val -> Promise.make(val.isPresent()));
+        }).next(v -> Promise.make(v.isPresent()));
     }
 
     @Override
@@ -55,7 +55,7 @@ public class PlayerInventoryData implements InventoryData {
     }
 
     @Override
-    public Promise<Boolean> loadInventory(PlayerCharacter pc) {
+    public Promise loadInventory(PlayerCharacter pc) {
         pc.getPlayer().getInventory().clear();
 
         if (inventoryData != null) {

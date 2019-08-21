@@ -1,7 +1,9 @@
 package com.legendsofvaleros.modules.quests;
 
 import com.google.common.cache.CacheBuilder;
-import com.google.common.collect.*;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Multimap;
 import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
@@ -19,17 +21,21 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
-import com.legendsofvaleros.modules.quests.api.*;
+import com.legendsofvaleros.modules.quests.api.IQuest;
+import com.legendsofvaleros.modules.quests.api.IQuestInstance;
+import com.legendsofvaleros.modules.quests.api.IQuestNode;
+import com.legendsofvaleros.modules.quests.api.IQuestPrerequisite;
 import com.legendsofvaleros.modules.quests.api.ports.INodeInput;
 import com.legendsofvaleros.modules.quests.api.ports.INodeOutput;
-import com.legendsofvaleros.modules.quests.core.*;
+import com.legendsofvaleros.modules.quests.core.Quest;
+import com.legendsofvaleros.modules.quests.core.QuestInstance;
+import com.legendsofvaleros.modules.quests.core.QuestNodeMap;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.registry.EventRegistry;
 import com.legendsofvaleros.modules.quests.registry.NodeRegistry;
 import com.legendsofvaleros.modules.quests.registry.PrerequisiteRegistry;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -37,8 +43,12 @@ import org.bukkit.event.Listener;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.time.Duration;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class QuestAPI extends ListenerModule {
@@ -66,7 +76,7 @@ public class QuestAPI extends ListenerModule {
          */
         Promise<Map<String, JsonObject>> getPlayerQuestsProgressNew(CharacterId characterId);
 
-        Promise<Boolean> savePlayerQuestsProgressNew(CharacterId characterId, Map<String, Object> map);
+        Promise<Object> savePlayerQuestsProgressNew(CharacterId characterId, Map<String, Object> map);
 
         Promise<Boolean> deletePlayerQuestsProgressNew(CharacterId characterId);
     }
@@ -129,20 +139,27 @@ public class QuestAPI extends ListenerModule {
                 .registerTypeAdapter(Quest.class, (JsonDeserializer<Quest>) (json, typeOfT, context) -> {
                     try {
                         return decodeQuest(json.getAsJsonObject(), context);
-                    } catch (NoSuchFieldException | IllegalAccessException e) {
-                        throw new RuntimeException(e);
+                    } catch (IllegalAccessException e) {
+                        MessageUtil.sendException(this, e);
                     }
+
+                    return null;
                 })
                 .registerTypeAdapter(IQuest.class, new TypeAdapter<IQuest>() {
                     @Override
                     public void write(JsonWriter write, IQuest quest) throws IOException {
-                        write.value(quest.getId());
+                        write.value(quest != null ? quest.getId() : null);
                     }
 
                     @Override
                     public IQuest read(JsonReader read) throws IOException {
                         // If we reference the interface, then the type should be a string, and we return the stored object.
                         // Note: it must be loaded already, else this returns null.
+                        if(read.peek() == JsonToken.NULL) {
+                            read.nextNull();
+                            return null;
+                        }
+
                         return quests.getIfPresent(read.nextString());
                     }
                 })
@@ -254,7 +271,8 @@ public class QuestAPI extends ListenerModule {
         for (IQuestInstance instance : playerQuests.removeAll(pc.getUniqueCharacterId()))
             map.put(instance.getQuest().getId(), instance);
 
-        return this.rpc.savePlayerQuestsProgressNew(pc.getUniqueCharacterId(), map);
+        return this.rpc.savePlayerQuestsProgressNew(pc.getUniqueCharacterId(), map)
+                .next(v -> Promise.make(v != null));
     }
 
     private Promise<Boolean> onDelete(final PlayerCharacter pc) {
@@ -302,7 +320,7 @@ public class QuestAPI extends ListenerModule {
      * @param jo
      * @param context
      */
-    private Quest decodeQuest(JsonObject jo, JsonDeserializationContext context) throws NoSuchFieldException, IllegalAccessException {
+    private Quest decodeQuest(JsonObject jo, JsonDeserializationContext context) throws IllegalAccessException {
         IQuestPrerequisite[] prerequisites = new IQuestPrerequisite[0];
         {
             // TODO: Decode prerequisites
@@ -339,13 +357,24 @@ public class QuestAPI extends ListenerModule {
 
                 // Decode default input interface values
                 for(Map.Entry<String, JsonElement> optionEntry : obj.getAsJsonObject("inputs").entrySet()) {
-                    IInportValue in = (IInportValue)findField(IInportValue.class, nodeClass, optionEntry.getKey()).get(node);
-                    in.setDefaultValue(APIController.getInstance().getGson().fromJson(optionEntry.getValue(), in.getValueClass()));
+                    INodeInput in = (INodeInput)findField(INodeInput.class, nodeClass, optionEntry.getKey()).get(node);
+
+                    if(in == null) continue;
+
+                    // If it's a value type, then we set the default value. If it's not a value type, then it has no default,
+                    // as it is likely an execution port.
+                    if(in instanceof IInportValue) {
+                        IInportValue inv = (IInportValue)in;
+                        inv.setDefaultValue(APIController.getInstance().getGson().fromJson(optionEntry.getValue(), inv.getValueClass()));
+                    }
                 }
 
                 // Decode options
                 for(Map.Entry<String, JsonElement> optionEntry : obj.getAsJsonObject("options").entrySet()) {
                     Field f = findField(Object.class, nodeClass, optionEntry.getKey());
+
+                    if(f == null) continue;
+
                     f.set(node, APIController.getInstance().getGson().fromJson(optionEntry.getValue(), f.getType()));
                 }
 
@@ -361,11 +390,18 @@ public class QuestAPI extends ListenerModule {
                 JsonArray from = pair.getAsJsonArray("from");
                 JsonArray to = pair.getAsJsonArray("to");
 
-                IQuestNode fromNode = nodes.get(UUID.fromString(from.get(0).getAsString()));
-                IQuestNode toNode = nodes.get(UUID.fromString(to.get(0).getAsString()));
+                IQuestNode fromNode = nodes.get(from.get(0).getAsString());
+                IQuestNode toNode = nodes.get(to.get(0).getAsString());
 
                 INodeOutput out = (INodeOutput)findField(INodeOutput.class, fromNode.getClass(), from.get(1).getAsString()).get(fromNode);
-                INodeInput in = (INodeInput)findField(INodeInput.class, toNode.getClass(), to.get(1).getAsString()).get(fromNode);
+                if(out == null) {
+                    throw new IllegalArgumentException("Node '" + fromNode.getClass().getSimpleName() + "' must contain a(n) " + from.get(1).getAsString() + " outport!");
+                }
+
+                INodeInput in = (INodeInput)findField(INodeInput.class, toNode.getClass(), to.get(1).getAsString()).get(toNode);
+                if(in == null) {
+                    throw new IllegalArgumentException("Node '" + toNode.getClass().getSimpleName() + "' must contain a(n) " + to.get(1).getAsString() + " inport!");
+                }
 
                 out.addConnection(in);
                 in.setConnection(out);
@@ -380,13 +416,15 @@ public class QuestAPI extends ListenerModule {
                 prerequisites, repeat, nodes);
     }
 
-    private Field findField(Class<?> type, Class<?> clazz, String name) throws NoSuchFieldException, IllegalAccessException {
+    private Field findField(Class<?> type, Class<?> clazz, String name) {
         Field field = null;
         try {
             field = clazz.getField(name);
 
-            if(type.isAssignableFrom(field.getType())) {
-                field = null;
+            if(!Modifier.isTransient(field.getModifiers())) {
+                if (type.isAssignableFrom(field.getType())) {
+                    field = null;
+                }
             }
         } catch (NoSuchFieldException e) {
 
@@ -394,10 +432,13 @@ public class QuestAPI extends ListenerModule {
 
         if(field == null) {
             for(Field f : clazz.getFields()) {
+                if(Modifier.isTransient(f.getModifiers())) continue;
                 if(!type.isAssignableFrom(f.getType())) continue;
 
                 SerializedName serializedName = f.getAnnotation(SerializedName.class);
+                getLogger().info("  " + serializedName);
                 if(serializedName != null) {
+                    getLogger().info("  " + serializedName.value());
                     if(serializedName.value().equals(name)) {
                         field = f;
                         break;
@@ -406,9 +447,6 @@ public class QuestAPI extends ListenerModule {
             }
         }
 
-        if(field == null)
-            throw new NoSuchFieldException(name);
-        
         return field;
     }
 
@@ -429,7 +467,8 @@ public class QuestAPI extends ListenerModule {
         public void onCharacterLogout(PlayerCharacterLogoutEvent event) {
             PhaseLock lock = event.getLock("Quests");
 
-            onLogout(event.getPlayerCharacter()).on(lock::release);
+            onLogout(event.getPlayerCharacter())
+                    .on(lock::release);
         }
 
         @EventHandler

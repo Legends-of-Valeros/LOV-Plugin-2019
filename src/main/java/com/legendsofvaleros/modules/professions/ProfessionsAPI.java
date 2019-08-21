@@ -21,12 +21,12 @@ public class ProfessionsAPI extends ListenerModule {
     public interface RPC {
         Promise<List<GatheringNode>> getAllGatheringNodesByZoneId(String zoneId);
 
-        Promise<Boolean> saveGatheringNode(GatheringNode gatheringNode);
+        Promise<Object> saveGatheringNode(GatheringNode gatheringNode);
 
         Promise<Boolean> deleteGatheringNode(int id);
 
         //Playerprofessions
-        Promise<Boolean> savePlayerProfessions(PlayerProfession playerProfession);
+        Promise<Object> savePlayerProfessions(PlayerProfession playerProfession);
 
         Promise<Boolean> deletePlayerProfessions(CharacterId playerProfessions);
 
@@ -65,7 +65,7 @@ public class ProfessionsAPI extends ListenerModule {
                         }
                     }
                 });
-            }).onFailure(Throwable::printStackTrace);
+            });
         }));
     }
 
@@ -78,7 +78,7 @@ public class ProfessionsAPI extends ListenerModule {
                 if (zoneGatheringNodes.containsKey(gatheringNode.getZoneId())) {
                     zoneGatheringNodes.get(gatheringNode.getZoneId()).add(gatheringNode);
                 }
-            }).onFailure(Throwable::printStackTrace);
+            });
         }));
     }
 
@@ -87,7 +87,7 @@ public class ProfessionsAPI extends ListenerModule {
      */
     public void updateGatheringNode(GatheringNode gatheringNode) {
         getScheduler().executeInMyCircle(new InternalTask(() -> {
-            rpc.saveGatheringNode(gatheringNode).onFailure(Throwable::printStackTrace);
+            rpc.saveGatheringNode(gatheringNode);
         }));
     }
 
@@ -98,7 +98,7 @@ public class ProfessionsAPI extends ListenerModule {
         getScheduler().executeInMyCircle(new InternalTask(() -> {
                     rpc.deleteGatheringNode(gatheringNode.getId()).onSuccess(val -> {
                         zoneGatheringNodes.values().remove(gatheringNode);
-                    }).onFailure(Throwable::printStackTrace);
+                    });
                 })
         );
     }
@@ -127,7 +127,7 @@ public class ProfessionsAPI extends ListenerModule {
      * @param characterId
      * @return
      */
-    public Promise<Boolean> onLogout(CharacterId characterId) {
+    public Promise onLogout(CharacterId characterId) {
         PlayerProfession playerProfession = playerProfessionsMap.remove(characterId);
 
         if (playerProfession == null) {
@@ -141,7 +141,7 @@ public class ProfessionsAPI extends ListenerModule {
      * @param characterId
      * @return
      */
-    public Promise<Boolean> onDelete(CharacterId characterId) {
+    public Promise onDelete(CharacterId characterId) {
         return rpc.deletePlayerProfessions(characterId);
     }
 }

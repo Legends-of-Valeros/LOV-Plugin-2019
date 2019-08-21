@@ -28,7 +28,7 @@ public class FactionAPI extends ListenerModule {
         Promise<List<Faction>> findFactions();
 
         Promise<Map<String, Integer>> getPlayerFactionReputation(CharacterId characterId);
-        Promise<Boolean> savePlayerFactionReputation(CharacterId characterId, Map<String, Integer> factions);
+        Promise<Object> savePlayerFactionReputation(CharacterId characterId, Map<String, Integer> factions);
         Promise<Boolean> deletePlayerFactionReputation(CharacterId characterId);
     }
 
@@ -65,7 +65,7 @@ public class FactionAPI extends ListenerModule {
                     factions.put(fac.getId(), fac));
 
             getLogger().info("Loaded " + factions.size() + " factions.");
-        }).onFailure(Throwable::printStackTrace);
+        });
     }
 
     public Faction getFaction(String factionId) {
@@ -96,12 +96,9 @@ public class FactionAPI extends ListenerModule {
         });
     }
 
-    private Promise<Boolean> onLogout(CharacterId characterId) {
-        Promise<Boolean> promise = rpc.savePlayerFactionReputation(characterId, playerRep.row(characterId));
-
-        promise.on(() -> playerRep.row(characterId).clear());
-
-        return promise;
+    private Promise onLogout(CharacterId characterId) {
+        return rpc.savePlayerFactionReputation(characterId, playerRep.row(characterId))
+                .on(() -> playerRep.row(characterId).clear());
     }
 
     public Promise<Boolean> onDelete(CharacterId characterId) {

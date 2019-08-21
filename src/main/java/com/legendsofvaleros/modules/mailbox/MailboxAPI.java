@@ -19,9 +19,9 @@ public class MailboxAPI extends ListenerModule {
     public interface RPC {
         Promise<List<Mail>> getMails(CharacterId characterId);
 
-        Promise<Boolean> saveMail(Mail mail);
+        Promise<Object> saveMail(Mail mail);
 
-        Promise<Boolean> saveMailbox(ArrayList<Mail> mails);
+        Promise<Object> saveMailbox(ArrayList<Mail> mails);
 
         Promise<Boolean> deleteMailbox(CharacterId characterId);
     }
@@ -49,19 +49,15 @@ public class MailboxAPI extends ListenerModule {
      * @param mail
      * @return
      */
-    Promise<Boolean> saveMail(CharacterId characterId, Mail mail) {
-        Promise<Boolean> promise = rpc.saveMail(mail);
-
+    Promise saveMail(CharacterId characterId, Mail mail) {
         if (!mailboxes.containsKey(characterId)) {
-            promise.resolve(false);
-            return promise;
+            return Promise.make(false);
         }
-        Mailbox mailbox = mailboxes.get(characterId);
-        promise.onSuccess(val -> {
-            mailbox.mails.add(mail);
-        }).onFailure(Throwable::printStackTrace);
 
-        return promise;
+        return rpc.saveMail(mail)
+                .onSuccess(val -> {
+                    mailboxes.get(characterId).mails.add(mail);
+                });
     }
 
     /**
@@ -75,7 +71,7 @@ public class MailboxAPI extends ListenerModule {
         Mailbox mailbox = new Mailbox(characterId);
         promise.onSuccess(val -> {
             mailbox.mails.addAll(val.orElse(ImmutableList.of()));
-        }).onFailure(Throwable::printStackTrace);
+        });
         mailboxes.put(characterId, mailbox);
 
         return promise;
@@ -86,15 +82,12 @@ public class MailboxAPI extends ListenerModule {
      * @param characterId
      * @return
      */
-    Promise<Boolean> saveMailbox(CharacterId characterId) {
-        Promise<Boolean> promise = rpc.saveMailbox(new ArrayList<>());
+    Promise<Object> saveMailbox(CharacterId characterId) {
         if (!mailboxes.containsKey(characterId)) {
-            promise.resolve(false);
-            return promise;
+            return Promise.make(false);
         }
-        Mailbox mailbox = mailboxes.get(characterId);
 
-        return rpc.saveMailbox(mailbox.getMails());
+        return rpc.saveMailbox(mailboxes.get(characterId).getMails());
     }
 
     /**
@@ -103,9 +96,7 @@ public class MailboxAPI extends ListenerModule {
      * @return
      */
     Promise<Boolean> deleteMailbox(CharacterId characterId) {
-        Mailbox mailbox = mailboxes.get(characterId);
-
-        if (mailbox == null) {
+        if (mailboxes.remove(characterId) == null) {
             return null;
         }
 

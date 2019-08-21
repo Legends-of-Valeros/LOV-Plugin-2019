@@ -29,7 +29,7 @@ public class PersistentRegeneratingStats {
 
     private interface RPC {
         Promise<Map<RegeneratingStat, Double>> getPlayerStats(CharacterId characterId);
-        Promise<Boolean> savePlayerStats(CharacterId characterId, Map<RegeneratingStat, Double> map);
+        Promise<Object> savePlayerStats(CharacterId characterId, Map<RegeneratingStat, Double> map);
     }
 
     private RPC rpc;
@@ -48,7 +48,7 @@ public class PersistentRegeneratingStats {
         });
     }
 
-    private Promise<Boolean> onLogout(CharacterId characterId, CombatEntity ce) {
+    private Promise onLogout(CharacterId characterId, CombatEntity ce) {
         Map<RegeneratingStat, Double> stats = new HashMap<>();
 
         for (RegeneratingStat stat : STATS)

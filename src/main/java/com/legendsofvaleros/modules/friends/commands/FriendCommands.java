@@ -65,7 +65,7 @@ public class FriendCommands extends BaseCommand {
 
             FriendsController.getInstance().getFriends(sender.getUniqueId()).remove(target);
             FriendsController.getInstance().getFriends(target).remove(sender.getUniqueId());
-        }).onFailure(Throwable::printStackTrace);
+        });
     }
 
     @Subcommand("accept")

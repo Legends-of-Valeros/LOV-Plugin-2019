@@ -22,7 +22,7 @@ public class FastTravelAPI extends Module {
     public interface RPC {
         Promise<List<String>> getPlayerFastTravels(CharacterId characterId);
 
-        Promise<Boolean> savePlayerFastTravels(CharacterId characterId, Collection<String> discovered);
+        Promise<Object> savePlayerFastTravels(CharacterId characterId, Collection<String> discovered);
 
         Promise<Boolean> deletePlayerFastTravels(CharacterId characterId);
     }
@@ -58,12 +58,9 @@ public class FastTravelAPI extends Module {
                     fastTravels.put(characterId, npcId)));
     }
 
-    private Promise<Boolean> onLogout(CharacterId characterId) {
-        Promise<Boolean> promise = rpc.savePlayerFastTravels(characterId, fastTravels.get(characterId));
-
-        promise.on(() -> fastTravels.removeAll(characterId));
-
-        return promise;
+    private Promise onLogout(CharacterId characterId) {
+        return rpc.savePlayerFastTravels(characterId, fastTravels.get(characterId))
+                .on(() -> fastTravels.removeAll(characterId));
     }
 
     public Promise<Boolean> onDelete(CharacterId characterId) {

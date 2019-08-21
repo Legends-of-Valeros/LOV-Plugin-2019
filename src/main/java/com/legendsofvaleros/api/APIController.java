@@ -87,6 +87,7 @@ public class APIController extends Module {
                     read.nextNull();
                     return null;
                 }
+
                 return CharacterId.fromString(read.nextString());
             }
         });
@@ -99,6 +100,11 @@ public class APIController extends Module {
 
             @Override
             public World read(JsonReader read) throws IOException {
+                if(read.peek() == JsonToken.NULL) {
+                    read.nextNull();
+                    return null;
+                }
+
                 return Bukkit.getWorld(read.nextString());
             }
         };

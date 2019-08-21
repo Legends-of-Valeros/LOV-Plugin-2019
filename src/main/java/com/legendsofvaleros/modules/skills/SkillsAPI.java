@@ -20,7 +20,7 @@ import java.util.Map;
 public class SkillsAPI extends ListenerModule {
     public interface RPC {
         Promise<Map<Integer, String>> getSkillBar(CharacterId characterId);
-        Promise<Boolean> saveSkillBar(CharacterId characterId, Map<Integer, String> map);
+        Promise<Object> saveSkillBar(CharacterId characterId, Map<Integer, String> map);
         Promise<Boolean> deleteSkillBar(CharacterId characterId);
     }
 
@@ -45,13 +45,13 @@ public class SkillsAPI extends ListenerModule {
                 skills.row(pc.getUniqueCharacterId()).putAll(map.orElse(ImmutableMap.of())));
     }
 
-    private Promise<Boolean> onLogout(PlayerCharacter pc) {
+    private Promise onLogout(PlayerCharacter pc) {
         return rpc.saveSkillBar(pc.getUniqueCharacterId(), skills.row(pc.getUniqueCharacterId())).onSuccess(map -> {
             skills.row(pc.getUniqueCharacterId()).clear();
         });
     }
 
-    private Promise<Boolean> onDelete(PlayerCharacter pc) {
+    private Promise onDelete(PlayerCharacter pc) {
         return rpc.deleteSkillBar(pc.getUniqueCharacterId()).on(() -> {
             skills.row(pc.getUniqueCharacterId()).clear();
         });

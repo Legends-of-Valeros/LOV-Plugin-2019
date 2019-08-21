@@ -29,7 +29,7 @@ public class CooldownsAPI extends Module {
 
 	private interface RPC {
 		Promise<Map<String, CooldownData>> getPlayerCooldowns(CharacterId characterId);
-		Promise<Boolean> savePlayerCooldowns(CharacterId characterId, Map<String, CooldownData> cooldowns);
+		Promise<Object> savePlayerCooldowns(CharacterId characterId, Map<String, CooldownData> cooldowns);
 		Promise<Boolean> deletePlayerCooldowns(CharacterId characterId);
 	}
 
@@ -80,7 +80,7 @@ public class CooldownsAPI extends Module {
 	 * Makes an asynchronous attempt to persistently save cooldown changes to the database record for
 	 * a player-character.
 	 */
-	private Promise<Boolean> onLogout(PlayerCharacter pc) {
+	private Promise onLogout(PlayerCharacter pc) {
 		Map<String, CooldownData> save = new HashMap<>();
 
 		CharacterCooldowns cools = cooldowns.get(pc.getUniqueCharacterId());
@@ -118,7 +118,7 @@ public class CooldownsAPI extends Module {
 		return rpc.savePlayerCooldowns(pc.getUniqueCharacterId(), save);
 	}
 
-	private Promise<Boolean> onDelete(PlayerCharacter pc) {
+	private Promise onDelete(PlayerCharacter pc) {
 		return rpc.deletePlayerCooldowns(pc.getUniqueCharacterId());
 	}
 

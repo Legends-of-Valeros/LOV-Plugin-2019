@@ -23,11 +23,11 @@ public class AuctionAPI extends ListenerModule {
 
         Promise<Auction> getAuction(int id);
 
-        Promise<Boolean> saveAuction(Auction auction);
+        Promise<Object> saveAuction(Auction auction);
 
         Promise<Boolean> deleteAuction(int auctionId);
 
-        Promise<Boolean> saveAuctionBidEntry(BidHistoryEntry entry);
+        Promise<Object> saveAuctionBidEntry(BidHistoryEntry entry);
 
         Promise<List<BidHistoryEntry>> getAllBidHistoryEntries(int auctionId);
     }
@@ -60,7 +60,7 @@ public class AuctionAPI extends ListenerModule {
             auctions.addAll(val.orElse(ImmutableList.of()));
 
             AuctionController.getInstance().getLogger().info("Loaded " + auctions.size() + " auctions.");
-        }).onFailure(Throwable::printStackTrace);
+        });
     }
 
     public Promise<List<Auction>> loadBidAuctions() {
@@ -68,7 +68,7 @@ public class AuctionAPI extends ListenerModule {
 
         promise.onSuccess(val -> {
             auctions.addAll(val.orElse(ImmutableList.of()));
-        }).onFailure(Throwable::printStackTrace);
+        });
 
         return promise;
     }
@@ -77,13 +77,13 @@ public class AuctionAPI extends ListenerModule {
         getScheduler().executeInMyCircle(new InternalTask(() -> {
             rpc.saveAuction(auction).onSuccess(() -> {
                 auctions.add(auction);
-            }).onFailure(Throwable::printStackTrace);
+            });
         }));
     }
 
     void updateAuction(Auction auction) {
         getScheduler().executeInMyCircle(new InternalTask(() -> {
-            rpc.saveAuction(auction).onFailure(Throwable::printStackTrace);
+            rpc.saveAuction(auction);
         }));
     }
 
@@ -91,7 +91,7 @@ public class AuctionAPI extends ListenerModule {
         getScheduler().executeInMyCircle(new InternalTask(() -> {
                     rpc.deleteAuction(auction.getId()).onSuccess(val -> {
                         auctions.remove(auction);
-                    }).onFailure(Throwable::printStackTrace);
+                    });
                 })
         );
     }

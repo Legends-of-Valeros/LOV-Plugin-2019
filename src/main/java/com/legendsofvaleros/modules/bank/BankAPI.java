@@ -16,12 +16,13 @@ import org.bukkit.event.Listener;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class BankAPI extends ListenerModule {
     public interface RPC {
         Promise<Bank> getPlayerBank(CharacterId characterId);
 
-        Promise<Boolean> savePlayerBank(Bank bank);
+        Promise<Object> savePlayerBank(Bank bank);
 
         Promise<Boolean> deletePlayerBank(CharacterId characterId);
     }
@@ -57,23 +58,16 @@ public class BankAPI extends ListenerModule {
         return promise;
     }
 
-    private Promise<Boolean> onLogout(CharacterId characterId) {
-        Promise<Boolean> promise = new Promise<>();
+    private Promise onLogout(CharacterId characterId) {
         Bank bank = banks.remove(characterId);
 
-        if (bank == null) {
-            promise.resolve(false);
-        } else {
-            rpc.savePlayerBank(bank).on((err, val) -> {
-                if (err.isPresent()) promise.reject(err.get());
-                else promise.resolve(val.orElse(false));
-            });
-        }
+        if(bank == null)
+            return Promise.make(false);
 
-        return promise;
+        return rpc.savePlayerBank(bank);
     }
 
-    public Promise<Boolean> onDelete(CharacterId characterId) {
+    public Promise onDelete(CharacterId characterId) {
         return removeBank(characterId);
     }
 
@@ -97,14 +91,12 @@ public class BankAPI extends ListenerModule {
             PhaseLock lock = event.getLock("Bank");
 
             onLogout(event.getPlayerCharacter().getUniqueCharacterId())
-                    .onFailure((err) -> MessageUtil.sendSevereException(BankController.getInstance(), event.getPlayer(), err))
                     .on(lock::release);
         }
 
         @EventHandler
         public void onCharacterRemoved(PlayerCharacterRemoveEvent event) {
-            onDelete(event.getPlayerCharacter().getUniqueCharacterId())
-                    .onFailure((err) -> MessageUtil.sendSevereException(BankController.getInstance(), event.getPlayer(), err));
+            onDelete(event.getPlayerCharacter().getUniqueCharacterId());
         }
     }
 }

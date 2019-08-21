@@ -55,7 +55,7 @@ public class GearAPI extends Module {
 
             GearController.ERROR_ITEM = Gear.fromId("perfectly-generic-item");
             getLogger().info("Loaded " + gear.size() + " items.");
-        }).onFailure(Throwable::printStackTrace);
+        });
     }
 
     public Gear getGear(String id) {

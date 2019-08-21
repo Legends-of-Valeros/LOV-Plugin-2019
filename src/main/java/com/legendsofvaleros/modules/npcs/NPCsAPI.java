@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.npcs;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
@@ -35,7 +36,7 @@ public class NPCsAPI extends ListenerModule {
 
         Promise<List<Skin>> findSkins();
 
-        Promise<Boolean> saveNPC(NPCData npc);
+        Promise<Object> saveNPC(NPCData npc);
     }
 
     protected RPC rpc;
@@ -80,13 +81,18 @@ public class NPCsAPI extends ListenerModule {
                 .registerTypeAdapter(ISkin.class, new TypeAdapter<ISkin>() {
                     @Override
                     public void write(JsonWriter write, ISkin skin) throws IOException {
-                        write.value(skin.getId());
+                        write.value(skin != null ? skin.getId() : null);
                     }
 
                     @Override
                     public ISkin read(JsonReader read) throws IOException {
                         // If we reference the interface, then the type should be a string, and we return the stored object.
                         // Note: it must be loaded already, else this returns null.
+                        if(read.peek() == JsonToken.NULL) {
+                            read.nextNull();
+                            return null;
+                        }
+
                         return skins.get(read.nextString());
                     }
                 });
@@ -114,7 +120,6 @@ public class NPCsAPI extends ListenerModule {
 
                     LootController.getInstance().getLogger().info("Loaded " + npcs.size() + " NPCs.");
                 })
-                .onFailure(Throwable::printStackTrace)
                 .next(rpc::findSkins)
                 .onSuccess(val -> {
                     skins.clear();
@@ -124,8 +129,7 @@ public class NPCsAPI extends ListenerModule {
                     });
 
                     LootController.getInstance().getLogger().info("Loaded " + skins.size() + " skins.");
-                })
-                .onFailure(Throwable::printStackTrace);
+                });
     }
 
     public void registerTrait(String id, Class<? extends LOVTrait> trait) {
@@ -151,7 +155,7 @@ public class NPCsAPI extends ListenerModule {
         getScheduler().executeInMyCircle(() -> {
             rpc.saveNPC(traitLOV.getNpcData()).onSuccess(() -> {
                 MessageUtil.sendInfo(Bukkit.getConsoleSender(), "Successfully saved npc " + traitLOV.npcId + " at " + traitLOV.getNPC().getStoredLocation());
-            }).onFailure(Throwable::printStackTrace);
+            });
         });
     }
 

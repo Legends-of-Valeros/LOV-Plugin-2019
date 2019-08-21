@@ -13,7 +13,7 @@ public class FriendsAPI extends ListenerModule {
     public interface RPC {
         Promise<List<UUID>> getAllFriends(UUID uuid);
 
-        Promise<Boolean> saveFriend(UUID player, UUID friend, Date friendsSince);
+        Promise<Object> saveFriend(UUID player, UUID friend, Date friendsSince);
 
         Promise<Boolean> deleteFriend(UUID player, UUID friend);
     }
@@ -41,7 +41,7 @@ public class FriendsAPI extends ListenerModule {
             rpc.saveFriend(friendRequest.getSenderID(), friendRequest.getReceiverID(), new Date()).onSuccess(() -> {
                 playerFriendsMap.get(friendRequest.getSenderID()).add(friendRequest.getReceiverID());
                 playerFriendsMap.get(friendRequest.getReceiverID()).add(friendRequest.getSenderID());
-            }).onFailure(Throwable::printStackTrace);
+            });
         });
     }
 

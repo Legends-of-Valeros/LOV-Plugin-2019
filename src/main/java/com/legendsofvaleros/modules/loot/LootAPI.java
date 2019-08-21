@@ -5,6 +5,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.TypeAdapter;
 import com.google.gson.internal.bind.ObjectTypeAdapter;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
@@ -40,13 +41,18 @@ public class LootAPI extends Module {
                 .registerTypeAdapter(ILootTable.class, new TypeAdapter<ILootTable>() {
                     @Override
                     public void write(JsonWriter write, ILootTable loot) throws IOException {
-                        write.value(loot.getId());
+                        write.value(loot != null ? loot.getId() : null);
                     }
 
                     @Override
                     public ILootTable read(JsonReader read) throws IOException {
                         // If we reference the interface, then the type should be a string, and we return the stored object.
                         // Note: it must be loaded already, else this returns null.
+                        if(read.peek() == JsonToken.NULL) {
+                            read.nextNull();
+                            return null;
+                        }
+
                         return tables.get(read.nextString());
                     }
                 });
@@ -71,6 +77,6 @@ public class LootAPI extends Module {
                     tables.put(table.getId(), table));
 
             LootController.getInstance().getLogger().info("Loaded " + tables.size() + " loot tables.");
-        }).onFailure(Throwable::printStackTrace);
+        });
     }
 }

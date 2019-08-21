@@ -13,7 +13,7 @@ public class PlayerData {
     private interface RPC {
         Promise<PlayerData> getPlayer(UUID uuid);
 
-        Promise<Boolean> savePlayer(PlayerData data);
+        Promise<Object> savePlayer(PlayerData data);
     }
 
     private static RPC rpc;
@@ -47,8 +47,8 @@ public class PlayerData {
         });
     }
 
-    public static Promise<Boolean> save(PlayerData data) {
-        return rpc.savePlayer(data);
+    public static Promise save(PlayerData data) {
+        return rpc.savePlayer(data).next(v -> Promise.make(v != null));
     }
 
 }

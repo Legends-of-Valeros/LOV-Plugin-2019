@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
@@ -52,13 +53,18 @@ public class ZonesAPI extends ListenerModule {
                 .registerTypeAdapter(IZone.class, new TypeAdapter<IZone>() {
                     @Override
                     public void write(JsonWriter write, IZone zone) throws IOException {
-                        write.value(zone.getId());
+                        write.value(zone != null ? zone.getId() : null);
                     }
 
                     @Override
                     public IZone read(JsonReader read) throws IOException {
                         // If we reference the interface, then the type should be a string, and we return the stored object.
                         // Note: it must be loaded already, else this returns null.
+                        if(read.peek() == JsonToken.NULL) {
+                            read.nextNull();
+                            return null;
+                        }
+
                         return zones.get(read.nextString());
                     }
                 });
@@ -83,7 +89,7 @@ public class ZonesAPI extends ListenerModule {
                     zones.put(zone.id, zone));
 
             getLogger().info("Loaded " + zones.size() + " zones.");
-        }).onFailure(Throwable::printStackTrace);
+        });
     }
 
 
