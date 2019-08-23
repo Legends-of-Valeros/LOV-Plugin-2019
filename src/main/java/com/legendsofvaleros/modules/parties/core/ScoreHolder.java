@@ -7,7 +7,8 @@ import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
-import com.legendsofvaleros.util.PlayerData;
+import com.legendsofvaleros.modules.playerdata.PlayerData;
+import com.legendsofvaleros.modules.playerdata.PlayerDataController;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
@@ -29,15 +30,15 @@ public class ScoreHolder {
 
     public ScoreHolder(CharacterId uuid) {
         this.uuid = uuid;
+        this.name = Bukkit.getOfflinePlayer(uuid.getPlayerId()).getName();
 
-        name = Bukkit.getOfflinePlayer(uuid.getPlayerId()).getName();
-        if (name == null) {
-            name = "Unknown Player";
-
-            PlayerData.get(uuid.getPlayerId()).onSuccess(val -> {
-                if (!val.isPresent()) return;
-                name = val.get().username;
-            });
+        if (this.name == null) {
+            PlayerData data = PlayerDataController.getInstance().getPlayerData(uuid.getPlayerId());
+            if (data != null && ! data.username.isEmpty()) {
+                this.name = data.username;
+            } else {
+                this.name = "Unknown Player";
+            }
         }
 
         update();

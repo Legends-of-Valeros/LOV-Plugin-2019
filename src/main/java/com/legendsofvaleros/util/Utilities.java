@@ -26,7 +26,6 @@ import org.bukkit.util.Vector;
 
 import java.util.Date;
 
-// TODO: Create subclass for listeners?
 @ModuleInfo(name = "Utilities", info = "")
 public class Utilities extends ListenerModule {
     private static Utilities instance;
@@ -50,7 +49,6 @@ public class Utilities extends ListenerModule {
 
         Discord.onEnable();
         LoggingOut.onEnable();
-        PlayerData.onEnable();
 
         new TitleUtil();
 
@@ -181,7 +179,6 @@ public class Utilities extends ListenerModule {
         }
         return true;
     }
-
 
 
     /**
