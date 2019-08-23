@@ -1,40 +1,53 @@
 package com.legendsofvaleros.modules.arena;
 
-import com.legendsofvaleros.module.ListenerModule;
-import com.legendsofvaleros.modules.queue.QueueAbleClass;
+import com.legendsofvaleros.modules.arena.arenamodes.ArenaMode;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.List;
 
 /**
  * Created by Crystall on 07/24/2019
  */
-public class Arena extends ListenerModule implements QueueAbleClass {
+public class Arena {
+    private ArenaMode arenaMode;
+    private List<Player> team1;
+    private List<Player> team2;
+    private boolean isRanked;
 
-    @Override
-    public void onLoad() {
-        super.onLoad();
+    public Arena(List<Player> team1, List<Player> team2, ArenaMode arenaMode, boolean isRanked) {
+        this.team1 = team1;
+        this.team2 = team2;
+        this.arenaMode = arenaMode;
+        this.isRanked = isRanked;
     }
 
-    @Override
-    public void onUnload() {
-        super.onUnload();
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        //TODO
     }
 
-    @Override
-    public void init(List<Player> players) {
-
-    }
-
-    @Override
-    public void onFinish() {
-
-    }
-
-    @Override
-    public void onCancel() {
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerQuit(PlayerQuitEvent event) {
 
     }
 
+    public void onFinish(Player winner) {
+        arenaMode.onFinish(winner);
+    }
+
+    public List<Player> getTeam1() {
+        return team1;
+    }
+
+    public List<Player> getTeam2() {
+        return team2;
+    }
+
+    public ArenaMode getMode() {
+        return arenaMode;
+    }
 
 }

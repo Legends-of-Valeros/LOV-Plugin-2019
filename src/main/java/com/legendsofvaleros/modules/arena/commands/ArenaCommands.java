@@ -21,4 +21,10 @@ public class ArenaCommands {
         //TODO get arena and quit out of it
     }
 
+    @Subcommand("setSpawn")
+    @Description("Sets the 'middle' of the arena. This is a workaround until instanced arenas are a thing")
+    public void onSetSpawn(Player player) {
+
+    }
+
 }
