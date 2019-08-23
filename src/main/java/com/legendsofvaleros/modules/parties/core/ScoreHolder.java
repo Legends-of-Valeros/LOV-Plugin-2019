@@ -18,10 +18,9 @@ import static com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat.HE
  * Created by Crystall on 04/05/2019
  */
 public class ScoreHolder {
-
     String name;
-
     CharacterId uuid;
+
     boolean online = false;
     boolean current = false;
 
@@ -83,8 +82,9 @@ public class ScoreHolder {
     public String getHealthString() {
         StringBuilder sb = new StringBuilder();
         sb.append("♥♥♥♥♥♥");
-        if (this.current)
+        if (this.current) {
             sb.insert(health, ChatColor.GRAY);
+        }
         sb.insert(0, this.current ? ChatColor.RED : (online ? ChatColor.DARK_GRAY : ChatColor.BLACK));
         return sb.toString();
     }
@@ -95,8 +95,9 @@ public class ScoreHolder {
     public String getEnergyString() {
         StringBuilder sb = new StringBuilder();
         sb.append("☼☼☼☼☼☼");
-        if (this.current)
+        if (this.current) {
             sb.insert(6 - energyMana, ChatColor.AQUA);
+        }
         sb.insert(0, this.current ? ChatColor.GRAY : (online ? ChatColor.DARK_GRAY : ChatColor.BLACK));
         return sb.toString();
     }

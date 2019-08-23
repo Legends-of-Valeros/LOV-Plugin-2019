@@ -36,6 +36,15 @@ public class Queue<T> {
         this.queueName = get().getClass().getCanonicalName();
     }
 
+    public boolean addPlayerToQueue(Player player) {
+        if (queuedPlayers.contains(player)) {
+            return false;
+        }
+
+        queuedPlayers.add(player);
+        return true;
+    }
+
     public List<Player> getQueuedPlayers() {
         return queuedPlayers;
     }

@@ -62,7 +62,6 @@ public class Utilities extends ListenerModule {
         super.onPostLoad();
 
         Model.onPostLoad();
-
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -111,14 +110,17 @@ public class Utilities extends ListenerModule {
         // finish (maybe)? Does this create a race condition?
         getScheduler().executeInMyCircleTimer(() -> {
             for (InternalScheduler scheduler : InternalScheduler.getAllSchedulers()) {
-                if (scheduler == getScheduler()) continue;
+                if (scheduler == getScheduler()) {
+                    continue;
+                }
 
                 scheduler.shutdown();
 
                 if (scheduler.getTasksRemaining() > 0) {
                     getLogger().info("Waiting for " + scheduler.getTasksRemaining() + " tasks to complete in " + scheduler.getName() + " (" + scheduler.getCurrentTick() + ")...");
-                    for (InternalTask task : scheduler.getTasksQueued())
+                    for (InternalTask task : scheduler.getTasksQueued()) {
                         getLogger().info(" -" + task.toString());
+                    }
                     return;
                 }
             }

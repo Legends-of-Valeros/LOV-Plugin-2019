@@ -2,11 +2,13 @@ package com.legendsofvaleros.modules.queue;
 
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ListenerModule;
-import com.legendsofvaleros.modules.arena.Arena;
 import com.legendsofvaleros.modules.queue.commands.QueueCommands;
+import com.legendsofvaleros.modules.queue.events.QueueAcceptEvent;
+import com.legendsofvaleros.modules.queue.events.QueueDenyEvent;
+import com.legendsofvaleros.modules.queue.events.QueueReadyEvent;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.commands.TemporaryCommand;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 
 import java.util.ArrayList;
 
@@ -25,7 +27,6 @@ public class QueueController extends ListenerModule {
     @Override
     public void onLoad() {
         super.onLoad();
-
         instance = this;
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new QueueCommands());
@@ -45,21 +46,35 @@ public class QueueController extends ListenerModule {
         return queues.add(queue);
     }
 
+    /**
+     * Lets a player join a queue if he is not already in the queue
+     * @param clazz
+     * @param player
+     * @return
+     */
     public boolean joinQueue(Class clazz, Player player) {
-        // TODO
-        return true;
+        Queue queue = getQueueByType(clazz);
+        if (queue == null) {
+            return false;
+        }
+        if (isInQueue(player, queue.getQueueName())) {
+            return false;
+        }
+
+        if (queue.addPlayerToQueue(player)) {
+
+            return true;
+        }
+
+        return false;
     }
 
-    public boolean joinQueue(Queue queue, Player player) {
-        // TODO
-        return true;
-    }
-
-    public boolean joinQueue(String queueName, Player player) {
-        // TODO
-        return true;
-    }
-
+    /**
+     * Lets a player leave the queue if he is part of it
+     * @param clazz
+     * @param player
+     * @return
+     */
     public boolean leaveQueue(Class clazz, Player player) {
         // TODO
         return true;
@@ -85,6 +100,10 @@ public class QueueController extends ListenerModule {
         return queues.stream().filter(q -> q.getQueuedPlayers().contains(player)).filter(queue1 -> queue1.getQueueName().equals(queueName)).findAny().orElse(null) != null;
     }
 
+    public boolean isInQueue(Player player, Class clazz) {
+        return getPlayerQueue(player).get() == clazz;
+    }
+
     /**
      * Returns a player's queue, null otherwise
      * @param player
@@ -92,6 +111,42 @@ public class QueueController extends ListenerModule {
      */
     public Queue getPlayerQueue(Player player) {
         return queues.stream().filter(q -> q.getQueuedPlayers().contains(player)).findAny().orElse(null);
+    }
+
+    public Queue getQueueByType(Class clazz) {
+        return queues.stream().filter(q -> q.get().equals(clazz)).findAny().orElse(null);
+    }
+
+    /**
+     * Shows the given player the queue scoreboard gui
+     * @param player
+     */
+    public void showQueueGui(Player player) {
+        //TODO
+    }
+
+    /**
+     * @param event
+     */
+    @EventHandler
+    public void onPlayerAccept(QueueAcceptEvent event) {
+
+    }
+
+    /**
+     * @param event
+     */
+    @EventHandler
+    public void onPlayerDeny(QueueDenyEvent event) {
+
+    }
+
+    /**
+     * @param event
+     */
+    @EventHandler
+    public void onQueueReadyEvent(QueueReadyEvent event) {
+
     }
 
 

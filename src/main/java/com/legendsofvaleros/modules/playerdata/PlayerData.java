@@ -11,4 +11,7 @@ public class PlayerData {
     PlayerData(UUID uuid) {
         this.uuid = uuid;
     }
+
+    // TODO add getter / handler for all player kind of stuff
+    // for example getcharacter / get professions / get arena rank data etc.
 }
