@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.queue.gui;
 
 import com.codingforcookies.robert.core.GUI;
+import com.codingforcookies.robert.core.GuiItem;
 import com.legendsofvaleros.modules.arena.arenamodes.OneVersusOne;
 import com.legendsofvaleros.modules.arena.arenamodes.TwoVersusTwo;
 import com.legendsofvaleros.modules.queue.QueueController;
@@ -13,7 +14,6 @@ public class ArenaQueueGui extends GUI {
 
     public ArenaQueueGui() {
         super("Arena");
-        type(1);
         init();
     }
 
@@ -26,11 +26,11 @@ public class ArenaQueueGui extends GUI {
         }
 
         // casual mode
-        slot(23, Material.APPLE, (gui, p, e) -> QueueController.getInstance().joinQueue(OneVersusOne.class, p));
-        slot(25, Material.APPLE, (gui, p, e) -> QueueController.getInstance().joinQueue(TwoVersusTwo.class, p));
+        slot(11, GuiItem.ONE_VERSUS_ONE.toItemStack(), (gui, p, e) -> QueueController.getInstance().joinQueue(OneVersusOne.class, p));
+        slot(12, GuiItem.TWO_VERSUS_TWO.toItemStack(), (gui, p, e) -> QueueController.getInstance().joinQueue(TwoVersusTwo.class, p));
 
         // ranked mode
-        slot(32, Material.APPLE, (gui, p, e) -> QueueController.getInstance().joinQueue(OneVersusOne.class, p));
-        slot(33, Material.APPLE, (gui, p, e) -> QueueController.getInstance().joinQueue(TwoVersusTwo.class, p));
+        slot(14, GuiItem.RANKED_ONE_VERSUS_ONE.toItemStack(), (gui, p, e) -> QueueController.getInstance().joinQueue(OneVersusOne.class, p));
+        slot(15, GuiItem.RANKED_TWO_VERSUS_TWO.toItemStack(), (gui, p, e) -> QueueController.getInstance().joinQueue(TwoVersusTwo.class, p));
     }
 }

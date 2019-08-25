@@ -170,12 +170,15 @@
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>LibsDisguises</groupId>-->
-        <!--            <artifactId>LibsDisguises</artifactId>-->
-        <!--            <version>LATEST</version>-->
-        <!--            <scope>provided</scope>-->
-        <!--        </dependency>-->
+
+        <!-- Libs disguises -->
+<!--        <dependency>-->
+<!--            <groupId>LibsDisguises</groupId>-->
+<!--            <artifactId>LibsDisguises</artifactId>-->
+<!--            <version>9.8.2</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
+
         <!--  Craftbukkit  -->
         <dependency>
             <groupId>org.bukkit</groupId>

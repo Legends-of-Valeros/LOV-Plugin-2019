@@ -28,7 +28,9 @@ public class FactionAPI extends ListenerModule {
         Promise<List<Faction>> findFactions();
 
         Promise<Map<String, Integer>> getPlayerFactionReputation(CharacterId characterId);
+
         Promise<Boolean> savePlayerFactionReputation(CharacterId characterId, Map<String, Integer> factions);
+
         Promise<Boolean> deletePlayerFactionReputation(CharacterId characterId);
     }
 
