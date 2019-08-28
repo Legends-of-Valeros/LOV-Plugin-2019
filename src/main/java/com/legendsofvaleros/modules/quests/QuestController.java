@@ -21,21 +21,22 @@ import com.legendsofvaleros.modules.quests.core.prerequisites.QuestsPrerequisite
 import com.legendsofvaleros.modules.quests.core.prerequisites.RacePrerequisite;
 import com.legendsofvaleros.modules.quests.events.QuestEndedEvent;
 import com.legendsofvaleros.modules.quests.events.QuestStartedEvent;
-import com.legendsofvaleros.modules.quests.nodes.MessageNode;
-import com.legendsofvaleros.modules.quests.nodes.QuestSuccessNode;
-import com.legendsofvaleros.modules.quests.nodes.QuestStartedNode;
-import com.legendsofvaleros.modules.quests.nodes.TestNode;
+import com.legendsofvaleros.modules.quests.nodes.character.*;
+import com.legendsofvaleros.modules.quests.nodes.entity.*;
+import com.legendsofvaleros.modules.quests.nodes.gear.*;
+import com.legendsofvaleros.modules.quests.nodes.npc.*;
+import com.legendsofvaleros.modules.quests.nodes.quest.*;
+import com.legendsofvaleros.modules.quests.nodes.utility.*;
+import com.legendsofvaleros.modules.quests.nodes.world.*;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.title.Title;
 import com.legendsofvaleros.util.title.TitleUtil;
 import io.chazza.advancementapi.AdvancementAPI;
 import io.chazza.advancementapi.FrameType;
 import io.chazza.advancementapi.Trigger;
-import net.citizensnpcs.api.event.NPCClickEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerEvent;
 
 @DependsOn(NPCsController.class)
 @DependsOn(CombatEngine.class)
@@ -87,10 +88,107 @@ public class QuestController extends QuestAPI {
         // PrerequisiteRegistry.addType("time", TimePrerequisite.class);
 
         getLogger().info("is registering nodes");
-        getNodeRegistry().addType("event_started", QuestStartedNode.class);
-        getNodeRegistry().addType("trigger_success", QuestSuccessNode.class);
-        getNodeRegistry().addType("message", MessageNode.class);
-        getNodeRegistry().addType("test", TestNode.class);
+        {
+            getLogger().info(" - Quest nodes");
+            {
+                getNodeRegistry().addType("quest:event_started", QuestStartedNode.class);
+
+                getNodeRegistry().addType("quest:trigger_success", QuestSuccessNode.class);
+                getNodeRegistry().addType("quest:trigger_fail", QuestFailNode.class);
+                getNodeRegistry().addType("quest:trigger_reset", QuestResetNode.class);
+
+                getNodeRegistry().addType("quest:log", QuestLogNode.class);
+                getNodeRegistry().addType("quest:offer", QuestOfferNode.class);
+            }
+
+            getLogger().info(" - Gear nodes");
+            {
+                getNodeRegistry().addType("gear:reference", ReferenceGearNode.class);
+
+                getNodeRegistry().addType("gear:give", AddGearNode.class);
+                getNodeRegistry().addType("gear:remove", RemoveGearNode.class);
+
+                getNodeRegistry().addType("gear:select", SelectGearNode.class);
+                getNodeRegistry().addType("gear:random", RandomGearNode.class);
+
+                getNodeRegistry().addType("gear:fetch", FetchGearNode.class);
+                getNodeRegistry().addType("gear:fetch_for", FetchGearForNode.class);
+                getNodeRegistry().addType("gear:equip", EquipGearNode.class);
+                getNodeRegistry().addType("gear:repair", RepairGearNode.class);
+            }
+
+            getLogger().info(" - World nodes");
+            {
+                getNodeRegistry().addType("world:flag_get", WorldFlagGetNode.class);
+                getNodeRegistry().addType("world:flag_set", WorldFlagSetNode.class);
+                getNodeRegistry().addType("world:flag_check", WorldFlagCheckNode.class);
+
+                getNodeRegistry().addType("world:region_access", RegionAccessNode.class);
+                getNodeRegistry().addType("world:region_deny", RegionDenyNode.class);
+                getNodeRegistry().addType("world:region_enter", RegionEnterNode.class);
+                getNodeRegistry().addType("world:region_exit", RegionExitNode.class);
+
+                getNodeRegistry().addType("world:particle", ParticleNode.class);
+                getNodeRegistry().addType("world:sound", SoundNode.class);
+
+                getNodeRegistry().addType("world:interact_block", InteractBlockNode.class);
+                getNodeRegistry().addType("world:interact_block_with", InteractBlockWithNode.class);
+
+                getNodeRegistry().addType("world:zone_enter", ZoneEnterNode.class);
+                getNodeRegistry().addType("world:zone_exit", ZoneExitNode.class);
+            }
+
+            getLogger().info(" - Entity nodes");
+            {
+                getNodeRegistry().addType("entity:reference", ReferenceEntityNode.class);
+
+                getNodeRegistry().addType("entity:conquer_region", ConquerRegionNode.class);
+                getNodeRegistry().addType("entity:conquer_zone", ConquerZoneNode.class);
+                getNodeRegistry().addType("entity:damage", DamageEntityNode.class);
+                getNodeRegistry().addType("entity:kill", KillEntityNode.class);
+            }
+
+            getLogger().info(" - NPC nodes");
+            {
+                getNodeRegistry().addType("npc:reference", ReferenceNPCNode.class);
+
+                getNodeRegistry().addType("npc:escort", NPCEscortNode.class);
+                getNodeRegistry().addType("npc:speak", NPCSpeakNode.class);
+
+                getNodeRegistry().addType("npc:talk", NPCTalkNode.class);
+                getNodeRegistry().addType("npc:return", NPCReturnNode.class);
+
+                getNodeRegistry().addType("npc:dialog", DialogNode.class);
+                getNodeRegistry().addType("npc:dialog_option", DialogOptionNode.class);
+            }
+
+            getLogger().info(" - Character nodes");
+            {
+                getNodeRegistry().addType("character:listen", ListenCharacterNode.class);
+
+                getNodeRegistry().addType("character:status_effect", StatusEffectNode.class);
+                getNodeRegistry().addType("character:xp", GiveXPNode.class);
+                getNodeRegistry().addType("character:teleport", TeleportNode.class);
+                getNodeRegistry().addType("character:credits", CreditsNode.class);
+
+                getNodeRegistry().addType("character:skill_bind", SkillBindNode.class);
+                getNodeRegistry().addType("character:skill_use", SkillUseNode.class);
+
+                getNodeRegistry().addType("character:currency_modify", CurrencyModifyNode.class);
+                getNodeRegistry().addType("character:reputation_modify", ReputationModifyNode.class);
+            }
+
+            getLogger().info(" - Utility nodes");
+            {
+                getNodeRegistry().addType("utility:timer", TimerNode.class);
+                getNodeRegistry().addType("utility:wait", WaitNode.class);
+                getNodeRegistry().addType("utility:command", CommandNode.class);
+                getNodeRegistry().addType("utility:notify", NotifyNode.class);
+                getNodeRegistry().addType("utility:title", TitleNode.class);
+                getNodeRegistry().addType("utility:message", MessageNode.class);
+            }
+        }
+
         /*NodeRegistry.addType("dummy", DummyObjective.class);
         NodeRegistry.addType("talk", TalkObjective.class);
         NodeRegistry.addType("return", ReturnObjective.class);

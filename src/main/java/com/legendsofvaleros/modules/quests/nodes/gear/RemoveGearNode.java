@@ -1,21 +1,12 @@
-package com.legendsofvaleros.modules.quests.nodes;
+package com.legendsofvaleros.modules.quests.nodes.gear;
 
 import com.google.gson.annotations.SerializedName;
-import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.characters.api.CharacterId;
-import com.legendsofvaleros.modules.quests.api.IQuestInstance;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
-import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitTask;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-public class MessageNode extends AbstractQuestNode<Void> {
+public class RemoveGearNode extends AbstractQuestNode<Void> {
     @SerializedName("Text")
     public IInportValue<String> text = new IInportValue<>(String.class, this, "N/A");
 
@@ -29,7 +20,7 @@ public class MessageNode extends AbstractQuestNode<Void> {
         onComplete.run(instance);
     });
 
-    public MessageNode(String id) {
+    public RemoveGearNode(String id) {
         super(id);
     }
 

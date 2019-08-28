@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.quests.nodes;
+package com.legendsofvaleros.modules.quests.nodes.quest;
 
 import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.quests.api.IQuestInstance;
