@@ -7,7 +7,7 @@ import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 
 public class QuestFailNode extends AbstractQuestNode<Void> {
     @SerializedName("Execute")
-    public IInportTrigger onExecute = new IInportTrigger(this, (instance, data) -> {
+    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> {
         QuestController.getInstance().failQuest(instance.getQuest(), instance.getPlayerCharacter());
     });
 

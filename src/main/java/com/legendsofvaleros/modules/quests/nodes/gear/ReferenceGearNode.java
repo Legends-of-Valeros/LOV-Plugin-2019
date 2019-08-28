@@ -1,24 +1,19 @@
 package com.legendsofvaleros.modules.quests.nodes.gear;
 
 import com.google.gson.annotations.SerializedName;
+import com.legendsofvaleros.modules.gear.GearController;
+import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
-import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
-import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
+import com.legendsofvaleros.modules.quests.core.ports.IOutportValue;
 
 public class ReferenceGearNode extends AbstractQuestNode<Void> {
-    @SerializedName("Text")
-    public IInportValue<String> text = new IInportValue<>(String.class, this, "N/A");
+    @SerializedName("Reference")
+    public IInportValue<Void, Gear> reference = new IInportValue<>(this, Gear.class, GearController.ERROR_ITEM);
 
-    @SerializedName("Completed")
-    public IOutportTrigger onComplete = new IOutportTrigger(this);
-
-    @SerializedName("Execute")
-    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> {
-        instance.getPlayerCharacter().getPlayer().sendMessage(text.get(instance));
-
-        onComplete.run(instance);
-    });
+    @SerializedName("Item")
+    public IOutportValue<Void, Gear> get = new IOutportValue<>(this, Gear.class,
+            (instance, data) -> reference.get(instance));
 
     public ReferenceGearNode(String id) {
         super(id);

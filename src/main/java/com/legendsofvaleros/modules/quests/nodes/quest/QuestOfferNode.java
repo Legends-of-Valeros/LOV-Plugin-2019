@@ -9,10 +9,10 @@ import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 
 public class QuestOfferNode extends AbstractQuestNode<Void> {
     @SerializedName("Quest")
-    public IInportValue<IQuest> quest = new IInportValue<>(IQuest.class,this, null);
+    public IInportValue<Void, IQuest> quest = new IInportValue<>(this, IQuest.class, null);
 
     @SerializedName("Execute")
-    public IInportTrigger onExecute = new IInportTrigger(this, (instance, data) -> {
+    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> {
         IQuest q = quest.get(instance);
         if(q != null)
             QuestController.getInstance().offerQuest(quest.get(instance), instance.getPlayerCharacter());

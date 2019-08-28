@@ -9,27 +9,30 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
-public class IOutportValue<T, V> implements INodeOutput<IInportValue<V>> {
+public class IOutportValue<T, V> implements INodeOutput<IInportValue<?, V>> {
     final IQuestNode<T> node;
 
-    final Set<IInportValue<V>> ports;
+    Class<V> valClass;
+    final Set<IInportValue<?, V>> ports;
 
     final INodeReturn<T, V> runnable;
 
-    public IOutportValue(IQuestNode node, @NotNull INodeReturn runnable) {
+    public IOutportValue(IQuestNode<T> node, Class<V> valClass, @NotNull INodeReturn<T, V> runnable) {
         this.node = node;
+
+        this.valClass = valClass;
         this.runnable = runnable;
 
         this.ports = new HashSet<>();
     }
 
     @Override
-    public void addConnection(IInportValue<V> port) {
+    public void addConnection(IInportValue<?, V> port) {
         this.ports.add(port);
     }
 
     @Override
-    public Set<IInportValue<V>> getConnected() {
+    public Set<IInportValue<?, V>> getConnected() {
         return this.ports;
     }
 

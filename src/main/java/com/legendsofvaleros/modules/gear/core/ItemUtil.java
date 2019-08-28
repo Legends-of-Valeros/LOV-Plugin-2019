@@ -88,6 +88,8 @@ public class ItemUtil {
      * @return wasRemoved
      */
     public static boolean removeItem(Player player, Gear.Instance gear) {
+        // TODO: This just... doesnt work. it only removes from a single stack, even if there's not enough to satisfy the amount.
+        // If there's not enough to remove everything, we should return false and not remove anything.
         ItemStack itemStack = gear.toStack();
         for (int i = 0; i < player.getInventory().getSize(); i++) {
             // Check if a fixed item is on the current slot

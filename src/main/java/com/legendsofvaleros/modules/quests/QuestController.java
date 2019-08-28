@@ -108,16 +108,17 @@ public class QuestController extends QuestAPI {
             {
                 getNodeRegistry().addType("gear:reference", ReferenceGearNode.class);
 
-                getNodeRegistry().addType("gear:give", AddGearNode.class);
-                getNodeRegistry().addType("gear:remove", RemoveGearNode.class);
+                getNodeRegistry().addType("gear:has", HasItemNode.class);
+                getNodeRegistry().addType("gear:give", AddItemNode.class);
+                getNodeRegistry().addType("gear:remove", RemoveItemNode.class);
 
-                getNodeRegistry().addType("gear:select", SelectGearNode.class);
-                getNodeRegistry().addType("gear:random", RandomGearNode.class);
+                getNodeRegistry().addType("gear:select", SelectItemNode.class);
+                getNodeRegistry().addType("gear:random", RandomItemNode.class);
 
-                getNodeRegistry().addType("gear:fetch", FetchGearNode.class);
-                getNodeRegistry().addType("gear:fetch_for", FetchGearForNode.class);
-                getNodeRegistry().addType("gear:equip", EquipGearNode.class);
-                getNodeRegistry().addType("gear:repair", RepairGearNode.class);
+                getNodeRegistry().addType("gear:fetch", FetchItemNode.class);
+                getNodeRegistry().addType("gear:fetch_for", FetchItemForNode.class);
+                getNodeRegistry().addType("gear:equip", EquipItemNode.class);
+                getNodeRegistry().addType("gear:repair", RepairItemNode.class);
             }
 
             getLogger().info(" - World nodes");

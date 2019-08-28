@@ -6,9 +6,9 @@ import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
 
-public class EquipGearNode extends AbstractQuestNode<Void> {
+public class EquipItemNode extends AbstractQuestNode<Void> {
     @SerializedName("Text")
-    public IInportValue<String> text = new IInportValue<>(String.class, this, "N/A");
+    public IInportValue<Void, String> text = new IInportValue<>(this, String.class, "N/A");
 
     @SerializedName("Completed")
     public IOutportTrigger onComplete = new IOutportTrigger(this);
@@ -20,7 +20,7 @@ public class EquipGearNode extends AbstractQuestNode<Void> {
         onComplete.run(instance);
     });
 
-    public EquipGearNode(String id) {
+    public EquipItemNode(String id) {
         super(id);
     }
 

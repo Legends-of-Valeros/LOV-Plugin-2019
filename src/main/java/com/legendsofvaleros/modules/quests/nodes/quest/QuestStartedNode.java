@@ -5,11 +5,9 @@ import com.legendsofvaleros.modules.quests.api.IQuestInstance;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
 
-import java.util.UUID;
-
 public class QuestStartedNode extends AbstractQuestNode<Boolean> {
     @SerializedName("Trigger")
-    public IOutportTrigger onTriggered = new IOutportTrigger(this);
+    public IOutportTrigger<Boolean> onTriggered = new IOutportTrigger<>(this);
 
     public QuestStartedNode(String id) {
         super(id);

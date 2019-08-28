@@ -7,16 +7,17 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public class IInportValue<V> implements INodeInput<IOutportValue<?, V>> {
-    final IQuestNode node;
+public class IInportValue<T, V> implements INodeInput<IOutportValue<?, V>> {
+    final IQuestNode<T> node;
 
     Class<V> valClass;
     V defaultValue;
     IOutportValue<?, V> port;
 
-    public IInportValue(Class<V> valClass, IQuestNode node, @NotNull V defaultValue) {
-        this.valClass = valClass;
+    public IInportValue(IQuestNode<T> node, Class<V> valClass, @NotNull V defaultValue) {
         this.node = node;
+
+        this.valClass = valClass;
         this.defaultValue = defaultValue;
     }
 

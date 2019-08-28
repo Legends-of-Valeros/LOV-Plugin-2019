@@ -13,7 +13,7 @@ import com.legendsofvaleros.modules.quests.events.QuestEndedEvent;
 
 public class QuestListenerNode extends AbstractQuestNode<Boolean> {
     @SerializedName("Quest")
-    public IInportValue<IQuest> quest = new IInportValue<>(IQuest.class,this, null);
+    public IInportValue<Boolean, IQuest> quest = new IInportValue<>(this, IQuest.class,null);
 
     @SerializedName("OnSuccess")
     public IOutportTrigger onSuccess = new IOutportTrigger(this);

@@ -10,13 +10,12 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class QuestLogNode extends AbstractQuestNode<Integer> {
     private static final Map<CharacterId, BukkitTask> TIMER = new HashMap<>();
 
     @SerializedName("Text")
-    public IInportValue<Object> text = new IInportValue<>(Object.class, this, "N/A");
+    public IInportValue<Integer, Object> text = new IInportValue<>(this, Object.class, "N/A");
 
     @SerializedName("Add")
     public IInportTrigger<Integer> onAdd = new IInportTrigger<>(this, (instance, logEntry) -> {
