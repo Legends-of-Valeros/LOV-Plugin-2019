@@ -8,7 +8,7 @@ import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 public class QuestResetNode extends AbstractQuestNode<Void> {
     @SerializedName("Execute")
     public IInportTrigger onExecute = new IInportTrigger(this, (instance, data) -> {
-        QuestController.getInstance().finishQuest(instance.getQuest(), instance.getPlayerCharacter());
+        QuestController.getInstance().resetQuest(instance.getQuest(), instance.getPlayerCharacter());
     });
 
     public QuestResetNode(String id) {

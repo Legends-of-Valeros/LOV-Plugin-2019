@@ -6,14 +6,14 @@ import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.quests.api.*;
-import com.legendsofvaleros.modules.quests.events.QuestEndedEvent;
-import com.legendsofvaleros.modules.quests.events.QuestStartedEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 public class Quest implements IQuest {
     private final Map<CharacterId, IQuestInstance> instances = new HashMap<>();
@@ -197,8 +197,6 @@ public class Quest implements IQuest {
 
     @Override
     public void onActivated(IQuestInstance instance) {
-        Bukkit.getPluginManager().callEvent(new QuestStartedEvent(instance));
-
         if(instancesActive == 0) {
             nodes.values().stream().forEach(IQuestNode::onWake);
         }
@@ -217,8 +215,6 @@ public class Quest implements IQuest {
         if(instancesActive == 0) {
             nodes.values().stream().forEach(IQuestNode::onSleep);
         }
-
-        Bukkit.getPluginManager().callEvent(new QuestEndedEvent(instance));
     }
 
     @Override

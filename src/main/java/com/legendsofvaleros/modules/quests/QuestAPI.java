@@ -202,6 +202,9 @@ public class QuestAPI extends ListenerModule {
         playerQuests.put(pc.getUniqueCharacterId(), instance);
     }
 
+    /**
+     * Removes the quest instance for the player. This effectively resets the quest completely.
+     */
     public void removeQuestProgress(IQuest quest, PlayerCharacter pc) {
         Optional<IQuestInstance> instance = quest.removeInstance(pc.getUniqueCharacterId());
 

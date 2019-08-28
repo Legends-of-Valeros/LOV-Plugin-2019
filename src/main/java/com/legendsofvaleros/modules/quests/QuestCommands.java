@@ -44,7 +44,7 @@ public class QuestCommands extends BaseCommand {
                 return;
             }
 
-            QuestController.getInstance().finishQuest(val.get(), pc);
+            QuestController.getInstance().completeQuest(val.get(), pc);
             MessageUtil.sendUpdate(player, "Quest completed.");
         });
     }

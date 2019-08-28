@@ -34,6 +34,7 @@ import com.legendsofvaleros.util.title.TitleUtil;
 import io.chazza.advancementapi.AdvancementAPI;
 import io.chazza.advancementapi.FrameType;
 import io.chazza.advancementapi.Trigger;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.event.EventHandler;
@@ -98,7 +99,9 @@ public class QuestController extends QuestAPI {
                 getNodeRegistry().addType("quest:trigger_reset", QuestResetNode.class);
 
                 getNodeRegistry().addType("quest:log", QuestLogNode.class);
+
                 getNodeRegistry().addType("quest:offer", QuestOfferNode.class);
+                getNodeRegistry().addType("quest:listener", QuestListenerNode.class);
             }
 
             getLogger().info(" - Gear nodes");
@@ -234,6 +237,26 @@ public class QuestController extends QuestAPI {
         NEW_OBJECTIVES.add();
     }
 
+    public boolean offerQuest(IQuest quest, PlayerCharacter pc) {
+        QuestStatus status = quest.getStatus(pc);
+
+        // A quest that cannot be accepted cannot be offered.
+        if (!status.canAccept()) {
+            return false;
+        }
+
+        // If it's a forced quest, show the quest dialog and accept it immediately.
+        if(quest.isForced()) {
+            startQuest(quest, pc);
+
+        // If it's not forced, show the quest dialog.
+        }else{
+
+        }
+
+        return true;
+    }
+
     public Boolean startQuest(IQuest quest, PlayerCharacter pc) {
         QuestStatus status = quest.getStatus(pc);
 
@@ -247,6 +270,8 @@ public class QuestController extends QuestAPI {
             // Activate the instance. This works for inactive and repeatable quests.
             instance.setState(QuestState.ACTIVE);
 
+            Bukkit.getPluginManager().callEvent(new QuestStartedEvent(instance));
+
             MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + quest.getId() + "' accepted!");
 
             return true;
@@ -256,22 +281,36 @@ public class QuestController extends QuestAPI {
         return false;
     }
 
-    public void finishQuest(IQuest quest, PlayerCharacter pc) {
+    public void completeQuest(IQuest quest, PlayerCharacter pc) {
         IQuestInstance instance = quest.getInstance(pc);
 
         instance.setState(QuestState.SUCCESS);
+
+        Bukkit.getPluginManager().callEvent(new QuestEndedEvent(instance));
     }
 
     public void failQuest(IQuest quest, PlayerCharacter pc) {
         IQuestInstance instance = quest.getInstance(pc);
 
         instance.setState(QuestState.FAILED);
+
+        Bukkit.getPluginManager().callEvent(new QuestEndedEvent(instance));
+    }
+
+    public void resetQuest(IQuest quest, PlayerCharacter pc) {
+        abandonQuest(quest, pc);
+
+        this.removeQuestProgress(quest, pc);
     }
 
     public void abandonQuest(IQuest quest, PlayerCharacter pc) {
         IQuestInstance instance = quest.getInstance(pc);
 
         instance.setState(QuestState.ABANDONED);
+
+        // If it was active, fore the end quest event.
+        if(instance.getState().isActive())
+            Bukkit.getPluginManager().callEvent(new QuestEndedEvent(instance));
     }
 
     @EventHandler
