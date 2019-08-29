@@ -1,10 +1,9 @@
 package com.legendsofvaleros.modules.npcs.trait;
 
-import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.legendsofvaleros.modules.npcs.NPCsController;
+import com.legendsofvaleros.modules.npcs.api.INPC;
 import com.legendsofvaleros.modules.npcs.api.ISkin;
 import com.legendsofvaleros.modules.npcs.core.NPCData;
-import com.legendsofvaleros.modules.npcs.core.Skin;
 import com.legendsofvaleros.modules.npcs.nameplate.Nameplates;
 import com.legendsofvaleros.util.MessageUtil;
 import net.citizensnpcs.api.command.CommandConfigurable;
@@ -199,11 +198,11 @@ public class TraitLOV extends Trait implements CommandConfigurable {
         TraitHelper.onRightClick(getNPC().getName(), player, traits);
     }
 
-    public NPCData getNpcData() {
+    public INPC getNpcData() {
         return npcData;
     }
 
-    public String getNpcId() {
-        return npcId;
+    public NPC getCitizen() {
+        return super.npc;
     }
 }

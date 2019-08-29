@@ -17,7 +17,7 @@ public class AddItemNode extends AbstractQuestNode<Void> {
     public IInportValue<Void, Integer> count = new IInportValue<>(this, Integer.class, 1);
 
     @SerializedName("Completed")
-    public IOutportTrigger onComplete = new IOutportTrigger(this);
+    public IOutportTrigger<Void> onComplete = new IOutportTrigger<>(this);
 
     @SerializedName("Execute")
     public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> {

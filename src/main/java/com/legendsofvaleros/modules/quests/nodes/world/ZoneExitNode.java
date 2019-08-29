@@ -11,7 +11,7 @@ public class ZoneExitNode extends AbstractQuestNode<Void> {
     public IInportValue<Void, String> text = new IInportValue<>(this, String.class, "N/A");
 
     @SerializedName("Completed")
-    public IOutportTrigger onComplete = new IOutportTrigger(this);
+    public IOutportTrigger<Void> onComplete = new IOutportTrigger<>(this);
 
     @SerializedName("Execute")
     public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> {
