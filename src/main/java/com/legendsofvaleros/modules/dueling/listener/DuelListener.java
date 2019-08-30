@@ -29,8 +29,8 @@ public class DuelListener implements Listener {
             return;
         }
 
-        if (! (event.getDamaged().getLivingEntity() instanceof Player) ||
-                ! (event.getAttacker() != null && event.getAttacker().getLivingEntity() instanceof Player)) {
+        if (!(event.getDamaged().getLivingEntity() instanceof Player) ||
+                !(event.getAttacker() != null && event.getAttacker().getLivingEntity() instanceof Player)) {
             return;
         }
 
@@ -56,9 +56,7 @@ public class DuelListener implements Listener {
 
         Duel d = dueling.getDuel(event.getAttacker(), event.getDamaged());
         if (d == null) {
-            // If either player is in a duel, cancel damage.
-            if (dueling.getDuel(event.getAttacker()) != null || dueling.getDuel(event.getDamaged()) != null)
-                event.setCancelled(true);
+            event.setCancelled(true);
             return;
         }
 
