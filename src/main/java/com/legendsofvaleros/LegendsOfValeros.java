@@ -8,6 +8,7 @@ import com.google.common.cache.CacheBuilder;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.Modules;
+import com.legendsofvaleros.modules.arena.ArenaController;
 import com.legendsofvaleros.modules.auction.AuctionController;
 import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.characters.core.Characters;
@@ -170,6 +171,7 @@ public class LegendsOfValeros extends JavaPlugin {
         Modules.registerModule(FriendsController.class);
         Modules.registerModule(TabMenuController.class);
         Modules.registerModule(QueueController.class);
+        Modules.registerModule(ArenaController.class);
     }
 
     public void registerEvents(Listener listener, Module module) {
@@ -184,7 +186,7 @@ public class LegendsOfValeros extends JavaPlugin {
         loadedEventClasses.put(listener.hashCode(), listener);
         loadedEventClassesName.put(listener.hashCode(), listenerName);
 
-        Bukkit.getServer().getPluginManager().registerEvents(listener, this);
+        Bukkit.getServer().getPluginManager().registerEvents(listener, LegendsOfValeros.getInstance());
     }
 
     public boolean isShutdown() {

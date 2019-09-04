@@ -124,6 +124,9 @@ public class RestrictionsController extends ListenerModule {
     public void onPlayerSwimming(EntityToggleSwimEvent event) {
         event.setCancelled(true);
         ((Player) event.getEntity()).setSwimming(false);
+        //TODO set player meta data to not swimming - this fixes a bug in bukkit
+//        PacketContainer meta = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
+//        meta.setMeta(EntityMetadataStore.);
     }
 
 

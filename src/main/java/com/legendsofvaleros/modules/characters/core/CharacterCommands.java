@@ -16,79 +16,87 @@ import org.bukkit.entity.Player;
 
 @CommandAlias("char|character|characters|lov char|lov character|lov characters")
 public class CharacterCommands extends BaseCommand {
-	@SuppressWarnings("deprecation")
-	@Subcommand("level set")
-	@Description("Set a character's level.")
-	@CommandPermission("character.level.set")
-	public void cmdSetLevel(CommandSender sender, @Optional OnlinePlayer player, int level) {
-		if(!LegendsOfValeros.getMode().allowEditing()) return;
+    @SuppressWarnings("deprecation")
+    @Subcommand("level set")
+    @Description("Set a character's level.")
+    @CommandPermission("character.level.set")
+    public void cmdSetLevel(CommandSender sender, @Optional OnlinePlayer player, int level) {
+        if (!LegendsOfValeros.getMode().allowEditing()) {
+            return;
+        }
 
-		Player p;
-		if(player == null) {
-			if(!(sender instanceof Player)) return;
-			p = (Player)sender;
-		}else
-			p = player.getPlayer();
+        Player p;
+        if (player == null) {
+            if (!(sender instanceof Player)) {
+                return;
+            }
+            p = (Player) sender;
+        } else {
+            p = player.getPlayer();
+        }
 
-		if(!Characters.isPlayerCharacterLoaded(p)) return;
+        if (!Characters.isPlayerCharacterLoaded(p)) {
+            return;
+        }
 
-		PlayerCharacter pc = Characters.getPlayerCharacter(p);
-		if(level < 0) {
-			MessageUtil.sendError(sender, "Level must be greater than -1.");
-		}else if(level > Characters.getInstance().getCharacterConfig().getMaxLevel()) {
-			MessageUtil.sendError(sender, "That is over the max level.");
-		}else{
-			int oldLevel = pc.getExperience().getLevel();
+        PlayerCharacter pc = Characters.getPlayerCharacter(p);
+        if (level < 0) {
+            MessageUtil.sendError(sender, "Level must be greater than -1.");
+        } else if (level > Characters.getInstance().getCharacterConfig().getMaxLevel()) {
+            MessageUtil.sendError(sender, "That is over the max level.");
+        } else {
+            int oldLevel = pc.getExperience().getLevel();
 
-			pc.getExperience().setLevel(level);
+            pc.getExperience().setLevel(level);
 
-			PlayerCharacterLevelChangeEvent event = new PlayerCharacterLevelChangeEvent(pc, oldLevel, level);
-			Bukkit.getPluginManager().callEvent(event);
+            PlayerCharacterLevelChangeEvent event = new PlayerCharacterLevelChangeEvent(pc, oldLevel, level);
+            Bukkit.getPluginManager().callEvent(event);
 
-			MessageUtil.sendUpdate(sender, "Level changed to " + level + "!");
+            MessageUtil.sendUpdate(sender, "Level changed to " + level + "!");
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    @Subcommand("level up")
+    @Description("Up a character's level.")
+    @CommandPermission("character.level.up")
+    public void cmdLevelup(CommandSender sender, @Optional OnlinePlayer player) {
+        if (!LegendsOfValeros.getMode().allowEditing()){
+        	return;
 		}
-	}
-	
-	@SuppressWarnings("deprecation")
-	@Subcommand("level up")
-	@Description("Up a character's level.")
-	@CommandPermission("character.level.up")
-	public void cmdLevelup(CommandSender sender, @Optional OnlinePlayer player) {
-		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		Player p;
+        Player p;
+        if (player == null) {
+            if (!(sender instanceof Player)) return;
+            p = (Player) sender;
+        } else
+            p = player.getPlayer();
 
-		if(player == null) {
-			if(!(sender instanceof Player)) return;
-			p = (Player)sender;
-		}else
-			p = player.getPlayer();
+        if (!Characters.isPlayerCharacterLoaded(p)) return;
 
-		if(!Characters.isPlayerCharacterLoaded(p)) return;
+        PlayerCharacter pc = Characters.getPlayerCharacter(p);
+        if (pc.getExperience().getLevel() + 1 > Characters.getInstance().getCharacterConfig().getMaxLevel()) {
+            MessageUtil.sendError(sender, "You are max level.");
+        } else {
+            pc.getExperience().addExperience(pc.getExperience().getExperienceForNextLevel(), true);
+        }
+    }
 
-		PlayerCharacter pc = Characters.getPlayerCharacter(p);
-		if(pc.getExperience().getLevel() + 1 > Characters.getInstance().getCharacterConfig().getMaxLevel()) {
-			MessageUtil.sendError(sender, "You are max level.");
-		}else{
-			pc.getExperience().addExperience(pc.getExperience().getExperienceForNextLevel(), true);
-		}
-	}
-	
-	@Default
-	@Subcommand("journal")
-	@Description("Open your character journal.")
-	// @CommandPermission("character.journal")
-	public void cmdJournal(Player player) {
-		if(!Characters.isPlayerCharacterLoaded(player)) return;
+    @Default
+    @Subcommand("journal")
+    @Description("Open your character journal.")
+    // @CommandPermission("character.journal")
+    public void cmdJournal(Player player) {
+        if (!Characters.isPlayerCharacterLoaded(player)) return;
 
-		Book book = new Book("Player Information", "Acolyte");
-		
-		PlayerInformationBookEvent event = new PlayerInformationBookEvent(Characters.getPlayerCharacter(player));
-		Bukkit.getServer().getPluginManager().callEvent(event);
-		
-		for(BaseComponent[] page : event.getPages())
-			book.addPage(page);
-		
-		book.open(player, false);
-	}
+        Book book = new Book("Player Information", "Acolyte");
+
+        PlayerInformationBookEvent event = new PlayerInformationBookEvent(Characters.getPlayerCharacter(player));
+        Bukkit.getServer().getPluginManager().callEvent(event);
+
+        for (BaseComponent[] page : event.getPages())
+            book.addPage(page);
+
+        book.open(player, false);
+    }
 }
