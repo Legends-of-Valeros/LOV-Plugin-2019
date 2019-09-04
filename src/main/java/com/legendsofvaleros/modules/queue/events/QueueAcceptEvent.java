@@ -20,7 +20,7 @@ public class QueueAcceptEvent extends Event {
         this.queue = queue;
     }
 
-    public HandlerList getHandlerList() {
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 
