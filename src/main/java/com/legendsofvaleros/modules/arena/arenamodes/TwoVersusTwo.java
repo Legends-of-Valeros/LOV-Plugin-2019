@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.arena.arenamodes;
 
-import org.bukkit.entity.Player;
+import com.legendsofvaleros.modules.arena.Team;
 
 /**
  * Created by Crystall on 08/04/2019
@@ -8,7 +8,12 @@ import org.bukkit.entity.Player;
 public class TwoVersusTwo implements ArenaMode {
 
     @Override
-    public void onFinish(Player winner) {
+    public void onInit() {
+
+    }
+
+    @Override
+    public void onFinish(Team winner) {
 
     }
 

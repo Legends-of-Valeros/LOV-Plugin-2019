@@ -3,20 +3,23 @@ package com.legendsofvaleros.modules.arena;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.module.annotation.DependsOn;
+import com.legendsofvaleros.modules.queue.QueueController;
 
 import java.util.UUID;
 
 /**
  * Created by Crystall on 08/21/2019
  */
+@DependsOn(QueueController.class)
 public class ArenaAPI extends ListenerModule {
 
     public interface RPC {
-        Promise loadPlayerData(UUID uuid);
-
-        Promise savePlayerData(UUID uuid);
-
-        Promise deletePlayerData(UUID uuid);
+//        Promise loadPlayerData(UUID uuid);
+//
+//        Promise savePlayerData(UUID uuid);
+//
+//        Promise deletePlayerData(UUID uuid);
     }
 
     private RPC rpc;
@@ -34,15 +37,18 @@ public class ArenaAPI extends ListenerModule {
     }
 
     public Promise onLogin(UUID uuid) {
-        return rpc.loadPlayerData(uuid);
+        return null;
+//        return rpc.loadPlayerData(uuid);
     }
 
     public Promise onLogout(UUID uuid) {
-        return rpc.savePlayerData(uuid);
+        return null;
+//        return rpc.savePlayerData(uuid);
     }
 
     public Promise onCharacterDelete(UUID uuid) {
-        return rpc.deletePlayerData(uuid);
+        return null;
+//        return rpc.deletePlayerData(uuid);
     }
 
 }
