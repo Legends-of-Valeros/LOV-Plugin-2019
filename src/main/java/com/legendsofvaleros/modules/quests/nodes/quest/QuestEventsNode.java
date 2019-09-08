@@ -11,7 +11,7 @@ import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
 import com.legendsofvaleros.modules.quests.events.QuestEndedEvent;
 
-public class QuestListenerNode extends AbstractQuestNode<Boolean> {
+public class QuestEventsNode extends AbstractQuestNode<Boolean> {
     @SerializedName("Quest")
     public IInportValue<Boolean, IQuest> quest = new IInportValue<>(this, IQuest.class,null);
 
@@ -33,7 +33,7 @@ public class QuestListenerNode extends AbstractQuestNode<Boolean> {
         }
     });
 
-    public QuestListenerNode(String id) {
+    public QuestEventsNode(String id) {
         super(id);
     }
 

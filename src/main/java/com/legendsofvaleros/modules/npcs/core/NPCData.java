@@ -38,6 +38,7 @@ public class NPCData implements INPC {
     	return skin;
 	}
 
+	@Override
     public Location getLocation() {
     	if(this.loc == null && world != null)
 			this.loc = new Location(world, x, y, z);

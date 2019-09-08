@@ -101,7 +101,7 @@ public class QuestController extends QuestAPI {
                 getNodeRegistry().addType("quest:log", QuestLogNode.class);
 
                 getNodeRegistry().addType("quest:offer", QuestOfferNode.class);
-                getNodeRegistry().addType("quest:listener", QuestListenerNode.class);
+                getNodeRegistry().addType("quest:listener", QuestEventsNode.class);
             }
 
             getLogger().info(" - Gear nodes");
@@ -123,23 +123,23 @@ public class QuestController extends QuestAPI {
 
             getLogger().info(" - World nodes");
             {
-                getNodeRegistry().addType("world:flag_get", WorldFlagGetNode.class);
-                getNodeRegistry().addType("world:flag_set", WorldFlagSetNode.class);
-                getNodeRegistry().addType("world:flag_check", WorldFlagCheckNode.class);
+                getNodeRegistry().addType("world:flag_get", GetWorldFlagNode.class);
+                getNodeRegistry().addType("world:flag_set", SetWorldFlagNode.class);
+                getNodeRegistry().addType("world:flag_check", CheckWorldFlagNode.class);
 
-                getNodeRegistry().addType("world:region_access", RegionAccessNode.class);
-                getNodeRegistry().addType("world:region_deny", RegionDenyNode.class);
-                getNodeRegistry().addType("world:region_enter", RegionEnterNode.class);
-                getNodeRegistry().addType("world:region_exit", RegionExitNode.class);
+                getNodeRegistry().addType("world:region_access", AccessRegionNode.class);
+                getNodeRegistry().addType("world:region_deny", DeclineRegionNode.class);
+                getNodeRegistry().addType("world:region_enter", EnterRegionNode.class);
+                getNodeRegistry().addType("world:region_exit", ExitRegionNode.class);
 
                 getNodeRegistry().addType("world:particle", ParticleNode.class);
                 getNodeRegistry().addType("world:sound", SoundNode.class);
 
                 getNodeRegistry().addType("world:interact_block", InteractBlockNode.class);
-                getNodeRegistry().addType("world:interact_block_with", InteractBlockWithNode.class);
+                getNodeRegistry().addType("world:interact_block_with", InteractBlockWithItemNode.class);
 
-                getNodeRegistry().addType("world:zone_enter", ZoneEnterNode.class);
-                getNodeRegistry().addType("world:zone_exit", ZoneExitNode.class);
+                getNodeRegistry().addType("world:zone_enter", EnterZoneNode.class);
+                getNodeRegistry().addType("world:zone_exit", ExitZoneNode.class);
             }
 
             getLogger().info(" - Entity nodes");
@@ -148,19 +148,19 @@ public class QuestController extends QuestAPI {
 
                 getNodeRegistry().addType("entity:conquer_region", ConquerRegionNode.class);
                 getNodeRegistry().addType("entity:conquer_zone", ConquerZoneNode.class);
-                getNodeRegistry().addType("entity:damage", DamageEntityNode.class);
-                getNodeRegistry().addType("entity:kill", KillEntityNode.class);
+                getNodeRegistry().addType("entity:damage", DamageNode.class);
+                getNodeRegistry().addType("entity:kill", KillNode.class);
             }
 
             getLogger().info(" - NPC nodes");
             {
                 getNodeRegistry().addType("npc:reference", ReferenceNPCNode.class);
 
-                getNodeRegistry().addType("npc:escort", NPCEscortNode.class);
-                getNodeRegistry().addType("npc:speak", NPCSpeakNode.class);
+                getNodeRegistry().addType("npc:follow", FollowNode.class);
+                getNodeRegistry().addType("npc:speak", SpeakNode.class);
 
-                getNodeRegistry().addType("npc:talk", NPCTalkNode.class);
-                getNodeRegistry().addType("npc:return", NPCReturnNode.class);
+                getNodeRegistry().addType("npc:talk", TalkNode.class);
+                getNodeRegistry().addType("npc:return", ReturnNode.class);
 
                 getNodeRegistry().addType("npc:dialog", DialogNode.class);
                 getNodeRegistry().addType("npc:dialog_option", DialogOptionNode.class);
@@ -168,26 +168,26 @@ public class QuestController extends QuestAPI {
 
             getLogger().info(" - Character nodes");
             {
-                getNodeRegistry().addType("character:listen", ListenCharacterNode.class);
+                getNodeRegistry().addType("character:listen", CharacterEventsNode.class);
 
                 getNodeRegistry().addType("character:status_effect", StatusEffectNode.class);
-                getNodeRegistry().addType("character:xp", GiveXPNode.class);
+                getNodeRegistry().addType("character:xp", ExperienceNode.class);
                 getNodeRegistry().addType("character:teleport", TeleportNode.class);
-                getNodeRegistry().addType("character:credits", CreditsNode.class);
+                getNodeRegistry().addType("character:credits", ShowCreditsNode.class);
 
-                getNodeRegistry().addType("character:skill_bind", SkillBindNode.class);
-                getNodeRegistry().addType("character:skill_use", SkillUseNode.class);
+                getNodeRegistry().addType("character:skill_bind", BindSkillNode.class);
+                getNodeRegistry().addType("character:skill_use", UseSkillNode.class);
 
-                getNodeRegistry().addType("character:currency_modify", CurrencyModifyNode.class);
-                getNodeRegistry().addType("character:reputation_modify", ReputationModifyNode.class);
+                getNodeRegistry().addType("character:currency_modify", GiveCurrencyNode.class);
+                getNodeRegistry().addType("character:reputation_modify", FactionRepNode.class);
             }
 
             getLogger().info(" - Utility nodes");
             {
                 getNodeRegistry().addType("utility:timer", TimerNode.class);
-                getNodeRegistry().addType("utility:wait", WaitNode.class);
-                getNodeRegistry().addType("utility:command", CommandNode.class);
-                getNodeRegistry().addType("utility:notify", NotifyNode.class);
+                getNodeRegistry().addType("utility:wait", WaitTicksNode.class);
+                getNodeRegistry().addType("utility:command", RunCommandNode.class);
+                getNodeRegistry().addType("utility:notify", NotificationNode.class);
                 getNodeRegistry().addType("utility:title", TitleNode.class);
                 getNodeRegistry().addType("utility:message", MessageNode.class);
             }

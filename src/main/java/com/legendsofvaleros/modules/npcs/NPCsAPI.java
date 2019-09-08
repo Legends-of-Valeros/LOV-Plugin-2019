@@ -9,7 +9,6 @@ import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.modules.loot.LootController;
-import com.legendsofvaleros.modules.loot.api.ILootTable;
 import com.legendsofvaleros.modules.npcs.api.ISkin;
 import com.legendsofvaleros.modules.npcs.core.NPCData;
 import com.legendsofvaleros.modules.npcs.core.Skin;
@@ -153,7 +152,7 @@ public class NPCsAPI extends ListenerModule {
 
     public void saveNPC(TraitLOV traitLOV) {
         getScheduler().executeInMyCircle(() -> {
-            rpc.saveNPC(traitLOV.getNpcData()).onSuccess(() -> {
+            rpc.saveNPC((NPCData)traitLOV.getNpcData()).onSuccess(() -> {
                 MessageUtil.sendInfo(Bukkit.getConsoleSender(), "Successfully saved npc " + traitLOV.npcId + " at " + traitLOV.getNPC().getStoredLocation());
             });
         });
