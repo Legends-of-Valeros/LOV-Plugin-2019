@@ -8,6 +8,7 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterCreateEvent;
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
+import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.npcs.trait.quests.TraitQuestGiver;
 import com.legendsofvaleros.modules.playermenu.InventoryManager;
@@ -83,12 +84,23 @@ public class QuestController extends QuestAPI {
         getLogger().info("is registering event handlers");
         getEventRegistry().addHandler(BindSkillEvent.class, (event) -> new Player[] { event.getPlayer() });
         getEventRegistry().addHandler(CombatEngineDamageEvent.class, (event) -> {
-            if(event.getDamaged().isPlayer() && event.getAttacker().isPlayer()) {
+            if(event.getAttacker().isPlayer() && event.getDamaged().isPlayer()) {
                 return new Player[] { (Player)event.getAttacker(), (Player)event.getDamaged() };
             }else if(event.getAttacker().isPlayer()) {
                 return new Player[] { (Player)event.getAttacker() };
             }else if(event.getDamaged().isPlayer()) {
                 return new Player[] { (Player)event.getDamaged() };
+            }
+
+            return null;
+        });
+        getEventRegistry().addHandler(CombatEngineDeathEvent.class, (event) -> {
+            if(event.getKiller().isPlayer() && event.getDied().isPlayer()) {
+                return new Player[] { (Player)event.getKiller(), (Player)event.getDied() };
+            }else if(event.getKiller().isPlayer()) {
+                return new Player[] { (Player)event.getKiller() };
+            }else if(event.getDied().isPlayer()) {
+                return new Player[] { (Player)event.getDied() };
             }
 
             return null;
@@ -173,7 +185,6 @@ public class QuestController extends QuestAPI {
                 getNodeRegistry().addType("npc:speak", SpeakNode.class);
 
                 getNodeRegistry().addType("npc:talk", TalkNode.class);
-                getNodeRegistry().addType("npc:return", ReturnNode.class);
 
                 getNodeRegistry().addType("npc:dialog", DialogNode.class);
                 getNodeRegistry().addType("npc:dialog_option", DialogOptionNode.class);

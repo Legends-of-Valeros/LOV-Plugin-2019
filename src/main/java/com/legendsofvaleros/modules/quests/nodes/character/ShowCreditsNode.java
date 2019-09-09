@@ -78,4 +78,10 @@ public class ShowCreditsNode extends AbstractQuestNode<Boolean> {
 
         instance.setNodeInstance(this, true);
     }
+
+    @Override
+    public void onDeactivated(IQuestInstance instance, Boolean data) {
+        // Remove any players currently in the credits
+        listener.waiting.remove(instance.getPlayerCharacter().getPlayer().getUniqueId());
+    }
 }

@@ -2,10 +2,14 @@ package com.legendsofvaleros.modules.quests.nodes.npc;
 
 import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.npcs.api.INPC;
+import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
+import com.legendsofvaleros.modules.quests.api.QuestEvent;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
+import com.legendsofvaleros.modules.quests.core.QuestInstance;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
+import net.citizensnpcs.api.event.NPCRightClickEvent;
 
 public class TalkNode extends AbstractQuestNode<Boolean> {
     @SerializedName("Completed")
@@ -34,14 +38,16 @@ public class TalkNode extends AbstractQuestNode<Boolean> {
     }
 
     @QuestEvent
-    public void onEvent(QuestInstance instance, Boolean data, SomeEvent event) {
+    public void onEvent(QuestInstance instance, Boolean data, NPCRightClickEvent event) {
         // If we aren't tracking, yet, ignore it.
         if(data == null || data) {
             return;
         }
 
-        // Fail logic
-        if(!) {
+        if(!event.getNPC().hasTrait(TraitLOV.class)) return;
+
+        TraitLOV lov = event.getNPC().getTrait(TraitLOV.class);
+        if(lov.getNpcData() != npc.get(instance)) {
             return;
         }
 

@@ -7,6 +7,8 @@ import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
 
 public class TimerNode extends AbstractQuestNode<Void> {
+    // TODO: this logic
+
     @SerializedName("OnTrigger")
     public IOutportTrigger<Void> onTrigger = new IOutportTrigger<>(this);
     

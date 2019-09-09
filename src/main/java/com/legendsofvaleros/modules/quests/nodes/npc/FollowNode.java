@@ -8,6 +8,8 @@ import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
 
 public class FollowNode extends AbstractQuestNode<Void> {
+    // TODO: This logic
+
     @SerializedName("OnDied")
     public IOutportTrigger<Void> onDied = new IOutportTrigger<>(this);
     

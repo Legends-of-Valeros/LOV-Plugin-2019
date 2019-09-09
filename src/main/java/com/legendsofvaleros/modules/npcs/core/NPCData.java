@@ -30,6 +30,7 @@ public class NPCData implements INPC {
     	return slug;
 	}
 
+	@Override
 	public String getName() {
     	return name;
 	}

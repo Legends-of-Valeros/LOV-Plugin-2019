@@ -9,6 +9,8 @@ import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportValue;
 
 public class DialogNode extends AbstractQuestNode<Void> {
+    // TODO: This logic
+
     @SerializedName("Dialog")
     public IOutportValue<Void, Object> dialog = new IOutportValue<>(this, Object.class, (instance, data) -> { return null; });
     

@@ -7,6 +7,8 @@ import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
 
 public class DialogOptionNode extends AbstractQuestNode<Void> {
+    // TODO: This logic
+
     @SerializedName("Chosen")
     public IOutportTrigger<Void> onChosen = new IOutportTrigger<>(this);
     
