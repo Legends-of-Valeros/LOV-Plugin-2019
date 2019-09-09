@@ -13,13 +13,15 @@ import com.legendsofvaleros.modules.quests.core.ports.IOutportValue;
 import com.legendsofvaleros.modules.quests.events.QuestEndedEvent;
 
 public class QuestEventsNode extends AbstractQuestNode<Boolean> {
-    @SerializedName("Text")
-    public IOutportValue<Boolean, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
-        return "Node<" + getClass().getSimpleName() + ">";
-    });
-
     @SerializedName("Quest")
     public IInportValue<Boolean, IQuest> quest = new IInportValue<>(this, IQuest.class,null);
+
+    @SerializedName("Text")
+    public IOutportValue<Boolean, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
+        if(Boolean.TRUE.equals(data))
+            return "Completed " + quest.get(instance).getName();
+        return "Complete " + quest.get(instance).getName();
+    });
 
     @SerializedName("OnSuccess")
     public IOutportTrigger onSuccess = new IOutportTrigger(this);

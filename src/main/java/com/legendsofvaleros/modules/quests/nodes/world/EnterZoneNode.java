@@ -12,17 +12,19 @@ import com.legendsofvaleros.modules.zones.api.IZone;
 import com.legendsofvaleros.modules.zones.event.ZoneEnterEvent;
 
 public class EnterZoneNode extends AbstractQuestNode<Boolean> {
+    @SerializedName("Zone")
+    public IInportValue<Boolean, IZone> zone = new IInportValue<>(this, IZone.class, null);
+
     @SerializedName("Text")
     public IOutportValue<Boolean, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
-        return "Node<" + getClass().getSimpleName() + ">";
+        if(Boolean.TRUE.equals(data))
+            return "Entered " + zone.get(instance).getName();
+        return "Enter " + zone.get(instance).getName();
     });
 
     @SerializedName("Completed")
     public IOutportTrigger<Boolean> onCompleted = new IOutportTrigger<>(this);
-    
-    @SerializedName("Zone")
-    public IInportValue<Boolean, IZone> zone = new IInportValue<>(this, IZone.class, null);
-    
+
     @SerializedName("Activate")
     public IInportTrigger<Boolean> onActivate = new IInportTrigger<>(this, (instance, data) -> {
         // If it's not null, then this node has already been activated.

@@ -13,19 +13,22 @@ import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportValue;
 
 public class FetchItemNode extends AbstractQuestNode<Integer> {
-    @SerializedName("Text")
-    public IOutportValue<Integer, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
-        return "Node<" + getClass().getSimpleName() + ">";
-    });
-
     @SerializedName("Item")
     public IInportValue<Integer, IGear> item = new IInportValue<>(this, IGear.class, GearController.ERROR_ITEM);
 
     @SerializedName("Count")
     public IInportValue<Integer, Integer> count = new IInportValue<>(this, Integer.class, 1);
 
+    @SerializedName("Text")
+    public IOutportValue<Integer, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
+        int count = this.count.get(instance);
+        if(data == Integer.MAX_VALUE)
+            return "Found " + (count > 1 ? count + "x" : "") + item.get(instance).getName();
+        return "Find " + (count > 1 ? count + "x" : "") + item.get(instance).getName();
+    });
+
     @SerializedName("Completed")
-    public IOutportTrigger<Integer> onComplete = new IOutportTrigger<>(this);
+    public IOutportTrigger<Integer> onCompleted = new IOutportTrigger<>(this);
 
     @SerializedName("Activate")
     public IInportTrigger<Integer> onActivate = new IInportTrigger<>(this, (instance, data) -> {
@@ -49,14 +52,7 @@ public class FetchItemNode extends AbstractQuestNode<Integer> {
     @QuestEvent
     public void onEvent(IQuestInstance instance, Integer data, GearPickupEvent event) {
         // If we aren't tracking, yet, ignore it.
-        if(data == null) {
-            return;
-        }
-
-        int count = this.count.get(instance);
-
-        // If we've already obtained all the items, ignore it
-        if(data >= count) {
+        if(data == null || data == Integer.MAX_VALUE) {
             return;
         }
 
@@ -65,11 +61,15 @@ public class FetchItemNode extends AbstractQuestNode<Integer> {
             return;
         }
 
-        instance.setNodeInstance(this, data + 1);
-
-        // If the new count should trigger completion
-        if(data >= count) {
-            onComplete.run(instance);
+        if(data + 1 < count.get(instance)) {
+            instance.setNodeInstance(this, data + 1);
+            return;
         }
+
+        // If we've completed the objective, set it to max int value. This makes checking for completion easier
+        // than fetching the count every time.
+        instance.setNodeInstance(this, Integer.MAX_VALUE);
+
+        onCompleted.run(instance);
     }
 }

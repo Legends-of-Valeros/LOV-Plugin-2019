@@ -13,17 +13,19 @@ import com.legendsofvaleros.modules.quests.core.ports.IOutportValue;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 
 public class TalkNode extends AbstractQuestNode<Boolean> {
+    @SerializedName("NPC")
+    public IInportValue<Boolean, INPC> npc = new IInportValue<>(this, INPC.class, null);
+
     @SerializedName("Text")
     public IOutportValue<Boolean, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
-        return "Node<" + getClass().getSimpleName() + ">";
+        if(Boolean.TRUE.equals(data))
+            return "Talked to " + npc.get(instance).getName();
+        return "Talk to " + npc.get(instance).getName();
     });
 
     @SerializedName("Completed")
     public IOutportTrigger<Boolean> onCompleted = new IOutportTrigger<>(this);
-    
-    @SerializedName("NPC")
-    public IInportValue<Boolean, INPC> npc = new IInportValue<>(this, INPC.class, null);
-    
+
     @SerializedName("Activate")
     public IInportTrigger<Boolean> onActivate = new IInportTrigger<>(this, (instance, data) -> {
         // If it's not null, then this node has already been activated.

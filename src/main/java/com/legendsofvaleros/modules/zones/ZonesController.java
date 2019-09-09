@@ -5,12 +5,10 @@ import com.codingforcookies.ambience.PlayerAmbience;
 import com.codingforcookies.ambience.Sound;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.collect.Multimap;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.IntegratesWith;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
-import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterFinishLoadingEvent;
@@ -34,8 +32,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @DependsOn(PvPController.class)
@@ -180,7 +176,9 @@ public class ZonesController extends ZonesAPI {
 
         // Display zone warning
         boolean pvp = PvPController.getInstance().isPvPEnabled() && event.getSection().pvp;
-        Title title = new Title(event.getZone().name, event.getSection().name + (pvp ? ChatColor.RED + "(pvp enabled)" : ""));
+        Title title = new Title(event.getZone().name,
+                        event.getSection().name
+                                + (pvp ? ChatColor.RED + "(pvp enabled)" : ""));
         title.setTitleColor(org.bukkit.ChatColor.GOLD);
         title.setSubtitleColor(org.bukkit.ChatColor.WHITE);
         TitleUtil.queueTitle(title, event.getPlayer());

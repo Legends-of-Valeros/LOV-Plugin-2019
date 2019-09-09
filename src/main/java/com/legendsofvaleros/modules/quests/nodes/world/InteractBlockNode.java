@@ -23,17 +23,19 @@ public class InteractBlockNode extends AbstractQuestNode<Boolean> {
     InternalTask task;
     Queue<IQuestInstance> instances;
 
+    @SerializedName("Location")
+    public IInportValue<Boolean, Vector> location = new IInportValue<>(this, Vector.class, null);
+
     @SerializedName("Text")
     public IOutportValue<Boolean, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
-        return "Node<" + getClass().getSimpleName() + ">";
+        if(Boolean.TRUE.equals(data))
+            return "Interacted with " + location.get(instance);
+        return "Interact with " + location.get(instance);
     });
 
     @SerializedName("Completed")
     public IOutportTrigger<Boolean> onCompleted = new IOutportTrigger<>(this);
-    
-    @SerializedName("Location")
-    public IInportValue<Boolean, Vector> location = new IInportValue<>(this, Vector.class, null);
-    
+
     @SerializedName("Activate")
     public IInportTrigger<Boolean> onActivate = new IInportTrigger<>(this, (instance, data) -> {
         // If it's not null, then this node has already been activated.

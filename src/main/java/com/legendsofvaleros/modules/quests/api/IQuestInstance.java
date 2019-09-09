@@ -5,7 +5,6 @@ import com.legendsofvaleros.modules.quests.core.QuestLogEntry;
 import com.legendsofvaleros.modules.quests.core.QuestNodeInstanceMap;
 import org.bukkit.entity.Player;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
@@ -59,10 +58,6 @@ public interface IQuestInstance {
     Optional<QuestLogEntry> getLogEntry(int id);
 
     void removeLogEntry(int id);
-
-    void addHistory(IQuestHistory... event);
-
-    Collection<IQuestHistory> getHistory();
 
     /**
      * Deletes all instancing data.

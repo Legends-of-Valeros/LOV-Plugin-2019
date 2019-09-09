@@ -12,20 +12,25 @@ import com.legendsofvaleros.modules.quests.core.ports.IOutportValue;
 import com.legendsofvaleros.modules.regions.core.IRegion;
 
 public class ConquerRegionNode extends AbstractQuestNode<Integer> {
-    @SerializedName("Text")
-    public IOutportValue<Integer, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
-        return "Node<" + getClass().getSimpleName() + ">";
-    });
-
     @SerializedName("Completed")
     public IOutportTrigger<Integer> onCompleted = new IOutportTrigger<>(this);
-    
+
     @SerializedName("Region")
     public IInportValue<Integer, IRegion> region = new IInportValue<>(this, IRegion.class, null);
-    
+
+    @SerializedName("Name")
+    public IInportValue<Integer, String> name = new IInportValue<>(this, String.class, null);
+
     @SerializedName("Count")
     public IInportValue<Integer, Integer> count = new IInportValue<>(this, Integer.class, 1);
-    
+
+    @SerializedName("Text")
+    public IOutportValue<Integer, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
+        if(data == Integer.MAX_VALUE)
+            return "Conquered " + name.get(instance);
+        return data + "/" + count.get(instance) + " killed in " + name.get(instance);
+    });
+
     @SerializedName("Activate")
     public IInportTrigger<Integer> onActivate = new IInportTrigger<>(this, (instance, data) -> {
         // If it's not null, then this node has already been activated.

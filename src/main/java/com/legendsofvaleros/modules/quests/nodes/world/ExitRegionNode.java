@@ -12,20 +12,22 @@ import com.legendsofvaleros.modules.regions.core.IRegion;
 import com.legendsofvaleros.modules.regions.event.RegionLeaveEvent;
 
 public class ExitRegionNode extends AbstractQuestNode<Boolean> {
+    @SerializedName("Region")
+    public IInportValue<Boolean, IRegion> region = new IInportValue<>(this, IRegion.class, null);
+
+    @SerializedName("Name")
+    public IInportValue<Boolean, String> name = new IInportValue<>(this, String.class, "N/A");
+
     @SerializedName("Text")
     public IOutportValue<Boolean, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
-        return "Node<" + getClass().getSimpleName() + ">";
+        if(Boolean.TRUE.equals(data))
+            return "Exited " + name.get(instance);
+        return "Exit " + name.get(instance);
     });
 
     @SerializedName("Completed")
     public IOutportTrigger<Boolean> onCompleted = new IOutportTrigger<>(this);
-    
-    @SerializedName("Region")
-    public IInportValue<Boolean, IRegion> region = new IInportValue<>(this, IRegion.class, null);
-    
-    @SerializedName("Name")
-    public IInportValue<Boolean, String> name = new IInportValue<>(this, String.class, "N/A");
-    
+
     @SerializedName("Activate")
     public IInportTrigger<Boolean> onActivate = new IInportTrigger<>(this, (instance, data) -> {
         // If it's not null, then this node has already been activated.

@@ -1,6 +1,11 @@
 package com.legendsofvaleros.modules.characters.core;
 
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.JsonWriter;
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
@@ -26,6 +31,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
+import java.io.IOException;
 import java.util.UUID;
 
 /**
@@ -59,6 +65,27 @@ public class Characters extends Module implements CharactersAPI {
         instance = this;
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new CharacterCommands());
+
+
+        APIController.getInstance().getGsonBuilder()
+                .registerTypeAdapter(PlayerCharacter.class, new TypeAdapter<PlayerCharacter>() {
+                    @Override
+                    public void write(JsonWriter write, PlayerCharacter pc) throws IOException {
+                        write.value(pc != null ? pc.getUniqueCharacterId().toString() : null);
+                    }
+
+                    @Override
+                    public PlayerCharacter read(JsonReader read) throws IOException {
+                        // If we reference the interface, then the type should be a string, and we return the stored object.
+                        // Note: it must be loaded already, else this returns null.
+                        if(read.peek() == JsonToken.NULL) {
+                            read.nextNull();
+                            return null;
+                        }
+
+                        return getCharacter(CharacterId.fromString(read.nextString()));
+                    }
+                });
 
         // configuration
         config = new BukkitConfig();

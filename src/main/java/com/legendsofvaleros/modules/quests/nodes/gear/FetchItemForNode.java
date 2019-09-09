@@ -17,12 +17,7 @@ import com.legendsofvaleros.modules.quests.core.ports.IOutportValue;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 
 public class FetchItemForNode extends AbstractQuestNode<Boolean> {
-    @SerializedName("Text")
-    public IOutportValue<Boolean, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
-        return "Node<" + getClass().getSimpleName() + ">";
-    });
-
-    @SerializedName("Item")
+    @SerializedName("NPC")
     public IInportValue<Boolean, INPC> npc = new IInportValue<>(this, INPC.class, null);
 
     @SerializedName("Item")
@@ -30,6 +25,14 @@ public class FetchItemForNode extends AbstractQuestNode<Boolean> {
 
     @SerializedName("Count")
     public IInportValue<Boolean, Integer> count = new IInportValue<>(this, Integer.class, 1);
+
+    @SerializedName("Text")
+    public IOutportValue<Boolean, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
+        int count = this.count.get(instance);
+        if(Boolean.TRUE.equals(data))
+            return "Retrieved " + (count > 1 ? count + "x" : "") + item.get(instance).getName() + " for " + npc.get(instance).getName();
+        return "Retrieve " + (count > 1 ? count + "x" : "") + item.get(instance).getName() + " for " + npc.get(instance).getName();
+    });
 
     @SerializedName("Completed")
     public IOutportTrigger<Boolean> onComplete = new IOutportTrigger<>(this);

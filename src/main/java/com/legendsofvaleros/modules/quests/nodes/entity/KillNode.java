@@ -13,20 +13,23 @@ import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportValue;
 
 public class KillNode extends AbstractQuestNode<Integer> {
-    @SerializedName("Text")
-    public IOutportValue<Integer, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
-        return "Node<" + getClass().getSimpleName() + ">";
-    });
-
-    @SerializedName("Completed")
-    public IOutportTrigger<Integer> onCompleted = new IOutportTrigger<>(this);
-
     @SerializedName("Entity")
     public IInportValue<Integer, IMob> entity = new IInportValue<>(this, IMob.class, null);
 
     @SerializedName("Count")
     public IInportValue<Integer, Integer> count = new IInportValue<>(this, Integer.class, 1);
-    
+
+    @SerializedName("Text")
+    public IOutportValue<Integer, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
+        int count = this.count.get(instance);
+        if(data == Integer.MAX_VALUE)
+            return "Killed " + (count > 1 ? count + "x" : "") + entity.get(instance).getName();
+        return "Kill " + (count > 1 ? count + "x" : "") + entity.get(instance).getName();
+    });
+
+    @SerializedName("Completed")
+    public IOutportTrigger<Integer> onCompleted = new IOutportTrigger<>(this);
+
     @SerializedName("Activate")
     public IInportTrigger<Integer> onActivate = new IInportTrigger<>(this, (instance, data) -> {
         // If it's not null, then this node has already been activated.

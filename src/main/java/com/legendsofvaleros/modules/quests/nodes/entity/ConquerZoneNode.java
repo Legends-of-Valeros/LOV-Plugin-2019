@@ -12,11 +12,6 @@ import com.legendsofvaleros.modules.quests.core.ports.IOutportValue;
 import com.legendsofvaleros.modules.zones.api.IZone;
 
 public class ConquerZoneNode extends AbstractQuestNode<Integer> {
-    @SerializedName("Text")
-    public IOutportValue<Integer, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
-        return "Node<" + getClass().getSimpleName() + ">";
-    });
-
     @SerializedName("Completed")
     public IOutportTrigger<Integer> onCompleted = new IOutportTrigger<>(this);
     
@@ -25,7 +20,14 @@ public class ConquerZoneNode extends AbstractQuestNode<Integer> {
     
     @SerializedName("Count")
     public IInportValue<Integer, Integer> count = new IInportValue<>(this, Integer.class, 1);
-    
+
+    @SerializedName("Text")
+    public IOutportValue<Integer, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
+        if(data == Integer.MAX_VALUE)
+            return "Conquered " + zone.get(instance).getName();
+        return data + "/" + count.get(instance) + " killed in " + zone.get(instance).getName();
+    });
+
     @SerializedName("Activate")
     public IInportTrigger<Integer> onActivate = new IInportTrigger<>(this, (instance, data) -> {
         // If it's not null, then this node has already been activated.

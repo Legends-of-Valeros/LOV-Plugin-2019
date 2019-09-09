@@ -1,8 +1,6 @@
 package com.legendsofvaleros.api;
 
-import com.google.common.collect.ImmutableList;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.util.MessageUtil;
 import sun.misc.Unsafe;
 
@@ -442,7 +440,7 @@ public class Promise<R> {
                 for (Object o : successes) {
                     success.add((T) o);
                 }
-                promise.resolve(ImmutableList.copyOf(success));
+                promise.resolve(Collections.unmodifiableList(success));
             }
         };
 

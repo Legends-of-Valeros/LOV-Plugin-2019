@@ -1,20 +1,13 @@
 package com.legendsofvaleros.modules.quests.nodes.quest;
 
 import com.google.gson.annotations.SerializedName;
-import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
 import com.legendsofvaleros.modules.quests.core.QuestLogEntry;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
-import org.bukkit.scheduler.BukkitTask;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class QuestLogNode extends AbstractQuestNode<Integer> {
-    private static final Map<CharacterId, BukkitTask> TIMER = new HashMap<>();
-
     @SerializedName("OnSuccess")
     public IOutportTrigger<Integer> onSuccess = new IOutportTrigger<>(this);
 
@@ -22,13 +15,17 @@ public class QuestLogNode extends AbstractQuestNode<Integer> {
     public IOutportTrigger<Integer> onFailure = new IOutportTrigger<>(this);
 
     @SerializedName("Text")
-    public IInportValue<Integer, Object> text = new IInportValue<>(this, Object.class, "N/A");
+    public IInportValue<Integer, String> text = new IInportValue<>(this, String.class, "N/A");
+
+    @SerializedName("Optional")
+    public IInportValue<Integer, Boolean> optional = new IInportValue<>(this, Boolean.class, false);
 
     @SerializedName("Add")
     public IInportTrigger<Integer> onAdd = new IInportTrigger<>(this, (instance, logEntry) -> {
         QuestLogEntry entry = new QuestLogEntry();
 
-        entry.text = text.get(instance).toString();
+        entry.logNodeId = getId();
+        entry.optional = optional.get(instance);
 
         if(logEntry == null) {
             logEntry = instance.addLogEntry(entry);

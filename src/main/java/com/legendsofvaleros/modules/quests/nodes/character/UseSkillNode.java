@@ -12,17 +12,19 @@ import com.legendsofvaleros.modules.quests.core.ports.IOutportValue;
 import com.legendsofvaleros.modules.skills.event.SkillUsedEvent;
 
 public class UseSkillNode extends AbstractQuestNode<Boolean> {
+    @SerializedName("Skill")
+    public IInportValue<Boolean, Skill> skill = new IInportValue<>(this, Skill.class, null);
+
     @SerializedName("Text")
     public IOutportValue<Boolean, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
-        return "Node<" + getClass().getSimpleName() + ">";
+        if(Boolean.TRUE.equals(data))
+            return "Used " + skill.get(instance).getUserFriendlyName(1);
+        return "Use " + skill.get(instance).getUserFriendlyName(1);
     });
 
     @SerializedName("Completed")
     public IOutportTrigger<Boolean> onCompleted = new IOutportTrigger<>(this);
-    
-    @SerializedName("Skill")
-    public IInportValue<Boolean, Skill> skill = new IInportValue<>(this, Skill.class, null);
-    
+
     @SerializedName("Activate")
     public IInportTrigger<Boolean> onActivate = new IInportTrigger<>(this, (instance, data) -> {
         // If it's not null, then this node has already been activated.

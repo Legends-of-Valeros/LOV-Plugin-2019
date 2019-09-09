@@ -14,9 +14,14 @@ import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportValue;
 
 public class EquipItemNode extends AbstractQuestNode<Boolean> {
+    @SerializedName("Item")
+    public IInportValue<Boolean, IGear> item = new IInportValue<>(this, IGear.class, GearController.ERROR_ITEM);
+
     @SerializedName("Text")
     public IOutportValue<Boolean, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
-        return "Node<" + getClass().getSimpleName() + ">";
+        if(Boolean.TRUE.equals(data))
+            return "Equipped " + item.get(instance).getName();
+        return "Equip " + item.get(instance).getName();
     });
 
     @SerializedName("Completed")
@@ -31,9 +36,6 @@ public class EquipItemNode extends AbstractQuestNode<Boolean> {
 
         instance.setNodeInstance(this, false);
     });
-
-    @SerializedName("Item")
-    public IInportValue<Boolean, IGear> item = new IInportValue<>(this, IGear.class, GearController.ERROR_ITEM);
 
     public EquipItemNode(String id) {
         super(id);

@@ -1,11 +1,15 @@
 package com.legendsofvaleros.modules.quests.core;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.quests.api.*;
+import com.legendsofvaleros.modules.quests.api.IQuest;
+import com.legendsofvaleros.modules.quests.api.IQuestInstance;
+import com.legendsofvaleros.modules.quests.api.IQuestNode;
+import com.legendsofvaleros.modules.quests.api.QuestState;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Optional;
 
 public class QuestInstance implements IQuestInstance {
     final PlayerCharacter player;
@@ -16,15 +20,11 @@ public class QuestInstance implements IQuestInstance {
 
     final QuestLogMap logs;
 
-    final List<Void> history;
-
     final QuestNodeInstanceMap nodes;
 
     public QuestInstance(PlayerCharacter player, IQuest quest) {
         this.quest = quest;
         this.player = player;
-
-        this.history = new ArrayList<>();
 
         this.logs = new QuestLogMap();
 
@@ -96,16 +96,6 @@ public class QuestInstance implements IQuestInstance {
         if(!this.nodes.hasInstance(node))
             this.nodes.putInstance(node, node.newInstance());
         return this.nodes.getInstance(node);
-    }
-
-    @Override
-    public void addHistory(IQuestHistory... event) {
-
-    }
-
-    @Override
-    public Collection<IQuestHistory> getHistory() {
-        return Collections.emptyList();
     }
 
     @Override

@@ -13,13 +13,15 @@ import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportValue;
 
 public class RepairItemNode extends AbstractQuestNode<Boolean> {
-    @SerializedName("Text")
-    public IOutportValue<Boolean, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
-        return "Node<" + getClass().getSimpleName() + ">";
-    });
-
     @SerializedName("Item")
     public IInportValue<Boolean, IGear> item = new IInportValue<>(this, IGear.class, GearController.ERROR_ITEM);
+
+    @SerializedName("Text")
+    public IOutportValue<Boolean, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
+        if(Boolean.TRUE.equals(data))
+            return "Repaired " + item.get(instance).getName();
+        return "Repair " + item.get(instance).getName();
+    });
 
     @SerializedName("Completed")
     public IOutportTrigger<Boolean> onComplete = new IOutportTrigger<>(this);
