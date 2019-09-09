@@ -43,7 +43,7 @@ public class WaitTicksNode extends AbstractQuestNode<Boolean> {
 
     @Override
     public void onActivated(IQuestInstance instance, Boolean data) {
-        // If we aren't in the credits screen, yet, ignore it.
+        // If we aren't waiting yet, yet, ignore it.
         if(data == null) {
             return;
         }
