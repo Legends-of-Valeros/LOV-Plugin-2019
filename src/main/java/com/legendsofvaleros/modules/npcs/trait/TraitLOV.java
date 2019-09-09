@@ -103,7 +103,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
         getNPC().data().setPersistent(NPC.SHOULD_SAVE_METADATA, true);
 
         // TODO: When binding an NPC, we should translate the slug in the command to the database ID. getNPCBySlug should quickly be refactored out.
-        npcData = NPCsController.getInstance().getNPCBySlug(npcId);
+        npcData = NPCsController.getInstance().getNPC(npcId);
         if (npcData == null) {
             getNPC().data().setPersistent(NPC.NAMEPLATE_VISIBLE_METADATA, true);
             getNPC().getEntity().setCustomNameVisible(true);

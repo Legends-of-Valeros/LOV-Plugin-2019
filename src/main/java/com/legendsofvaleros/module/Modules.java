@@ -230,7 +230,7 @@ public class Modules {
 
             for (IntegratesWith integrate : clazz.getAnnotationsByType(IntegratesWith.class)) {
                 if (integrate.integration() == Integration.class) {
-                    getLogger().severe("Class-level @IntegratesWith must reference an integration class!");
+                    getLogger().severe("Class-level (" + clazz.getSimpleName() + ") @IntegratesWith must reference an integration class!");
                     continue;
                 }
 
@@ -242,7 +242,7 @@ public class Modules {
                 if (integrate == null) continue;
 
                 if (integrate.integration() != Integration.class) {
-                    getLogger().severe("Method-level @IntegratesWith must not reference an integration class!");
+                    getLogger().severe("Method-level (" + clazz.getSimpleName() + "#" + method.getName() + ") @IntegratesWith must not reference an integration class!");
                     continue;
                 }
 

@@ -32,10 +32,6 @@ public class BindSkillEvent extends PlayerEvent {
 
     private final Skill skill;
 
-    public String getSkillId() {
-        return skill.getId();
-    }
-
     public Skill getSkill() {
         return skill;
     }

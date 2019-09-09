@@ -101,7 +101,7 @@ public abstract class SkillTree {
                                 skill.getKey().getId());
                         p.getInventory().setItem(event.getHotbarButton(), skillStack);
 
-                        Bukkit.getPluginManager().callEvent(new BindSkillEvent(p, Hotswitch.getInstance().getCurrentHotbar(p.getUniqueId()), event.getHotbarButton(), skill.getKey().getId()));
+                        Bukkit.getPluginManager().callEvent(new BindSkillEvent(p, Hotswitch.getInstance().getCurrentHotbar(p.getUniqueId()), event.getHotbarButton(), skill.getKey()));
                     }
                 }
             } else if (canUpgrade && event.isRightClick()) {

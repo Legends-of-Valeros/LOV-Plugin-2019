@@ -2,6 +2,7 @@ package com.legendsofvaleros.modules.quests.nodes.character;
 
 import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.characters.skill.Skill;
+import com.legendsofvaleros.modules.quests.api.IQuestInstance;
 import com.legendsofvaleros.modules.quests.api.QuestEvent;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;

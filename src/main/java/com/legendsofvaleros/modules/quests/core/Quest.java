@@ -4,7 +4,6 @@ import com.google.common.collect.HashBasedTable;
 import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.quests.api.*;
 import org.bukkit.event.Event;
 
@@ -58,19 +57,9 @@ public class Quest implements IQuest {
             for (Method method : node.getClass().getMethods()) {
                 if (method.getAnnotation(QuestEvent.class) == null) continue;
 
+                // If this node is loaded, it's assumed the parameters are correct, as it was checked during registration.
+
                 Class<?>[] params = method.getParameterTypes();
-                if (params.length != 3) {
-                    throw new IllegalArgumentException("@QuestEvent methods must have 3 arguments. IQuestInstance, generic T, and a supported Event.");
-                }
-
-                if (params[0] != IQuestInstance.class) {
-                    throw new IllegalArgumentException("@QuestEvent method's first parameter must be IQuestInstance.");
-                }
-
-                if (Event.class.isAssignableFrom(params[2])
-                        || !QuestController.getInstance().getEventRegistry().hasHandler((Class<? extends Event>) params[2])) {
-                    throw new IllegalArgumentException("@QuestEvent method's third parameter must be a supported Event.");
-                }
 
                 Class<? extends Event> event = (Class<? extends Event>) params[2];
 

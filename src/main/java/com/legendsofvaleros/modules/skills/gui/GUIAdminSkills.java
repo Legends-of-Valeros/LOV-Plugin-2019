@@ -43,7 +43,7 @@ public class GUIAdminSkills extends ExpandingGUI {
 								skill.getId());
 						p.getInventory().setItem(event.getHotbarButton(), skillStack);
 
-						Bukkit.getPluginManager().callEvent(new BindSkillEvent(p, Hotswitch.getInstance().getCurrentHotbar(p.getUniqueId()), event.getHotbarButton(), skill.getId()));
+						Bukkit.getPluginManager().callEvent(new BindSkillEvent(p, Hotswitch.getInstance().getCurrentHotbar(p.getUniqueId()), event.getHotbarButton(), skill));
 					}
 				}
 			}));

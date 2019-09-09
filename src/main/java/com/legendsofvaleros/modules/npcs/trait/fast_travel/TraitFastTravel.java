@@ -99,14 +99,14 @@ public class TraitFastTravel extends LOVTrait {
 
             gui.slot(i++, ib.create(), (gui1, p1, event) -> {
                 if (!Money.sub(Characters.getPlayerCharacter(p1), data.cost)) {
-                    NPCEmulator.speak(npc, p1, "You don't have enough crowns for that.");
+                    NPCEmulator.speak(npcData, p1, "You don't have enough crowns for that.");
                     return;
                 }
 
                 p1.teleport(npcData.getLocation());
 
                 if (data.message != null && data.message.length() > 0)
-                    NPCEmulator.speak(npc, p1, data.message);
+                    NPCEmulator.speak(npcData, p1, data.message);
             });
         }
 

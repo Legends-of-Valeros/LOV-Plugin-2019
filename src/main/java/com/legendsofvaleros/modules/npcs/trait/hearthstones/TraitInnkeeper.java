@@ -43,7 +43,7 @@ public class TraitInnkeeper extends LOVTrait {
 
 		HomePoint oldHome = HearthstoneController.getInstance().getHome(pc);
 		if(oldHome != null && loc.distance(oldHome.getLocation()) <= SAME_LOC_DISTANCE)
-			NPCEmulator.speak(npc, p, "You already have a room here!");
+			NPCEmulator.speak(npc_id, p, "You already have a room here!");
 		else{
 			new WindowYesNo("Reserve a room?") {
 				@Override
