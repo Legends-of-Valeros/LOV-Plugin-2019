@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.quests.nodes.gear;
 
 import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.gear.GearController;
-import com.legendsofvaleros.modules.gear.core.Gear;
+import com.legendsofvaleros.modules.gear.api.IGear;
 import com.legendsofvaleros.modules.gear.event.GearPickupEvent;
 import com.legendsofvaleros.modules.quests.api.IQuestInstance;
 import com.legendsofvaleros.modules.quests.api.QuestEvent;
@@ -10,10 +10,16 @@ import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
+import com.legendsofvaleros.modules.quests.core.ports.IOutportValue;
 
 public class FetchItemNode extends AbstractQuestNode<Integer> {
+    @SerializedName("Text")
+    public IOutportValue<Integer, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
+        return "Node<" + getClass().getSimpleName() + ">";
+    });
+
     @SerializedName("Item")
-    public IInportValue<Integer, Gear> item = new IInportValue<>(this, Gear.class, GearController.ERROR_ITEM);
+    public IInportValue<Integer, IGear> item = new IInportValue<>(this, IGear.class, GearController.ERROR_ITEM);
 
     @SerializedName("Count")
     public IInportValue<Integer, Integer> count = new IInportValue<>(this, Integer.class, 1);

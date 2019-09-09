@@ -98,6 +98,7 @@ public class Gear implements IGear {
     /**
      * Instances a new instance of this Gear with default component persistent data, and an amount of 1.
      */
+    @Override
     public Gear.Instance newInstance() {
         Gear.Instance instance = new Gear.Instance(this, UUID.randomUUID());
         instance.amount = 1;
@@ -115,15 +116,13 @@ public class Gear implements IGear {
         return instance;
     }
 
+    @Override
     public boolean isSimilar(ItemStack stack) {
         return isSimilar(Gear.Instance.fromStack(stack));
     }
 
-    public boolean isSimilar(Gear.Instance gear) {
-        return gear != null && (this == gear.gear || this.id.equals(gear.getId()));
-    }
-
-    public boolean isSimilar(Gear gear) {
+    @Override
+    public boolean isSimilar(IGear gear) {
         return gear != null && (this == gear || this.id.equals(gear.getId()));
     }
 
@@ -216,6 +215,21 @@ public class Gear implements IGear {
         @Override
         public int getSeed() {
             return gear.getSeed();
+        }
+
+        @Override
+        public Instance newInstance() {
+            return gear.newInstance();
+        }
+
+        @Override
+        public boolean isSimilar(ItemStack newArmorPiece) {
+            return gear.isSimilar(newArmorPiece);
+        }
+
+        @Override
+        public boolean isSimilar(IGear gear) {
+            return gear.isSimilar(gear);
         }
 
         /**

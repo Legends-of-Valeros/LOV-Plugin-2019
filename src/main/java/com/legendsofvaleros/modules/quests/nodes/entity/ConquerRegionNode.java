@@ -8,9 +8,15 @@ import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
+import com.legendsofvaleros.modules.quests.core.ports.IOutportValue;
 import com.legendsofvaleros.modules.regions.core.IRegion;
 
 public class ConquerRegionNode extends AbstractQuestNode<Integer> {
+    @SerializedName("Text")
+    public IOutportValue<Integer, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
+        return "Node<" + getClass().getSimpleName() + ">";
+    });
+
     @SerializedName("Completed")
     public IOutportTrigger<Integer> onCompleted = new IOutportTrigger<>(this);
     
@@ -18,7 +24,7 @@ public class ConquerRegionNode extends AbstractQuestNode<Integer> {
     public IInportValue<Integer, IRegion> region = new IInportValue<>(this, IRegion.class, null);
     
     @SerializedName("Count")
-    public IInportValue<Integer, Integer> count = new IInportValue<>(this, Integer.class, 0);
+    public IInportValue<Integer, Integer> count = new IInportValue<>(this, Integer.class, 1);
     
     @SerializedName("Activate")
     public IInportTrigger<Integer> onActivate = new IInportTrigger<>(this, (instance, data) -> {

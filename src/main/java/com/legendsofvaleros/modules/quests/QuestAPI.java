@@ -359,8 +359,13 @@ public class QuestAPI extends ListenerModule {
                 }
 
                 // Decode default input interface values
-                for(Map.Entry<String, JsonElement> optionEntry : obj.getAsJsonObject("inputs").entrySet()) {
-                    INodeInput in = (INodeInput)findField(INodeInput.class, nodeClass, optionEntry.getKey()).get(node);
+                for(Map.Entry<String, JsonElement> inportEntry : obj.getAsJsonObject("inputs").entrySet()) {
+                    Field f = findField(INodeInput.class, nodeClass, inportEntry.getKey());
+                    if(f == null) {
+                        throw new IllegalArgumentException("Unknown inport interface: " + inportEntry.getKey() + " in " + nodeClass.getSimpleName());
+                    }
+
+                    INodeInput in = (INodeInput)f.get(node);
 
                     if(in == null) continue;
 
@@ -368,7 +373,11 @@ public class QuestAPI extends ListenerModule {
                     // as it is likely an execution port.
                     if(in instanceof IInportValue) {
                         IInportValue inv = (IInportValue)in;
-                        inv.setDefaultValue(APIController.getInstance().getGson().fromJson(optionEntry.getValue(), inv.getValueClass()));
+                        try {
+                            inv.setDefaultValue(APIController.getInstance().getGson().fromJson(inportEntry.getValue(), inv.getValueClass()));
+                        } catch(Exception e) {
+                            throw new IllegalArgumentException("Failed to decode inport value: " + inportEntry.getKey() + " in " + nodeClass.getSimpleName(), e);
+                        }
                     }
                 }
 
@@ -376,9 +385,15 @@ public class QuestAPI extends ListenerModule {
                 for(Map.Entry<String, JsonElement> optionEntry : obj.getAsJsonObject("options").entrySet()) {
                     Field f = findField(Object.class, nodeClass, optionEntry.getKey());
 
-                    if(f == null) continue;
+                    if(f == null) {
+                        throw new IllegalArgumentException("Unknown option: " + optionEntry.getKey() + " in " + nodeClass.getSimpleName());
+                    }
 
-                    f.set(node, APIController.getInstance().getGson().fromJson(optionEntry.getValue(), f.getType()));
+                    try {
+                        f.set(node, APIController.getInstance().getGson().fromJson(optionEntry.getValue(), f.getType()));
+                    } catch(Exception e) {
+                        throw new IllegalArgumentException("Failed to decode option value: " + optionEntry.getKey() + " in " + nodeClass.getSimpleName(), e);
+                    }
                 }
 
                 nodes.put(id, node);

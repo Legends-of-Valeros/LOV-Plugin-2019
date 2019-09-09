@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.quests.nodes.world;
 
 import com.google.gson.annotations.SerializedName;
+import com.legendsofvaleros.modules.gear.api.IGear;
 import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.quests.api.IQuestInstance;
@@ -9,6 +10,7 @@ import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
+import com.legendsofvaleros.modules.quests.core.ports.IOutportValue;
 import com.legendsofvaleros.scheduler.InternalTask;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -25,6 +27,11 @@ public class InteractBlockWithItemNode extends AbstractQuestNode<Boolean> {
     InternalTask task;
     Queue<IQuestInstance> instances;
 
+    @SerializedName("Text")
+    public IOutportValue<Boolean, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
+        return "Node<" + getClass().getSimpleName() + ">";
+    });
+
     @SerializedName("Completed")
     public IOutportTrigger<Boolean> onCompleted = new IOutportTrigger<>(this);
     
@@ -32,7 +39,7 @@ public class InteractBlockWithItemNode extends AbstractQuestNode<Boolean> {
     public IInportValue<Boolean, Vector> location = new IInportValue<>(this, Vector.class, null);
     
     @SerializedName("Item")
-    public IInportValue<Boolean, Gear> item = new IInportValue<>(this, Gear.class, null);
+    public IInportValue<Boolean, IGear> item = new IInportValue<>(this, IGear.class, null);
 
     @SerializedName("Activate")
     public IInportTrigger<Boolean> onActivate = new IInportTrigger<>(this, (instance, data) -> {

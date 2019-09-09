@@ -7,10 +7,16 @@ import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
+import com.legendsofvaleros.modules.quests.core.ports.IOutportValue;
 import com.legendsofvaleros.modules.zones.api.IZone;
 import com.legendsofvaleros.modules.zones.event.ZoneEnterEvent;
 
 public class EnterZoneNode extends AbstractQuestNode<Boolean> {
+    @SerializedName("Text")
+    public IOutportValue<Boolean, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
+        return "Node<" + getClass().getSimpleName() + ">";
+    });
+
     @SerializedName("Completed")
     public IOutportTrigger<Boolean> onCompleted = new IOutportTrigger<>(this);
     

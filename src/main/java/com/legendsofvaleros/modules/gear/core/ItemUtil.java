@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.gear.core;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
+import com.legendsofvaleros.modules.gear.api.IGear;
 import com.legendsofvaleros.modules.gear.component.core.GearPhysicalDamage;
 import com.legendsofvaleros.modules.gear.component.core.GearUseSpeed;
 import com.legendsofvaleros.modules.gear.event.GearPickupEvent;
@@ -43,7 +44,7 @@ public class ItemUtil {
         return random.nextBoolean();
     }
 
-    public static boolean hasItem(Player p, Gear gear, int amount) {
+    public static boolean hasItem(Player p, IGear gear, int amount) {
         if (amount <= 0) return true;
 
         int count = 0;

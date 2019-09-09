@@ -1,8 +1,10 @@
 package com.legendsofvaleros.modules.gear.api;
 
+import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.gear.core.GearRarity;
 import com.legendsofvaleros.modules.gear.core.GearType;
 import com.legendsofvaleros.util.model.Model;
+import org.bukkit.inventory.ItemStack;
 
 public interface IGear {
     /**
@@ -60,4 +62,10 @@ public interface IGear {
      * @return
      */
     int getSeed();
+
+    Gear.Instance newInstance();
+
+    boolean isSimilar(ItemStack newArmorPiece);
+
+    boolean isSimilar(IGear gear);
 }

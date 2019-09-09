@@ -5,22 +5,18 @@ import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
 
 public class TeleportNode extends AbstractQuestNode<Void> {
     @SerializedName("Completed")
     public IOutportTrigger<Void> onCompleted = new IOutportTrigger<>(this);
-    
-    @SerializedName("Entity")
-    public IInportValue<Void, LivingEntity> entity = new IInportValue<>(this, LivingEntity.class, null);
-    
+
     @SerializedName("Location")
     public IInportValue<Void, Vector> location = new IInportValue<>(this, Vector.class, null);
     
     @SerializedName("Execute")
     public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> {
-        entity.get(instance).teleport(location.get(instance).toLocation(entity.get(instance).getWorld()));
+        instance.getPlayer().teleport(location.get(instance).toLocation(instance.getPlayer().getWorld()));
 
         onCompleted.run(instance);
     });

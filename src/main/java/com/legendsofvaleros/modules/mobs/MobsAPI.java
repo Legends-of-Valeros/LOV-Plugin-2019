@@ -14,7 +14,6 @@ import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.modules.mobs.api.IMob;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.mobs.core.SpawnArea;
-import com.legendsofvaleros.modules.npcs.api.INPC;
 import org.bukkit.Chunk;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -65,7 +64,7 @@ public class MobsAPI extends ListenerModule {
         this.rpc = APIController.create(RPC.class);
 
         APIController.getInstance().getGsonBuilder()
-                .registerTypeAdapter(INPC.class, new TypeAdapter<IMob>() {
+                .registerTypeAdapter(IMob.class, new TypeAdapter<IMob>() {
                     @Override
                     public void write(JsonWriter write, IMob mob) throws IOException {
                         write.value(mob != null ? mob.getId() : null);

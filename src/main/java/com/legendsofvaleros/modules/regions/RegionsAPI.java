@@ -1,6 +1,10 @@
 package com.legendsofvaleros.modules.regions;
 
 import com.google.common.collect.*;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.JsonWriter;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.ListenerModule;
@@ -14,6 +18,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +43,7 @@ public class RegionsAPI extends ListenerModule {
 
     private RPC rpc;
     private static final List<IRegion> EMPTY_LIST = ImmutableList.of();
-    protected HashMap<String, IRegion> regions = new HashMap<>();
+    protected Map<String, IRegion> regions = new HashMap<>();
 
     /**
      * A map who's key is a chunk x,y pair and the regions inside it. Allows for extremely fast regions searching.
@@ -51,6 +56,26 @@ public class RegionsAPI extends ListenerModule {
     @Override
     public void onLoad() {
         super.onLoad();
+
+        APIController.getInstance().getGsonBuilder()
+                .registerTypeAdapter(IRegion.class, new TypeAdapter<IRegion>() {
+                    @Override
+                    public void write(JsonWriter write, IRegion region) throws IOException {
+                        write.value(region != null ? region.getId() : null);
+                    }
+
+                    @Override
+                    public IRegion read(JsonReader read) throws IOException {
+                        // If we reference the interface, then the type should be a string, and we return the stored object.
+                        // Note: it must be loaded already, else this returns null.
+                        if(read.peek() == JsonToken.NULL) {
+                            read.nextNull();
+                            return null;
+                        }
+
+                        return regions.get(read.nextString());
+                    }
+                });
     }
 
     @Override

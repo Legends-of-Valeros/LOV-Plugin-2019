@@ -6,6 +6,7 @@ import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
 import com.legendsofvaleros.modules.quests.core.QuestLogEntry;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
+import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
@@ -13,6 +14,12 @@ import java.util.Map;
 
 public class QuestLogNode extends AbstractQuestNode<Integer> {
     private static final Map<CharacterId, BukkitTask> TIMER = new HashMap<>();
+
+    @SerializedName("OnSuccess")
+    public IOutportTrigger<Integer> onSuccess = new IOutportTrigger<>(this);
+
+    @SerializedName("OnFailure")
+    public IOutportTrigger<Integer> onFailure = new IOutportTrigger<>(this);
 
     @SerializedName("Text")
     public IInportValue<Integer, Object> text = new IInportValue<>(this, Object.class, "N/A");
@@ -31,7 +38,7 @@ public class QuestLogNode extends AbstractQuestNode<Integer> {
     });
 
     @SerializedName("Success")
-    public IInportTrigger<Integer> onSuccess = new IInportTrigger<>(this, (instance, logEntry) -> {
+    public IInportTrigger<Integer> triggerSuccess = new IInportTrigger<>(this, (instance, logEntry) -> {
         if(logEntry == null) {
             throw new IllegalStateException("Cannot edit a log entry before its been added!");
         }
@@ -44,10 +51,12 @@ public class QuestLogNode extends AbstractQuestNode<Integer> {
 
         entry.success = true;
         entry.disabled = true;
+
+        this.onSuccess.run(instance);
     });
 
     @SerializedName("Fail")
-    public IInportTrigger<Integer> onFail = new IInportTrigger<>(this, (instance, logEntry) -> {
+    public IInportTrigger<Integer> triggerFail = new IInportTrigger<>(this, (instance, logEntry) -> {
         if(logEntry == null) {
             throw new IllegalStateException("Cannot edit a log entry before its been added!");
         }
@@ -59,6 +68,8 @@ public class QuestLogNode extends AbstractQuestNode<Integer> {
         }
 
         entry.disabled = true;
+
+        this.onFailure.run(instance);
     });
 
     @SerializedName("Remove")
