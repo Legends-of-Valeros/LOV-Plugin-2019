@@ -10,11 +10,15 @@ public class ExperienceNode extends AbstractQuestNode<Void> {
     @SerializedName("Completed")
     public IOutportTrigger<Void> onCompleted = new IOutportTrigger<>(this);
     
-    @SerializedName("Execute")
-    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> { });
-    
     @SerializedName("Count")
     public IInportValue<Void, Integer> count = new IInportValue<>(this, Integer.class, 0);
+    
+    @SerializedName("Execute")
+    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> {
+        instance.getPlayerCharacter().getExperience().addExperience(count.get(instance), false);
+
+        onCompleted.run(instance);
+    });
     
     public ExperienceNode(String id) {
         super(id);

@@ -7,6 +7,7 @@ import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterCreateEvent;
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.npcs.trait.quests.TraitQuestGiver;
 import com.legendsofvaleros.modules.playermenu.InventoryManager;
@@ -28,6 +29,7 @@ import com.legendsofvaleros.modules.quests.nodes.npc.*;
 import com.legendsofvaleros.modules.quests.nodes.quest.*;
 import com.legendsofvaleros.modules.quests.nodes.utility.*;
 import com.legendsofvaleros.modules.quests.nodes.world.*;
+import com.legendsofvaleros.modules.skills.event.BindSkillEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.title.Title;
 import com.legendsofvaleros.util.title.TitleUtil;
@@ -37,6 +39,7 @@ import io.chazza.advancementapi.Trigger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 
 @DependsOn(NPCsController.class)
@@ -78,8 +81,18 @@ public class QuestController extends QuestAPI {
 
         // Register some basic event handlers.
         getLogger().info("is registering event handlers");
-        //getEventRegistry().addHandler(NPCClickEvent.class, (event) -> event.getClicker());
-        //getEventRegistry().addHandler(PlayerEvent.class, (event) -> event.getPlayer());
+        getEventRegistry().addHandler(BindSkillEvent.class, (event) -> new Player[] { event.getPlayer() });
+        getEventRegistry().addHandler(CombatEngineDamageEvent.class, (event) -> {
+            if(event.getDamaged().isPlayer() && event.getAttacker().isPlayer()) {
+                return new Player[] { (Player)event.getAttacker(), (Player)event.getDamaged() };
+            }else if(event.getAttacker().isPlayer()) {
+                return new Player[] { (Player)event.getAttacker() };
+            }else if(event.getDamaged().isPlayer()) {
+                return new Player[] { (Player)event.getDamaged() };
+            }
+
+            return null;
+        });
 
         getLogger().info("is registering prerequisites");
         getPrerequisiteRegistry().addType("class", ClassPrerequisite.class);

@@ -6,22 +6,46 @@ import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
 
-public class DamageNode extends AbstractQuestNode<Void> {
+public class DamageNode extends AbstractQuestNode<Boolean> {
     @SerializedName("Completed")
-    public IOutportTrigger<Void> onCompleted = new IOutportTrigger<>(this);
-    
-    @SerializedName("Activate")
-    public IInportTrigger<Void> onActivate = new IInportTrigger<>(this, (instance, data) -> { });
+    public IOutportTrigger<Boolean> onCompleted = new IOutportTrigger<>(this);
     
     @SerializedName("Entity")
-    public IInportValue<Void, String> entity = new IInportValue<>(this, String.class, null);
+    public IInportValue<Boolean, String> entity = new IInportValue<>(this, String.class, null);
+    
+    @SerializedName("Activate")
+    public IInportTrigger<Boolean> onActivate = new IInportTrigger<>(this, (instance, data) -> {
+        // If it's not null, then this node has already been activated.
+        if(data != null) {
+            return;
+        }
+        
+        instance.setNodeInstance(this, false);
+    });
     
     public DamageNode(String id) {
         super(id);
     }
 
     @Override
-    public Void newInstance() {
+    public Boolean newInstance() {
         return null;
+    }
+
+    @QuestEvent
+    public void onEvent(QuestInstance instance, Boolean data, SomeEvent event) {
+        // If we aren't tracking, yet, ignore it.
+        if(data == null || data) {
+            return;
+        }
+
+        // Fail logic
+        if(!) {
+            return;
+        }
+
+        instance.setNodeInstance(this, true);
+
+        onCompleted.run(instance);
     }
 }

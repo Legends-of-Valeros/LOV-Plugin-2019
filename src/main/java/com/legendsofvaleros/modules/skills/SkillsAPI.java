@@ -3,6 +3,10 @@ package com.legendsofvaleros.modules.skills;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Table;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.JsonWriter;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.ListenerModule;
@@ -12,9 +16,11 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
+import com.legendsofvaleros.modules.characters.skill.Skill;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.io.IOException;
 import java.util.Map;
 
 public class SkillsAPI extends ListenerModule {
@@ -36,6 +42,26 @@ public class SkillsAPI extends ListenerModule {
         super.onLoad();
 
         this.rpc = APIController.create(RPC.class);
+
+        APIController.getInstance().getGsonBuilder()
+                .registerTypeAdapter(Skill.class, new TypeAdapter<Skill>() {
+                    @Override
+                    public void write(JsonWriter write, Skill skill) throws IOException {
+                        write.value(skill != null ? skill.getId() : null);
+                    }
+
+                    @Override
+                    public Skill read(JsonReader read) throws IOException {
+                        // If we reference the interface, then the type should be a string, and we return the stored object.
+                        // Note: it must be loaded already, else this returns null.
+                        if(read.peek() == JsonToken.NULL) {
+                            read.nextNull();
+                            return null;
+                        }
+
+                        return Skill.getSkillById(read.nextString());
+                    }
+                });
 
         registerEvents(new PlayerListener());
     }

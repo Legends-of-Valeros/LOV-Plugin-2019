@@ -7,25 +7,49 @@ import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
 import com.legendsofvaleros.modules.zones.api.IZone;
 
-public class ConquerZoneNode extends AbstractQuestNode<Void> {
+public class ConquerZoneNode extends AbstractQuestNode<Boolean> {
     @SerializedName("Completed")
-    public IOutportTrigger<Void> onCompleted = new IOutportTrigger<>(this);
-    
-    @SerializedName("Activate")
-    public IInportTrigger<Void> onActivate = new IInportTrigger<>(this, (instance, data) -> { });
+    public IOutportTrigger<Boolean> onCompleted = new IOutportTrigger<>(this);
     
     @SerializedName("Zone")
-    public IInportValue<Void, IZone> zone = new IInportValue<>(this, IZone.class, null);
+    public IInportValue<Boolean, IZone> zone = new IInportValue<>(this, IZone.class, null);
     
     @SerializedName("Count")
-    public IInportValue<Void, Integer> count = new IInportValue<>(this, Integer.class, 0);
+    public IInportValue<Boolean, Integer> count = new IInportValue<>(this, Integer.class, 0);
+    
+    @SerializedName("Activate")
+    public IInportTrigger<Boolean> onActivate = new IInportTrigger<>(this, (instance, data) -> {
+        // If it's not null, then this node has already been activated.
+        if(data != null) {
+            return;
+        }
+        
+        instance.setNodeInstance(this, false);
+    });
     
     public ConquerZoneNode(String id) {
         super(id);
     }
 
     @Override
-    public Void newInstance() {
+    public Boolean newInstance() {
         return null;
+    }
+
+    @QuestEvent
+    public void onEvent(QuestInstance instance, Boolean data, SomeEvent event) {
+        // If we aren't tracking, yet, ignore it.
+        if(data == null || data) {
+            return;
+        }
+
+        // Fail logic
+        if(!) {
+            return;
+        }
+
+        instance.setNodeInstance(this, true);
+
+        onCompleted.run(instance);
     }
 }

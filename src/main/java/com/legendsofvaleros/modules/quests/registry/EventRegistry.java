@@ -5,7 +5,9 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.quests.QuestController;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.*;
+import org.bukkit.event.Event;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +25,7 @@ import java.util.Optional;
 public class EventRegistry implements Listener {
     @FunctionalInterface
     public interface IQuestEventHandler<T extends Event> {
-        Player getPlayer(T event);
+        Player[] getPlayers(T event);
     }
 
     private Map<Class<?>, IQuestEventHandler> handlers = new HashMap<>();
@@ -56,10 +58,14 @@ public class EventRegistry implements Listener {
         handlers.put(c, handler);
 
         Bukkit.getServer().getPluginManager().registerEvent(c, this, EventPriority.MONITOR, (listener, event) -> {
-            Player p = handler.getPlayer(c.cast(event));
-            if(!Characters.isPlayerCharacterLoaded(p)) return;
+            Player[] ps = handler.getPlayers(c.cast(event));
+            if(ps == null) return;
 
-            QuestController.getInstance().propagateEvent(Characters.getPlayerCharacter(p), c, event);
+            for(Player p : ps) {
+                if (!Characters.isPlayerCharacterLoaded(p)) return;
+
+                QuestController.getInstance().propagateEvent(Characters.getPlayerCharacter(p), c, event);
+            }
         }, LegendsOfValeros.getInstance());
     }
 }
