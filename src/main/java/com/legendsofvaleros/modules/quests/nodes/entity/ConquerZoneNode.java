@@ -1,30 +1,33 @@
 package com.legendsofvaleros.modules.quests.nodes.entity;
 
 import com.google.gson.annotations.SerializedName;
+import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
+import com.legendsofvaleros.modules.quests.api.QuestEvent;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
+import com.legendsofvaleros.modules.quests.core.QuestInstance;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
 import com.legendsofvaleros.modules.zones.api.IZone;
 
-public class ConquerZoneNode extends AbstractQuestNode<Boolean> {
+public class ConquerZoneNode extends AbstractQuestNode<Integer> {
     @SerializedName("Completed")
-    public IOutportTrigger<Boolean> onCompleted = new IOutportTrigger<>(this);
+    public IOutportTrigger<Integer> onCompleted = new IOutportTrigger<>(this);
     
     @SerializedName("Zone")
-    public IInportValue<Boolean, IZone> zone = new IInportValue<>(this, IZone.class, null);
+    public IInportValue<Integer, IZone> zone = new IInportValue<>(this, IZone.class, null);
     
     @SerializedName("Count")
-    public IInportValue<Boolean, Integer> count = new IInportValue<>(this, Integer.class, 0);
+    public IInportValue<Integer, Integer> count = new IInportValue<>(this, Integer.class, 0);
     
     @SerializedName("Activate")
-    public IInportTrigger<Boolean> onActivate = new IInportTrigger<>(this, (instance, data) -> {
+    public IInportTrigger<Integer> onActivate = new IInportTrigger<>(this, (instance, data) -> {
         // If it's not null, then this node has already been activated.
         if(data != null) {
             return;
         }
         
-        instance.setNodeInstance(this, false);
+        instance.setNodeInstance(this, 0);
     });
     
     public ConquerZoneNode(String id) {
@@ -32,23 +35,35 @@ public class ConquerZoneNode extends AbstractQuestNode<Boolean> {
     }
 
     @Override
-    public Boolean newInstance() {
+    public Integer newInstance() {
         return null;
     }
 
     @QuestEvent
-    public void onEvent(QuestInstance instance, Boolean data, SomeEvent event) {
+    public void onEvent(QuestInstance instance, Integer data, CombatEngineDeathEvent event) {
         // If we aren't tracking, yet, ignore it.
-        if(data == null || data) {
+        if(data == null || data == Integer.MAX_VALUE) {
             return;
         }
 
-        // Fail logic
-        if(!) {
+        // Ignore non-quest player
+        if(event.getKiller().getLivingEntity() != instance.getPlayerCharacter().getPlayer()) {
             return;
         }
 
-        instance.setNodeInstance(this, true);
+        // If they're not within the zone, ignore it
+        if(zone.get(instance).isInside(event.getKiller().getLivingEntity().getLocation())) {
+            return;
+        }
+
+        if(data + 1 < count.get(instance)) {
+            instance.setNodeInstance(this, data + 1);
+            return;
+        }
+
+        // If we've completed the objective, set it to max int value. This makes checking for completion easier
+        // than fetching the count every time.
+        instance.setNodeInstance(this, Integer.MAX_VALUE);
 
         onCompleted.run(instance);
     }

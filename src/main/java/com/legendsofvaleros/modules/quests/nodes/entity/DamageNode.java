@@ -1,7 +1,10 @@
 package com.legendsofvaleros.modules.quests.nodes.entity;
 
 import com.google.gson.annotations.SerializedName;
+import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
+import com.legendsofvaleros.modules.quests.api.QuestEvent;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
+import com.legendsofvaleros.modules.quests.core.QuestInstance;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
@@ -33,14 +36,17 @@ public class DamageNode extends AbstractQuestNode<Boolean> {
     }
 
     @QuestEvent
-    public void onEvent(QuestInstance instance, Boolean data, SomeEvent event) {
+    public void onEvent(QuestInstance instance, Boolean data, CombatEngineDamageEvent event) {
         // If we aren't tracking, yet, ignore it.
         if(data == null || data) {
             return;
         }
 
-        // Fail logic
-        if(!) {
+        if(event.getFinalDamage() < 0) {
+            return;
+        }
+
+        if(event.getAttacker().getLivingEntity() != instance.getPlayerCharacter().getPlayer()) {
             return;
         }
 

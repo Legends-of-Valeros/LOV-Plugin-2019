@@ -1,7 +1,11 @@
 package com.legendsofvaleros.modules.quests.nodes.entity;
 
 import com.google.gson.annotations.SerializedName;
+import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
+import com.legendsofvaleros.modules.mobs.core.Mob;
+import com.legendsofvaleros.modules.quests.api.QuestEvent;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
+import com.legendsofvaleros.modules.quests.core.QuestInstance;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
@@ -11,7 +15,7 @@ public class KillNode extends AbstractQuestNode<Boolean> {
     public IOutportTrigger<Boolean> onCompleted = new IOutportTrigger<>(this);
     
     @SerializedName("Entity")
-    public IInportValue<Boolean, String> entity = new IInportValue<>(this, String.class, null);
+    public IInportValue<Boolean, Mob> entity = new IInportValue<>(this, Mob.class, null);
     
     @SerializedName("Activate")
     public IInportTrigger<Boolean> onActivate = new IInportTrigger<>(this, (instance, data) -> {
@@ -33,14 +37,18 @@ public class KillNode extends AbstractQuestNode<Boolean> {
     }
 
     @QuestEvent
-    public void onEvent(QuestInstance instance, Boolean data, SomeEvent event) {
+    public void onEvent(QuestInstance instance, Boolean data, CombatEngineDeathEvent event) {
         // If we aren't tracking, yet, ignore it.
         if(data == null || data) {
             return;
         }
 
-        // Fail logic
-        if(!) {
+        if(event.getKiller().getLivingEntity() != instance.getPlayerCharacter().getPlayer()) {
+            return;
+        }
+
+        Mob.Instance mobInstance = Mob.Instance.get(event.getDied().getLivingEntity());
+        if(mobInstance == null || mobInstance.mob != entity.get(instance)) {
             return;
         }
 
