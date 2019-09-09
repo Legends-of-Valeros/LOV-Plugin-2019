@@ -17,7 +17,7 @@ public class HasItemNode extends AbstractQuestNode<Void> {
 
     @SerializedName("Value")
     public IOutportValue<Void, Boolean> value = new IOutportValue<>(this, Boolean.class, (instance, data) ->
-            ItemUtil.hasItem(instance.getPlayerCharacter().getPlayer(), item.get(instance), count.get(instance)));
+            ItemUtil.hasItem(instance.getPlayer(), item.get(instance), count.get(instance)));
 
     public HasItemNode(String id) {
         super(id);

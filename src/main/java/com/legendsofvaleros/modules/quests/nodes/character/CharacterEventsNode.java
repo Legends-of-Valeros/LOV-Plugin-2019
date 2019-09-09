@@ -6,7 +6,6 @@ import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.combatengine.events.DamageAddsThreatEvent;
 import com.legendsofvaleros.modules.quests.api.QuestEvent;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
-import com.legendsofvaleros.modules.quests.core.QuestInstance;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
 
 public class CharacterEventsNode extends AbstractQuestNode<Void> {
@@ -29,8 +28,8 @@ public class CharacterEventsNode extends AbstractQuestNode<Void> {
     }
 
     @QuestEvent
-    public void onHurt(QuestInstance instance, Void _, CombatEngineDamageEvent event) {
-        if(event.getDamaged().getLivingEntity() != instance.getPlayerCharacter().getPlayer()) {
+    public void onEvent(IQuestInstance instance, Void _, CombatEngineDamageEvent event) {
+        if(event.getDamaged().getLivingEntity() != instance.getPlayer()) {
             return;
         }
 
@@ -38,8 +37,8 @@ public class CharacterEventsNode extends AbstractQuestNode<Void> {
     }
 
     @QuestEvent
-    public void onAggro(QuestInstance instance, Void _, DamageAddsThreatEvent event) {
-        if(!event.getPossibleTarget().isPlayer() || event.getPossibleTarget().getLivingEntity() != instance.getPlayerCharacter().getPlayer()) {
+    public void onEvent(IQuestInstance instance, Void _, DamageAddsThreatEvent event) {
+        if(!event.getPossibleTarget().isPlayer() || event.getPossibleTarget().getLivingEntity() != instance.getPlayer()) {
             return;
         }
 
@@ -47,8 +46,8 @@ public class CharacterEventsNode extends AbstractQuestNode<Void> {
     }
 
     @QuestEvent
-    public void onAggro(QuestInstance instance, Void _, CombatEngineDeathEvent event) {
-        if(!event.getDied().isPlayer() || event.getDied().getLivingEntity() != instance.getPlayerCharacter().getPlayer()) {
+    public void onEvent(IQuestInstance instance, Void _, CombatEngineDeathEvent event) {
+        if(!event.getDied().isPlayer() || event.getDied().getLivingEntity() != instance.getPlayer()) {
             return;
         }
 

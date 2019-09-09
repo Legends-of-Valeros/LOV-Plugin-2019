@@ -6,7 +6,6 @@ import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.gear.event.GearPickupEvent;
 import com.legendsofvaleros.modules.quests.api.QuestEvent;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
-import com.legendsofvaleros.modules.quests.core.QuestInstance;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
@@ -41,7 +40,7 @@ public class FetchItemNode extends AbstractQuestNode<Integer> {
     }
 
     @QuestEvent
-    public void onGetItem(QuestInstance instance, Integer data, GearPickupEvent event) {
+    public void onEvent(IQuestInstance instance, Integer data, GearPickupEvent event) {
         // If we aren't tracking, yet, ignore it.
         if(data == null) {
             return;

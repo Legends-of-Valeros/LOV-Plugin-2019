@@ -17,7 +17,7 @@ public class RunCommandNode extends AbstractQuestNode<Void> {
     
     @SerializedName("Execute")
     public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> {
-        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), Moustache.translate(instance.getPlayerCharacter().getPlayer(), command.get(instance)));
+        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), Moustache.translate(instance.getPlayer(), command.get(instance)));
 
         onCompleted.run(instance);
     });

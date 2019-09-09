@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.quests.core;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.api.*;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -28,6 +29,11 @@ public class QuestInstance implements IQuestInstance {
         this.logs = new QuestLogMap();
 
         this.nodes = new QuestNodeInstanceMap();
+    }
+
+    @Override
+    public Player getPlayer() {
+        return this.player.getPlayer();
     }
 
     @Override

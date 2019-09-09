@@ -7,7 +7,6 @@ import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.gear.event.ItemEquipEvent;
 import com.legendsofvaleros.modules.quests.api.QuestEvent;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
-import com.legendsofvaleros.modules.quests.core.QuestInstance;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
@@ -39,7 +38,7 @@ public class EquipItemNode extends AbstractQuestNode<Boolean> {
     }
 
     @QuestEvent
-    public void onEquipArmor(QuestInstance instance, Boolean data, ArmorEquipEvent event) {
+    public void onEvent(IQuestInstance instance, Boolean data, ArmorEquipEvent event) {
         // If we aren't tracking, yet, ignore it.
         if(data == null || data) {
             return;
@@ -56,7 +55,7 @@ public class EquipItemNode extends AbstractQuestNode<Boolean> {
     }
 
     @QuestEvent
-    public void onEquipItem(QuestInstance instance, Boolean data, ItemEquipEvent event) {
+    public void onEvent(IQuestInstance instance, Boolean data, ItemEquipEvent event) {
         // If we aren't tracking, yet, ignore it.
         if(data == null || data) {
             return;

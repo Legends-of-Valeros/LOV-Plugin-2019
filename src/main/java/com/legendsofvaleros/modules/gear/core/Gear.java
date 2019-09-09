@@ -123,6 +123,10 @@ public class Gear implements IGear {
         return gear != null && (this == gear.gear || this.id.equals(gear.getId()));
     }
 
+    public boolean isSimilar(Gear gear) {
+        return gear != null && (this == gear || this.id.equals(gear.getId()));
+    }
+
     @Override
     public String toString() {
         return "GearController(version=" + version + ", id=" + id + ", name=" + name + ", type=" + type + ", model=" + modelId + ", rarity=" + rarity + ", components=" + components + ")";

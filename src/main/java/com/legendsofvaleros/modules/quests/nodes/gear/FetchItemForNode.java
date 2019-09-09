@@ -8,7 +8,6 @@ import com.legendsofvaleros.modules.npcs.api.INPC;
 import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
 import com.legendsofvaleros.modules.quests.api.QuestEvent;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
-import com.legendsofvaleros.modules.quests.core.QuestInstance;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
@@ -47,7 +46,7 @@ public class FetchItemForNode extends AbstractQuestNode<Boolean> {
     }
 
     @QuestEvent
-    public void onclickNPC(QuestInstance instance, Boolean data, NPCRightClickEvent event) {
+    public void onEvent(IQuestInstance instance, Boolean data, NPCRightClickEvent event) {
         // If we aren't tracking, yet, or we've already completed, ignore it.
         if(data == null || data) {
             return;
@@ -62,13 +61,13 @@ public class FetchItemForNode extends AbstractQuestNode<Boolean> {
             Gear item = this.item.get(instance);
             int count = this.count.get(instance);
 
-            if (!ItemUtil.hasItem(instance.getPlayerCharacter().getPlayer(), item, count)) {
+            if (!ItemUtil.hasItem(instance.getPlayer(), item, count)) {
                 return;
             }
 
             Gear.Instance gearInstance = item.newInstance();
             gearInstance.amount = count;
-            ItemUtil.removeItem(instance.getPlayerCharacter().getPlayer(), gearInstance);
+            ItemUtil.removeItem(instance.getPlayer(), gearInstance);
 
             instance.setNodeInstance(this, true);
 

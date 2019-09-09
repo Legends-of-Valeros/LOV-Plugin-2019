@@ -1,11 +1,13 @@
 package com.legendsofvaleros.modules.quests.nodes.world;
 
 import com.google.gson.annotations.SerializedName;
+import com.legendsofvaleros.modules.quests.api.QuestEvent;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
 import com.legendsofvaleros.modules.zones.api.IZone;
+import com.legendsofvaleros.modules.zones.event.ZoneLeaveEvent;
 
 public class ExitZoneNode extends AbstractQuestNode<Boolean> {
     @SerializedName("Completed")
@@ -34,14 +36,14 @@ public class ExitZoneNode extends AbstractQuestNode<Boolean> {
     }
 
     @QuestEvent
-    public void onEvent(QuestInstance instance, Boolean data, SomeEvent event) {
+    public void onEvent(IQuestInstance instance, Boolean data, ZoneLeaveEvent event) {
         // If we aren't tracking, yet, ignore it.
         if(data == null || data) {
             return;
         }
 
         // Fail logic
-        if(!) {
+        if(event.getZone() != zone.get(instance)) {
             return;
         }
 

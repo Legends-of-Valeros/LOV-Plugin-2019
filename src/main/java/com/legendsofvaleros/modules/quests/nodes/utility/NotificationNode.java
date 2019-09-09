@@ -35,7 +35,7 @@ public class NotificationNode extends AbstractQuestNode<Void> {
                 .background("minecraft:textures/gui/advancements/backgrounds/stone.png")
                 .frame(FrameType.TASK)
             .build()
-        .show(instance.getPlayerCharacter().getPlayer());
+        .show(instance.getPlayer());
 
         onCompleted.run(instance);
     });

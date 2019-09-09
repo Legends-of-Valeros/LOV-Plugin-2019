@@ -42,6 +42,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 @DependsOn(NPCsController.class)
 @DependsOn(CombatEngine.class)
@@ -82,6 +83,7 @@ public class QuestController extends QuestAPI {
 
         // Register some basic event handlers.
         getLogger().info("is registering event handlers");
+        getEventRegistry().addHandler(PlayerInteractEvent.class, (event) -> new Player[] { event.getPlayer() });
         getEventRegistry().addHandler(BindSkillEvent.class, (event) -> new Player[] { event.getPlayer() });
         getEventRegistry().addHandler(CombatEngineDamageEvent.class, (event) -> {
             if(event.getAttacker().isPlayer() && event.getDamaged().isPlayer()) {

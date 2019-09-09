@@ -3,14 +3,19 @@ package com.legendsofvaleros.modules.quests.api;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.core.QuestLogEntry;
 import com.legendsofvaleros.modules.quests.core.QuestNodeInstanceMap;
+import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * A quest instance is created for each player with the quest currently active, completed, failed, or abandoned. It does
  * not exist if and only if the player has never accepted the quest.
  */
 public interface IQuestInstance {
+    Player getPlayer();
+
     /**
      * Returns the player that this object applies to.
      */

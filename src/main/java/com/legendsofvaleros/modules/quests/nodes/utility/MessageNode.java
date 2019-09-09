@@ -25,16 +25,16 @@ public class MessageNode extends AbstractQuestNode<Void> {
 
         switch (format.toString()) {
             case "TEXT":
-                instance.getPlayerCharacter().getPlayer().sendMessage(line);
+                instance.getPlayer().sendMessage(line);
                 break;
             case "INFO":
-                MessageUtil.sendInfo(instance.getPlayerCharacter().getPlayer(), line);
+                MessageUtil.sendInfo(instance.getPlayer(), line);
                 break;
             case "UPDATE":
-                MessageUtil.sendUpdate(instance.getPlayerCharacter().getPlayer(), line);
+                MessageUtil.sendUpdate(instance.getPlayer(), line);
                 break;
             case "ERROR":
-                MessageUtil.sendError(instance.getPlayerCharacter().getPlayer(), line);
+                MessageUtil.sendError(instance.getPlayer(), line);
                 break;
         }
 

@@ -5,7 +5,6 @@ import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.quests.api.QuestEvent;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
-import com.legendsofvaleros.modules.quests.core.QuestInstance;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
@@ -37,13 +36,13 @@ public class KillNode extends AbstractQuestNode<Boolean> {
     }
 
     @QuestEvent
-    public void onEvent(QuestInstance instance, Boolean data, CombatEngineDeathEvent event) {
+    public void onEvent(IQuestInstance instance, Boolean data, CombatEngineDeathEvent event) {
         // If we aren't tracking, yet, ignore it.
         if(data == null || data) {
             return;
         }
 
-        if(event.getKiller().getLivingEntity() != instance.getPlayerCharacter().getPlayer()) {
+        if(event.getKiller().getLivingEntity() != instance.getPlayer()) {
             return;
         }
 

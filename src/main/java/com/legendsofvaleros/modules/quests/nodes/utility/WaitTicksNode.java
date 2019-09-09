@@ -68,7 +68,7 @@ public class WaitTicksNode extends AbstractQuestNode<Boolean> {
     @Override
     public void onDeactivated(IQuestInstance instance, Boolean data) {
         // Remove any players currently in the credits
-        InternalTask it = waiting.remove(instance.getPlayerCharacter().getPlayer().getUniqueId());
+        InternalTask it = waiting.remove(instance.getPlayer().getUniqueId());
 
         if(it != null) {
             it.cancel();

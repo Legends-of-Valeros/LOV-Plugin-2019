@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.quests.api.QuestEvent;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
-import com.legendsofvaleros.modules.quests.core.QuestInstance;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
@@ -40,14 +39,14 @@ public class ConquerRegionNode extends AbstractQuestNode<Integer> {
     }
 
     @QuestEvent
-    public void onEvent(QuestInstance instance, Integer data, CombatEngineDeathEvent event) {
+    public void onEvent(IQuestInstance instance, Integer data, CombatEngineDeathEvent event) {
         // If we aren't tracking, yet, ignore it.
         if(data == null || data == Integer.MAX_VALUE) {
             return;
         }
 
         // Ignore non-quest player
-        if(event.getKiller().getLivingEntity() != instance.getPlayerCharacter().getPlayer()) {
+        if(event.getKiller().getLivingEntity() != instance.getPlayer()) {
             return;
         }
 

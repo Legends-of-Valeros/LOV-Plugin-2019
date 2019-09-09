@@ -13,7 +13,9 @@ public class SetWorldFlagNode extends AbstractQuestNode<Void> {
     public IInportValue<Void, Boolean> value = new IInportValue<>(this, Boolean.class, false);
     
     @SerializedName("Execute")
-    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> { });
+    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> {
+        // TODO: logic
+    });
     
     public SetWorldFlagNode(String id) {
         super(id);

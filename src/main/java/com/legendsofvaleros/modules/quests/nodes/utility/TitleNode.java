@@ -25,7 +25,7 @@ public class TitleNode extends AbstractQuestNode<Void> {
         t.setTimingsToTicks();
         t.setTitleColor(ChatColor.WHITE);
         t.setSubtitleColor(ChatColor.GRAY);
-        TitleUtil.queueTitle(t, instance.getPlayerCharacter().getPlayer());
+        TitleUtil.queueTitle(t, instance.getPlayer());
 
         onCompleted.run(instance);
     });

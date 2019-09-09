@@ -43,7 +43,7 @@ public class QuestEventsNode extends AbstractQuestNode<Boolean> {
     }
 
     @QuestEvent
-    public void onQuestCompleted(IQuestInstance instance, Boolean completed, QuestEndedEvent event) {
+    public void onEvent(IQuestInstance instance, Boolean completed, QuestEndedEvent event) {
         // If it's null, we haven't been activated, yet.
         if(completed == null) return;
 

@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.quests.api.QuestEvent;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
-import com.legendsofvaleros.modules.quests.core.QuestInstance;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
@@ -37,7 +36,7 @@ public class BindSkillNode extends AbstractQuestNode<Boolean> {
     }
 
     @QuestEvent
-    public void onBindSkill(QuestInstance instance, Boolean data, BindSkillEvent event) {
+    public void onEvent(IQuestInstance instance, Boolean data, BindSkillEvent event) {
         // If we aren't tracking, yet, ignore it.
         if(data == null || data) {
             return;

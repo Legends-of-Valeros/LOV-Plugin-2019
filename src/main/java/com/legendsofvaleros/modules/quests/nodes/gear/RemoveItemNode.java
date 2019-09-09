@@ -25,7 +25,7 @@ public class RemoveItemNode extends AbstractQuestNode<Void> {
 
         gear.amount = count.get(instance);
 
-        ItemUtil.removeItem(instance.getPlayerCharacter().getPlayer(), gear);
+        ItemUtil.removeItem(instance.getPlayer(), gear);
 
         this.onCompleted.run(instance);
     });

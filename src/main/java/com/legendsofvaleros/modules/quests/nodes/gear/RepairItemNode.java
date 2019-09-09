@@ -6,7 +6,6 @@ import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.gear.event.RepairItemEvent;
 import com.legendsofvaleros.modules.quests.api.QuestEvent;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
-import com.legendsofvaleros.modules.quests.core.QuestInstance;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
@@ -38,7 +37,7 @@ public class RepairItemNode extends AbstractQuestNode<Boolean> {
     }
 
     @QuestEvent
-    public void onRepairItem(QuestInstance instance, Boolean data, RepairItemEvent event) {
+    public void onEvent(IQuestInstance instance, Boolean data, RepairItemEvent event) {
         // If we aren't tracking, yet, ignore it.
         if(data == null || data) {
             return;

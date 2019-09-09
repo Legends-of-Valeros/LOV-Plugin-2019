@@ -9,7 +9,6 @@ import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.quests.QuestUtil;
 import com.legendsofvaleros.modules.quests.api.QuestEvent;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
-import com.legendsofvaleros.modules.quests.core.QuestInstance;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
@@ -38,7 +37,7 @@ public class SpeakNode extends AbstractQuestNode<Void> {
 
         String line = text.get(instance);
 
-        NPCEmulator.speak(npc, instance.getPlayerCharacter().getPlayer(), ChatColor.translateAlternateColorCodes('&', QuestUtil.moustache(instance.getPlayerCharacter(), line)));
+        NPCEmulator.speak(npc, instance.getPlayer(), ChatColor.translateAlternateColorCodes('&', QuestUtil.moustache(instance.getPlayerCharacter(), line)));
 
         InternalTask task = QuestController.getInstance().getScheduler().executeInSpigotCircleLater(() -> {
             onCompleted.run(instance);
@@ -57,7 +56,7 @@ public class SpeakNode extends AbstractQuestNode<Void> {
     }
 
     @QuestEvent
-    public void onEvent(QuestInstance instance, Void _, NPCRightClickEvent event) {
+    public void onEvent(IQuestInstance instance, Void _, NPCRightClickEvent event) {
         if (!event.getNPC().hasTrait(TraitLOV.class)) return;
 
         TraitLOV lov = event.getNPC().getTrait(TraitLOV.class);

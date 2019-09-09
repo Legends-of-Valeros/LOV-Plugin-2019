@@ -46,7 +46,7 @@ public class ShowCreditsNode extends AbstractQuestNode<Boolean> {
     
     @SerializedName("Execute")
     public IInportTrigger<Boolean> onExecute = new IInportTrigger<>(this, (instance, data) -> {
-        EntityPlayer nms = ((CraftPlayer)instance.getPlayerCharacter().getPlayer()).getHandle();
+        EntityPlayer nms = ((CraftPlayer)instance.getPlayer()).getHandle();
         nms.viewingCredits = true;
         nms.playerConnection.sendPacket(new PacketPlayOutGameStateChange(4, 1F));
 
@@ -82,6 +82,6 @@ public class ShowCreditsNode extends AbstractQuestNode<Boolean> {
     @Override
     public void onDeactivated(IQuestInstance instance, Boolean data) {
         // Remove any players currently in the credits
-        listener.waiting.remove(instance.getPlayerCharacter().getPlayer().getUniqueId());
+        listener.waiting.remove(instance.getPlayer().getUniqueId());
     }
 }
