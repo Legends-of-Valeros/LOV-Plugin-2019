@@ -3,18 +3,25 @@ package com.legendsofvaleros.modules.mobs;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.JsonWriter;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.modules.mobs.api.IMob;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.mobs.core.SpawnArea;
+import com.legendsofvaleros.modules.npcs.api.INPC;
 import org.bukkit.Chunk;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +63,26 @@ public class MobsAPI extends ListenerModule {
         super.onLoad();
 
         this.rpc = APIController.create(RPC.class);
+
+        APIController.getInstance().getGsonBuilder()
+                .registerTypeAdapter(INPC.class, new TypeAdapter<IMob>() {
+                    @Override
+                    public void write(JsonWriter write, IMob mob) throws IOException {
+                        write.value(mob != null ? mob.getId() : null);
+                    }
+
+                    @Override
+                    public IMob read(JsonReader read) throws IOException {
+                        // If we reference the interface, then the type should be a string, and we return the stored object.
+                        // Note: it must be loaded already, else this returns null.
+                        if(read.peek() == JsonToken.NULL) {
+                            read.nextNull();
+                            return null;
+                        }
+
+                        return entities.get(read.nextString());
+                    }
+                });
 
         registerEvents(new ChunkListener());
     }

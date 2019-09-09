@@ -2,22 +2,18 @@ package com.legendsofvaleros.modules.mobs.core;
 
 import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
-import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
-import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
-import com.legendsofvaleros.modules.combatengine.stat.Stat;
+import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.gear.core.Gear;
-import com.legendsofvaleros.modules.loot.LootTable;
 import com.legendsofvaleros.modules.loot.api.ILootTable;
 import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.modules.mobs.ai.AIStuckAction;
+import com.legendsofvaleros.modules.mobs.api.IMob;
 import com.legendsofvaleros.modules.mobs.behavior.StaticAI;
 import com.legendsofvaleros.modules.mobs.trait.MobTrait;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.npcs.api.ISkin;
-import com.legendsofvaleros.modules.npcs.core.Skin;
 import com.legendsofvaleros.util.MessageUtil;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.Equipment;
@@ -30,7 +26,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-public class Mob {
+public class Mob implements IMob {
     @SerializedName("_id")
     private String id;
     private String slug;
@@ -59,6 +55,7 @@ public class Mob {
 
     private transient Set<SpawnArea> spawns;
 
+    @Override
     public String getId() {
         return id;
     }

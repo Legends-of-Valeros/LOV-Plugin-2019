@@ -9,6 +9,7 @@ import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.modules.loot.LootController;
+import com.legendsofvaleros.modules.npcs.api.INPC;
 import com.legendsofvaleros.modules.npcs.api.ISkin;
 import com.legendsofvaleros.modules.npcs.core.NPCData;
 import com.legendsofvaleros.modules.npcs.core.Skin;
@@ -93,6 +94,24 @@ public class NPCsAPI extends ListenerModule {
                         }
 
                         return skins.get(read.nextString());
+                    }
+                })
+                .registerTypeAdapter(INPC.class, new TypeAdapter<INPC>() {
+                    @Override
+                    public void write(JsonWriter write, INPC npc) throws IOException {
+                        write.value(npc != null ? npc.getId() : null);
+                    }
+
+                    @Override
+                    public INPC read(JsonReader read) throws IOException {
+                        // If we reference the interface, then the type should be a string, and we return the stored object.
+                        // Note: it must be loaded already, else this returns null.
+                        if(read.peek() == JsonToken.NULL) {
+                            read.nextNull();
+                            return null;
+                        }
+
+                        return npcs.get(read.nextString());
                     }
                 });
     }

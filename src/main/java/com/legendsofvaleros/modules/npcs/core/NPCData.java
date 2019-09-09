@@ -22,6 +22,7 @@ public class NPCData implements INPC {
 
     private transient Location loc;
 
+    @Override
     public String getId() {
     	return id;
 	}

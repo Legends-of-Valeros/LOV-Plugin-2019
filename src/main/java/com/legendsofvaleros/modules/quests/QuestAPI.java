@@ -74,11 +74,11 @@ public class QuestAPI extends ListenerModule {
          * }
          * }
          */
-        Promise<Map<String, JsonObject>> getPlayerQuestsProgressNew(CharacterId characterId);
+        Promise<Map<String, JsonObject>> getPlayerQuestsProgress(CharacterId characterId);
 
-        Promise<Object> savePlayerQuestsProgressNew(CharacterId characterId, Map<String, Object> map);
+        Promise<Object> savePlayerQuestsProgress(CharacterId characterId, Map<String, Object> map);
 
-        Promise<Boolean> deletePlayerQuestsProgressNew(CharacterId characterId);
+        Promise<Boolean> deletePlayerQuestsProgress(CharacterId characterId);
     }
 
     private EventRegistry eventRegistry;
@@ -215,7 +215,7 @@ public class QuestAPI extends ListenerModule {
     private Promise<Void> onLogin(final PlayerCharacter pc) {
         Promise<Void> promise = new Promise<>();
 
-        rpc.getPlayerQuestsProgressNew(pc.getUniqueCharacterId())
+        rpc.getPlayerQuestsProgress(pc.getUniqueCharacterId())
                 .onFailure(promise::reject).onSuccess(val -> {
             Map<String, JsonObject> map = val.orElse(ImmutableMap.of());
 
@@ -274,7 +274,7 @@ public class QuestAPI extends ListenerModule {
         for (IQuestInstance instance : playerQuests.removeAll(pc.getUniqueCharacterId()))
             map.put(instance.getQuest().getId(), instance);
 
-        return this.rpc.savePlayerQuestsProgressNew(pc.getUniqueCharacterId(), map)
+        return this.rpc.savePlayerQuestsProgress(pc.getUniqueCharacterId(), map)
                 .next(v -> Promise.make(v != null));
     }
 
@@ -284,7 +284,7 @@ public class QuestAPI extends ListenerModule {
 
         playerQuests.removeAll(pc.getUniqueCharacterId());
 
-        return this.rpc.deletePlayerQuestsProgressNew(pc.getUniqueCharacterId());
+        return this.rpc.deletePlayerQuestsProgress(pc.getUniqueCharacterId());
     }
 
     public void reloadQuests() throws Throwable {
