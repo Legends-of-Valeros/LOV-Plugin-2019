@@ -11,14 +11,14 @@ public class NotificationNode extends AbstractQuestNode<Void> {
     @SerializedName("Completed")
     public IOutportTrigger<Void> onCompleted = new IOutportTrigger<>(this);
     
-    @SerializedName("Execute")
-    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> { });
-    
     @SerializedName("Icon")
     public IInportValue<Void, Material> icon = new IInportValue<>(this, Material.class, Material.AIR);
     
     @SerializedName("Text")
     public IInportValue<Void, String> text = new IInportValue<>(this, String.class, "N/A");
+    
+    @SerializedName("Execute")
+    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> { });
     
     public NotificationNode(String id) {
         super(id);

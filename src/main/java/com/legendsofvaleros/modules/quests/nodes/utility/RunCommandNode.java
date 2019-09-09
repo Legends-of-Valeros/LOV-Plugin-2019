@@ -10,11 +10,11 @@ public class RunCommandNode extends AbstractQuestNode<Void> {
     @SerializedName("Completed")
     public IOutportTrigger<Void> onCompleted = new IOutportTrigger<>(this);
     
-    @SerializedName("Execute")
-    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> { });
-    
     @SerializedName("Command")
     public IInportValue<Void, String> command = new IInportValue<>(this, String.class, "N/A");
+    
+    @SerializedName("Execute")
+    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> { });
     
     public RunCommandNode(String id) {
         super(id);

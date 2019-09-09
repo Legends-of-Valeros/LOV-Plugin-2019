@@ -11,9 +11,6 @@ public class SoundNode extends AbstractQuestNode<Void> {
     @SerializedName("Completed")
     public IOutportTrigger<Void> onCompleted = new IOutportTrigger<>(this);
     
-    @SerializedName("Execute")
-    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> { });
-    
     @SerializedName("Sound")
     public IInportValue<Void, String> sound = new IInportValue<>(this, String.class, null);
     
@@ -25,6 +22,9 @@ public class SoundNode extends AbstractQuestNode<Void> {
     
     @SerializedName("Location")
     public IInportValue<Void, Vector> location = new IInportValue<>(this, Vector.class, null);
+    
+    @SerializedName("Execute")
+    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> { });
     
     public SoundNode(String id) {
         super(id);

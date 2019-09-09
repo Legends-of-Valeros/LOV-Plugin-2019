@@ -8,10 +8,13 @@ import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
 
 public class TimerNode extends AbstractQuestNode<Void> {
     @SerializedName("OnTrigger")
-    public IOutportTrigger<Void> onOnTrigger = new IOutportTrigger<>(this);
+    public IOutportTrigger<Void> onTrigger = new IOutportTrigger<>(this);
     
     @SerializedName("OnStopped")
-    public IOutportTrigger<Void> onOnStopped = new IOutportTrigger<>(this);
+    public IOutportTrigger<Void> onStopped = new IOutportTrigger<>(this);
+    
+    @SerializedName("Seconds")
+    public IInportValue<Void, Integer> seconds = new IInportValue<>(this, Integer.class, 0);
     
     @SerializedName("Start")
     public IInportTrigger<Void> onStart = new IInportTrigger<>(this, (instance, data) -> { });
@@ -24,9 +27,6 @@ public class TimerNode extends AbstractQuestNode<Void> {
     
     @SerializedName("Cancel")
     public IInportTrigger<Void> onCancel = new IInportTrigger<>(this, (instance, data) -> { });
-    
-    @SerializedName("Seconds")
-    public IInportValue<Void, Integer> seconds = new IInportValue<>(this, Integer.class, 0);
     
     public TimerNode(String id) {
         super(id);

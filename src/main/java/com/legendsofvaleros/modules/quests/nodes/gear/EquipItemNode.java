@@ -13,11 +13,8 @@ import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
 
 public class EquipItemNode extends AbstractQuestNode<Boolean> {
-    @SerializedName("Item")
-    public IInportValue<Boolean, Gear> item = new IInportValue<>(this, Gear.class, GearController.ERROR_ITEM);
-
     @SerializedName("Completed")
-    public IOutportTrigger<Boolean> onComplete = new IOutportTrigger<>(this);
+    public IOutportTrigger<Boolean> onCompleted = new IOutportTrigger<>(this);
 
     @SerializedName("Activate")
     public IInportTrigger<Boolean> onActivate = new IInportTrigger<>(this, (instance, data) -> {
@@ -28,6 +25,9 @@ public class EquipItemNode extends AbstractQuestNode<Boolean> {
 
         instance.setNodeInstance(this, false);
     });
+
+    @SerializedName("Item")
+    public IInportValue<Boolean, Gear> item = new IInportValue<>(this, Gear.class, GearController.ERROR_ITEM);
 
     public EquipItemNode(String id) {
         super(id);
@@ -52,7 +52,7 @@ public class EquipItemNode extends AbstractQuestNode<Boolean> {
 
         instance.setNodeInstance(this, true);
 
-        onComplete.run(instance);
+        onCompleted.run(instance);
     }
 
     @QuestEvent
@@ -69,6 +69,6 @@ public class EquipItemNode extends AbstractQuestNode<Boolean> {
 
         instance.setNodeInstance(this, true);
 
-        onComplete.run(instance);
+        onCompleted.run(instance);
     }
 }

@@ -10,14 +10,14 @@ public class TitleNode extends AbstractQuestNode<Void> {
     @SerializedName("Completed")
     public IOutportTrigger<Void> onCompleted = new IOutportTrigger<>(this);
     
-    @SerializedName("Execute")
-    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> { });
-    
     @SerializedName("Title")
     public IInportValue<Void, String> title = new IInportValue<>(this, String.class, "N/A");
     
     @SerializedName("Subtitle")
     public IInportValue<Void, String> subtitle = new IInportValue<>(this, String.class, "N/A");
+    
+    @SerializedName("Execute")
+    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> { });
     
     public TitleNode(String id) {
         super(id);

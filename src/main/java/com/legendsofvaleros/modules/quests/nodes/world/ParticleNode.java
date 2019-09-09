@@ -11,9 +11,6 @@ public class ParticleNode extends AbstractQuestNode<Void> {
     @SerializedName("Completed")
     public IOutportTrigger<Void> onCompleted = new IOutportTrigger<>(this);
     
-    @SerializedName("Execute")
-    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> { });
-    
     @SerializedName("Particle")
     public IInportValue<Void, String> particle = new IInportValue<>(this, String.class, null);
     
@@ -22,6 +19,9 @@ public class ParticleNode extends AbstractQuestNode<Void> {
     
     @SerializedName("Offset")
     public IInportValue<Void, Vector> offset = new IInportValue<>(this, Vector.class, null);
+    
+    @SerializedName("Execute")
+    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> { });
     
     public ParticleNode(String id) {
         super(id);

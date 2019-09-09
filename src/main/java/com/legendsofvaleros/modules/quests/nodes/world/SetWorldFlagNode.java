@@ -9,11 +9,11 @@ public class SetWorldFlagNode extends AbstractQuestNode<Void> {
     @SerializedName("Flag")
     public String flag = "N/A";
     
-    @SerializedName("Execute")
-    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> { });
-    
     @SerializedName("Value")
     public IInportValue<Void, Boolean> value = new IInportValue<>(this, Boolean.class, false);
+    
+    @SerializedName("Execute")
+    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> { });
     
     public SetWorldFlagNode(String id) {
         super(id);

@@ -10,11 +10,11 @@ public class WaitTicksNode extends AbstractQuestNode<Void> {
     @SerializedName("Completed")
     public IOutportTrigger<Void> onCompleted = new IOutportTrigger<>(this);
     
-    @SerializedName("Execute")
-    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> { });
-    
     @SerializedName("Seconds")
     public IInportValue<Void, Integer> seconds = new IInportValue<>(this, Integer.class, 0);
+    
+    @SerializedName("Execute")
+    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> { });
     
     public WaitTicksNode(String id) {
         super(id);

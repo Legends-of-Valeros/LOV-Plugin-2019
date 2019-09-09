@@ -11,14 +11,14 @@ public class SpeakNode extends AbstractQuestNode<Void> {
     @SerializedName("Completed")
     public IOutportTrigger<Void> onCompleted = new IOutportTrigger<>(this);
     
-    @SerializedName("Execute")
-    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> { });
-    
     @SerializedName("Speaker")
     public IInportValue<Void, INPC> speaker = new IInportValue<>(this, INPC.class, null);
     
     @SerializedName("Text")
     public IInportValue<Void, String> text = new IInportValue<>(this, String.class, "N/A");
+    
+    @SerializedName("Execute")
+    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> { });
     
     public SpeakNode(String id) {
         super(id);

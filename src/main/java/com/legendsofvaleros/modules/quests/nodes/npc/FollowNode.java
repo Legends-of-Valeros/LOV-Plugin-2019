@@ -9,13 +9,13 @@ import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
 
 public class FollowNode extends AbstractQuestNode<Void> {
     @SerializedName("OnDied")
-    public IOutportTrigger<Void> onOnDied = new IOutportTrigger<>(this);
-    
-    @SerializedName("Execute")
-    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> { });
+    public IOutportTrigger<Void> onDied = new IOutportTrigger<>(this);
     
     @SerializedName("NPC")
     public IInportValue<Void, INPC> npc = new IInportValue<>(this, INPC.class, null);
+    
+    @SerializedName("Execute")
+    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> { });
     
     @SerializedName("Reset")
     public IInportTrigger<Void> onReset = new IInportTrigger<>(this, (instance, data) -> { });

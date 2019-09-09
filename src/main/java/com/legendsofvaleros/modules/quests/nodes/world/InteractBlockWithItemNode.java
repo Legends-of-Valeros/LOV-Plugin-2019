@@ -7,25 +7,49 @@ import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
 import org.bukkit.util.Vector;
 
-public class InteractBlockWithItemNode extends AbstractQuestNode<Void> {
+public class InteractBlockWithItemNode extends AbstractQuestNode<Boolean> {
     @SerializedName("Completed")
-    public IOutportTrigger<Void> onCompleted = new IOutportTrigger<>(this);
-    
-    @SerializedName("Activate")
-    public IInportTrigger<Void> onActivate = new IInportTrigger<>(this, (instance, data) -> { });
+    public IOutportTrigger<Boolean> onCompleted = new IOutportTrigger<>(this);
     
     @SerializedName("Location")
-    public IInportValue<Void, Vector> location = new IInportValue<>(this, Vector.class, null);
+    public IInportValue<Boolean, Vector> location = new IInportValue<>(this, Vector.class, null);
     
     @SerializedName("Item")
-    public IInportValue<Void, Object> item = new IInportValue<>(this, Object.class, null);
+    public IInportValue<Boolean, Object> item = new IInportValue<>(this, Object.class, null);
+    
+    @SerializedName("Activate")
+    public IInportTrigger<Boolean> onActivate = new IInportTrigger<>(this, (instance, data) -> {
+        // If it's not null, then this node has already been activated.
+        if(data != null) {
+            return;
+        }
+        
+        instance.setNodeInstance(this, false);
+    });
     
     public InteractBlockWithItemNode(String id) {
         super(id);
     }
 
     @Override
-    public Void newInstance() {
+    public Boolean newInstance() {
         return null;
+    }
+
+    @QuestEvent
+    public void onEvent(QuestInstance instance, Boolean data, SomeEvent event) {
+        // If we aren't tracking, yet, ignore it.
+        if(data == null || data) {
+            return;
+        }
+
+        // Fail logic
+        if(!) {
+            return;
+        }
+
+        instance.setNodeInstance(this, true);
+
+        onCompleted.run(instance);
     }
 }

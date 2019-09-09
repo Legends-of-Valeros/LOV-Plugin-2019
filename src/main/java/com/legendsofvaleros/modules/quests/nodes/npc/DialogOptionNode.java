@@ -13,11 +13,11 @@ public class DialogOptionNode extends AbstractQuestNode<Void> {
     @SerializedName("Dialog")
     public IInportValue<Void, Object> dialog = new IInportValue<>(this, Object.class, null);
     
-    @SerializedName("Activate")
-    public IInportTrigger<Void> onActivate = new IInportTrigger<>(this, (instance, data) -> { });
-    
     @SerializedName("Text")
     public IInportValue<Void, String> text = new IInportValue<>(this, String.class, "N/A");
+    
+    @SerializedName("Activate")
+    public IInportTrigger<Void> onActivate = new IInportTrigger<>(this, (instance, data) -> { });
     
     public DialogOptionNode(String id) {
         super(id);
