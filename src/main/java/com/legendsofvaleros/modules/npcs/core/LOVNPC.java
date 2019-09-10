@@ -6,9 +6,8 @@ import com.legendsofvaleros.modules.npcs.api.ISkin;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Location;
-import org.bukkit.World;
 
-public class NPCData implements INPC {
+public class LOVNPC implements INPC {
 	@SerializedName("_id")
 	private String id;
 	private String slug;
@@ -17,10 +16,7 @@ public class NPCData implements INPC {
 	private ISkin skin;
 	public LOVTrait[] traits;
 
-	public World world;
-	public int x, y, z;
-
-    private transient Location loc;
+	public Location location;
 
     @Override
     public String getId() {
@@ -36,25 +32,21 @@ public class NPCData implements INPC {
     	return name;
 	}
 
+	@Override
 	public ISkin getSkin() {
     	return skin;
 	}
 
 	@Override
     public Location getLocation() {
-    	if(this.loc == null && world != null)
-			this.loc = new Location(world, x, y, z);
-    	return this.loc;
+    	return this.location;
 	}
 
 	public void setLocation(NPC npc) {
-		this.loc = npc.getEntity().getLocation().getBlock().getLocation();
-		this.world = loc.getWorld();
-		this.x = loc.getBlockX();
-		this.y = loc.getBlockY();
-		this.z = loc.getBlockZ();
+		this.location = npc.getEntity().getLocation().getBlock().getLocation();
 	}
 
+	@Override
     public <T extends LOVTrait> T getTrait(Class<T> trait) {
 		for(LOVTrait t : traits) {
 			if(trait.isAssignableFrom(t.getClass()))

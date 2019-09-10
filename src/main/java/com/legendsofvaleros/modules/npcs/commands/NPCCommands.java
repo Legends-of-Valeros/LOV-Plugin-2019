@@ -5,7 +5,7 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.npcs.NPCsController;
-import com.legendsofvaleros.modules.npcs.core.NPCData;
+import com.legendsofvaleros.modules.npcs.core.LOVNPC;
 import com.legendsofvaleros.modules.npcs.trait.TraitHelper;
 import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
 import com.legendsofvaleros.util.MessageUtil;
@@ -35,7 +35,7 @@ public class NPCCommands extends BaseCommand {
 	public void cmdActivateNPC(Player player, String npcId, String side) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		NPCData npc = NPCsController.getInstance().getNPCBySlug(npcId);
+		LOVNPC npc = NPCsController.getInstance().getNPCBySlug(npcId);
 
 		if(side.equalsIgnoreCase("left"))
 			TraitHelper.onLeftClick(npc.getName(), player, npc.traits);
@@ -51,8 +51,8 @@ public class NPCCommands extends BaseCommand {
 	public void cmdBindNPC(Player player, String npcId) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		NPCData npcData = NPCsController.getInstance().getNPCBySlug(npcId);
-		if(npcData == null) {
+		LOVNPC lovNPC = NPCsController.getInstance().getNPCBySlug(npcId);
+		if(lovNPC == null) {
 			MessageUtil.sendError(player, "NPC with that ID does not exist.");
 			return;
 		}
@@ -106,8 +106,8 @@ public class NPCCommands extends BaseCommand {
 						&& trait.getNPC().getEntity().getLocation() != null) {
 					player.teleport(trait.getNPC().getEntity().getLocation());
 					return;
-				}else if(trait.getNpcData().getLocation() != null) {
-					player.teleport(trait.getNpcData().getLocation());
+				}else if(trait.getLovNPC().getLocation() != null) {
+					player.teleport(trait.getLovNPC().getLocation());
 					return;
 				}
 

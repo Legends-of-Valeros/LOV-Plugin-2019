@@ -3,7 +3,7 @@ package com.legendsofvaleros.modules.npcs.trait;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.npcs.api.INPC;
 import com.legendsofvaleros.modules.npcs.api.ISkin;
-import com.legendsofvaleros.modules.npcs.core.NPCData;
+import com.legendsofvaleros.modules.npcs.core.LOVNPC;
 import com.legendsofvaleros.modules.npcs.nameplate.Nameplates;
 import com.legendsofvaleros.util.MessageUtil;
 import net.citizensnpcs.api.command.CommandConfigurable;
@@ -32,7 +32,7 @@ public class TraitLOV extends Trait implements CommandConfigurable {
     @Persist(required = true)
     public String npcId;
 
-    private NPCData npcData;
+    private LOVNPC lovNPC;
     private LOVTrait[] traits = new LOVTrait[0];
 
     public Nameplates nameplates;
@@ -103,8 +103,8 @@ public class TraitLOV extends Trait implements CommandConfigurable {
         getNPC().data().setPersistent(NPC.SHOULD_SAVE_METADATA, true);
 
         // TODO: When binding an NPC, we should translate the slug in the command to the database ID. getNPCBySlug should quickly be refactored out.
-        npcData = NPCsController.getInstance().getNPCBySlug(npcId);
-        if (npcData == null) {
+        lovNPC = NPCsController.getInstance().getNPCBySlug(npcId);
+        if (lovNPC == null) {
             getNPC().data().setPersistent(NPC.NAMEPLATE_VISIBLE_METADATA, true);
             getNPC().getEntity().setCustomNameVisible(true);
             MessageUtil.sendException(NPCsController.getInstance(), "No NPC with that ID exists in the cache. Offender: " + npcId + " on " + getNPC().getId());
@@ -121,9 +121,9 @@ public class TraitLOV extends Trait implements CommandConfigurable {
             getNPC().getEntity().addPassenger(s);
         }
 
-        if (npcData.getName() != null) {
-            if (!getNPC().getName().equals(npcData.getName())) {
-                getNPC().setName(npcData.getName());
+        if (lovNPC.getName() != null) {
+            if (!getNPC().getName().equals(lovNPC.getName())) {
+                getNPC().setName(lovNPC.getName());
                 return;
             }
         } else {
@@ -131,13 +131,13 @@ public class TraitLOV extends Trait implements CommandConfigurable {
         }
 
         nameplates = Nameplates.get(getNPC());
-        nameplates.getOrAdd(Nameplates.BASE).appendTextLine(npcData.getName());
+        nameplates.getOrAdd(Nameplates.BASE).appendTextLine(lovNPC.getName());
 
-        if (npcData.getSkin() != null && !updatedSkin && getNPC().getEntity() instanceof SkinnableEntity) {
+        if (lovNPC.getSkin() != null && !updatedSkin && getNPC().getEntity() instanceof SkinnableEntity) {
             updatedSkin = true;
 
             try {
-                ISkin skin = npcData.getSkin();
+                ISkin skin = lovNPC.getSkin();
 
                 npc.data().setPersistent("cached-skin-uuid", skin.getUUID());
                 npc.data().setPersistent("cached-skin-uuid-name", skin.getUsername().toLowerCase());
@@ -155,19 +155,17 @@ public class TraitLOV extends Trait implements CommandConfigurable {
             }
         }
 
-        if (npcData.getLocation() == null || npcData.world == null
-                || npcData.world != getNPC().getEntity().getLocation().getWorld()
-                || getNPC().getEntity().getLocation().distance(npcData.getLocation()) > 2) {
-            npcData.setLocation(getNPC());
+        if (lovNPC.getLocation() == null
+                || getNPC().getEntity().getLocation().distance(lovNPC.getLocation()) > 2) {
+            lovNPC.setLocation(getNPC());
 
-            // TODO: removed so that NPC slugs don't get removed until we're absolutely ready
-            // NPCsController.getInstance().saveNPC(this);
+            NPCsController.getInstance().saveNPC(this);
         }
 
-        npcId = npcData.getId();
+        npcId = lovNPC.getId();
 
-        if(npcData.traits != null) {
-            traits = npcData.traits;
+        if(lovNPC.traits != null) {
+            traits = lovNPC.traits;
 
             for (LOVTrait trait : traits) {
                 trait.npc_id = npcId;
@@ -200,8 +198,8 @@ public class TraitLOV extends Trait implements CommandConfigurable {
         TraitHelper.onRightClick(getNPC().getName(), player, traits);
     }
 
-    public INPC getNpcData() {
-        return npcData;
+    public INPC getLovNPC() {
+        return lovNPC;
     }
 
     public NPC getCitizen() {

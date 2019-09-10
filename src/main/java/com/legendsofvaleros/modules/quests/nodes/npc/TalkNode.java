@@ -55,7 +55,7 @@ public class TalkNode extends AbstractQuestNode<Boolean> {
         if(!event.getNPC().hasTrait(TraitLOV.class)) return;
 
         TraitLOV lov = event.getNPC().getTrait(TraitLOV.class);
-        if(lov.getNpcData() != npc.get(instance)) {
+        if(lov.getLovNPC() != npc.get(instance)) {
             return;
         }
 

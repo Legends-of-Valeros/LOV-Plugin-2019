@@ -8,6 +8,7 @@ import com.legendsofvaleros.modules.bank.core.Money;
 import com.legendsofvaleros.modules.bank.gui.ItemMorphGUI;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.gear.api.IGear;
 import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.gear.core.ItemUtil;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
@@ -90,17 +91,10 @@ public class TraitTrader extends LOVTrait {
         }
     }
 
-    private String[] items = new String[0];
+    private IGear[] items = new IGear[0];
     private int[] costs = new int[0];
 
     private transient Gear[] gears = new Gear[0];
-
-    @Override
-    public void onSpawn() {
-        gears = new Gear[items.length];
-        for (int i = 0; i < items.length; i++)
-            gears[i] = Gear.fromId(items[i]);
-    }
 
     @Override
     public void onRightClick(Player player, SettableFuture<Slot> slot) {

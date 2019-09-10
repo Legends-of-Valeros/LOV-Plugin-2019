@@ -12,7 +12,7 @@ import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.modules.loot.LootController;
 import com.legendsofvaleros.modules.npcs.api.INPC;
 import com.legendsofvaleros.modules.npcs.api.ISkin;
-import com.legendsofvaleros.modules.npcs.core.NPCData;
+import com.legendsofvaleros.modules.npcs.core.LOVNPC;
 import com.legendsofvaleros.modules.npcs.core.Skin;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
@@ -32,15 +32,15 @@ import java.util.Map;
 
 public class NPCsAPI extends ListenerModule {
     public interface RPC {
-        Promise<List<NPCData>> findNPCs();
+        Promise<List<LOVNPC>> findNPCs();
 
         Promise<List<Skin>> findSkins();
 
-        Promise<Object> saveNPC(NPCData npc);
+        Promise<Object> saveNPC(LOVNPC npc);
     }
 
     protected RPC rpc;
-    protected HashMap<String, NPCData> npcs = new HashMap<>();
+    protected HashMap<String, LOVNPC> npcs = new HashMap<>();
     NPCRegistry registry;
     HashMap<String, Class<? extends LOVTrait>> traitTypes = new HashMap<>();
     Map<String, Skin> skins = new HashMap<>();
@@ -133,16 +133,16 @@ public class NPCsAPI extends ListenerModule {
         return npcs.containsKey(id);
     }
 
-    public NPCData getNPC(String id) {
+    public LOVNPC getNPC(String id) {
         return npcs.get(id);
     }
-    public NPCData getNPCBySlug(String id) {
+    public LOVNPC getNPCBySlug(String id) {
         return npcs.values().stream().filter(n -> n.getSlug().equals(id)).findFirst().orElse(null);
     }
 
     public void saveNPC(TraitLOV traitLOV) {
         getScheduler().executeInMyCircle(() -> {
-            rpc.saveNPC((NPCData)traitLOV.getNpcData()).onSuccess(() -> {
+            rpc.saveNPC((LOVNPC)traitLOV.getLovNPC()).onSuccess(() -> {
                 MessageUtil.sendInfo(Bukkit.getConsoleSender(), "Successfully saved npc " + traitLOV.npcId + " at " + traitLOV.getNPC().getStoredLocation());
             });
         });

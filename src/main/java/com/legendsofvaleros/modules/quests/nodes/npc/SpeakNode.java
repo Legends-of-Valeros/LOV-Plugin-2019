@@ -61,7 +61,7 @@ public class SpeakNode extends AbstractQuestNode<Void> {
         if (!event.getNPC().hasTrait(TraitLOV.class)) return;
 
         TraitLOV lov = event.getNPC().getTrait(TraitLOV.class);
-        if (lov.getNpcData() != speaker.get(instance)) {
+        if (lov.getLovNPC() != speaker.get(instance)) {
             return;
         }
 

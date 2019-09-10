@@ -8,7 +8,7 @@ import com.legendsofvaleros.modules.bank.core.Money;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.fast_travel.FastTravelController;
 import com.legendsofvaleros.modules.npcs.NPCsController;
-import com.legendsofvaleros.modules.npcs.core.NPCData;
+import com.legendsofvaleros.modules.npcs.core.LOVNPC;
 import com.legendsofvaleros.modules.npcs.core.NPCEmulator;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import com.legendsofvaleros.util.MessageUtil;
@@ -76,13 +76,13 @@ public class TraitFastTravel extends LOVTrait {
         for (String id : available) {
             TraitFastTravel.Data data = connections.get(id);
 
-            NPCData npcData = NPCsController.getInstance().getNPCBySlug(id);
+            LOVNPC lovNPC = NPCsController.getInstance().getNPCBySlug(id);
             if (npc == null) {
                 MessageUtil.sendError(p, "Unable to find NPC with that ID: " + id);
                 continue;
             }
 
-            TraitFastTravel trait = npcData.getTrait(TraitFastTravel.class);
+            TraitFastTravel trait = lovNPC.getTrait(TraitFastTravel.class);
             if (trait == null) {
                 MessageUtil.sendError(p, "Destination NPC does not have fast travel name set: " + id);
                 continue;
@@ -99,14 +99,14 @@ public class TraitFastTravel extends LOVTrait {
 
             gui.slot(i++, ib.create(), (gui1, p1, event) -> {
                 if (!Money.sub(Characters.getPlayerCharacter(p1), data.cost)) {
-                    NPCEmulator.speak(npcData, p1, "You don't have enough crowns for that.");
+                    NPCEmulator.speak(lovNPC, p1, "You don't have enough crowns for that.");
                     return;
                 }
 
-                p1.teleport(npcData.getLocation());
+                p1.teleport(lovNPC.getLocation());
 
                 if (data.message != null && data.message.length() > 0)
-                    NPCEmulator.speak(npcData, p1, data.message);
+                    NPCEmulator.speak(lovNPC, p1, data.message);
             });
         }
 

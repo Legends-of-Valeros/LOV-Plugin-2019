@@ -8,7 +8,6 @@ import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.modules.bank.core.Money;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.mount.Mount;
 import com.legendsofvaleros.modules.mount.MountsController;
 import com.legendsofvaleros.modules.mount.api.IMount;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
@@ -20,7 +19,7 @@ import org.bukkit.event.inventory.InventoryType;
 import java.util.Collection;
 
 public class TraitMount extends LOVTrait {
-    public String[] mounts;
+    public IMount[] mounts;
 
     @Override
     public void onRightClick(Player player, SettableFuture<Slot> slot) {
@@ -47,7 +46,7 @@ public class TraitMount extends LOVTrait {
         if (playerMounts.size() == 0) return;
 
         for (int i = 0; i < mounts.length; i++) {
-            final Mount m = MountsController.getInstance().getMount(mounts[i]);
+            final IMount m = mounts[i];
             boolean owned = playerMounts.contains(m);
             boolean levelTooLow;
 

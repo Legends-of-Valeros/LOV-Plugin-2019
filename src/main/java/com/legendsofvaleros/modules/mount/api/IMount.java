@@ -12,5 +12,9 @@ public interface IMount {
 
     int getSpeedPercent();
 
+    int getMinimumLevel();
+
+    long getCost();
+
     void hopOn(Player p);
 }

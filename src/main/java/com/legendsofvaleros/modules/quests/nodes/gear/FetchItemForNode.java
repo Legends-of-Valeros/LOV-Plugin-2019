@@ -68,7 +68,7 @@ public class FetchItemForNode extends AbstractQuestNode<Boolean> {
         }
 
         TraitLOV lov = event.getNPC().getTrait(TraitLOV.class);
-        if (lov.getNpcData() == npc.get(instance)) {
+        if (lov.getLovNPC() == npc.get(instance)) {
             IGear item = this.item.get(instance);
             int count = this.count.get(instance);
 

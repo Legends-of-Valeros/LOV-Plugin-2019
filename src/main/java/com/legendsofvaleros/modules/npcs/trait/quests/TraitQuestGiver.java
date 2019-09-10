@@ -6,7 +6,6 @@ import com.codingforcookies.robert.item.ItemBuilder;
 import com.codingforcookies.robert.slot.Slot;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.google.common.util.concurrent.SettableFuture;
-import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterFinishLoadingEvent;
@@ -30,18 +29,16 @@ import org.bukkit.event.Listener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class TraitQuestGiver extends LOVTrait {
     private static final String MARKER = "quest";
 
     public static List<TraitQuestGiver> all = new ArrayList<>();
 
-    public String introText;
-    public String[] questIDs;
+    public String text;
     public Hologram available;
 
-    public transient List<IQuest> quests;
+    public List<IQuest> quests;
 
     @Override
     public void onSpawn() {
@@ -51,16 +48,7 @@ public class TraitQuestGiver extends LOVTrait {
         available.appendItemLine(Model.stack("marker-quest-available").create());
         available.getVisibilityManager().setVisibleByDefault(false);
 
-        List<Promise<IQuest>> promises = new ArrayList<>();
-
-        for (String id : questIDs) {
-            promises.add(QuestController.getInstance().getQuestBySlug(id));
-        }
-
-        Promise.collect(promises).onSuccess(val -> {
-            quests = val.orElseGet(ArrayList::new);
-            Marker.update(this);
-        });
+        Marker.update(this);
     }
 
     @Override
@@ -113,21 +101,6 @@ public class TraitQuestGiver extends LOVTrait {
                 }));
             }
         }, QuestController.getInstance().getScheduler()::async);
-
-        List<IQuest> quests = new ArrayList<>();
-        AtomicInteger left = new AtomicInteger(questIDs.length);
-        for (String questId : questIDs) {
-            QuestController.getInstance().getQuestBySlug(questId).on((err, val) -> {
-                if (val.isPresent()) {
-                    IQuest quest = val.get();
-                    quests.add(quest);
-                } else
-                    throw new Exception("Failed to load quest on NPC! Offender: " + questId + " on " + trait.npcId);
-
-                if (left.decrementAndGet() == 0)
-                    future.set(quests);
-            }, QuestController.getInstance().getScheduler()::async);
-        }
     }
 
     private void openGUI(Player player, Collection<IQuest> acceptableQuests) {
@@ -135,8 +108,8 @@ public class TraitQuestGiver extends LOVTrait {
 
         TextBuilder tb = new TextBuilder(StringUtil.center(Book.WIDTH, npc.getName())).color(ChatColor.DARK_AQUA).underlined(true);
 
-        if (introText != null && introText.length() > 0)
-            tb.append("\n\n" + introText).color(ChatColor.BLACK);
+        if (text != null && text.length() > 0)
+            tb.append("\n\n" + text).color(ChatColor.BLACK);
 
         tb.append("\n\n");
 
