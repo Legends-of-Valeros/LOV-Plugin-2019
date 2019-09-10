@@ -20,15 +20,13 @@ public class QuestInstance implements IQuestInstance {
 
     private QuestState state = QuestState.INACTIVE;
 
-    private final QuestLogMap logs;
+    private QuestLogMap logs;
 
-    private final QuestNodeInstanceMap nodes;
+    private QuestNodeInstanceMap nodes;
 
     public QuestInstance(PlayerCharacter player, IQuest quest) {
         this.quest = quest;
         this.player = player;
-
-        this.logs = new QuestLogMap();
 
         this.nodes = new QuestNodeInstanceMap();
     }
@@ -70,18 +68,21 @@ public class QuestInstance implements IQuestInstance {
 
     @Override
     public Map<Integer, QuestLogEntry> getLogEntries() {
+        if(this.logs == null) this.logs = new QuestLogMap();
         return logs;
     }
 
     @Override
     public int addLogEntry(QuestLogEntry entry) {
-        // Should we fire an new entry event, here?
+        if(this.logs == null) this.logs = new QuestLogMap();
 
         return logs.add(entry);
     }
 
     @Override
     public void updateLogEntry(int id, QuestLogEntry entry) {
+        if(this.logs == null) this.logs = new QuestLogMap();
+
         logs.put(id, entry);
 
         // Should we fire an updated entry event, here?
@@ -89,11 +90,13 @@ public class QuestInstance implements IQuestInstance {
 
     @Override
     public Optional<QuestLogEntry> getLogEntry(int id) {
-        return Optional.ofNullable(logs.get(id));
+        return Optional.ofNullable(logs != null ? logs.get(id) : null);
     }
 
     @Override
     public void removeLogEntry(int id) {
+        if(this.logs == null) return;
+
         logs.remove(id);
         // Should we fire an updated entry event, here?
     }
@@ -107,7 +110,8 @@ public class QuestInstance implements IQuestInstance {
 
     @Override
     public void reset() {
-        this.logs.clear();
+        if(this.logs != null)
+            this.logs.clear();
 
         this.nodes.clear();
     }

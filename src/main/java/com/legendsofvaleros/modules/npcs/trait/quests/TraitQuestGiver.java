@@ -181,7 +181,7 @@ public class TraitQuestGiver extends LOVTrait {
             for (IQuest quest : trait.quests) {
                 // If the quest can be accepted, the marker should be active.
                 if (quest.getStatus(pc).canAccept()) {
-                    trait.available.getVisibilityManager().showTo(pc.getPlayer());
+                    // trait.available.getVisibilityManager().showTo(pc.getPlayer());
                     return;
                 }
             }

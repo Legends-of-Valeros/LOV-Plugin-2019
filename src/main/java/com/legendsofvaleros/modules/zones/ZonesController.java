@@ -92,7 +92,7 @@ public class ZonesController extends ZonesAPI {
             return null;
         }
 
-        Zone.Section section = playerZone.getIfPresent(playerCharacter.getPlayerId());
+        Zone.Section section = playerZone.getIfPresent(playerCharacter.getPlayer());
 
         if(section != null)
             return section;
@@ -106,13 +106,15 @@ public class ZonesController extends ZonesAPI {
      * Updates the zone and fires aa zone leave or enter event
      */
     private void updateZone(PlayerCharacter pc) {
-        Zone.Section oldSection = playerZone.getIfPresent(pc.getPlayer().getUniqueId());
+        Zone.Section oldSection = playerZone.getIfPresent(pc.getPlayer());
         Zone oldZone = oldSection != null ? oldSection.getZone() : null;
 
         for (Zone zone : getZones()) {
             Optional<Zone.Section> section = zone.getSection(pc.getLocation());
 
-            if(section.isPresent()) {
+            if(section.isPresent() && oldSection != section.get()) {
+                playerZone.put(pc.getPlayer(), section.get());
+
                 if (zone != oldZone) {
                     if (oldZone != null) {
                         Bukkit.getServer().getPluginManager().callEvent(new ZoneLeaveEvent(pc, oldZone));
@@ -141,10 +143,9 @@ public class ZonesController extends ZonesAPI {
     public void onZoneEnter(ZoneEnterEvent event) {
         // Handle zone activation
         Zone zone = event.getZone();
-        PlayerCharacter playerCharacter = Characters.getPlayerCharacter(event.getPlayer());
         zone.timeWithoutPlayers = 0;
 
-        zone.playersInZone.add(playerCharacter.getUniqueCharacterId());
+        zone.playersInZone.add(event.getPlayerCharacter().getUniqueCharacterId());
 
         if (!zone.isActive) {
             zone.setActive(true);
@@ -158,9 +159,8 @@ public class ZonesController extends ZonesAPI {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onZoneLeave(ZoneLeaveEvent event) {
         Zone zone = event.getZone();
-        PlayerCharacter playerCharacter = Characters.getPlayerCharacter(event.getPlayer());
 
-        zone.playersInZone.remove(playerCharacter.getUniqueCharacterId());
+        zone.playersInZone.remove(event.getPlayerCharacter().getUniqueCharacterId());
 
         if (zone.playersInZone.size() == 0) {
             zone.timeWithoutPlayers = System.currentTimeMillis() / 1000L;
@@ -169,14 +169,8 @@ public class ZonesController extends ZonesAPI {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onZoneSectionEnter(ZoneSectionEnterEvent event) {
-        if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) {
-            return;
-        }
-
         // Display zone warning
         boolean pvp = PvPController.getInstance().isPvPEnabled() && event.getSection().pvp;
-
-        event.getPlayer().sendMessage(String.valueOf(event.getZone()));
 
         Title title = new Title(event.getZone().name,
                         event.getSection().name
@@ -200,6 +194,10 @@ public class ZonesController extends ZonesAPI {
     public void onPlayerMove(PlayerMoveEvent event) {
         Player p = event.getPlayer();
         if (!Characters.isPlayerCharacterLoaded(p)) {
+            return;
+        }
+
+        if(event.getFrom().toVector().distance(event.getTo().toVector()) == 0) {
             return;
         }
 

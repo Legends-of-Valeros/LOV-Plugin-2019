@@ -45,6 +45,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class QuestAPI extends ListenerModule {
     public interface RPC {
@@ -189,12 +190,9 @@ public class QuestAPI extends ListenerModule {
 
     private Promise onLogin(final PlayerCharacter pc) {
         return rpc.getPlayerQuests(pc.getUniqueCharacterId()).onSuccess(val -> {
-            Collection<QuestInstance> quests = val.orElse(ImmutableList.of())/*
+            Collection<QuestInstance> quests = val.orElse(ImmutableList.of())
                     // Filter out quests that no longer exist
-                    .stream().filter(v -> v.getQuest() != null).collect(Collectors.toList())*/;
-
-            System.out.println(quests.size());
-            System.out.println(quests);
+                    .stream().filter(v -> v.getQuest() != null).collect(Collectors.toList());
 
             // Set the player and add the instance to the respective quest
             quests.forEach(qi -> qi.setPlayer(pc));
