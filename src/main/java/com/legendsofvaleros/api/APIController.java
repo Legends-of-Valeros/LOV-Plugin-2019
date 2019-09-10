@@ -70,7 +70,7 @@ public class APIController extends Module {
 
         instance = this;
 
-        this.pool = Executors.newFixedThreadPool(8);
+        this.pool = Executors.newCachedThreadPool();
 
         this.gsonBuilder.registerTypeAdapter(Duration.class, (JsonDeserializer<Duration>) (json, typeOfT, context) -> Duration.parse(json.getAsString()));
 

@@ -77,6 +77,7 @@ public class InterfaceTypeAdapter<T> extends TypeAdapter<T> {
         }
 
         String id = in.nextString();
+
         T val = decoder.toValue(id);
 
         if(val == null) {

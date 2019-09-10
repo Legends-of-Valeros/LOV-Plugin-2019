@@ -41,9 +41,9 @@ public class PromiseCache<K, V> {
 
     public Optional<V> getAndWait(@Nonnull K k) {
         try {
-            return Optional.of(Promise.make(() -> this.get(k).get() ).get());
+            return Optional.ofNullable(this.get(k).get());
         } catch (Throwable throwable) {
-            return Optional.empty();
+            throw new RuntimeException(throwable);
         }
     }
 
