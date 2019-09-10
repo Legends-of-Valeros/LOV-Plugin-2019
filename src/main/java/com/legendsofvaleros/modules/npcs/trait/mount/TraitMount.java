@@ -10,6 +10,7 @@ import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.mount.Mount;
 import com.legendsofvaleros.modules.mount.MountsController;
+import com.legendsofvaleros.modules.mount.api.IMount;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -42,7 +43,7 @@ public class TraitMount extends LOVTrait {
 
         final PlayerCharacter pc = Characters.getPlayerCharacter(p);
 
-        Collection<Mount> playerMounts = MountsController.getInstance().getMounts(pc);
+        Collection<IMount> playerMounts = MountsController.getInstance().getMounts(pc);
         if (playerMounts.size() == 0) return;
 
         for (int i = 0; i < mounts.length; i++) {
@@ -61,7 +62,7 @@ public class TraitMount extends LOVTrait {
 
             gui.slot(i, ib.create(), owned || levelTooLow ? null : (ISlotAction) (gui1, p1, event) -> {
                 if (Money.sub(Characters.getPlayerCharacter(p1), m.getCost())) {
-                    MountsController.getInstance().addMount(pc.getUniqueCharacterId(), m);
+                    MountsController.getInstance().addMount(pc, m);
                     gui1.close(p1);
                 }
             });

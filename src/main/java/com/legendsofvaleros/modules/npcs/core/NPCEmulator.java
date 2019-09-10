@@ -16,7 +16,7 @@ public class NPCEmulator {
 
 	private static void speakDirect(String npc, Player p, String message) {
 		if(npc == null)
-			p.sendMessage(ChatColor.GREEN + p.getName() + ": " + ChatColor.ITALIC + ChatColor.GRAY + message);
+			p.sendMessage(ChatColor.GREEN + "<Invalid NPC>: " + ChatColor.ITALIC + ChatColor.GRAY + message);
 		else
 			p.sendMessage(ChatColor.GREEN + npc + ": " + ChatColor.RESET + message);
 	}

@@ -1,17 +1,13 @@
 package com.legendsofvaleros.modules.gear;
 
 import com.google.common.collect.ImmutableList;
-import com.google.gson.TypeAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
-import com.google.gson.stream.JsonWriter;
 import com.legendsofvaleros.api.APIController;
+import com.legendsofvaleros.api.InterfaceTypeAdapter;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.modules.gear.api.IGear;
 import com.legendsofvaleros.modules.gear.core.Gear;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,25 +27,9 @@ public class GearAPI extends Module {
 
         this.rpc = APIController.create(RPC.class);
 
-        APIController.getInstance().getGsonBuilder()
-                .registerTypeAdapter(IGear.class, new TypeAdapter<IGear>() {
-                    @Override
-                    public void write(JsonWriter write, IGear gear) throws IOException {
-                        write.value(gear != null ? gear.getId() : null);
-                    }
-
-                    @Override
-                    public IGear read(JsonReader read) throws IOException {
-                        // If we reference the interface, then the type should be a string, and we return the stored object.
-                        // Note: it must be loaded already, else this returns null.
-                        if(read.peek() == JsonToken.NULL) {
-                            read.nextNull();
-                            return null;
-                        }
-
-                        return gear.get(read.nextString());
-                    }
-                });
+        InterfaceTypeAdapter.register(IGear.class,
+                                        obj -> obj.getId(),
+                                        id -> gear.get(id));
     }
 
     @Override

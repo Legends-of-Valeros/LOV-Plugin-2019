@@ -5,7 +5,7 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.mobs.MobsController;
-import com.legendsofvaleros.modules.mobs.core.Mob;
+import com.legendsofvaleros.modules.mobs.api.IEntity;
 import com.legendsofvaleros.modules.mobs.core.SpawnArea;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.command.CommandSender;
@@ -28,9 +28,9 @@ public class MobCommands extends BaseCommand {
 	public void cmdCreate(Player player, String mobId, int radius, int padding, String level, @Optional Integer count, @Optional Integer interval, @Optional Integer chance) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		Mob mobData = MobsController.getInstance().getEntity(mobId);
-		if(mobData == null) {
-			MessageUtil.sendError(player, "Unknown mob with that ID.");
+		IEntity entity = MobsController.getInstance().getEntity(mobId);
+		if(entity == null) {
+			MessageUtil.sendError(player, "Unknown entity with that ID.");
 			return;
 		}
 
@@ -44,7 +44,7 @@ public class MobCommands extends BaseCommand {
 			levels = new int[] { Integer.parseInt(level), Integer.parseInt(level) };
 		}
 		
-		SpawnArea data = new SpawnArea(player.getLocation(), mobId, radius, padding, levels);
+		SpawnArea data = new SpawnArea(player.getLocation(), entity, radius, padding, levels);
 
 		MessageUtil.sendUpdate(player, "Created spawn area with radius " + data.getRadius() + " blocks.");
 

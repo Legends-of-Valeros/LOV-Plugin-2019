@@ -8,6 +8,7 @@ import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
+import com.legendsofvaleros.modules.mount.api.IMount;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.playermenu.events.PlayerOptionsOpenEvent;
@@ -55,7 +56,7 @@ public class MountsController extends MountAPI {
 
     @EventHandler
     public void onCharacterOptionsOpen(PlayerOptionsOpenEvent event) {
-        List<Mount> mounts = new ArrayList<>(getMounts(Characters.getPlayerCharacter(event.getPlayer())));
+        List<IMount> mounts = new ArrayList<>(getMounts(Characters.getPlayerCharacter(event.getPlayer())));
 
         if(mounts.size() == 0) return;
 
@@ -70,7 +71,7 @@ public class MountsController extends MountAPI {
                 mountgui.type(InventoryType.DISPENSER);
 
                 for (int i = 0; i < mounts.size(); i++) {
-                    final Mount m = mounts.get(i);
+                    final IMount m = mounts.get(i);
                     mountgui.slot(i, new ItemBuilder(m.getIcon()).setName(m.getName())
                             .addLore("", "Speed: " + ChatColor.GREEN + m.getSpeedPercent() + "%")
                             .create(), (gui1, p1, event1) -> {

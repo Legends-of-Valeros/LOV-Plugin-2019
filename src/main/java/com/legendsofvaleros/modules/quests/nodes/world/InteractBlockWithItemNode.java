@@ -12,6 +12,7 @@ import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportValue;
 import com.legendsofvaleros.scheduler.InternalTask;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.event.block.Action;
@@ -68,7 +69,7 @@ public class InteractBlockWithItemNode extends AbstractQuestNode<Boolean> {
 
         this.task = QuestController.getInstance().getScheduler().executeInSpigotCircleTimer(() -> {
             for(IQuestInstance instance : instances) {
-                Location loc = location.get(instance).toLocation(instance.getPlayer().getLocation().getWorld());
+                Location loc = location.get(instance).toLocation(Bukkit.getWorlds().get(0));
                 instance.getPlayer().spawnParticle(Particle.VILLAGER_HAPPY, loc.add(Math.random(), Math.random(), Math.random()), 1);
             }
         }, 0L, 10L);
@@ -121,7 +122,7 @@ public class InteractBlockWithItemNode extends AbstractQuestNode<Boolean> {
         if (!isCorrectItem(instance, instance.getPlayer().getInventory().getItemInMainHand())) return;
 
         Location bloc = event.getClickedBlock().getLocation();
-        Location target = location.get(instance).toLocation(instance.getPlayer().getWorld());
+        Location target = location.get(instance).toLocation(Bukkit.getWorlds().get(0));
 
         if (!bloc.equals(target)
                 || !bloc.clone().add(

@@ -12,6 +12,7 @@ import com.legendsofvaleros.modules.graveyard.core.Graveyard;
 import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.modules.zones.core.Zone;
 import com.legendsofvaleros.util.MessageUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -20,7 +21,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import java.util.Collection;
-import java.util.List;
 
 // Currently graveyards search the entire zone for the nearest. Should we make it search for nearest graveyards in the Section, first?
 @DependsOn(CombatEngine.class)
@@ -61,7 +61,7 @@ public class GraveyardController extends GraveyardAPI {
             MessageUtil.sendException(this, event.getPlayer(), "Failed to locate graveyard at " + loc.getBlockX() + ", " + loc.getBlockZ() + "!");
             event.setRespawnLocation(event.getPlayer().getLocation());
         } else {
-            Location loc = new Location(data.getWorld(), data.x + (Math.random() * (data.radius * 2) - data.radius), data.y, data.z + (Math.random() * (data.radius * 2) - data.radius));
+            Location loc = new Location(Bukkit.getWorlds().get(0), data.getLocation().getX() + (Math.random() * (data.radius * 2) - data.radius), data.getLocation().getY(), data.getLocation().getZ() + (Math.random() * (data.radius * 2) - data.radius));
             while (loc.getBlock().getType() != Material.AIR)
                 loc.add(0, 1, 0);
             event.setRespawnLocation(loc);

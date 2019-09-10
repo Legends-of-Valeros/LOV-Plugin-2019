@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.quests.nodes.entity;
 
 import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
-import com.legendsofvaleros.modules.mobs.api.IMob;
+import com.legendsofvaleros.modules.mobs.api.IEntity;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.quests.api.IQuestInstance;
 import com.legendsofvaleros.modules.quests.api.QuestEvent;
@@ -14,7 +14,7 @@ import com.legendsofvaleros.modules.quests.core.ports.IOutportValue;
 
 public class KillNode extends AbstractQuestNode<Integer> {
     @SerializedName("Entity")
-    public IInportValue<Integer, IMob> entity = new IInportValue<>(this, IMob.class, null);
+    public IInportValue<Integer, IEntity> entity = new IInportValue<>(this, IEntity.class, null);
 
     @SerializedName("Count")
     public IInportValue<Integer, Integer> count = new IInportValue<>(this, Integer.class, 1);
@@ -61,7 +61,7 @@ public class KillNode extends AbstractQuestNode<Integer> {
         }
 
         Mob.Instance mobInstance = Mob.Instance.get(event.getDied().getLivingEntity());
-        if(mobInstance == null || mobInstance.mob != entity.get(instance)) {
+        if(mobInstance == null || mobInstance.entity != entity.get(instance)) {
             return;
         }
 

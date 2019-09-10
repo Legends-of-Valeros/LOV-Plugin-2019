@@ -10,7 +10,6 @@ import com.legendsofvaleros.module.annotation.IntegratesWith;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.core.PlayerInventoryData;
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.gear.commands.ItemCommands;
 import com.legendsofvaleros.modules.gear.component.ComponentMap;
@@ -18,7 +17,6 @@ import com.legendsofvaleros.modules.gear.component.GearComponent;
 import com.legendsofvaleros.modules.gear.component.PersistMap;
 import com.legendsofvaleros.modules.gear.component.core.*;
 import com.legendsofvaleros.modules.gear.core.Gear;
-import com.legendsofvaleros.modules.gear.core.GearInventoryLoader;
 import com.legendsofvaleros.modules.gear.integration.BankIntegration;
 import com.legendsofvaleros.modules.gear.integration.SkillsIntegration;
 import com.legendsofvaleros.modules.gear.listener.InventoryListener;
@@ -68,8 +66,6 @@ public class GearController extends GearAPI {
         GearRegistry.registerComponent("use_speed", GearUseSpeed.Component.class);
 
         GearRegistry.registerComponent("stats", GearStats.Component.class);
-
-        PlayerInventoryData.method = new GearInventoryLoader();
 
         APIController.getInstance().getGsonBuilder()
                 // This is going to be replaced with a general computational value object, eventually (with the random gen system)

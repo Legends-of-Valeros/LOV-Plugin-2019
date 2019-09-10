@@ -1,16 +1,16 @@
 package com.legendsofvaleros.modules.regions;
 
-import com.google.common.collect.*;
-import com.google.gson.TypeAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
-import com.google.gson.stream.JsonWriter;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Multimap;
 import com.legendsofvaleros.api.APIController;
+import com.legendsofvaleros.api.InterfaceTypeAdapter;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.regions.core.IRegion;
+import com.legendsofvaleros.modules.regions.core.PlayerAccessibility;
 import com.legendsofvaleros.modules.regions.core.Region;
 import com.legendsofvaleros.modules.regions.core.RegionBounds;
 import com.legendsofvaleros.util.MessageUtil;
@@ -18,11 +18,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class RegionsAPI extends ListenerModule {
     public interface RPC {
@@ -32,13 +28,11 @@ public class RegionsAPI extends ListenerModule {
 
         Promise<Boolean> deleteRegion(String id);
 
-        Promise<Map<String, Boolean>> getPlayerRegionAccess(CharacterId characterId);
+        Promise<PlayerAccessibility> getPlayerRegionAccess(CharacterId characterId);
 
-        Promise<Object> savePlayerRegionAccess(CharacterId characterId, Map<String, Boolean> map);
+        Promise<Object> savePlayerRegionAccess(PlayerAccessibility accessibility);
 
         Promise<Boolean> deletePlayerRegionAccess(CharacterId characterId);
-
-        Promise<Boolean> deletePlayerRegionAccess(CharacterId characterId, String regionId);
     }
 
     private RPC rpc;
@@ -49,33 +43,32 @@ public class RegionsAPI extends ListenerModule {
      * A map who's key is a chunk x,y pair and the regions inside it. Allows for extremely fast regions searching.
      */
     Multimap<String, String> regionChunks = HashMultimap.create();
-    Table<CharacterId, String, Boolean> playerAccess = HashBasedTable.create();
-    Multimap<Player, String> playerRegions = HashMultimap.create();
+    Map<CharacterId, PlayerAccessibility> playerAccess = new HashMap<>();
+    Multimap<Player, IRegion> playerRegions = HashMultimap.create();
 
+    public IRegion getRegion(String region_id) {
+        return regions.get(region_id);
+    }
+
+    public boolean canPlayerAccess(CharacterId characterId, IRegion region) {
+        return playerAccess.get(characterId).hasAccess(region);
+    }
+
+    public void setRegionAccessibility(PlayerCharacter pc, IRegion region, boolean accessible) {
+        playerAccess.get(pc.getUniqueCharacterId()).setAccessibility(region, accessible);
+    }
+
+    public Collection<IRegion> getPlayerRegions(Player p) {
+        return playerRegions.get(p);
+    }
 
     @Override
     public void onLoad() {
         super.onLoad();
 
-        APIController.getInstance().getGsonBuilder()
-                .registerTypeAdapter(IRegion.class, new TypeAdapter<IRegion>() {
-                    @Override
-                    public void write(JsonWriter write, IRegion region) throws IOException {
-                        write.value(region != null ? region.getId() : null);
-                    }
-
-                    @Override
-                    public IRegion read(JsonReader read) throws IOException {
-                        // If we reference the interface, then the type should be a string, and we return the stored object.
-                        // Note: it must be loaded already, else this returns null.
-                        if(read.peek() == JsonToken.NULL) {
-                            read.nextNull();
-                            return null;
-                        }
-
-                        return regions.get(read.nextString());
-                    }
-                });
+        InterfaceTypeAdapter.register(IRegion.class,
+                                        obj -> obj.getId(),
+                                        id -> regions.get(id));
     }
 
     @Override
@@ -158,18 +151,15 @@ public class RegionsAPI extends ListenerModule {
         });
     }
 
-    public Promise<Map<String, Boolean>> onLogin(PlayerCharacter pc) {
+    public Promise onLogin(PlayerCharacter pc) {
         return rpc.getPlayerRegionAccess(pc.getUniqueCharacterId()).onSuccess(val -> {
-            val.orElse(ImmutableMap.of()).forEach((key, value) -> playerAccess.put(pc.getUniqueCharacterId(), key, value));
+            playerAccess.put(pc.getUniqueCharacterId(), val.orElseGet(() -> new PlayerAccessibility(pc)));
         });
     }
 
     public Promise onLogout(PlayerCharacter pc) {
-        return rpc.savePlayerRegionAccess(pc.getUniqueCharacterId(), playerAccess.row(pc.getUniqueCharacterId())).on(() -> {
-            playerRegions.removeAll(pc.getPlayer());
-
-            playerAccess.row(pc.getUniqueCharacterId()).clear();
-        });
+        playerRegions.removeAll(pc.getPlayer());
+        return rpc.savePlayerRegionAccess(playerAccess.remove(pc.getUniqueCharacterId()));
     }
 
     public Promise<Boolean> onDelete(CharacterId characterId) {

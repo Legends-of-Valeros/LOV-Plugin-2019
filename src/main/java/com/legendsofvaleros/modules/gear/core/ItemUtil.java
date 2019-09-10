@@ -79,19 +79,16 @@ public class ItemUtil {
         ItemListener.itemOwner.put(item.getUniqueId(), owner.getPlayerId());
 
         item.setGlowing(true);
-        instance.getRarityLevel().getTeam().addEntry(item.getUniqueId().toString());
+        instance.gear.getRarityLevel().getTeam().addEntry(item.getUniqueId().toString());
     }
 
     /**
      * Remove an ItemStack from the player's inventory.
-     * @param player
-     * @param gear
-     * @return wasRemoved
      */
-    public static boolean removeItem(Player player, Gear.Instance gear) {
+    public static boolean removeItem(Player player, Gear.Instance gearInstance) {
         // TODO: This just... doesnt work. it only removes from a single stack, even if there's not enough to satisfy the amount.
         // If there's not enough to remove everything, we should return false and not remove anything.
-        ItemStack itemStack = gear.toStack();
+        ItemStack itemStack = gearInstance.toStack();
         for (int i = 0; i < player.getInventory().getSize(); i++) {
             // Check if a fixed item is on the current slot
             if (InventoryManager.hasFixedItem(i)) {

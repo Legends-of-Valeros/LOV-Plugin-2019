@@ -5,11 +5,9 @@ import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
-import com.legendsofvaleros.modules.gear.core.Gear;
-import com.legendsofvaleros.modules.loot.api.ILootTable;
 import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.modules.mobs.ai.AIStuckAction;
-import com.legendsofvaleros.modules.mobs.api.IMob;
+import com.legendsofvaleros.modules.mobs.api.IEntity;
 import com.legendsofvaleros.modules.mobs.behavior.StaticAI;
 import com.legendsofvaleros.modules.mobs.trait.MobTrait;
 import com.legendsofvaleros.modules.npcs.NPCsController;
@@ -18,15 +16,13 @@ import com.legendsofvaleros.util.MessageUtil;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.Equipment;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-public class Mob implements IMob {
+public class Mob implements IEntity {
     @SerializedName("_id")
     private String id;
     private String slug;
@@ -60,50 +56,82 @@ public class Mob implements IMob {
         return id;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
-    public EntityType getEntityType() {
+    @Override
+    public EntityType getType() {
         return type;
     }
 
+    @Override
+    public ISkin getSkin() {
+        return skin;
+    }
+
+    @Override
     public EntityRarity getRarity() {
         return rarity;
     }
 
+    @Override
     public String getArchetype() {
         return archetype;
     }
 
+    @Override
     public EntityClass getEntityClass() {
         return entityClass;
     }
 
+    @Override
     public int getExperience() {
         return experience;
     }
 
+    @Override
+    public Loot[] getLoot() {
+        return loot;
+    }
+
+    @Override
     public boolean isInvincible() {
         return invincible;
     }
 
+    @Override
+    public boolean isGhost() {
+        return ghost;
+    }
+
+    @Override
     public StatsMap getStats() {
         if (stats == null)
             stats = new StatsMap();
         return stats;
     }
 
+    @Override
     public Integer getStat(Enum e) {
         return getStats().get(e);
     }
 
+    @Override
     public EquipmentMap getEquipment() {
         if (equipment == null)
             equipment = new EquipmentMap();
         return equipment;
     }
 
+    @Override
+    public Distance getDistance() { return distance; }
+
+    @Override
+    public Map<CharacterId, Long> getLeashed() { return leashed; }
+
+    @Override
     public Set<SpawnArea> getSpawns() {
         if (spawns == null)
             spawns = new HashSet<>();
@@ -116,130 +144,24 @@ public class Mob implements IMob {
             Mob mob = (Mob) obj;
             return this == mob || this.id.equals(mob.id);
         } else if (obj instanceof Instance) {
-            Mob mob = ((Instance) obj).mob;
-            return mob != null && (this == mob || this.id.equals(mob.id));
+            IEntity entity = ((Instance)obj).entity;
+            return entity != null && (this == entity || this.id.equals(entity.getId()));
         }
 
         return false;
     }
 
-    public static class StatsMap extends HashMap<Object, Integer> { }
-    public static class EquipmentMap extends HashMap<Equipment.EquipmentSlot, Item[]> { }
-
-    public static class Loot {
-        public int tries;
-        public double chance;
-        public Table[] tables;
-
-        public static class Table {
-            public ILootTable table;
-            public double weight;
-            public int amount;
-        }
-
-        public Instance newInstance() {
-            return new Instance(this);
-        }
-
-        /**
-         * An instance is created whenever a query for this drop occurs. i.e. on death.
-         */
-        public static class Instance {
-            final Loot loot;
-
-            double totalWeight = 0D;
-
-            /**
-             * Keeps track of how much each table has dropped.
-             */
-            byte[] dropped;
-
-            /**
-             * A dead table is one that is not allowed to drop anymore.
-             */
-            byte dead = 0;
-
-            public Instance(Loot loot) {
-                this.loot = loot;
-
-                for (Mob.Loot.Table table : loot.tables) {
-                    this.totalWeight += table.weight;
-                }
-
-                this.dropped = new byte[loot.tables.length];
-            }
-
-            public Optional<ILootTable> nextTable() {
-                // If chance fails, return.
-                if(Math.random() > loot.chance) return Optional.empty();
-
-                // If all tables are dead, return.
-                if(this.dead == this.loot.tables.length) return Optional.empty();
-
-                double random = Math.random() * this.totalWeight;
-
-                for (int i = 0; i < this.loot.tables.length; i++) {
-                    // If more has dropped from this than allowed, skip it.
-                    if(this.dropped[i] >= this.loot.tables[i].amount) continue;
-
-                    random -= this.loot.tables[i].weight;
-
-                    if (random <= 0D) {
-                        this.dropped[i]++;
-
-                        if(this.dropped[i] >= this.loot.tables[i].amount) {
-                            // Subtract the weight or we get incorrect chances next time 'round.
-                            this.totalWeight -= this.loot.tables[i].weight;
-                            this.dead++;
-                        }
-
-                        return Optional.of(this.loot.tables[i].table);
-                    }
-                }
-
-                return Optional.empty();
-            }
-        }
-    }
-
-    public static class Distance {
-        public Integer detection = 5;
-        public Integer chase = 10;
-    }
-
-    public static class Item {
-        private String id;
-
-        private int amount = 1;
-        private double chance = 1;
-
-        public ItemStack getStack() {
-            ItemStack itemStack = Gear.fromId(id).newInstance().toStack();
-            if (itemStack.getType() != Material.AIR) {
-                itemStack.setAmount(this.amount);
-                return itemStack;
-            } else
-                MobsController.getInstance().getLogger().severe("Item does not exist. Offender: " + id);
-            return null;
-        }
-
-        @Override
-        public String toString() {
-            return id + " x" + amount + " - " + chance * 100D + "%";
-        }
-    }
-
     public static class Instance {
         private static final Map<UUID, Instance> INSTANCES = new HashMap<>();
         public Boolean active = null;
-        public final Mob mob;
+        public final IEntity entity;
         public final SpawnArea home;
         public final int level;
         public CombatEntity ce;
         public NPC npc;
 
-        public Instance(Mob mob, SpawnArea home, int level) {
-            this.mob = mob;
+        public Instance(IEntity entity, SpawnArea home, int level) {
+            this.entity = entity;
             this.home = home;
             this.level = level;
         }
@@ -257,7 +179,7 @@ public class Mob implements IMob {
                 throw new IllegalStateException("Mob instance already destroyed.");
             active = true;
 
-            npc = NPCsController.getInstance().createNPC(mob.type, "");
+            npc = NPCsController.getInstance().createNPC(entity.getType(), "");
             npc.getNavigator().getLocalParameters().updatePathRate(20)
                     .useNewPathfinder(true)
                     .stuckAction(AIStuckAction.INSTANCE)
@@ -271,10 +193,10 @@ public class Mob implements IMob {
             npc.data().setPersistent(NPC.TARGETABLE_METADATA, false);
             npc.data().setPersistent(NPC.COLLIDABLE_METADATA, true);
 
-            if (mob.type == EntityType.PLAYER) {
-                if (mob.skin != null) {
+            if (entity.getType() == EntityType.PLAYER) {
+                if (entity.getSkin() != null) {
                     try {
-                        ISkin skin = mob.skin;
+                        ISkin skin = entity.getSkin();
 
                         npc.data().setPersistent("cached-skin-uuid", skin.getUUID());
                         npc.data().setPersistent("cached-skin-uuid-name", skin.getUsername().toLowerCase());
@@ -320,20 +242,20 @@ public class Mob implements IMob {
         }
 
         private Item getRandomEquipment(Equipment.EquipmentSlot slot) {
-            Item[] items = mob.getEquipment().get(slot);
+            Item[] items = entity.getEquipment().get(slot);
             if (items == null || items.length == 0)
                 return null;
 
             // Compute the total weight of all items together
             double totalWeight = 0.0d;
             for (Item i : items)
-                totalWeight += i.chance;
+                totalWeight += i.getChance();
 
             // Now choose a random item
             int randomIndex = -1;
             double random = Math.random() * totalWeight;
             for (int i = 0; i < items.length; ++i) {
-                random -= items[i].chance;
+                random -= items[i].getChance();
                 if (random <= 0.0d) {
                     randomIndex = i;
                     break;

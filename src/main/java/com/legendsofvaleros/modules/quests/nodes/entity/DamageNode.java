@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.quests.nodes.entity;
 
 import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
-import com.legendsofvaleros.modules.mobs.api.IMob;
+import com.legendsofvaleros.modules.mobs.api.IEntity;
 import com.legendsofvaleros.modules.quests.api.IQuestInstance;
 import com.legendsofvaleros.modules.quests.api.QuestEvent;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
@@ -13,7 +13,7 @@ import com.legendsofvaleros.modules.quests.core.ports.IOutportValue;
 
 public class DamageNode extends AbstractQuestNode<Boolean> {
     @SerializedName("Entity")
-    public IInportValue<Boolean, IMob> entity = new IInportValue<>(this, IMob.class, null);
+    public IInportValue<Boolean, IEntity> entity = new IInportValue<>(this, IEntity.class, null);
 
     @SerializedName("Text")
     public IOutportValue<Boolean, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {

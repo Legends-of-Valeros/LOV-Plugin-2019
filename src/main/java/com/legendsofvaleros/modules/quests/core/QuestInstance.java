@@ -12,15 +12,15 @@ import java.util.Map;
 import java.util.Optional;
 
 public class QuestInstance implements IQuestInstance {
-    final PlayerCharacter player;
+    private final PlayerCharacter player;
 
-    final IQuest quest;
+    private final IQuest quest;
 
     private QuestState state = QuestState.INACTIVE;
 
-    final QuestLogMap logs;
+    private final QuestLogMap logs;
 
-    final QuestNodeInstanceMap nodes;
+    private final QuestNodeInstanceMap nodes;
 
     public QuestInstance(PlayerCharacter player, IQuest quest) {
         this.quest = quest;

@@ -7,11 +7,11 @@ import com.gmail.filoghost.holographicdisplays.api.line.ItemLine;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.mobs.MobsController;
+import com.legendsofvaleros.modules.mobs.api.IEntity;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 
 import java.time.Instant;
@@ -34,21 +34,9 @@ public class SpawnArea {
         return id;
     }
 
-    private World world;
-
-    public World getWorld() {
-        return world;
-    }
-
-    private int x;
-    private int y;
-    private int z;
-
-    private transient Location location;
+    private Location location;
 
     public Location getLocation() {
-        if (location == null)
-            location = new Location(getWorld(), x, y, z);
         return location;
     }
 
@@ -75,34 +63,21 @@ public class SpawnArea {
     /**
      * The ID of the entities that spawn here.
      */
-    private String entityId;
+    private IEntity entity;
 
-    public String getEntityId() {
-        return entityId;
-    }
-
-    private transient Mob mob;
-
-    public Mob getMob() {
-        if (mob == null)
-            mob = MobsController.getInstance().getEntity(entityId);
-        return mob;
+    public IEntity getEntity() {
+        return entity;
     }
 
     /**
      * Tells the spawn point what level to set the spawned entities.
      * <br />
-     * Example: 1-5 defines that an entitiy spawned here should be between level 1 and 5.
+     * Example: [1, 5] defines that an entitiy spawned here should be between level 1 and 5.
      */
-    private String level;
-    private int[] levels;
+    private int[] level;
 
     public int[] getLevelRange() {
-        if (levels == null)
-            levels = new int[]{
-                    level != null ? Integer.parseInt(level.split("-")[0]) : 0,
-                    level != null ? Integer.parseInt(level.split("-")[1]) : 0};
-        return levels;
+        return level;
     }
 
     public int getLevel() {
@@ -172,25 +147,20 @@ public class SpawnArea {
 
     public Location getGround() {
         if (ground == null) {
-            World world = getWorld();
             Location position = getLocation();
             ground = position.clone();
-            while (world.getBlockAt(ground.getBlockX(), ground.getBlockY() - 1, ground.getBlockZ()).getType().isTransparent())
+            while(position.getWorld().getBlockAt(ground.getBlockX(), ground.getBlockY() - 1, ground.getBlockZ()).getType().isTransparent())
                 ground.subtract(0, 1, 0);
         }
         return ground;
     }
 
-    public SpawnArea(Location loc, String entityId, int radius, int padding, int[] levels) {
-        this.world = loc.getWorld();
-        this.entityId = entityId;
+    public SpawnArea(Location loc, IEntity entity, int radius, int padding, int[] levels) {
+        this.entity = entity;
         this.radius = radius;
         this.padding = padding;
-        this.level = levels[0] + "-" + levels[1];
+        this.level = levels;
 
-        this.x = loc.getBlockX();
-        this.y = loc.getBlockY();
-        this.z = loc.getBlockZ();
         this.location = loc;
     }
 
@@ -209,7 +179,7 @@ public class SpawnArea {
     public Hologram getHologram() {
         if (hologram == null) {
             hologram = HologramsAPI.createHologram(LegendsOfValeros.getInstance(), getLocation());
-            textEntityId = hologram.appendTextLine(ChatColor.GOLD + "" + ChatColor.BOLD + entityId);
+            textEntityId = hologram.appendTextLine(ChatColor.GOLD + "" + ChatColor.BOLD + entity.getName());
             textLevel = hologram.appendTextLine("[" + getLevelRange()[0] + " - " + getLevelRange()[1] + "]");
             textRadius = hologram.appendTextLine("Radius: " + getRadius());
             textPadding = hologram.appendTextLine("Padding: " + getPadding());
@@ -256,8 +226,7 @@ public class SpawnArea {
         }
     }
 
-    public Mob.Instance spawn(Mob mob) {
-        World world = getWorld();
+    public Mob.Instance spawn(IEntity entity) {
         Location ground = getGround();
 
         if (radius < 0) {
@@ -265,30 +234,27 @@ public class SpawnArea {
             MessageUtil.sendException(MobsController.getInstance(), "Spawn '" + id + "' has a radius of < 0, setting it to 0.");
         }
 
-        Location loc = new Location(world,
+        Location loc = new Location(ground.getWorld(),
                 ground.getBlockX() - (radius == 0 ? 0 : rand.nextInt(radius * 2) - radius),
                 ground.getBlockY(),
                 ground.getBlockZ() - (radius == 0 ? 0 : rand.nextInt(radius * 2) - radius)
         );
 
         // Move up until loc is a transparent block
-        while (!world.getBlockAt(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()).getType().isTransparent())
+        while(!ground.getWorld().getBlockAt(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()).getType().isTransparent())
             loc.add(0, 1, 0);
 
         // Move down until the block below is solid
-        while (world.getBlockAt(loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ()).getType().isTransparent())
+        while(ground.getWorld().getBlockAt(loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ()).getType().isTransparent())
             loc.subtract(0, 1, 0);
 
-        Mob.Instance instance = new Mob.Instance(mob, this, getLevel());
+        Mob.Instance instance = new Mob.Instance(entity, this, getLevel());
         instance.spawn(loc);
         return instance;
     }
 
     public void delete() {
-        Mob mob = getMob();
-        if (mob != null) {
-            mob.getSpawns().remove(this);
-        }
+        entity.getSpawns().remove(this);
 
         clear();
         if (hologram != null) {

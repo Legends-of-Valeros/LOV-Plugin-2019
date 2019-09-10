@@ -5,10 +5,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.legendsofvaleros.api.annotation.ModuleRPC;
 import io.deepstream.RpcResult;
+import org.apache.logging.log4j.util.Strings;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executor;
 
 public class RPCFunction<T> {
@@ -51,6 +54,8 @@ public class RPCFunction<T> {
     }
 
     public static <T> T oneShotSync(String func, TypeToken<T> result, Object... args) {
+        RpcResult res = null;
+
         try {
             Object arg = null;
             if (args.length == 1) {
@@ -66,7 +71,7 @@ public class RPCFunction<T> {
                 throw new IllegalStateException("Must wait until onPostLoad() before using RPC functions!");
             }
 
-            RpcResult res = APIController.getInstance().getClient()
+            res = APIController.getInstance().getClient()
                     .rpc.make(func, arg != null ? gson.fromJson(gson.toJson(arg), JsonElement.class) : null);
 
             if (res.success()) {
@@ -84,7 +89,9 @@ public class RPCFunction<T> {
 
             throw new RuntimeException("" + res.getData());
         } catch (Exception e) {
-            throw new RuntimeException(func + "() -> " + result.getType().getTypeName() + " failure!", e);
+            List<String> objs = new ArrayList<>();
+            for(Object o : args) objs.add(o.toString());
+            throw new RuntimeException(func + "(" + Strings.join(objs, ',') + ") -> " + result.getType().getTypeName() + " failure! " + (res != null ? res.getData().toString() : ""), e);
         }
     }
 

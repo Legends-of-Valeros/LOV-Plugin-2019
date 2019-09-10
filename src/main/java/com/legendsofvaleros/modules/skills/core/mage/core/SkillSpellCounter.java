@@ -45,7 +45,7 @@ public class SkillSpellCounter extends Skill {
             clazz = Characters.getPlayerCharacter((Player) target.getLivingEntity()).getPlayerClass();
         } else {
             Mob.Instance mob = Mob.Instance.get(target.getLivingEntity());
-            clazz = mob.mob.getEntityClass();
+            clazz = mob.entity.getEntityClass();
         }
 
         if (clazz != EntityClass.MAGE) return false;

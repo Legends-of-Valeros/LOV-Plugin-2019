@@ -1,5 +1,6 @@
 package com.legendsofvaleros.modules.mount;
 
+import com.legendsofvaleros.modules.mount.api.IMount;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
@@ -11,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
-public class Mount {
+public class Mount implements IMount {
     private String id;
 
     public String getId() {

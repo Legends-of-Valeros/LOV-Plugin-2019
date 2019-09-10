@@ -3,10 +3,10 @@ package com.legendsofvaleros.modules.mobs.core;
 import org.bukkit.ChatColor;
 
 public enum EntityRarity {
-	NORMAL((instance) -> instance.mob.getName() + ChatColor.GOLD + ChatColor.BOLD + " Lv." + instance.level),
-	RARE((instance) -> ChatColor.GRAY + "[" + instance.mob.getName() + "]" + ChatColor.GOLD + ChatColor.BOLD + " Lv." + instance.level),
-	ELITE((instance) -> ChatColor.RED + "[" + instance.mob.getName() + "]" + ChatColor.GOLD + ChatColor.BOLD + " Lv." + instance.level),
-	BOSS((instance) -> ChatColor.YELLOW + "[" + ChatColor.RED + ChatColor.BOLD + instance.mob.getName() + ChatColor.YELLOW + "]" + ChatColor.GOLD + ChatColor.BOLD + " Lv." + instance.level);
+	NORMAL((instance) -> instance.entity.getName() + ChatColor.GOLD + ChatColor.BOLD + " Lv." + instance.level),
+	RARE((instance) -> ChatColor.GRAY + "[" + instance.entity.getName() + "]" + ChatColor.GOLD + ChatColor.BOLD + " Lv." + instance.level),
+	ELITE((instance) -> ChatColor.RED + "[" + instance.entity.getName() + "]" + ChatColor.GOLD + ChatColor.BOLD + " Lv." + instance.level),
+	BOSS((instance) -> ChatColor.YELLOW + "[" + ChatColor.RED + ChatColor.BOLD + instance.entity.getName() + ChatColor.YELLOW + "]" + ChatColor.GOLD + ChatColor.BOLD + " Lv." + instance.level);
 
 	final INameplateGen gen;
 	EntityRarity(INameplateGen gen) {

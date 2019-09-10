@@ -4,7 +4,6 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.IntegratesWith;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
-import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
@@ -15,7 +14,6 @@ import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.hearthstones.HearthstoneController;
 import com.legendsofvaleros.modules.regions.commands.RegionCommands;
 import com.legendsofvaleros.modules.regions.core.IRegion;
-import com.legendsofvaleros.modules.regions.core.Region;
 import com.legendsofvaleros.modules.regions.core.RegionBounds;
 import com.legendsofvaleros.modules.regions.core.RegionSelector;
 import com.legendsofvaleros.modules.regions.event.RegionEnterEvent;
@@ -29,7 +27,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -77,37 +74,14 @@ public class RegionController extends RegionsAPI {
             }
         }
 
-        for (Map.Entry<Player, String> e : playerRegions.entries()) {
-            if (region.getId().equals(e.getValue())) {
+        for (Map.Entry<Player, IRegion> e : playerRegions.entries()) {
+            if (e.getValue() == region) {
                 playerRegions.remove(e.getKey(), e.getValue());
             }
         }
 
         this.deleteRegion(region);
     }
-
-
-    public void setRegionAccessibility(PlayerCharacter pc, String region, boolean accessible) {
-        boolean current = (playerAccess.contains(pc.getUniqueCharacterId(), region) ? playerAccess.get(pc.getUniqueCharacterId(), region) : false);
-        if (accessible == current) {
-            return;
-        }
-
-        playerAccess.put(pc.getUniqueCharacterId(), region, accessible);
-    }
-
-    public IRegion getRegion(String region_id) {
-        return regions.get(region_id);
-    }
-
-    public Collection<String> getPlayerRegions(Player p) {
-        return playerRegions.get(p);
-    }
-
-    public boolean canPlayerAccess(CharacterId characterId, String regionId) {
-        return playerAccess.get(characterId, regionId);
-    }
-
 
     @EventHandler
     public void onPlayerLoading(PlayerCharacterStartLoadingEvent event) {
@@ -145,8 +119,7 @@ public class RegionController extends RegionsAPI {
 
             PlayerCharacter pc = Characters.getPlayerCharacter(event.getPlayer());
             for (IRegion region : toRegions) {
-                if (!region.isAllowedByDefault() && (!playerAccess.contains(pc.getUniqueCharacterId(), region.getId())
-                        || !playerAccess.get(pc.getUniqueCharacterId(), region.getId()))) {
+                if (!playerAccess.get(pc.getUniqueCharacterId()).hasAccess(region)) {
                     MessageUtil.sendError(event.getPlayer(), region.getErrorMessage());
                     event.getPlayer().teleport(event.getFrom());
                     return;
@@ -173,7 +146,7 @@ public class RegionController extends RegionsAPI {
                 MessageUtil.sendInfo(event.getPlayer(), region.getEnterMessage());
             }
 
-            playerRegions.put(event.getPlayer(), region.getId());
+            playerRegions.put(event.getPlayer(), region);
             Bukkit.getServer().getPluginManager().callEvent(new RegionEnterEvent(event.getPlayer(), region));
         }
 
@@ -187,7 +160,8 @@ public class RegionController extends RegionsAPI {
                 MessageUtil.sendInfo(event.getPlayer(), region.getExitMessage());
             }
 
-            playerRegions.remove(event.getPlayer(), region.getId());
+            playerRegions.remove(event.getPlayer(), region);
+
             Bukkit.getServer().getPluginManager().callEvent(new RegionLeaveEvent(event.getPlayer(), region));
         }
     }

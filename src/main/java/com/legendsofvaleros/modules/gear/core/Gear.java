@@ -122,6 +122,11 @@ public class Gear implements IGear {
     }
 
     @Override
+    public boolean isSimilar(Gear.Instance gearInstance) {
+        return isSimilar(gearInstance.gear);
+    }
+
+    @Override
     public boolean isSimilar(IGear gear) {
         return gear != null && (this == gear || this.id.equals(gear.getId()));
     }
@@ -138,7 +143,7 @@ public class Gear implements IGear {
     /**
      * Gear.Instance is the true internal definition of an item, its components, and their respective persistent data.
      */
-    public static class Instance implements IGear {
+    public static class Instance {
         private static final Cache<String, Gear.Instance> cache = CacheBuilder.newBuilder()
                 .concurrencyLevel(4)
                 .expireAfterAccess(5, TimeUnit.MINUTES)
@@ -170,66 +175,6 @@ public class Gear implements IGear {
             this.gear = gear;
             this.version = gear.version;
             this.uuid = uuid;
-        }
-
-        @Override
-        public String getId() {
-            return gear.getId();
-        }
-
-        @Override
-        public int getVersion() {
-            return gear.getVersion();
-        }
-
-        @Override
-        public String getName() {
-            return gear.getName();
-        }
-
-        @Override
-        public GearType getType() {
-            return gear.getType();
-        }
-
-        @Override
-        public String getModelId() {
-            return gear.getModelId();
-        }
-
-        @Override
-        public Model getModel() {
-            return gear.getModel();
-        }
-
-        @Override
-        public byte getMaxAmount() {
-            return gear.getMaxAmount();
-        }
-
-        @Override
-        public GearRarity getRarityLevel() {
-            return gear.getRarityLevel();
-        }
-
-        @Override
-        public int getSeed() {
-            return gear.getSeed();
-        }
-
-        @Override
-        public Instance newInstance() {
-            return gear.newInstance();
-        }
-
-        @Override
-        public boolean isSimilar(ItemStack newArmorPiece) {
-            return gear.isSimilar(newArmorPiece);
-        }
-
-        @Override
-        public boolean isSimilar(IGear gear) {
-            return gear.isSimilar(gear);
         }
 
         /**

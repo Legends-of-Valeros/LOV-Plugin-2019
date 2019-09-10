@@ -1,50 +1,32 @@
 package com.legendsofvaleros.modules.characters.core;
 
-import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterInventoryFillEvent;
+import com.legendsofvaleros.modules.gear.core.Gear;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class PlayerInventoryData implements InventoryData {
-    public interface InventoryMethod {
-        Promise<String> encode(ItemStack[] contents);
-
-        Promise<ItemStack[]> decode(String data);
-    }
-
-    public static InventoryMethod method = new InventoryMethod() {
-        @Override
-        public Promise<String> encode(ItemStack[] contents) {
-            return Promise.make("");
-        }
-
-        @Override
-        public Promise<ItemStack[]> decode(String data) {
-            return Promise.make(new ItemStack[0]);
-        }
-
-    };
-
-    private String inventoryData;
+    private Gear.Data[] inventoryData;
 
     public PlayerInventoryData() {
+
     }
 
-    public PlayerInventoryData(String inventoryData) {
-        this.inventoryData = inventoryData;
-    }
-
-    @Override
-    public Promise onInvalidated(PlayerCharacter pc) {
-        return saveInventory(pc);
+    public PlayerInventoryData(Gear.Data[] data) {
+        this.inventoryData = data;
     }
 
     @Override
-    public Promise saveInventory(PlayerCharacter pc) {
-        return method.encode(pc.getPlayer().getInventory().getContents()).onSuccess(val -> {
-            inventoryData = val.orElseGet(null);
-        }).next(v -> Promise.make(v.isPresent()));
+    public Gear.Data[] getData() {
+        return inventoryData;
+    }
+
+    @Override
+    public void onInvalidated(PlayerCharacter pc) {
+        saveInventory(pc);
     }
 
     @Override
@@ -55,27 +37,42 @@ public class PlayerInventoryData implements InventoryData {
     }
 
     @Override
-    public Promise loadInventory(PlayerCharacter pc) {
+    public void saveInventory(PlayerCharacter pc) {
+        ItemStack[] contents = pc.getPlayer().getInventory().getContents();
+
+        inventoryData = new Gear.Data[contents.length];
+        for (int i = 0; i < contents.length; i++) {
+            Gear.Instance instance = Gear.Instance.fromStack(contents[i]);
+            if (instance != null)
+                inventoryData[i] = instance.getData();
+        }
+    }
+
+    @Override
+    public void loadInventory(PlayerCharacter pc) {
         pc.getPlayer().getInventory().clear();
 
         if (inventoryData != null) {
-            return method.decode(inventoryData).onSuccess(val -> {
-                pc.getPlayer().getInventory().setContents(val.orElse(new ItemStack[0]));
+            ItemStack[] contents = new ItemStack[inventoryData.length];
 
-                Bukkit.getServer().getPluginManager().callEvent(new PlayerCharacterInventoryFillEvent(pc, false));
-            }, Characters.getInstance().getScheduler()::sync)
-                    .next(al -> Promise.make(al.isPresent()));
+            AtomicInteger amount = new AtomicInteger(contents.length);
+            for (int i = 0; i < contents.length; i++) {
+                if (inventoryData[i] == null) {
+                    amount.decrementAndGet();
+                    continue;
+                }
+
+                contents[i] = inventoryData[i].toStack();
+            }
+
+            pc.getPlayer().getInventory().setContents(contents);
+
+            Bukkit.getServer().getPluginManager().callEvent(new PlayerCharacterInventoryFillEvent(pc, false));
         }
-
-        return Promise.make(true);
     }
 
     @Override
     public void onDeath(PlayerCharacter pc) {
 
-    }
-
-    public String getData() {
-        return inventoryData;
     }
 }

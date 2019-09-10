@@ -2,6 +2,7 @@ package com.legendsofvaleros.modules.regions.core;
 
 import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.quests.api.IQuest;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -13,7 +14,6 @@ public class Region implements IRegion {
     private String id;
     private String slug;
 
-    public World world;
     private RegionBounds bounds;
     public boolean allowAccess = false;
     public boolean allowHearthstone = true;
@@ -25,7 +25,6 @@ public class Region implements IRegion {
 
     public Region(String id, World world, RegionBounds bounds) {
         this.id = id;
-        this.world = world;
         this.bounds = bounds;
     }
 
@@ -41,7 +40,7 @@ public class Region implements IRegion {
 
     @Override
     public World getWorld() {
-        return world;
+        return Bukkit.getWorlds().get(0);
     }
 
     public RegionBounds getBounds() {

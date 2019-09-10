@@ -2,8 +2,8 @@ package com.legendsofvaleros.modules.mobs.pl8;
 
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
@@ -68,7 +68,7 @@ public class MobHealthbarManager implements Listener {
             return;
         }
 
-        if (spawnedEntity.mob.isInvincible()) {
+        if (spawnedEntity.entity.isInvincible()) {
             if (DebugFlags.get((Player) event.getAttacker().getLivingEntity()).damage)
                 MessageUtil.sendDebug(event.getAttacker().getLivingEntity(), "That mob is tagged as invincible.");
             event.setCancelled(true);

@@ -60,7 +60,7 @@ public class MobListener implements Listener {
             return;
         }
 
-        Archetype archetype = LevelArchetypes.getInstance().getArchetype(instance.mob.getArchetype());
+        Archetype archetype = LevelArchetypes.getInstance().getArchetype(instance.entity.getArchetype());
         if (archetype != null) {
             // Counting starts at 0. We must shift the level down by one for it to work properly.
             CombatProfile baseStats = archetype.getCombatProfile(Math.max(0, instance.level - 1));
@@ -76,8 +76,8 @@ public class MobListener implements Listener {
             return;
         }
 
-        if (instance.mob.getStats() != null) {
-            for (Entry<Object, Integer> stat : instance.mob.getStats().entrySet()) {
+        if (instance.entity.getStats() != null) {
+            for (Entry<Object, Integer> stat : instance.entity.getStats().entrySet()) {
                 event.getCombatEntity().getStats().newStatModifierBuilder((Stat) stat.getKey())
                         .setModifierType(ValueModifierBuilder.ModifierType.FLAT_EDIT_IGNORES_MULTIPLIERS)
                         .setValue(stat.getValue())

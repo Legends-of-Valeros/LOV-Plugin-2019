@@ -1,11 +1,12 @@
 package com.legendsofvaleros.modules.npcs;
 
 import com.google.common.collect.ImmutableList;
-import com.google.gson.*;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
-import com.google.gson.stream.JsonWriter;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializer;
 import com.legendsofvaleros.api.APIController;
+import com.legendsofvaleros.api.InterfaceTypeAdapter;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.modules.loot.LootController;
@@ -24,7 +25,6 @@ import net.citizensnpcs.api.trait.TraitInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -77,43 +77,14 @@ public class NPCsAPI extends ListenerModule {
                     for (LOVTrait trait : val)
                         obj.add(trait.id, context.serialize(trait));
                     return obj;
-                })
-                .registerTypeAdapter(ISkin.class, new TypeAdapter<ISkin>() {
-                    @Override
-                    public void write(JsonWriter write, ISkin skin) throws IOException {
-                        write.value(skin != null ? skin.getId() : null);
-                    }
-
-                    @Override
-                    public ISkin read(JsonReader read) throws IOException {
-                        // If we reference the interface, then the type should be a string, and we return the stored object.
-                        // Note: it must be loaded already, else this returns null.
-                        if(read.peek() == JsonToken.NULL) {
-                            read.nextNull();
-                            return null;
-                        }
-
-                        return skins.get(read.nextString());
-                    }
-                })
-                .registerTypeAdapter(INPC.class, new TypeAdapter<INPC>() {
-                    @Override
-                    public void write(JsonWriter write, INPC npc) throws IOException {
-                        write.value(npc != null ? npc.getId() : null);
-                    }
-
-                    @Override
-                    public INPC read(JsonReader read) throws IOException {
-                        // If we reference the interface, then the type should be a string, and we return the stored object.
-                        // Note: it must be loaded already, else this returns null.
-                        if(read.peek() == JsonToken.NULL) {
-                            read.nextNull();
-                            return null;
-                        }
-
-                        return npcs.get(read.nextString());
-                    }
                 });
+
+        InterfaceTypeAdapter.register(ISkin.class,
+                                        obj -> obj.getId(),
+                                        id -> skins.get(id));
+        InterfaceTypeAdapter.register(INPC.class,
+                                        obj -> obj.getId(),
+                                        id -> npcs.get(id));
     }
 
     @Override

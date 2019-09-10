@@ -31,16 +31,16 @@ public class MobTrait extends Trait {
 
 		LivingEntity entity = (LivingEntity)npc.getEntity();
 
-		nameplate = Nameplates.get(entity).get(Nameplates.BASE).appendTextLine(instance.mob.getRarity().newNameplate(instance));
+		nameplate = Nameplates.get(entity).get(Nameplates.BASE).appendTextLine(instance.entity.getRarity().newNameplate(instance));
 		
 		{
-			Model model = Model.get("instance-rarity-" + instance.mob.getRarity().name().toLowerCase());
+			Model model = Model.get("instance-rarity-" + instance.entity.getRarity().name().toLowerCase());
 			if(model != Model.NONE) {
 				rarityPlate = nameplate.getParent().insertItemLine(0, model.toStack().create());
 			}
 		}
 
-		if(instance.mob.ghost) {
+		if(instance.entity.isGhost()) {
 			entity.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, Integer.MAX_VALUE, 1));
 			entity.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
 		}

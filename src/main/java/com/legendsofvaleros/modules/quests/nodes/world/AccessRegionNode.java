@@ -17,7 +17,7 @@ public class AccessRegionNode extends AbstractQuestNode<Void> {
     
     @SerializedName("Execute")
     public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> {
-        RegionController.getInstance().setRegionAccessibility(instance.getPlayerCharacter(), region.get(instance).getId(), true);
+        RegionController.getInstance().setRegionAccessibility(instance.getPlayerCharacter(), region.get(instance), true);
 
         onCompleted.run(instance);
     });

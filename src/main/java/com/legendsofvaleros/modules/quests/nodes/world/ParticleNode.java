@@ -5,6 +5,7 @@ import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
@@ -31,7 +32,7 @@ public class ParticleNode extends AbstractQuestNode<Void> {
     
     @SerializedName("Execute")
     public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> {
-        World world = instance.getPlayer().getWorld();
+        World world = relative.get(instance) ? instance.getPlayer().getWorld() : Bukkit.getWorlds().get(0);
         Location loc = (Boolean.TRUE.equals(relative.get(instance)) ? instance.getPlayer().getLocation().add(location.get(instance)) : location.get(instance).toLocation(world));
         world.spawnParticle(particle.get(instance), loc, count.get(instance));
 

@@ -15,8 +15,8 @@ import com.legendsofvaleros.modules.characters.loading.TaskPhase;
 import com.legendsofvaleros.modules.characters.race.EntityRace;
 import com.legendsofvaleros.modules.characters.ui.CharacterCreationListener;
 import com.legendsofvaleros.modules.characters.ui.CharacterSelectionListener;
-import com.legendsofvaleros.modules.combatengine.api.UnsafePlayerInitializer;
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.api.UnsafePlayerInitializer;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -249,15 +249,15 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
     private void onDoneLoading(CharacterId uniqueCharacterId) {
         PlayerCharacter doneLoading = Characters.getInstance().getCharacter(uniqueCharacterId);
 
+        PlayerLock playerLock = locks.remove(doneLoading.getPlayerId());
+        if (playerLock != null) {
+            playerLock.release();
+        }
+
         // does not call finish loading event if player is no longer online
         if (doneLoading == null || doneLoading.getPlayer() == null
                 || !doneLoading.getPlayer().isOnline()) {
             return;
-        }
-
-        PlayerLock playerLock = locks.remove(doneLoading.getPlayerId());
-        if (playerLock != null) {
-            playerLock.release();
         }
 
         Bukkit.getPluginManager().callEvent(new PlayerCharacterFinishLoadingEvent(doneLoading,
@@ -284,8 +284,7 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
             PlayerCharacter character = Characters.getPlayerCharacter(player);
 
             TaskPhase<CharacterId> tp =
-                    new TaskPhase<>("Logout", Characters.getInstance().getUiManager()
-                            .getProgressView(character.getPlayer()));
+                    new TaskPhase<>("Logout");
 
             PlayerCharacterLogoutEvent event =
                     new PlayerCharacterLogoutEvent(character, tp, serverLogout);
@@ -408,17 +407,10 @@ public class PlayerLoader implements CharacterSelectionListener, Listener {
             PlayerCharacter pc = event.getPlayerCharacter();
             InventoryData inventory = pc.getInventoryData();
 
-            PhaseLock lock = event.getLock("Inventory");
-
-            Characters.getInstance().getScheduler().executeInMyCircle(() -> {
-                if (inventory.getData() != null)
-                    inventory.loadInventory(pc).on(lock::release);
-                else {
-                    inventory.initInventory(pc);
-
-                    lock.release();
-                }
-            });
+            if(inventory.getData() != null)
+                inventory.loadInventory(pc);
+            else
+                inventory.initInventory(pc);
         }
 
         @EventHandler(priority = EventPriority.HIGH)

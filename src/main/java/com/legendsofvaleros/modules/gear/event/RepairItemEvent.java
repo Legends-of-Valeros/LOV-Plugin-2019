@@ -17,14 +17,14 @@ public class RepairItemEvent extends PlayerEvent {
         return handlers;
     }
 
-    private final Gear.Instance gear;
+    private final Gear.Instance gearInstance;
 
     public Gear.Instance getItem() {
-        return gear;
+        return gearInstance;
     }
 
-    public RepairItemEvent(Player who, Gear.Instance gear) {
+    public RepairItemEvent(Player who, Gear.Instance gearInstance) {
         super(who);
-        this.gear = gear;
+        this.gearInstance = gearInstance;
     }
 }

@@ -67,5 +67,7 @@ public interface IGear {
 
     boolean isSimilar(ItemStack newArmorPiece);
 
+    boolean isSimilar(Gear.Instance gearInstance);
+
     boolean isSimilar(IGear gear);
 }

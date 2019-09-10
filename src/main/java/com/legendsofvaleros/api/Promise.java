@@ -323,14 +323,10 @@ public class Promise<R> {
         int i = -1;
         for (String line : trace.split("\n")) {
             if (i == -1) {
-                // Ignore non-LOV packages
-                if (!line.contains("com.legendsofvaleros") || line.contains("com.legendsofvaleros.api.")) {
+                // Ignore leading non-LOV packages
+                if (!line.contains("com.legendsofvaleros") || line.contains("com.legendsofvaleros.api")) {
                     continue;
                 }
-                // Ignore api package
-//                if (line.contains("com.legendsofvaleros.api")) {
-//                    continue;
-//                }
             }
 
             i++;
@@ -338,7 +334,7 @@ public class Promise<R> {
             LegendsOfValeros.getInstance().getLogger().warning(line);
 
             // Don't print too many lines. After an amount, it's just spam.
-            if (i > 15 && !line.contains("legendsofvaleros")) {
+            if (i >= 5 && !line.contains("legendsofvaleros")) {
                 break;
             }
         }
@@ -346,7 +342,9 @@ public class Promise<R> {
         LegendsOfValeros.getInstance().getLogger().warning("-----------------TRACE------------------");
 
         // Print the actual reason for rejection
-        th.printStackTrace();
+        String[] lines = MessageUtil.getStackTrace(th).split("\n");
+        for(int j = 0; j < Math.min(lines.length, 20); j++)
+            LegendsOfValeros.getInstance().getLogger().warning(lines[j]);
 
         LegendsOfValeros.getInstance().getLogger().warning("------------------END-------------------");
 
@@ -421,6 +419,10 @@ public class Promise<R> {
     }
 
     public static <T> Promise<List<T>> collect(Executor exec, Promise<T>... promises) {
+        if(promises.length == 0) {
+            return Promise.make(new ArrayList<>());
+        }
+
         Promise<List<T>> promise = new Promise<>(exec);
 
         AtomicBoolean fail = new AtomicBoolean(false);
@@ -448,7 +450,6 @@ public class Promise<R> {
             final int k = j;
             promises[j].onSuccess(val -> {
                 successes[k] = val.orElse(null);
-                onFinish.run();
             });
         }
 
@@ -458,6 +459,12 @@ public class Promise<R> {
                 failures[k] = err;
 
                 fail.set(true);
+            });
+        }
+
+        for (int j = 0; j < promises.length; j++) {
+            final int k = j;
+            promises[j].on(() -> {
                 onFinish.run();
             });
         }

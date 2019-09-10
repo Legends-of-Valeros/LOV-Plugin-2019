@@ -22,11 +22,11 @@ public class RemoveItemNode extends AbstractQuestNode<Void> {
 
     @SerializedName("Execute")
     public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> {
-        Gear.Instance gear = item.get(instance).newInstance();
+        Gear.Instance gearInstance = item.get(instance).newInstance();
 
-        gear.amount = count.get(instance);
+        gearInstance.amount = count.get(instance);
 
-        ItemUtil.removeItem(instance.getPlayer(), gear);
+        ItemUtil.removeItem(instance.getPlayer(), gearInstance);
 
         this.onCompleted.run(instance);
     });

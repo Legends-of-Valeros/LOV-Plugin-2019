@@ -106,7 +106,7 @@ public class TaskPhase<V> implements Callback<PhaseLock> {
 
     // Cannot execute this in the scheduler, as it's a looping task.
     new Thread(() -> {
-      int notifyTimer = 30000; // Ten seconds
+      int notifyTimer = 30 * 1000; // Thirty seconds
 
       while (!complete) {
         if (view != null) {
@@ -129,9 +129,14 @@ public class TaskPhase<V> implements Callback<PhaseLock> {
             StringBuilder sb = new StringBuilder("'" + name + "' phase slow, is it frozen? Unfinished tasks: ");
             for(PhaseLock lock : locks.values())
               sb.append(lock.getName() + ", ");
-            MessageUtil.sendError(view.getPlayer(), sb.toString());
 
-            notifyTimer = 30000;
+            if(view != null)
+              MessageUtil.sendError(view.getPlayer(), sb.toString());
+            else
+              // Notify console of issues if no player is online
+              System.out.println((view != null ? view.getPlayer().getDisplayName() + ": " : "") + sb.toString());
+
+            notifyTimer = 30 * 1000;
           }
         }
       }

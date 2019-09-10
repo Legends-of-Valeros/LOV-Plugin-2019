@@ -25,9 +25,11 @@ import java.util.Map;
 
 public class SkillsAPI extends ListenerModule {
     public interface RPC {
-        Promise<Map<Integer, String>> getSkillBar(CharacterId characterId);
-        Promise<Object> saveSkillBar(CharacterId characterId, Map<Integer, String> map);
-        Promise<Boolean> deleteSkillBar(CharacterId characterId);
+        Promise<Map<Integer, String>> getPlayerSkillBar(CharacterId characterId);
+
+        Promise<Object> savePlayerSkillBar(CharacterId characterId, Map<Integer, String> map);
+
+        Promise<Boolean> deletePlayerSkillBar(CharacterId characterId);
     }
 
     private RPC rpc;
@@ -67,18 +69,18 @@ public class SkillsAPI extends ListenerModule {
     }
 
     private Promise<Map<Integer, String>> onLogin(PlayerCharacter pc) {
-        return rpc.getSkillBar(pc.getUniqueCharacterId()).onSuccess(map ->
+        return rpc.getPlayerSkillBar(pc.getUniqueCharacterId()).onSuccess(map ->
                 skills.row(pc.getUniqueCharacterId()).putAll(map.orElse(ImmutableMap.of())));
     }
 
     private Promise onLogout(PlayerCharacter pc) {
-        return rpc.saveSkillBar(pc.getUniqueCharacterId(), skills.row(pc.getUniqueCharacterId())).onSuccess(map -> {
+        return rpc.savePlayerSkillBar(pc.getUniqueCharacterId(), skills.row(pc.getUniqueCharacterId())).onSuccess(map -> {
             skills.row(pc.getUniqueCharacterId()).clear();
         });
     }
 
     private Promise onDelete(PlayerCharacter pc) {
-        return rpc.deleteSkillBar(pc.getUniqueCharacterId()).on(() -> {
+        return rpc.deletePlayerSkillBar(pc.getUniqueCharacterId()).on(() -> {
             skills.row(pc.getUniqueCharacterId()).clear();
         });
     }

@@ -6,10 +6,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
-import com.google.gson.stream.JsonWriter;
 import com.legendsofvaleros.api.APIController;
+import com.legendsofvaleros.api.InterfaceTypeAdapter;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.api.PromiseCache;
 import com.legendsofvaleros.module.ListenerModule;
@@ -41,10 +39,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.time.Duration;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -74,11 +70,11 @@ public class QuestAPI extends ListenerModule {
          * }
          * }
          */
-        Promise<Map<String, JsonObject>> getPlayerQuestsProgress(CharacterId characterId);
+        Promise<Map<String, JsonObject>> getPlayerQuests(JsonObject jo);
 
-        Promise<Object> savePlayerQuestsProgress(CharacterId characterId, Map<String, Object> map);
+        Promise<Object> savePlayerQuests(CharacterId characterId, Map<String, IQuestInstance> quests);
 
-        Promise<Boolean> deletePlayerQuestsProgress(CharacterId characterId);
+        Promise<Boolean> deletePlayerQuests(CharacterId characterId);
     }
 
     private EventRegistry eventRegistry;
@@ -135,6 +131,10 @@ public class QuestAPI extends ListenerModule {
             quests.cleanUp();
         }, 0L, 20L);
 
+        InterfaceTypeAdapter.register(IQuest.class,
+                                        obj -> obj.getId(),
+                                        id -> quests.getIfPresent(id));
+
         APIController.getInstance().getGsonBuilder()
                 .registerTypeAdapter(Quest.class, (JsonDeserializer<Quest>) (json, typeOfT, context) -> {
                     try {
@@ -144,26 +144,7 @@ public class QuestAPI extends ListenerModule {
                     }
 
                     return null;
-                })
-                .registerTypeAdapter(IQuest.class, new TypeAdapter<IQuest>() {
-                    @Override
-                    public void write(JsonWriter write, IQuest quest) throws IOException {
-                        write.value(quest != null ? quest.getId() : null);
-                    }
-
-                    @Override
-                    public IQuest read(JsonReader read) throws IOException {
-                        // If we reference the interface, then the type should be a string, and we return the stored object.
-                        // Note: it must be loaded already, else this returns null.
-                        if(read.peek() == JsonToken.NULL) {
-                            read.nextNull();
-                            return null;
-                        }
-
-                        return quests.getIfPresent(read.nextString());
-                    }
-                })
-                .registerTypeAdapter(Duration.class, (JsonDeserializer<Duration>) (json, typeOfT, context) -> Duration.parse(json.getAsString()));
+                });
 
         registerEvents(new PlayerListener());
     }
@@ -215,7 +196,9 @@ public class QuestAPI extends ListenerModule {
     private Promise<Void> onLogin(final PlayerCharacter pc) {
         Promise<Void> promise = new Promise<>();
 
-        rpc.getPlayerQuestsProgress(pc.getUniqueCharacterId())
+        JsonObject jo = new JsonObject();
+        jo.add("player", new JsonPrimitive(pc.getUniqueCharacterId().toString()));
+        rpc.getPlayerQuests(jo)
                 .onFailure(promise::reject).onSuccess(val -> {
             Map<String, JsonObject> map = val.orElse(ImmutableMap.of());
 
@@ -264,18 +247,19 @@ public class QuestAPI extends ListenerModule {
     /**
      * Save player quest progress to database.
      */
-    private Promise<Boolean> onLogout(PlayerCharacter pc) {
+    private Promise onLogout(PlayerCharacter pc) {
         // Remove the instance from quests.
         for (IQuestInstance instance : getPlayerQuests(pc))
             instance.getQuest().removeInstance(pc.getUniqueCharacterId());
 
-        Map<String, Object> map = new HashMap<>();
+        // TODO: create an API endpoint to save all quests in one query
+
+        Map<String, IQuestInstance> map = new HashMap<>();
 
         for (IQuestInstance instance : playerQuests.removeAll(pc.getUniqueCharacterId()))
             map.put(instance.getQuest().getId(), instance);
 
-        return this.rpc.savePlayerQuestsProgress(pc.getUniqueCharacterId(), map)
-                .next(v -> Promise.make(v != null));
+        return rpc.savePlayerQuests(pc.getUniqueCharacterId(), map);
     }
 
     private Promise<Boolean> onDelete(final PlayerCharacter pc) {
@@ -284,7 +268,7 @@ public class QuestAPI extends ListenerModule {
 
         playerQuests.removeAll(pc.getUniqueCharacterId());
 
-        return this.rpc.deletePlayerQuestsProgress(pc.getUniqueCharacterId());
+        return this.rpc.deletePlayerQuests(pc.getUniqueCharacterId());
     }
 
     public void reloadQuests() throws Throwable {

@@ -22,13 +22,13 @@ public class AddItemNode extends AbstractQuestNode<Void> {
 
     @SerializedName("Execute")
     public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> {
-        Gear.Instance gear = item.get(instance).newInstance();
+        Gear.Instance gearInstance = item.get(instance).newInstance();
 
-        gear.amount = count.get(instance);
+        gearInstance.amount = count.get(instance);
 
         // TODO: open UI if the player's inventory is full so they can empty or move stuff around to make space
 
-        ItemUtil.giveItem(instance.getPlayerCharacter(), gear);
+        ItemUtil.giveItem(instance.getPlayerCharacter(), gearInstance);
 
         this.onComplete.run(instance);
     });

@@ -104,38 +104,37 @@ public class ZonesController extends ZonesAPI {
 
     /**
      * Updates the zone and fires aa zone leave or enter event
-     * @param p
      */
-    private void updateZone(Player p) {
-        Zone.Section oldSection = playerZone.getIfPresent(p.getUniqueId());
+    private void updateZone(PlayerCharacter pc) {
+        Zone.Section oldSection = playerZone.getIfPresent(pc.getPlayer().getUniqueId());
         Zone oldZone = oldSection != null ? oldSection.getZone() : null;
 
         for (Zone zone : getZones()) {
-            Optional<Zone.Section> section = zone.getSection(p.getLocation());
+            Optional<Zone.Section> section = zone.getSection(pc.getLocation());
 
             if(section.isPresent()) {
                 if (zone != oldZone) {
                     if (oldZone != null) {
-                        Bukkit.getServer().getPluginManager().callEvent(new ZoneLeaveEvent(p, oldZone));
+                        Bukkit.getServer().getPluginManager().callEvent(new ZoneLeaveEvent(pc, oldZone));
                     }
                 }
 
                 if(oldSection != null) {
-                    Bukkit.getServer().getPluginManager().callEvent(new ZoneSectionLeaveEvent(p, oldSection));
+                    Bukkit.getServer().getPluginManager().callEvent(new ZoneSectionLeaveEvent(pc, oldSection));
                 }
 
                 if(zone != oldZone) {
-                    Bukkit.getServer().getPluginManager().callEvent(new ZoneEnterEvent(p, zone));
+                    Bukkit.getServer().getPluginManager().callEvent(new ZoneEnterEvent(pc, zone));
                 }
 
-                Bukkit.getServer().getPluginManager().callEvent(new ZoneSectionEnterEvent(p, section.get()));
+                Bukkit.getServer().getPluginManager().callEvent(new ZoneSectionEnterEvent(pc, section.get()));
 
                 return;
             }
         }
 
         // We should never reach this point, as bedrock is registered as a zone.
-        MessageUtil.sendInfo(Bukkit.getConsoleSender(), "WARNING - " + p.getDisplayName() + " has is in an area with no zone at all! This is heckin bad!");
+        MessageUtil.sendInfo(Bukkit.getConsoleSender(), "WARNING - " + pc.getPlayer().getDisplayName() + " has is in an area with no zone at all! This is heckin bad!");
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -176,6 +175,9 @@ public class ZonesController extends ZonesAPI {
 
         // Display zone warning
         boolean pvp = PvPController.getInstance().isPvPEnabled() && event.getSection().pvp;
+
+        event.getPlayer().sendMessage(String.valueOf(event.getZone()));
+
         Title title = new Title(event.getZone().name,
                         event.getSection().name
                                 + (pvp ? ChatColor.RED + "(pvp enabled)" : ""));
@@ -201,12 +203,12 @@ public class ZonesController extends ZonesAPI {
             return;
         }
 
-        updateZone(p);
+        updateZone(Characters.getPlayerCharacter(p));
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void playerJoin(PlayerCharacterFinishLoadingEvent e) {
-        updateZone(e.getPlayer());
+        updateZone(e.getPlayerCharacter());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

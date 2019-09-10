@@ -17,7 +17,7 @@ public class DeclineRegionNode extends AbstractQuestNode<Void> {
     
     @SerializedName("Execute")
     public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> {
-        RegionController.getInstance().setRegionAccessibility(instance.getPlayerCharacter(), region.get(instance).getId(), false);
+        RegionController.getInstance().setRegionAccessibility(instance.getPlayerCharacter(), region.get(instance), false);
 
         onCompleted.run(instance);});
     

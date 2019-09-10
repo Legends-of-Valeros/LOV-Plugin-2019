@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.factions.event;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterEvent;
-import com.legendsofvaleros.modules.factions.core.Faction;
+import com.legendsofvaleros.modules.factions.api.IFaction;
 import org.bukkit.event.HandlerList;
 
 public class FactionReputationChangeEvent extends PlayerCharacterEvent {
@@ -16,9 +16,9 @@ public class FactionReputationChangeEvent extends PlayerCharacterEvent {
         return handlers;
     }
 
-    private final Faction faction;
+    private final IFaction faction;
 
-    public Faction getFaction() {
+    public IFaction getFaction() {
         return faction;
     }
 
@@ -34,7 +34,7 @@ public class FactionReputationChangeEvent extends PlayerCharacterEvent {
         return change;
     }
 
-    public FactionReputationChangeEvent(PlayerCharacter pc, Faction faction, int reputation, int change) {
+    public FactionReputationChangeEvent(PlayerCharacter pc, IFaction faction, int reputation, int change) {
         super(pc);
         this.faction = faction;
         this.reputation = reputation;

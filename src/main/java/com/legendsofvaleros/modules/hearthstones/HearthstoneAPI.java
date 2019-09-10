@@ -56,7 +56,7 @@ public class HearthstoneAPI extends ListenerModule {
      * @param loc     The location of the home.
      */
     public Promise setHome(PlayerCharacter pc, String innName, Location loc) {
-        HomePoint home = new HomePoint(pc.getUniqueCharacterId(), innName, loc);
+        HomePoint home = new HomePoint(pc, innName, loc);
 
         homes.put(pc.getUniqueCharacterId(), home);
 

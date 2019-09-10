@@ -16,15 +16,14 @@ import org.bukkit.event.Listener;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 
 public class BankAPI extends ListenerModule {
     public interface RPC {
-        Promise<Bank> getPlayerBank(CharacterId characterId);
+        Promise<Bank> getBank(String id);
 
-        Promise<Object> savePlayerBank(Bank bank);
+        Promise<Object> saveBank(Bank bank);
 
-        Promise<Boolean> deletePlayerBank(CharacterId characterId);
+        Promise<Boolean> deleteBank(String id);
     }
 
     private RPC rpc;
@@ -44,12 +43,12 @@ public class BankAPI extends ListenerModule {
         registerEvents(new PlayerCharacterListener());
     }
 
-    private Promise<Boolean> removeBank(CharacterId characterId) {
-        return rpc.deletePlayerBank(characterId);
+    private Promise<Boolean> removeBank(String id) {
+        return rpc.deleteBank(id);
     }
 
     private Promise<Bank> onLogin(CharacterId characterId) {
-        Promise<Bank> promise = rpc.getPlayerBank(characterId);
+        Promise<Bank> promise = rpc.getBank(characterId.toString());
 
         promise.onSuccess(val -> {
             banks.put(characterId, val.orElseGet(() -> new Bank(characterId)));
@@ -64,11 +63,11 @@ public class BankAPI extends ListenerModule {
         if(bank == null)
             return Promise.make(false);
 
-        return rpc.savePlayerBank(bank);
+        return rpc.saveBank(bank);
     }
 
     public Promise onDelete(CharacterId characterId) {
-        return removeBank(characterId);
+        return removeBank(characterId.toString());
     }
 
     private class PlayerCharacterListener implements Listener {

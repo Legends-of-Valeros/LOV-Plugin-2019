@@ -6,13 +6,11 @@ import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.ItemLine;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.modules.zones.api.IZone;
 import com.legendsofvaleros.modules.zones.core.Zone;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 
 public class Graveyard {
@@ -21,23 +19,20 @@ public class Graveyard {
      */
     private transient Hologram hologram;
     private transient TextLine textZone, textRadius;
-    private transient Location location;
 
     private IZone zone;
 
-    public World world;
-    public int x;
-    public int y;
-    public int z;
+    private Location location;
     public int radius;
 
     public Graveyard(Zone zone, Location location, int radius) {
         this.zone = zone;
-        this.world = location.getWorld();
-        this.x = location.getBlockX();
-        this.y = location.getBlockY();
-        this.z = location.getBlockZ();
+        this.location = location;
         this.radius = radius;
+    }
+
+    public Location getLocation() {
+        return location;
     }
 
     public Hologram getHologram() {
@@ -68,18 +63,7 @@ public class Graveyard {
         return this.zone;
     }
 
-    public World getWorld() {
-        return world;
-    }
-
     public int getRadius() {
         return radius;
-    }
-
-    public Location getLocation() {
-        if (location == null) {
-            location = new Location(world, x, y, z);
-        }
-        return location;
     }
 }

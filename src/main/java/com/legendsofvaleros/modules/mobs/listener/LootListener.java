@@ -6,9 +6,8 @@ import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.damage.DamageHistory;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.gear.core.ItemUtil;
-import com.legendsofvaleros.modules.loot.LootController;
-import com.legendsofvaleros.modules.loot.LootTable;
 import com.legendsofvaleros.modules.loot.api.ILootTable;
+import com.legendsofvaleros.modules.mobs.api.IEntity;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
@@ -18,11 +17,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class LootListener implements Listener {
     private static final Random RAND = new Random();
@@ -31,10 +27,10 @@ public class LootListener implements Listener {
     public void onEntityDeath(CombatEngineDeathEvent event) {
         if (event.getDied().isPlayer()) return;
 
-        Mob.Instance entity = Mob.Instance.get(event.getDied().getLivingEntity());
-        if (entity == null) return;
-        if (entity.mob.loot == null) {
-            MessageUtil.sendError(Bukkit.getConsoleSender(), "No loot found for entity " + entity.mob.getName());
+        Mob.Instance instance = Mob.Instance.get(event.getDied().getLivingEntity());
+        if (instance == null) return;
+        if (instance.entity.getLoot() == null) {
+            MessageUtil.sendError(Bukkit.getConsoleSender(), "No loot found for entity " + instance.entity.getName());
             return;
         }
 
@@ -54,11 +50,11 @@ public class LootListener implements Listener {
 
         Location dieLoc = event.getDied().getLivingEntity().getLocation();
 
-        for (Mob.Loot loot : entity.mob.loot) {
-            Mob.Loot.Instance instance = loot.newInstance();
+        for (IEntity.Loot loot : instance.entity.getLoot()) {
+            IEntity.Loot.Instance lootInstance = loot.newInstance();
 
             for(int t = 0; t < loot.tries; t++) {
-                Optional<ILootTable> table = instance.nextTable();
+                Optional<ILootTable> table = lootInstance.nextTable();
                 if(table.isPresent()) {
                     ItemUtil.dropItem(dieLoc, table.get().nextItem().newInstance(), pc);
                 }
