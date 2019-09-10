@@ -47,8 +47,10 @@ public class GearAPI extends Module {
         return rpc.findGear().onSuccess(val -> {
             gear.clear();
 
-            val.orElse(ImmutableList.of()).stream().forEach(g ->
-                    gear.put(g.getId(), g));
+            val.orElse(ImmutableList.of()).stream().forEach(g -> {
+                gear.put(g.getId(), g);
+                gear.put(g.getSlug(), g);
+            });
 
             GearController.ERROR_ITEM = Gear.fromId("perfectly-generic-item");
             getLogger().info("Loaded " + gear.size() + " items.");

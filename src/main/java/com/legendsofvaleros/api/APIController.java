@@ -1,10 +1,7 @@
 package com.legendsofvaleros.api;
 
 import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.TypeAdapter;
+import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
@@ -235,6 +232,14 @@ public class APIController extends Module {
                 getLogger().info("No issues! All registered RPC functions exist!");
             }
         });
+    }
+
+    public <T> Promise<T> fromJson(JsonElement elem, Class<T> clazz) {
+        return Promise.make(() -> this.gson.fromJson(elem, clazz));
+    }
+
+    public <T> Promise<T> fromJson(String json, Class<T> clazz) {
+        return Promise.make(() -> this.gson.fromJson(json, clazz));
     }
 
     public static <T> T create(Class<T> clazz) {

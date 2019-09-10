@@ -10,7 +10,6 @@ import com.legendsofvaleros.modules.hearthstones.HearthstoneController;
 import com.legendsofvaleros.modules.mailbox.MailboxController;
 import com.legendsofvaleros.modules.mount.MountsController;
 import com.legendsofvaleros.modules.npcs.commands.NPCCommands;
-import com.legendsofvaleros.modules.npcs.core.Skin;
 import com.legendsofvaleros.modules.npcs.integration.*;
 import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
 import com.legendsofvaleros.modules.npcs.trait.core.TraitTitle;
@@ -78,9 +77,5 @@ public class NPCsController extends NPCsAPI {
     public boolean isStaticNPC(LivingEntity entity) {
         NPC npc = CitizensAPI.getNPCRegistry().getNPC(entity);
         return npc != null && npc.getOwningRegistry() == CitizensAPI.getNPCRegistry();
-    }
-
-    public Skin getSkin(String id) {
-        return skins.get(id);
     }
 }

@@ -5,9 +5,10 @@ import com.google.common.cache.CacheStats;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
-import com.legendsofvaleros.api.Promise;
+import com.legendsofvaleros.util.Utilities;
 
 import javax.annotation.Nonnull;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentMap;
 
 public class PromiseCache<K, V> {
@@ -27,10 +28,23 @@ public class PromiseCache<K, V> {
     public PromiseCache(Cache<K, V> cache, ILoader<K, V> loader) {
         this.cache = cache;
         this.loader = loader;
+
+        Utilities.getInstance().getScheduler().executeInMyCircleTimer(() -> {
+            // This is done so we get almost-live updates on GC'd listeners.
+            this.cleanUp();
+        }, 0L, 20L);
     }
 
     public V getIfPresent(K k) {
         return cache.getIfPresent(k);
+    }
+
+    public Optional<V> getAndWait(@Nonnull K k) {
+        try {
+            return Optional.of(Promise.make(() -> this.get(k).get() ).get());
+        } catch (Throwable throwable) {
+            return Optional.empty();
+        }
     }
 
     public synchronized Promise<V> get(@Nonnull K k) {
@@ -45,6 +59,9 @@ public class PromiseCache<K, V> {
             if(!awaiting.containsKey(k)) {
                 loader.loadValue(k).onSuccess(val -> {
                     put(k, val.orElse(null));
+                }).onFailure(th -> {
+                    for (Promise<V> ret : awaiting.removeAll(k))
+                        ret.reject(th);
                 });
             }
 
@@ -58,11 +75,8 @@ public class PromiseCache<K, V> {
         if(v != null)
             cache.put(k, v);
 
-        if(awaiting.containsKey(k)) {
-            for (Promise<V> ret : awaiting.get(k))
-                ret.resolve(v);
-            awaiting.removeAll(k);
-        }
+        for (Promise<V> ret : awaiting.removeAll(k))
+            ret.resolve(v);
     }
 
     public void invalidate(K k) {

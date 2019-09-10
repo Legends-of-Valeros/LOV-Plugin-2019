@@ -49,6 +49,11 @@ public class Gear implements IGear {
     }
 
     @Override
+    public String getSlug() {
+        return slug;
+    }
+
+    @Override
     public int getVersion() {
         return version;
     }

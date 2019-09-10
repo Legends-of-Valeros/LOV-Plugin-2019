@@ -1,5 +1,6 @@
 package com.legendsofvaleros.modules.quests.core;
 
+import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.quests.api.IQuest;
 import com.legendsofvaleros.modules.quests.api.IQuestInstance;
@@ -12,9 +13,10 @@ import java.util.Map;
 import java.util.Optional;
 
 public class QuestInstance implements IQuestInstance {
-    private final PlayerCharacter player;
-
+    @SerializedName("_id")
     private final IQuest quest;
+
+    private transient PlayerCharacter player;
 
     private QuestState state = QuestState.INACTIVE;
 
@@ -29,6 +31,11 @@ public class QuestInstance implements IQuestInstance {
         this.logs = new QuestLogMap();
 
         this.nodes = new QuestNodeInstanceMap();
+    }
+
+    public void setPlayer(PlayerCharacter pc) {
+        if(this.player != null) throw new IllegalStateException("Player already set!");
+        this.player = pc;
     }
 
     @Override

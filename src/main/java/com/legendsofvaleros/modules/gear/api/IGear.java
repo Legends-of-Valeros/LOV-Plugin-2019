@@ -13,6 +13,8 @@ public interface IGear {
      */
     String getId();
 
+    String getSlug();
+
     /**
      * The current version of the item. If this is changes between
      * decoding, the item is completely regenerated.

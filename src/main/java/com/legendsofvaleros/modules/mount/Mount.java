@@ -15,12 +15,14 @@ import java.util.UUID;
 public class Mount implements IMount {
     private String id;
 
+    @Override
     public String getId() {
         return id;
     }
 
     private String name;
 
+    @Override
     public String getName() {
         return name;
     }
@@ -32,16 +34,19 @@ public class Mount implements IMount {
      */
     private float speed;
 
+    @Override
     public float getSpeed() {
         return speed;
     }
 
+    @Override
     public int getSpeedPercent() {
         return (int) (speed * 100);
     }
 
     private int minLevel;
 
+    @Override
     public int getMinimumLevel() {
         return minLevel;
     }
@@ -58,17 +63,19 @@ public class Mount implements IMount {
 
     private Material icon;
 
+    @Override
     public Material getIcon() {
         return icon;
     }
 
-    private int cost;
+    private long cost;
 
-    public int getCost() {
+    @Override
+    public long getCost() {
         return cost;
     }
 
-    public Mount(String id, String name, EntityType type, float speed, int minLevel, Material icon, int cost) {
+    public Mount(String id, String name, EntityType type, float speed, int minLevel, Material icon, long cost) {
         this.id = id;
         this.name = name;
         this.type = type;

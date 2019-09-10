@@ -69,7 +69,12 @@ public class ZonesAPI extends ListenerModule {
                                                 section.name = sEntry.getValue().getAsString();
                                                 break;
                                             case "material":
-                                                section.material = Material.valueOf(sEntry.getValue().getAsString());
+                                                try {
+                                                    section.material = Material.valueOf(sEntry.getValue().getAsString());
+                                                } catch(Exception e) {
+                                                    getLogger().warning("Zone '" + zone.getId() + "' has a section with an invalid material: " + sEntry.getValue().getAsString());
+                                                    continue;
+                                                }
                                                 break;
                                             case "pvp":
                                                 section.pvp = sEntry.getValue().getAsBoolean();

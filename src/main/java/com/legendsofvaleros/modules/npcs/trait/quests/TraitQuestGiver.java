@@ -189,5 +189,4 @@ public class TraitQuestGiver extends LOVTrait {
             trait.available.getVisibilityManager().hideTo(pc.getPlayer());
         }
     }
-
 }

@@ -23,8 +23,6 @@ public class NPCCommands extends BaseCommand {
 	@Description("Reload the NPC cache and citizens.")
 	@CommandPermission("npcs.reload")
 	public void cmdListNPCReload(CommandSender sender) throws Throwable {
-		NPCsController.getInstance().loadAll().get();
-
 		Bukkit.dispatchCommand(sender, "citizens save");
 		Bukkit.dispatchCommand(sender, "citizens reload");
 	}
@@ -35,7 +33,7 @@ public class NPCCommands extends BaseCommand {
 	public void cmdActivateNPC(Player player, String npcId, String side) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		LOVNPC npc = NPCsController.getInstance().getNPCBySlug(npcId);
+		LOVNPC npc = NPCsController.getInstance().getNPC(npcId);
 
 		if(side.equalsIgnoreCase("left"))
 			TraitHelper.onLeftClick(npc.getName(), player, npc.traits);
@@ -51,7 +49,7 @@ public class NPCCommands extends BaseCommand {
 	public void cmdBindNPC(Player player, String npcId) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		LOVNPC lovNPC = NPCsController.getInstance().getNPCBySlug(npcId);
+		LOVNPC lovNPC = NPCsController.getInstance().getNPC(npcId);
 		if(lovNPC == null) {
 			MessageUtil.sendError(player, "NPC with that ID does not exist.");
 			return;

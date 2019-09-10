@@ -10,6 +10,8 @@ public interface IMount {
 
     String getName();
 
+    float getSpeed();
+
     int getSpeedPercent();
 
     int getMinimumLevel();

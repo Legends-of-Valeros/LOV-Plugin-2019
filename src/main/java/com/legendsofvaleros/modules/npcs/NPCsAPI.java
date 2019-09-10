@@ -22,7 +22,6 @@ import net.citizensnpcs.api.npc.MemoryNPCDataStore;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
 import net.citizensnpcs.api.trait.TraitInfo;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 
 import java.util.ArrayList;
@@ -105,6 +104,7 @@ public class NPCsAPI extends ListenerModule {
 
                     val.orElse(ImmutableList.of()).forEach(npc -> {
                         npcs.put(npc.getId(), npc);
+                        npcs.put(npc.getSlug(), npc);
                     });
 
                     LootController.getInstance().getLogger().info("Loaded " + npcs.size() + " NPCs.");
@@ -115,6 +115,7 @@ public class NPCsAPI extends ListenerModule {
 
                     val.orElse(ImmutableList.of()).forEach(skin -> {
                         skins.put(skin.getId(), skin);
+                        skins.put(skin.getSlug(), skin);
                     });
 
                     LootController.getInstance().getLogger().info("Loaded " + skins.size() + " skins.");
@@ -136,16 +137,4 @@ public class NPCsAPI extends ListenerModule {
     public LOVNPC getNPC(String id) {
         return npcs.get(id);
     }
-    public LOVNPC getNPCBySlug(String id) {
-        return npcs.values().stream().filter(n -> n.getSlug().equals(id)).findFirst().orElse(null);
-    }
-
-    public void saveNPC(TraitLOV traitLOV) {
-        getScheduler().executeInMyCircle(() -> {
-            rpc.saveNPC((LOVNPC)traitLOV.getLovNPC()).onSuccess(() -> {
-                MessageUtil.sendInfo(Bukkit.getConsoleSender(), "Successfully saved npc " + traitLOV.npcId + " at " + traitLOV.getNPC().getStoredLocation());
-            });
-        });
-    }
-
 }

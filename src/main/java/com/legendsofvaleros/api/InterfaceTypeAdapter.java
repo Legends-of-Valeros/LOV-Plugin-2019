@@ -76,6 +76,13 @@ public class InterfaceTypeAdapter<T> extends TypeAdapter<T> {
             return APIController.getInstance().getGson().getDelegateAdapter(skipPast, TypeToken.get(clazz)).read(in);
         }
 
-        return decoder.toValue(in.nextString());
+        String id = in.nextString();
+        T val = decoder.toValue(id);
+
+        if(val == null) {
+            APIController.getInstance().getLogger().warning("'" + id + "' does not map to any " + clazz.getSimpleName() + "!");
+        }
+
+        return val;
     }
 }

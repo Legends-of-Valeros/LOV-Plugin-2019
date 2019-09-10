@@ -84,7 +84,7 @@ public class RPCFunction<T> {
                     return APIController.getInstance().getGson().fromJson((String) res.getData(), result.getType());
                 }
 
-                return (T) res.getData();
+                return (T)res.getData();
             }
 
             throw new RuntimeException("" + res.getData());

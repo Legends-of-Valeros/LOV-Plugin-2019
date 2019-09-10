@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.quests;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
@@ -42,10 +42,9 @@ import org.bukkit.event.Listener;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class QuestAPI extends ListenerModule {
     public interface RPC {
@@ -70,9 +69,9 @@ public class QuestAPI extends ListenerModule {
          * }
          * }
          */
-        Promise<Map<String, JsonObject>> getPlayerQuests(JsonObject jo);
+        Promise<List<QuestInstance>> getPlayerQuests(CharacterId characterId);
 
-        Promise<Object> savePlayerQuests(CharacterId characterId, Map<String, IQuestInstance> quests);
+        Promise<Object> savePlayerQuests(CharacterId characterId, Collection<IQuestInstance> quests);
 
         Promise<Boolean> deletePlayerQuests(CharacterId characterId);
     }
@@ -124,16 +123,11 @@ public class QuestAPI extends ListenerModule {
                 .removalListener(entry -> {
                     getLogger().warning("Quest '" + entry.getKey() + "' removed from the cache: " + entry.getCause());
                 })
-                .build(), questId -> rpc.getQuest(questId));
-
-        getScheduler().executeInMyCircleTimer(() -> {
-            // This is done so we get almost-live updates on GC'd listeners.
-            quests.cleanUp();
-        }, 0L, 20L);
+                .build(), id -> rpc.getQuest(id));
 
         InterfaceTypeAdapter.register(IQuest.class,
                                         obj -> obj.getId(),
-                                        id -> quests.getIfPresent(id));
+                                        id -> quests.getAndWait(id).orElse(null));
 
         APIController.getInstance().getGsonBuilder()
                 .registerTypeAdapter(Quest.class, (JsonDeserializer<Quest>) (json, typeOfT, context) -> {
@@ -193,44 +187,21 @@ public class QuestAPI extends ListenerModule {
             playerQuests.remove(pc.getUniqueCharacterId(), instance.get());
     }
 
-    private Promise<Void> onLogin(final PlayerCharacter pc) {
-        Promise<Void> promise = new Promise<>();
+    private Promise onLogin(final PlayerCharacter pc) {
+        return rpc.getPlayerQuests(pc.getUniqueCharacterId()).onSuccess(val -> {
+            Collection<QuestInstance> quests = val.orElse(ImmutableList.of())/*
+                    // Filter out quests that no longer exist
+                    .stream().filter(v -> v.getQuest() != null).collect(Collectors.toList())*/;
 
-        JsonObject jo = new JsonObject();
-        jo.add("player", new JsonPrimitive(pc.getUniqueCharacterId().toString()));
-        rpc.getPlayerQuests(jo)
-                .onFailure(promise::reject).onSuccess(val -> {
-            Map<String, JsonObject> map = val.orElse(ImmutableMap.of());
+            System.out.println(quests.size());
+            System.out.println(quests);
 
-            if (map.size() == 0) {
-                promise.resolve(null);
-                return;
-            }
+            // Set the player and add the instance to the respective quest
+            quests.forEach(qi -> qi.setPlayer(pc));
+            quests.forEach(qi -> qi.getQuest().setInstance(pc.getUniqueCharacterId(), qi));
 
-            AtomicInteger questsToLoad = new AtomicInteger(map.size());
-
-            map.forEach((k, v) -> {
-                getQuest(k).onSuccess(q -> {
-                    if (q.isPresent()) {
-                        try {
-                            IQuestInstance instance = APIController.getInstance().getGson().fromJson(v, QuestInstance.class);
-
-                            // Store the instance in a temporary map for safety, as we don't act like it's ready until
-                            // the player is completely loaded.
-                            playerQuestsLoaded.put(pc.getUniqueCharacterId(), instance);
-                        } catch (Exception e) {
-                            getLogger().warning("Player attempt to load progress for quest, but something went wrong. Offender: " + pc.getPlayer().getName() + " in quest " + k);
-                            MessageUtil.sendSevereException(this, pc.getPlayer(), e);
-                        }
-                    }
-                }).on(() -> {
-                    if (questsToLoad.decrementAndGet() == 0)
-                        promise.resolve(null);
-                });
-            });
+            playerQuestsLoaded.putAll(pc.getUniqueCharacterId(), quests);
         });
-
-        return promise;
     }
 
     private void onLoginComplete(PlayerCharacter pc) {
@@ -254,12 +225,7 @@ public class QuestAPI extends ListenerModule {
 
         // TODO: create an API endpoint to save all quests in one query
 
-        Map<String, IQuestInstance> map = new HashMap<>();
-
-        for (IQuestInstance instance : playerQuests.removeAll(pc.getUniqueCharacterId()))
-            map.put(instance.getQuest().getId(), instance);
-
-        return rpc.savePlayerQuests(pc.getUniqueCharacterId(), map);
+        return rpc.savePlayerQuests(pc.getUniqueCharacterId(), playerQuests.removeAll(pc.getUniqueCharacterId()));
     }
 
     private Promise<Boolean> onDelete(final PlayerCharacter pc) {

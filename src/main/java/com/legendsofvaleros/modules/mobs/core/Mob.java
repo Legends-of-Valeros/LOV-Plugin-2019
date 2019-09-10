@@ -198,11 +198,13 @@ public class Mob implements IEntity {
                     try {
                         ISkin skin = entity.getSkin();
 
-                        npc.data().setPersistent("cached-skin-uuid", skin.getUUID());
-                        npc.data().setPersistent("cached-skin-uuid-name", skin.getUsername().toLowerCase());
-                        npc.data().setPersistent(NPC.PLAYER_SKIN_UUID_METADATA, skin.getUsername().toLowerCase());
-                        npc.data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA, skin.getSignature());
-                        npc.data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA, skin.getData());
+                        ISkin.Texture texture = skin.getTexture();
+
+                        npc.data().setPersistent("cached-skin-uuid", texture.getUUID());
+                        npc.data().setPersistent("cached-skin-uuid-name", texture.getUsername().toLowerCase());
+                        npc.data().setPersistent(NPC.PLAYER_SKIN_UUID_METADATA, texture.getUsername().toLowerCase());
+                        npc.data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA, texture.getSignature());
+                        npc.data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA, texture.getData());
                         npc.data().setPersistent(NPC.PLAYER_SKIN_USE_LATEST, false);
                     } catch (Exception e) {
                         MessageUtil.sendException(MobsController.getInstance(), e);

@@ -36,7 +36,7 @@ public class QuestUtil {
 				StringBuffer sb = new StringBuffer();
 
 				do {
-					LOVNPC data = NPCsController.getInstance().getNPCBySlug(npcs.group(1));
+					LOVNPC data = NPCsController.getInstance().getNPC(npcs.group(1));
 
 					String name = npcs.group(1);
 					if(data != null)

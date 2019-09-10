@@ -35,10 +35,10 @@ public class MobsAPI extends ListenerModule {
 
     private RPC rpc;
 
-    private Map<String, Mob> entities = new HashMap<>();
+    private Map<String, Mob> mobs = new HashMap<>();
 
-    public Mob getEntity(String id) {
-        return entities.get(id);
+    public Mob getMob(String id) {
+        return mobs.get(id);
     }
 
     private Multimap<String, SpawnArea> spawns = HashMultimap.create();
@@ -61,7 +61,7 @@ public class MobsAPI extends ListenerModule {
 
         InterfaceTypeAdapter.register(IEntity.class,
                                         obj -> obj.getId(),
-                                        id -> entities.get(id));
+                                        id -> mobs.get(id));
 
         registerEvents(new ChunkListener());
     }
@@ -79,12 +79,12 @@ public class MobsAPI extends ListenerModule {
 
     public Promise loadAll() {
         return rpc.findMobs().onSuccess(val -> {
-            entities.clear();
+            mobs.clear();
 
             for (Mob mob : val.orElse(ImmutableList.of()))
-                entities.put(mob.getId(), mob);
+                mobs.put(mob.getId(), mob);
 
-            getLogger().info("Loaded " + entities.size() + " mobs.");
+            getLogger().info("Loaded " + mobs.size() + " mobs.");
         }).next(rpc::findSpawns).onSuccess(val -> {
             spawns.clear();
 

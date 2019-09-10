@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 public class NPCEmulator {
 	public static void speak(String npcId, Player p, String message) {
-		speakDirect(NPCsController.getInstance().getNPCBySlug(npcId).getName(), p, message);
+		speakDirect(NPCsController.getInstance().getNPC(npcId).getName(), p, message);
 	}
 
 	public static void speak(INPC npc, Player p, String message) {
