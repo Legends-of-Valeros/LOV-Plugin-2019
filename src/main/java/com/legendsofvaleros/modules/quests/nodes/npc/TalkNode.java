@@ -47,6 +47,7 @@ public class TalkNode extends AbstractQuestNode<Boolean> {
 
     @QuestEvent
     public void onEvent(IQuestInstance instance, Boolean data, NPCRightClickEvent event) {
+        instance.getPlayer().sendMessage("talk node " + data);
         // If we aren't tracking, yet, ignore it.
         if(data == null || data) {
             return;
@@ -55,6 +56,9 @@ public class TalkNode extends AbstractQuestNode<Boolean> {
         if(!event.getNPC().hasTrait(TraitLOV.class)) return;
 
         TraitLOV lov = event.getNPC().getTrait(TraitLOV.class);
+
+        instance.getPlayer().sendMessage(lov.getLovNPC() + " " + npc.get(instance));
+
         if(lov.getLovNPC() != npc.get(instance)) {
             return;
         }

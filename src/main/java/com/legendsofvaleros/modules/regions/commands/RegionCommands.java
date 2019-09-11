@@ -5,6 +5,7 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.api.Get;
 import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.quests.api.IQuest;
 import com.legendsofvaleros.modules.regions.RegionController;
@@ -133,7 +134,7 @@ public class RegionCommands extends BaseCommand {
         }
 
         QuestController.getInstance().getQuestBySlug(questId).onSuccess(quest -> {
-            region.quests.add(quest.get());
+            region.quests.add(Get.of(quest.get()));
 
             RegionController.getInstance().saveRegion(region);
             MessageUtil.sendUpdate(sender, "Region updated. Now triggers gear: " + questId);

@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.regions.core;
 
 import com.google.gson.annotations.SerializedName;
+import com.legendsofvaleros.api.Get;
 import com.legendsofvaleros.modules.quests.api.IQuest;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -8,6 +9,7 @@ import org.bukkit.World;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Region implements IRegion {
     @SerializedName("_id")
@@ -17,13 +19,13 @@ public class Region implements IRegion {
     private RegionBounds bounds;
     public boolean allowAccess = false;
     public boolean allowHearthstone = true;
-    public List<IQuest> quests = new ArrayList<>();
+    public List<Get<IQuest>> quests = new ArrayList<>();
 
     public String msgEnter;
     public String msgExit;
     public String msgError = "You cannot go there, yet.";
 
-    public Region(String id, World world, RegionBounds bounds) {
+    public Region(String id, RegionBounds bounds) {
         this.id = id;
         this.bounds = bounds;
     }
@@ -59,7 +61,7 @@ public class Region implements IRegion {
 
     @Override
     public List<IQuest> getQuestsTriggered() {
-        return quests;
+        return quests.stream().map(v -> v.get()).collect(Collectors.toList());
     }
 
     @Override
