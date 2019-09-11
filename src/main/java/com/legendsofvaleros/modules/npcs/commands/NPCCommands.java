@@ -30,15 +30,16 @@ public class NPCCommands extends BaseCommand {
 	@Subcommand("activate")
 	@Description("Activate an NPC remotely.")
 	@CommandPermission("npcs.activate")
-	public void cmdActivateNPC(Player player, String npcId, String side) {
+	public void cmdActivateNPC(Player player, String slug, String side) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		LOVNPC npc = NPCsController.getInstance().getNPC(npcId);
+		String id = NPCsController.getInstance().getNPCIDFromSlug(slug);
+		LOVNPC lovNPC = NPCsController.getInstance().getNPC(id);
 
 		if(side.equalsIgnoreCase("left"))
-			TraitHelper.onLeftClick(npc.getName(), player, npc.traits);
+			TraitHelper.onLeftClick(lovNPC.getName(), player, lovNPC.traits);
 		else if(side.equalsIgnoreCase("right"))
-			TraitHelper.onRightClick(npc.getName(), player, npc.traits);
+			TraitHelper.onRightClick(lovNPC.getName(), player, lovNPC.traits);
 		else
 			MessageUtil.sendError(player, "Side argument must be 'left' or 'right'!");
 	}
@@ -46,10 +47,12 @@ public class NPCCommands extends BaseCommand {
 	@Subcommand("bind")
 	@Description("Bind an LOV NPC to a citizens NPC.")
 	@CommandPermission("npcs.bind")
-	public void cmdBindNPC(Player player, String npcId) {
+	public void cmdBindNPC(Player player, String slug) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		LOVNPC lovNPC = NPCsController.getInstance().getNPC(npcId);
+		String id = NPCsController.getInstance().getNPCIDFromSlug(slug);
+		LOVNPC lovNPC = NPCsController.getInstance().getNPC(id);
+
 		if(lovNPC == null) {
 			MessageUtil.sendError(player, "NPC with that ID does not exist.");
 			return;
@@ -62,9 +65,9 @@ public class NPCCommands extends BaseCommand {
 			return;
 		}
 		
-		if(!npc.hasTrait(TraitLOV.class))		
+		if(!npc.hasTrait(TraitLOV.class))
 			npc.addTrait(TraitLOV.class);
-		npc.getTrait(TraitLOV.class).npcId = npcId;
+		npc.getTrait(TraitLOV.class).npcId = id;
 
 		npc.setName(UUID.randomUUID().toString());
 	}

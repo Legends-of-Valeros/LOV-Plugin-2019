@@ -41,8 +41,8 @@ public class ZonesAPI extends ListenerModule {
         this.rpc = APIController.create(RPC.class);
 
         InterfaceTypeAdapter.register(IZone.class,
-                                        obj -> obj.getId(),
-                                        id -> zones.get(id));
+                obj -> obj.getId(),
+                id -> Promise.make(zones.get(id)));
 
         APIController.getInstance().getGsonBuilder()
                 .registerTypeAdapter(Zone.class, (JsonDeserializer<Zone>) (val, typeOfT, context) -> {

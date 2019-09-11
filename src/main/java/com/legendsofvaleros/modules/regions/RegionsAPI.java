@@ -67,8 +67,8 @@ public class RegionsAPI extends ListenerModule {
         super.onLoad();
 
         InterfaceTypeAdapter.register(IRegion.class,
-                                        obj -> obj.getId(),
-                                        id -> regions.get(id));
+                obj -> obj.getId(),
+                id -> Promise.make(regions.get(id)));
     }
 
     @Override

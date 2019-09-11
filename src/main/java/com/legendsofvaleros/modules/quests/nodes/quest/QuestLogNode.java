@@ -6,6 +6,10 @@ import com.legendsofvaleros.modules.quests.core.QuestLogEntry;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
+import com.legendsofvaleros.modules.quests.events.QuestLogEntryAddedEvent;
+import com.legendsofvaleros.modules.quests.events.QuestLogEntryRemovedEvent;
+import com.legendsofvaleros.modules.quests.events.QuestLogEntryUpdatedEvent;
+import org.bukkit.Bukkit;
 
 public class QuestLogNode extends AbstractQuestNode<Integer> {
     @SerializedName("OnSuccess")
@@ -32,6 +36,8 @@ public class QuestLogNode extends AbstractQuestNode<Integer> {
         }
 
         instance.setNodeInstance(this, logEntry);
+
+        Bukkit.getPluginManager().callEvent(new QuestLogEntryAddedEvent(instance, entry));
     });
 
     @SerializedName("Success")
@@ -48,6 +54,8 @@ public class QuestLogNode extends AbstractQuestNode<Integer> {
 
         entry.success = true;
         entry.disabled = true;
+
+        Bukkit.getPluginManager().callEvent(new QuestLogEntryUpdatedEvent(instance, entry, true));
 
         this.onSuccess.run(instance);
     });
@@ -66,6 +74,8 @@ public class QuestLogNode extends AbstractQuestNode<Integer> {
 
         entry.disabled = true;
 
+        Bukkit.getPluginManager().callEvent(new QuestLogEntryUpdatedEvent(instance, entry, false));
+
         this.onFailure.run(instance);
     });
 
@@ -75,9 +85,13 @@ public class QuestLogNode extends AbstractQuestNode<Integer> {
             throw new IllegalStateException("Log entry is already removed!");
         }
 
+        QuestLogEntry entry = instance.getLogEntry(logEntry).get();
+
         instance.removeLogEntry(logEntry);
 
         instance.setNodeInstance(this, null);
+
+        Bukkit.getPluginManager().callEvent(new QuestLogEntryRemovedEvent(instance, entry));
     });
 
     public QuestLogNode(String id) {

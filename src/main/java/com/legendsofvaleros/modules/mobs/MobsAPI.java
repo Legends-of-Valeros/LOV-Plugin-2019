@@ -60,8 +60,8 @@ public class MobsAPI extends ListenerModule {
         this.rpc = APIController.create(RPC.class);
 
         InterfaceTypeAdapter.register(IEntity.class,
-                                        obj -> obj.getId(),
-                                        id -> mobs.get(id));
+                obj -> obj.getId(),
+                id -> Promise.make(mobs.get(id)));
 
         registerEvents(new ChunkListener());
     }

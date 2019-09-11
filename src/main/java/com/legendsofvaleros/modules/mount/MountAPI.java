@@ -45,8 +45,8 @@ public class MountAPI extends ListenerModule {
         this.rpc = APIController.create(RPC.class);
 
         InterfaceTypeAdapter.register(IMount.class,
-                                        obj -> obj.getId(),
-                                        id -> mounts.get(id));
+                obj -> obj.getId(),
+                id -> Promise.make(mounts.get(id)));
 
         registerEvents(new PlayerListener());
     }

@@ -46,8 +46,8 @@ public class FactionAPI extends ListenerModule {
         this.rpc = APIController.create(RPC.class);
 
         InterfaceTypeAdapter.register(IFaction.class,
-                                        obj -> obj.getId(),
-                                        id -> factions.get(id));
+                obj -> obj.getId(),
+                id -> Promise.make(factions.get(id)));
 
         registerEvents(new PlayerListener());
     }

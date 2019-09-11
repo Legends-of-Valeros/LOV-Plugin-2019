@@ -9,17 +9,20 @@ import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 /**
  * This allows the use of an interface to get a reference to an object, but still allow the object itself to be decoded.
  * i.e. The Gear type will be decoded normally, but decoding an IGear field will reference an existing Gear object.
  */
 public class InterfaceTypeAdapter<T> extends TypeAdapter<T> {
-    public static <T> void register(Class<T> clazz, Encoder<T> encoder, Decoder<T> decoder) {
-        APIController.getInstance().getGsonBuilder().registerTypeAdapterFactory(of(clazz, encoder, decoder));
+    public static <T> void register(Class<T> clazz, Encoder<T> encoder, Getter<T> getter) {
+        APIController.getInstance().getGsonBuilder().registerTypeAdapterFactory(of(clazz, encoder, getter));
     }
 
-    public static <T> TypeAdapterFactory of(Class<T> clazz, Encoder<T> encoder, Decoder<T> decoder) {
+    public static <T> TypeAdapterFactory of(Class<T> clazz, Encoder<T> encoder, Getter<T> getter) {
         return new TypeAdapterFactory() {
             @Override
             public TypeAdapter create(Gson gson, TypeToken typeToken) {
@@ -28,7 +31,7 @@ public class InterfaceTypeAdapter<T> extends TypeAdapter<T> {
                     return null;
                 }
 
-                return new InterfaceTypeAdapter(this, requestedType, encoder, decoder);
+                return new InterfaceTypeAdapter(this, requestedType, encoder, getter);
             }
         };
     }
@@ -37,20 +40,42 @@ public class InterfaceTypeAdapter<T> extends TypeAdapter<T> {
         String toString(T val);
     }
 
-    public interface Decoder<T> {
-        T toValue(String id);
+    public interface Getter<T> {
+        Promise<T> getValuePromise(String id);
+    }
+
+    public class Handler<T> implements InvocationHandler {
+        final Promise<T> promise;
+
+        T val;
+
+        public Handler(Promise<T> promise) {
+            this.promise = promise.on((err, val) -> this.val = val.orElse(null));
+        }
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            // If the value isn't loaded, yet, then block until it is.
+            if(val == null)
+                promise.get();
+
+            if(val == null)
+                throw new NullPointerException();
+
+            return method.invoke(val, args);
+        }
     }
 
     private final Class<T> clazz;
     private final Encoder<T> encoder;
-    private final Decoder<T> decoder;
+    private final Getter<T> getter;
 
     private final TypeAdapterFactory skipPast;
 
-    private InterfaceTypeAdapter(TypeAdapterFactory skipPast, Class<T> clazz, Encoder<T> encoder, Decoder<T> decoder) {
+    private InterfaceTypeAdapter(TypeAdapterFactory skipPast, Class<T> clazz, Encoder<T> encoder, Getter<T> getter) {
         this.clazz = clazz;
         this.encoder = encoder;
-        this.decoder = decoder;
+        this.getter = getter;
 
         this.skipPast = skipPast;
     }
@@ -76,14 +101,9 @@ public class InterfaceTypeAdapter<T> extends TypeAdapter<T> {
             return APIController.getInstance().getGson().getDelegateAdapter(skipPast, TypeToken.get(clazz)).read(in);
         }
 
-        String id = in.nextString();
-
-        T val = decoder.toValue(id);
-
-        if(val == null) {
-            APIController.getInstance().getLogger().warning("'" + id + "' does not map to any " + clazz.getSimpleName() + "!");
-        }
-
-        return val;
+        // So, if we just decode the value here, we run into the common issue of circular references.
+        // This lets us delay loading until decoding has completed, or a method within the interface is called.
+        return clazz.cast(Proxy.newProxyInstance(clazz.getClassLoader(), new java.lang.Class[]{ clazz },
+                new Handler<>(getter.getValuePromise(in.nextString()))));
     }
 }

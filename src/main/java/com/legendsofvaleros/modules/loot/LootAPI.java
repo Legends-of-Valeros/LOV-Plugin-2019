@@ -31,8 +31,8 @@ public class LootAPI extends Module {
         this.rpc = APIController.create(RPC.class);
 
         InterfaceTypeAdapter.register(ILootTable.class,
-                                        obj -> obj.getId(),
-                                        id -> tables.get(id));
+                obj -> obj.getId(),
+                id -> Promise.make(tables.get(id)));
     }
 
     @Override

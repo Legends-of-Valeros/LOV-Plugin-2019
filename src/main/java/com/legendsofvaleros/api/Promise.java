@@ -68,7 +68,7 @@ public class Promise<R> {
      * to detect if a listener was bound a second time and makes firing
      * them a shorter operation.
      */
-    private final Map<Listener, Executor> callbacks = new HashMap<>();
+    private final Map<Listener, Executor> callbacks = new LinkedHashMap<>();
 
     /**
      * The value that was returned from the promise.
@@ -303,13 +303,8 @@ public class Promise<R> {
         this.value = t;
         this.state = State.RESOLVED;
 
-        callbacks.forEach((k, v) -> v.execute(() -> {
-            try {
-                k.run(Optional.empty(), Optional.ofNullable(t));
-            } catch (Throwable th) {
-                th.printStackTrace();
-            }
-        }));
+        this.execute(callbacks.entrySet().iterator(), Optional.empty(), Optional.ofNullable(t));
+
         new HashSet<>(waiting).forEach(UNSAFE::unpark);
     }
 
@@ -351,14 +346,27 @@ public class Promise<R> {
         this.value = th;
         this.state = State.REJECTED;
 
-        callbacks.forEach((k, v) -> v.execute(() -> {
-            try {
-                k.run(Optional.of(th), Optional.empty());
-            } catch (Throwable th2) {
-                th2.printStackTrace();
-            }
-        }));
+        this.execute(callbacks.entrySet().iterator(), Optional.of(th), Optional.empty());
+
         new HashSet<>(waiting).forEach(UNSAFE::unpark);
+    }
+
+    private void execute(Iterator<Map.Entry<Listener, Executor>> it, Optional<Throwable> th, Optional<R> t) {
+        if(it.hasNext()) {
+            Map.Entry<Listener, Executor> ex = it.next();
+
+            ex.getValue().execute(() -> {
+                try {
+                    ex.getKey().run(th, t);
+                } catch (Throwable thh) {
+                    thh.printStackTrace();
+                }
+
+                // Wait until the last function executed before running the next. This ensures they execute in the order
+                // that they were registered.
+                execute(it, th, t);
+            });
+        }
     }
 
 

@@ -43,7 +43,7 @@ public class PromiseCache<K, V> {
         try {
             return Optional.ofNullable(this.get(k).get());
         } catch (Throwable throwable) {
-            throw new RuntimeException(throwable);
+            throw new RuntimeException("Failed to get '" + k + "'", throwable);
         }
     }
 

@@ -29,7 +29,10 @@ public class TraitLOV extends Trait implements CommandConfigurable {
     public static final List<TraitLOV> all = new ArrayList<>();
     private boolean updatedSkin = false;
 
-    @Persist(required = true)
+    @Persist
+    public String npcSlug;
+
+    @Persist(value = "")
     public String npcId;
 
     private LOVNPC lovNPC;
@@ -92,7 +95,17 @@ public class TraitLOV extends Trait implements CommandConfigurable {
         super.onSpawn();
 
         if (npcId == null) {
-            return;
+            if(this.npcSlug != null) {
+                System.out.println(npcSlug);
+
+                this.npcId = NPCsController.getInstance().getNPCIDFromSlug(npcSlug);
+                this.npcSlug = null;
+
+                System.out.println(npcId);
+            }
+
+            if(this.npcId == null)
+                return;
         }
 
         getNPC().data().setPersistent(NPC.SHOULD_SAVE_METADATA, true);
@@ -132,21 +145,22 @@ public class TraitLOV extends Trait implements CommandConfigurable {
 
             try {
                 ISkin skin = lovNPC.getSkin();
+                if(skin != null) {
+                    ISkin.Texture texture = skin.getTexture();
 
-                ISkin.Texture texture = skin.getTexture();
+                    if (texture != null) {
+                        npc.data().setPersistent("cached-skin-uuid", texture.getUUID());
+                        npc.data().setPersistent("cached-skin-uuid-name", texture.getUsername().toLowerCase());
+                        npc.data().setPersistent(NPC.PLAYER_SKIN_UUID_METADATA, texture.getUsername().toLowerCase());
+                        npc.data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA, texture.getSignature());
+                        npc.data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA, texture.getData());
+                        npc.data().setPersistent(NPC.PLAYER_SKIN_USE_LATEST, false);
 
-                if(texture != null) {
-                    npc.data().setPersistent("cached-skin-uuid", texture.getUUID());
-                    npc.data().setPersistent("cached-skin-uuid-name", texture.getUsername().toLowerCase());
-                    npc.data().setPersistent(NPC.PLAYER_SKIN_UUID_METADATA, texture.getUsername().toLowerCase());
-                    npc.data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA, texture.getSignature());
-                    npc.data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA, texture.getData());
-                    npc.data().setPersistent(NPC.PLAYER_SKIN_USE_LATEST, false);
+                        SkinnableEntity se = (SkinnableEntity) getNPC().getEntity();
+                        se.getSkinTracker().notifySkinChange(false);
 
-                    SkinnableEntity se = (SkinnableEntity) getNPC().getEntity();
-                    se.getSkinTracker().notifySkinChange(false);
-
-                    return;
+                        return;
+                    }
                 }
             } catch (Exception e) {
                 MessageUtil.sendException(NPCsController.getInstance(), null, e);

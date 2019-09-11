@@ -22,6 +22,7 @@ import com.legendsofvaleros.modules.quests.core.prerequisites.LevelPrerequisite;
 import com.legendsofvaleros.modules.quests.core.prerequisites.QuestsPrerequisite;
 import com.legendsofvaleros.modules.quests.core.prerequisites.RacePrerequisite;
 import com.legendsofvaleros.modules.quests.events.QuestEndedEvent;
+import com.legendsofvaleros.modules.quests.events.QuestLogEntryAddedEvent;
 import com.legendsofvaleros.modules.quests.events.QuestStartedEvent;
 import com.legendsofvaleros.modules.quests.nodes.character.*;
 import com.legendsofvaleros.modules.quests.nodes.entity.*;
@@ -346,6 +347,11 @@ public class QuestController extends QuestAPI {
         title.setTimingsToTicks();
         title.setTitleColor(ChatColor.GOLD);
         TitleUtil.queueTitle(title, event.getPlayer());
+    }
+
+    @EventHandler
+    public void onQuestEntryAdded(QuestLogEntryAddedEvent event) {
+        MessageUtil.sendUpdate(event.getPlayer(), "Quest log updated: " + event.getEntry().getText(event.getInstance()));
     }
 
     @EventHandler

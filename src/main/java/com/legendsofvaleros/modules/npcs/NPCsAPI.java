@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.npcs;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.cache.CacheBuilder;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -8,8 +8,8 @@ import com.google.gson.JsonSerializer;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.InterfaceTypeAdapter;
 import com.legendsofvaleros.api.Promise;
+import com.legendsofvaleros.api.PromiseCache;
 import com.legendsofvaleros.module.ListenerModule;
-import com.legendsofvaleros.modules.loot.LootController;
 import com.legendsofvaleros.modules.npcs.api.INPC;
 import com.legendsofvaleros.modules.npcs.api.ISkin;
 import com.legendsofvaleros.modules.npcs.core.LOVNPC;
@@ -31,24 +31,50 @@ import java.util.Map;
 
 public class NPCsAPI extends ListenerModule {
     public interface RPC {
-        Promise<List<LOVNPC>> findNPCs();
+        Promise<Skin> getSkin(String id);
 
-        Promise<List<Skin>> findSkins();
+        Promise<LOVNPC> getNPC(String id);
 
-        Promise<Object> saveNPC(LOVNPC npc);
+        Promise<String> convertNPCSlugToID(String id);
     }
 
     protected RPC rpc;
-    protected HashMap<String, LOVNPC> npcs = new HashMap<>();
+
+    private PromiseCache<String, Skin> skins;
+    private PromiseCache<String, LOVNPC> npcs;
+
     NPCRegistry registry;
     HashMap<String, Class<? extends LOVTrait>> traitTypes = new HashMap<>();
-    Map<String, Skin> skins = new HashMap<>();
 
     @Override
     public void onLoad() {
         super.onLoad();
 
         this.rpc = APIController.create(RPC.class);
+
+        this.skins = new PromiseCache<>(CacheBuilder.newBuilder()
+                .concurrencyLevel(4)
+                .weakValues()
+                .removalListener(entry -> {
+                    getLogger().warning("Skin '" + entry.getKey() + "' removed from the cache: " + entry.getCause());
+                })
+                .build(), id -> rpc.getSkin(id));
+
+        InterfaceTypeAdapter.register(ISkin.class,
+                obj -> obj.getId(),
+                id -> skins.get(id).next(v -> Promise.make(v.orElse(null))));
+
+        this.npcs = new PromiseCache<>(CacheBuilder.newBuilder()
+                .concurrencyLevel(4)
+                .weakValues()
+                .removalListener(entry -> {
+                    getLogger().warning("NPC '" + entry.getKey() + "' removed from the cache: " + entry.getCause());
+                })
+                .build(), id -> rpc.getNPC(id));
+
+        InterfaceTypeAdapter.register(INPC.class,
+                obj -> obj.getId(),
+                id -> npcs.get(id).next(v -> Promise.make(v.orElse(null))));
 
         this.registry = CitizensAPI.createAnonymousNPCRegistry(new MemoryNPCDataStore());
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TraitLOV.class).withName(TraitLOV.TRAIT_NAME));
@@ -77,49 +103,6 @@ public class NPCsAPI extends ListenerModule {
                         obj.add(trait.id, context.serialize(trait));
                     return obj;
                 });
-
-        InterfaceTypeAdapter.register(ISkin.class,
-                                        obj -> obj.getId(),
-                                        id -> skins.get(id));
-        InterfaceTypeAdapter.register(INPC.class,
-                                        obj -> obj.getId(),
-                                        id -> npcs.get(id));
-    }
-
-    @Override
-    public void onPostLoad() {
-        super.onPostLoad();
-
-        try {
-            this.loadAll().get();
-        } catch (Throwable th) {
-            th.printStackTrace();
-        }
-    }
-
-    public Promise loadAll() {
-        return rpc.findNPCs()
-                .onSuccess(val -> {
-                    npcs.clear();
-
-                    val.orElse(ImmutableList.of()).forEach(npc -> {
-                        npcs.put(npc.getId(), npc);
-                        npcs.put(npc.getSlug(), npc);
-                    });
-
-                    LootController.getInstance().getLogger().info("Loaded " + npcs.size() + " NPCs.");
-                })
-                .next(rpc::findSkins)
-                .onSuccess(val -> {
-                    skins.clear();
-
-                    val.orElse(ImmutableList.of()).forEach(skin -> {
-                        skins.put(skin.getId(), skin);
-                        skins.put(skin.getSlug(), skin);
-                    });
-
-                    LootController.getInstance().getLogger().info("Loaded " + skins.size() + " skins.");
-                });
     }
 
     public void registerTrait(String id, Class<? extends LOVTrait> trait) {
@@ -130,11 +113,15 @@ public class NPCsAPI extends ListenerModule {
         return registry.createNPC(type, s);
     }
 
-    public boolean isNPC(String id) {
-        return npcs.containsKey(id);
+    public LOVNPC getNPC(String id) {
+        return npcs.getAndWait(id).orElse(null);
     }
 
-    public LOVNPC getNPC(String id) {
-        return npcs.get(id);
+    public String getNPCIDFromSlug(String slug) {
+        try {
+            return rpc.convertNPCSlugToID(slug).get();
+        } catch (Throwable throwable) {
+            return null;
+        }
     }
 }

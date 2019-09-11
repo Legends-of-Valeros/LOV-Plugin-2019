@@ -127,8 +127,8 @@ public class QuestAPI extends ListenerModule {
                 .build(), id -> rpc.getQuest(id));
 
         InterfaceTypeAdapter.register(IQuest.class,
-                                        obj -> obj.getId(),
-                                        id -> quests.getAndWait(id).orElse(null));
+                obj -> obj.getId(),
+                id -> quests.get(id).next(v -> Promise.make(v.orElse(null))));
 
         APIController.getInstance().getGsonBuilder()
                 .registerTypeAdapter(Quest.class, (JsonDeserializer<Quest>) (json, typeOfT, context) -> {
@@ -272,6 +272,7 @@ public class QuestAPI extends ListenerModule {
      * @param context
      */
     private Quest decodeQuest(JsonObject jo, JsonDeserializationContext context) throws IllegalAccessException {
+        System.out.println("1");
         IQuestPrerequisite[] prerequisites = new IQuestPrerequisite[0];
         {
             // TODO: Decode prerequisites
@@ -284,6 +285,7 @@ public class QuestAPI extends ListenerModule {
 
         QuestNodeMap nodes = new QuestNodeMap();
         if (jo.has("nodes")) {
+            System.out.println("2");
             for (Map.Entry<String, JsonElement> nodeEntry : jo.getAsJsonObject("nodes").entrySet()) {
                 String id = nodeEntry.getKey();
                 JsonObject obj = nodeEntry.getValue().getAsJsonObject();
@@ -308,6 +310,7 @@ public class QuestAPI extends ListenerModule {
 
                 // Decode default input interface values
                 for(Map.Entry<String, JsonElement> inportEntry : obj.getAsJsonObject("inputs").entrySet()) {
+                    System.out.println("5");
                     Field f = findField(INodeInput.class, nodeClass, inportEntry.getKey());
                     if(f == null) {
                         throw new IllegalArgumentException("Unknown inport interface: " + inportEntry.getKey() + " in " + nodeClass.getSimpleName());
@@ -322,7 +325,9 @@ public class QuestAPI extends ListenerModule {
                     if(in instanceof IInportValue) {
                         IInportValue inv = (IInportValue)in;
                         try {
-                            inv.setDefaultValue(APIController.getInstance().getGson().fromJson(inportEntry.getValue(), inv.getValueClass()));
+                            System.out.println("6 " + inv.getValueClass().getSimpleName() + " " + inportEntry.getValue());
+                            inv.setDefaultValue(context.deserialize(inportEntry.getValue(), inv.getValueClass()));
+                            System.out.println("7");
                         } catch(Exception e) {
                             throw new IllegalArgumentException("Failed to decode inport value: " + inportEntry.getKey() + " in " + nodeClass.getSimpleName(), e);
                         }
@@ -338,7 +343,9 @@ public class QuestAPI extends ListenerModule {
                     }
 
                     try {
-                        f.set(node, APIController.getInstance().getGson().fromJson(optionEntry.getValue(), f.getType()));
+                        System.out.println("8");
+                        f.set(node, context.deserialize(optionEntry.getValue(), f.getType()));
+                        System.out.println("9");
                     } catch(Exception e) {
                         throw new IllegalArgumentException("Failed to decode option value: " + optionEntry.getKey() + " in " + nodeClass.getSimpleName(), e);
                     }
@@ -347,6 +354,8 @@ public class QuestAPI extends ListenerModule {
                 nodes.put(id, node);
             }
         }
+
+        System.out.println("3");
 
         // Decode connections
         if(jo.has("connections")) {
@@ -373,6 +382,8 @@ public class QuestAPI extends ListenerModule {
                 in.setConnection(out);
             }
         }
+
+        System.out.println("4");
 
         return new Quest(jo.get("_id").getAsString(),
                 jo.get("slug").getAsString(),

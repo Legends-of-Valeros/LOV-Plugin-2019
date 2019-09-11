@@ -28,8 +28,8 @@ public class GearAPI extends Module {
         this.rpc = APIController.create(RPC.class);
 
         InterfaceTypeAdapter.register(IGear.class,
-                                        obj -> obj.getId(),
-                                        id -> gear.get(id));
+                obj -> obj.getId(),
+                id -> Promise.make(gear.get(id)));
     }
 
     @Override
@@ -47,10 +47,7 @@ public class GearAPI extends Module {
         return rpc.findGear().onSuccess(val -> {
             gear.clear();
 
-            val.orElse(ImmutableList.of()).stream().forEach(g -> {
-                gear.put(g.getId(), g);
-                gear.put(g.getSlug(), g);
-            });
+            val.orElse(ImmutableList.of()).stream().forEach(g -> gear.put(g.getId(), g));
 
             GearController.ERROR_ITEM = Gear.fromId("perfectly-generic-item");
             getLogger().info("Loaded " + gear.size() + " items.");

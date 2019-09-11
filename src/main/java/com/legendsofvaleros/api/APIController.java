@@ -259,7 +259,7 @@ public class APIController extends Module {
             getInstance().rpcFuncs.add(rpc.getName());
         }
 
-        return clazz.cast(Proxy.newProxyInstance(clazz.getClassLoader(), new java.lang.Class[]{clazz},
+        return clazz.cast(Proxy.newProxyInstance(clazz.getClassLoader(), new java.lang.Class[]{ clazz },
                 (proxy, m, args) -> methods.get(m.getName()).call((args != null ? args : new Object[0]))
         ));
     }
