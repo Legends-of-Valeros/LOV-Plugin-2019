@@ -5,31 +5,32 @@ import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.quests.api.IQuestInstance;
 import com.legendsofvaleros.modules.quests.api.QuestEvent;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
-import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
-import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
-import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
-import com.legendsofvaleros.modules.quests.core.ports.IOutportValue;
+import com.legendsofvaleros.modules.quests.core.ports.*;
 import com.legendsofvaleros.modules.zones.api.IZone;
+
+import java.util.Optional;
 
 public class ConquerZoneNode extends AbstractQuestNode<Integer> {
     @SerializedName("Completed")
     public IOutportTrigger<Integer> onCompleted = new IOutportTrigger<>(this);
     
     @SerializedName("Zone")
-    public IInportValue<Integer, IZone> zone = new IInportValue<>(this, IZone.class, null);
+    public IInportReference<Integer, IZone> zone = IInportValue.ref(this, IZone.class);
     
     @SerializedName("Count")
-    public IInportValue<Integer, Integer> count = new IInportValue<>(this, Integer.class, 1);
+    public IInportObject<Integer, Integer> count = IInportValue.of(this, Integer.class, 1);
 
     @SerializedName("Text")
     public IOutportValue<Integer, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
+        Optional<IZone> op = zone.get(instance);
+        String name = op.isPresent() ? op.get().getName() : "<Unknown>";
         if(data == Integer.MAX_VALUE)
-            return "Conquered " + zone.get(instance).getName();
-        return data + "/" + count.get(instance) + " killed in " + zone.get(instance).getName();
+            return "Conquered " + name;
+        return data + "/" + count.get(instance) + " killed in " + name;
     });
 
     @SerializedName("Activate")
-    public IInportTrigger<Integer> onActivate = new IInportTrigger<>(this, (instance, data) -> {
+    public IInportTrigger<Integer> onActivate = IInportTrigger.of(this, (instance, data) -> {
         // If it's not null, then this node has already been activated.
         if(data != null) {
             return;
@@ -47,7 +48,7 @@ public class ConquerZoneNode extends AbstractQuestNode<Integer> {
         return null;
     }
 
-    @QuestEvent
+    @QuestEvent.Async
     public void onEvent(IQuestInstance instance, Integer data, CombatEngineDeathEvent event) {
         // If we aren't tracking, yet, ignore it.
         if(data == null || data == Integer.MAX_VALUE) {
@@ -60,7 +61,8 @@ public class ConquerZoneNode extends AbstractQuestNode<Integer> {
         }
 
         // If they're not within the zone, ignore it
-        if(zone.get(instance).isInside(event.getKiller().getLivingEntity().getLocation())) {
+        Optional<IZone> op = zone.get(instance);
+        if(!op.isPresent() || !op.get().isInside(event.getKiller().getLivingEntity().getLocation())) {
             return;
         }
 

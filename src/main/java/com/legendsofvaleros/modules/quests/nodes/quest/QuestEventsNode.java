@@ -5,6 +5,7 @@ import com.legendsofvaleros.modules.quests.api.IQuestInstance;
 import com.legendsofvaleros.modules.quests.api.QuestEvent;
 import com.legendsofvaleros.modules.quests.api.QuestState;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
+import com.legendsofvaleros.modules.quests.core.ports.IInportObject;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
 import com.legendsofvaleros.modules.quests.events.QuestEndedEvent;
@@ -13,7 +14,7 @@ public class QuestEventsNode extends AbstractQuestNode<Void> {
     // We don't want to load another quest when this node is loaded, otherwise we could use IQuest instead of String
 
     @SerializedName("Quest")
-    public IInportValue<Void, String> questId = new IInportValue<>(this, String.class,null);
+    public IInportObject<Void, String> questId = IInportValue.of(this, String.class,null);
 
     @SerializedName("OnSuccess")
     public IOutportTrigger onSuccess = new IOutportTrigger(this);

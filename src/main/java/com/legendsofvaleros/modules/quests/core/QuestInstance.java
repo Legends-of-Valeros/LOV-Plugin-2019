@@ -24,11 +24,21 @@ public class QuestInstance implements IQuestInstance {
 
     private QuestNodeInstanceMap nodes;
 
+    private transient boolean isActive = false;
+
     public QuestInstance(PlayerCharacter player, IQuest quest) {
         this.quest = quest;
         this.player = player;
 
         this.nodes = new QuestNodeInstanceMap();
+    }
+
+    public QuestInstance(IQuest quest, QuestState state, QuestLogMap logs, QuestNodeInstanceMap nodes) {
+        this(null, quest);
+
+        this.state = state;
+        this.logs = logs;
+        this.nodes = nodes;
     }
 
     public void setPlayer(PlayerCharacter pc) {
@@ -135,14 +145,23 @@ public class QuestInstance implements IQuestInstance {
     }
 
     @Override
+    public boolean isActive() {
+        return this.isActive;
+    }
+
+    @Override
     public void onActivated() {
-        for(IQuestNode node : quest.getNodes())
-            node.onActivated(this, this.nodes.getInstance(node));
+        if(this.isActive)
+            throw new IllegalStateException("Quest instance is already active!");
+
+        this.isActive = true;
     }
 
     @Override
     public void onDeactivated() {
-        for(IQuestNode node : quest.getNodes())
-            node.onDeactivated(this, this.nodes.getInstance(node));
+        if(!this.isActive)
+            throw new IllegalStateException("Quest instance is not active!");
+
+        this.isActive = false;
     }
 }

@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 public class MountAPI extends ListenerModule {
     public interface RPC {
@@ -55,11 +54,7 @@ public class MountAPI extends ListenerModule {
     public void onPostLoad() {
         super.onPostLoad();
 
-        try {
-            this.loadAll().get();
-        } catch (Throwable th) {
-            th.printStackTrace();
-        }
+        this.loadAll().get();
     }
 
     public Promise<List<Mount>> loadAll() {
@@ -117,14 +112,14 @@ public class MountAPI extends ListenerModule {
             PhaseLock lock = event.getLock("Mounts");
 
             onLogout(event.getPlayerCharacter().getUniqueCharacterId())
-                    .onFailure((Consumer<Throwable>) err -> MessageUtil.sendSevereException(MountAPI.this, event.getPlayer(), err))
+                    .onFailure(err -> MessageUtil.sendSevereException(MountAPI.this, event.getPlayer(), (Throwable)err))
                     .on(lock::release);
         }
 
         @EventHandler
         public void onPlayerRemoved(PlayerCharacterRemoveEvent event) {
             onDelete(event.getPlayerCharacter().getUniqueCharacterId())
-                    .onFailure((Consumer<Throwable>) err -> MessageUtil.sendSevereException(MountAPI.this, event.getPlayer(), err));
+                    .onFailure(err -> MessageUtil.sendSevereException(MountAPI.this, event.getPlayer(), err));
         }
     }
 }

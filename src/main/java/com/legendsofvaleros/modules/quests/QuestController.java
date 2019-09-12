@@ -7,8 +7,6 @@ import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterCreateEvent;
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
-import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
-import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.npcs.trait.quests.TraitQuestGiver;
 import com.legendsofvaleros.modules.playermenu.InventoryManager;
@@ -31,7 +29,6 @@ import com.legendsofvaleros.modules.quests.nodes.npc.*;
 import com.legendsofvaleros.modules.quests.nodes.quest.*;
 import com.legendsofvaleros.modules.quests.nodes.utility.*;
 import com.legendsofvaleros.modules.quests.nodes.world.*;
-import com.legendsofvaleros.modules.skills.event.BindSkillEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.title.Title;
 import com.legendsofvaleros.util.title.TitleUtil;
@@ -41,9 +38,7 @@ import io.chazza.advancementapi.Trigger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerInteractEvent;
 
 @DependsOn(NPCsController.class)
 @DependsOn(CombatEngine.class)
@@ -83,31 +78,7 @@ public class QuestController extends QuestAPI {
         registerEvents(new TraitQuestGiver.Marker());
 
         // Register some basic event handlers.
-        getLogger().info("is registering event handlers");
-        getEventRegistry().addHandler(PlayerInteractEvent.class, (event) -> new Player[] { event.getPlayer() });
-        getEventRegistry().addHandler(BindSkillEvent.class, (event) -> new Player[] { event.getPlayer() });
-        getEventRegistry().addHandler(CombatEngineDamageEvent.class, (event) -> {
-            if(event.getAttacker().isPlayer() && event.getDamaged().isPlayer()) {
-                return new Player[] { (Player)event.getAttacker(), (Player)event.getDamaged() };
-            }else if(event.getAttacker().isPlayer()) {
-                return new Player[] { (Player)event.getAttacker() };
-            }else if(event.getDamaged().isPlayer()) {
-                return new Player[] { (Player)event.getDamaged() };
-            }
-
-            return null;
-        });
-        getEventRegistry().addHandler(CombatEngineDeathEvent.class, (event) -> {
-            if(event.getKiller().isPlayer() && event.getDied().isPlayer()) {
-                return new Player[] { (Player)event.getKiller(), (Player)event.getDied() };
-            }else if(event.getKiller().isPlayer()) {
-                return new Player[] { (Player)event.getKiller() };
-            }else if(event.getDied().isPlayer()) {
-                return new Player[] { (Player)event.getDied() };
-            }
-
-            return null;
-        });
+        // getLogger().info("is registering event handlers");
 
         getLogger().info("is registering prerequisites");
         getPrerequisiteRegistry().addType("class", ClassPrerequisite.class);
@@ -273,14 +244,7 @@ public class QuestController extends QuestAPI {
             return false;
         }
 
-        // If it's a forced quest, show the quest dialog and accept it immediately.
-        if(quest.isForced()) {
-            startQuest(quest, pc);
-
-        // If it's not forced, show the quest dialog.
-        }else{
-
-        }
+        // TODO: show quest dialog
 
         return true;
     }
@@ -310,6 +274,11 @@ public class QuestController extends QuestAPI {
     }
 
     public void completeQuest(IQuest quest, PlayerCharacter pc) {
+        if(!Bukkit.isPrimaryThread()) {
+            getScheduler().sync(() -> completeQuest(quest, pc));
+            return;
+        }
+
         IQuestInstance instance = quest.getInstance(pc);
 
         instance.setState(QuestState.SUCCESS);
@@ -318,6 +287,11 @@ public class QuestController extends QuestAPI {
     }
 
     public void failQuest(IQuest quest, PlayerCharacter pc) {
+        if(!Bukkit.isPrimaryThread()) {
+            getScheduler().sync(() -> failQuest(quest, pc));
+            return;
+        }
+
         IQuestInstance instance = quest.getInstance(pc);
 
         instance.setState(QuestState.FAILED);
@@ -332,6 +306,11 @@ public class QuestController extends QuestAPI {
     }
 
     public void abandonQuest(IQuest quest, PlayerCharacter pc) {
+        if(!Bukkit.isPrimaryThread()) {
+            getScheduler().sync(() -> abandonQuest(quest, pc));
+            return;
+        }
+
         IQuestInstance instance = quest.getInstance(pc);
 
         instance.setState(QuestState.ABANDONED);

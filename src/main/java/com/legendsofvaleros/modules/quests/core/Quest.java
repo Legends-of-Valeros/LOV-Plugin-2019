@@ -4,6 +4,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
+import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.quests.api.*;
 import org.bukkit.event.Event;
 
@@ -30,7 +31,8 @@ public class Quest implements IQuest {
 
     private final QuestNodeMap nodes;
 
-    private final HashBasedTable<Class<? extends Event>, IQuestNode, Method> events = HashBasedTable.create();
+    private final HashBasedTable<Class<? extends Event>, IQuestNode, Method> eventsSync = HashBasedTable.create();
+    private final HashBasedTable<Class<? extends Event>, IQuestNode, Method> eventAsync = HashBasedTable.create();
 
     public Quest(String id,
                  String slug,
@@ -55,15 +57,23 @@ public class Quest implements IQuest {
         for (IQuestNode node : nodes.values()) {
             // Loop through all methods and find ones annotated with @QuestEvent
             for (Method method : node.getClass().getMethods()) {
-                if (method.getAnnotation(QuestEvent.class) == null) continue;
+                if (method.getAnnotation(QuestEvent.class) != null) {
+                    // If this node is loaded, it's assumed the parameters are correct, as it was checked during registration.
 
-                // If this node is loaded, it's assumed the parameters are correct, as it was checked during registration.
+                    Class<?>[] params = method.getParameterTypes();
 
-                Class<?>[] params = method.getParameterTypes();
+                    Class<? extends Event> event = (Class<? extends Event>) params[2];
 
-                Class<? extends Event> event = (Class<? extends Event>) params[2];
+                    eventsSync.put(event, node, method);
+                }else if (method.getAnnotation(QuestEvent.Async.class) != null) {
+                    // If this node is loaded, it's assumed the parameters are correct, as it was checked during registration.
 
-                events.put(event, node, method);
+                    Class<?>[] params = method.getParameterTypes();
+
+                    Class<? extends Event> event = (Class<? extends Event>) params[2];
+
+                    eventAsync.put(event, node, method);
+                }
             }
         }
     }
@@ -111,11 +121,6 @@ public class Quest implements IQuest {
     @Override
     public Collection<IQuestNode> getNodes() {
         return nodes.values();
-    }
-
-    @Override
-    public Map<IQuestNode, Method> getListeners(Class<? extends Event> caught) {
-        return events.row(caught);
     }
 
     /**
@@ -186,6 +191,8 @@ public class Quest implements IQuest {
 
     @Override
     public void onActivated(IQuestInstance instance) {
+        instance.onActivated();
+
         if(instancesActive == 0) {
             nodes.values().stream().forEach(IQuestNode::onWake);
         }
@@ -197,6 +204,8 @@ public class Quest implements IQuest {
 
     @Override
     public void onDeactivated(IQuestInstance instance) {
+        instance.onDeactivated();
+
         nodes.values().stream().forEach(node -> node.onDeactivated(instance, instance.getNodeInstance(node)));
 
         instancesActive--;
@@ -212,17 +221,34 @@ public class Quest implements IQuest {
             return;
         }
 
-        Map<IQuestNode, Method> listeners = getListeners(caught);
+        Map<IQuestNode, Method> listenersSync = eventsSync.row(caught);
+
+        QuestController.getInstance().getScheduler().sync(() -> {
+            // Fire the event in every node that's listening
+            listenersSync.forEach((node, method) -> {
+                try {
+                    method.invoke(node, instance, instance.getNodeInstance(node), event);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            });
+        });
+
+        Map<IQuestNode, Method> listenersAsync = eventAsync.row(caught);
 
         // Fire the event in every node that's listening
-        listeners.forEach((node, method) -> {
-            try {
-                method.invoke(node, this, instance.getNodeInstance(node), event);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            }
+        listenersAsync.forEach((node, method) -> {
+            QuestController.getInstance().getScheduler().async(() -> {
+                try {
+                    method.invoke(node, instance, instance.getNodeInstance(node), event);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            });
         });
     }
 }

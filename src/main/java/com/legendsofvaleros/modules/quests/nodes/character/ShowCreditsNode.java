@@ -45,7 +45,7 @@ public class ShowCreditsNode extends AbstractQuestNode<Boolean> {
     public IOutportTrigger<Boolean> onCompleted = new IOutportTrigger<>(this);
     
     @SerializedName("Execute")
-    public IInportTrigger<Boolean> onExecute = new IInportTrigger<>(this, (instance, data) -> {
+    public IInportTrigger<Boolean> onExecute = IInportTrigger.of(this, (instance, data) -> {
         EntityPlayer nms = ((CraftPlayer)instance.getPlayer()).getHandle();
         nms.viewingCredits = true;
         nms.playerConnection.sendPacket(new PacketPlayOutGameStateChange(4, 1F));

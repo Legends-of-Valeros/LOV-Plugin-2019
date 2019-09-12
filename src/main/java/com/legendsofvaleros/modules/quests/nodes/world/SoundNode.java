@@ -2,6 +2,7 @@ package com.legendsofvaleros.modules.quests.nodes.world;
 
 import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
+import com.legendsofvaleros.modules.quests.core.ports.IInportObject;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
@@ -16,22 +17,22 @@ public class SoundNode extends AbstractQuestNode<Void> {
     public IOutportTrigger<Void> onCompleted = new IOutportTrigger<>(this);
 
     @SerializedName("Location")
-    public IInportValue<Void, Vector> location = new IInportValue<>(this, Vector.class, new Vector(0, 0, 0));
+    public IInportObject<Void, Vector> location = IInportValue.of(this, Vector.class, new Vector(0, 0, 0));
 
     @SerializedName("Relative")
-    public IInportValue<Void, Boolean> relative = new IInportValue<>(this, Boolean.class, false);
+    public IInportObject<Void, Boolean> relative = IInportValue.of(this, Boolean.class, false);
     
     @SerializedName("Sound")
-    public IInportValue<Void, Sound> sound = new IInportValue<>(this, Sound.class, null);
+    public IInportObject<Void, Sound> sound = IInportValue.of(this, Sound.class, null);
     
     @SerializedName("Volume")
-    public IInportValue<Void, Float> volume = new IInportValue<>(this, Float.class, 1F);
+    public IInportObject<Void, Float> volume = IInportValue.of(this, Float.class, 1F);
     
     @SerializedName("Pitch")
-    public IInportValue<Void, Float> pitch = new IInportValue<>(this, Float.class, 1F);
+    public IInportObject<Void, Float> pitch = IInportValue.of(this, Float.class, 1F);
     
     @SerializedName("Execute")
-    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> {
+    public IInportTrigger<Void> onExecute = IInportTrigger.of(this, (instance, data) -> {
         World world = relative.get(instance) ? instance.getPlayer().getWorld() : Bukkit.getWorlds().get(0);
         Location loc = (Boolean.TRUE.equals(relative.get(instance)) ? instance.getPlayer().getLocation().add(location.get(instance)) : location.get(instance).toLocation(world));
         world.playSound(loc, sound.get(instance), volume.get(instance), pitch.get(instance));

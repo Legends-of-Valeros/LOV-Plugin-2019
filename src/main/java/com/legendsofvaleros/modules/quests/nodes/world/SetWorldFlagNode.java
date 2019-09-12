@@ -2,6 +2,7 @@ package com.legendsofvaleros.modules.quests.nodes.world;
 
 import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
+import com.legendsofvaleros.modules.quests.core.ports.IInportObject;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 
@@ -10,10 +11,10 @@ public class SetWorldFlagNode extends AbstractQuestNode<Void> {
     public String flag = "N/A";
     
     @SerializedName("Value")
-    public IInportValue<Void, Boolean> value = new IInportValue<>(this, Boolean.class, false);
+    public IInportObject<Void, Boolean> value = IInportValue.of(this, Boolean.class, false);
     
     @SerializedName("Execute")
-    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> {
+    public IInportTrigger<Void> onExecute = IInportTrigger.of(this, (instance, data) -> {
         // TODO: logic
     });
     

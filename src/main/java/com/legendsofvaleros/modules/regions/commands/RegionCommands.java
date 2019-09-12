@@ -5,7 +5,7 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.api.Get;
+import com.legendsofvaleros.api.Ref;
 import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.quests.api.IQuest;
 import com.legendsofvaleros.modules.regions.RegionController;
@@ -59,7 +59,7 @@ public class RegionCommands extends BaseCommand {
             return;
         }
 
-        Region region = new Region(id, locations[0].getWorld(), new RegionBounds().setBounds(locations[0], locations[1]));
+        Region region = new Region(id, new RegionBounds().setBounds(locations[0], locations[1]));
         region.allowAccess = access;
 
         RegionController.getInstance().addRegion(region);
@@ -134,7 +134,7 @@ public class RegionCommands extends BaseCommand {
         }
 
         QuestController.getInstance().getQuestBySlug(questId).onSuccess(quest -> {
-            region.quests.add(Get.of(quest.get()));
+            region.quests.add(Ref.of(quest.get()));
 
             RegionController.getInstance().saveRegion(region);
             MessageUtil.sendUpdate(sender, "Region updated. Now triggers gear: " + questId);

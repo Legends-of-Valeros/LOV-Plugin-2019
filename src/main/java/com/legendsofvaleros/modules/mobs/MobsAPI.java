@@ -1,5 +1,6 @@
 package com.legendsofvaleros.modules.mobs;
 
+import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
@@ -7,6 +8,7 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.InterfaceTypeAdapter;
 import com.legendsofvaleros.api.Promise;
+import com.legendsofvaleros.api.PromiseCache;
 import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.modules.mobs.api.IEntity;
 import com.legendsofvaleros.modules.mobs.core.Mob;
@@ -18,28 +20,20 @@ import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class MobsAPI extends ListenerModule {
     public interface RPC {
-        Promise<List<Mob>> findMobs();
-
         Promise<List<SpawnArea>> findSpawns();
 
         Promise<Object> saveSpawn(SpawnArea spawn);
 
         Promise<Boolean> deleteSpawn(Integer spawn);
+
+        Promise<Mob> getMob(String id);
     }
 
     private RPC rpc;
-
-    private Map<String, Mob> mobs = new HashMap<>();
-
-    public Mob getMob(String id) {
-        return mobs.get(id);
-    }
 
     private Multimap<String, SpawnArea> spawns = HashMultimap.create();
 
@@ -53,15 +47,29 @@ public class MobsAPI extends ListenerModule {
         return spawnsLoaded.values();
     }
 
+    private PromiseCache<String, Mob> mobs;
+
+    public Mob getMob(String id) {
+        return mobs.getIfPresent(id);
+    }
+
     @Override
     public void onLoad() {
         super.onLoad();
 
         this.rpc = APIController.create(RPC.class);
 
+        this.mobs = new PromiseCache<>(CacheBuilder.newBuilder()
+                .concurrencyLevel(4)
+                .weakValues()
+                .removalListener(entry -> {
+                    getLogger().warning("Mob '" + entry.getKey() + "' removed from the cache: " + entry.getCause());
+                })
+                .build(), id -> rpc.getMob(id));
+
         InterfaceTypeAdapter.register(IEntity.class,
                 obj -> obj.getId(),
-                id -> Promise.make(mobs.get(id)));
+                id -> mobs.get(id).next(v -> Promise.make(v.orElse(null))));
 
         registerEvents(new ChunkListener());
     }
@@ -70,22 +78,11 @@ public class MobsAPI extends ListenerModule {
     public void onPostLoad() {
         super.onPostLoad();
 
-        try {
-            this.loadAll().get();
-        } catch (Throwable th) {
-            th.printStackTrace();
-        }
+        this.loadAll().get();
     }
 
     public Promise loadAll() {
-        return rpc.findMobs().onSuccess(val -> {
-            mobs.clear();
-
-            for (Mob mob : val.orElse(ImmutableList.of()))
-                mobs.put(mob.getId(), mob);
-
-            getLogger().info("Loaded " + mobs.size() + " mobs.");
-        }).next(rpc::findSpawns).onSuccess(val -> {
+        return rpc.findSpawns().onSuccess(val -> {
             spawns.clear();
 
             // Return to the spigot thread to allow fetching chunk objects.

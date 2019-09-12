@@ -6,8 +6,8 @@ import co.aikar.commands.annotation.*;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.npcs.core.LOVNPC;
+import com.legendsofvaleros.modules.npcs.trait.CitizensTraitLOV;
 import com.legendsofvaleros.modules.npcs.trait.TraitHelper;
-import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
 import com.legendsofvaleros.util.MessageUtil;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -22,7 +22,7 @@ public class NPCCommands extends BaseCommand {
 	@Subcommand("reload")
 	@Description("Reload the NPC cache and citizens.")
 	@CommandPermission("npcs.reload")
-	public void cmdListNPCReload(CommandSender sender) throws Throwable {
+	public void cmdListNPCReload(CommandSender sender) {
 		Bukkit.dispatchCommand(sender, "citizens save");
 		Bukkit.dispatchCommand(sender, "citizens reload");
 	}
@@ -33,8 +33,8 @@ public class NPCCommands extends BaseCommand {
 	public void cmdActivateNPC(Player player, String slug, String side) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		String id = NPCsController.getInstance().getNPCIDFromSlug(slug);
-		LOVNPC lovNPC = NPCsController.getInstance().getNPC(id);
+		String id = NPCsController.getInstance().getNPCIDFromSlug(slug).get();
+		LOVNPC lovNPC = NPCsController.getInstance().getNPC(id).get();
 
 		if(side.equalsIgnoreCase("left"))
 			TraitHelper.onLeftClick(lovNPC.getName(), player, lovNPC.traits);
@@ -50,8 +50,8 @@ public class NPCCommands extends BaseCommand {
 	public void cmdBindNPC(Player player, String slug) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		String id = NPCsController.getInstance().getNPCIDFromSlug(slug);
-		LOVNPC lovNPC = NPCsController.getInstance().getNPC(id);
+		String id = NPCsController.getInstance().getNPCIDFromSlug(slug).get();
+		LOVNPC lovNPC = NPCsController.getInstance().getNPC(id).get();
 
 		if(lovNPC == null) {
 			MessageUtil.sendError(player, "NPC with that ID does not exist.");
@@ -65,9 +65,9 @@ public class NPCCommands extends BaseCommand {
 			return;
 		}
 		
-		if(!npc.hasTrait(TraitLOV.class))
-			npc.addTrait(TraitLOV.class);
-		npc.getTrait(TraitLOV.class).npcId = id;
+		if(!npc.hasTrait(CitizensTraitLOV.class))
+			npc.addTrait(CitizensTraitLOV.class);
+		npc.getTrait(CitizensTraitLOV.class).npcId = id;
 
 		npc.setName(UUID.randomUUID().toString());
 	}
@@ -84,12 +84,12 @@ public class NPCCommands extends BaseCommand {
 			return;
 		}
 		
-		if(!npc.hasTrait(TraitLOV.class)) {
+		if(!npc.hasTrait(CitizensTraitLOV.class)) {
 			MessageUtil.sendError(player, "That NPC is not bound to an LOV NPC.");
 			return;
 		}
 
-		MessageUtil.sendInfo(player, "LOV ID: " + npc.getTrait(TraitLOV.class).npcId);
+		MessageUtil.sendInfo(player, "LOV ID: " + npc.getTrait(CitizensTraitLOV.class).npcId);
 	}
 
 	@Subcommand("tp")
@@ -98,7 +98,7 @@ public class NPCCommands extends BaseCommand {
 	public void cmdNPCTeleport(Player player, String id) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		for(TraitLOV trait : TraitLOV.all) {
+		for(CitizensTraitLOV trait : CitizensTraitLOV.all) {
 			if(trait.npcId != null && trait.npcId.equals(id)) {
 				if(trait.getNPC().getStoredLocation() != null) {
 					player.teleport(trait.getNPC().getStoredLocation());

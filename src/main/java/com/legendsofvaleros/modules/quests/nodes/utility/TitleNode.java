@@ -2,6 +2,7 @@ package com.legendsofvaleros.modules.quests.nodes.utility;
 
 import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
+import com.legendsofvaleros.modules.quests.core.ports.IInportObject;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
@@ -14,13 +15,13 @@ public class TitleNode extends AbstractQuestNode<Void> {
     public IOutportTrigger<Void> onCompleted = new IOutportTrigger<>(this);
     
     @SerializedName("Title")
-    public IInportValue<Void, String> title = new IInportValue<>(this, String.class, "N/A");
+    public IInportObject<Void, String> title = IInportValue.of(this, String.class, "N/A");
     
     @SerializedName("Subtitle")
-    public IInportValue<Void, String> subtitle = new IInportValue<>(this, String.class, "N/A");
+    public IInportObject<Void, String> subtitle = IInportValue.of(this, String.class, "N/A");
     
     @SerializedName("Execute")
-    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> {
+    public IInportTrigger<Void> onExecute = IInportTrigger.of(this, (instance, data) -> {
         Title t = new Title(title.get(instance), subtitle.get(instance), 20, 20 * 3, 20);
         t.setTimingsToTicks();
         t.setTitleColor(ChatColor.WHITE);

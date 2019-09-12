@@ -12,7 +12,9 @@ public class TraitTitle extends LOVTrait {
 
 	@Override
 	public void onSpawn() {
-		titleLine = trait.nameplates.get(Nameplates.BASE).appendTextLine(ChatColor.YELLOW + "<" + text + ">");
+		titleLine = trait
+				.nameplates
+				.get(Nameplates.BASE).appendTextLine(ChatColor.YELLOW + "<" + text + ">");
 	}
 
 	@Override

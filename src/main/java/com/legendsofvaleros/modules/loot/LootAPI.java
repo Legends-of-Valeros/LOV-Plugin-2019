@@ -39,11 +39,7 @@ public class LootAPI extends Module {
     public void onPostLoad() {
         super.onPostLoad();
 
-        try {
-            this.loadAll().get();
-        } catch (Throwable th) {
-            th.printStackTrace();
-        }
+        this.loadAll().get();
     }
 
     public Promise<List<LootTable>> loadAll() {
@@ -53,7 +49,7 @@ public class LootAPI extends Module {
             val.orElse(ImmutableList.of()).forEach(table ->
                     tables.put(table.getId(), table));
 
-            LootController.getInstance().getLogger().info("Loaded " + tables.size() + " loot tables.");
+            getLogger().info("Loaded " + tables.size() + " loot tables.");
         });
     }
 }

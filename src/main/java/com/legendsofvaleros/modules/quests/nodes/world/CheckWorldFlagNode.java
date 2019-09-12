@@ -16,10 +16,7 @@ public class CheckWorldFlagNode extends AbstractQuestNode<Void> {
     public IOutportTrigger<Void> onFalse = new IOutportTrigger<>(this);
     
     @SerializedName("Execute")
-    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> {
-        // TODO: logic
-        onFalse.run(instance);
-    });
+    public IInportTrigger<Void> onExecute = IInportTrigger.empty(this);
     
     public CheckWorldFlagNode(String id) {
         super(id);

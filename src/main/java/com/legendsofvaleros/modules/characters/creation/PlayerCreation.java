@@ -18,7 +18,7 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.characters.race.EntityRace;
 import com.legendsofvaleros.modules.characters.ui.CharacterCreationListener;
 import com.legendsofvaleros.modules.characters.util.ShitUtil;
-import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
+import com.legendsofvaleros.modules.npcs.trait.CitizensTraitLOV;
 import com.legendsofvaleros.util.TextBuilder;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import org.bukkit.ChatColor;
@@ -77,7 +77,7 @@ public class PlayerCreation implements Listener {
 
 	@EventHandler
 	public void onNPCClick(NPCRightClickEvent event) {
-		TraitLOV lov = event.getNPC().getTrait(TraitLOV.class);
+		CitizensTraitLOV lov = event.getNPC().getTrait(CitizensTraitLOV.class);
 		if(lov == null) return;
 		if(lov.npcId == null) return;
 		if(!lov.npcId.equals(Characters.getInstance().getCharacterConfig().getCreationStartNPC())) return;

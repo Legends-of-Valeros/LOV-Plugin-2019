@@ -7,10 +7,7 @@ import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.quests.api.IQuestInstance;
 import com.legendsofvaleros.modules.quests.api.QuestEvent;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
-import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
-import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
-import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
-import com.legendsofvaleros.modules.quests.core.ports.IOutportValue;
+import com.legendsofvaleros.modules.quests.core.ports.*;
 import com.legendsofvaleros.scheduler.InternalTask;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -21,6 +18,7 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -29,23 +27,25 @@ public class InteractBlockWithItemNode extends AbstractQuestNode<Boolean> {
     Queue<IQuestInstance> instances;
 
     @SerializedName("Location")
-    public IInportValue<Boolean, Vector> location = new IInportValue<>(this, Vector.class, null);
+    public IInportObject<Boolean, Vector> location = IInportValue.of(this, Vector.class, null);
 
     @SerializedName("Item")
-    public IInportValue<Boolean, IGear> item = new IInportValue<>(this, IGear.class, null);
+    public IInportReference<Boolean, IGear> item = IInportValue.ref(this, IGear.class);
 
     @SerializedName("Text")
     public IOutportValue<Boolean, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
+        Optional<IGear> op = item.get(instance);
+        String name = op.isPresent() ? op.get().getName() : "<Unknown>";
         if(Boolean.TRUE.equals(data))
-            return "Interacted with " + location.get(instance) + " using " + item.get(instance).getName();
-        return "Interact with " + location.get(instance) + " using " + item.get(instance).getName();
+            return "Interacted with " + location.get(instance) + " using " + name;
+        return "Interact with " + location.get(instance) + " using " + name;
     });
 
     @SerializedName("Completed")
     public IOutportTrigger<Boolean> onCompleted = new IOutportTrigger<>(this);
 
     @SerializedName("Activate")
-    public IInportTrigger<Boolean> onActivate = new IInportTrigger<>(this, (instance, data) -> {
+    public IInportTrigger<Boolean> onActivate = IInportTrigger.of(this, (instance, data) -> {
         // If it's not null, then this node has already been activated.
         if(data != null) {
             return;
@@ -93,7 +93,7 @@ public class InteractBlockWithItemNode extends AbstractQuestNode<Boolean> {
         this.instances = null;
     }
 
-    @QuestEvent
+    @QuestEvent.Async
     public void onEvent(IQuestInstance instance, Boolean data, PlayerItemHeldEvent event) {
         // If we aren't tracking, yet, ignore it.
         if(data == null || data) {
@@ -109,7 +109,7 @@ public class InteractBlockWithItemNode extends AbstractQuestNode<Boolean> {
         }
     }
 
-    @QuestEvent
+    @QuestEvent.Async
     public void onEvent(IQuestInstance instance, Boolean data, PlayerInteractEvent event) {
         // If we aren't tracking, yet, ignore it.
         if(data == null || data) {
@@ -138,7 +138,10 @@ public class InteractBlockWithItemNode extends AbstractQuestNode<Boolean> {
     }
 
     private boolean isCorrectItem(IQuestInstance instance, ItemStack stack) {
+        Optional<IGear> op = item.get(instance);
+        if(!op.isPresent()) return false;
+
         Gear.Instance gearInstance = Gear.Instance.fromStack(stack);
-        return (gearInstance != null && gearInstance.gear.isSimilar(item.get(instance)));
+        return (gearInstance != null && gearInstance.gear.isSimilar(op.get()));
     }
 }

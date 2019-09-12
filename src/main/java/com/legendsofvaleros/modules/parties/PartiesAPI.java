@@ -109,7 +109,7 @@ public class PartiesAPI extends Module {
         }
 
         @EventHandler
-        public void onPlayerRemoved(PlayerCharacterRemoveEvent e) throws Throwable {
+        public void onPlayerRemoved(PlayerCharacterRemoveEvent e) {
             onLogin(e.getPlayerCharacter().getUniqueCharacterId()).get();
 
             PlayerParty p = getPartyByMember(e.getPlayerCharacter().getUniqueCharacterId());

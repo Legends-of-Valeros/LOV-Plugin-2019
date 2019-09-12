@@ -40,11 +40,7 @@ public class AuctionAPI extends ListenerModule {
         super.onPostLoad();
         this.rpc = APIController.create(AuctionAPI.RPC.class);
 
-        try {
-            this.loadEntries().get();
-        } catch (Throwable th) {
-            th.printStackTrace();
-        }
+        this.loadEntries().get();
     }
 
     @Override
@@ -59,7 +55,7 @@ public class AuctionAPI extends ListenerModule {
         return rpc.getAllAuctions().onSuccess(val -> {
             auctions.addAll(val.orElse(ImmutableList.of()));
 
-            AuctionController.getInstance().getLogger().info("Loaded " + auctions.size() + " auctions.");
+            getLogger().info("Loaded " + auctions.size() + " auctions.");
         });
     }
 
@@ -104,12 +100,8 @@ public class AuctionAPI extends ListenerModule {
     boolean checkIfAuctionStillExists(Auction auction) {
         Auction[] result = {null};
         getScheduler().executeInMyCircle(new InternalTask(() -> {
-                    try {
-                        //TODO add callback / listener
-                        result[0] = rpc.getAuction(auction.getId()).get();
-                    } catch (Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
+                    //TODO add callback / listener
+                    result[0] = rpc.getAuction(auction.getId()).get();
                 })
         );
         return result[0] == null;

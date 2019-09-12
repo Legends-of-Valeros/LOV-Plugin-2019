@@ -56,11 +56,7 @@ public class FactionAPI extends ListenerModule {
     public void onPostLoad() {
         super.onPostLoad();
 
-        try {
-            this.loadAll().get();
-        } catch (Throwable th) {
-            th.printStackTrace();
-        }
+        this.loadAll().get();
     }
 
     public Promise<List<Faction>> loadAll() {
@@ -83,6 +79,9 @@ public class FactionAPI extends ListenerModule {
     }
 
     public Integer editReputation(IFaction faction, PlayerCharacter pc, int amount) {
+        if(faction == null)
+            return null;
+
         int oldRep = playerRep.get(faction).getReputation(faction);
         int newRep = playerRep.get(faction).editReputation(faction, amount);
         int change = newRep - oldRep;

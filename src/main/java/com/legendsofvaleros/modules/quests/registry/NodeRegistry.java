@@ -4,7 +4,6 @@ import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.quests.api.IQuestInstance;
 import com.legendsofvaleros.modules.quests.api.IQuestNode;
 import com.legendsofvaleros.modules.quests.api.QuestEvent;
-import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.event.Event;
 
 import java.lang.reflect.Method;
@@ -27,32 +26,31 @@ public class NodeRegistry {
     }
 
     public void addType(String id, Class<? extends IQuestNode> type) {
-        try {
-            for (Method method : type.getClass().getMethods()) {
-                if (method.getAnnotation(QuestEvent.class) == null) continue;
+        for (Method method : type.getMethods()) {
+            if (method.getAnnotation(QuestEvent.class) == null && method.getAnnotation(QuestEvent.Async.class) == null) continue;
 
-                Class<?>[] params = method.getParameterTypes();
-                if (params.length != 3) {
-                    throw new IllegalArgumentException("@QuestEvent methods must have 3 arguments. IQuestInstance, generic T, and a supported Event.");
-                }
-
-                if (params[0] != IQuestInstance.class) {
-                    throw new IllegalArgumentException("@QuestEvent method's first parameter must be IQuestInstance.");
-                }
-
-                if (!Event.class.isAssignableFrom(params[2])
-                        || !QuestController.getInstance().getEventRegistry().hasHandler((Class<? extends Event>) params[2])) {
-                    throw new IllegalArgumentException("@QuestEvent method's third parameter must be a supported Event.");
-                }
+            Class<?>[] params = method.getParameterTypes();
+            if (params.length != 3) {
+                throw new IllegalArgumentException("@QuestEvent methods must have 3 arguments. IQuestInstance, generic T, and a supported Event.");
             }
 
-            types.put(id, type);
+            if (params[0] != IQuestInstance.class) {
+                throw new IllegalArgumentException("@QuestEvent method's first parameter must be IQuestInstance.");
+            }
 
-            instanceType.put(id, ((ParameterizedType) type.getGenericSuperclass()).getActualTypeArguments()[0]);
-            instanceType.put(type, ((ParameterizedType) type.getGenericSuperclass()).getActualTypeArguments()[0]);
-        } catch(Exception e) {
-            MessageUtil.sendSevereException(QuestController.getInstance(), e);
+            if (!Event.class.isAssignableFrom(params[2])) {
+                throw new IllegalArgumentException("@QuestEvent method's third parameter must be an Event.");
+            }
+
+            if (!QuestController.getInstance().getEventRegistry().hasHandler((Class<? extends Event>) params[2])) {
+                throw new IllegalArgumentException("@QuestEvent method's third parameter (" + params[2].getSimpleName() + ") must be a supported Event. This usually means it's not fit for automatic detection. Register a handler using EventRegistry#addHandler() or have it return Player, PlayerCharacter, or CombatEntity in one of the Event's functions!");
+            }
         }
+
+        types.put(id, type);
+
+        instanceType.put(id, ((ParameterizedType) type.getGenericSuperclass()).getActualTypeArguments()[0]);
+        instanceType.put(type, ((ParameterizedType) type.getGenericSuperclass()).getActualTypeArguments()[0]);
     }
 
     public static Type getInstanceType(Object key) {

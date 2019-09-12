@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.quests.nodes.utility;
 import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
+import com.legendsofvaleros.modules.quests.core.ports.IInportObject;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
@@ -18,13 +19,13 @@ public class NotificationNode extends AbstractQuestNode<Void> {
     public IOutportTrigger<Void> onCompleted = new IOutportTrigger<>(this);
     
     @SerializedName("Icon")
-    public IInportValue<Void, String> icon = new IInportValue<>(this, String.class, null);
+    public IInportObject<Void, String> icon = IInportValue.of(this, String.class, null);
     
     @SerializedName("Text")
-    public IInportValue<Void, String> text = new IInportValue<>(this, String.class, "N/A");
+    public IInportObject<Void, String> text = IInportValue.of(this, String.class, "N/A");
     
     @SerializedName("Execute")
-    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> {
+    public IInportTrigger<Void> onExecute = IInportTrigger.of(this, (instance, data) -> {
         AdvancementAPI.builder(new NamespacedKey(LegendsOfValeros.getInstance(), "quests/" + UUID.randomUUID().toString()))
                 .icon(icon.get(instance))
                 .title(text.get(instance))

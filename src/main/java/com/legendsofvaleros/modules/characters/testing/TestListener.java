@@ -5,7 +5,7 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.*;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineRegenEvent;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
-import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
+import com.legendsofvaleros.modules.npcs.trait.CitizensTraitLOV;
 import com.legendsofvaleros.modules.parties.PartiesController;
 import com.legendsofvaleros.modules.parties.core.PlayerParty;
 import com.legendsofvaleros.modules.playermenu.InventoryManager;
@@ -110,7 +110,7 @@ public class TestListener implements Listener {
 
     @EventHandler
     public void onNPCLeftClick(NPCLeftClickEvent event) {
-        if (!event.getNPC().hasTrait(TraitLOV.class)) {
+        if (!event.getNPC().hasTrait(CitizensTraitLOV.class)) {
             return;
         }
         if (!Characters.getInstance().isInCombat(event.getClicker())) {
@@ -123,7 +123,7 @@ public class TestListener implements Listener {
 
     @EventHandler
     public void onNPCRightClick(NPCRightClickEvent event) {
-        if (!event.getNPC().hasTrait(TraitLOV.class)) {
+        if (!event.getNPC().hasTrait(CitizensTraitLOV.class)) {
             return;
         }
         if (!Characters.getInstance().isInCombat(event.getClicker())) {

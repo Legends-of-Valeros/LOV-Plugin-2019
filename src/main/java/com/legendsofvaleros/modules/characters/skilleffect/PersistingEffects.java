@@ -83,10 +83,8 @@ public class PersistingEffects {
 		dataMap.put(effect.getAffected(), effect);
 	}
 
-	private static Promise<Boolean> onLogin(PlayerCharacter pc) {
-		Promise<Boolean> promise = new Promise<>();
-
-		rpc.getPlayerPersistingEffects(pc.getUniqueCharacterId()).onSuccess(val -> {
+	private static Promise onLogin(PlayerCharacter pc) {
+		return rpc.getPlayerPersistingEffects(pc.getUniqueCharacterId()).onSuccess(val -> {
 			val.orElse(ImmutableMap.of()).forEach((id, saved) -> {
 				PersistingEffectBuilder builder =
 						PersistingEffect.newBuilder(id, pc.getUniqueCharacterId(), saved.remaining);
@@ -98,11 +96,7 @@ public class PersistingEffects {
 
 				dataMap.put(pc.getUniqueCharacterId(), builder.build());
 			});
-
-			promise.resolve(true);
-		}).onFailure(promise::reject);
-
-		return promise;
+		});
 	}
 
 	private static Promise onLogout(PlayerCharacter pc) {

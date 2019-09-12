@@ -4,29 +4,30 @@ import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.quests.api.IQuestInstance;
 import com.legendsofvaleros.modules.quests.api.QuestEvent;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
-import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
-import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
-import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
-import com.legendsofvaleros.modules.quests.core.ports.IOutportValue;
+import com.legendsofvaleros.modules.quests.core.ports.*;
 import com.legendsofvaleros.modules.zones.api.IZone;
 import com.legendsofvaleros.modules.zones.event.ZoneEnterEvent;
 
+import java.util.Optional;
+
 public class EnterZoneNode extends AbstractQuestNode<Boolean> {
     @SerializedName("Zone")
-    public IInportValue<Boolean, IZone> zone = new IInportValue<>(this, IZone.class, null);
+    public IInportReference<Boolean, IZone> zone = IInportValue.ref(this, IZone.class);
 
     @SerializedName("Text")
     public IOutportValue<Boolean, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
+        Optional<IZone> op = zone.get(instance);
+        String name = op.isPresent() ? op.get().getName() : "<Unknown>";
         if(Boolean.TRUE.equals(data))
-            return "Entered " + zone.get(instance).getName();
-        return "Enter " + zone.get(instance).getName();
+            return "Entered " + name;
+        return "Enter " + name;
     });
 
     @SerializedName("Completed")
     public IOutportTrigger<Boolean> onCompleted = new IOutportTrigger<>(this);
 
     @SerializedName("Activate")
-    public IInportTrigger<Boolean> onActivate = new IInportTrigger<>(this, (instance, data) -> {
+    public IInportTrigger<Boolean> onActivate = IInportTrigger.of(this, (instance, data) -> {
         // If it's not null, then this node has already been activated.
         if(data != null) {
             return;
@@ -44,7 +45,7 @@ public class EnterZoneNode extends AbstractQuestNode<Boolean> {
         return null;
     }
 
-    @QuestEvent
+    @QuestEvent.Async
     public void onEvent(IQuestInstance instance, Boolean data, ZoneEnterEvent event) {
         // If we aren't tracking, yet, ignore it.
         if(data == null || data) {
@@ -52,7 +53,8 @@ public class EnterZoneNode extends AbstractQuestNode<Boolean> {
         }
 
         // Fail logic
-        if(event.getZone() != zone.get(instance)) {
+        Optional<IZone> op = zone.get(instance);
+        if(!op.isPresent() || event.getZone() != op.get()) {
             return;
         }
 

@@ -8,25 +8,24 @@ import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.Executor;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 public class Promise<R> {
     public interface Function<R, V> {
-        R run(@Nonnull Optional<V> val) throws Throwable;
+        R run(@Nonnull Optional<V> val) throws Exception;
     }
 
     public interface FunctionAlone<R> {
-        R run() throws Throwable;
+        R run() throws Exception;
     }
 
     public interface Listener<R> {
-        void run(@Nonnull Optional<Throwable> th, @Nonnull Optional<R> t) throws Throwable;
+        void run(@Nonnull Optional<Exception> th, @Nonnull Optional<R> t) throws Exception;
     }
 
-    enum State {PENDING, FIRED, RESOLVED, REJECTED}
+    enum State { PENDING, RESOLVED, REJECTED }
 
     /**
      * Unsafe is used to park and unpark threads that directly call get()
@@ -55,11 +54,13 @@ public class Promise<R> {
      */
     private final Executor executor;
 
+    private final Object lock = new Object();
+
     /**
      * Threads that called get() and are waiting for the Promise to
      * be resolved.
      */
-    private final Set<Thread> waiting = new HashSet<>();
+    // private final Set<Thread> waiting = new HashSet<>();
 
     /**
      * Hold a list of callbacks and the executor used to fire them.
@@ -126,15 +127,15 @@ public class Promise<R> {
                 ex.execute(() -> {
                     try {
                         cb.run(Optional.empty(), Optional.ofNullable((R) value));
-                    } catch (Throwable th) {
+                    } catch (Exception th) {
                         th.printStackTrace();
                     }
                 });
             else if (wasRejected())
                 ex.execute(() -> {
                     try {
-                        cb.run(Optional.of((Throwable) value), Optional.empty());
-                    } catch (Throwable th) {
+                        cb.run(Optional.of((Exception) value), Optional.empty());
+                    } catch (Exception th) {
                         th.printStackTrace();
                     }
                 });
@@ -187,11 +188,11 @@ public class Promise<R> {
         return onFailure((err) -> cb.run(), null);
     }
 
-    public Promise<R> onFailure(Consumer<Throwable> cb) {
+    public Promise<R> onFailure(Consumer<Exception> cb) {
         return onFailure(cb, null);
     }
 
-    public Promise<R> onFailure(Consumer<Throwable> cb, Executor ex) {
+    public Promise<R> onFailure(Consumer<Exception> cb, Executor ex) {
         return addListener((err, val) -> {
             if (val.isPresent()) {
                 return;
@@ -264,7 +265,7 @@ public class Promise<R> {
 
                     promise.resolve(val2.orElse(null));
                 });
-            } catch (Throwable th) {
+            } catch (Exception th) {
                 promise.reject(th);
             }
         }, ex);
@@ -272,12 +273,18 @@ public class Promise<R> {
         return promise;
     }
 
-    public R get() throws Throwable {
-        return get(null, 0L);
-    }
+    public R get() {
+        synchronized (lock) {
+            while (!isDone()) {
+                try {
+                    lock.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
 
-    public R get(TimeUnit unit, long duration) throws Throwable {
-        if (!isDone()) {
+        /*if (!isDone()) {
             waiting.add(Thread.currentThread());
 
             if (unit != null)
@@ -288,12 +295,13 @@ public class Promise<R> {
             waiting.remove(Thread.currentThread());
 
             if (Thread.interrupted())
-                throw new InterruptedException();
+                throw new RuntimeException(new InterruptedException());
+        }*/
+
+        if (this.value instanceof Exception) {
+            throw new RuntimeException((Exception)this.value);
         }
 
-        if (this.value instanceof Throwable) {
-            throw (Throwable) this.value;
-        }
         return (R) this.value;
     }
 
@@ -305,10 +313,14 @@ public class Promise<R> {
 
         this.execute(callbacks.entrySet().iterator(), Optional.empty(), Optional.ofNullable(t));
 
-        new HashSet<>(waiting).forEach(UNSAFE::unpark);
+        synchronized(lock) {
+            lock.notify();
+        }
+
+        // new HashSet<>(waiting).forEach(UNSAFE::unpark);
     }
 
-    public void reject(Throwable th) {
+    public void reject(Exception th) {
         if (isDone()) {
             throw new IllegalStateException("Promise already resolved!");
         }
@@ -348,17 +360,21 @@ public class Promise<R> {
 
         this.execute(callbacks.entrySet().iterator(), Optional.of(th), Optional.empty());
 
-        new HashSet<>(waiting).forEach(UNSAFE::unpark);
+        synchronized(lock) {
+            lock.notify();
+        }
+
+        // new HashSet<>(waiting).forEach(UNSAFE::unpark);
     }
 
-    private void execute(Iterator<Map.Entry<Listener, Executor>> it, Optional<Throwable> th, Optional<R> t) {
+    private void execute(Iterator<Map.Entry<Listener, Executor>> it, Optional<Exception> th, Optional<R> t) {
         if(it.hasNext()) {
             Map.Entry<Listener, Executor> ex = it.next();
 
             ex.getValue().execute(() -> {
                 try {
                     ex.getKey().run(th, t);
-                } catch (Throwable thh) {
+                } catch (Exception thh) {
                     thh.printStackTrace();
                 }
 
@@ -380,13 +396,11 @@ public class Promise<R> {
         if (this.state != State.PENDING)
             throw new IllegalStateException("Promise has already been made! You cannot fire it again!");
 
-        this.state = State.PENDING;
-
         if (func != null) {
             this.executor.execute(() -> {
                 try {
                     this.resolve(func.run(Optional.ofNullable(val)));
-                } catch (Throwable th) {
+                } catch (Exception th) {
                     this.reject(th);
                 }
             });
@@ -436,7 +450,7 @@ public class Promise<R> {
         AtomicBoolean fail = new AtomicBoolean(false);
 
         Object[] successes = new Object[promises.length];
-        Throwable[] failures = new Throwable[promises.length];
+        Exception[] failures = new Exception[promises.length];
 
         AtomicInteger i = new AtomicInteger(promises.length);
         Runnable onFinish = () -> {

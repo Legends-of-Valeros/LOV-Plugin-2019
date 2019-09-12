@@ -42,20 +42,21 @@ public class PromiseCache<K, V> {
     public Optional<V> getAndWait(@Nonnull K k) {
         try {
             return Optional.ofNullable(this.get(k).get());
-        } catch (Throwable throwable) {
-            throw new RuntimeException("Failed to get '" + k + "'", throwable);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to get '" + k + "'", e);
         }
     }
 
     public synchronized Promise<V> get(@Nonnull K k) {
-        if(k == null) return null;
+        if(k == null)
+            throw new NullPointerException("Cannot have a null key!");
 
         Promise<V> promise = new Promise<>();
 
         V cached = cache.getIfPresent(k);
-        if(cached != null)
+        if(cached != null) {
             promise.resolve(cached);
-        else{
+        }else{
             if(!awaiting.containsKey(k)) {
                 loader.loadValue(k).onSuccess(val -> {
                     put(k, val.orElse(null));

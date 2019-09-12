@@ -21,6 +21,7 @@ import org.bukkit.World;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.HashMap;
@@ -51,10 +52,6 @@ public class APIController extends Module {
     }
 
     private Gson gson;
-
-    public Gson getGson() {
-        return gson;
-    }
 
     private DeepstreamClient client;
 
@@ -234,12 +231,42 @@ public class APIController extends Module {
         });
     }
 
+    /**
+     * You should use the fromJson or toJson methods in this class, rather than accessing Gson directly.
+     */
+    @Deprecated
+    public Gson getGson() {
+        return this.gson;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> Promise<T> fromJson(JsonElement elem, Type type) {
+        if(this.gson == null)
+            throw new IllegalStateException("Must wait until onPostLoad() before using RPC functions!");
+        return Promise.make(() -> (T)this.gson.fromJson(elem, type));
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> Promise<T> fromJson(String json, Type type) {
+        if(this.gson == null)
+            throw new IllegalStateException("Must wait until onPostLoad() before using RPC functions!");
+        return Promise.make(() -> (T)this.gson.fromJson(json, type));
+    }
+
     public <T> Promise<T> fromJson(JsonElement elem, Class<T> clazz) {
+        if(this.gson == null)
+            throw new IllegalStateException("Must wait until onPostLoad() before using RPC functions!");
         return Promise.make(() -> this.gson.fromJson(elem, clazz));
     }
 
     public <T> Promise<T> fromJson(String json, Class<T> clazz) {
+        if(this.gson == null)
+            throw new IllegalStateException("Must wait until onPostLoad() before using RPC functions!");
         return Promise.make(() -> this.gson.fromJson(json, clazz));
+    }
+
+    public Promise<String> toJson(Object arg) {
+        return Promise.make(() -> this.gson.toJson(arg));
     }
 
     public static <T> T create(Class<T> clazz) {

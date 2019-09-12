@@ -22,32 +22,55 @@ public class InterfaceTypeAdapter {
     public interface Getter<X> extends Function<String, Promise<X>> { }
 
     public static <X> void register(Class<X> clazz, Encoder<X> encoder, Getter<X> getter) {
+        final TypeAdapter refTypeAdapter = new TypeAdapter<Ref<X>>() {
+            @Override
+            public void write(JsonWriter out, Ref<X> value) throws IOException {
+                // We should never be saving any full object registered through this type. Therefore, we only save the reference string.
+                out.value(value != null ? encoder.apply(value.get()) : null);
+            }
+
+            @Override
+            public Ref<X> read(JsonReader in) throws IOException {
+                if(in.peek() == JsonToken.NULL) {
+                    in.nextNull();
+                    return Ref.empty();
+                }
+
+                // So, if we just decode the value here, we run into the common issue of circular references.
+                // This lets us delay loading until decoding has completed.
+                return Ref.of(getter.apply(in.nextString()).get());
+            }
+        };
+
         APIController.getInstance().getGsonBuilder().registerTypeAdapterFactory(new TypeAdapterFactory() {
             @Override
+            @SuppressWarnings("unchecked")
             public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
                 Class<T> rawType = (Class<T>)type.getRawType();
-                if (rawType != Get.class) {
-                    if(rawType == clazz) {
-                        return (TypeAdapter)new TypeAdapter<X>() {
+
+                if (rawType != Ref.class) {
+                    if(clazz.isAssignableFrom(rawType)) {
+                        TypeAdapterFactory factory = this;
+
+                        return new TypeAdapter() {
                             @Override
-                            public void write(JsonWriter out, X value) throws IOException {
+                            public void write(JsonWriter out, Object value) throws IOException {
                                 // We should never be saving any full object registered through this type. Therefore, we only save the reference string.
-                                out.value(value != null ? encoder.apply(value) : null);
+                                out.value(value != null ? encoder.apply((X)value) : null);
                             }
 
                             @Override
-                            public X read(JsonReader in) throws IOException {
-
+                            public Object read(JsonReader in) throws IOException {
                                 if(in.peek() == JsonToken.NULL) {
                                     in.nextNull();
                                     return null;
                                 }
 
-                                try {
+                                if(in.peek() == JsonToken.STRING) {
                                     return getter.apply(in.nextString()).get();
-                                } catch (Throwable th) {
-                                    throw new RuntimeException(th);
                                 }
+
+                                return APIController.getInstance().getGson().getDelegateAdapter(factory, type).read(in);
                             }
                         };
                     }
@@ -61,29 +84,7 @@ public class InterfaceTypeAdapter {
                 if(actualType != clazz)
                     return null;
 
-                return (TypeAdapter)new TypeAdapter<Get<X>>() {
-                    @Override
-                    public void write(JsonWriter out, Get<X> value) throws IOException {
-                        // We should never be saving any full object registered through this type. Therefore, we only save the reference string.
-                        out.value(value != null ? encoder.apply(value.get()) : null);
-                    }
-
-                    @Override
-                    public Get<X> read(JsonReader in) throws IOException {
-                        if(in.peek() == JsonToken.NULL) {
-                            in.nextNull();
-                            return Get.of(null);
-                        }
-
-                        // So, if we just decode the value here, we run into the common issue of circular references.
-                        // This lets us delay loading until decoding has completed.
-                        Get<X> get = new Get<>();
-                        getter.apply(in.nextString()).on((err, val) -> {
-                            get.set(val.orElse(null));
-                        });
-                        return get;
-                    }
-                };
+                return refTypeAdapter;
             }
         });
     }

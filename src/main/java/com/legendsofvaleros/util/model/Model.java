@@ -41,11 +41,7 @@ public class Model {
     }
 
     public static void onPostLoad() {
-        try {
-            loadAll().get();
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
+        loadAll().get();
     }
 
     public static Promise<List<Model>> loadAll() {

@@ -2,14 +2,9 @@ package com.legendsofvaleros.modules.quests;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.gear.GearController;
-import com.legendsofvaleros.modules.gear.core.Gear;
-import com.legendsofvaleros.modules.npcs.NPCsController;
-import com.legendsofvaleros.modules.npcs.core.LOVNPC;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class QuestUtil {
@@ -29,14 +24,20 @@ public class QuestUtil {
 
 		str = TITLE.matcher(str).replaceAll(ChatColor.YELLOW + "$1" + ChatColor.RESET);
 
-		{
+		str = NPC.matcher(str).replaceAll(ChatColor.GREEN + "$1" + ChatColor.RESET);
+
+		str = ITEM.matcher(str).replaceAll(ChatColor.AQUA + "$1" + ChatColor.RESET);
+
+		/* TODO: Maybe have a system for constructing text in the editor ui. This bit of commented out code swapped
+					[npc-id] to [NPC Name], however it turned out to be a tad too intensive to be run on the main thread.*/
+		/*{
 			Matcher npcs = NPC.matcher(str);
 
 			if(npcs.find()) {
 				StringBuffer sb = new StringBuffer();
 
 				do {
-					LOVNPC data = NPCsController.getInstance().getNPC(npcs.group(1));
+					LOVNPC data = NPCsController.getInstance().getNPC(npcs.group(1)).get();
 
 					String name = npcs.group(1);
 					if(data != null)
@@ -71,7 +72,7 @@ public class QuestUtil {
 
 				str = sb.toString();
 			}
-		}
+		}*/
 
 		return str;
 	}

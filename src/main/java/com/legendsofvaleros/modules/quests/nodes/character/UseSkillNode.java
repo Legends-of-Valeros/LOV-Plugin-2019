@@ -5,15 +5,12 @@ import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.quests.api.IQuestInstance;
 import com.legendsofvaleros.modules.quests.api.QuestEvent;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
-import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
-import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
-import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
-import com.legendsofvaleros.modules.quests.core.ports.IOutportValue;
+import com.legendsofvaleros.modules.quests.core.ports.*;
 import com.legendsofvaleros.modules.skills.event.SkillUsedEvent;
 
 public class UseSkillNode extends AbstractQuestNode<Boolean> {
     @SerializedName("Skill")
-    public IInportValue<Boolean, Skill> skill = new IInportValue<>(this, Skill.class, null);
+    public IInportObject<Boolean, Skill> skill = IInportValue.of(this, Skill.class, null);
 
     @SerializedName("Text")
     public IOutportValue<Boolean, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
@@ -26,7 +23,7 @@ public class UseSkillNode extends AbstractQuestNode<Boolean> {
     public IOutportTrigger<Boolean> onCompleted = new IOutportTrigger<>(this);
 
     @SerializedName("Activate")
-    public IInportTrigger<Boolean> onActivate = new IInportTrigger<>(this, (instance, data) -> {
+    public IInportTrigger<Boolean> onActivate = IInportTrigger.of(this, (instance, data) -> {
         // If it's not null, then this node has already been activated.
         if(data != null) {
             return;

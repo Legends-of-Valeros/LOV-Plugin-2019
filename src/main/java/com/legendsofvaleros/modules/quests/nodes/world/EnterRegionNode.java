@@ -4,19 +4,18 @@ import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.quests.api.IQuestInstance;
 import com.legendsofvaleros.modules.quests.api.QuestEvent;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
-import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
-import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
-import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
-import com.legendsofvaleros.modules.quests.core.ports.IOutportValue;
+import com.legendsofvaleros.modules.quests.core.ports.*;
 import com.legendsofvaleros.modules.regions.core.IRegion;
 import com.legendsofvaleros.modules.regions.event.RegionEnterEvent;
 
+import java.util.Optional;
+
 public class EnterRegionNode extends AbstractQuestNode<Boolean> {
     @SerializedName("Region")
-    public IInportValue<Boolean, IRegion> region = new IInportValue<>(this, IRegion.class, null);
+    public IInportReference<Boolean, IRegion> region = IInportValue.ref(this, IRegion.class);
 
     @SerializedName("Name")
-    public IInportValue<Boolean, String> name = new IInportValue<>(this, String.class, "N/A");
+    public IInportObject<Boolean, String> name = IInportValue.of(this, String.class, "N/A");
 
     @SerializedName("Text")
     public IOutportValue<Boolean, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
@@ -29,7 +28,7 @@ public class EnterRegionNode extends AbstractQuestNode<Boolean> {
     public IOutportTrigger<Boolean> onCompleted = new IOutportTrigger<>(this);
 
     @SerializedName("Activate")
-    public IInportTrigger<Boolean> onActivate = new IInportTrigger<>(this, (instance, data) -> {
+    public IInportTrigger<Boolean> onActivate = IInportTrigger.of(this, (instance, data) -> {
         // If it's not null, then this node has already been activated.
         if(data != null) {
             return;
@@ -47,7 +46,7 @@ public class EnterRegionNode extends AbstractQuestNode<Boolean> {
         return null;
     }
 
-    @QuestEvent
+    @QuestEvent.Async
     public void onEvent(IQuestInstance instance, Boolean data, RegionEnterEvent event) {
         // If we aren't tracking, yet, ignore it.
         if(data == null || data) {
@@ -55,7 +54,8 @@ public class EnterRegionNode extends AbstractQuestNode<Boolean> {
         }
 
         // Fail logic
-        if(event.getRegion() != region.get(instance)) {
+        Optional<IRegion> op = region.get(instance);
+        if(!op.isPresent() || event.getRegion() != op.get()) {
             return;
         }
 

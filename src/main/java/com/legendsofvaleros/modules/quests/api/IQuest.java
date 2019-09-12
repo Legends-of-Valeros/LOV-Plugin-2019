@@ -4,11 +4,8 @@ import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import org.bukkit.event.Event;
 
-import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 public interface IQuest {
     /**
@@ -46,8 +43,6 @@ public interface IQuest {
     Optional<IQuestNode> getNode(String id);
 
     Collection<IQuestNode> getNodes();
-
-    Map<IQuestNode, Method> getListeners(Class<? extends Event> caught);
 
     QuestStatus getStatus(PlayerCharacter pc);
 

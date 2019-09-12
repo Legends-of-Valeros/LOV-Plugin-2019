@@ -66,6 +66,8 @@ public interface IQuestInstance {
 
     void setState(QuestState state) throws IllegalStateException;
 
+    boolean isActive();
+
     void onActivated();
 
     void onDeactivated();

@@ -15,5 +15,12 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface QuestEvent {
+    /**
+     * Makes sure to handle the event in an async thread.
+     */
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface Async {
 
+    }
 }

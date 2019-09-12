@@ -5,10 +5,7 @@ import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.quests.api.IQuestInstance;
 import com.legendsofvaleros.modules.quests.api.QuestEvent;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
-import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
-import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
-import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
-import com.legendsofvaleros.modules.quests.core.ports.IOutportValue;
+import com.legendsofvaleros.modules.quests.core.ports.*;
 import com.legendsofvaleros.scheduler.InternalTask;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -25,7 +22,7 @@ public class InteractBlockNode extends AbstractQuestNode<Boolean> {
     Queue<IQuestInstance> instances;
 
     @SerializedName("Location")
-    public IInportValue<Boolean, Vector> location = new IInportValue<>(this, Vector.class, null);
+    public IInportObject<Boolean, Vector> location = IInportValue.of(this, Vector.class, null);
 
     @SerializedName("Text")
     public IOutportValue<Boolean, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
@@ -38,7 +35,7 @@ public class InteractBlockNode extends AbstractQuestNode<Boolean> {
     public IOutportTrigger<Boolean> onCompleted = new IOutportTrigger<>(this);
 
     @SerializedName("Activate")
-    public IInportTrigger<Boolean> onActivate = new IInportTrigger<>(this, (instance, data) -> {
+    public IInportTrigger<Boolean> onActivate = IInportTrigger.of(this, (instance, data) -> {
         // If it's not null, then this node has already been activated.
         if(data != null) {
             return;

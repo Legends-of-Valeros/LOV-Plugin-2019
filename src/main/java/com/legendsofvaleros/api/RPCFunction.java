@@ -1,7 +1,6 @@
 package com.legendsofvaleros.api;
 
 import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.legendsofvaleros.api.annotation.ModuleRPC;
 import io.deepstream.RpcResult;
@@ -53,6 +52,7 @@ public class RPCFunction<T> {
         return Promise.make(() -> oneShotSync(func, result, args), exec);
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> T oneShotSync(String func, TypeToken<T> result, Object... args) {
         RpcResult res = null;
 
@@ -66,24 +66,18 @@ public class RPCFunction<T> {
 
             // This is a hack so we can use our own Gson parser.
             // TODO: Fix when deepstream supports passing our own data.
-            Gson gson = APIController.getInstance().getGson();
-            if (gson == null) {
-                throw new IllegalStateException("Must wait until onPostLoad() before using RPC functions!");
-            }
 
-            System.out.println(func + "(" + arg + ")");
             res = APIController.getInstance().getClient()
-                    .rpc.make(func, arg != null ? gson.fromJson(gson.toJson(arg), JsonElement.class) : null);
-            System.out.println(res.getData());
+                    .rpc.make(func, arg != null ? APIController.getInstance().getGson().fromJson(APIController.getInstance().getGson().toJson(arg), JsonElement.class) : null);
 
             if (res.success()) {
                 // Decode result into T using Gson
                 if (res.getData() instanceof JsonElement) {
-                    return gson.fromJson((JsonElement) res.getData(), result.getType());
+                    return APIController.getInstance().getGson().fromJson((JsonElement)res.getData(), result.getType());
                 }
 
                 if (res.getData() instanceof String) {
-                    return gson.fromJson((String) res.getData(), result.getType());
+                    return (T)APIController.getInstance().fromJson((String)res.getData(), result.getType());
                 }
 
                 return (T)res.getData();

@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.quests.nodes.quest;
 import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
 import com.legendsofvaleros.modules.quests.core.QuestLogEntry;
+import com.legendsofvaleros.modules.quests.core.ports.IInportObject;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
@@ -19,13 +20,13 @@ public class QuestLogNode extends AbstractQuestNode<Integer> {
     public IOutportTrigger<Integer> onFailure = new IOutportTrigger<>(this);
 
     @SerializedName("Text")
-    public IInportValue<Integer, String> text = new IInportValue<>(this, String.class, "N/A");
+    public IInportObject<Integer, String> text = IInportValue.of(this, String.class, "N/A");
 
     @SerializedName("Optional")
-    public IInportValue<Integer, Boolean> optional = new IInportValue<>(this, Boolean.class, false);
+    public IInportObject<Integer, Boolean> optional = IInportValue.of(this, Boolean.class, false);
 
     @SerializedName("Add")
-    public IInportTrigger<Integer> onAdd = new IInportTrigger<>(this, (instance, logEntry) -> {
+    public IInportTrigger<Integer> onAdd = IInportTrigger.sync(this, (instance, logEntry) -> {
         QuestLogEntry entry = new QuestLogEntry();
 
         entry.logNodeId = getId();
@@ -41,7 +42,7 @@ public class QuestLogNode extends AbstractQuestNode<Integer> {
     });
 
     @SerializedName("Success")
-    public IInportTrigger<Integer> triggerSuccess = new IInportTrigger<>(this, (instance, logEntry) -> {
+    public IInportTrigger<Integer> triggerSuccess = IInportTrigger.sync(this, (instance, logEntry) -> {
         if(logEntry == null) {
             throw new IllegalStateException("Cannot edit a log entry before its been added!");
         }
@@ -61,7 +62,7 @@ public class QuestLogNode extends AbstractQuestNode<Integer> {
     });
 
     @SerializedName("Fail")
-    public IInportTrigger<Integer> triggerFail = new IInportTrigger<>(this, (instance, logEntry) -> {
+    public IInportTrigger<Integer> triggerFail = IInportTrigger.sync(this, (instance, logEntry) -> {
         if(logEntry == null) {
             throw new IllegalStateException("Cannot edit a log entry before its been added!");
         }
@@ -80,7 +81,7 @@ public class QuestLogNode extends AbstractQuestNode<Integer> {
     });
 
     @SerializedName("Remove")
-    public IInportTrigger<Integer> onRemove = new IInportTrigger<>(this, (instance, logEntry) -> {
+    public IInportTrigger<Integer> onRemove = IInportTrigger.sync(this, (instance, logEntry) -> {
         if(logEntry == null) {
             throw new IllegalStateException("Log entry is already removed!");
         }

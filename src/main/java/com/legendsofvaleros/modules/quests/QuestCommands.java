@@ -26,7 +26,7 @@ public class QuestCommands extends BaseCommand {
     @Subcommand("reload")
     @Description("Reload quests currently in the cache.")
     @CommandPermission("quests.reload")
-    public void cmdReload(CommandSender sender) throws Throwable {
+    public void cmdReload(CommandSender sender) throws Exception {
         QuestController.getInstance().reloadQuests();
 
         MessageUtil.sendUpdate(sender, "Quests reloaded.");
@@ -156,7 +156,7 @@ public class QuestCommands extends BaseCommand {
             for(QuestLogEntry entry : entries.stream().map(v -> v.getValue()).toArray(QuestLogEntry[]::new)) {
                 tb.append("[" + (entry.success ? "⦿" : "⦾") + "]")
                         .color(ChatColor.BLACK)
-                    .append((entry.optional ? "(Optional)" : "") + entry.getText(instance) + "\n")
+                    .append((entry.optional ? "(Optional)" : "") + " " + entry.getText(instance) + "\n")
                         .color(ChatColor.BLACK).strikethrough(entry.disabled);
             }
 

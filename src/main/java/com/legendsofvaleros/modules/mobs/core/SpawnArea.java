@@ -166,18 +166,21 @@ public class SpawnArea {
 
     public void updateStats() {
         if (hologram != null) {
-            textEntities.setText(getEntities().size() + " / " + despawnedEnemies);
-            textInterval.setText(Instant.ofEpochMilli(System.currentTimeMillis()).toString());
+            if(textEntities != null)
+                textEntities.setText(getEntities().size() + " / " + despawnedEnemies);
+            if(textInterval != null)
+                textInterval.setText(Instant.ofEpochMilli(System.currentTimeMillis()).toString());
         }
     }
 
     public void setDebugInfo(String info) {
         if (hologram != null)
-            textInfo.setText(info);
+            if(textInfo != null)
+                textInfo.setText(info);
     }
 
     public Hologram getHologram() {
-        if (hologram == null) {
+        if (hologram == null && entity != null) {
             hologram = HologramsAPI.createHologram(LegendsOfValeros.getInstance(), getLocation());
             textEntityId = hologram.appendTextLine(ChatColor.GOLD + "" + ChatColor.BOLD + entity.getName());
             textLevel = hologram.appendTextLine("[" + getLevelRange()[0] + " - " + getLevelRange()[1] + "]");

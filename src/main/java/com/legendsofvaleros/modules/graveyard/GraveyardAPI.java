@@ -9,8 +9,6 @@ import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.modules.graveyard.core.Graveyard;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 // TODO: Implement zone activation?
@@ -36,11 +34,7 @@ public class GraveyardAPI extends ListenerModule {
         super.onPostLoad();
         this.rpc = APIController.create(GraveyardAPI.RPC.class);
 
-        try {
-            this.loadAll().get();
-        } catch (Throwable th) {
-            th.printStackTrace();
-        }
+        this.loadAll().get();
     }
 
     public Promise<List<Graveyard>> loadAll() {

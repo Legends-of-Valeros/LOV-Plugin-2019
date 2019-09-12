@@ -121,6 +121,7 @@ public class InternalTask {
 
     public void cancel() {
         setRepeating(false);
+        this.executed = true;
     }
 
     @Override

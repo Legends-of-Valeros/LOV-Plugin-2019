@@ -2,6 +2,7 @@ package com.legendsofvaleros.modules.quests.nodes.world;
 
 import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
+import com.legendsofvaleros.modules.quests.core.ports.IInportObject;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
@@ -16,22 +17,22 @@ public class ParticleNode extends AbstractQuestNode<Void> {
     public IOutportTrigger<Void> onCompleted = new IOutportTrigger<>(this);
 
     @SerializedName("Location")
-    public IInportValue<Void, Vector> location = new IInportValue<>(this, Vector.class, new Vector(0, 0, 0));
+    public IInportObject<Void, Vector> location = IInportValue.of(this, Vector.class, new Vector(0, 0, 0));
 
     @SerializedName("Relative")
-    public IInportValue<Void, Boolean> relative = new IInportValue<>(this, Boolean.class, false);
+    public IInportObject<Void, Boolean> relative = IInportValue.of(this, Boolean.class, false);
     
     @SerializedName("Particle")
-    public IInportValue<Void, Particle> particle = new IInportValue<>(this, Particle.class, null);
+    public IInportObject<Void, Particle> particle = IInportValue.of(this, Particle.class, null);
 
     @SerializedName("Offset")
-    public IInportValue<Void, Vector> offset = new IInportValue<>(this, Vector.class, new Vector(0, 0, 0));
+    public IInportObject<Void, Vector> offset = IInportValue.of(this, Vector.class, new Vector(0, 0, 0));
 
     @SerializedName("Count")
-    public IInportValue<Void, Integer> count = new IInportValue<>(this, Integer.class, 1);
+    public IInportObject<Void, Integer> count = IInportValue.of(this, Integer.class, 1);
     
     @SerializedName("Execute")
-    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> {
+    public IInportTrigger<Void> onExecute = IInportTrigger.of(this, (instance, data) -> {
         World world = relative.get(instance) ? instance.getPlayer().getWorld() : Bukkit.getWorlds().get(0);
         Location loc = (Boolean.TRUE.equals(relative.get(instance)) ? instance.getPlayer().getLocation().add(location.get(instance)) : location.get(instance).toLocation(world));
         world.spawnParticle(particle.get(instance), loc, count.get(instance));

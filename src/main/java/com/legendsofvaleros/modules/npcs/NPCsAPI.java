@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.npcs;
 
 import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -14,8 +15,8 @@ import com.legendsofvaleros.modules.npcs.api.INPC;
 import com.legendsofvaleros.modules.npcs.api.ISkin;
 import com.legendsofvaleros.modules.npcs.core.LOVNPC;
 import com.legendsofvaleros.modules.npcs.core.Skin;
+import com.legendsofvaleros.modules.npcs.trait.CitizensTraitLOV;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
-import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
 import com.legendsofvaleros.util.MessageUtil;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.MemoryNPCDataStore;
@@ -31,7 +32,7 @@ import java.util.Map;
 
 public class NPCsAPI extends ListenerModule {
     public interface RPC {
-        Promise<Skin> getSkin(String id);
+        Promise<List<Skin>> findSkins();
 
         Promise<LOVNPC> getNPC(String id);
 
@@ -40,7 +41,7 @@ public class NPCsAPI extends ListenerModule {
 
     protected RPC rpc;
 
-    private PromiseCache<String, Skin> skins;
+    private Map<String, Skin> skins = new HashMap<>();
     private PromiseCache<String, LOVNPC> npcs;
 
     NPCRegistry registry;
@@ -52,17 +53,9 @@ public class NPCsAPI extends ListenerModule {
 
         this.rpc = APIController.create(RPC.class);
 
-        this.skins = new PromiseCache<>(CacheBuilder.newBuilder()
-                .concurrencyLevel(4)
-                .weakValues()
-                .removalListener(entry -> {
-                    getLogger().warning("Skin '" + entry.getKey() + "' removed from the cache: " + entry.getCause());
-                })
-                .build(), id -> rpc.getSkin(id));
-
         InterfaceTypeAdapter.register(ISkin.class,
                 obj -> obj.getId(),
-                id -> skins.get(id).next(v -> Promise.make(v.orElse(null))));
+                id -> Promise.make(skins.get(id)));
 
         this.npcs = new PromiseCache<>(CacheBuilder.newBuilder()
                 .concurrencyLevel(4)
@@ -77,7 +70,7 @@ public class NPCsAPI extends ListenerModule {
                 id -> npcs.get(id).next(v -> Promise.make(v.orElse(null))));
 
         this.registry = CitizensAPI.createAnonymousNPCRegistry(new MemoryNPCDataStore());
-        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TraitLOV.class).withName(TraitLOV.TRAIT_NAME));
+        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(CitizensTraitLOV.class).withName(CitizensTraitLOV.TRAIT_NAME));
 
         APIController.getInstance().getGsonBuilder()
                 .registerTypeAdapter(LOVTrait[].class, (JsonDeserializer<LOVTrait[]>) (json, typeOfT, context) -> {
@@ -105,6 +98,24 @@ public class NPCsAPI extends ListenerModule {
                 });
     }
 
+    @Override
+    public void onPostLoad() {
+        super.onPostLoad();
+
+        this.loadAll().get();
+    }
+
+    public Promise loadAll() {
+        return rpc.findSkins().onSuccess(val -> {
+            skins.clear();
+
+            val.orElse(ImmutableList.of()).forEach(skin ->
+                    skins.put(skin.getId(), skin));
+
+            getLogger().info("Loaded " + skins.size() + " skins.");
+        });
+    }
+
     public void registerTrait(String id, Class<? extends LOVTrait> trait) {
         traitTypes.put(id, trait);
     }
@@ -113,15 +124,11 @@ public class NPCsAPI extends ListenerModule {
         return registry.createNPC(type, s);
     }
 
-    public LOVNPC getNPC(String id) {
-        return npcs.getAndWait(id).orElse(null);
+    public Promise<LOVNPC> getNPC(String id) {
+        return npcs.get(id);
     }
 
-    public String getNPCIDFromSlug(String slug) {
-        try {
-            return rpc.convertNPCSlugToID(slug).get();
-        } catch (Throwable throwable) {
-            return null;
-        }
+    public Promise<String> getNPCIDFromSlug(String slug) {
+        return rpc.convertNPCSlugToID(slug);
     }
 }

@@ -76,7 +76,7 @@ public class TraitFastTravel extends LOVTrait {
         for (String id : available) {
             TraitFastTravel.Data data = connections.get(id);
 
-            LOVNPC lovNPC = NPCsController.getInstance().getNPC(id);
+            LOVNPC lovNPC = NPCsController.getInstance().getNPC(id).get();
             if (npc == null) {
                 MessageUtil.sendError(p, "Unable to find NPC with that ID: " + id);
                 continue;

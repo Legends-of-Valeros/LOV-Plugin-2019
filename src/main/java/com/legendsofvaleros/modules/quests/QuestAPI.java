@@ -19,15 +19,10 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
-import com.legendsofvaleros.modules.quests.api.IQuest;
-import com.legendsofvaleros.modules.quests.api.IQuestInstance;
-import com.legendsofvaleros.modules.quests.api.IQuestNode;
-import com.legendsofvaleros.modules.quests.api.IQuestPrerequisite;
+import com.legendsofvaleros.modules.quests.api.*;
 import com.legendsofvaleros.modules.quests.api.ports.INodeInput;
 import com.legendsofvaleros.modules.quests.api.ports.INodeOutput;
-import com.legendsofvaleros.modules.quests.core.Quest;
-import com.legendsofvaleros.modules.quests.core.QuestInstance;
-import com.legendsofvaleros.modules.quests.core.QuestNodeMap;
+import com.legendsofvaleros.modules.quests.core.*;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.registry.EventRegistry;
 import com.legendsofvaleros.modules.quests.registry.NodeRegistry;
@@ -41,6 +36,8 @@ import org.bukkit.event.Listener;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -141,6 +138,39 @@ public class QuestAPI extends ListenerModule {
                     return null;
                 });
 
+        APIController.getInstance().getGsonBuilder()
+                .registerTypeAdapter(QuestInstance.class,(JsonDeserializer<QuestInstance>) (json, typeOfT, context) -> {
+                    JsonObject obj = json.getAsJsonObject();
+
+                    IQuest quest = context.deserialize(obj.get("_id"), IQuest.class);
+
+                    if(quest == null) {
+                        getLogger().warning("Unknown quest: " + obj.get("_id"));
+                        return null;
+                    }
+
+                    QuestState state = context.deserialize(obj.get("state"), QuestState.class);
+                    QuestLogMap log = context.deserialize(obj.get("logs"), QuestLogMap.class);
+
+                    QuestNodeInstanceMap nodes = new QuestNodeInstanceMap();
+
+                    if(obj.has("nodes")) {
+                        for(Map.Entry<String, JsonElement> entry : obj.getAsJsonObject("nodes").entrySet()) {
+                            Optional<IQuestNode> op = quest.getNode(entry.getKey());
+
+                            if(!op.isPresent()) continue;
+
+                            IQuestNode node = op.get();
+
+                            Type instanceType = ((ParameterizedType)node.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+
+                            nodes.putInstance(node, context.deserialize(entry.getValue(), instanceType));
+                        }
+                    }
+
+                    return new QuestInstance(quest, state, log, nodes);
+                });
+
         registerEvents(new PlayerListener());
     }
 
@@ -148,13 +178,13 @@ public class QuestAPI extends ListenerModule {
         return playerQuests.get(pc.getUniqueCharacterId());
     }
 
-    public Promise<IQuest> getQuest(String quest_id) {
+    public Promise<Quest> getQuest(String quest_id) {
         // Turn the Promise<Quest> into Promise<IQuest>
-        return quests.get(quest_id).next(p -> Promise.make(p.orElse(null)));
+        return quests.get(quest_id);
     }
 
     // REFACTOR THIS OUT ASAP
-    public Promise<IQuest> getQuestBySlug(String slug) {
+    public Promise<Quest> getQuestBySlug(String slug) {
         // Turn the Promise<Quest> into Promise<IQuest>
         Optional<Quest> quest = quests.asMap().values().stream().filter(v -> v.getSlug().equals(slug)).findFirst();
 
@@ -163,14 +193,12 @@ public class QuestAPI extends ListenerModule {
 
         JsonObject jo = new JsonObject();
         jo.add("slug", new JsonPrimitive(slug));
-        return rpc.getQuest(jo).next(p -> {
+        return rpc.getQuest(jo).onSuccess(p -> {
             Quest q = p.orElse(null);
 
             if(q != null && quests.getIfPresent(q.getId()) == null) {
                 quests.put(q.getId(), q);
             }
-
-            return Promise.make(q);
         });
     }
 
@@ -192,11 +220,10 @@ public class QuestAPI extends ListenerModule {
         return rpc.getPlayerQuests(pc.getUniqueCharacterId()).onSuccess(val -> {
             Collection<QuestInstance> quests = val.orElse(ImmutableList.of())
                     // Filter out quests that no longer exist
-                    .stream().filter(v -> v.getQuest() != null).collect(Collectors.toList());
+                    .stream().filter(v -> v != null).collect(Collectors.toList());
 
             // Set the player and add the instance to the respective quest
             quests.forEach(qi -> qi.setPlayer(pc));
-            quests.forEach(qi -> qi.getQuest().setInstance(pc.getUniqueCharacterId(), qi));
 
             playerQuestsLoaded.putAll(pc.getUniqueCharacterId(), quests);
         });
@@ -205,12 +232,10 @@ public class QuestAPI extends ListenerModule {
     private void onLoginComplete(PlayerCharacter pc) {
         // Set the instance in the quest after loading has completed. This is because the quest may act on the
         // addition immediately, and we don't want anything occurring during player load.
-        for (IQuestInstance instance : playerQuestsLoaded.get(pc.getUniqueCharacterId())) {
+        for (IQuestInstance instance : playerQuestsLoaded.removeAll(pc.getUniqueCharacterId())) {
             playerQuests.put(pc.getUniqueCharacterId(), instance);
             instance.getQuest().setInstance(pc.getUniqueCharacterId(), instance);
         }
-
-        playerQuestsLoaded.removeAll(pc.getUniqueCharacterId());
     }
 
     /**
@@ -220,8 +245,6 @@ public class QuestAPI extends ListenerModule {
         // Remove the instance from quests.
         for (IQuestInstance instance : getPlayerQuests(pc))
             instance.getQuest().removeInstance(pc.getUniqueCharacterId());
-
-        // TODO: create an API endpoint to save all quests in one query
 
         return rpc.savePlayerQuests(pc.getUniqueCharacterId(), playerQuests.removeAll(pc.getUniqueCharacterId()));
     }
@@ -235,7 +258,7 @@ public class QuestAPI extends ListenerModule {
         return this.rpc.deletePlayerQuests(pc.getUniqueCharacterId());
     }
 
-    public void reloadQuests() throws Throwable {
+    public void reloadQuests() {
         // Make all quests think the user has logged out.
         for (CharacterId characterId : playerQuests.keys()) {
             onLogout(Characters.getPlayerCharacter(characterId)).get();
@@ -322,7 +345,9 @@ public class QuestAPI extends ListenerModule {
                     if(in instanceof IInportValue) {
                         IInportValue inv = (IInportValue)in;
                         try {
-                            inv.setDefaultValue(context.deserialize(inportEntry.getValue(), inv.getValueClass()));
+                            Object inObj = context.deserialize(inportEntry.getValue(), inv.getValueClass().getType());
+                            if(inObj != null)
+                                inv.setDefaultValue(inObj);
                         } catch(Exception e) {
                             throw new IllegalArgumentException("Failed to decode inport value: " + inportEntry.getKey() + " in " + nodeClass.getSimpleName(), e);
                         }
@@ -338,7 +363,9 @@ public class QuestAPI extends ListenerModule {
                     }
 
                     try {
-                        f.set(node, context.deserialize(optionEntry.getValue(), f.getType()));
+                        Object optObj = context.deserialize(optionEntry.getValue(), f.getType());
+                        if(optObj != null)
+                            f.set(node, optObj);
                     } catch(Exception e) {
                         throw new IllegalArgumentException("Failed to decode option value: " + optionEntry.getKey() + " in " + nodeClass.getSimpleName(), e);
                     }

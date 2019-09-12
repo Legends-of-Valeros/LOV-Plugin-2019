@@ -127,7 +127,6 @@ public class ItemUtil {
             return false; // Can't give empty item.
         }
 
-
         Inventory inv = player.getInventory();
         for (int i = 0; i < inv.getSize(); i++) { // Add the possible items to the player's inventory.
             ItemStack item = inv.getItem(i);

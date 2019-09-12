@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.regions.core;
 
 import com.google.gson.annotations.SerializedName;
-import com.legendsofvaleros.api.Get;
+import com.legendsofvaleros.api.Ref;
 import com.legendsofvaleros.modules.quests.api.IQuest;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -19,7 +19,7 @@ public class Region implements IRegion {
     private RegionBounds bounds;
     public boolean allowAccess = false;
     public boolean allowHearthstone = true;
-    public List<Get<IQuest>> quests = new ArrayList<>();
+    public List<Ref<IQuest>> quests = new ArrayList<>();
 
     public String msgEnter;
     public String msgExit;

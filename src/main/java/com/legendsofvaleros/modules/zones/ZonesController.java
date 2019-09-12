@@ -192,12 +192,11 @@ public class ZonesController extends ZonesAPI {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
+        if (event.getFrom().getBlock().getLocation().equals(event.getTo().getBlock().getLocation()))
+            return;
+
         Player p = event.getPlayer();
         if (!Characters.isPlayerCharacterLoaded(p)) {
-            return;
-        }
-
-        if(event.getFrom().toVector().distance(event.getTo().toVector()) == 0) {
             return;
         }
 

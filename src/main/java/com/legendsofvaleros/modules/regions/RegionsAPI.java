@@ -55,6 +55,8 @@ public class RegionsAPI extends ListenerModule {
     }
 
     public void setRegionAccessibility(PlayerCharacter pc, IRegion region, boolean accessible) {
+        if(region == null) return;
+
         playerAccess.get(pc.getUniqueCharacterId()).setAccessibility(region, accessible);
     }
 
@@ -76,11 +78,7 @@ public class RegionsAPI extends ListenerModule {
         super.onPostLoad();
         this.rpc = APIController.create(RPC.class);
 
-        try {
-            this.loadAll().get();
-        } catch (Throwable th) {
-            th.printStackTrace();
-        }
+        this.loadAll().get();
     }
 
     public Promise<List<Region>> loadAll() {

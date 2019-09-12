@@ -6,7 +6,7 @@ import com.codingforcookies.robert.item.ItemBuilder;
 import com.codingforcookies.robert.slot.Slot;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.google.common.util.concurrent.SettableFuture;
-import com.legendsofvaleros.api.Get;
+import com.legendsofvaleros.api.Ref;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterFinishLoadingEvent;
@@ -39,7 +39,7 @@ public class TraitQuestGiver extends LOVTrait {
     public String text;
     public Hologram available;
 
-    public Get<IQuest>[] quests;
+    public Ref<IQuest>[] quests;
 
     @Override
     public void onSpawn() {
@@ -179,9 +179,11 @@ public class TraitQuestGiver extends LOVTrait {
                 return;
             }
 
-            for (Get<IQuest> quest : trait.quests) {
+            for (Ref<IQuest> ref : trait.quests) {
+                if(ref.get() == null) continue;
+
                 // If the quest can be accepted, the marker should be active.
-                if (quest.get().getStatus(pc).canAccept()) {
+                if (ref.get().getStatus(pc).canAccept()) {
                     // trait.available.getVisibilityManager().showTo(pc.getPlayer());
                     return;
                 }

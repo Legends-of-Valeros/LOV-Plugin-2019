@@ -5,14 +5,11 @@ import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.gear.api.IGear;
 import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
-import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
-import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
-import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
-import com.legendsofvaleros.modules.quests.core.ports.IOutportValue;
+import com.legendsofvaleros.modules.quests.core.ports.*;
 
 public class SelectItemNode extends AbstractQuestNode<IGear> {
     @SerializedName("Items")
-    public IInportValue<IGear, IGear[]> items = new IInportValue<>(this, IGear[].class, new Gear[0]);
+    public IInportReference<IGear, IGear[]> items = IInportValue.ref(this, IGear[].class);
 
     @SerializedName("Selected")
     public IOutportTrigger<IGear> onSelected = new IOutportTrigger<>(this);
@@ -23,11 +20,7 @@ public class SelectItemNode extends AbstractQuestNode<IGear> {
     });
 
     @SerializedName("Execute")
-    public IInportTrigger<IGear> onExecute = new IInportTrigger<>(this, (instance, data) -> {
-        // TODO: create selection GUI
-
-        onSelected.run(instance);
-    });
+    public IInportTrigger<IGear> onExecute = IInportTrigger.empty(this);
 
     public SelectItemNode(String id) {
         super(id);

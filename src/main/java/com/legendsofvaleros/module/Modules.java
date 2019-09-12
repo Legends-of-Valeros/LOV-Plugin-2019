@@ -32,7 +32,7 @@ public class Modules {
     /**
      * Attempt to load all modules that are marked as "enabled."
      */
-    public static void loadModules() {
+    public static void loadModules() throws Exception {
         long enabled = modules.values().stream().filter(InternalModule::isEnabled).count();
 
         getLogger().log(Level.INFO, "Attempting to load {0} enabled modules...", enabled);
@@ -68,7 +68,7 @@ public class Modules {
                     loadOrder.add(module);
                 } catch (Exception e) {
                     getLogger().severe("Failed to load module. Aborting! Offender: " + module.getName());
-                    e.printStackTrace();
+                    throw e;
                 }
 
                 getLogger().info("");

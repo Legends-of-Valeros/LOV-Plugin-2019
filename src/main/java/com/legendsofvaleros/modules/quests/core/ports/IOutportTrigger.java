@@ -1,11 +1,9 @@
 package com.legendsofvaleros.modules.quests.core.ports;
 
-import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.quests.api.IQuestInstance;
 import com.legendsofvaleros.modules.quests.api.IQuestNode;
 import com.legendsofvaleros.modules.quests.api.ports.INodeOutput;
 import com.legendsofvaleros.modules.quests.api.ports.INodeRunnable;
-import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -43,12 +41,6 @@ public class IOutportTrigger<T> implements INodeOutput<IInportTrigger<?>> {
     }
 
     public void run(IQuestInstance instance) {
-        // If we're on the main thread, move to an async one.
-        if(Bukkit.isPrimaryThread()) {
-            QuestController.getInstance().getScheduler().async(() -> run(instance));
-            return;
-        }
-
         this.runnable.run(instance, instance.getNodeInstance(node));
 
         this.getConnected().stream().forEach(port -> port.run(instance));

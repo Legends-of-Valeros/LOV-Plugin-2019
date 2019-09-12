@@ -7,31 +7,33 @@ import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.quests.api.IQuestInstance;
 import com.legendsofvaleros.modules.quests.api.QuestEvent;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
-import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
-import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
-import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
-import com.legendsofvaleros.modules.quests.core.ports.IOutportValue;
+import com.legendsofvaleros.modules.quests.core.ports.*;
+
+import java.util.Optional;
 
 public class KillNode extends AbstractQuestNode<Integer> {
     @SerializedName("Entity")
-    public IInportValue<Integer, IEntity> entity = new IInportValue<>(this, IEntity.class, null);
+    public IInportReference<Integer, IEntity> entity = IInportValue.ref(this, IEntity.class);
 
     @SerializedName("Count")
-    public IInportValue<Integer, Integer> count = new IInportValue<>(this, Integer.class, 1);
+    public IInportObject<Integer, Integer> count = IInportValue.of(this, Integer.class, 1);
 
     @SerializedName("Text")
     public IOutportValue<Integer, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
+        Optional<IEntity> op = entity.get(instance);
+        String name = op.isPresent() ? op.get().getName() : "<Unknown>";
+
         int count = this.count.get(instance);
         if(data == Integer.MAX_VALUE)
-            return "Killed " + (count > 1 ? count + "x" : "") + entity.get(instance).getName();
-        return "Kill " + (count > 1 ? count + "x" : "") + entity.get(instance).getName();
+            return "Killed " + (count > 1 ? count + "x" : "") + name;
+        return "Kill " + (count > 1 ? count + "x" : "") + name;
     });
 
     @SerializedName("Completed")
     public IOutportTrigger<Integer> onCompleted = new IOutportTrigger<>(this);
 
     @SerializedName("Activate")
-    public IInportTrigger<Integer> onActivate = new IInportTrigger<>(this, (instance, data) -> {
+    public IInportTrigger<Integer> onActivate = IInportTrigger.of(this, (instance, data) -> {
         // If it's not null, then this node has already been activated.
         if(data != null) {
             return;
@@ -49,7 +51,7 @@ public class KillNode extends AbstractQuestNode<Integer> {
         return null;
     }
 
-    @QuestEvent
+    @QuestEvent.Async
     public void onEvent(IQuestInstance instance, Integer data, CombatEngineDeathEvent event) {
         // If we aren't tracking, yet, ignore it.
         if(data == null || data == Integer.MAX_VALUE) {
@@ -60,8 +62,13 @@ public class KillNode extends AbstractQuestNode<Integer> {
             return;
         }
 
+        Optional<IEntity> op = entity.get(instance);
+        if(!op.isPresent()) {
+            return;
+        }
+
         Mob.Instance mobInstance = Mob.Instance.get(event.getDied().getLivingEntity());
-        if(mobInstance == null || mobInstance.entity != entity.get(instance)) {
+        if(mobInstance == null || mobInstance.entity != op.get()) {
             return;
         }
 

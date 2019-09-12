@@ -2,6 +2,7 @@ package com.legendsofvaleros.modules.quests.nodes.world;
 
 import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
+import com.legendsofvaleros.modules.quests.core.ports.IInportReference;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
@@ -13,11 +14,11 @@ public class AccessRegionNode extends AbstractQuestNode<Void> {
     public IOutportTrigger<Void> onCompleted = new IOutportTrigger<>(this);
     
     @SerializedName("Region")
-    public IInportValue<Void, IRegion> region = new IInportValue<>(this, IRegion.class, null);
+    public IInportReference<Void, IRegion> region = IInportValue.ref(this, IRegion.class);
     
     @SerializedName("Execute")
-    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> {
-        RegionController.getInstance().setRegionAccessibility(instance.getPlayerCharacter(), region.get(instance), true);
+    public IInportTrigger<Void> onExecute = IInportTrigger.async(this, (instance, data) -> {
+        RegionController.getInstance().setRegionAccessibility(instance.getPlayerCharacter(), region.get(instance).orElse(null), true);
 
         onCompleted.run(instance);
     });

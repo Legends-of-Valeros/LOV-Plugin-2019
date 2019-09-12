@@ -1,7 +1,9 @@
 package com.legendsofvaleros.modules.quests.registry;
 
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.quests.QuestController;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -9,9 +11,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.lang.reflect.Method;
+import java.util.*;
 
 /**
  * Used by quests to filter the player object from events so the quest system can route events to the
@@ -43,11 +44,15 @@ public class EventRegistry implements Listener {
                 }
             }
 
+            if(eh == null) {
+                eh = attemptCreateHandler(c);
+            }
+
             // Cache the class match to the handler list.
             handlers.put(c, eh);
         }
 
-        return Optional.ofNullable(handlers.get(c));
+        return handlers.get(c) != null ? Optional.of(handlers.get(c)) : Optional.empty();
     }
 
     public boolean hasHandler(Class<? extends Event> c) {
@@ -55,8 +60,6 @@ public class EventRegistry implements Listener {
     }
 
     public <T extends Event> void addHandler(Class<T> c, IQuestEventHandler<T> handler) {
-        handlers.put(c, handler);
-
         Bukkit.getServer().getPluginManager().registerEvent(c, this, EventPriority.MONITOR, (listener, event) -> {
             Player[] ps = handler.getPlayers(c.cast(event));
             if(ps == null) return;
@@ -67,5 +70,51 @@ public class EventRegistry implements Listener {
                 QuestController.getInstance().propagateEvent(Characters.getPlayerCharacter(p), c, event);
             }
         }, LegendsOfValeros.getInstance());
+
+        handlers.put(c, handler);
+    }
+
+    private IQuestEventHandler attemptCreateHandler(Class<? extends Event> c) {
+        List<Method> methods = new ArrayList<>();
+
+        for(Method m : c.getMethods()) {
+            if(m.getParameterTypes().length != 0) continue;
+
+            if(m.getReturnType() == Player.class
+                || m.getReturnType() == PlayerCharacter.class
+                || m.getReturnType() == CombatEntity.class) {
+                methods.add(m);
+            }
+        }
+
+        if(methods.size() == 0)
+            return null;
+
+        IQuestEventHandler handler = (event) -> {
+            Set<Player> players = new HashSet<>();
+
+            methods.forEach(m -> {
+                try {
+                    Object r = m.invoke(event);
+
+                    if(r instanceof Player)
+                        players.add((Player)r);
+                    else if(r instanceof PlayerCharacter)
+                        players.add(((PlayerCharacter)r).getPlayer());
+                    else if(r instanceof CombatEntity) {
+                        if(((CombatEntity)r).isPlayer())
+                            players.add((Player)((CombatEntity)r).getLivingEntity());
+                    }
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            });
+
+            return players.toArray(new Player[0]);
+        };
+
+        addHandler(c, handler);
+
+        return handler;
     }
 }

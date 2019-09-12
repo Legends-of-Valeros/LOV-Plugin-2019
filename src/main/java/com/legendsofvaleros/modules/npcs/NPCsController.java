@@ -11,7 +11,7 @@ import com.legendsofvaleros.modules.mailbox.MailboxController;
 import com.legendsofvaleros.modules.mount.MountsController;
 import com.legendsofvaleros.modules.npcs.commands.NPCCommands;
 import com.legendsofvaleros.modules.npcs.integration.*;
-import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
+import com.legendsofvaleros.modules.npcs.trait.CitizensTraitLOV;
 import com.legendsofvaleros.modules.npcs.trait.core.TraitTitle;
 import com.legendsofvaleros.modules.pvp.PvPController;
 import com.legendsofvaleros.modules.quests.QuestController;
@@ -56,14 +56,14 @@ public class NPCsController extends NPCsAPI {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onLeftClick(NPCLeftClickEvent event) {
-        if (!event.getNPC().hasTrait(TraitLOV.class)) return;
-        event.getNPC().getTrait(TraitLOV.class).onLeftClick(event.getClicker());
+        if (!event.getNPC().hasTrait(CitizensTraitLOV.class)) return;
+        event.getNPC().getTrait(CitizensTraitLOV.class).onLeftClick(event.getClicker());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onRightClick(NPCRightClickEvent event) {
-        if (!event.getNPC().hasTrait(TraitLOV.class)) return;
-        event.getNPC().getTrait(TraitLOV.class).onRightClick(event.getClicker());
+        if (!event.getNPC().hasTrait(CitizensTraitLOV.class)) return;
+        event.getNPC().getTrait(CitizensTraitLOV.class).onRightClick(event.getClicker());
     }
 
     public NPC getNPC(LivingEntity entity) {

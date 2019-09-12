@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.characters.util;
 
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.npcs.core.NPCEmulator;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.ChatColor;
@@ -31,7 +32,7 @@ public class ShitUtil {
 					ddelay = Long.parseLong(pair[1]);
 					break;
 				default:
-					NPCEmulator.speak(pair[0], p, pair[1]);
+					NPCEmulator.speak(NPCsController.getInstance().getNPC(pair[0]).get(), p, pair[1]);
 					break;
 			}
 			doShit(p, lines, i + 1, ddelay, complete);

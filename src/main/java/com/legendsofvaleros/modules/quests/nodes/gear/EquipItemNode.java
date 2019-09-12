@@ -2,33 +2,33 @@ package com.legendsofvaleros.modules.quests.nodes.gear;
 
 import com.codingforcookies.armorequip.ArmorEquipEvent;
 import com.google.gson.annotations.SerializedName;
-import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.gear.api.IGear;
 import com.legendsofvaleros.modules.gear.event.ItemEquipEvent;
 import com.legendsofvaleros.modules.quests.api.IQuestInstance;
 import com.legendsofvaleros.modules.quests.api.QuestEvent;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
-import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
-import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
-import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
-import com.legendsofvaleros.modules.quests.core.ports.IOutportValue;
+import com.legendsofvaleros.modules.quests.core.ports.*;
+
+import java.util.Optional;
 
 public class EquipItemNode extends AbstractQuestNode<Boolean> {
     @SerializedName("Item")
-    public IInportValue<Boolean, IGear> item = new IInportValue<>(this, IGear.class, GearController.ERROR_ITEM);
+    public IInportReference<Boolean, IGear> item = IInportValue.ref(this, IGear.class);
 
     @SerializedName("Text")
     public IOutportValue<Boolean, String> progressText = new IOutportValue<>(this, String.class, (instance, data) -> {
+        Optional<IGear> op = item.get(instance);
+        String name = op.isPresent() ? op.get().getName() : "<Unknown>";
         if(Boolean.TRUE.equals(data))
-            return "Equipped " + item.get(instance).getName();
-        return "Equip " + item.get(instance).getName();
+            return "Equipped " + name;
+        return "Equip " + name;
     });
 
     @SerializedName("Completed")
     public IOutportTrigger<Boolean> onCompleted = new IOutportTrigger<>(this);
 
     @SerializedName("Activate")
-    public IInportTrigger<Boolean> onActivate = new IInportTrigger<>(this, (instance, data) -> {
+    public IInportTrigger<Boolean> onActivate = IInportTrigger.of(this, (instance, data) -> {
         // If it's not null, then this node has already been activated.
         if(data != null) {
             return;
@@ -46,15 +46,17 @@ public class EquipItemNode extends AbstractQuestNode<Boolean> {
         return null;
     }
 
-    @QuestEvent
+    @QuestEvent.Async
     public void onEvent(IQuestInstance instance, Boolean data, ArmorEquipEvent event) {
         // If we aren't tracking, yet, ignore it.
         if(data == null || data) {
             return;
         }
 
+        Optional<IGear> op = item.get(instance);
+
         // If the item equipped is not the same as the item we're tracking, ignore it
-        if (!item.get(instance).isSimilar(event.getNewArmorPiece())) {
+        if (!op.isPresent() || !op.get().isSimilar(event.getNewArmorPiece())) {
             return;
         }
 
@@ -70,8 +72,10 @@ public class EquipItemNode extends AbstractQuestNode<Boolean> {
             return;
         }
 
+        Optional<IGear> op = item.get(instance);
+
         // If the item equipped is not the same as the item we're tracking, ignore it
-        if(!item.get(instance).isSimilar(event.getGear())) {
+        if(!op.isPresent() || !op.get().isSimilar(event.getGear())) {
             return;
         }
 

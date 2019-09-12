@@ -6,7 +6,7 @@ import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.entity.Player;
 
 public abstract class LOVTrait {
-    public transient TraitLOV trait;
+    public transient CitizensTraitLOV trait;
 
     public transient String id;
 

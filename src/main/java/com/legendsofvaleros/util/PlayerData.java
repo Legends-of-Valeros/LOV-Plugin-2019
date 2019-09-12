@@ -48,7 +48,7 @@ public class PlayerData {
     }
 
     public static Promise save(PlayerData data) {
-        return rpc.savePlayer(data).next(v -> Promise.make(v != null));
+        return rpc.savePlayer(data);
     }
 
 }

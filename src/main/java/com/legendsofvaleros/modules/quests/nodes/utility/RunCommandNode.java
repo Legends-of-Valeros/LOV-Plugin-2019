@@ -2,6 +2,7 @@ package com.legendsofvaleros.modules.quests.nodes.utility;
 
 import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
+import com.legendsofvaleros.modules.quests.core.ports.IInportObject;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
@@ -13,10 +14,10 @@ public class RunCommandNode extends AbstractQuestNode<Void> {
     public IOutportTrigger<Void> onCompleted = new IOutportTrigger<>(this);
     
     @SerializedName("Command")
-    public IInportValue<Void, String> command = new IInportValue<>(this, String.class, "N/A");
+    public IInportObject<Void, String> command = IInportValue.of(this, String.class, "N/A");
     
     @SerializedName("Execute")
-    public IInportTrigger<Void> onExecute = new IInportTrigger<>(this, (instance, data) -> {
+    public IInportTrigger<Void> onExecute = IInportTrigger.of(this, (instance, data) -> {
         Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), Moustache.translate(instance.getPlayer(), command.get(instance)));
 
         onCompleted.run(instance);

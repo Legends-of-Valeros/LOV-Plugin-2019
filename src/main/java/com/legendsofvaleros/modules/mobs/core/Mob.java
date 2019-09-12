@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.mobs.core;
 
 import com.google.gson.annotations.SerializedName;
+import com.legendsofvaleros.api.Ref;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
@@ -29,7 +30,7 @@ public class Mob implements IEntity {
 
     private String name;
     private EntityType type;
-    private ISkin skin;
+    private Ref<ISkin> skin;
 
     private EntityRarity rarity;
     private String archetype;
@@ -68,7 +69,7 @@ public class Mob implements IEntity {
 
     @Override
     public ISkin getSkin() {
-        return skin;
+        return skin != null ? skin.get() : null;
     }
 
     @Override

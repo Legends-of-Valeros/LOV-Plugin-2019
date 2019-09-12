@@ -5,6 +5,7 @@ import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.quests.api.IQuestInstance;
 import com.legendsofvaleros.modules.quests.core.AbstractQuestNode;
+import com.legendsofvaleros.modules.quests.core.ports.IInportObject;
 import com.legendsofvaleros.modules.quests.core.ports.IInportTrigger;
 import com.legendsofvaleros.modules.quests.core.ports.IInportValue;
 import com.legendsofvaleros.modules.quests.core.ports.IOutportTrigger;
@@ -20,14 +21,16 @@ public class WaitTicksNode extends AbstractQuestNode<Boolean> {
     public IOutportTrigger<Boolean> onCompleted = new IOutportTrigger<>(this);
     
     @SerializedName("Seconds")
-    public IInportValue<Boolean, Double> seconds = new IInportValue<>(this, Double.class, 0D);
+    public IInportObject<Boolean, Double> seconds = IInportValue.of(this, Double.class, 0D);
     
     @SerializedName("Execute")
-    public IInportTrigger<Boolean> onExecute = new IInportTrigger<>(this, (instance, data) -> {
+    public IInportTrigger<Boolean> onExecute = IInportTrigger.of(this, (instance, data) -> {
         // If it's not null, then this node has already been activated.
         if(data != null) {
             return;
         }
+
+        instance.setNodeInstance(this, false);
 
         this.onActivated(instance, instance.getNodeInstance(this));
     });
@@ -44,7 +47,7 @@ public class WaitTicksNode extends AbstractQuestNode<Boolean> {
     @Override
     public void onActivated(IQuestInstance instance, Boolean data) {
         // If we aren't waiting yet, yet, ignore it.
-        if(data == null) {
+        if(data == null || data) {
             return;
         }
 
@@ -61,8 +64,6 @@ public class WaitTicksNode extends AbstractQuestNode<Boolean> {
         if(it != null) {
             it.cancel();
         }
-
-        instance.setNodeInstance(this, false);
     }
 
     @Override

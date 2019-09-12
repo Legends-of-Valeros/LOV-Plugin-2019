@@ -314,7 +314,7 @@ public class Gear implements IGear {
             Gear.Instance data = new Gear.Instance(gear, nbt.getString("lov.cache") == null ? UUID.randomUUID() : UUID.fromString(nbt.getString("lov.cache")));
             data.version = nbt.getInteger("lov.version");
             data.amount = stack.getAmount();
-            data.persists = APIController.getInstance().getGson().fromJson(nbt.getString("lov.persist"), PersistMap.class);
+            data.persists = APIController.getInstance().fromJson(nbt.getString("lov.persist"), PersistMap.class).get();
 
             return data;
         }
@@ -406,7 +406,7 @@ public class Gear implements IGear {
 
                 // Turn the persistent data into a JSON string
                 // ?Should we store persistent data in raw NBT?
-                String json = APIController.getInstance().getGson().toJson(persists);
+                String json = APIController.getInstance().toJson(persists).get();
                 builder.setTag("lov.persist", json);
 
                 // Hide all special vanilla attributes.
@@ -464,7 +464,7 @@ public class Gear implements IGear {
 
         @Override
         public String toString() {
-            return APIController.getInstance().getGson().toJson(this);
+            return APIController.getInstance().toJson(this).get();
         }
     }
 }
