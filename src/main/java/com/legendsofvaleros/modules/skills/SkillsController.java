@@ -8,8 +8,8 @@ import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.cooldowns.api.Cooldowns;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.modules.mobs.MobsController;
@@ -27,6 +27,7 @@ import com.legendsofvaleros.modules.skills.listener.HotbarListener;
 import com.legendsofvaleros.modules.skills.listener.SkillListener;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.model.Model;
+import com.legendsofvaleros.util.model.Models;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -79,7 +80,7 @@ public class SkillsController extends SkillsAPI {
 
     @EventHandler
     public void onCharacterOptionsOpen(PlayerOptionsOpenEvent event) {
-        event.addSlot(Model.stack("menu-skill-tree-button").setName("Skill Tree").create(), (gui, p, type) -> new GUISkillsCore(Characters.getPlayerCharacter(p)).open(p));
+        event.addSlot(Models.stack("menu-skill-tree-button").setName("Skill Tree").create(), (gui, p, type) -> new GUISkillsCore(Characters.getPlayerCharacter(p)).open(p));
     }
 
     public static void castSkill(CombatEntity caster, Skill skill, int level) {
@@ -148,6 +149,6 @@ public class SkillsController extends SkillsAPI {
     }
 
     public static ItemBuilder getItemRepresentation(Skill skill) {
-        return Model.stack("skill-" + skill.getId());
+        return Models.stack("skill-" + skill.getId());
     }
 }

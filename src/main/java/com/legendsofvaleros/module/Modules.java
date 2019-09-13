@@ -113,6 +113,8 @@ public class Modules {
 
         getLogger().info("Loaded " + i + " integrations");
 
+        i = 0;
+
         for (InternalModule module : loadOrder) {
             if (module.isLoaded) {
                 module.instance.onPostLoad();

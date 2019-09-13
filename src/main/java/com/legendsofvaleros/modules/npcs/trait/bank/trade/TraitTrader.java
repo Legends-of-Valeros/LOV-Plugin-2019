@@ -12,7 +12,7 @@ import com.legendsofvaleros.modules.gear.api.IGear;
 import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.gear.core.ItemUtil;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
-import com.legendsofvaleros.util.model.Model;
+import com.legendsofvaleros.util.model.Models;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TraitTrader extends LOVTrait {
-    private static final ItemStack SELL_BUTTON = Model.stack("menu-price-button").setName("Sell Items").create();
+    private static final ItemStack SELL_BUTTON = Models.stack("menu-price-button").setName("Sell Items").create();
 
     private static class BuyGUI extends GUI {
         BuyGUI(Player p, Gear[] gears, int[] costs) {

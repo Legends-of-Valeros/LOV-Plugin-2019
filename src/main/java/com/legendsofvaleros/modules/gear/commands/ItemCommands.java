@@ -9,7 +9,7 @@ import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.gear.core.ItemUtil;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.model.Model;
+import com.legendsofvaleros.util.model.Models;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -20,7 +20,7 @@ public class ItemCommands extends BaseCommand {
     @CommandPermission("gear.reload")
     public void cmdReload(CommandSender sender) {
         GearController.getInstance().loadAll();
-        Model.loadAll();
+        Models.loadAll();
 
         MessageUtil.sendUpdate(sender, "Item and item model cache reloaded.");
     }

@@ -19,7 +19,7 @@ import com.legendsofvaleros.modules.quests.events.QuestEndedEvent;
 import com.legendsofvaleros.modules.quests.events.QuestStartedEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
-import com.legendsofvaleros.util.model.Model;
+import com.legendsofvaleros.util.model.Models;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -46,7 +46,7 @@ public class TraitQuestGiver extends LOVTrait {
         all.add(this);
 
         available = trait.nameplates.getOrAdd(MARKER);
-        available.appendItemLine(Model.stack("marker-quest-available").create());
+        available.appendItemLine(Models.stack("marker-quest-available").create());
         available.getVisibilityManager().setVisibleByDefault(false);
 
         Marker.update(this);

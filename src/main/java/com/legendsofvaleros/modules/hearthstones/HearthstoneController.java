@@ -8,7 +8,7 @@ import com.legendsofvaleros.modules.hearthstones.core.HomePoint;
 import com.legendsofvaleros.modules.hearthstones.core.HomeTeleporter;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.playermenu.events.PlayerOptionsOpenEvent;
-import com.legendsofvaleros.util.model.Model;
+import com.legendsofvaleros.util.model.Models;
 import org.bukkit.event.EventHandler;
 
 @DependsOn(CombatEngine.class)
@@ -38,7 +38,7 @@ public class HearthstoneController extends HearthstoneAPI {
         HomePoint point = getHome(Characters.getPlayerCharacter(event.getPlayer()));
         if (point == null) return;
 
-        event.addSlot(Model.stack("menu-hearthstone-button").setName("Hearthstone: " + point.name).create(), (gui, p, type) -> {
+        event.addSlot(Models.stack("menu-hearthstone-button").setName("Hearthstone: " + point.name).create(), (gui, p, type) -> {
             gui.close(p);
 
             teleporter.attemptTeleport(Characters.getPlayerCharacter(p));

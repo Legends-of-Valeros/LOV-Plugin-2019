@@ -9,7 +9,7 @@ import com.legendsofvaleros.modules.skills.SkillsController;
 import com.legendsofvaleros.modules.skills.core.SkillTree;
 import com.legendsofvaleros.modules.skills.core.SkillTree.SpecializedTree;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.model.Model;
+import com.legendsofvaleros.util.model.Models;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -21,7 +21,7 @@ import java.util.Map.Entry;
 
 public class GUISkillsCore extends GUI {
 	private ItemStack stack;
-	@Override public void onOpen(Player p, InventoryView view) { p.getInventory().setItem(17, Model.merge("menu-ui-chest-3", (stack = p.getInventory().getItem(17)))); }
+	@Override public void onOpen(Player p, InventoryView view) { p.getInventory().setItem(17, Models.merge("menu-ui-chest-3", (stack = p.getInventory().getItem(17)))); }
 	@Override public void onClose(Player p, InventoryView view) { p.getInventory().setItem(17, stack); }
 	
 	public GUISkillsCore(PlayerCharacter pc) {
@@ -37,12 +37,12 @@ public class GUISkillsCore extends GUI {
 		boolean hasSkill1 = treeSkills[0].hasSkill(pc);
 		boolean hasSkill2 = treeSkills[1].hasSkill(pc);
 		
-		slot(0, Model.stack("menu-arrow-left-button")
+		slot(0, Models.stack("menu-arrow-left-button")
 				.setName(treeSkills[0].name)
 				.addLore("", (pc.getExperience().getLevel() >= 10 ? (hasSkill1 ? ChatColor.YELLOW + "Unlocked" : (hasSkill2 ? ChatColor.RED + "Locked" : ChatColor.GREEN + "Available")) : ChatColor.GRAY + "Unlocked at level 10"))
 				.setEnchanted(hasSkill1)
 				.create(), (gui, p, clickType) -> new GUISkillsSpecialized(pc, true, treeSkills[0]).open(p, Flag.REPLACE));
-		slot(8, Model.stack("menu-arrow-right-button")
+		slot(8, Models.stack("menu-arrow-right-button")
 				.setName(treeSkills[1].name)
 				.addLore("", (pc.getExperience().getLevel() >= 10 ? (hasSkill2 ? ChatColor.YELLOW + "Unlocked" : (hasSkill1 ? ChatColor.RED + "Locked" : ChatColor.GREEN + "Available")) : ChatColor.GRAY + "Unlocked at level 10"))
 				.setEnchanted(hasSkill2)

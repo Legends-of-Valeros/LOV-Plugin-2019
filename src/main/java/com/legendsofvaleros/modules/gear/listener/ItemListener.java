@@ -129,7 +129,7 @@ public class ItemListener implements Listener {
                 ItemUtil.giveItem(pc, instance);
                 // Dont log currency drops since they are logged on their own.
                 // TODO: this should made cleaner
-                if (instance.gear.getModelId().toLowerCase().contains("crown")) {
+                if (instance.gear.getModel().getId().toLowerCase().contains("crown")) {
                     return;
                 }
 

@@ -5,6 +5,7 @@ import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.npcs.nameplate.Nameplates;
 import com.legendsofvaleros.util.model.Model;
+import com.legendsofvaleros.util.model.Models;
 import net.citizensnpcs.api.trait.Trait;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
@@ -34,7 +35,7 @@ public class MobTrait extends Trait {
 		nameplate = Nameplates.get(entity).get(Nameplates.BASE).appendTextLine(instance.entity.getRarity().newNameplate(instance));
 		
 		{
-			Model model = Model.get("instance-rarity-" + instance.entity.getRarity().name().toLowerCase());
+			Model model = Models.get("instance-rarity-" + instance.entity.getRarity().name().toLowerCase());
 			if(model != Model.NONE) {
 				rarityPlate = nameplate.getParent().insertItemLine(0, model.toStack().create());
 			}

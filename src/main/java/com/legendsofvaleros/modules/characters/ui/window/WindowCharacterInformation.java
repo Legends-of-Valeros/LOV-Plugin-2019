@@ -8,7 +8,7 @@ import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.ui.CharacterSelectionListener;
-import com.legendsofvaleros.util.model.Model;
+import com.legendsofvaleros.util.model.Models;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -20,7 +20,7 @@ public class WindowCharacterInformation extends GUI {
     private ItemStack stack;
 
     @Override public void onOpen(Player p, InventoryView view) {
-        p.getInventory().setItem(17, Model.merge("menu-ui-3x3", (stack = p.getInventory().getItem(17))));
+        p.getInventory().setItem(17, Models.merge("menu-ui-3x3", (stack = p.getInventory().getItem(17))));
     }
 
     @Override public void onClose(Player p, InventoryView view) {
@@ -53,9 +53,9 @@ public class WindowCharacterInformation extends GUI {
         slot(5, new ItemBuilder(Material.PAPER).setName(null).create(), null);
 
 
-        slot(6, Model.stack("menu-arrow-left-button").create(), (gui, p, type) -> gui.close(p));
+        slot(6, Models.stack("menu-arrow-left-button").create(), (gui, p, type) -> gui.close(p));
 
-        slot(8, new ItemBuilder(Model.stack("menu-characters-delete-button").setName(ChatColor.RED + "" + ChatColor.BOLD + "Delete Character").create()).addLore("WARNING: THIS IS PERMANENT").create(), (gui, p, type) -> new WindowYesNo() {
+        slot(8, new ItemBuilder(Models.stack("menu-characters-delete-button").setName(ChatColor.RED + "" + ChatColor.BOLD + "Delete Character").create()).addLore("WARNING: THIS IS PERMANENT").create(), (gui, p, type) -> new WindowYesNo() {
             public void onAccept(GUI gui, Player p) {
                 listener.onCharacterRemoved(p, new CharacterId(p.getUniqueId(), characterId));
 

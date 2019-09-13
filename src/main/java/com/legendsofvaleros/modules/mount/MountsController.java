@@ -13,7 +13,7 @@ import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.playermenu.events.PlayerOptionsOpenEvent;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.model.Model;
+import com.legendsofvaleros.util.model.Models;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -60,7 +60,7 @@ public class MountsController extends MountAPI {
 
         if(mounts.size() == 0) return;
 
-        event.addSlot(Model.stack("menu-mounts-button").setName("Mount").create(), (gui, p, event12) -> {
+        event.addSlot(Models.stack("menu-mounts-button").setName("Mount").create(), (gui, p, event12) -> {
             gui.close(p);
 
             if (mounts.size() == 1) {

@@ -12,7 +12,7 @@ import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.modules.playermenu.InventoryManager;
 import com.legendsofvaleros.modules.playermenu.events.PlayerMenuOpenEvent;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.model.Model;
+import com.legendsofvaleros.util.model.Models;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -104,8 +104,8 @@ class TradeState {
             g1.getInventory().setItem(5 + slot, g2.getInventory().getItem(slot));
         }
 
-        g1.slot(5, 2, Model.stack("menu-accept-button" + (g2.accepted ? "-pressed" : "")).setName(g2.accepted ? "Accepted" : "Not Accepted").create(), null);
-        g2.slot(5, 2, Model.stack("menu-accept-button" + (g1.accepted ? "-pressed" : "")).setName(g1.accepted ? "Accepted" : "Not Accepted").create(), null);
+        g1.slot(5, 2, Models.stack("menu-accept-button" + (g2.accepted ? "-pressed" : "")).setName(g2.accepted ? "Accepted" : "Not Accepted").create(), null);
+        g2.slot(5, 2, Models.stack("menu-accept-button" + (g1.accepted ? "-pressed" : "")).setName(g1.accepted ? "Accepted" : "Not Accepted").create(), null);
 
         if (g1.accepted && g2.accepted) {
             for (int i = 0; i < 7; i++) {
@@ -139,7 +139,7 @@ class TradeState {
 
 class TradeGUI extends GUI {
     private ItemStack stack;
-    @Override public void onOpen(Player p, InventoryView view) { p.getInventory().setItem(17, Model.merge("menu-ui-trade", (stack = p.getInventory().getItem(17)))); }
+    @Override public void onOpen(Player p, InventoryView view) { p.getInventory().setItem(17, Models.merge("menu-ui-trade", (stack = p.getInventory().getItem(17)))); }
     @Override public void onClose(Player p, InventoryView view) {
         p.getInventory().setItem(17, stack);
     }
@@ -177,15 +177,15 @@ class TradeGUI extends GUI {
                 });
 
         for (int i = 0; i < 3; i++)
-            slot(4, i, Model.stack("empty-slot").create(), null);
+            slot(4, i, Models.stack("empty-slot").create(), null);
 
         regenButtons();
     }
 
     public void regenButtons() {
-        slot(0, 2, Model.stack("menu-decline-button").setName("Cancel").create(), (gui, p, event) -> state.close());
+        slot(0, 2, Models.stack("menu-decline-button").setName("Cancel").create(), (gui, p, event) -> state.close());
 
-        slot(3, 2, Model.stack("menu-accept-button" + (accepted ? "-pressed" : "")).setName(accepted ? "You've accepted" : "Accept").create(), (gui, p, event) -> {
+        slot(3, 2, Models.stack("menu-accept-button" + (accepted ? "-pressed" : "")).setName(accepted ? "You've accepted" : "Accept").create(), (gui, p, event) -> {
             accepted = !accepted;
             state.updateSlots(false);
         });

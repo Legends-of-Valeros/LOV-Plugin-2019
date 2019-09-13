@@ -15,7 +15,7 @@ import com.legendsofvaleros.modules.gear.component.GearComponentOrder;
 import com.legendsofvaleros.modules.gear.component.PersistMap;
 import com.legendsofvaleros.modules.gear.trigger.GearTrigger;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.model.Model;
+import com.legendsofvaleros.util.model.IModel;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -33,7 +33,7 @@ public class Gear implements IGear {
 
     private String name;
     private GearType type;
-    private String modelId;
+    private IModel model;
     private byte maxAmount = 1;
     private GearRarity rarity;
     private ComponentMap components;
@@ -70,14 +70,9 @@ public class Gear implements IGear {
         return type;
     }
 
-
     @Override
-    public String getModelId() {
-        return modelId;
-    }
-
-    public Model getModel() {
-        return Model.get(modelId);
+    public IModel getModel() {
+        return model;
     }
 
 
@@ -138,7 +133,7 @@ public class Gear implements IGear {
 
     @Override
     public String toString() {
-        return "GearController(version=" + version + ", id=" + id + ", name=" + name + ", type=" + type + ", model=" + modelId + ", rarity=" + rarity + ", components=" + components + ")";
+        return "GearController(version=" + version + ", id=" + id + ", name=" + name + ", type=" + type + ", model=" + (model != null ? model.getId() : null) + ", rarity=" + rarity + ", components=" + components + ")";
     }
 
     public static Gear fromId(String id) {

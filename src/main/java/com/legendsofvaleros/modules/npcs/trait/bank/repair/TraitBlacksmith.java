@@ -11,7 +11,7 @@ import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.gear.core.ItemUtil;
 import com.legendsofvaleros.modules.gear.event.RepairItemEvent;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
-import com.legendsofvaleros.util.model.Model;
+import com.legendsofvaleros.util.model.Models;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -51,7 +51,7 @@ public class TraitBlacksmith extends LOVTrait {
         }
 
         public void applyStacked(Player p) {
-            p.getInventory().setItem(17, Model.merge("menu-ui-blacksmith", stack));
+            p.getInventory().setItem(17, Models.merge("menu-ui-blacksmith", stack));
         }
 
         double costFactor;

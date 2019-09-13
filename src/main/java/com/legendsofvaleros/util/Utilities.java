@@ -7,7 +7,7 @@ import com.legendsofvaleros.scheduler.InternalScheduler;
 import com.legendsofvaleros.scheduler.InternalTask;
 import com.legendsofvaleros.util.commands.LOVCommands;
 import com.legendsofvaleros.util.commands.TemporaryCommand;
-import com.legendsofvaleros.util.model.Model;
+import com.legendsofvaleros.util.model.Models;
 import com.legendsofvaleros.util.title.TitleUtil;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
@@ -54,7 +54,7 @@ public class Utilities extends ListenerModule {
 
         new TitleUtil();
 
-        Model.onLoad();
+        Models.onLoad();
         MessageUtil.onEnable();
         Advancements.onEnable();
     }
@@ -63,7 +63,7 @@ public class Utilities extends ListenerModule {
     public void onPostLoad() {
         super.onPostLoad();
 
-        Model.onPostLoad();
+        Models.onPostLoad();
 
     }
 

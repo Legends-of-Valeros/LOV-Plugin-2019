@@ -13,7 +13,7 @@ import com.legendsofvaleros.modules.playermenu.events.PlayerMenuOpenEvent;
 import com.legendsofvaleros.modules.playermenu.events.PlayerOptionsOpenEvent;
 import com.legendsofvaleros.util.CustomEntityFirework;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.model.Model;
+import com.legendsofvaleros.util.model.Models;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import org.bukkit.ChatColor;
@@ -64,7 +64,7 @@ public class TestListener implements Listener {
             return;
         }
 
-        event.addSlot(Model.stack("menu-characters-button").setName("Character Selection").create(), (gui, p, event1) -> Characters.openCharacterSelection(p));
+        event.addSlot(Models.stack("menu-characters-button").setName("Character Selection").create(), (gui, p, event1) -> Characters.openCharacterSelection(p));
     }
 
     @EventHandler(priority = EventPriority.LOW)

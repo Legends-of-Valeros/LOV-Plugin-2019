@@ -12,6 +12,7 @@ import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.gear.core.ItemUtil;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.model.Model;
+import com.legendsofvaleros.util.model.Models;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -21,7 +22,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class ItemMorphGUI extends GUI {
-    private static final ItemBuilder ACCEPT_BUTTON = Model.stack("menu-accept-button").setName(null);
+    private static final ItemBuilder ACCEPT_BUTTON = Models.stack("menu-accept-button").setName(null);
 
     @Override
     public void onClose(Player p, InventoryView view) {
