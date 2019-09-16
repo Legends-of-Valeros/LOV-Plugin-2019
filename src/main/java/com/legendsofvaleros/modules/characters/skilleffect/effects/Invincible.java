@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.characters.skilleffect.effects;
 
-import com.codingforcookies.robert.core.RomanNumeral;
+import com.legendsofvaleros.util.RomanNumeral;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.skilleffect.*;
 import com.legendsofvaleros.modules.characters.skilleffect.PersistingEffect.PersistingEffectBuilder;

@@ -1,4 +1,4 @@
-package com.codingforcookies.robert.core;
+package com.legendsofvaleros.util;
 
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.StringUtils;
@@ -19,8 +19,9 @@ public class StringUtil {
     }
 
     public static int getStringWidth(String str) {
-        if (str.length() == 0)
+        if (str.length() == 0) {
             return 0;
+        }
 
         ChatColor test;
         int add = 0;
@@ -28,13 +29,15 @@ public class StringUtil {
         int result = 0;
         for (int i = 0; i < str.length(); i++) {
             if (str.charAt(i) == ChatColor.COLOR_CHAR) {
-                test = ChatColor.getByChar(str.charAt(++i));
-                if (test.isColor())
+                test = ChatColor.getByChar(str.charAt(++ i));
+                if (test.isColor()) {
                     add = 0;
-                else if (test == ChatColor.BOLD)
+                } else if (test == ChatColor.BOLD) {
                     add = 1;
-            } else
+                }
+            } else {
                 result += pxLen(str.charAt(i)) + add;
+            }
         }
 
         return result;
@@ -73,11 +76,12 @@ public class StringUtil {
         StringBuilder strBuilder = new StringBuilder(str);
         while ((width += PADDING_WIDTH) <= maxWidth) {
             strBuilder.insert(0, PADDING_CHAR);
-            if ((width += PADDING_WIDTH) <= maxWidth)
+            if ((width += PADDING_WIDTH) <= maxWidth) {
                 strBuilder.append(PADDING_CHAR);
+            }
         }
-        str = strBuilder.toString();
-        return str;
+
+        return strBuilder.toString();
     }
 
     public static String sides(int maxWidth, String left, String right) {
@@ -85,18 +89,20 @@ public class StringUtil {
 
         int width = getStringWidth(left) + getStringWidth(right);
         StringBuilder centerBuilder = new StringBuilder();
-        while ((width += PADDING_WIDTH) <= maxWidth)
+        while ((width += PADDING_WIDTH) <= maxWidth) {
             centerBuilder.append(PADDING_CHAR);
+        }
         center = centerBuilder.toString();
 
         width -= PADDING_WIDTH;
         int remaining = maxWidth - (width - PADDING_WIDTH);
         if (remaining <= 2) {
-            String add = remaining == 3 ? "." : ChatColor.BOLD + ".";
+            String add = ChatColor.BOLD + ".";
             if (center.length() > 3) {
                 center = center.substring(0, center.length() / 2) + add + center.substring(center.length() / 2);
-            } else
+            } else {
                 center += add;
+            }
         }
 
         return left + center + right;
@@ -107,16 +113,18 @@ public class StringUtil {
 
         int width = getStringWidth(prefix) + getStringWidth(right);
         StringBuilder centerBuilder = new StringBuilder();
-        while ((width += PADDING_WIDTH) <= maxWidth)
+        while ((width += PADDING_WIDTH) <= maxWidth) {
             centerBuilder.append(PADDING_CHAR);
+        }
         center = centerBuilder.toString();
 
         width -= PADDING_WIDTH;
         if (maxWidth - (width - PADDING_WIDTH) >= 6) {
             if (center.length() > 3) {
                 center = center.substring(0, center.length() / 2) + "." + center.substring(center.length() / 2);
-            } else
+            } else {
                 center += ".";
+            }
         }
 
         return center + right;
@@ -196,6 +204,6 @@ public class StringUtil {
         for (String anAppendWith : appendWith) {
             sb.append(anAppendWith);
         }
-        return ++numElements;
+        return ++ numElements;
     }
 }

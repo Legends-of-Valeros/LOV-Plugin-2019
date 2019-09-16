@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.quests.core;
 
-import com.codingforcookies.robert.core.StringUtil;
+import com.legendsofvaleros.util.StringUtil;
 import com.codingforcookies.robert.item.Book;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.api.CharacterId;

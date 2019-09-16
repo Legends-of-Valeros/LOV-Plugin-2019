@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.skills.core;
 
-import com.codingforcookies.robert.core.RomanNumeral;
+import com.legendsofvaleros.util.RomanNumeral;
 import com.codingforcookies.robert.slot.ISlotAction;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.skill.Skill;

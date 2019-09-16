@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.characters.core;
 
-import com.codingforcookies.robert.core.StringUtil;
+import com.legendsofvaleros.util.StringUtil;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.modules.characters.api.CharacterId;

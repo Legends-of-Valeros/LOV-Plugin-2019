@@ -1,7 +1,7 @@
-package com.codingforcookies.robert.core;
+package com.legendsofvaleros.features.gui.core;
 
-import com.codingforcookies.robert.slot.ISlotAction;
-import com.codingforcookies.robert.slot.SlotUsable;
+import com.legendsofvaleros.features.gui.slot.ISlotAction;
+import com.legendsofvaleros.features.gui.slot.SlotUsable;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;

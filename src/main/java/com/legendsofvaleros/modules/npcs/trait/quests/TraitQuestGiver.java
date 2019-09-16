@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.npcs.trait.quests;
 
-import com.codingforcookies.robert.core.StringUtil;
+import com.legendsofvaleros.util.StringUtil;
 import com.codingforcookies.robert.item.Book;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.codingforcookies.robert.slot.Slot;

@@ -3,7 +3,7 @@ package com.legendsofvaleros.modules.quests;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
-import com.codingforcookies.robert.core.StringUtil;
+import com.legendsofvaleros.util.StringUtil;
 import com.codingforcookies.robert.item.Book;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;

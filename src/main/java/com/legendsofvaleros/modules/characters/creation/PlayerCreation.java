@@ -5,7 +5,7 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Private;
 import co.aikar.commands.annotation.Subcommand;
-import com.codingforcookies.robert.core.StringUtil;
+import com.legendsofvaleros.util.StringUtil;
 import com.codingforcookies.robert.item.Book;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.config.ClassConfig;

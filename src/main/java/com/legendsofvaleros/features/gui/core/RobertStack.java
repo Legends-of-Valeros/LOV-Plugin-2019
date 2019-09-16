@@ -1,13 +1,22 @@
-package com.codingforcookies.robert.core;
+package com.legendsofvaleros.features.gui.core;
 
+import com.legendsofvaleros.LegendsOfValeros;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.HashMap;
 import java.util.Stack;
 import java.util.UUID;
 
-public class RobertStack {
+public class RobertStack implements Listener {
     private static HashMap<UUID, Stack<GUI>> parents = new HashMap<>();
+
+    private RobertStack() {
+        LegendsOfValeros.getInstance().getServer().getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
+    }
 
     public static GUI top(Player p) {
         Stack<GUI> guis = parents.get(p.getUniqueId());
@@ -20,12 +29,15 @@ public class RobertStack {
      * Drop down one element in the parent stack.
      */
     public static void open(GUI gui, Player p) {
-        if (gui == null) return;
+        if (gui == null) {
+            return;
+        }
 
         Stack<GUI> guis = parents.computeIfAbsent(p.getUniqueId(), k -> new Stack<>());
 
-        if (!guis.isEmpty())
+        if (! guis.isEmpty()) {
             onClose(guis.peek(), p);
+        }
 
         guis.push(gui);
         onOpen(gui, p);
@@ -38,13 +50,16 @@ public class RobertStack {
      */
     public static GUI phaseDown(Player p) {
         Stack<GUI> guis = parents.get(p.getUniqueId());
-        if (guis == null) return null;
+        if (guis == null) {
+            return null;
+        }
 
         GUI gui = guis.pop();
         onClose(gui, p);
 
-        if (guis.isEmpty())
+        if (guis.isEmpty()) {
             parents.remove(p.getUniqueId());
+        }
 
         return gui;
     }
@@ -54,14 +69,16 @@ public class RobertStack {
      */
     public static void down(Player p) {
         Stack<GUI> guis = parents.get(p.getUniqueId());
-        if (guis == null) return;
+        if (guis == null) {
+            return;
+        }
 
         phaseDown(p);
 
         p.closeInventory();
 
         // We need to pop off the next element because <code>open()</code> pushes on the opened GUI.
-        open((!guis.isEmpty() ? guis.pop() : null), p);
+        open((! guis.isEmpty() ? guis.pop() : null), p);
     }
 
     /**
@@ -70,10 +87,11 @@ public class RobertStack {
      */
     public static void clear(Player p) {
         Stack<GUI> guis = parents.get(p.getUniqueId());
-        if (guis == null) return;
+        if (guis == null) {
+            return;
+        }
 
         onClose(guis.pop(), p);
-
         p.closeInventory();
 
         parents.remove(p.getUniqueId());
@@ -87,12 +105,19 @@ public class RobertStack {
     }
 
     private static void onClose(GUI gui, Player p) {
-        if (gui != null) {
-            gui.onClose(p, gui.views.get(p.getUniqueId()));
-            gui.cleanup(p);
-
-            // Required due to potential desync issues.
-            p.updateInventory();
+        if (gui == null) {
+            return;
         }
+
+        gui.onClose(p, gui.views.get(p.getUniqueId()));
+        gui.cleanup(p);
+
+        // Required due to potential desync issues.
+        p.updateInventory();
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlayerLogout(PlayerQuitEvent e) {
+        clear(e.getPlayer());
     }
 }

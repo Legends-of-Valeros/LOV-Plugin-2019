@@ -2,10 +2,10 @@ package com.legendsofvaleros;
 
 import co.aikar.commands.BukkitCommandManager;
 import co.aikar.commands.PaperCommandManager;
-import com.codingforcookies.robert.core.Robert;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.legendsofvaleros.api.APIController;
+import com.legendsofvaleros.features.gui.core.RobertStack;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.Modules;
 import com.legendsofvaleros.modules.arena.ArenaController;
@@ -45,7 +45,10 @@ import com.legendsofvaleros.scheduler.InternalScheduler;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Bukkit;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Field;
@@ -132,7 +135,6 @@ public class LegendsOfValeros extends JavaPlugin {
     }
 
     private void registerModules() throws IllegalAccessException, InstantiationException {
-        Robert.enablePortable(this);
         // These are not optional modules EVER. In fact, no modules should ever
         // have define them as a dependency. Load them immediately.
         Modules.loadModuleBypass(APIController.class);

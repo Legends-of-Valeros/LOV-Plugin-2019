@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.characters.testing;
 
-import com.codingforcookies.robert.core.StringUtil;
+import com.legendsofvaleros.util.StringUtil;
 import com.codingforcookies.robert.item.Book;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.config.ClassConfig;

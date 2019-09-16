@@ -1,4 +1,4 @@
-package com.codingforcookies.robert.item;
+package com.legendsofvaleros.features.gui.item;
 
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;

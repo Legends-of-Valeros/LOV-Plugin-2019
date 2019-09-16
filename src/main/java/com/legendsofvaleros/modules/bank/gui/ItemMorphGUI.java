@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.bank.gui;
 
 import com.codingforcookies.robert.core.GUI;
-import com.codingforcookies.robert.core.StringUtil;
+import com.legendsofvaleros.util.StringUtil;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.codingforcookies.robert.slot.ISlotAction;
 import com.codingforcookies.robert.slot.SlotUsable;

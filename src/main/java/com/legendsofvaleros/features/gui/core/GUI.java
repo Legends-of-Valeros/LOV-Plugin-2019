@@ -1,6 +1,7 @@
-package com.codingforcookies.robert.core;
+package com.legendsofvaleros.features.gui.core;
 
-import com.codingforcookies.robert.slot.ISlotAction;
+import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.features.gui.slot.ISlotAction;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -161,7 +162,7 @@ public class GUI {
                 public void run() {
                     RobertStack.open(GUI.this, p);
                 }
-            }.runTaskLater(Robert.plugin(), 1L);
+            }.runTaskLater(LegendsOfValeros.getInstance(), 1L);
         }
     }
 

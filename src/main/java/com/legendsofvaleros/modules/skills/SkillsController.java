@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.skills;
 
-import com.codingforcookies.robert.core.RomanNumeral;
+import com.legendsofvaleros.util.RomanNumeral;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;

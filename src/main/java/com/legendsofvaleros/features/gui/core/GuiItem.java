@@ -1,4 +1,4 @@
-package com.codingforcookies.robert.core;
+package com.legendsofvaleros.features.gui.core;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
