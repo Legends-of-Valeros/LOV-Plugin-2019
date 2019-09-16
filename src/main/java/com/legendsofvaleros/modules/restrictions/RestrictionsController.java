@@ -10,6 +10,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.*;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.*;
@@ -150,15 +151,6 @@ public class RestrictionsController extends ListenerModule {
     }
 
     /**
-     * Prevent messing with item frames.
-     * @param evt
-     */
-    @EventHandler(ignoreCancelled = true)
-    public void onItemFrameInteract(PlayerInteractEntityEvent evt) {
-        evt.setCancelled(evt.getRightClicked().getType() == EntityType.ITEM_FRAME);
-    }
-
-    /**
      * Prevent players from punching items out of item frames.
      * @param evt
      */
@@ -222,7 +214,8 @@ public class RestrictionsController extends ListenerModule {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInteractEntity(PlayerInteractEntityEvent event) {
         if (event.getRightClicked() instanceof ArmorStand ||
-                event.getRightClicked() instanceof Painting) {
+                event.getRightClicked() instanceof Painting ||
+                event.getRightClicked() instanceof ItemFrame) {
             event.setCancelled(true);
         }
     }
@@ -256,10 +249,11 @@ public class RestrictionsController extends ListenerModule {
                 case DRAGON_EGG:
                 case DROPPER:
                 case BREWING_STAND:
-                case FLOWER_POT:
                 case POTTED_CORNFLOWER:
+                case FLOWER_POT:
                 case LEVER:
                     event.setCancelled(true);
+                    event.setUseInteractedBlock(Event.Result.DENY);
                     break;
                 default:
                     break;
