@@ -5,57 +5,27 @@ import com.legendsofvaleros.ServerMode;
 import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.util.Discord;
 import com.legendsofvaleros.util.Utilities;
-
-import java.util.stream.Collectors;
-
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Hanging;
-import org.bukkit.entity.Painting;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockFadeEvent;
-import org.bukkit.event.block.BlockFormEvent;
-import org.bukkit.event.block.BlockIgniteEvent;
-import org.bukkit.event.block.BlockPhysicsEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.block.BlockSpreadEvent;
-import org.bukkit.event.block.LeavesDecayEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.enchantment.EnchantItemEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.EntityPortalEvent;
-import org.bukkit.event.entity.EntityTeleportEvent;
-import org.bukkit.event.entity.EntityToggleGlideEvent;
-import org.bukkit.event.entity.EntityToggleSwimEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
-import org.bukkit.event.player.PlayerBucketEmptyEvent;
-import org.bukkit.event.player.PlayerBucketFillEvent;
-import org.bukkit.event.player.PlayerGameModeChangeEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerPickupArrowEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRegisterChannelEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.potion.PotionEffect;
+
+import java.util.stream.Collectors;
 
 /**
  * Created by Crystall on 04/11/2019
@@ -80,7 +50,7 @@ public class RestrictionsController extends ListenerModule {
      */
     @EventHandler
     public void onChannelRegister(PlayerRegisterChannelEvent evt) {
-        if (!evt.getChannel().equalsIgnoreCase("WDL|INIT")) {
+        if (! evt.getChannel().equalsIgnoreCase("WDL|INIT")) {
             return;
         }
         evt.getPlayer().kickPlayer(ChatColor.RED + "Please disable World Downloader.");
@@ -96,7 +66,7 @@ public class RestrictionsController extends ListenerModule {
     public void onVehicleMove(VehicleMoveEvent evt) {
         String fly = evt.getVehicle().getPassengers().stream().filter(Player.class::isInstance)
                 .map(Entity::getName).collect(Collectors.joining(", "));
-        if (evt.getVehicle().getType() == EntityType.BOAT && !evt.getFrom().getBlock().isLiquid()
+        if (evt.getVehicle().getType() == EntityType.BOAT && ! evt.getFrom().getBlock().isLiquid()
                 && fly.length() > 0
                 && evt.getTo().getY() > evt.getFrom().getY()
                 && evt.getVehicle().getVelocity().getY() <= 0) {
@@ -283,6 +253,7 @@ public class RestrictionsController extends ListenerModule {
                 case ENCHANTING_TABLE:
                 case TRAPPED_CHEST:
                 case DISPENSER:
+                case DRAGON_EGG:
                 case DROPPER:
                 case BREWING_STAND:
                 case FLOWER_POT:
@@ -424,7 +395,7 @@ public class RestrictionsController extends ListenerModule {
      */
     @EventHandler(ignoreCancelled = true)
     public void onPortal(EntityPortalEvent evt) {
-        evt.setCancelled(!(evt.getEntity() instanceof Player));
+        evt.setCancelled(! (evt.getEntity() instanceof Player));
     }
 
     /**
