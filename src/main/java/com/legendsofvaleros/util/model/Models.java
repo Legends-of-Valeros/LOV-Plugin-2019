@@ -53,7 +53,6 @@ public class Models {
     }
 
     public static Model get(String id) {
-        System.out.println(id + " " + models.containsKey(id));
         if (!models.containsKey(id)) {
             return Model.NONE;
         }
