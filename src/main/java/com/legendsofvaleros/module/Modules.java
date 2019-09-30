@@ -271,8 +271,9 @@ public class Modules {
         }
 
         public void load() throws IllegalAccessException, InstantiationException {
-            if (isLoaded)
+            if (isLoaded) {
                 throw new IllegalStateException("Attempt to load a module that is already loaded!");
+            }
 
             this.instance = moduleClass.newInstance();
             this.instance.moduleName = this.getName();

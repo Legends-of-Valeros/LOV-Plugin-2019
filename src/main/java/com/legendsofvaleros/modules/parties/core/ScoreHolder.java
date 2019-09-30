@@ -7,7 +7,8 @@ import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
-import com.legendsofvaleros.util.PlayerData;
+import com.legendsofvaleros.modules.playerdata.PlayerData;
+import com.legendsofvaleros.modules.playerdata.PlayerDataController;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
@@ -17,10 +18,9 @@ import static com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat.HE
  * Created by Crystall on 04/05/2019
  */
 public class ScoreHolder {
-
     String name;
-
     CharacterId uuid;
+
     boolean online = false;
     boolean current = false;
 
@@ -29,15 +29,15 @@ public class ScoreHolder {
 
     public ScoreHolder(CharacterId uuid) {
         this.uuid = uuid;
+        this.name = Bukkit.getOfflinePlayer(uuid.getPlayerId()).getName();
 
-        name = Bukkit.getOfflinePlayer(uuid.getPlayerId()).getName();
-        if (name == null) {
-            name = "Unknown Player";
-
-            PlayerData.get(uuid.getPlayerId()).onSuccess(val -> {
-                if (!val.isPresent()) return;
-                name = val.get().username;
-            });
+        if (this.name == null) {
+            PlayerData data = PlayerDataController.getInstance().getPlayerData(uuid.getPlayerId());
+            if (data != null && ! data.username.isEmpty()) {
+                this.name = data.username;
+            } else {
+                this.name = "Unknown Player";
+            }
         }
 
         update();
@@ -82,8 +82,9 @@ public class ScoreHolder {
     public String getHealthString() {
         StringBuilder sb = new StringBuilder();
         sb.append("♥♥♥♥♥♥");
-        if (this.current)
+        if (this.current) {
             sb.insert(health, ChatColor.GRAY);
+        }
         sb.insert(0, this.current ? ChatColor.RED : (online ? ChatColor.DARK_GRAY : ChatColor.BLACK));
         return sb.toString();
     }
@@ -94,8 +95,9 @@ public class ScoreHolder {
     public String getEnergyString() {
         StringBuilder sb = new StringBuilder();
         sb.append("☼☼☼☼☼☼");
-        if (this.current)
+        if (this.current) {
             sb.insert(6 - energyMana, ChatColor.AQUA);
+        }
         sb.insert(0, this.current ? ChatColor.GRAY : (online ? ChatColor.DARK_GRAY : ChatColor.BLACK));
         return sb.toString();
     }

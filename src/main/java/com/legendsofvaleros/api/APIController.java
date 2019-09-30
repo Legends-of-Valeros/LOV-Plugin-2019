@@ -17,6 +17,7 @@ import io.deepstream.InvalidDeepstreamConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -194,12 +195,20 @@ public class APIController extends Module {
             Map<String, Object> opts = new HashMap<>();
             opts.put(ConfigOptions.RPC_RESPONSE_TIMEOUT.toString(), "30000");
 
-            String apiEndpoint = LegendsOfValeros.getInstance().getConfig().getString("api-endpoint", "127.0.0.1:6020");
+            ConfigurationSection section = LegendsOfValeros.getInstance().getConfig().getConfigurationSection("api");
+            {
+                String endpoint = section.getString("endpoint", "127.0.0.1:6020");
 
-            getLogger().info("Connecting to API at " + apiEndpoint);
-            this.client = new DeepstreamClient(apiEndpoint, opts);
+                getLogger().info("Connecting to API at " + endpoint);
+                this.client = new DeepstreamClient(endpoint, opts);
 
-            this.client.login();
+                JsonObject authParams = new JsonObject();
+                authParams.add("username", new JsonPrimitive(section.getString("username", null)));
+                authParams.add("password", new JsonPrimitive(section.getString("password", null)));
+                this.client.login(authParams);
+
+                getLogger().info("Logged in to Deepstream successfully");
+            }
         } catch (URISyntaxException | InvalidDeepstreamConfig e) {
             e.printStackTrace();
         }

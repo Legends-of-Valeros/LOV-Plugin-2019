@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.skills.gui;
 
 import com.codingforcookies.robert.core.GUI;
+import com.codingforcookies.robert.core.GuiFlag;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.codingforcookies.robert.slot.ISlotAction;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
@@ -41,12 +42,12 @@ public class GUISkillsCore extends GUI {
 				.setName(treeSkills[0].name)
 				.addLore("", (pc.getExperience().getLevel() >= 10 ? (hasSkill1 ? ChatColor.YELLOW + "Unlocked" : (hasSkill2 ? ChatColor.RED + "Locked" : ChatColor.GREEN + "Available")) : ChatColor.GRAY + "Unlocked at level 10"))
 				.setEnchanted(hasSkill1)
-				.create(), (gui, p, clickType) -> new GUISkillsSpecialized(pc, true, treeSkills[0]).open(p, Flag.REPLACE));
+				.create(), (gui, p, clickType) -> new GUISkillsSpecialized(pc, true, treeSkills[0]).open(p, GuiFlag.REPLACE));
 		slot(8, Models.stack("menu-arrow-right-button")
 				.setName(treeSkills[1].name)
 				.addLore("", (pc.getExperience().getLevel() >= 10 ? (hasSkill2 ? ChatColor.YELLOW + "Unlocked" : (hasSkill1 ? ChatColor.RED + "Locked" : ChatColor.GREEN + "Available")) : ChatColor.GRAY + "Unlocked at level 10"))
 				.setEnchanted(hasSkill2)
-				.create(), (gui, p, clickType) -> new GUISkillsSpecialized(pc, false, treeSkills[1]).open(p, Flag.REPLACE));
+				.create(), (gui, p, clickType) -> new GUISkillsSpecialized(pc, false, treeSkills[1]).open(p, GuiFlag.REPLACE));
 
 		slot(4, new ItemBuilder(Material.BOOK)
 				.setName(tree.getName())
@@ -66,7 +67,7 @@ public class GUISkillsCore extends GUI {
 			}
 			
 			int level = pc.getSkillSet().getLevel(skillID);
-			Entry<ItemStack, ISlotAction> stack = SkillTree.buildStack(pointCount, pc, new SimpleImmutableEntry<>(skill, level), true, (gui, p, button) -> new GUISkillsCore(pc).open(p, Flag.REPLACE));
+			Entry<ItemStack, ISlotAction> stack = SkillTree.buildStack(pointCount, pc, new SimpleImmutableEntry<>(skill, level), true, (gui, p, button) -> new GUISkillsCore(pc).open(p, GuiFlag.REPLACE));
 			slot(1 + i, 1, stack.getKey(), stack.getValue());
 			i++;
 		}

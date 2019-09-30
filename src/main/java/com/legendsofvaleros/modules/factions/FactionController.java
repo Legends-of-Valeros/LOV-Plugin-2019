@@ -10,7 +10,10 @@ import com.legendsofvaleros.modules.factions.listener.ReputationListener;
 @ModuleInfo(name = "Factions", info = "")
 public class FactionController extends FactionAPI {
     private static FactionController instance;
-    public static FactionController getInstance() { return instance; }
+
+    public static FactionController getInstance() {
+        return instance;
+    }
 
     @Override
     public void onLoad() {

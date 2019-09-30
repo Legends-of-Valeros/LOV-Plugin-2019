@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.mobs.core;
 
-import com.codingforcookies.robert.core.GUI;
+import com.codingforcookies.robert.core.GuiFlag;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.ItemLine;
@@ -72,7 +72,7 @@ public class SpawnArea {
     /**
      * Tells the spawn point what level to set the spawned entities.
      * <br />
-     * Example: [1, 5] defines that an entitiy spawned here should be between level 1 and 5.
+     * Example: 1-5 defines that an entitiy spawned here should be between level 1 and 5.
      */
     private int[] level;
 
@@ -166,17 +166,14 @@ public class SpawnArea {
 
     public void updateStats() {
         if (hologram != null) {
-            if(textEntities != null)
-                textEntities.setText(getEntities().size() + " / " + despawnedEnemies);
-            if(textInterval != null)
-                textInterval.setText(Instant.ofEpochMilli(System.currentTimeMillis()).toString());
+            textEntities.setText(getEntities().size() + " / " + despawnedEnemies);
+            textInterval.setText(Instant.ofEpochMilli(System.currentTimeMillis()).toString());
         }
     }
 
     public void setDebugInfo(String info) {
         if (hologram != null)
-            if(textInfo != null)
-                textInfo.setText(info);
+            textInfo.setText(info);
     }
 
     public Hologram getHologram() {
@@ -196,7 +193,7 @@ public class SpawnArea {
             ItemLine touchLine = hologram.appendItemLine(new ItemStack(Material.ENDER_EYE));
             touchLine.setPickupHandler((p) -> {
                 if (p.isSneaking())
-                    new SpawnEditorGUI(this).open(p, GUI.Flag.NO_PARENTS);
+                    new SpawnEditorGUI(this).open(p, GuiFlag.NO_PARENTS);
             });
 
             hologram.teleport(hologram.getLocation().add(0, hologram.getHeight(), 0));
@@ -208,7 +205,7 @@ public class SpawnArea {
     public void clear() {
         despawnedEnemies = 0;
 
-        if (entities == null || entities.size() == 0) return;
+        if (entities == null || entities.isEmpty()) return;
         Mob.Instance instance;
 
         int i = 0;
@@ -224,7 +221,7 @@ public class SpawnArea {
             despawnedEnemies++;
         }
 
-        if (entities.size() == 0) {
+        if (entities.isEmpty()) {
             entities = null;
         }
     }

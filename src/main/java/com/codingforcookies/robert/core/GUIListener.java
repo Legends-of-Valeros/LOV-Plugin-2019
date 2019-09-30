@@ -1,6 +1,5 @@
 package com.codingforcookies.robert.core;
 
-import com.codingforcookies.robert.core.GUI.Flag;
 import com.codingforcookies.robert.slot.ISlotAction;
 import com.codingforcookies.robert.slot.SlotUsable;
 import org.bukkit.Material;
@@ -55,7 +54,7 @@ public class GUIListener implements Listener {
 
     @EventHandler
     public void onInventoryDrag(InventoryDragEvent event) {
-        if (!isGUI((Player) event.getWhoClicked(), event.getInventory()))
+        if (! isGUI((Player) event.getWhoClicked(), event.getInventory()))
             return;
 
         // Drag events are evil. Only allow """dragging""" if only one slot exists. Re-fire it as a normal click event.
@@ -75,7 +74,7 @@ public class GUIListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (!isGUI((Player) event.getWhoClicked(), event.getInventory())) {
+        if (! isGUI((Player) event.getWhoClicked(), event.getInventory())) {
             return;
         }
 
@@ -95,7 +94,7 @@ public class GUIListener implements Listener {
 
         ISlotAction action = gui.getSlot(event.getSlot());
 
-        if (!(action instanceof SlotUsable)) {
+        if (! (action instanceof SlotUsable)) {
             event.setCancelled(true);
         }
 
@@ -106,16 +105,16 @@ public class GUIListener implements Listener {
 
     @EventHandler
     public void onInventoryClosed(final InventoryCloseEvent event) {
-        if (!isGUI((Player) event.getPlayer(), event.getView()))
+        if (! isGUI((Player) event.getPlayer(), event.getView()))
             return;
 
         BukkitRunnable run = null;
 
-        if (gui.isFixed() && !gui.allowClose) {
+        if (gui.isFixed() && ! gui.allowClose) {
             run = new BukkitRunnable() {
                 @Override
                 public void run() {
-                    gui.open((Player) event.getPlayer(), Flag.REPLACE);
+                    gui.open((Player) event.getPlayer(), GuiFlag.REPLACE);
                 }
             };
         } else {

@@ -1,8 +1,6 @@
 package com.legendsofvaleros.modules.queue;
 
-import org.bukkit.entity.Player;
-
-import java.util.List;
+import com.legendsofvaleros.modules.arena.Team;
 
 /**
  * Created by Crystall on 08/04/2019
@@ -11,19 +9,19 @@ import java.util.List;
 public interface QueueAbleClass {
 
     /**
-     * Called then the game has finished
+     * Called right after the queue is ready to start the "game"
      */
-    void onFinish();
+    void onInit();
+
+    /**
+     * Called then the game has finished
+     * @param winner
+     */
+    void onFinish(Team winner);
 
     /**
      * Called whenever the game is cancelled
      */
     void onCancel();
-
-    /**
-     * Called when a queue has enough players and is transferring the players into the game
-     * @param players
-     */
-    void init(List<Player> players);
 
 }

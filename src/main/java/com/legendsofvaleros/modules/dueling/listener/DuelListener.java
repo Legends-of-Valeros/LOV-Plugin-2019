@@ -29,8 +29,8 @@ public class DuelListener implements Listener {
             return;
         }
 
-        if (! (event.getDamaged().getLivingEntity() instanceof Player) ||
-                ! (event.getAttacker() != null && event.getAttacker().getLivingEntity() instanceof Player)) {
+        if (!(event.getDamaged().getLivingEntity() instanceof Player) ||
+                !(event.getAttacker() != null && event.getAttacker().getLivingEntity() instanceof Player)) {
             return;
         }
 
@@ -42,7 +42,6 @@ public class DuelListener implements Listener {
         // Prevent death and end the duel
         if (event.getDamaged().getStats().getRegeneratingStat(RegeneratingStat.HEALTH) - event.getFinalDamage() <= 0) {
             event.setCancelled(true);
-
             d.onDeath((Player) event.getDamaged().getLivingEntity());
         } else {
             d.onDamage(event);
@@ -51,18 +50,13 @@ public class DuelListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void isPvPAllowed(PvPCheckEvent event) {
-        // A duel should override every other PvP setting. Tis a fight
-        // to the death, regardless of kinship.
-
-        Duel d = dueling.getDuel(event.getAttacker(), event.getDamaged());
-        if (d == null) {
-            // If either player is in a duel, cancel damage.
-            if (dueling.getDuel(event.getAttacker()) != null || dueling.getDuel(event.getDamaged()) != null)
-                event.setCancelled(true);
+        if (dueling.getDuel(event.getAttacker()) == null || dueling.getDuel(event.getDamaged()) == null) {
             return;
         }
+        // A duel should override every other PvP setting. Tis a fight to the death, regardless of kinship.
+        // Duel is null if both players are not in the same duel
+        // so the damage only gets cancelled if the two players are not dueling
+        event.setCancelled(dueling.getDuel(event.getAttacker(), event.getDamaged()) == null);
 
-        // These two players are dueling. Allow PvP.
-        event.setCancelled(false);
     }
 }

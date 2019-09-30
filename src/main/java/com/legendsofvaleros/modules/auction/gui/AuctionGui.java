@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.auction.gui;
 
 import com.codingforcookies.robert.core.GUI;
+import com.codingforcookies.robert.core.GuiItem;
 import com.legendsofvaleros.modules.auction.Auction;
 import com.legendsofvaleros.modules.auction.AuctionChatPrompt.AuctionPromptType;
 import com.legendsofvaleros.modules.auction.AuctionController;
@@ -12,7 +13,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -36,13 +36,9 @@ public class AuctionGui extends GUI implements Listener {
         this.loadItemsForPage();
     }
 
-    @Override
-    public void onClose(Player p, InventoryView view) {
-    }
-
     private void addUIElements() {
         if (currentPage > 1) {
-            slot(45, AuctionGuiItem.PREVIOUS_PAGE.toItemStack(), (gui, p, e) -> { //previous page
+            slot(45, GuiItem.PREVIOUS_PAGE.toItemStack(), (gui, p, e) -> { //previous page
                 e.setCancelled(true);
                 currentPage--;
                 this.loadItemsForPage();
@@ -51,7 +47,7 @@ public class AuctionGui extends GUI implements Listener {
             getInventory().setItem(45, new ItemStack(Material.AIR));
         }
 
-        slot(47, AuctionGuiItem.REFRESH.toItemStack(), (gui, p, e) -> { //refresh
+        slot(47, GuiItem.REFRESH.toItemStack(), (gui, p, e) -> { //refresh
             this.loadItemsForPage();
         });
 
@@ -64,7 +60,7 @@ public class AuctionGui extends GUI implements Listener {
         });
 
         if (currentPage < totalPages) {
-            slot(53, AuctionGuiItem.NEXT_PAGE.toItemStack(), (gui, p, e) -> {
+            slot(53, GuiItem.NEXT_PAGE.toItemStack(), (gui, p, e) -> {
                 currentPage++;
                 this.loadItemsForPage();
             });

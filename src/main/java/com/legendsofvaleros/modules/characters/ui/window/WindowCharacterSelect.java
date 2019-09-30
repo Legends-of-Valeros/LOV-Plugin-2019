@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.characters.ui.window;
 
 import com.codingforcookies.robert.core.GUI;
+import com.codingforcookies.robert.core.GuiFlag;
 import com.codingforcookies.robert.item.ItemBuilder;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
@@ -45,7 +46,7 @@ public class WindowCharacterSelect extends GUI {
         slot(6, Models.stack("menu-arrow-left-button").setEnchanted(page > 0)
                 .setName((page <= 0 ? ChatColor.RED : ChatColor.YELLOW) + "< Page").create(), (gui, p, event) -> {
             if (page > 0) {
-                new WindowCharacterSelect(page - 1, characters, listener, forced).open(p, Flag.NO_PARENTS);
+                new WindowCharacterSelect(page - 1, characters, listener, forced).open(p, GuiFlag.NO_PARENTS);
             }
         });
 
@@ -53,7 +54,7 @@ public class WindowCharacterSelect extends GUI {
         slot(8, Models.stack("menu-arrow-right-button").setEnchanted(len - page * 6 >= 6)
                 .setName((len < page * 6 ? ChatColor.RED : ChatColor.YELLOW) + "Page >").create(), (gui, p, event) -> {
             if (len - page * 6 > 6) {
-                new WindowCharacterSelect(page + 1, characters, listener, forced).open(p, Flag.NO_PARENTS);
+                new WindowCharacterSelect(page + 1, characters, listener, forced).open(p, GuiFlag.NO_PARENTS);
             }
         });
 

@@ -1,11 +1,8 @@
 package com.legendsofvaleros.modules.mailbox.gui;
 
 import com.codingforcookies.robert.core.GUI;
-import com.legendsofvaleros.modules.auction.Auction;
-import com.legendsofvaleros.modules.auction.AuctionChatPrompt;
+import com.codingforcookies.robert.core.GuiItem;
 import com.legendsofvaleros.modules.auction.AuctionController;
-import com.legendsofvaleros.modules.auction.gui.AuctionGui;
-import com.legendsofvaleros.modules.auction.gui.AuctionGuiItem;
 import com.legendsofvaleros.modules.mailbox.Mail;
 import com.legendsofvaleros.modules.mailbox.MailboxController;
 import org.bukkit.Material;
@@ -41,7 +38,7 @@ public class MailboxGui extends GUI implements Listener {
 
     private void addUIElements() {
         if (currentPage > 1) {
-            slot(45, AuctionGuiItem.PREVIOUS_PAGE.toItemStack(), (gui, p, e) -> { //previous page
+            slot(45, GuiItem.PREVIOUS_PAGE.toItemStack(), (gui, p, e) -> { //previous page
                 currentPage--;
                 this.loadItemsForPage();
             });
@@ -49,12 +46,12 @@ public class MailboxGui extends GUI implements Listener {
             getInventory().setItem(45, new ItemStack(Material.AIR));
         }
 
-        slot(47, AuctionGuiItem.REFRESH.toItemStack(), (gui, p, e) -> { //refresh
+        slot(47, GuiItem.REFRESH.toItemStack(), (gui, p, e) -> { //refresh
             this.loadItemsForPage();
         });
 
         if (currentPage < totalPages) {
-            slot(53, AuctionGuiItem.NEXT_PAGE.toItemStack(), (gui, p, e) -> {
+            slot(53, GuiItem.NEXT_PAGE.toItemStack(), (gui, p, e) -> {
                 currentPage++;
                 this.loadItemsForPage();
             });

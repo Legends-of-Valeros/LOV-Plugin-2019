@@ -7,11 +7,6 @@ import java.util.Objects;
  */
 public class PhaseLock {
     private final String name;
-
-    public String getName() {
-        return name;
-    }
-
     private final Integer lockId;
     private final Callback<PhaseLock> callback;
     private volatile boolean locked;
@@ -62,18 +57,30 @@ public class PhaseLock {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
+
         PhaseLock other = (PhaseLock) obj;
-        if (!callback.equals(other.callback))
+
+        if (! callback.equals(other.callback)) {
             return false;
-        if (!Objects.equals(lockId, other.lockId))
+        }
+        if (! Objects.equals(lockId, other.lockId)) {
             return false;
+        }
+
         return true;
+    }
+
+    public String getName() {
+        return name;
     }
 
 }

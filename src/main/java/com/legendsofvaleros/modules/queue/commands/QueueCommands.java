@@ -4,6 +4,7 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
+import com.legendsofvaleros.modules.queue.QueueController;
 import com.legendsofvaleros.modules.queue.gui.QueueGui;
 import org.bukkit.entity.Player;
 
@@ -25,22 +26,10 @@ public class QueueCommands extends BaseCommand {
         //TODO
     }
 
-    @Subcommand("join")
-    @Description("joins a queue by the given name")
-    public void onJoin(Player player, String queueName) {
-        //TODO
-    }
-
-    @Subcommand("leave")
+    @Subcommand("leave|quit")
     @Description("Leaves the current queue you are in")
     public void onLeave(Player player) {
-        //TODO
-    }
-
-    @Subcommand("current")
-    @Description("Requests how many people are in the current queue / ahead of you")
-    public void onAmountRequest(Player player) {
-        //TODO
+        QueueController.getInstance().leaveQueue(player);
     }
 
     @Subcommand("show")
@@ -48,6 +37,5 @@ public class QueueCommands extends BaseCommand {
     public void onShow(Player player) {
         new QueueGui().open(player);
     }
-
 
 }

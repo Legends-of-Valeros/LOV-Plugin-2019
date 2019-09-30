@@ -50,7 +50,6 @@ public class Utilities extends ListenerModule {
 
         Discord.onEnable();
         LoggingOut.onEnable();
-        PlayerData.onEnable();
 
         new TitleUtil();
 
@@ -119,8 +118,9 @@ public class Utilities extends ListenerModule {
 
                 if (scheduler.getTasksRemaining() > 0) {
                     getLogger().info("Waiting for " + scheduler.getTasksRemaining() + " tasks to complete in " + scheduler.getName() + " (" + scheduler.getCurrentTick() + ")...");
-                    for (InternalTask task : scheduler.getTasksQueued())
+                    for (InternalTask task : scheduler.getTasksQueued()) {
                         getLogger().info(" -" + task.toString());
+                    }
                     return;
                 }
             }
@@ -181,8 +181,6 @@ public class Utilities extends ListenerModule {
         }
         return true;
     }
-
-
 
     /**
      * Returns the current uptime of the server
