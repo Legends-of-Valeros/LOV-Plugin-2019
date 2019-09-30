@@ -136,6 +136,8 @@ public class CitizensTraitLOV extends Trait implements CommandConfigurable {
 
         promise.onSuccess(() -> {
             NPCsController.getInstance().getNPC(npcId).onSuccess(val -> {
+                if(!val.isPresent()) return;
+
                 this.lovNPC = val.get();
 
                 NPCsController.getInstance().getScheduler().sync(() -> {
