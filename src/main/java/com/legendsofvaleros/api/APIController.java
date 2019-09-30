@@ -197,7 +197,8 @@ public class APIController extends Module {
 
             ConfigurationSection section = LegendsOfValeros.getInstance().getConfig().getConfigurationSection("api");
             {
-                String endpoint = section.getString("endpoint", "127.0.0.1:6020");
+                // We use 6021 instead of 6020 due to the DS compat layer
+                String endpoint = section.getString("endpoint", "127.0.0.1:6021");
 
                 getLogger().info("Connecting to API at " + endpoint);
                 this.client = new DeepstreamClient(endpoint, opts);
