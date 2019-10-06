@@ -58,7 +58,7 @@ public class GUISkillsCore extends GUI {
 				.create(), null);
 		
 		int i = 0;
-		
+
 		for(String skillID : tree.getCoreSkills()) {
 			Skill skill = Skill.getSkillById(skillID);
 			if(skill == null) {

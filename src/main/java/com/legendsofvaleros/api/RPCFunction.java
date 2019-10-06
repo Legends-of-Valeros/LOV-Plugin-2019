@@ -2,7 +2,9 @@ package com.legendsofvaleros.api;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.legendsofvaleros.api.annotation.ModuleRPC;
+import io.deepstream.LoginResult;
 import io.deepstream.RpcResult;
 import org.apache.logging.log4j.util.Strings;
 
@@ -67,8 +69,11 @@ public class RPCFunction<T> {
             // This is a hack so we can use our own Gson parser.
             // TODO: Fix when deepstream supports passing our own data.
 
-            res = APIController.getInstance().getClient()
-                    .rpc.make(func, arg != null ? APIController.getInstance().getGson().fromJson(APIController.getInstance().getGson().toJson(arg), JsonElement.class) : null);
+            JsonObject request = new JsonObject();
+            request.add("session", APIController.getInstance().getAPISession());
+            request.add("arg", arg != null ? APIController.getInstance().getGson().fromJson(APIController.getInstance().getGson().toJson(arg), JsonElement.class) : null);
+
+            res = APIController.getInstance().getClient().rpc.make(func, request);
 
             if (res.success()) {
                 // Decode result into T using Gson

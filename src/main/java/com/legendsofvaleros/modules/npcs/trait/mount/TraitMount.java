@@ -19,7 +19,12 @@ import org.bukkit.event.inventory.InventoryType;
 import java.util.Collection;
 
 public class TraitMount extends LOVTrait {
-    public IMount[] mounts;
+    private class Entry {
+        IMount mount;
+        int cost;
+    }
+
+    public Entry[] mounts;
 
     @Override
     public void onRightClick(Player player, SettableFuture<Slot> slot) {
@@ -46,7 +51,8 @@ public class TraitMount extends LOVTrait {
         if (playerMounts.size() == 0) return;
 
         for (int i = 0; i < mounts.length; i++) {
-            final IMount m = mounts[i];
+            final IMount m = mounts[i].mount;
+            final int cost = mounts[i].cost;
             boolean owned = playerMounts.contains(m);
             boolean levelTooLow;
 
@@ -57,10 +63,10 @@ public class TraitMount extends LOVTrait {
 
             ib.addLore("Level: " + (levelTooLow ? ChatColor.RED : ChatColor.GREEN) + m.getMinimumLevel());
 
-            ib.addLore("", owned ? ChatColor.YELLOW + "Already Owned" : "Cost: " + ChatColor.GOLD + m.getCost());
+            ib.addLore("", owned ? ChatColor.YELLOW + "Already Owned" : "Cost: " + Money.Format.format(cost));
 
             gui.slot(i, ib.create(), owned || levelTooLow ? null : (ISlotAction) (gui1, p1, event) -> {
-                if (Money.sub(Characters.getPlayerCharacter(p1), m.getCost())) {
+                if (Money.sub(Characters.getPlayerCharacter(p1), cost)) {
                     MountsController.getInstance().addMount(pc, m);
                     gui1.close(p1);
                 }

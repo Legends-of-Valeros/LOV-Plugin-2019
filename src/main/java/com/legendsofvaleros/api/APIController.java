@@ -14,6 +14,7 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import io.deepstream.ConfigOptions;
 import io.deepstream.DeepstreamClient;
 import io.deepstream.InvalidDeepstreamConfig;
+import io.deepstream.LoginResult;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -59,6 +60,10 @@ public class APIController extends Module {
     public DeepstreamClient getClient() {
         return client;
     }
+
+    private JsonObject apiSession;
+
+    public JsonObject getAPISession() { return apiSession; }
 
     private Set<String> rpcFuncs = new HashSet<>();
 
@@ -204,9 +209,11 @@ public class APIController extends Module {
                 this.client = new DeepstreamClient(endpoint, opts);
 
                 JsonObject authParams = new JsonObject();
-                authParams.add("username", new JsonPrimitive(section.getString("username", null)));
-                authParams.add("password", new JsonPrimitive(section.getString("password", null)));
-                this.client.login(authParams);
+
+                authParams.add("token", new JsonPrimitive(section.getString("token", "")));
+
+                JsonObject obj = (JsonObject)this.client.login(authParams).getData();
+                apiSession = obj.getAsJsonObject("session");
 
                 getLogger().info("Logged in to Deepstream successfully");
             }

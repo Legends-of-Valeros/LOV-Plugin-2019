@@ -68,21 +68,13 @@ public class Mount implements IMount {
         return icon;
     }
 
-    private long cost;
-
-    @Override
-    public long getCost() {
-        return cost;
-    }
-
-    public Mount(String id, String name, EntityType type, float speed, int minLevel, Material icon, long cost) {
+    public Mount(String id, String name, EntityType type, float speed, int minLevel, Material icon) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.speed = speed;
         this.minLevel = minLevel;
         this.icon = icon;
-        this.cost = cost;
     }
 
     public void hopOn(Player p) {

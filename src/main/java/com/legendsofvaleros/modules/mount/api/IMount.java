@@ -16,7 +16,5 @@ public interface IMount {
 
     int getMinimumLevel();
 
-    long getCost();
-
     void hopOn(Player p);
 }

@@ -36,9 +36,9 @@ public class TraitQuestGiver extends LOVTrait {
 
     public static List<TraitQuestGiver> all = new ArrayList<>();
 
-    public String text;
-    public Hologram available;
+    public transient Hologram available;
 
+    public String text;
     public Ref<IQuest>[] quests;
 
     @Override
