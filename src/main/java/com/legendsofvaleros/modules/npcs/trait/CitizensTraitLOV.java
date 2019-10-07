@@ -96,20 +96,11 @@ public class CitizensTraitLOV extends Trait implements CommandConfigurable {
     public void onSpawn() {
         super.onSpawn();
 
-        nameplates = Nameplates.get(npc);
-        nameLine = nameplates.getOrAdd(Nameplates.BASE).appendTextLine(npc.getName());
-
         npc.data().setPersistent(NPC.SHOULD_SAVE_METADATA, true);
 
         npc.data().setPersistent(NPC.COLLIDABLE_METADATA, true);
         npc.data().setPersistent(NPC.NAMEPLATE_VISIBLE_METADATA, false);
         npc.getEntity().setCustomNameVisible(false);
-
-        if (npc.getEntity().getType() == EntityType.PLAYER) {
-            Snowball s = (Snowball) npc.getEntity().getWorld().spawnEntity(npc.getEntity().getLocation(), EntityType.SNOWBALL);
-            s.setSilent(true);
-            npc.getEntity().addPassenger(s);
-        }
 
         if((npcId == null && npcSlug == null)) {
             if(lovNPC != null) {
@@ -156,7 +147,14 @@ public class CitizensTraitLOV extends Trait implements CommandConfigurable {
                         MessageUtil.sendException(NPCsController.getInstance(), "NPC has a null name. Offender: " + npcId + " on " + npc.getId());
                     }
 
-                    nameLine.setText(lovNPC.getName());
+                    nameplates = Nameplates.get(npc);
+                    nameLine = nameplates.getOrAdd(Nameplates.BASE).appendTextLine(lovNPC.getName());
+
+                    if (npc.getEntity().getType() == EntityType.PLAYER) {
+                        Snowball s = (Snowball) npc.getEntity().getWorld().spawnEntity(npc.getEntity().getLocation(), EntityType.SNOWBALL);
+                        s.setSilent(true);
+                        npc.getEntity().addPassenger(s);
+                    }
 
                     if (this.lovNPC.getSkin() != null && !updatedSkin && npc.getEntity() instanceof SkinnableEntity) {
                         updatedSkin = true;

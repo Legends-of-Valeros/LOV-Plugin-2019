@@ -56,6 +56,7 @@ public class Models {
         if (!models.containsKey(id)) {
             return Model.NONE;
         }
+
         return models.get(id);
     }
 

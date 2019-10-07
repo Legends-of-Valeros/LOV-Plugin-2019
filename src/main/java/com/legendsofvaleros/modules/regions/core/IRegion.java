@@ -25,5 +25,5 @@ public interface IRegion {
 
     String getExitMessage();
 
-    String getErrorMessage();
+    String getDenyMessage();
 }

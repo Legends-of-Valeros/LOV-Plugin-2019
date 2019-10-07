@@ -23,7 +23,7 @@ public class Region implements IRegion {
 
     public String msgEnter;
     public String msgExit;
-    public String msgError = "You cannot go there, yet.";
+    public String msgDenied = "You cannot go there, yet.";
 
     public Region(String id, RegionBounds bounds) {
         this.id = id;
@@ -75,7 +75,7 @@ public class Region implements IRegion {
     }
 
     @Override
-    public String getErrorMessage() {
-        return msgError;
+    public String getDenyMessage() {
+        return msgDenied;
     }
 }

@@ -112,7 +112,7 @@ public class RegionController extends RegionsAPI {
         List<IRegion> toRegions = findRegions(event.getTo());
         if (!toRegions.isEmpty()) {
             if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) {
-                MessageUtil.sendError(event.getPlayer(), toRegions.get(0).getErrorMessage());
+                MessageUtil.sendError(event.getPlayer(), toRegions.get(0).getDenyMessage());
                 event.getPlayer().teleport(event.getFrom());
                 return;
             }
@@ -120,7 +120,7 @@ public class RegionController extends RegionsAPI {
             PlayerCharacter pc = Characters.getPlayerCharacter(event.getPlayer());
             for (IRegion region : toRegions) {
                 if (!playerAccess.get(pc.getUniqueCharacterId()).hasAccess(region)) {
-                    MessageUtil.sendError(event.getPlayer(), region.getErrorMessage());
+                    MessageUtil.sendError(event.getPlayer(), region.getDenyMessage());
                     event.getPlayer().teleport(event.getFrom());
                     return;
                 }

@@ -37,7 +37,7 @@ public class Model implements IModel {
 
     @Override
     public String getSlug() {
-        return null;
+        return slug;
     }
 
     @Override
@@ -57,7 +57,7 @@ public class Model implements IModel {
 
     @Override
     public ItemBuilder toStack() {
-        return new ItemBuilder(material).setName(null).setDurability(damage).unbreakable().addFlag(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
+        return new ItemBuilder(material).setName(null).setDamage(damage).unbreakable().addFlag(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
     }
 
     @Override

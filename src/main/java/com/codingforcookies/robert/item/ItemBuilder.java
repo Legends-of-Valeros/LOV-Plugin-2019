@@ -17,7 +17,7 @@ public class ItemBuilder {
 	public ItemBuilder setMaterial(Material material) { stack.setType(material); return this; }
 	
 	public int getDurability() { return stack.getDurability(); }
-	public ItemBuilder setDurability(short durability) { stack.setDurability(durability); return this; }
+	public ItemBuilder setDamage(short durability) { stack.setDurability(durability); return this; }
 	
 	private String name;
 	public String getName() { return name; }

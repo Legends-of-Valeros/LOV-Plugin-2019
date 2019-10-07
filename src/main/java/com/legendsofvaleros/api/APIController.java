@@ -212,13 +212,18 @@ public class APIController extends Module {
 
                 authParams.add("token", new JsonPrimitive(section.getString("token", "")));
 
-                JsonObject obj = (JsonObject)this.client.login(authParams).getData();
-                apiSession = obj.getAsJsonObject("session");
+                Object ret = this.client.login(authParams).getData();
+
+                if(ret instanceof JsonObject) {
+                    apiSession = ((JsonObject)ret).getAsJsonObject("session");
+                }else{
+                    throw new RuntimeException("Unknown value returned from Deepstream login: " + ret);
+                }
 
                 getLogger().info("Logged in to Deepstream successfully");
             }
-        } catch (URISyntaxException | InvalidDeepstreamConfig e) {
-            e.printStackTrace();
+        } catch(Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
