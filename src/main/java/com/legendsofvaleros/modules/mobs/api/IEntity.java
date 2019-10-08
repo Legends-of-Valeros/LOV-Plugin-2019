@@ -59,7 +59,12 @@ public interface IEntity {
 
     class Loot {
         public int tries;
+
+        /**
+         * A value between 0 and 100, not 0.0 and 1.0.
+         */
         public double chance;
+
         public Table[] tables;
 
         public static class Table {
@@ -102,7 +107,7 @@ public interface IEntity {
 
             public Optional<ILootTable> nextTable() {
                 // If chance fails, return.
-                if(Math.random() > loot.chance) return Optional.empty();
+                if(Math.random() > (loot.chance / 100)) return Optional.empty();
 
                 // If all tables are dead, return.
                 if(this.dead == this.loot.tables.length) return Optional.empty();

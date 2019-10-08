@@ -202,10 +202,10 @@ public class RegionCommands extends BaseCommand {
         MessageUtil.sendUpdate(sender, "Region updated. Exit: '" + region.msgExit + "'");
     }
 
-    @Subcommand("failure")
-    @Description("Set a regions enter failure message.")
-    @CommandPermission("regions.")
-    public void cmdSetFailure(CommandSender sender, String regionId, String message) {
+    @Subcommand("denied")
+    @Description("Set a regions enter denied message.")
+    @CommandPermission("regions.set.denied")
+    public void cmdSetDenied(CommandSender sender, String regionId, String message) {
         if (!LegendsOfValeros.getMode().allowEditing()) return;
 
         Region region = (Region)RegionController.getInstance().getRegion(regionId);
@@ -214,10 +214,10 @@ public class RegionCommands extends BaseCommand {
             return;
         }
 
-        region.msgError = message;
+        region.msgDenied = message;
 
         RegionController.getInstance().saveRegion(region);
-        MessageUtil.sendUpdate(sender, "Region updated. Failure: '" + region.msgError + "'");
+        MessageUtil.sendUpdate(sender, "Region updated. Failure: '" + region.msgDenied + "'");
     }
 
     @Default
