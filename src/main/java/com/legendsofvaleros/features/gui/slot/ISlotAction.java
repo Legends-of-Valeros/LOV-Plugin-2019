@@ -10,7 +10,9 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 public interface ISlotAction {
 
     /**
-     * @param p The player who clicked the slot.
+     * @param gui
+     * @param p     The player who clicked the slot.
+     * @param event
      */
     void doAction(GUI gui, Player p, InventoryClickEvent event);
 }

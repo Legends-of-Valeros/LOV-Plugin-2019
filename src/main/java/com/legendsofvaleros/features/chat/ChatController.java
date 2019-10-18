@@ -1,12 +1,12 @@
-package com.legendsofvaleros.modules.chat;
+package com.legendsofvaleros.features.chat;
 
 import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.chat.listener.ChatListener;
-import com.legendsofvaleros.modules.chat.listener.CommandListener;
-import com.legendsofvaleros.modules.playermenu.PlayerMenu;
+import com.legendsofvaleros.features.chat.listener.ChatListener;
+import com.legendsofvaleros.features.chat.listener.CommandListener;
+import com.legendsofvaleros.features.playermenu.PlayerMenu;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;

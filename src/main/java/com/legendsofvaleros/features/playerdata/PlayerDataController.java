@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.playerdata;
+package com.legendsofvaleros.features.playerdata;
 
 import com.legendsofvaleros.modules.characters.loading.PlayerLock;
 import com.legendsofvaleros.util.MessageUtil;

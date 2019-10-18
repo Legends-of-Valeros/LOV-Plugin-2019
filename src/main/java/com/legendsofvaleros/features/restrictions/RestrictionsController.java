@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.restrictions;
+package com.legendsofvaleros.features.restrictions;
 
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.ServerMode;

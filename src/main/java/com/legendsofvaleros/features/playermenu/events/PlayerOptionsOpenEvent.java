@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.playermenu.events;
+package com.legendsofvaleros.features.playermenu.events;
 
 import com.codingforcookies.robert.slot.ISlotAction;
 import com.codingforcookies.robert.slot.Slot;

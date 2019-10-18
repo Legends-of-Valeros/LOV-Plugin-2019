@@ -1,8 +1,8 @@
-package com.legendsofvaleros.modules.chat.listener;
+package com.legendsofvaleros.features.chat.listener;
 
-import com.legendsofvaleros.modules.chat.ChatChannel;
-import com.legendsofvaleros.modules.chat.ChatController;
-import com.legendsofvaleros.modules.chat.PlayerChat;
+import com.legendsofvaleros.features.chat.ChatChannel;
+import com.legendsofvaleros.features.chat.ChatController;
+import com.legendsofvaleros.features.chat.PlayerChat;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
 import net.md_5.bungee.api.chat.BaseComponent;

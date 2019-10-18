@@ -10,7 +10,7 @@ import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.dueling.core.Duel;
 import com.legendsofvaleros.modules.dueling.listener.DuelListener;
 import com.legendsofvaleros.modules.dueling.listener.PlayerMenuListener;
-import com.legendsofvaleros.modules.playermenu.PlayerMenu;
+import com.legendsofvaleros.features.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.pvp.PvPController;
 import com.legendsofvaleros.util.title.Title;
 import com.legendsofvaleros.util.title.TitleUtil;

@@ -1,9 +1,9 @@
-package com.legendsofvaleros.modules.playermenu;
+package com.legendsofvaleros.features.playermenu;
 
 import com.codingforcookies.robert.window.ExpandingGUI;
 import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
-import com.legendsofvaleros.modules.playermenu.events.PlayerMenuOpenEvent;
+import com.legendsofvaleros.features.playermenu.events.PlayerMenuOpenEvent;
 import com.legendsofvaleros.util.model.Model;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;

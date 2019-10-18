@@ -9,8 +9,8 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.gear.core.ItemUtil;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
-import com.legendsofvaleros.modules.playermenu.InventoryManager;
-import com.legendsofvaleros.modules.playermenu.events.PlayerMenuOpenEvent;
+import com.legendsofvaleros.features.playermenu.InventoryManager;
+import com.legendsofvaleros.features.playermenu.events.PlayerMenuOpenEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.model.Model;
 import org.bukkit.Material;

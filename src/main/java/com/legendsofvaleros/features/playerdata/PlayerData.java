@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.playerdata;
+package com.legendsofvaleros.features.playerdata;
 
 import java.util.UUID;
 

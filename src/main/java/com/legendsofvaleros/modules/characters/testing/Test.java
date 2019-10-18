@@ -2,8 +2,8 @@ package com.legendsofvaleros.modules.characters.testing;
 
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
-import com.legendsofvaleros.modules.playermenu.InventoryManager;
-import com.legendsofvaleros.modules.playermenu.options.PlayerOptions;
+import com.legendsofvaleros.features.playermenu.InventoryManager;
+import com.legendsofvaleros.features.playermenu.options.PlayerOptions;
 
 public class Test {
     public Test() {

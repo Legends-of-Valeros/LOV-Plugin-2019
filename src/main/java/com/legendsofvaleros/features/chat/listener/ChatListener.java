@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.chat.listener;
+package com.legendsofvaleros.features.chat.listener;
 
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.ServerMode;
@@ -6,9 +6,9 @@ import com.legendsofvaleros.modules.auction.AuctionController;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.chat.ChatChannel;
-import com.legendsofvaleros.modules.chat.ChatController;
-import com.legendsofvaleros.modules.chat.PlayerChat;
+import com.legendsofvaleros.features.chat.ChatChannel;
+import com.legendsofvaleros.features.chat.ChatController;
+import com.legendsofvaleros.features.chat.PlayerChat;
 import com.legendsofvaleros.modules.parties.PartiesController;
 import com.legendsofvaleros.modules.parties.core.PlayerParty;
 import com.legendsofvaleros.modules.zones.ZonesController;

@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.chat;
+package com.legendsofvaleros.features.chat;
 
 import org.bukkit.ChatColor;
 

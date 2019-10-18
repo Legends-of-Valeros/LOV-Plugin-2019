@@ -9,7 +9,7 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.component.bank.WorthComponent;
 import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.gear.event.InventoryFullEvent;
-import com.legendsofvaleros.modules.playermenu.InventoryManager;
+import com.legendsofvaleros.features.playermenu.InventoryManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;

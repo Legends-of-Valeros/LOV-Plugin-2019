@@ -17,7 +17,7 @@ import com.legendsofvaleros.modules.gear.integration.SkillsIntegration;
 import com.legendsofvaleros.modules.gear.listener.InventoryListener;
 import com.legendsofvaleros.modules.gear.listener.ItemListener;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
-import com.legendsofvaleros.modules.playermenu.PlayerMenu;
+import com.legendsofvaleros.features.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.skills.SkillsController;
 
 @DependsOn(CombatEngine.class)

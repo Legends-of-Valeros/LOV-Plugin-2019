@@ -47,12 +47,6 @@ public class AuctionAPI extends ListenerModule {
         }
     }
 
-    @Override
-    public void onLoad() {
-        super.onLoad();
-
-    }
-
     public Promise<List<Auction>> loadEntries() {
         auctions.clear();
 

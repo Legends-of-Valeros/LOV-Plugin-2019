@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.playermenu;
+package com.legendsofvaleros.features.playermenu;
 
 import java.util.HashMap;
 import java.util.Map.Entry;

@@ -1,11 +1,11 @@
-package com.legendsofvaleros.modules.keepoutofocean;
+package com.legendsofvaleros.features.keepoutofocean;
 
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineRegenEvent;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import com.legendsofvaleros.modules.combatengine.stat.StatUtils;
@@ -120,7 +120,7 @@ public class KeepOutOfOcean extends ListenerModule {
         @Override
         public void run() {
             for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                if (!violating.containsKey(player.getUniqueId()) && isInOcean(player)) {
+                if (! violating.containsKey(player.getUniqueId()) && isInOcean(player)) {
                     violating.put(player.getUniqueId(), new OutOfBoundsPlayer(plugin, player));
                 }
             }
@@ -153,7 +153,7 @@ public class KeepOutOfOcean extends ListenerModule {
 
         @Override
         public void run() {
-            if (!isInOcean(player)) {
+            if (! isInOcean(player)) {
                 finish(false);
                 return;
             }
@@ -166,7 +166,7 @@ public class KeepOutOfOcean extends ListenerModule {
             warningTask.cancel();
             cancel();
 
-            if (!died && damageDone > 0) {
+            if (! died && damageDone > 0) {
                 CombatEntity ce = CombatEngine.getEntity(player);
                 if (ce != null) {
                     ce.getStats().editRegeneratingStat(RegeneratingStat.HEALTH, damageDone);

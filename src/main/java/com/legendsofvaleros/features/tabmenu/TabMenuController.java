@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.tabmenu;
+package com.legendsofvaleros.features.tabmenu;
 
 import codecrafter47.bungeetablistplus.api.bukkit.BungeeTabListPlusBukkitAPI;
 import codecrafter47.bungeetablistplus.api.bukkit.Variable;
