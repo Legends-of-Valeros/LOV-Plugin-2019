@@ -12,51 +12,52 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 public class DuelListener implements Listener {
-    private DuelingController dueling = DuelingController.getInstance();
 
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onLogout(PlayerCharacterLogoutEvent event) {
-        Duel d = dueling.getDuel(event.getPlayer());
-        if (d != null) {
-            d.onDeath(event.getPlayer());
-        }
+  private DuelingController dueling = DuelingController.getInstance();
+
+  @EventHandler(priority = EventPriority.MONITOR)
+  public void onLogout(PlayerCharacterLogoutEvent event) {
+    Duel d = dueling.getDuel(event.getPlayer());
+    if (d != null) {
+      d.onDeath(event.getPlayer());
+    }
+  }
+
+  @EventHandler(priority = EventPriority.HIGHEST)
+  public void onDeath(CombatEngineDamageEvent event) {
+    // We don't care about cancelled damage events.
+    if (event.isCancelled()) {
+      return;
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onDeath(CombatEngineDamageEvent event) {
-        // We don't care about cancelled damage events.
-        if (event.isCancelled()) {
-            return;
-        }
-
-        if (!(event.getDamaged().getLivingEntity() instanceof Player) ||
-                !(event.getAttacker() != null && event.getAttacker().getLivingEntity() instanceof Player)) {
-            return;
-        }
-
-        Duel d = dueling.getDuel((Player) event.getDamaged().getLivingEntity(), (Player) event.getAttacker().getLivingEntity());
-        if (d == null) {
-            return;
-        }
-
-        // Prevent death and end the duel
-        if (event.getDamaged().getStats().getRegeneratingStat(RegeneratingStat.HEALTH) - event.getFinalDamage() <= 0) {
-            event.setCancelled(true);
-            d.onDeath((Player) event.getDamaged().getLivingEntity());
-        } else {
-            d.onDamage(event);
-        }
+    if (!(event.getDamaged().getLivingEntity() instanceof Player) ||
+      !(event.getAttacker() != null && event.getAttacker().getLivingEntity() instanceof Player)) {
+      return;
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void isPvPAllowed(PvPCheckEvent event) {
-        if (dueling.getDuel(event.getAttacker()) == null || dueling.getDuel(event.getDamaged()) == null) {
-            return;
-        }
-        // A duel should override every other PvP setting. Tis a fight to the death, regardless of kinship.
-        // Duel is null if both players are not in the same duel
-        // so the damage only gets cancelled if the two players are not dueling
-        event.setCancelled(dueling.getDuel(event.getAttacker(), event.getDamaged()) == null);
-
+    Duel d = dueling.getDuel((Player) event.getDamaged().getLivingEntity(), (Player) event.getAttacker().getLivingEntity());
+    if (d == null) {
+      return;
     }
+
+    // Prevent death and end the duel
+    if (event.getDamaged().getStats().getRegeneratingStat(RegeneratingStat.HEALTH) - event.getFinalDamage() <= 0) {
+      event.setCancelled(true);
+      d.onDeath((Player) event.getDamaged().getLivingEntity());
+    } else {
+      d.onDamage(event);
+    }
+  }
+
+  @EventHandler(priority = EventPriority.HIGHEST)
+  public void isPvPAllowed(PvPCheckEvent event) {
+    if (dueling.getDuel(event.getAttacker()) == null || dueling.getDuel(event.getDamaged()) == null) {
+      return;
+    }
+    // A duel should override every other PvP setting. Tis a fight to the death, regardless of kinship.
+    // Duel is null if both players are not in the same duel
+    // so the damage only gets cancelled if the two players are not dueling
+    event.setCancelled(dueling.getDuel(event.getAttacker(), event.getDamaged()) == null);
+
+  }
 }
