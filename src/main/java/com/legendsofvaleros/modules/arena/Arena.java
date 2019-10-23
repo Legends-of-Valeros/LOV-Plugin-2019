@@ -88,16 +88,16 @@ public class Arena implements Listener {
         event.setCancelled(damaged.equals(attacker));
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onDeath(CombatEngineDamageEvent event) {
-        // Prevent death and end the duel
-        if (event.getDamaged().getStats().getRegeneratingStat(RegeneratingStat.HEALTH) - event.getFinalDamage() <= 0) {
-            event.setCancelled(true);
-            d.onDeath((Player) event.getDamaged().getLivingEntity());
-        } else {
-            d.onDamage(event);
-        }
-    }
+//    @EventHandler(priority = EventPriority.HIGHEST)
+//    public void onDeath(CombatEngineDamageEvent event) {
+//        // Prevent death and end the duel
+//        if (event.getDamaged().getStats().getRegeneratingStat(RegeneratingStat.HEALTH) - event.getFinalDamage() <= 0) {
+//            event.setCancelled(true);
+//            d.onDeath((Player) event.getDamaged().getLivingEntity());
+//        } else {
+//            d.onDamage(event);
+//        }
+//    }
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerDeath(PlayerDeathEvent event) {
@@ -120,7 +120,6 @@ public class Arena implements Listener {
         }
         return null;
     }
-
 
     public Team getTeamOne() {
         return team1;

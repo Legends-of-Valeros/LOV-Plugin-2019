@@ -1,7 +1,7 @@
 package com.legendsofvaleros.features.playermenu.events;
 
-import com.codingforcookies.robert.slot.ISlotAction;
-import com.codingforcookies.robert.slot.Slot;
+import com.legendsofvaleros.features.gui.slot.ISlotAction;
+import com.legendsofvaleros.features.gui.slot.Slot;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;

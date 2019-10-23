@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.quests.action.gear;
 
-import com.codingforcookies.robert.core.GUI;
-import com.codingforcookies.robert.slot.ISlotAction;
+import com.legendsofvaleros.features.gui.core.GUI;
+import com.legendsofvaleros.features.gui.slot.ISlotAction;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.gear.core.Gear;

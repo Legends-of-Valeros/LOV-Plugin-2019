@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.skills.core.admin;
 
 import com.legendsofvaleros.util.StringUtil;
-import com.codingforcookies.robert.item.Book;
+import com.legendsofvaleros.features.gui.item.Book;
 import com.legendsofvaleros.modules.characters.testing.StatDisplay;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.CombatEngine;

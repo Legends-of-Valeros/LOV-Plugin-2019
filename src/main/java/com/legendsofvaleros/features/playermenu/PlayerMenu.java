@@ -1,6 +1,6 @@
 package com.legendsofvaleros.features.playermenu;
 
-import com.codingforcookies.robert.window.ExpandingGUI;
+import com.legendsofvaleros.features.gui.window.ExpandingGUI;
 import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.features.playermenu.events.PlayerMenuOpenEvent;

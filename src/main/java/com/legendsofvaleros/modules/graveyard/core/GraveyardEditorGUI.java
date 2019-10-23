@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.graveyard.core;
 
-import com.codingforcookies.robert.core.GUI;
+import com.legendsofvaleros.features.gui.core.GUI;
 import com.legendsofvaleros.modules.graveyard.GraveyardController;
 import com.legendsofvaleros.util.model.Model;
 import org.bukkit.entity.Player;

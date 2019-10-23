@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.quests.core;
 
 import com.legendsofvaleros.util.StringUtil;
-import com.codingforcookies.robert.item.Book;
+import com.legendsofvaleros.features.gui.item.Book;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;

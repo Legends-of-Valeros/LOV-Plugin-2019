@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.mobs.core;
 
-import com.codingforcookies.robert.core.GUI;
-import com.codingforcookies.robert.item.ItemBuilder;
+import com.legendsofvaleros.features.gui.core.GUI;
+import com.legendsofvaleros.features.gui.item.ItemBuilder;
 import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.util.model.Model;
 import org.bukkit.Material;

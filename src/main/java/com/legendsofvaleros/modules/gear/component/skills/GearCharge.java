@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.gear.component.skills;
 
-import com.codingforcookies.robert.item.ItemBuilder;
+import com.legendsofvaleros.features.gui.item.ItemBuilder;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.legendsofvaleros.LegendsOfValeros;

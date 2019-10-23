@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.gear.component;
 
-import com.codingforcookies.robert.item.ItemBuilder;
+import com.legendsofvaleros.features.gui.item.ItemBuilder;
 import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.gear.trigger.GearTrigger;
 

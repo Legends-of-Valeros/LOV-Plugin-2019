@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.gear.core;
 
-import com.codingforcookies.robert.item.ItemBuilder;
-import com.codingforcookies.robert.item.NBTEditor;
+import com.legendsofvaleros.features.gui.item.ItemBuilder;
+import com.legendsofvaleros.features.gui.item.NBTEditor;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.legendsofvaleros.LegendsOfValeros;

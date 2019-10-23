@@ -1,5 +1,6 @@
 package com.legendsofvaleros.features.gui.core;
 
+import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.features.gui.slot.ISlotAction;
 import com.legendsofvaleros.features.gui.slot.SlotUsable;
 import org.bukkit.Material;
@@ -13,133 +14,137 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class GUIListener implements Listener {
-    private GUI gui;
 
-    public GUIListener(GUI gui) {
-        this.gui = gui;
+  private GUI gui;
+
+  public GUIListener(GUI gui) {
+    this.gui = gui;
+  }
+
+  /**
+   * Binds the GUI listeners. This should be done just before opening the GUI to the player.
+   */
+  public void bind() {
+    LegendsOfValeros.getInstance().getServer().getPluginManager().registerEvents(this, LegendsOfValeros.getInstance());
+  }
+
+  /**
+   * Unbinds the GUI listeners. This should be done just after closing the GUI.
+   */
+  public void unbind() {
+    InventoryDragEvent.getHandlerList().unregister(this);
+    InventoryClickEvent.getHandlerList().unregister(this);
+    InventoryCloseEvent.getHandlerList().unregister(this);
+  }
+
+  /**
+   * Helper function for determining if the GUI that threw the event is the GUI we're supposed
+   * to be monitoring.
+   */
+  private boolean isGUI(Player p, Inventory inventory) {
+    InventoryView view = gui.getView(p);
+    if (view == null) {
+      return false;
     }
 
-    /**
-     * Binds the GUI listeners. This should be done just before opening the GUI to the player.
-     */
-    public void bind() {
-        Robert.plugin().getServer().getPluginManager().registerEvents(this, Robert.plugin());
+    return view.getTopInventory() == inventory;
+  }
+
+  private boolean isGUI(Player p, InventoryView view) {
+    return gui.getView(p) == view;
+  }
+
+  @EventHandler
+  public void onInventoryDrag(InventoryDragEvent event) {
+      if (!isGUI((Player) event.getWhoClicked(), event.getInventory())) {
+          return;
+      }
+
+    // Drag events are evil. Only allow """dragging""" if only one slot exists. Re-fire it as a normal click event.
+    // TODO: Make drag events work like vanilla MC.
+      if (event.getInventorySlots().size() == 1) {
+          event.getView().setCursor(event.getOldCursor());
+
+          InventoryClickEvent ice;
+          onInventoryClick(ice = new InventoryClickEvent(event.getView(),
+              InventoryType.SlotType.CONTAINER,
+              event.getInventorySlots().iterator().next(),
+              ClickType.LEFT, InventoryAction.PLACE_ALL));
+          event.setCancelled(ice.isCancelled());
+      } else {
+          event.setCancelled(true);
+      }
+  }
+
+  @EventHandler
+  public void onInventoryClick(InventoryClickEvent event) {
+    if (!isGUI((Player) event.getWhoClicked(), event.getInventory())) {
+      return;
     }
 
-    /**
-     * Unbinds the GUI listeners. This should be done just after closing the GUI.
-     */
-    public void unbind() {
-        InventoryDragEvent.getHandlerList().unregister(this);
-        InventoryClickEvent.getHandlerList().unregister(this);
-        InventoryCloseEvent.getHandlerList().unregister(this);
+    if (event.getClickedInventory() == null) {
+      return;
     }
 
-    /**
-     * Helper function for determining if the GUI that threw the event is the GUI we're supposed
-     * to be monitoring.
-     */
-    private boolean isGUI(Player p, Inventory inventory) {
-        InventoryView view = gui.getView(p);
-        if (view == null) {
-            return false;
-        }
-
-        return view.getTopInventory() == inventory;
+    if (event.isShiftClick()) {
+      event.setCancelled(true);
+      return;
     }
 
-    private boolean isGUI(Player p, InventoryView view) {
-        return gui.getView(p) == view;
+    if (event.getClickedInventory() == event.getWhoClicked().getInventory()) {
+      gui.onClickPlayerInventory(gui, (Player) event.getWhoClicked(), event);
+      return;
     }
 
-    @EventHandler
-    public void onInventoryDrag(InventoryDragEvent event) {
-        if (! isGUI((Player) event.getWhoClicked(), event.getInventory()))
-            return;
+    ISlotAction action = gui.getSlot(event.getSlot());
 
-        // Drag events are evil. Only allow """dragging""" if only one slot exists. Re-fire it as a normal click event.
-        // TODO: Make drag events work like vanilla MC.
-        if (event.getInventorySlots().size() == 1) {
-            event.getView().setCursor(event.getOldCursor());
-
-            InventoryClickEvent ice;
-            onInventoryClick(ice = new InventoryClickEvent(event.getView(),
-                    InventoryType.SlotType.CONTAINER,
-                    event.getInventorySlots().iterator().next(),
-                    ClickType.LEFT, InventoryAction.PLACE_ALL));
-            event.setCancelled(ice.isCancelled());
-        } else
-            event.setCancelled(true);
+    if (!(action instanceof SlotUsable)) {
+      event.setCancelled(true);
     }
 
-    @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
-        if (! isGUI((Player) event.getWhoClicked(), event.getInventory())) {
-            return;
-        }
+    if (action != null) {
+      action.doAction(gui, (Player) event.getWhoClicked(), event);
+    }
+  }
 
-        if (event.getClickedInventory() == null) {
-            return;
-        }
+  @EventHandler
+  public void onInventoryClosed(final InventoryCloseEvent event) {
+      if (!isGUI((Player) event.getPlayer(), event.getView())) {
+          return;
+      }
 
-        if (event.isShiftClick()) {
-            event.setCancelled(true);
-            return;
-        }
+    BukkitRunnable run = null;
 
-        if (event.getClickedInventory() == event.getWhoClicked().getInventory()) {
-            gui.onClickPlayerInventory(gui, (Player) event.getWhoClicked(), event);
-            return;
+    if (gui.isFixed() && !gui.allowClose) {
+      run = new BukkitRunnable() {
+        @Override
+        public void run() {
+          gui.open((Player) event.getPlayer(), GuiFlag.REPLACE);
         }
-
-        ISlotAction action = gui.getSlot(event.getSlot());
-
-        if (! (action instanceof SlotUsable)) {
-            event.setCancelled(true);
-        }
-
-        if (action != null) {
-            action.doAction(gui, (Player) event.getWhoClicked(), event);
-        }
+      };
+    } else {
+      // Inventory closed using escape
+      if (RobertStack.top((Player) event.getPlayer()) == gui) {
+        run = new BukkitRunnable() {
+          @Override
+          public void run() {
+            gui.close((Player) event.getPlayer());
+          }
+        };
+      }
     }
 
-    @EventHandler
-    public void onInventoryClosed(final InventoryCloseEvent event) {
-        if (! isGUI((Player) event.getPlayer(), event.getView()))
-            return;
+    if (event.getView().getCursor().getType() != Material.AIR) {
+      Player p = (Player) event.getView().getPlayer();
+      Item i = p.getWorld().dropItem(p.getLocation(), event.getView().getCursor());
+      i.setPickupDelay(0);
 
-        BukkitRunnable run = null;
-
-        if (gui.isFixed() && ! gui.allowClose) {
-            run = new BukkitRunnable() {
-                @Override
-                public void run() {
-                    gui.open((Player) event.getPlayer(), GuiFlag.REPLACE);
-                }
-            };
-        } else {
-            // Inventory closed using escape
-            if (RobertStack.top((Player) event.getPlayer()) == gui) {
-                run = new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        gui.close((Player) event.getPlayer());
-                    }
-                };
-            }
-        }
-
-        if (event.getView().getCursor().getType() != Material.AIR) {
-            Player p = (Player) event.getView().getPlayer();
-            Item i = p.getWorld().dropItem(p.getLocation(), event.getView().getCursor());
-            i.setPickupDelay(0);
-
-            event.getView().setCursor(null);
-        }
-
-        // Prevents rebinding close event before the GUI <i>actually</i> closes, resulting in an infinite loop.
-        if (run != null) {
-            run.runTaskLater(Robert.plugin(), 1L);
-        }
+      event.getView().setCursor(null);
     }
+
+    // Prevents rebinding close event before the GUI <i>actually</i> closes, resulting in an infinite loop.
+    if (run != null) {
+      run.runTaskLater(LegendsOfValeros.getInstance(), 1L);
+    }
+  }
 }

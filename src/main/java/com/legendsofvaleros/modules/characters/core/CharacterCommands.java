@@ -3,7 +3,7 @@ package com.legendsofvaleros.modules.characters.core;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import co.aikar.commands.contexts.OnlinePlayer;
-import com.codingforcookies.robert.item.Book;
+import com.legendsofvaleros.features.gui.item.Book;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLevelChangeEvent;

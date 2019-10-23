@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.bank.listener;
 
-import com.codingforcookies.robert.item.ItemBuilder;
+import com.legendsofvaleros.features.gui.item.ItemBuilder;
 import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.bank.core.Bank;
 import com.legendsofvaleros.modules.bank.core.Currency;

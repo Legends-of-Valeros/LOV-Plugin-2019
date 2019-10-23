@@ -1,7 +1,7 @@
 package com.legendsofvaleros.features.playermenu.options;
 
-import com.codingforcookies.robert.core.GuiFlag;
-import com.codingforcookies.robert.window.ExpandingGUI;
+import com.legendsofvaleros.features.gui.core.GuiFlag;
+import com.legendsofvaleros.features.gui.window.ExpandingGUI;
 import com.legendsofvaleros.features.playermenu.events.PlayerOptionsOpenEvent;
 import com.legendsofvaleros.util.model.Model;
 import org.bukkit.Bukkit;

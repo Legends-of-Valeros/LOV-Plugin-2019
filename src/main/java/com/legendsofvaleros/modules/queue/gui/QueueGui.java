@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.queue.gui;
 
-import com.codingforcookies.robert.core.GUI;
-import com.codingforcookies.robert.core.GuiItem;
+import com.legendsofvaleros.features.gui.core.GUI;
+import com.legendsofvaleros.features.gui.core.GuiItem;
 import com.legendsofvaleros.modules.queue.QueueController;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.bank.core;
 
-import com.codingforcookies.robert.core.RobertStack;
-import com.codingforcookies.robert.item.ItemBuilder;
+import com.legendsofvaleros.features.gui.core.RobertStack;
+import com.legendsofvaleros.features.gui.item.ItemBuilder;
 import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.bank.gui.CreatePouchGUI;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;

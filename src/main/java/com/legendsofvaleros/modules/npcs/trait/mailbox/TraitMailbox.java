@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.npcs.trait.mailbox;
 
-import com.codingforcookies.robert.item.ItemBuilder;
-import com.codingforcookies.robert.slot.Slot;
+import com.legendsofvaleros.features.gui.item.ItemBuilder;
+import com.legendsofvaleros.features.gui.slot.Slot;
 import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;

@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.skills;
 
 import com.legendsofvaleros.util.RomanNumeral;
-import com.codingforcookies.robert.item.ItemBuilder;
+import com.legendsofvaleros.features.gui.item.ItemBuilder;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.bank.BankController;

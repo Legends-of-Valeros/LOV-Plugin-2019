@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.auction.gui;
 
-import com.codingforcookies.robert.core.GUI;
-import com.codingforcookies.robert.core.GuiItem;
+import com.legendsofvaleros.features.gui.core.GUI;
+import com.legendsofvaleros.features.gui.core.GuiItem;
 import com.legendsofvaleros.modules.auction.Auction;
 import com.legendsofvaleros.modules.auction.AuctionChatPrompt.AuctionPromptType;
 import com.legendsofvaleros.modules.auction.AuctionController;

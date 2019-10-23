@@ -1,8 +1,8 @@
 package com.legendsofvaleros.modules.characters.ui.window;
 
-import com.codingforcookies.robert.core.GUI;
-import com.codingforcookies.robert.core.GuiFlag;
-import com.codingforcookies.robert.slot.ISlotAction;
+import com.legendsofvaleros.features.gui.core.GUI;
+import com.legendsofvaleros.features.gui.core.GuiFlag;
+import com.legendsofvaleros.features.gui.slot.ISlotAction;
 import com.legendsofvaleros.modules.characters.ui.CharacterSelectionListener;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
