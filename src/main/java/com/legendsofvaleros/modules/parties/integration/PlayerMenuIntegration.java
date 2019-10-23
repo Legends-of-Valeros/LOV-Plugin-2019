@@ -1,15 +1,15 @@
 package com.legendsofvaleros.modules.parties.integration;
 
 import co.aikar.commands.contexts.OnlinePlayer;
-import com.codingforcookies.robert.core.GUI;
-import com.codingforcookies.robert.item.ItemBuilder;
+import com.legendsofvaleros.features.gui.core.GUI;
+import com.legendsofvaleros.features.gui.item.ItemBuilder;
 import com.legendsofvaleros.module.Integration;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.parties.PartiesController;
 import com.legendsofvaleros.modules.parties.commands.PartyCommands;
 import com.legendsofvaleros.modules.parties.core.PlayerParty;
-import com.legendsofvaleros.modules.playermenu.events.PlayerMenuOpenEvent;
+import com.legendsofvaleros.features.playermenu.events.PlayerMenuOpenEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

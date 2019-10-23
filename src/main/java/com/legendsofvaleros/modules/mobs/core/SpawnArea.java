@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.mobs.core;
 
-import com.codingforcookies.robert.core.GuiFlag;
+import com.legendsofvaleros.features.gui.core.GuiFlag;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.ItemLine;

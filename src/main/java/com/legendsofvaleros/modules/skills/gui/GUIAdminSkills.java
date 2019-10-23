@@ -1,8 +1,8 @@
 package com.legendsofvaleros.modules.skills.gui;
 
-import com.codingforcookies.robert.item.ItemBuilder;
-import com.codingforcookies.robert.slot.Slot;
-import com.codingforcookies.robert.window.ExpandingGUI;
+import com.legendsofvaleros.features.gui.item.ItemBuilder;
+import com.legendsofvaleros.features.gui.slot.Slot;
+import com.legendsofvaleros.features.gui.window.ExpandingGUI;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;

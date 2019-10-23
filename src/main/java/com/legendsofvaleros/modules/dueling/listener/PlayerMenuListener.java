@@ -1,9 +1,9 @@
 package com.legendsofvaleros.modules.dueling.listener;
 
-import com.codingforcookies.robert.item.ItemBuilder;
+import com.legendsofvaleros.features.gui.item.ItemBuilder;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.dueling.DuelingController;
-import com.legendsofvaleros.modules.playermenu.events.PlayerMenuOpenEvent;
+import com.legendsofvaleros.features.playermenu.events.PlayerMenuOpenEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

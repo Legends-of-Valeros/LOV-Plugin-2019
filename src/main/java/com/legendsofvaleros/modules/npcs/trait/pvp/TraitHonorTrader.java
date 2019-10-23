@@ -1,8 +1,8 @@
 package com.legendsofvaleros.modules.npcs.trait.pvp;
 
-import com.codingforcookies.robert.core.GUI;
-import com.codingforcookies.robert.item.ItemBuilder;
-import com.codingforcookies.robert.slot.Slot;
+import com.legendsofvaleros.features.gui.core.GUI;
+import com.legendsofvaleros.features.gui.item.ItemBuilder;
+import com.legendsofvaleros.features.gui.slot.Slot;
 import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.characters.core.Characters;

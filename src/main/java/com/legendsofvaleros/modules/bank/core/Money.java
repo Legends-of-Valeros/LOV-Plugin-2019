@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.bank.core;
 
-import com.codingforcookies.robert.core.RobertStack;
-import com.codingforcookies.robert.item.ItemBuilder;
+import com.legendsofvaleros.features.gui.core.RobertStack;
+import com.legendsofvaleros.features.gui.item.ItemBuilder;
 import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.bank.gui.CreatePouchGUI;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
@@ -9,7 +9,7 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.component.bank.WorthComponent;
 import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.gear.event.InventoryFullEvent;
-import com.legendsofvaleros.modules.playermenu.InventoryManager;
+import com.legendsofvaleros.features.playermenu.InventoryManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;

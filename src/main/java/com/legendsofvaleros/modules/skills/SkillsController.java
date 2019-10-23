@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.skills;
 
-import com.codingforcookies.robert.core.RomanNumeral;
-import com.codingforcookies.robert.item.ItemBuilder;
+import com.legendsofvaleros.util.RomanNumeral;
+import com.legendsofvaleros.features.gui.item.ItemBuilder;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.bank.BankController;
@@ -13,8 +13,8 @@ import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.cooldowns.api.Cooldowns;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.modules.mobs.MobsController;
-import com.legendsofvaleros.modules.playermenu.PlayerMenu;
-import com.legendsofvaleros.modules.playermenu.events.PlayerOptionsOpenEvent;
+import com.legendsofvaleros.features.playermenu.PlayerMenu;
+import com.legendsofvaleros.features.playermenu.events.PlayerOptionsOpenEvent;
 import com.legendsofvaleros.modules.skills.core.SkillTree;
 import com.legendsofvaleros.modules.skills.core.admin.AdminSkills;
 import com.legendsofvaleros.modules.skills.core.mage.TreeMage;

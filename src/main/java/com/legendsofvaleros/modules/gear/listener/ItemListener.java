@@ -1,8 +1,8 @@
 package com.legendsofvaleros.modules.gear.listener;
 
 import com.codingforcookies.armorequip.ArmorEquipEvent;
-import com.codingforcookies.robert.core.GUI;
-import com.codingforcookies.robert.window.WindowYesNo;
+import com.legendsofvaleros.features.gui.core.GUI;
+import com.legendsofvaleros.features.gui.window.WindowYesNo;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;

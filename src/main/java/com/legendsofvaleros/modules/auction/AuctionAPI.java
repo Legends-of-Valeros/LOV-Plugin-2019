@@ -43,12 +43,6 @@ public class AuctionAPI extends ListenerModule {
         this.loadEntries().get();
     }
 
-    @Override
-    public void onLoad() {
-        super.onLoad();
-
-    }
-
     public Promise<List<Auction>> loadEntries() {
         auctions.clear();
 

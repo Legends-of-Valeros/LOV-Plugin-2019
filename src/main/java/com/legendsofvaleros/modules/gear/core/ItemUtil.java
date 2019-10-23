@@ -8,7 +8,7 @@ import com.legendsofvaleros.modules.gear.event.GearPickupEvent;
 import com.legendsofvaleros.modules.gear.event.InventoryFullEvent;
 import com.legendsofvaleros.modules.gear.listener.ItemListener;
 import com.legendsofvaleros.modules.gear.trigger.PickupTrigger;
-import com.legendsofvaleros.modules.playermenu.InventoryManager;
+import com.legendsofvaleros.features.playermenu.InventoryManager;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

@@ -7,8 +7,8 @@ import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
-import com.legendsofvaleros.modules.playerdata.PlayerData;
-import com.legendsofvaleros.modules.playerdata.PlayerDataController;
+import com.legendsofvaleros.features.playerdata.PlayerData;
+import com.legendsofvaleros.features.playerdata.PlayerDataController;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 

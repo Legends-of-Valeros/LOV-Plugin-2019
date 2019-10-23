@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.npcs.trait;
 
-import com.codingforcookies.robert.slot.Slot;
+import com.legendsofvaleros.features.gui.slot.Slot;
 import com.google.common.util.concurrent.SettableFuture;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.entity.Player;

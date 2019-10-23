@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.gear.component.core;
 
-import com.codingforcookies.robert.item.ItemBuilder;
+import com.legendsofvaleros.features.gui.item.ItemBuilder;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;

@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.npcs.trait.bank.repair;
 
-import com.codingforcookies.robert.item.ItemBuilder;
-import com.codingforcookies.robert.slot.Slot;
+import com.legendsofvaleros.features.gui.item.ItemBuilder;
+import com.legendsofvaleros.features.gui.slot.Slot;
 import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.modules.bank.gui.ItemMorphGUI;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;

@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.gear.component.core;
 
-import com.codingforcookies.robert.core.StringUtil;
-import com.codingforcookies.robert.item.ItemBuilder;
+import com.legendsofvaleros.util.StringUtil;
+import com.legendsofvaleros.features.gui.item.ItemBuilder;
 import com.legendsofvaleros.modules.gear.component.GearComponent;
 import com.legendsofvaleros.modules.gear.component.GearComponentOrder;
 import com.legendsofvaleros.modules.gear.core.Gear;

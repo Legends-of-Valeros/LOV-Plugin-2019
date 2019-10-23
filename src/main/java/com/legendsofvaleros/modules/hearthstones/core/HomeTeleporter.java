@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.hearthstones.core;
 
-import com.codingforcookies.robert.core.StringUtil;
+import com.legendsofvaleros.util.StringUtil;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.hearthstones.HearthstoneController;

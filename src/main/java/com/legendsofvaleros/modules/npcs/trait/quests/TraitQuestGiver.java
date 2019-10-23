@@ -1,9 +1,9 @@
 package com.legendsofvaleros.modules.npcs.trait.quests;
 
-import com.codingforcookies.robert.core.StringUtil;
-import com.codingforcookies.robert.item.Book;
-import com.codingforcookies.robert.item.ItemBuilder;
-import com.codingforcookies.robert.slot.Slot;
+import com.legendsofvaleros.util.StringUtil;
+import com.legendsofvaleros.features.gui.item.Book;
+import com.legendsofvaleros.features.gui.item.ItemBuilder;
+import com.legendsofvaleros.features.gui.slot.Slot;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.api.Ref;

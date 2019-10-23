@@ -1,16 +1,16 @@
 package com.legendsofvaleros.modules.npcs.trait.bank.trade;
 
-import com.codingforcookies.robert.core.GUI;
-import com.codingforcookies.robert.item.ItemBuilder;
-import com.codingforcookies.robert.slot.SlotUsable;
+import com.legendsofvaleros.features.gui.core.GUI;
+import com.legendsofvaleros.features.gui.item.ItemBuilder;
+import com.legendsofvaleros.features.gui.slot.SlotUsable;
 import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.gear.core.ItemUtil;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
-import com.legendsofvaleros.modules.playermenu.InventoryManager;
-import com.legendsofvaleros.modules.playermenu.events.PlayerMenuOpenEvent;
+import com.legendsofvaleros.features.playermenu.InventoryManager;
+import com.legendsofvaleros.features.playermenu.events.PlayerMenuOpenEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.model.Models;
 import org.bukkit.Material;

@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.characters.skill;
 
-import com.codingforcookies.robert.core.StringUtil;
+import com.legendsofvaleros.util.StringUtil;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;

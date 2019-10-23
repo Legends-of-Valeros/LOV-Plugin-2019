@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.skills.listener;
 
-import com.codingforcookies.robert.item.ItemReader;
+import com.legendsofvaleros.features.gui.item.ItemReader;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterInventoryFillEvent;

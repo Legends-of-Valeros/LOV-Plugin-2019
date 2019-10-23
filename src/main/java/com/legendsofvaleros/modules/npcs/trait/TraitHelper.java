@@ -1,8 +1,8 @@
 package com.legendsofvaleros.modules.npcs.trait;
 
-import com.codingforcookies.robert.core.GUI;
-import com.codingforcookies.robert.slot.Slot;
-import com.codingforcookies.robert.window.ExpandingGUI;
+import com.legendsofvaleros.features.gui.core.GUI;
+import com.legendsofvaleros.features.gui.slot.Slot;
+import com.legendsofvaleros.features.gui.window.ExpandingGUI;
 import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.util.MessageUtil;

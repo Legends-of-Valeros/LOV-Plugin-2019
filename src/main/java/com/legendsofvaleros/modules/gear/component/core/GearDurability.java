@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.gear.component.core;
 
-import com.codingforcookies.robert.item.ItemBuilder;
+import com.legendsofvaleros.features.gui.item.ItemBuilder;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.legendsofvaleros.LegendsOfValeros;
@@ -98,9 +98,9 @@ public class GearDurability {
 					if(dur.min != null && perc <= dur.min) continue;
 					
 					arr.addAll(dur.strings.get(null));
-					arr.addAll(dur.strings.get(item.gear.getType()));
-					
-					builder.addLore(ChatColor.GRAY + "❖ " + arr.get(item.gear.getSeed() % arr.size()));
+					arr.addAll(dur.strings.get(item.getType()));
+
+					builder.addLore(ChatColor.GRAY + "❖ " + arr.get(item.getSeed() % arr.size()));
 					break;
 				}
 

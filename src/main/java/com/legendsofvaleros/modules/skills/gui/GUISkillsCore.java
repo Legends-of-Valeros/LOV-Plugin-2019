@@ -1,9 +1,9 @@
 package com.legendsofvaleros.modules.skills.gui;
 
-import com.codingforcookies.robert.core.GUI;
-import com.codingforcookies.robert.core.GuiFlag;
-import com.codingforcookies.robert.item.ItemBuilder;
-import com.codingforcookies.robert.slot.ISlotAction;
+import com.legendsofvaleros.features.gui.core.GUI;
+import com.legendsofvaleros.features.gui.core.GuiFlag;
+import com.legendsofvaleros.features.gui.item.ItemBuilder;
+import com.legendsofvaleros.features.gui.slot.ISlotAction;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.skill.Skill;
 import com.legendsofvaleros.modules.skills.SkillsController;

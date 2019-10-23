@@ -2,40 +2,43 @@ package com.legendsofvaleros;
 
 import co.aikar.commands.BukkitCommandManager;
 import co.aikar.commands.PaperCommandManager;
-import com.codingforcookies.robert.core.Robert;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.module.Module;
 import com.legendsofvaleros.module.Modules;
 import com.legendsofvaleros.modules.arena.ArenaController;
+import com.legendsofvaleros.modules.auction.AuctionController;
 import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.chat.ChatController;
+import com.legendsofvaleros.features.chat.ChatController;
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.cooldowns.CooldownsController;
 import com.legendsofvaleros.modules.dueling.DuelingController;
 import com.legendsofvaleros.modules.factions.FactionController;
 import com.legendsofvaleros.modules.fast_travel.FastTravelController;
+import com.legendsofvaleros.modules.friends.FriendsController;
 import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.graveyard.GraveyardController;
 import com.legendsofvaleros.modules.hearthstones.HearthstoneController;
 import com.legendsofvaleros.modules.hotswitch.Hotswitch;
-import com.legendsofvaleros.modules.keepoutofocean.KeepOutOfOcean;
+import com.legendsofvaleros.features.keepoutofocean.KeepOutOfOcean;
 import com.legendsofvaleros.modules.levelarchetypes.core.LevelArchetypes;
 import com.legendsofvaleros.modules.loot.LootController;
+import com.legendsofvaleros.modules.mailbox.MailboxController;
 import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.modules.mount.MountsController;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.parties.PartiesController;
-import com.legendsofvaleros.modules.playermenu.PlayerMenu;
+import com.legendsofvaleros.features.playermenu.PlayerMenu;
+import com.legendsofvaleros.modules.professions.ProfessionsController;
 import com.legendsofvaleros.modules.pvp.PvPController;
 import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.queue.QueueController;
 import com.legendsofvaleros.modules.regions.RegionController;
-import com.legendsofvaleros.modules.restrictions.RestrictionsController;
+import com.legendsofvaleros.features.restrictions.RestrictionsController;
 import com.legendsofvaleros.modules.skills.SkillsController;
-import com.legendsofvaleros.modules.tabmenu.TabMenuController;
+import com.legendsofvaleros.features.tabmenu.TabMenuController;
 import com.legendsofvaleros.modules.zones.ZonesController;
 import com.legendsofvaleros.scheduler.InternalScheduler;
 import com.legendsofvaleros.util.MessageUtil;
@@ -128,8 +131,6 @@ public class LegendsOfValeros extends JavaPlugin {
     }
 
     private void registerModules() throws IllegalAccessException, InstantiationException {
-        Robert.enablePortable(this);
-
         // These are not optional modules EVER. In fact, no modules should ever
         // have define them as a dependency. Load them immediately.
         Modules.loadModuleBypass(APIController.class);
@@ -161,11 +162,11 @@ public class LegendsOfValeros extends JavaPlugin {
         Modules.registerModule(RegionController.class);
         Modules.registerModule(SkillsController.class);
         Modules.registerModule(ZonesController.class);
-        //Modules.registerModule(AuctionController.class);
-        //Modules.registerModule(MailboxController.class);
-        //Modules.registerModule(ProfessionsController.class);
+        Modules.registerModule(AuctionController.class);
+        Modules.registerModule(MailboxController.class);
+        Modules.registerModule(ProfessionsController.class);
         Modules.registerModule(RestrictionsController.class);
-        //Modules.registerModule(FriendsController.class);
+        Modules.registerModule(FriendsController.class);
         Modules.registerModule(TabMenuController.class);
         Modules.registerModule(QueueController.class);
         Modules.registerModule(ArenaController.class);
