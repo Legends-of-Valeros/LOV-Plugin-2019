@@ -133,7 +133,7 @@
         <dependency>
             <groupId>io.deepstream</groupId>
             <artifactId>deepstream.io-client-java</artifactId>
-            <version>2.2.2</version>
+            <version>LATEST</version>
         </dependency>
         <!--        -->
         <dependency>
@@ -172,12 +172,12 @@
         </dependency>
 
         <!-- Libs disguises -->
-<!--        <dependency>-->
-<!--            <groupId>LibsDisguises</groupId>-->
-<!--            <artifactId>LibsDisguises</artifactId>-->
-<!--            <version>9.8.2</version>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>LibsDisguises</groupId>-->
+        <!--            <artifactId>LibsDisguises</artifactId>-->
+        <!--            <version>9.8.2</version>-->
+        <!--            <scope>provided</scope>-->
+        <!--        </dependency>-->
 
         <!--  Craftbukkit  -->
         <dependency>

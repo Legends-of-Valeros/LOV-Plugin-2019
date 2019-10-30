@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.characters.creation;
 
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
+import com.legendsofvaleros.modules.classes.EntityClass;
 import com.legendsofvaleros.modules.characters.race.EntityRace;
 import com.legendsofvaleros.modules.characters.ui.CharacterCreationListener;
 

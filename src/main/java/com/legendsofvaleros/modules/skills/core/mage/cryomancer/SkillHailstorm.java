@@ -2,9 +2,9 @@ package com.legendsofvaleros.modules.skills.core.mage.cryomancer;
 
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.characters.skilleffect.MetaEffectInstance;
+import com.legendsofvaleros.modules.classes.EntityClass;
+import com.legendsofvaleros.modules.classes.skills.Skill;
+import com.legendsofvaleros.modules.classes.skills.skilleffect.MetaEffectInstance;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import org.bukkit.Location;
 import org.bukkit.Particle;

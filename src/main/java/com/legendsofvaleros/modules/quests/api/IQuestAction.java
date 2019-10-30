@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.quests.api;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
+import com.legendsofvaleros.modules.classes.EntityClass;
 
 import java.lang.ref.WeakReference;
 

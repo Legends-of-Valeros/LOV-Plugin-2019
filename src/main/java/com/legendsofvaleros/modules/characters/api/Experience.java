@@ -7,7 +7,7 @@ public interface Experience {
 
   /**
    * Gets the listener level of this player character.
-   * 
+   *
    * @return This player-character's current listener level.
    */
   int getLevel();
@@ -19,9 +19,9 @@ public interface Experience {
 
   /**
    * Gets the current amount of listener towards the next level that this player-character has.
-   * 
+   *
    * @return The amount of listener from the player-character's current level that they have in
-   *         progress towards the next level.
+   * progress towards the next level.
    */
   long getExperienceTowardsNextLevel();
 
@@ -32,7 +32,7 @@ public interface Experience {
    * The result may be an approximation. This is more useful for things like user interfaces than
    * for uses that need precise math. If you need precise math, it can be calculated by client code
    * using the other data points offered by this interface.
-   * 
+   *
    * @return The percentage towards the next level that a player is.
    */
   double getPercentageTowardsNextLevel();
@@ -42,10 +42,10 @@ public interface Experience {
    * <p>
    * May cause the player-character to level up if it pushes them over the threshold to their next
    * level.
-   * 
+   *
    * @param add The amount of listener to add. Can be negative to subtract.
    * @param ignoresMultipliers <code>true</code> if the added/subracted listener should ignore
-   *        multipliers like listener boosts/penalties.
+   * multipliers like listener boosts/penalties.
    */
   void addExperience(long add, boolean ignoresMultipliers);
 
@@ -57,7 +57,7 @@ public interface Experience {
    * <p>
    * Multipliers are not persistent. As soon as the player logs out, this multiplier will be
    * forgotten.
-   * 
+   *
    * @param amount The amount to multiply new additions/subtractions of listener by.
    * @return An object which can be used to remove the listener multiplier.
    */
@@ -65,12 +65,12 @@ public interface Experience {
 
   /**
    * Sets the player's listener level.
-   * 
+   *
    * @param setTo The level to set listener to. Cannot be negative.
    * @deprecated Unless you specifically want to override normal behavior, do not use this method.
-   *             This can be used to do things like penalize or reset players' levels, but should
-   *             never be used to grant listener to players. Instead, see
-   *             {@link #addExperience(long, boolean)}.
+   * This can be used to do things like penalize or reset players' levels, but should
+   * never be used to grant listener to players. Instead, see
+   * {@link #addExperience(long, boolean)}.
    */
   @Deprecated
   void setLevel(int setTo);
@@ -80,12 +80,12 @@ public interface Experience {
    * <p>
    * May cause the player-character to level up if it pushes them over the threshold to their next
    * level.
-   * 
+   *
    * @param setTo The amount to set the character's listener to. Cannot be negative.
    * @deprecated It is much better to use relative edits (ie {@link #addExperience(long, boolean)}, because they are
-   *             much less dangerous. Setting xp has a very high likelihood of causing logical
-   *             conflicts with other clients or the database record (especially if it is being
-   *             edited from multiple sources at once).
+   * much less dangerous. Setting xp has a very high likelihood of causing logical
+   * conflicts with other clients or the database record (especially if it is being
+   * edited from multiple sources at once).
    */
   @Deprecated
   void setExperienceTowardsNextLevel(long setTo);

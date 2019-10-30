@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.quests.objective.skills;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.skill.Skill;
+import com.legendsofvaleros.modules.classes.skills.Skill;
 import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.quests.objective.AbstractQuestObjective;
 import com.legendsofvaleros.modules.skills.event.BindSkillEvent;

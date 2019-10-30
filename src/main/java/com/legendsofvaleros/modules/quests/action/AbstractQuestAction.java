@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.quests.action;
 
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
+import com.legendsofvaleros.modules.classes.EntityClass;
 import com.legendsofvaleros.modules.quests.api.IQuest;
 import com.legendsofvaleros.modules.quests.api.IQuestAction;
 

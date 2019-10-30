@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.characters.ui;
 
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.race.EntityRace;
+import com.legendsofvaleros.modules.classes.EntityClass;
 import org.bukkit.entity.Player;
 
 /**
@@ -15,7 +15,7 @@ public interface CharacterCreationListener {
    * <p>
    * Marks the end of character creation, and that the player should start playing the character
    * they created.
-   * 
+   *
    * @param player The player who completed character selection.
    * @param raceSelected The race that the player selected.
    * @param classSelected The class that the player selected.

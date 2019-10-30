@@ -1,11 +1,11 @@
 package com.legendsofvaleros.modules.characters.core;
 
-import com.legendsofvaleros.modules.characters.api.AbilityStats;
+import com.legendsofvaleros.modules.classes.skills.AbilityStats;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.config.ClassConfig;
-import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
-import com.legendsofvaleros.modules.characters.entityclass.AbilityStatApplicator;
-import com.legendsofvaleros.modules.characters.entityclass.AbilityStatValue;
+import com.legendsofvaleros.modules.classes.stats.AbilityStat;
+import com.legendsofvaleros.modules.classes.stats.AbilityStatApplicator;
+import com.legendsofvaleros.modules.classes.stats.AbilityStatValue;
 import com.legendsofvaleros.modules.characters.ui.AbilityStatChangeListener;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.modifiers.ConstructionListener;
@@ -13,8 +13,7 @@ import com.legendsofvaleros.modules.combatengine.modifiers.DecayingValueModifier
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifier;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
 import com.legendsofvaleros.modules.levelarchetypes.api.Archetype;
-
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -29,151 +28,150 @@ import java.util.Set;
  */
 public class CharacterAbilityStats implements AbilityStats {
 
-	private final PlayerCharacter playerCharacter;
-	private final AbilityStatChangeListener ui;
-	
-	private final AbilityStatListener listener;
-	
-	private final ClassConfig configClass;
-	private final Map<AbilityStat, AbilityStatValue> abilityStats;
-	private AbilityStatApplicator applicatorClass;
+  private final PlayerCharacter playerCharacter;
+  private final AbilityStatChangeListener ui;
 
-	private final Set<ValueModifier> removeOnDeath;
-	private final Set<ValueModifier> haveTasks;
+  private final AbilityStatListener listener;
 
-	/**
-	 * Class constructor.
-	 * 
-	 * @param playerCharacter The player character these class stats are for.
-	 * @param combatEntity The combat entity that represents the player character and will be the
-	 *        target of the effects of these class stats. Can be <code>null</code> if this class is
-	 *        later informed when it is initialized with {@link #onCombatEntityCreate(CombatEntity)}.
-	 * @throws IllegalArgumentException On a <code>null</code> player character.
-	 */
-	public CharacterAbilityStats(PlayerCharacter playerCharacter, CombatEntity combatEntity)
-			throws IllegalArgumentException {
-		if (playerCharacter == null) {
-			throw new IllegalArgumentException("params cannot be null");
-		}
-		this.playerCharacter = playerCharacter;
-		this.ui = Characters.getInstance().getUiManager().getAbilityStatInterface(playerCharacter);
+  private final ClassConfig configClass;
+  private final Map<AbilityStat, AbilityStatValue> abilityStats;
+  private AbilityStatApplicator applicatorClass;
 
-		this.listener = new AbilityStatListener();
+  private final Set<ValueModifier> removeOnDeath;
+  private final Set<ValueModifier> haveTasks;
 
-		this.configClass = Characters.getInstance().getCharacterConfig().getClassConfig(playerCharacter.getPlayerClass());
-		if (combatEntity != null)
-			this.applicatorClass = configClass.getNewApplicator(combatEntity);
+  /**
+   * Class constructor.
+   *
+   * @param playerCharacter The player character these class stats are for.
+   * @param combatEntity The combat entity that represents the player character and will be the
+   * target of the effects of these class stats. Can be <code>null</code> if this class is
+   * later informed when it is initialized with {@link #onCombatEntityCreate(CombatEntity)}.
+   * @throws IllegalArgumentException On a <code>null</code> player character.
+   */
+  public CharacterAbilityStats(PlayerCharacter playerCharacter, CombatEntity combatEntity) throws IllegalArgumentException {
+    if (playerCharacter == null) {
+      throw new IllegalArgumentException("params cannot be null");
+    }
+    this.playerCharacter = playerCharacter;
+    this.ui = Characters.getInstance().getUiManager().getAbilityStatInterface(playerCharacter);
 
-		this.abilityStats = new HashMap<>();
-		
-		//getAbilityStatValue(AbilityStat.STRENGTH).flatEdit(1, true);
-		
-		this.removeOnDeath = new HashSet<>();
-		this.haveTasks = new HashSet<>();
+    this.listener = new AbilityStatListener();
 
-		// applies baseline class stats
-		Archetype arch = configClass.getArchetype();
-		
-		for (AbilityStat abilityStat : AbilityStat.values()) {
-			double baseLevel =
-					arch.getStatValue(abilityStat.name(), playerCharacter.getExperience().getLevel());
-			if (baseLevel != 0.0) {
-				newAbilityStatModifierBuilder(abilityStat).setValue(baseLevel)
-				.setModifierType(ValueModifierBuilder.ModifierType.FLAT_EDIT).build();
-			}
-		}
-	}
+    this.configClass = Characters.getInstance().getCharacterConfig().getClassConfig(playerCharacter.getPlayerClass());
+    if (combatEntity != null) {
+      this.applicatorClass = configClass.getNewApplicator(combatEntity);
+    }
 
-	@Override
-	public PlayerCharacter getPlayerCharacter() {
-		return playerCharacter;
-	}
+    this.abilityStats = new EnumMap<>(AbilityStat.class);
 
-	@Override
-	public double getAbilityStat(AbilityStat abilityStat) {
-		AbilityStatValue val = abilityStats.get(abilityStat);
-		if (val == null) {
-			return 0;
-		}
-		return val.getFinalValue();
-	}
+    //getAbilityStatValue(AbilityStat.STRENGTH).flatEdit(1, true);
 
-	@Override
-	public ValueModifierBuilder newAbilityStatModifierBuilder(AbilityStat modify)
-			throws IllegalArgumentException {
-		if (modify == null) {
-			throw new IllegalArgumentException("class stat cannot be null");
-		}
-		AbilityStatValue value = getAbilityStatValue(modify);
-		return new ValueModifierBuilder(value, listener);
-	}
+    this.removeOnDeath = new HashSet<>();
+    this.haveTasks = new HashSet<>();
 
-	/**
-	 * If no combat entity object was previously provided, informs this class when there is a combat
-	 * entity which can actually implement the effects of these class stats.
-	 * 
-	 * @param useThis The combat entity object to affect with the effects of these class stat values.
-	 */
-	void onCombatEntityCreate(CombatEntity useThis) {
-		this.applicatorClass = configClass.getNewApplicator(useThis);
-		// on creating a new applicator, informs it of any applied changes before now
-		for (Map.Entry<AbilityStat, AbilityStatValue> ent : abilityStats.entrySet()) {
-			applicatorClass.onAbilityStatChange(ent.getKey(), ent.getValue().getFinalValue(), 0);
-		}
-	}
+    // applies baseline class stats
+    Archetype arch = configClass.getArchetype();
 
-	void onInvalidated() {
-		// cancels any tasks that are ongoing.
-		for (ValueModifier modifier : haveTasks) {
-			if (modifier != null) {
-				modifier.remove();
-			}
-		}
-		haveTasks.clear();
-	}
+    for (AbilityStat abilityStat : AbilityStat.values()) {
+      double baseLevel =
+          arch.getStatValue(abilityStat.name(), playerCharacter.getExperience().getLevel());
+      if (baseLevel != 0.0) {
+        newAbilityStatModifierBuilder(abilityStat).setValue(baseLevel)
+            .setModifierType(ValueModifierBuilder.ModifierType.FLAT_EDIT).build();
+      }
+    }
+  }
 
-	void onDeath() {
-		for (ValueModifier modifier : removeOnDeath) {
-			modifier.remove();
-		}
-		removeOnDeath.clear();
-	}
+  @Override
+  public PlayerCharacter getPlayerCharacter() {
+    return playerCharacter;
+  }
 
-	private AbilityStatValue getAbilityStatValue(AbilityStat abilityStat) {
-		AbilityStatValue value = abilityStats.get(abilityStat);
-		if (value == null) {
-			value = new AbilityStatValue(abilityStat, listener);
-			abilityStats.put(abilityStat, value);
-		}
-		return value;
-	}
+  @Override
+  public double getAbilityStat(AbilityStat abilityStat) {
+    AbilityStatValue val = abilityStats.get(abilityStat);
+    if (val == null) {
+      return 0;
+    }
+    return val.getFinalValue();
+  }
 
-	/**
-	 * Listens to changes in the player character's class stats'.
-	 */
-	private class AbilityStatListener implements ConstructionListener, AbilityStatChangeListener {
+  @Override
+  public ValueModifierBuilder newAbilityStatModifierBuilder(AbilityStat modify) throws IllegalArgumentException {
+    if (modify == null) {
+      throw new IllegalArgumentException("class stat cannot be null");
+    }
+    AbilityStatValue value = getAbilityStatValue(modify);
+    return new ValueModifierBuilder(value, listener);
+  }
 
-		@Override
-		public void onConstruction(ValueModifier newModifier) {
-			if (newModifier.isRemovedOnDeath()) {
-				removeOnDeath.add(newModifier);
-			}
-			if (newModifier.isRemovedOnDeath() || newModifier.getExpiration() < Long.MAX_VALUE
-					|| newModifier instanceof DecayingValueModifier) {
-				haveTasks.add(newModifier);
-			}
-		}
+  /**
+   * If no combat entity object was previously provided, informs this class when there is a combat
+   * entity which can actually implement the effects of these class stats.
+   *
+   * @param useThis The combat entity object to affect with the effects of these class stat values.
+   */
+  void onCombatEntityCreate(CombatEntity useThis) {
+    this.applicatorClass = configClass.getNewApplicator(useThis);
+    // on creating a new applicator, informs it of any applied changes before now
+    for (Map.Entry<AbilityStat, AbilityStatValue> ent : abilityStats.entrySet()) {
+      applicatorClass.onAbilityStatChange(ent.getKey(), ent.getValue().getFinalValue(), 0);
+    }
+  }
 
-		@Override
-		public void onAbilityStatChange(AbilityStat changed, double newValue, double previousValue) {
-			if (applicatorClass != null) {
-				applicatorClass.onAbilityStatChange(changed, newValue, previousValue);
-			}
+  void onInvalidated() {
+    // cancels any tasks that are ongoing.
+    for (ValueModifier modifier : haveTasks) {
+      if (modifier != null) {
+        modifier.remove();
+      }
+    }
+    haveTasks.clear();
+  }
 
-			if (ui != null) {
-				ui.onAbilityStatChange(changed, newValue, previousValue);
-			}
-		}
+  void onDeath() {
+    for (ValueModifier modifier : removeOnDeath) {
+      modifier.remove();
+    }
+    removeOnDeath.clear();
+  }
 
-	}
+  private AbilityStatValue getAbilityStatValue(AbilityStat abilityStat) {
+    AbilityStatValue value = abilityStats.get(abilityStat);
+    if (value == null) {
+      value = new AbilityStatValue(abilityStat, listener);
+      abilityStats.put(abilityStat, value);
+    }
+    return value;
+  }
+
+  /**
+   * Listens to changes in the player character's class stats'.
+   */
+  private class AbilityStatListener implements ConstructionListener, AbilityStatChangeListener {
+
+    @Override
+    public void onConstruction(ValueModifier newModifier) {
+      if (newModifier.isRemovedOnDeath()) {
+        removeOnDeath.add(newModifier);
+      }
+      if (newModifier.isRemovedOnDeath() || newModifier.getExpiration() < Long.MAX_VALUE
+          || newModifier instanceof DecayingValueModifier) {
+        haveTasks.add(newModifier);
+      }
+    }
+
+    @Override
+    public void onAbilityStatChange(AbilityStat changed, double newValue, double previousValue) {
+      if (applicatorClass != null) {
+        applicatorClass.onAbilityStatChange(changed, newValue, previousValue);
+      }
+
+      if (ui != null) {
+        ui.onAbilityStatChange(changed, newValue, previousValue);
+      }
+    }
+
+  }
 }

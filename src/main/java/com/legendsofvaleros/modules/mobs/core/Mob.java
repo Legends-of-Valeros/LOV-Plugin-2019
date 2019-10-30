@@ -2,8 +2,8 @@ package com.legendsofvaleros.modules.mobs.core;
 
 import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
-import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
+import com.legendsofvaleros.modules.classes.stats.AbilityStat;
+import com.legendsofvaleros.modules.classes.EntityClass;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;

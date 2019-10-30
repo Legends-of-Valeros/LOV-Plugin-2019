@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.characters.config;
 
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.entityclass.StatModifierModel;
+import com.legendsofvaleros.modules.classes.stats.StatModifierModel;
 import com.legendsofvaleros.modules.characters.race.EntityRace;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;

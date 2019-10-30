@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.characters.config;
 
-import com.legendsofvaleros.modules.characters.entityclass.StatModifierModel;
+import com.legendsofvaleros.modules.classes.stats.StatModifierModel;
 import com.legendsofvaleros.modules.characters.race.EntityRace;
 
 import java.util.Collection;

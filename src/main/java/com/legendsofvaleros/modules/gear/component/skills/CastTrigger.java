@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.gear.component.skills;
 
-import com.legendsofvaleros.modules.characters.skill.Skill;
+import com.legendsofvaleros.modules.classes.skills.Skill;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.gear.trigger.CombatEntityTrigger;
 

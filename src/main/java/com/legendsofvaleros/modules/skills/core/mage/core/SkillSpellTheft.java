@@ -1,10 +1,10 @@
 package com.legendsofvaleros.modules.skills.core.mage.core;
 
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.characters.skilleffect.SkillEffect;
-import com.legendsofvaleros.modules.characters.skilleffect.SkillEffectInstance;
+import com.legendsofvaleros.modules.classes.EntityClass;
+import com.legendsofvaleros.modules.classes.skills.Skill;
+import com.legendsofvaleros.modules.classes.skills.skilleffect.SkillEffect;
+import com.legendsofvaleros.modules.classes.skills.skilleffect.SkillEffectInstance;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import org.bukkit.Sound;
 import org.bukkit.World;

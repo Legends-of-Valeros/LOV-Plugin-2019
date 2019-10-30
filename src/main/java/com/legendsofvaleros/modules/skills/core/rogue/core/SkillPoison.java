@@ -1,9 +1,9 @@
 package com.legendsofvaleros.modules.skills.core.rogue.core;
 
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.characters.skilleffect.MetaEffectInstance;
-import com.legendsofvaleros.modules.characters.skilleffect.effects.PercentagePoison;
+import com.legendsofvaleros.modules.classes.EntityClass;
+import com.legendsofvaleros.modules.classes.skills.Skill;
+import com.legendsofvaleros.modules.classes.skills.skilleffect.MetaEffectInstance;
+import com.legendsofvaleros.modules.classes.skills.skilleffect.effects.PercentagePoison;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import org.bukkit.World;
 
