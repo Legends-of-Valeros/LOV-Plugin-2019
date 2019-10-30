@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.gear.component.core;
 
-import com.legendsofvaleros.features.gui.item.ItemBuilder;
 import com.google.gson.annotations.SerializedName;
+import com.legendsofvaleros.features.gui.item.ItemBuilder;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
@@ -31,7 +31,7 @@ public class RequireComponent extends GearComponent<Void> {
 
 	@Override
 	protected void onGenerateItem(Gear.Instance item, Void persist, ItemBuilder builder) {
-		StringBuilder sb = new StringBuilder(String.valueOf(ChatColor.YELLOW) + " ✓");
+		StringBuilder sb = new StringBuilder(ChatColor.YELLOW + " ✓");
 		
 		if(level != null && level > 0) {
 			sb.append(" Lvl ");
@@ -66,9 +66,6 @@ public class RequireComponent extends GearComponent<Void> {
 		if(entityRace != null && entityRace != pc.getPlayerRace())
 			return false;
 
-		if(level != null && pc.getExperience().getLevel() < level)
-			return false;
-		
-		return true;
+		return level == null || pc.getExperience().getLevel() >= level;
 	}
 }

@@ -262,14 +262,14 @@ public class APIController extends Module {
     public <T> Promise<T> fromJson(JsonElement elem, Type type) {
         if(this.gson == null)
             throw new IllegalStateException("Must wait until onPostLoad() before using RPC functions!");
-        return Promise.make(() -> (T)this.gson.fromJson(elem, type));
+        return Promise.make(() -> this.gson.fromJson(elem, type));
     }
 
     @SuppressWarnings("unchecked")
     public <T> Promise<T> fromJson(String json, Type type) {
         if(this.gson == null)
             throw new IllegalStateException("Must wait until onPostLoad() before using RPC functions!");
-        return Promise.make(() -> (T)this.gson.fromJson(json, type));
+        return Promise.make(() -> this.gson.fromJson(json, type));
     }
 
     public <T> Promise<T> fromJson(JsonElement elem, Class<T> clazz) {

@@ -1,7 +1,7 @@
 package com.legendsofvaleros.util.model;
 
-import com.codingforcookies.robert.item.ItemBuilder;
 import com.google.gson.annotations.SerializedName;
+import com.legendsofvaleros.features.gui.item.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -57,11 +57,11 @@ public class Model implements IModel {
 
     @Override
     public ItemBuilder toStack() {
-        return new ItemBuilder(material).setName(null).setDamage(damage).unbreakable().addFlag(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
+        return new ItemBuilder(material).setName(null).setDurability(damage).unbreakable().addFlag(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
     }
 
     @Override
     public String toString() {
-        return "Model(id=" + id + ", name=" + name + ", material=" + material + ", damage=" + damage + ")";
+        return "Model(id=" + id + ", name=" + name + ", material=" + material + ", durability=" + damage + ")";
     }
 }

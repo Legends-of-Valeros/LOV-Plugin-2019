@@ -47,7 +47,7 @@ public class NPCsController extends NPCsAPI {
     public void onLoad() {
         super.onLoad();
 
-        this.instance = this;
+        instance = this;
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new NPCCommands());
 

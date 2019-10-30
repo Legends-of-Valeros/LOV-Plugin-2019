@@ -1,6 +1,5 @@
 package com.legendsofvaleros.modules.characters.skilleffect.effects;
 
-import com.legendsofvaleros.util.RomanNumeral;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterCombatLogoutEvent;
@@ -9,10 +8,11 @@ import com.legendsofvaleros.modules.characters.skilleffect.MetaEffectInstance;
 import com.legendsofvaleros.modules.characters.skilleffect.PersistingEffect;
 import com.legendsofvaleros.modules.characters.skilleffect.PersistingEffect.PersistingEffectBuilder;
 import com.legendsofvaleros.modules.characters.skilleffect.RemovalReason;
+import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.api.EntityStats;
-import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.stat.Stat;
+import com.legendsofvaleros.util.RomanNumeral;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -84,11 +84,9 @@ public class Bleed extends DamageOverTime<Void> {
         if (replaced != null) {
             // does not overwrite a previous instance if the new instance is lower level or is the same
             // level but has a shorter duration
-            if (effectInstance.getLevel() < replaced.getLevel()
-                    || (effectInstance.getLevel() == replaced.getLevel() && effectInstance
-                    .getRemainingDurationMillis() <= replaced.getRemainingDurationMillis())) {
-                return false;
-            }
+            return effectInstance.getLevel() >= replaced.getLevel()
+                    && (effectInstance.getLevel() != replaced.getLevel() || effectInstance
+                    .getRemainingDurationMillis() > replaced.getRemainingDurationMillis());
         }
 
         return true;

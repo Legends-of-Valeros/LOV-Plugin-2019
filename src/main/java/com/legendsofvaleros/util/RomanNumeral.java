@@ -1,8 +1,8 @@
 package com.legendsofvaleros.util;
 
 public class RomanNumeral {
-    final static char symbol[] = {'M', 'D', 'C', 'L', 'X', 'V', 'I'};
-    final static int value[] = {1000, 500, 100, 50, 10, 5, 1};
+    final static char[] symbol = {'M', 'D', 'C', 'L', 'X', 'V', 'I'};
+    final static int[] value = {1000, 500, 100, 50, 10, 5, 1};
 
     private static int[] numbers = {
             1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1

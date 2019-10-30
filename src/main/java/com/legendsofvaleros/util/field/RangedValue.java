@@ -60,6 +60,6 @@ public class RangedValue {
 	}
 	
 	public long longValue() {
-		return (long)intValue();
+		return intValue();
 	}
 }

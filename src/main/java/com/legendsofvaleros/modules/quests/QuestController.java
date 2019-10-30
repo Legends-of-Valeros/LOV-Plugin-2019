@@ -1,6 +1,8 @@
 package com.legendsofvaleros.modules.quests;
 
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.features.playermenu.InventoryManager;
+import com.legendsofvaleros.features.playermenu.PlayerMenu;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
@@ -9,8 +11,6 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterCreateEvent
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.npcs.trait.quests.TraitQuestGiver;
-import com.legendsofvaleros.modules.playermenu.InventoryManager;
-import com.legendsofvaleros.modules.playermenu.PlayerMenu;
 import com.legendsofvaleros.modules.quests.api.IQuest;
 import com.legendsofvaleros.modules.quests.api.IQuestInstance;
 import com.legendsofvaleros.modules.quests.api.QuestState;
@@ -191,31 +191,6 @@ public class QuestController extends QuestAPI {
             }
         }
 
-        /*NodeRegistry.addType("dummy", DummyObjective.class);
-        NodeRegistry.addType("talk", TalkObjective.class);
-        NodeRegistry.addType("return", ReturnObjective.class);
-        NodeRegistry.addType("interact_block", InteractBlockObjective.class);
-
-        NodeRegistry.addType("conversation", ActionConversation.class);
-        NodeRegistry.addType("goto", ActionGoTo.class);
-
-        NodeRegistry.addType("command_run", ActionRunCommand.class);
-        NodeRegistry.addType("speech", ActionSpeech.class);
-        NodeRegistry.addType("wait", ActionWait.class);
-
-        NodeRegistry.addType("quest_new", ActionNewQuest.class);
-
-        NodeRegistry.addType("notify", ActionNotification.class);
-        NodeRegistry.addType("title", ActionTitle.class);
-
-        NodeRegistry.addType("text", ActionText.class);
-
-        NodeRegistry.addType("particle", ActionParticle.class);
-        NodeRegistry.addType("sound", ActionSound.class);
-        NodeRegistry.addType("xp", ActionExperience.class);
-        NodeRegistry.addType("teleport", ActionTeleport.class);
-        NodeRegistry.addType("show_credits", ActionShowCredits.class);*/
-
         // Fill in the top two slots of the crafting area
         InventoryManager.addFixedItem(42, new InventoryManager.InventoryItem(null,
                 (p, event) -> p.performCommand("quests gui")));
@@ -240,13 +215,9 @@ public class QuestController extends QuestAPI {
         QuestStatus status = quest.getStatus(pc);
 
         // A quest that cannot be accepted cannot be offered.
-        if (!status.canAccept()) {
-            return false;
-        }
+        return status.canAccept();
 
         // TODO: show quest dialog
-
-        return true;
     }
 
     public Boolean startQuest(IQuest quest, PlayerCharacter pc) {

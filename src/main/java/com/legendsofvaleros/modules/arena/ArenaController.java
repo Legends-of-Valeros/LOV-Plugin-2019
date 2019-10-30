@@ -31,7 +31,7 @@ public class ArenaController extends ArenaAPI {
     @Override
     public void onLoad() {
         super.onLoad();
-        this.instance = this;
+        instance = this;
 
         QueueController.getInstance().registerQueue(OneVersusOne.class, 2);
         QueueController.getInstance().registerQueue(TwoVersusTwo.class, 4);
@@ -41,7 +41,7 @@ public class ArenaController extends ArenaAPI {
     public void onUnload() {
         super.onUnload();
 
-        this.instance = null;
+        instance = null;
     }
 
 //    @EventHandler

@@ -23,6 +23,6 @@ public class FastTravelController extends FastTravelAPI {
     public void onLoad() {
         super.onLoad();
 
-        this.instance = this;
+        instance = this;
     }
 }

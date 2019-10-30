@@ -28,7 +28,7 @@ public class SoulbindComponent extends GearComponent<Boolean> {
 	@Override
 	public Boolean test(Gear.Instance item, Boolean persist, GearTrigger trigger) {
 		if(!trigger.equals(EquipTrigger.class)) return null;
-		return persist || (trigger instanceof CombatEntityTrigger ? !((CombatEntityTrigger)trigger).getEntity().isPlayer() : true);
+		return persist || (!(trigger instanceof CombatEntityTrigger) || !((CombatEntityTrigger) trigger).getEntity().isPlayer());
 	}
 
 	@Override

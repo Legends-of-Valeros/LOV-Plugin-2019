@@ -19,7 +19,7 @@ public class FactionController extends FactionAPI {
     public void onLoad() {
         super.onLoad();
 
-        this.instance = this;
+        instance = this;
 
         registerEvents(new ReputationListener());
 

@@ -61,7 +61,7 @@ public class MobsController extends MobsAPI {
     public void onLoad() {
         super.onLoad();
 
-        this.instance = this;
+        instance = this;
 
         APIController.getInstance().getGsonBuilder().registerTypeAdapter(Mob.StatsMap.class, (JsonDeserializer<Mob.StatsMap>) (json, typeOfT, context) -> {
             Mob.StatsMap map = new Mob.StatsMap();

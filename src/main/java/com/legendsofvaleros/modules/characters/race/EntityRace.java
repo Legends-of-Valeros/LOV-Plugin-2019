@@ -28,7 +28,7 @@ public enum EntityRace {
   }
 
   public static EntityRace getRaceByName(String name) {
-      EntityRace races[] = EntityRace.values();
+      EntityRace[] races = EntityRace.values();
       for (EntityRace race : races) {
           if (race.name().equalsIgnoreCase(name)) {
               return race;

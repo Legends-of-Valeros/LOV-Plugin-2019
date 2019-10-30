@@ -1,12 +1,12 @@
 package com.legendsofvaleros.modules.gear.core;
 
-import com.legendsofvaleros.features.gui.item.ItemBuilder;
-import com.legendsofvaleros.features.gui.item.NBTEditor;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.api.APIController;
+import com.legendsofvaleros.features.gui.item.ItemBuilder;
+import com.legendsofvaleros.features.gui.item.NBTEditor;
 import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.gear.api.IGear;
 import com.legendsofvaleros.modules.gear.component.ComponentMap;
@@ -90,7 +90,7 @@ public class Gear implements IGear {
     public int getSeed() {
         int seed = 0;
         for (int i = 0; i < id.length(); i++) {
-            seed += (int) id.charAt(i);
+            seed += id.charAt(i);
         }
         return seed;
     }

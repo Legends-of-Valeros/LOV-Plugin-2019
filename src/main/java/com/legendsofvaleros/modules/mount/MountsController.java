@@ -2,6 +2,8 @@ package com.legendsofvaleros.modules.mount;
 
 import com.legendsofvaleros.features.gui.core.GUI;
 import com.legendsofvaleros.features.gui.item.ItemBuilder;
+import com.legendsofvaleros.features.playermenu.PlayerMenu;
+import com.legendsofvaleros.features.playermenu.events.PlayerOptionsOpenEvent;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.bank.BankController;
@@ -10,8 +12,6 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.mount.api.IMount;
 import com.legendsofvaleros.modules.npcs.NPCsController;
-import com.legendsofvaleros.features.playermenu.PlayerMenu;
-import com.legendsofvaleros.features.playermenu.events.PlayerOptionsOpenEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.model.Models;
 import org.bukkit.Bukkit;
@@ -43,7 +43,7 @@ public class MountsController extends MountAPI {
     public void onLoad() {
         super.onLoad();
 
-        this.instance = this;
+        instance = this;
     }
 
     @Override

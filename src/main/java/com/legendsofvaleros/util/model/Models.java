@@ -1,10 +1,10 @@
 package com.legendsofvaleros.util.model;
 
-import com.codingforcookies.robert.item.ItemBuilder;
 import com.google.common.collect.ImmutableList;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.InterfaceTypeAdapter;
 import com.legendsofvaleros.api.Promise;
+import com.legendsofvaleros.features.gui.item.ItemBuilder;
 import com.legendsofvaleros.util.Utilities;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

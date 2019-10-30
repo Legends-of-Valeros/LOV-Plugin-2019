@@ -36,10 +36,8 @@ public class WorthComponent extends GearComponent<Long> {
 		}else if(trigger.equals(CombineTrigger.class)) {
 			CombineTrigger t = (CombineTrigger)trigger;
 			Long amt = t.getBase().getPersist(WorthComponent.class);
-			if(amt == null)
-				return false;
-			return true;
-		}
+            return amt != null;
+        }
 		return null;
 	}
 

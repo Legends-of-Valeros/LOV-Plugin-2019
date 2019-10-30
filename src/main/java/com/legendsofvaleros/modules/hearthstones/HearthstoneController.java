@@ -1,16 +1,13 @@
 package com.legendsofvaleros.modules.hearthstones;
 
+import com.legendsofvaleros.features.playermenu.PlayerMenu;
+import com.legendsofvaleros.features.playermenu.events.PlayerOptionsOpenEvent;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.hearthstones.core.HomePoint;
 import com.legendsofvaleros.modules.hearthstones.core.HomeTeleporter;
-import com.legendsofvaleros.features.playermenu.PlayerMenu;
-import com.legendsofvaleros.features.playermenu.events.PlayerOptionsOpenEvent;
-import com.legendsofvaleros.util.model.Model;
-import com.legendsofvaleros.modules.playermenu.PlayerMenu;
-import com.legendsofvaleros.modules.playermenu.events.PlayerOptionsOpenEvent;
 import com.legendsofvaleros.util.model.Models;
 import org.bukkit.event.EventHandler;
 
@@ -29,7 +26,7 @@ public class HearthstoneController extends HearthstoneAPI {
     public void onLoad() {
         super.onLoad();
 
-        this.instance = this;
+        instance = this;
 
         this.teleporter = new HomeTeleporter(getConfig().getLong("warmup-seconds"));
     }

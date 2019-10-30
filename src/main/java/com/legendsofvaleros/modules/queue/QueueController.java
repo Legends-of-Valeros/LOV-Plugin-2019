@@ -30,7 +30,7 @@ public class QueueController extends ListenerModule {
     @Override
     public void onLoad() {
         super.onLoad();
-        this.instance = this;
+        instance = this;
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new QueueCommands());
     }

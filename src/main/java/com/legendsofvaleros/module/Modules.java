@@ -158,10 +158,7 @@ public class Modules {
         if (optional && !modules.get(dependency).isEnabled) return true;
 
         // If the dependency is enabled, but not yet loaded, then dependencies aren't met
-        if (!modules.get(dependency).isLoaded)
-            return false;
-
-        return true;
+        return modules.get(dependency).isLoaded;
     }
 
     public static boolean isLoaded(Class<? extends Module> clazz) {

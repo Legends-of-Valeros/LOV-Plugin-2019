@@ -1,6 +1,6 @@
 package com.legendsofvaleros.util.model;
 
-import com.codingforcookies.robert.item.ItemBuilder;
+import com.legendsofvaleros.features.gui.item.ItemBuilder;
 import org.bukkit.Material;
 
 public interface IModel {
