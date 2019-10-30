@@ -1,14 +1,18 @@
 package com.legendsofvaleros.api;
 
 import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.legendsofvaleros.api.annotation.ModuleRPC;
+import io.deepstream.LoginResult;
 import io.deepstream.RpcResult;
+import org.apache.logging.log4j.util.Strings;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executor;
 
 public class RPCFunction<T> {
@@ -50,7 +54,10 @@ public class RPCFunction<T> {
         return Promise.make(() -> oneShotSync(func, result, args), exec);
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> T oneShotSync(String func, TypeToken<T> result, Object... args) {
+        RpcResult res = null;
+
         try {
             Object arg = null;
             if (args.length == 1) {
@@ -61,30 +68,31 @@ public class RPCFunction<T> {
 
             // This is a hack so we can use our own Gson parser.
             // TODO: Fix when deepstream supports passing our own data.
-            Gson gson = APIController.getInstance().getGson();
-            if (gson == null) {
-                throw new IllegalStateException("Must wait until onPostLoad() before using RPC functions!");
-            }
 
-            RpcResult res = APIController.getInstance().getClient()
-                    .rpc.make(func, arg != null ? gson.fromJson(gson.toJson(arg), JsonElement.class) : null);
+            JsonObject request = new JsonObject();
+            request.add("session", APIController.getInstance().getAPISession());
+            request.add("arg", arg != null ? APIController.getInstance().getGson().fromJson(APIController.getInstance().getGson().toJson(arg), JsonElement.class) : null);
+
+            res = APIController.getInstance().getClient().rpc.make(func, request);
 
             if (res.success()) {
                 // Decode result into T using Gson
                 if (res.getData() instanceof JsonElement) {
-                    return APIController.getInstance().getGson().fromJson((JsonElement) res.getData(), result.getType());
+                    return APIController.getInstance().getGson().fromJson((JsonElement)res.getData(), result.getType());
                 }
 
                 if (res.getData() instanceof String) {
-                    return APIController.getInstance().getGson().fromJson((String) res.getData(), result.getType());
+                    return (T)APIController.getInstance().fromJson((String)res.getData(), result.getType());
                 }
 
-                return (T) res.getData();
+                return (T)res.getData();
             }
 
             throw new RuntimeException("" + res.getData());
         } catch (Exception e) {
-            throw new RuntimeException(func + "() -> " + result.getType().getTypeName() + " failure!", e);
+            List<String> objs = new ArrayList<>();
+            for(Object o : args) objs.add(o.toString());
+            throw new RuntimeException(func + "(" + Strings.join(objs, ',') + ") -> " + result.getType().getTypeName() + " failure! " + (res != null ? res.getData().toString() : ""), e);
         }
     }
 

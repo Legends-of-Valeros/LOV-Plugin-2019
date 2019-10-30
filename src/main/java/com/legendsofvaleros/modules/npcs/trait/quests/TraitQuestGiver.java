@@ -6,7 +6,7 @@ import com.legendsofvaleros.features.gui.item.ItemBuilder;
 import com.legendsofvaleros.features.gui.slot.Slot;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.google.common.util.concurrent.SettableFuture;
-import com.legendsofvaleros.api.Promise;
+import com.legendsofvaleros.api.Ref;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterFinishLoadingEvent;
@@ -14,12 +14,12 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import com.legendsofvaleros.modules.quests.QuestController;
 import com.legendsofvaleros.modules.quests.api.IQuest;
-import com.legendsofvaleros.modules.quests.core.QuestStatus;
-import com.legendsofvaleros.modules.quests.event.QuestCompletedEvent;
-import com.legendsofvaleros.modules.quests.event.QuestStartedEvent;
+import com.legendsofvaleros.modules.quests.api.QuestStatus;
+import com.legendsofvaleros.modules.quests.events.QuestEndedEvent;
+import com.legendsofvaleros.modules.quests.events.QuestStartedEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.TextBuilder;
-import com.legendsofvaleros.util.model.Model;
+import com.legendsofvaleros.util.model.Models;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -28,40 +28,28 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class TraitQuestGiver extends LOVTrait {
     private static final String MARKER = "quest";
 
     public static List<TraitQuestGiver> all = new ArrayList<>();
 
-    public String introText;
-    public String[] questIDs;
-    public Hologram available;
+    public transient Hologram available;
 
-    public transient List<IQuest> quests;
+    public String text;
+    public Ref<IQuest>[] quests;
 
     @Override
     public void onSpawn() {
         all.add(this);
 
         available = trait.nameplates.getOrAdd(MARKER);
-        available.appendItemLine(Model.stack("marker-gear-available").create());
+        available.appendItemLine(Models.stack("marker-quest-available").create());
         available.getVisibilityManager().setVisibleByDefault(false);
 
-        List<Promise<IQuest>> promises = new ArrayList<>();
-
-        for (String id : questIDs) {
-            promises.add(QuestController.getInstance().getQuest(id));
-        }
-
-        Promise.collect(promises).onSuccess(val -> {
-            quests = val.orElseGet(ArrayList::new);
-            Marker.update(this);
-        });
+        Marker.update(this);
     }
 
     @Override
@@ -81,14 +69,14 @@ public class TraitQuestGiver extends LOVTrait {
         SettableFuture<List<IQuest>> future = SettableFuture.create();
 
         future.addListener(() -> {
-            LinkedHashMap<IQuest, QuestStatus> playerQuests = new LinkedHashMap<>();
+            Collection<IQuest> acceptableQuests = new ArrayList<>();
 
             try {
                 PlayerCharacter pc = Characters.getPlayerCharacter(player);
                 for (IQuest quest : future.get()) {
-                    QuestStatus status = QuestController.getInstance().getStatus(pc, quest);
+                    QuestStatus status = quest.getStatus(pc);
                     if (status.canAccept()) {
-                        playerQuests.put(quest, status);
+                        acceptableQuests.add(quest);
                     }
                 }
             } catch (Exception e) {
@@ -96,61 +84,45 @@ public class TraitQuestGiver extends LOVTrait {
                 return;
             }
 
-            if (playerQuests.isEmpty()) {
+            if (acceptableQuests.isEmpty()) {
                 slot.set(null);
                 return;
             }
 
-            if (playerQuests.size() == 1) {
-                Entry<IQuest, QuestStatus> quest = playerQuests.entrySet().iterator().next();
+            if (acceptableQuests.size() == 1) {
+                IQuest quest = acceptableQuests.iterator().next();
                 QuestController.getInstance().getScheduler().executeInSpigotCircle(() -> {
-                    player.performCommand("quests talk " + quest.getKey().getId());
+                    player.performCommand("quests init " + quest.getId());
                 });
             } else {
                 slot.set(new Slot(new ItemBuilder(Material.WRITABLE_BOOK).setName("Quests").create(), (gui, p, event) -> {
                     gui.close(p);
 
-                    openGUI(player, playerQuests);
+                    openGUI(player, acceptableQuests);
                 }));
             }
         }, QuestController.getInstance().getScheduler()::async);
-
-        List<IQuest> quests = new ArrayList<>();
-        AtomicInteger left = new AtomicInteger(questIDs.length);
-        for (String questId : questIDs) {
-            QuestController.getInstance().getQuest(questId).on((err, val) -> {
-                if (val.isPresent()) {
-                    IQuest quest = val.get();
-                    quests.add(quest);
-                } else
-                    throw new Exception("Failed to load quest on NPC! Offender: " + questId + " on " + trait.npcId);
-
-                if (left.decrementAndGet() == 0)
-                    future.set(quests);
-            }, QuestController.getInstance().getScheduler()::async);
-        }
     }
 
-    private void openGUI(Player player, LinkedHashMap<IQuest, QuestStatus> playerQuests) {
+    private void openGUI(Player player, Collection<IQuest> acceptableQuests) {
         Book book = new Book("Possible Quests", "Acolyte");
 
         TextBuilder tb = new TextBuilder(StringUtil.center(Book.WIDTH, npc.getName())).color(ChatColor.DARK_AQUA).underlined(true);
 
-        if (introText != null && introText.length() > 0)
-            tb.append("\n\n" + introText).color(ChatColor.BLACK);
+        if (text != null && text.length() > 0)
+            tb.append("\n\n" + text).color(ChatColor.BLACK);
 
         tb.append("\n\n");
 
-        for (final Entry<IQuest, QuestStatus> quest : playerQuests.entrySet()) {
-            if (StringUtil.getStringWidth(quest.getKey().getName()) > Book.WIDTH) {
-                tb.append("[" + quest.getKey().getName() + "]" + "\n\n");
+        for (IQuest quest : acceptableQuests) {
+            if (StringUtil.getStringWidth(quest.getName()) > Book.WIDTH) {
+                tb.append("[" + quest.getName() + "]" + "\n\n");
             } else {
-                tb.append(StringUtil.center(Book.WIDTH, "[" + quest.getKey().getName() + "]") + "\n\n");
+                tb.append(StringUtil.center(Book.WIDTH, "[" + quest.getName() + "]") + "\n\n");
             }
 
-            // TODO: Switch to using "temporary" commands, as anyone who knows the secret command can accept any gear.
-            tb.color(quest.getValue() == QuestStatus.NEITHER ? ChatColor.DARK_PURPLE : ChatColor.DARK_RED)
-                    .command("/quests talk " + quest.getKey().getId());
+            // TODO: Switch to using the page event, as anyone who knows the secret command can accept any quest.
+            tb.color(ChatColor.DARK_PURPLE).command("/quests info " + quest.getId());
         }
 
         book.addPage(tb.create());
@@ -158,6 +130,7 @@ public class TraitQuestGiver extends LOVTrait {
         book.open(player, false);
     }
 
+    // TODO: fix this bullshit. It's ass.
     public static class Marker implements Listener {
         @EventHandler
         public void onQuestStarted(QuestStartedEvent event) {
@@ -165,7 +138,7 @@ public class TraitQuestGiver extends LOVTrait {
         }
 
         @EventHandler
-        public void onQuestComplete(QuestCompletedEvent event) {
+        public void onQuestComplete(QuestEndedEvent event) {
             update(event.getPlayerCharacter());
         }
 
@@ -206,12 +179,12 @@ public class TraitQuestGiver extends LOVTrait {
                 return;
             }
 
-            for (IQuest quest : trait.quests) {
-                QuestStatus status = QuestController.getInstance().getStatus(pc, quest);
+            for (Ref<IQuest> ref : trait.quests) {
+                if(ref.get() == null) continue;
 
                 // If the quest can be accepted, the marker should be active.
-                if (status.canAccept()) {
-                    trait.available.getVisibilityManager().showTo(pc.getPlayer());
+                if (ref.get().getStatus(pc).canAccept()) {
+                    // trait.available.getVisibilityManager().showTo(pc.getPlayer());
                     return;
                 }
             }
@@ -219,5 +192,4 @@ public class TraitQuestGiver extends LOVTrait {
             trait.available.getVisibilityManager().hideTo(pc.getPlayer());
         }
     }
-
 }

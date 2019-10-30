@@ -12,7 +12,7 @@ public class SkillCloak extends Skill {
 	private static final double[] COOLDOWN = new double[] { 60 };
 	private static final int[] TIME = new int[] { 30 };
 	private static final Object[] DESCRIPTION = new Object[] {
-			"Toggles sneaking, invisibility for ", new TimePart().seconds(TIME), ", cancelled by attacking or taking damage."
+			"Toggles sneaking, invisibility for ", new TimePart().seconds(TIME), ", disabled by attacking or taking damage."
 		};
 
 	public SkillCloak() { super(ID, Type.SELF, EntityClass.ROGUE, LEVELS, COST, COOLDOWN, DESCRIPTION); }

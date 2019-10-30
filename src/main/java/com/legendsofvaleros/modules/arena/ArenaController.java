@@ -1,10 +1,8 @@
 package com.legendsofvaleros.modules.arena;
 
-import com.legendsofvaleros.modules.arena.arenamodes.ArenaMode;
-import com.legendsofvaleros.modules.arena.arenamodes.OneVersusOne;
-import com.legendsofvaleros.modules.arena.arenamodes.TwoVersusTwo;
-import com.legendsofvaleros.modules.dueling.core.Duel;
-import com.legendsofvaleros.modules.pvp.event.PvPCheckEvent;
+import com.legendsofvaleros.modules.arena.arenaModes.ArenaMode;
+import com.legendsofvaleros.modules.arena.arenaModes.OneVersusOne;
+import com.legendsofvaleros.modules.arena.arenaModes.TwoVersusTwo;
 import com.legendsofvaleros.modules.queue.Queue;
 import com.legendsofvaleros.modules.queue.QueueController;
 import com.legendsofvaleros.modules.queue.events.QueueReadyEvent;
@@ -12,7 +10,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +31,7 @@ public class ArenaController extends ArenaAPI {
     @Override
     public void onLoad() {
         super.onLoad();
-        this.instance = this;
+        instance = this;
 
         QueueController.getInstance().registerQueue(OneVersusOne.class, 2);
         QueueController.getInstance().registerQueue(TwoVersusTwo.class, 4);
@@ -44,7 +41,7 @@ public class ArenaController extends ArenaAPI {
     public void onUnload() {
         super.onUnload();
 
-        this.instance = null;
+        instance = null;
     }
 
 //    @EventHandler

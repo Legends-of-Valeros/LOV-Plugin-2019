@@ -1,18 +1,21 @@
 package com.legendsofvaleros.modules.characters.core;
 
 import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
+import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
-import com.legendsofvaleros.modules.classes.EntityClass;
 import com.legendsofvaleros.modules.characters.race.EntityRace;
+import com.legendsofvaleros.modules.classes.EntityClass;
 import com.legendsofvaleros.modules.classes.skills.Skill;
+import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -24,11 +27,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class PlayerCharacterData {
     private interface RPC {
-        Promise<List<CharacterData>> getPlayerCharacters(UUID uuid);
+        Promise<List<CharacterData>> findPlayerCharacters(Object obj);
 
-        Promise<Boolean> savePlayerCharacter(UUID uuid, CharacterData character);
+        Promise<Object> savePlayerCharacter(CharacterData character);
 
-        Promise<Boolean> deletePlayerCharacter(UUID uuid, int number);
+        Promise<Boolean> deletePlayerCharacter(CharacterId characterId);
     }
 
     private static RPC rpc;
@@ -68,7 +71,10 @@ public class PlayerCharacterData {
      */
     static Promise<PlayerCharacters> onLogin(final UUID playerId) {
         Promise<PlayerCharacters> promise = new Promise<>();
-        rpc.getPlayerCharacters(playerId).onSuccess(val -> {
+
+        JsonObject jo = new JsonObject();
+        jo.add("player", new JsonPrimitive(playerId.toString()));
+        rpc.findPlayerCharacters(jo).onSuccess(val -> {
             Player player = Bukkit.getPlayer(playerId);
             if (player != null && player.isOnline()) {
                 List<ReusablePlayerCharacter> characters = new LinkedList<>();
@@ -76,12 +82,11 @@ public class PlayerCharacterData {
                 for (CharacterData datum : val.orElse(ImmutableList.of())) {
                     try {
                         CharacterExperience experience = new CharacterExperience(datum.level, datum.progress);
-                        Location loc = new Location(datum.world, datum.x, datum.y, datum.z, datum.yaw, datum.pitch);
-                        ReusablePlayerCharacter character = new ReusablePlayerCharacter(player, datum.number, datum.race,
-                                datum.clazz, loc, experience, new PlayerInventoryData(datum.inventory), datum.skills);
+                        ReusablePlayerCharacter character = new ReusablePlayerCharacter(player, datum.id.getCharacterNumber(), datum.race,
+                                datum.clazz, datum.location, experience, new PlayerInventoryData(datum.inventory), datum.skills);
                         characters.add(character);
                     } catch (Exception e) {
-                        Characters.getInstance().getLogger().severe("could not load character " + datum.number + " for player " + player.getName());
+                        Characters.getInstance().getLogger().severe("could not load character " + datum.id.getCharacterNumber() + " for player " + player.getName());
                         MessageUtil.sendSevereException(Characters.getInstance(), player, e);
                     }
                 }
@@ -96,10 +101,10 @@ public class PlayerCharacterData {
         return promise;
     }
 
-    static Promise<Boolean> onLogout(PlayerCharacter pc) {
-        return pc.getInventoryData().saveInventory(pc).onSuccess(val -> {
-            save(pc);
-        });
+    static Promise onLogout(PlayerCharacter pc) {
+        pc.getInventoryData().saveInventory(pc);
+
+        return save(pc);
     }
 
     static void onLogout(UUID playerId) {
@@ -107,17 +112,20 @@ public class PlayerCharacterData {
     }
 
     public static Promise<Boolean> remove(UUID playerId, int characterId) {
-        return rpc.deletePlayerCharacter(playerId, characterId);
+        return rpc.deletePlayerCharacter(new CharacterId(playerId, characterId));
     }
 
-    public static Promise<Boolean> save(PlayerCharacter pc) {
-        return rpc.savePlayerCharacter(pc.getPlayerId(), new CharacterData(pc));
+    public static Promise save(PlayerCharacter pc) {
+        return rpc.savePlayerCharacter(new CharacterData(pc));
     }
 
     /**
      * Stores loaded data about a player-character until it can be used on the main thread.
      */
     private static class CharacterData {
+        @SerializedName("_id")
+        private CharacterId id;
+        private UUID player;
         private int number;
 
         private EntityRace race;
@@ -128,17 +136,14 @@ public class PlayerCharacterData {
         private int level;
         private long progress;
 
-        private World world;
-        private double x;
-        private double y;
-        private double z;
-        private float yaw;
-        private float pitch;
+        private Location location;
 
-        private String inventory;
+        private Gear.Data[] inventory;
         protected List<String> skills;
 
         private CharacterData(PlayerCharacter character) {
+            this.id = character.getUniqueCharacterId();
+            this.player = character.getPlayerId();
             this.number = character.getCharacterNumber();
 
             this.race = character.getPlayerRace();
@@ -147,12 +152,7 @@ public class PlayerCharacterData {
             this.level = character.getExperience().getLevel();
             this.progress = character.getExperience().getExperienceTowardsNextLevel();
 
-            this.world = character.getLocation().getWorld();
-            this.x = character.getLocation().getX();
-            this.y = character.getLocation().getY();
-            this.z = character.getLocation().getZ();
-            this.yaw = character.getLocation().getYaw();
-            this.pitch = character.getLocation().getPitch();
+            this.location = character.getLocation();
 
             this.inventory = character.getInventoryData().getData();
 

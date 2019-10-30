@@ -1,30 +1,24 @@
 package com.legendsofvaleros.modules.hearthstones.core;
 
-import com.legendsofvaleros.modules.characters.api.CharacterId;
+import com.google.gson.annotations.SerializedName;
+import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import org.bukkit.Location;
-import org.bukkit.World;
 
 public class HomePoint {
-	public CharacterId characterId;
+	@SerializedName("_id")
+	public PlayerCharacter pc;
 
 	public String name;
 
-	public World world;
-
-	public int x;
-	public int y;
-	public int z;
+	public Location location;
 	
-	public HomePoint(CharacterId characterId, String name, Location location) {
-		this.characterId = characterId;
+	public HomePoint(PlayerCharacter pc, String name, Location location) {
+		this.pc = pc;
 		this.name = name;
-		this.world = location.getWorld();
-		this.x = location.getBlockX();
-		this.y = location.getBlockY();
-		this.z = location.getBlockZ();
+		this.location = location;
 	}
 
 	public Location getLocation() {
-		return new Location(world, x, y, z);
+		return location;
 	}
 }

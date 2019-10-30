@@ -18,10 +18,10 @@ public class ItemUnEquipEvent extends PlayerCharacterEvent {
         return handlers;
     }
 
-    private Gear.Instance gear;
+    private Gear.Instance gearInstance;
 
     public Gear.Instance getGear() {
-        return gear;
+        return gearInstance;
     }
 
     private EquipmentSlot slot;
@@ -30,9 +30,9 @@ public class ItemUnEquipEvent extends PlayerCharacterEvent {
         return slot;
     }
 
-    public ItemUnEquipEvent(PlayerCharacter pc, Gear.Instance gear, EquipmentSlot slot) {
+    public ItemUnEquipEvent(PlayerCharacter pc, Gear.Instance gearInstance, EquipmentSlot slot) {
         super(pc);
-        this.gear = gear;
+        this.gearInstance = gearInstance;
         this.slot = slot;
     }
 }

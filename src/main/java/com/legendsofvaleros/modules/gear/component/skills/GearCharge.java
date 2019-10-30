@@ -89,9 +89,9 @@ public class GearCharge {
 					if(dur.min != null && perc <= dur.min) continue;
 					
 					arr.addAll(dur.strings.get(null));
-					arr.addAll(dur.strings.get(item.getType()));
+					arr.addAll(dur.strings.get(item.gear.getType()));
 					
-					builder.addLore(ChatColor.AQUA + "❅ " + arr.get(item.getSeed() % arr.size()));
+					builder.addLore(ChatColor.AQUA + "❅ " + arr.get(item.gear.getSeed() % arr.size()));
 					break;
 				}
 
@@ -107,8 +107,8 @@ public class GearCharge {
 			}else if(trigger.equals(CombineTrigger.class)) {
 				if(persist.current > 0 || persist.max == 0) {
 					CombineTrigger t = (CombineTrigger)trigger;
-					if(t.getAgent().getType() == GearType.ARMOR
-							|| t.getAgent().getType() == GearType.WEAPON)
+					if(t.getAgent().gear.getType() == GearType.ARMOR
+							|| t.getAgent().gear.getType() == GearType.WEAPON)
 						return false;
 					Persist basePersist = t.getBase().getPersist(Component.class);
 					if(basePersist == null)

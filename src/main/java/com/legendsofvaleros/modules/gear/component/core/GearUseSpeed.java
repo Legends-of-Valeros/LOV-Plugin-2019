@@ -45,7 +45,7 @@ public class GearUseSpeed {
 		@Override
 		public GearUseSpeed.Persist fire(Gear.Instance item, GearUseSpeed.Persist persist, GearTrigger trigger) {
 			/*if(trigger.equals(EquipTrigger.class)) {
-				AttributeInstance attr = ((EquipTrigger)trigger).getEntity().getLivingEntity()
+				AttributeInstance attr = ((EquipTrigger)trigger).getMob().getLivingEntity()
 											.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
 				attr.setBaseValue(persist.speed);
 
@@ -55,11 +55,11 @@ public class GearUseSpeed {
 				for(AttributeModifier m : attr.getModifiers())
 					Bukkit.broadcastMessage("m: " + m.getName() + " " + m.getAmount());
 			}else if(trigger.equals(UnEquipTrigger.class)) {
-				AttributeInstance attr = ((UnEquipTrigger)trigger).getEntity().getLivingEntity()
+				AttributeInstance attr = ((UnEquipTrigger)trigger).getMob().getLivingEntity()
 						.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
 				attr.setBaseValue(attr.getDefaultValue());
 
-				//((UnEquipTrigger)trigger).getEntity().getLivingEntity()
+				//((UnEquipTrigger)trigger).getMob().getLivingEntity()
 				//		.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(4F); // 4 is the default player value
 			}*/
 

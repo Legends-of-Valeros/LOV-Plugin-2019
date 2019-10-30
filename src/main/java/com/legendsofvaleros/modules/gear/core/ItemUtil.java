@@ -1,6 +1,7 @@
 package com.legendsofvaleros.modules.gear.core;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
+import com.legendsofvaleros.modules.gear.api.IGear;
 import com.legendsofvaleros.modules.gear.component.core.GearPhysicalDamage;
 import com.legendsofvaleros.modules.gear.component.core.GearUseSpeed;
 import com.legendsofvaleros.modules.gear.event.GearPickupEvent;
@@ -43,7 +44,7 @@ public class ItemUtil {
         return random.nextBoolean();
     }
 
-    public static boolean hasItem(Player p, Gear gear, int amount) {
+    public static boolean hasItem(Player p, IGear gear, int amount) {
         if (amount <= 0) return true;
 
         int count = 0;
@@ -78,17 +79,16 @@ public class ItemUtil {
         ItemListener.itemOwner.put(item.getUniqueId(), owner.getPlayerId());
 
         item.setGlowing(true);
-        instance.getRarityLevel().getTeam().addEntry(item.getUniqueId().toString());
+        instance.gear.getRarityLevel().getTeam().addEntry(item.getUniqueId().toString());
     }
 
     /**
      * Remove an ItemStack from the player's inventory.
-     * @param player
-     * @param gear
-     * @return wasRemoved
      */
-    public static boolean removeItem(Player player, Gear.Instance gear) {
-        ItemStack itemStack = gear.toStack();
+    public static boolean removeItem(Player player, Gear.Instance gearInstance) {
+        // TODO: This just... doesnt work. it only removes from a single stack, even if there's not enough to satisfy the amount.
+        // If there's not enough to remove everything, we should return false and not remove anything.
+        ItemStack itemStack = gearInstance.toStack();
         for (int i = 0; i < player.getInventory().getSize(); i++) {
             // Check if a fixed item is on the current slot
             if (InventoryManager.hasFixedItem(i)) {
@@ -126,7 +126,6 @@ public class ItemUtil {
         if (isAir(itemStack)) {
             return false; // Can't give empty item.
         }
-
 
         Inventory inv = player.getInventory();
         for (int i = 0; i < inv.getSize(); i++) { // Add the possible items to the player's inventory.

@@ -113,7 +113,7 @@ public class ReusablePlayerCharacter implements PlayerCharacter {
 
     @Override
     public Zone getCurrentZone() {
-        return ZonesController.getInstance().getZone(getPlayer());
+        return ZonesController.getInstance().getZone(getPlayer()).getZone();
     }
 
     @Override

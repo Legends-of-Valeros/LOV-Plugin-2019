@@ -9,7 +9,7 @@ import com.legendsofvaleros.modules.hotswitch.Hotswitch;
 import com.legendsofvaleros.modules.skills.SkillsController;
 import com.legendsofvaleros.modules.skills.core.admin.AdminSkills;
 import com.legendsofvaleros.modules.skills.event.BindSkillEvent;
-import com.legendsofvaleros.util.model.Model;
+import com.legendsofvaleros.util.model.Models;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -21,7 +21,7 @@ import java.util.List;
 
 public class GUIAdminSkills extends ExpandingGUI {
 	private ItemStack stack;
-	@Override public void onOpen(Player p, InventoryView view) { p.getInventory().setItem(17, Model.merge("menu-ui-chest-3", (stack = p.getInventory().getItem(17)))); }
+	@Override public void onOpen(Player p, InventoryView view) { p.getInventory().setItem(17, Models.merge("menu-ui-chest-3", (stack = p.getInventory().getItem(17)))); }
 	@Override public void onClose(Player p, InventoryView view) { p.getInventory().setItem(17, stack); }
 
 	public GUIAdminSkills(PlayerCharacter pc) {
@@ -43,7 +43,7 @@ public class GUIAdminSkills extends ExpandingGUI {
 								skill.getId());
 						p.getInventory().setItem(event.getHotbarButton(), skillStack);
 
-						Bukkit.getPluginManager().callEvent(new BindSkillEvent(p, Hotswitch.getInstance().getCurrentHotbar(p.getUniqueId()), event.getHotbarButton(), skill.getId()));
+						Bukkit.getPluginManager().callEvent(new BindSkillEvent(p, Hotswitch.getInstance().getCurrentHotbar(p.getUniqueId()), event.getHotbarButton(), skill));
 					}
 				}
 			}));

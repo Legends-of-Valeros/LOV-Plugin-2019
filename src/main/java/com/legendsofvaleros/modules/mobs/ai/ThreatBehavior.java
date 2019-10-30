@@ -32,7 +32,7 @@ public class ThreatBehavior {
         public NodeStatus onStep(CombatEntity ce, long ticks) {
             NPC npc = NPCsController.getInstance().getNPC(ce.getLivingEntity());
             MobTrait trait = npc.getTrait(MobTrait.class);
-            List<Entity> entities = ce.getLivingEntity().getNearbyEntities(trait.instance.mob.getOptions().distance.detection, trait.instance.mob.getOptions().distance.detection, trait.instance.mob.getOptions().distance.detection);
+            List<Entity> entities = ce.getLivingEntity().getNearbyEntities(trait.instance.entity.getDistance().detection, trait.instance.entity.getDistance().detection, trait.instance.entity.getDistance().detection);
             for (Entity entity : entities)
                 if (entity instanceof LivingEntity && !NPCsController.getInstance().isNPC((LivingEntity) entity)) {
                     if (entity instanceof Player) {
@@ -41,7 +41,7 @@ public class ThreatBehavior {
                         }
                         if (((Player) entity).isSneaking()) {
                             // Sneaking players have a halved detection distance
-                            if (entity.getLocation().distance(ce.getLivingEntity().getLocation()) > Math.round(trait.instance.mob.getOptions().distance.detection / 2)) {
+                            if (entity.getLocation().distance(ce.getLivingEntity().getLocation()) > Math.round(trait.instance.entity.getDistance().detection / 2)) {
                                 continue;
                             }
                         }
@@ -78,10 +78,10 @@ public class ThreatBehavior {
                 DamageHistory history = CombatEngine.getInstance().getDamageHistory(ce.getLivingEntity());
                 if (history != null) {
                     if (history.didDamage(target)) {
-                        if (!trait.instance.mob.getOptions().leashed.containsKey(characterId)) {
-                            trait.instance.mob.getOptions().leashed.put(characterId, System.currentTimeMillis() / 1000L);
+                        if (!trait.instance.entity.getLeashed().containsKey(characterId)) {
+                            trait.instance.entity.getLeashed().put(characterId, System.currentTimeMillis() / 1000L);
                         } else {
-                            long since = trait.instance.mob.getOptions().leashed.get(characterId);
+                            long since = trait.instance.entity.getLeashed().get(characterId);
 
                             if ((System.currentTimeMillis() / 1000L) - since > 3) {
                                 // Safespotting where the mob cannot reach the player's Y level. Teleport this mob to the player.
@@ -92,7 +92,7 @@ public class ThreatBehavior {
                                 ce.getLivingEntity().getWorld().playSound(ce.getLivingEntity().getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 1);
 
                                 //reset the timer
-                                trait.instance.mob.getOptions().leashed.put(characterId, System.currentTimeMillis() / 1000L);
+                                trait.instance.entity.getLeashed().put(characterId, System.currentTimeMillis() / 1000L);
                             }
                         }
                     }

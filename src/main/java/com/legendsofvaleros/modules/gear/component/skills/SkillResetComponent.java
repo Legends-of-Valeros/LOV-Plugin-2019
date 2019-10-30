@@ -7,7 +7,6 @@ import com.legendsofvaleros.modules.classes.skills.Skill;
 import com.legendsofvaleros.modules.gear.component.GearComponent;
 import com.legendsofvaleros.modules.gear.component.GearComponentOrder;
 import com.legendsofvaleros.modules.gear.core.Gear;
-import com.legendsofvaleros.modules.gear.core.NoPersist;
 import com.legendsofvaleros.modules.gear.trigger.GearTrigger;
 import com.legendsofvaleros.modules.gear.trigger.UseTrigger;
 import com.legendsofvaleros.modules.skills.SkillsController;
@@ -18,22 +17,22 @@ import org.bukkit.entity.Player;
 
 import java.util.Map.Entry;
 
-public class SkillResetComponent extends GearComponent<NoPersist> {
+public class SkillResetComponent extends GearComponent<Void> {
 	@Override public GearComponentOrder getOrder() { return GearComponentOrder.EXTRA; }
-	@Override public NoPersist onInit() { return null; }
+	@Override public Void onInit() { return null; }
 
-	@Override public double getValue(Gear.Instance item, NoPersist persist) {
+	@Override public double getValue(Gear.Instance item, Void persist) {
 		//TODO check if correct value
 		return 0;
 	}
 
 	@Override
-	protected void onGenerateItem(Gear.Instance item, NoPersist persist, ItemBuilder builder) {
+	protected void onGenerateItem(Gear.Instance item, Void persist, ItemBuilder builder) {
 		builder.addLore(ChatColor.LIGHT_PURPLE + "* Resets your skill points");
 	}
 	
 	@Override
-	public Boolean test(Gear.Instance item, NoPersist persist, GearTrigger trigger) {
+	public Boolean test(Gear.Instance item, Void persist, GearTrigger trigger) {
 		if(trigger.equals(UseTrigger.class)) {
 			UseTrigger t = (UseTrigger)trigger;
 			if(t.getEntity().isPlayer()) {
@@ -50,7 +49,7 @@ public class SkillResetComponent extends GearComponent<NoPersist> {
 	}
 	
 	@Override
-	public NoPersist fire(Gear.Instance item, NoPersist persist, GearTrigger trigger) {
+	public Void fire(Gear.Instance item, Void persist, GearTrigger trigger) {
 		if(trigger.equals(UseTrigger.class)) {
 			UseTrigger t = (UseTrigger)trigger;
 			if(t.getEntity().isPlayer()) {

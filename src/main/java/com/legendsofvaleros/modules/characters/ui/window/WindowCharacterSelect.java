@@ -6,7 +6,7 @@ import com.legendsofvaleros.features.gui.item.ItemBuilder;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
 import com.legendsofvaleros.modules.characters.ui.CharacterSelectionListener;
-import com.legendsofvaleros.util.model.Model;
+import com.legendsofvaleros.util.model.Models;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -18,7 +18,7 @@ public class WindowCharacterSelect extends GUI {
 
     @Override
     public void onOpen(Player p, InventoryView view) {
-        p.getInventory().setItem(17, Model.merge(isFixed() ? "menu-ui-character-select" : "menu-ui-3x3", (stack = p.getInventory().getItem(17))));
+        p.getInventory().setItem(17, Models.merge(isFixed() ? "menu-ui-character-select" : "menu-ui-3x3", (stack = p.getInventory().getItem(17))));
     }
 
     @Override
@@ -36,14 +36,14 @@ public class WindowCharacterSelect extends GUI {
         type(InventoryType.DISPENSER);
 
         if (forced) {
-            slot(7, Model.stack("menu-logout-button").setName(ChatColor.RED + "Logout").create(), (gui, p, event) -> {
+            slot(7, Models.stack("menu-logout-button").setName(ChatColor.RED + "Logout").create(), (gui, p, event) -> {
                 gui.close(p);
 
                 p.kickPlayer("Logged out.");
             });
         }
 
-        slot(6, Model.stack("menu-arrow-left-button").setEnchanted(page > 0)
+        slot(6, Models.stack("menu-arrow-left-button").setEnchanted(page > 0)
                 .setName((page <= 0 ? ChatColor.RED : ChatColor.YELLOW) + "< Page").create(), (gui, p, event) -> {
             if (page > 0) {
                 new WindowCharacterSelect(page - 1, characters, listener, forced).open(p, GuiFlag.NO_PARENTS);
@@ -51,7 +51,7 @@ public class WindowCharacterSelect extends GUI {
         });
 
         final int len = characters.getMaxCharacters();
-        slot(8, Model.stack("menu-arrow-right-button").setEnchanted(len - page * 6 >= 6)
+        slot(8, Models.stack("menu-arrow-right-button").setEnchanted(len - page * 6 >= 6)
                 .setName((len < page * 6 ? ChatColor.RED : ChatColor.YELLOW) + "Page >").create(), (gui, p, event) -> {
             if (len - page * 6 > 6) {
                 new WindowCharacterSelect(page + 1, characters, listener, forced).open(p, GuiFlag.NO_PARENTS);
@@ -62,14 +62,14 @@ public class WindowCharacterSelect extends GUI {
             final PlayerCharacter pChar = characters.getForNumber(page * 6 + i);
 
             if (pChar == null) {
-                ItemBuilder ib = Model.stack("menu-characters-new-button")
+                ItemBuilder ib = Models.stack("menu-characters-new-button")
                         .setName("New Character")
                         .addLore("", ChatColor.DARK_GRAY + "[" + ChatColor.GRAY + "Left click" + ChatColor.DARK_GRAY + " to create a new character]");
                 slot(i, ib.create(), new SlotNewCharacter(page * 6 + i, listener));
                 continue;
             }
 
-            ItemBuilder ib = Model.stack("menu-characters-button")
+            ItemBuilder ib = Models.stack("menu-characters-button")
                     .setName(pChar.getPlayerRace().getUserFriendlyName() + " " + pChar.getPlayerClass().getUserFriendlyName())
                     .addLore("", ChatColor.GOLD + "" + ChatColor.BOLD + "Level: " +
                                     ChatColor.GRAY + pChar.getExperience().getLevel(),

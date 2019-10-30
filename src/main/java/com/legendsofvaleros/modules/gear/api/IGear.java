@@ -1,8 +1,10 @@
 package com.legendsofvaleros.modules.gear.api;
 
+import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.gear.core.GearRarity;
 import com.legendsofvaleros.modules.gear.core.GearType;
-import com.legendsofvaleros.util.model.Model;
+import com.legendsofvaleros.util.model.IModel;
+import org.bukkit.inventory.ItemStack;
 
 public interface IGear {
     /**
@@ -10,6 +12,8 @@ public interface IGear {
      * @return
      */
     String getId();
+
+    String getSlug();
 
     /**
      * The current version of the item. If this is changes between
@@ -31,16 +35,10 @@ public interface IGear {
     GearType getType();
 
     /**
-     * The ID of the model for the item.
+     * The the model for the item.
      * @return
      */
-    String getModelId();
-
-    /**
-     * A model object based on the model ID of the item.
-     * @return
-     */
-    Model getModel();
+    IModel getModel();
 
     /**
      * The maximum amount of items that this can stack to.
@@ -60,4 +58,12 @@ public interface IGear {
      * @return
      */
     int getSeed();
+
+    Gear.Instance newInstance();
+
+    boolean isSimilar(ItemStack newArmorPiece);
+
+    boolean isSimilar(Gear.Instance gearInstance);
+
+    boolean isSimilar(IGear gear);
 }

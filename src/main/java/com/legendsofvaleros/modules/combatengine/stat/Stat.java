@@ -130,7 +130,7 @@ public enum Stat {
 		case HIT_CHANCE:
 		case DODGE_CHANCE:
 		case CRIT_CHANCE:
-			return String.valueOf(Math.round(value)) + "%";
+			return Math.round(value) + "%";
 
 		default:
 			return String.valueOf(Math.round(value));

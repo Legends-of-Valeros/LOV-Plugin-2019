@@ -9,7 +9,7 @@ import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.gear.component.bank.WorthComponent;
 import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.model.Model;
+import com.legendsofvaleros.util.model.Models;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
@@ -20,7 +20,7 @@ public class CreatePouchGUI extends GUI {
 
     @Override
     public void onOpen(Player p, InventoryView view) {
-        p.getInventory().setItem(17, Model.merge("menu-ui-chest-3", (stack = p.getInventory().getItem(17))));
+        p.getInventory().setItem(17, Models.merge("menu-ui-chest-3", (stack = p.getInventory().getItem(17))));
     }
 
     @Override
@@ -28,13 +28,13 @@ public class CreatePouchGUI extends GUI {
         p.getInventory().setItem(17, stack);
     }
 
-    /*private static final ItemBuilder up = Model.stack("menu-arrow-up-button");
-    private static final ItemBuilder down = Model.stack("menu-arrow-down-button");*/
+    /*private static final ItemBuilder up = Models.stack("menu-arrow-up-button");
+    private static final ItemBuilder down = Models.stack("menu-arrow-down-button");*/
     private static final ItemBuilder[] number = new ItemBuilder[10];
 
     static {
         for (int i = 0; i <= 9; i++)
-            number[i] = Model.stack("number-" + i);
+            number[i] = Models.stack("number-" + i);
     }
 
     private byte[] amount = new byte[9];
@@ -51,21 +51,21 @@ public class CreatePouchGUI extends GUI {
             updateButton(new int[]{3, 0}, 3);
             updateButton(new int[]{4, 0}, 4);
 
-            slot(5, 0, Model.stack("crowns-gold").create(), null);
+            slot(5, 0, Models.stack("crowns-gold").create(), null);
         }
 
         {
             updateButton(new int[]{0, 2}, 5);
             updateButton(new int[]{1, 2}, 6);
 
-            slot(2, 2, Model.stack("crowns-silver").create(), null);
+            slot(2, 2, Models.stack("crowns-silver").create(), null);
         }
 
         {
             updateButton(new int[]{3, 2}, 7);
             updateButton(new int[]{4, 2}, 8);
 
-            slot(5, 2, Model.stack("crowns-copper").create(), null);
+            slot(5, 2, Models.stack("crowns-copper").create(), null);
         }
 
         slot(7, 1, Material.AIR, (gui, p, event) -> {

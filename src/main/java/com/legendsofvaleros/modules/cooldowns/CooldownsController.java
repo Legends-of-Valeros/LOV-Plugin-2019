@@ -14,6 +14,6 @@ public class CooldownsController extends CooldownsAPI {
     public void onLoad() {
         super.onLoad();
 
-        this.instance = this;
+        instance = this;
     }
 }

@@ -45,7 +45,7 @@ public class BankController extends BankAPI {
     public void onLoad() {
         super.onLoad();
 
-        this.instance = this;
+        instance = this;
 
         registerEvents(new InventoryListener());
 

@@ -2,8 +2,10 @@ package com.legendsofvaleros.modules.loot;
 
 import com.google.common.collect.ImmutableList;
 import com.legendsofvaleros.api.APIController;
+import com.legendsofvaleros.api.InterfaceTypeAdapter;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.Module;
+import com.legendsofvaleros.modules.loot.api.ILootTable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,17 +29,17 @@ public class LootAPI extends Module {
         super.onLoad();
 
         this.rpc = APIController.create(RPC.class);
+
+        InterfaceTypeAdapter.register(ILootTable.class,
+                obj -> obj.getId(),
+                id -> Promise.make(tables.get(id)));
     }
 
     @Override
     public void onPostLoad() {
         super.onPostLoad();
 
-        try {
-            this.loadAll().get();
-        } catch (Throwable th) {
-            th.printStackTrace();
-        }
+        this.loadAll().get();
     }
 
     public Promise<List<LootTable>> loadAll() {
@@ -45,9 +47,9 @@ public class LootAPI extends Module {
             tables.clear();
 
             val.orElse(ImmutableList.of()).forEach(table ->
-                    tables.put(table.id, table));
+                    tables.put(table.getId(), table));
 
-            LootController.getInstance().getLogger().info("Loaded " + tables.size() + " loot tables.");
-        }).onFailure(Throwable::printStackTrace);
+            getLogger().info("Loaded " + tables.size() + " loot tables.");
+        });
     }
 }

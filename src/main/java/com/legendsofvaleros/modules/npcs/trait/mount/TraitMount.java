@@ -8,8 +8,8 @@ import com.google.common.util.concurrent.SettableFuture;
 import com.legendsofvaleros.modules.bank.core.Money;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.mount.Mount;
 import com.legendsofvaleros.modules.mount.MountsController;
+import com.legendsofvaleros.modules.mount.api.IMount;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -19,7 +19,12 @@ import org.bukkit.event.inventory.InventoryType;
 import java.util.Collection;
 
 public class TraitMount extends LOVTrait {
-    public String[] mounts;
+    private class Entry {
+        IMount mount;
+        int cost;
+    }
+
+    public Entry[] mounts;
 
     @Override
     public void onRightClick(Player player, SettableFuture<Slot> slot) {
@@ -42,11 +47,12 @@ public class TraitMount extends LOVTrait {
 
         final PlayerCharacter pc = Characters.getPlayerCharacter(p);
 
-        Collection<Mount> playerMounts = MountsController.getInstance().getMounts(pc);
+        Collection<IMount> playerMounts = MountsController.getInstance().getMounts(pc);
         if (playerMounts.size() == 0) return;
 
         for (int i = 0; i < mounts.length; i++) {
-            final Mount m = MountsController.getInstance().getMount(mounts[i]);
+            final IMount m = mounts[i].mount;
+            final int cost = mounts[i].cost;
             boolean owned = playerMounts.contains(m);
             boolean levelTooLow;
 
@@ -57,11 +63,11 @@ public class TraitMount extends LOVTrait {
 
             ib.addLore("Level: " + (levelTooLow ? ChatColor.RED : ChatColor.GREEN) + m.getMinimumLevel());
 
-            ib.addLore("", owned ? ChatColor.YELLOW + "Already Owned" : "Cost: " + ChatColor.GOLD + m.getCost());
+            ib.addLore("", owned ? ChatColor.YELLOW + "Already Owned" : "Cost: " + Money.Format.format(cost));
 
             gui.slot(i, ib.create(), owned || levelTooLow ? null : (ISlotAction) (gui1, p1, event) -> {
-                if (Money.sub(Characters.getPlayerCharacter(p1), m.getCost())) {
-                    MountsController.getInstance().addMount(pc.getUniqueCharacterId(), m);
+                if (Money.sub(Characters.getPlayerCharacter(p1), cost)) {
+                    MountsController.getInstance().addMount(pc, m);
                     gui1.close(p1);
                 }
             });

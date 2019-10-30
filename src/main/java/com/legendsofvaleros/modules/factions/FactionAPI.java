@@ -1,10 +1,8 @@
 package com.legendsofvaleros.modules.factions;
 
-import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Table;
 import com.legendsofvaleros.api.APIController;
+import com.legendsofvaleros.api.InterfaceTypeAdapter;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
@@ -13,7 +11,9 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
+import com.legendsofvaleros.modules.factions.api.IFaction;
 import com.legendsofvaleros.modules.factions.core.Faction;
+import com.legendsofvaleros.modules.factions.core.PlayerFactionReputation;
 import com.legendsofvaleros.modules.factions.event.FactionReputationChangeEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -27,9 +27,9 @@ public class FactionAPI extends ListenerModule {
     public interface RPC {
         Promise<List<Faction>> findFactions();
 
-        Promise<Map<String, Integer>> getPlayerFactionReputation(CharacterId characterId);
+        Promise<PlayerFactionReputation> getPlayerFactionReputation(CharacterId characterId);
 
-        Promise<Boolean> savePlayerFactionReputation(CharacterId characterId, Map<String, Integer> factions);
+        Promise<Object> savePlayerFactionReputation(PlayerFactionReputation factionReputation);
 
         Promise<Boolean> deletePlayerFactionReputation(CharacterId characterId);
     }
@@ -37,13 +37,17 @@ public class FactionAPI extends ListenerModule {
     private RPC rpc;
 
     private Map<String, Faction> factions = new HashMap<>();
-    private Table<CharacterId, String, Integer> playerRep = HashBasedTable.create();
+    private Map<CharacterId, PlayerFactionReputation> playerRep = new HashMap<>();
 
     @Override
     public void onLoad() {
         super.onLoad();
 
         this.rpc = APIController.create(RPC.class);
+
+        InterfaceTypeAdapter.register(IFaction.class,
+                obj -> obj.getId(),
+                id -> Promise.make(factions.get(id)));
 
         registerEvents(new PlayerListener());
     }
@@ -52,11 +56,7 @@ public class FactionAPI extends ListenerModule {
     public void onPostLoad() {
         super.onPostLoad();
 
-        try {
-            this.loadAll().get();
-        } catch (Throwable th) {
-            th.printStackTrace();
-        }
+        this.loadAll().get();
     }
 
     public Promise<List<Faction>> loadAll() {
@@ -67,43 +67,37 @@ public class FactionAPI extends ListenerModule {
                     factions.put(fac.getId(), fac));
 
             getLogger().info("Loaded " + factions.size() + " factions.");
-        }).onFailure(Throwable::printStackTrace);
+        });
     }
 
     public Faction getFaction(String factionId) {
         return factions.get(factionId);
     }
 
-    public Integer getRep(String factionId, PlayerCharacter pc) {
-        return playerRep.get(pc.getUniqueCharacterId(), factionId);
+    public Integer getReputation(IFaction faction, PlayerCharacter pc) {
+        return playerRep.get(pc.getUniqueCharacterId()).getReputation(faction);
     }
 
-    public Integer editRep(String factionId, PlayerCharacter pc, int amount) {
-        Faction faction = getFaction(factionId);
+    public Integer editReputation(IFaction faction, PlayerCharacter pc, int amount) {
+        if(faction == null)
+            return null;
 
-        int newRep = Math.min(getRep(factionId, pc) + amount, faction.getMaxReputation());
-        int change = newRep - faction.getMaxReputation();
-
-        playerRep.put(pc.getUniqueCharacterId(), factionId, newRep);
+        int oldRep = playerRep.get(faction).getReputation(faction);
+        int newRep = playerRep.get(faction).editReputation(faction, amount);
+        int change = newRep - oldRep;
 
         Bukkit.getPluginManager().callEvent(new FactionReputationChangeEvent(pc, faction, newRep, change));
 
         return newRep;
     }
 
-    private Promise<Map<String, Integer>> onLogin(CharacterId characterId) {
-        return rpc.getPlayerFactionReputation(characterId).onSuccess(val -> {
-            val.orElse(ImmutableMap.of()).entrySet().stream().forEach((entry) ->
-                    playerRep.put(characterId, entry.getKey(), entry.getValue()));
-        });
+    private Promise<PlayerFactionReputation> onLogin(PlayerCharacter pc) {
+        return rpc.getPlayerFactionReputation(pc.getUniqueCharacterId()).onSuccess(val ->
+                playerRep.put(pc.getUniqueCharacterId(), val.orElseGet(() -> new PlayerFactionReputation(pc))));
     }
 
-    private Promise<Boolean> onLogout(CharacterId characterId) {
-        Promise<Boolean> promise = rpc.savePlayerFactionReputation(characterId, playerRep.row(characterId));
-
-        promise.on(() -> playerRep.row(characterId).clear());
-
-        return promise;
+    private Promise onLogout(CharacterId characterId) {
+        return rpc.savePlayerFactionReputation(playerRep.remove(characterId));
     }
 
     public Promise<Boolean> onDelete(CharacterId characterId) {
@@ -115,7 +109,7 @@ public class FactionAPI extends ListenerModule {
         public void onPlayerLogin(PlayerCharacterStartLoadingEvent event) {
             PhaseLock lock = event.getLock("Factions");
 
-            onLogin(event.getPlayerCharacter().getUniqueCharacterId()).on(lock::release);
+            onLogin(event.getPlayerCharacter()).on(lock::release);
         }
 
         @EventHandler

@@ -6,4 +6,6 @@
 server-mode: DEV
 
 #The api endpoint ip, deepstream  is trying to connect to
-api-endpoint: 127.0.0.1:6020
+api:
+  endpoint: 127.0.0.1:6020
+  token: ""

@@ -1,9 +1,8 @@
 package com.legendsofvaleros.modules.mount;
 
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Multimap;
 import com.legendsofvaleros.api.APIController;
+import com.legendsofvaleros.api.InterfaceTypeAdapter;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
@@ -12,6 +11,8 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
+import com.legendsofvaleros.modules.mount.api.IMount;
+import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -19,15 +20,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class MountAPI extends ListenerModule {
     public interface RPC {
         Promise<List<Mount>> findMounts();
 
-        Promise<List<String>> getPlayerMounts(CharacterId characterId);
+        Promise<PlayerMounts> getPlayerMounts(CharacterId characterId);
 
-        Promise<Boolean> savePlayerMounts(CharacterId characterId, Collection<String> strings);
+        Promise<Object> savePlayerMounts(PlayerMounts pm);
 
         Promise<Boolean> deletePlayerMounts(CharacterId characterId);
     }
@@ -35,13 +35,17 @@ public class MountAPI extends ListenerModule {
     private RPC rpc;
 
     private Map<String, Mount> mounts = new HashMap<>();
-    private Multimap<CharacterId, String> playerMounts = HashMultimap.create();
+    private Map<CharacterId, PlayerMounts> playerMounts = new HashMap<>();
 
     @Override
     public void onLoad() {
         super.onLoad();
 
         this.rpc = APIController.create(RPC.class);
+
+        InterfaceTypeAdapter.register(IMount.class,
+                obj -> obj.getId(),
+                id -> Promise.make(mounts.get(id)));
 
         registerEvents(new PlayerListener());
     }
@@ -50,11 +54,7 @@ public class MountAPI extends ListenerModule {
     public void onPostLoad() {
         super.onPostLoad();
 
-        try {
-            this.loadAll().get();
-        } catch (Throwable th) {
-            th.printStackTrace();
-        }
+        this.loadAll().get();
     }
 
     public Promise<List<Mount>> loadAll() {
@@ -65,42 +65,34 @@ public class MountAPI extends ListenerModule {
                     mounts.put(mount.getId(), mount));
 
             getLogger().info("Loaded " + mounts.size() + " mounts.");
-        }).onFailure(Throwable::printStackTrace);
+        });
     }
 
     public Mount getMount(String mountId) {
         return mounts.get(mountId);
     }
 
-    public Collection<Mount> getMounts(PlayerCharacter pc) {
-        return playerMounts.get(pc.getUniqueCharacterId()).stream()
-                .map(mountId -> mounts.get(mountId))
-                .filter(m -> m != null)
-                .collect(Collectors.toList());
+    public Collection<IMount> getMounts(PlayerCharacter pc) {
+        return playerMounts.get(pc.getUniqueCharacterId()).mounts;
     }
 
     /**
      * Adds a mount to a player.
      */
-    public void addMount(CharacterId identifier, Mount mount) {
+    public void addMount(PlayerCharacter pc, IMount mount) {
         if (mount == null)
             return;
 
-        playerMounts.put(identifier, mount.getId());
+        getMounts(pc).add(mount);
     }
 
-    private Promise<List<String>> onLogin(CharacterId characterId) {
-        return rpc.getPlayerMounts(characterId).onSuccess(val -> {
-            val.orElse(ImmutableList.of()).forEach(mount ->
-                    playerMounts.put(characterId, mount));
-        });
+    private Promise onLogin(PlayerCharacter pc) {
+        return rpc.getPlayerMounts(pc.getUniqueCharacterId()).onSuccess(val ->
+                playerMounts.put(pc.getUniqueCharacterId(), val.orElseGet(() -> new PlayerMounts(pc))));
     }
 
-    private Promise<Boolean> onLogout(CharacterId characterId) {
-        Promise<Boolean> promise = rpc.savePlayerMounts(characterId, playerMounts.get(characterId));
-        promise.on(() -> playerMounts.removeAll(characterId));
-
-        return promise;
+    private Promise onLogout(CharacterId characterId) {
+        return rpc.savePlayerMounts(playerMounts.remove(characterId));
     }
 
     public Promise<Boolean> onDelete(CharacterId characterId) {
@@ -112,19 +104,22 @@ public class MountAPI extends ListenerModule {
         public void onPlayerLogin(PlayerCharacterStartLoadingEvent event) {
             PhaseLock lock = event.getLock("Mounts");
 
-            onLogin(event.getPlayerCharacter().getUniqueCharacterId()).on(lock::release);
+            onLogin(event.getPlayerCharacter()).on(lock::release);
         }
 
         @EventHandler
         public void onPlayerLeave(PlayerCharacterLogoutEvent event) {
             PhaseLock lock = event.getLock("Mounts");
 
-            onLogout(event.getPlayerCharacter().getUniqueCharacterId()).on(lock::release);
+            onLogout(event.getPlayerCharacter().getUniqueCharacterId())
+                    .onFailure(err -> MessageUtil.sendSevereException(MountAPI.this, event.getPlayer(), (Throwable)err))
+                    .on(lock::release);
         }
 
         @EventHandler
         public void onPlayerRemoved(PlayerCharacterRemoveEvent event) {
-            onDelete(event.getPlayerCharacter().getUniqueCharacterId());
+            onDelete(event.getPlayerCharacter().getUniqueCharacterId())
+                    .onFailure(err -> MessageUtil.sendSevereException(MountAPI.this, event.getPlayer(), err));
         }
     }
 }

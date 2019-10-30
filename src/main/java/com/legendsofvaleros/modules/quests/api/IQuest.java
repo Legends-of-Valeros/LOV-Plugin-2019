@@ -2,82 +2,78 @@ package com.legendsofvaleros.modules.quests.api;
 
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.quests.action.QuestActions;
-import com.legendsofvaleros.modules.quests.core.QuestObjectives;
-import com.legendsofvaleros.modules.quests.core.QuestProgressPack;
+import org.bukkit.event.Event;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.Collection;
+import java.util.Optional;
 
 public interface IQuest {
-	/**
-	 * @return The unique name used to identify this gear.
-	 */
-	String getId();
-	
-	/**
-	 * @return Get the quest type.
-	 */
-	String getType();
-	
-	/**
-	 * @return The list of prerequisite quests that must be completed before this one is available.
-	 */
-	List<IQuestPrerequisite> getPrerequisites();
-	
-	/**
-	 * @return The display name to show in UIs for the player.
-	 */
-	String getName();
+    /**
+     * @return The unique ID used to identify this quest.
+     */
+    String getId();
 
-	/**
-	 * @return A description to show for the quest in the quest book.
-	 */
-	String getDescription();
+    /**
+     * @return The unique slug used to identify this gear with a human readable identifier.
+     */
+    String getSlug();
 
-	boolean isForced();
-	
-	boolean isRepeatable();
+    /**
+     * @return The display name to show in UIs for the player.
+     */
+    String getName();
 
-	QuestActions getActions();
-	Integer getActionGroupI(PlayerCharacter pc);
-	IQuestAction[] getActionGroup(PlayerCharacter pc);
+    /**
+     * @return A description to show for the quest in the quest book.
+     */
+    String getDescription();
 
-	void testResumeActions(PlayerCharacter pc);
+    boolean isForced();
 
-	QuestObjectives getObjectives();
-	Integer getObjectiveGroupI(PlayerCharacter pc);
-	IQuestObjective<?>[] getObjectiveGroup(PlayerCharacter pc);
+    /**
+     * @return The list of prerequisite quests that must be completed before this one is available.
+     */
+    IQuestPrerequisite[] getPrerequisites();
 
+    /**
+     * @return The options that define how a quest can be repeated.
+     */
+    Object getRepeatOptions();
 
-	/**
-	 * Called when a player starts a gear.
-	 */
-	void onStart(PlayerCharacter pc);
-	
-	/**
-	 * Called when the quest is declined.
-	 */
-	void onDecline(PlayerCharacter pc);
-	
-	/**
-	 * Called when the quest is began.
-	 */
-	void onAccept(PlayerCharacter pc);
-	
-	/**
-	 * Called when the quest is completed.
-	 */
-	void onCompleted(PlayerCharacter pc);
+    Optional<IQuestNode> getNode(String id);
 
-	boolean isCompleted(PlayerCharacter pc);
-	void checkCompleted(PlayerCharacter pc);
+    Collection<IQuestNode> getNodes();
 
-	Set<Map.Entry<CharacterId, QuestProgressPack>> getProgressions();
+    QuestStatus getStatus(PlayerCharacter pc);
 
-	boolean hasProgress(PlayerCharacter pc);
-	QuestProgressPack getProgress(PlayerCharacter pc);
-	void loadProgress(PlayerCharacter pc, QuestProgressPack progress);
-	void clearProgress(PlayerCharacter pc);
+    /**
+     * Returns a quest instance for the player. This should always return a value, even if the player doesn't have an
+     * instance tracked. However, if a new instance is created, it should NOT be tracked.
+     */
+    IQuestInstance getInstance(PlayerCharacter pc);
+
+    /**
+     * Adds the instance to the quest. This is called on anything ranging from quest acceptance to just a log in.
+     */
+    void setInstance(CharacterId characterId, IQuestInstance instance);
+
+    /**
+     * Remove the instance from the quest. This is called on anything ranging from quest deletion to just a log out.
+     * Should return the instance that was removed, if there was one.
+     */
+    Optional<IQuestInstance> removeInstance(CharacterId characterId);
+
+    /**
+     * Fired when a quest's nodes are to be made active for an instance. This may be for any reason between creation, or
+     * the instance being loaded after a login.
+     */
+    void onActivated(IQuestInstance instance);
+
+    /**
+     * Fired when a quest's nodes are to be deactivated for an instance. This may be for any reason between logout out,
+     * or the instance being deleted entirely.
+     */
+    void onDeactivated(IQuestInstance instance);
+
+    void callEvent(IQuestInstance instance, Class<? extends Event> caught, Event event);
 }

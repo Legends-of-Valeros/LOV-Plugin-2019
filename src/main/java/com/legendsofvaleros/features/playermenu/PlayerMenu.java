@@ -1,10 +1,10 @@
 package com.legendsofvaleros.features.playermenu;
 
 import com.legendsofvaleros.features.gui.window.ExpandingGUI;
+import com.legendsofvaleros.features.playermenu.events.PlayerMenuOpenEvent;
 import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
-import com.legendsofvaleros.features.playermenu.events.PlayerMenuOpenEvent;
-import com.legendsofvaleros.util.model.Model;
+import com.legendsofvaleros.util.model.Models;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -35,7 +35,7 @@ public class PlayerMenu extends ListenerModule {
 
             @Override
             public void onOpen(Player p, InventoryView view) {
-                p.getInventory().setItem(17, Model.merge(event.getSlots().size() <= 5 ? "menu-ui-hopper" : "menu-ui-dispenser", (stack = p.getInventory().getItem(17))));
+                p.getInventory().setItem(17, Models.merge(event.getSlots().size() <= 5 ? "menu-ui-hopper" : "menu-ui-dispenser", (stack = p.getInventory().getItem(17))));
             }
 
             @Override public void onClose(Player p, InventoryView view) {

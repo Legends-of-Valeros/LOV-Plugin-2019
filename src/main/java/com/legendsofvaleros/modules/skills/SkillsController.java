@@ -19,24 +19,22 @@ import com.legendsofvaleros.modules.skills.core.mage.TreeMage;
 import com.legendsofvaleros.modules.skills.core.priest.TreePriest;
 import com.legendsofvaleros.modules.skills.core.rogue.TreeRogue;
 import com.legendsofvaleros.modules.skills.core.warrior.TreeWarrior;
-import com.legendsofvaleros.modules.skills.event.FallDamage;
-import com.legendsofvaleros.modules.skills.event.NextAttack;
-import com.legendsofvaleros.modules.skills.event.OnProjectile;
-import com.legendsofvaleros.modules.skills.event.SkillPreUseEvent;
-import com.legendsofvaleros.modules.skills.event.SkillUsedEvent;
+import com.legendsofvaleros.modules.skills.event.*;
 import com.legendsofvaleros.modules.skills.gui.GUISkillsCore;
 import com.legendsofvaleros.modules.skills.listener.HotbarListener;
 import com.legendsofvaleros.modules.skills.listener.SkillListener;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.RomanNumeral;
 import com.legendsofvaleros.util.model.Model;
-import java.util.List;
-import java.util.Map.Entry;
+import com.legendsofvaleros.util.model.Models;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
+import java.util.Map.Entry;
 
 @DependsOn(PlayerMenu.class)
 @DependsOn(BankController.class)
@@ -85,7 +83,7 @@ public class SkillsController extends SkillsAPI {
 
   @EventHandler
   public void onCharacterOptionsOpen(PlayerOptionsOpenEvent event) {
-    event.addSlot(Model.stack("menu-skill-tree-button").setName("Skill Tree").create(),
+    event.addSlot(Models.stack("menu-skill-tree-button").setName("Skill Tree").create(),
         (gui, p, type) -> new GUISkillsCore(Characters.getPlayerCharacter(p)).open(p));
   }
 
@@ -163,6 +161,6 @@ public class SkillsController extends SkillsAPI {
   }
 
   public static ItemBuilder getItemRepresentation(Skill skill) {
-    return Model.stack("skill-" + skill.getId());
+    return Models.stack("skill-" + skill.getId());
   }
 }

@@ -5,9 +5,9 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.npcs.NPCsController;
-import com.legendsofvaleros.modules.npcs.core.NPCData;
+import com.legendsofvaleros.modules.npcs.core.LOVNPC;
+import com.legendsofvaleros.modules.npcs.trait.CitizensTraitLOV;
 import com.legendsofvaleros.modules.npcs.trait.TraitHelper;
-import com.legendsofvaleros.modules.npcs.trait.TraitLOV;
 import com.legendsofvaleros.util.MessageUtil;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -22,9 +22,7 @@ public class NPCCommands extends BaseCommand {
 	@Subcommand("reload")
 	@Description("Reload the NPC cache and citizens.")
 	@CommandPermission("npcs.reload")
-	public void cmdListNPCReload(CommandSender sender) throws Throwable {
-		NPCsController.getInstance().loadAll().get();
-
+	public void cmdListNPCReload(CommandSender sender) {
 		Bukkit.dispatchCommand(sender, "citizens save");
 		Bukkit.dispatchCommand(sender, "citizens reload");
 	}
@@ -32,15 +30,16 @@ public class NPCCommands extends BaseCommand {
 	@Subcommand("activate")
 	@Description("Activate an NPC remotely.")
 	@CommandPermission("npcs.activate")
-	public void cmdActivateNPC(Player player, String npcId, String side) {
+	public void cmdActivateNPC(Player player, String slug, String side) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		NPCData npc = NPCsController.getInstance().getNPC(npcId);
+		String id = NPCsController.getInstance().getNPCIDFromSlug(slug).get();
+		LOVNPC lovNPC = NPCsController.getInstance().getNPC(id).get();
 
 		if(side.equalsIgnoreCase("left"))
-			TraitHelper.onLeftClick(npc.name, player, npc.traits);
+			TraitHelper.onLeftClick(lovNPC.getName(), player, lovNPC.traits);
 		else if(side.equalsIgnoreCase("right"))
-			TraitHelper.onRightClick(npc.name, player, npc.traits);
+			TraitHelper.onRightClick(lovNPC.getName(), player, lovNPC.traits);
 		else
 			MessageUtil.sendError(player, "Side argument must be 'left' or 'right'!");
 	}
@@ -48,11 +47,13 @@ public class NPCCommands extends BaseCommand {
 	@Subcommand("bind")
 	@Description("Bind an LOV NPC to a citizens NPC.")
 	@CommandPermission("npcs.bind")
-	public void cmdBindNPC(Player player, String npcId) {
+	public void cmdBindNPC(Player player, String slug) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		NPCData npcData = NPCsController.getInstance().getNPC(npcId);
-		if(npcData == null) {
+		String id = NPCsController.getInstance().getNPCIDFromSlug(slug).get();
+		LOVNPC lovNPC = NPCsController.getInstance().getNPC(id).get();
+
+		if(lovNPC == null) {
 			MessageUtil.sendError(player, "NPC with that ID does not exist.");
 			return;
 		}
@@ -64,9 +65,9 @@ public class NPCCommands extends BaseCommand {
 			return;
 		}
 		
-		if(!npc.hasTrait(TraitLOV.class))		
-			npc.addTrait(TraitLOV.class);
-		npc.getTrait(TraitLOV.class).npcId = npcId;
+		if(!npc.hasTrait(CitizensTraitLOV.class))
+			npc.addTrait(CitizensTraitLOV.class);
+		npc.getTrait(CitizensTraitLOV.class).npcId = id;
 
 		npc.setName(UUID.randomUUID().toString());
 	}
@@ -83,12 +84,12 @@ public class NPCCommands extends BaseCommand {
 			return;
 		}
 		
-		if(!npc.hasTrait(TraitLOV.class)) {
+		if(!npc.hasTrait(CitizensTraitLOV.class)) {
 			MessageUtil.sendError(player, "That NPC is not bound to an LOV NPC.");
 			return;
 		}
 
-		MessageUtil.sendInfo(player, "LOV ID: " + npc.getTrait(TraitLOV.class).npcId);
+		MessageUtil.sendInfo(player, "LOV ID: " + npc.getTrait(CitizensTraitLOV.class).npcId);
 	}
 
 	@Subcommand("tp")
@@ -97,7 +98,7 @@ public class NPCCommands extends BaseCommand {
 	public void cmdNPCTeleport(Player player, String id) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		for(TraitLOV trait : TraitLOV.all) {
+		for(CitizensTraitLOV trait : CitizensTraitLOV.all) {
 			if(trait.npcId != null && trait.npcId.equals(id)) {
 				if(trait.getNPC().getStoredLocation() != null) {
 					player.teleport(trait.getNPC().getStoredLocation());
@@ -106,8 +107,8 @@ public class NPCCommands extends BaseCommand {
 						&& trait.getNPC().getEntity().getLocation() != null) {
 					player.teleport(trait.getNPC().getEntity().getLocation());
 					return;
-				}else if(trait.getNpcData().getLocation() != null) {
-					player.teleport(trait.getNpcData().getLocation());
+				}else if(trait.getLovNPC().getLocation() != null) {
+					player.teleport(trait.getLovNPC().getLocation());
 					return;
 				}
 

@@ -8,7 +8,8 @@ import com.legendsofvaleros.modules.bank.core.Money;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.fast_travel.FastTravelController;
 import com.legendsofvaleros.modules.npcs.NPCsController;
-import com.legendsofvaleros.modules.npcs.core.NPCData;
+import com.legendsofvaleros.modules.npcs.api.INPC;
+import com.legendsofvaleros.modules.npcs.core.LOVNPC;
 import com.legendsofvaleros.modules.npcs.core.NPCEmulator;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
 import com.legendsofvaleros.util.MessageUtil;
@@ -25,14 +26,15 @@ import java.util.HashMap;
 import java.util.List;
 
 public class TraitFastTravel extends LOVTrait {
-    public static class Data {
+    public static class Entry {
+        public INPC npc;
         public int cost;
         public String message;
     }
 
     public String name;
 
-    public HashMap<String, TraitFastTravel.Data> connections;
+    public Entry[] destinations;
 
     @Override
     public void onRightClick(Player player, SettableFuture<Slot> slot) {
@@ -54,11 +56,11 @@ public class TraitFastTravel extends LOVTrait {
             TitleUtil.queueTitle(title, player);
         }
 
-        List<String> available = new ArrayList<>();
+        List<Entry> available = new ArrayList<>();
 
-        for (String id : found)
-            if (connections.containsKey(id))
-                available.add(id);
+        for (Entry entry : destinations)
+            if (found.contains(entry.npc.getId()))
+                available.add(entry);
 
         if (available.size() == 0) {
             slot.set(null);
@@ -68,21 +70,13 @@ public class TraitFastTravel extends LOVTrait {
         slot.set(new Slot(new ItemBuilder(Material.LEATHER_BOOTS).setName("Fast Travel").create(), (gui, p, event) -> openGUI(p, available)));
     }
 
-    private void openGUI(Player p, Collection<String> available) {
+    private void openGUI(Player p, Collection<Entry> available) {
         GUI gui = new GUI(npc.getName());
         gui.type(InventoryType.DISPENSER);
 
         int i = 0;
-        for (String id : available) {
-            TraitFastTravel.Data data = connections.get(id);
-
-            NPCData npcData = NPCsController.getInstance().getNPC(id);
-            if (npc == null) {
-                MessageUtil.sendError(p, "Unable to find NPC with that ID: " + id);
-                continue;
-            }
-
-            TraitFastTravel trait = npcData.getTrait(TraitFastTravel.class);
+        for (Entry entry : available) {
+            TraitFastTravel trait = entry.npc.getTrait(TraitFastTravel.class);
             if (trait == null) {
                 MessageUtil.sendError(p, "Destination NPC does not have fast travel name set: " + id);
                 continue;
@@ -90,23 +84,19 @@ public class TraitFastTravel extends LOVTrait {
 
             ItemBuilder ib = new ItemBuilder(Material.ENDER_EYE);
 
-            if (trait.name == null || trait.name.length() == 0) {
-                ib.setName("- Unnamed -");
-            } else {
-                ib.setName(trait.name);
-            }
-            ib.addLore("", "" + Money.Format.format(data.cost));
+            ib.setName(trait.name);
+            ib.addLore("", "" + Money.Format.format(entry.cost));
 
             gui.slot(i++, ib.create(), (gui1, p1, event) -> {
-                if (!Money.sub(Characters.getPlayerCharacter(p1), data.cost)) {
-                    NPCEmulator.speak(npc, p1, "You don't have enough crowns for that.");
+                if (!Money.sub(Characters.getPlayerCharacter(p1), entry.cost)) {
+                    NPCEmulator.speak(entry.npc, p1, "You don't have enough crowns for that.");
                     return;
                 }
 
-                p1.teleport(npcData.getLocation());
+                p1.teleport(entry.npc.getLocation());
 
-                if (data.message != null && data.message.length() > 0)
-                    NPCEmulator.speak(npc, p1, data.message);
+                if (entry.message != null && entry.message.length() > 0)
+                    NPCEmulator.speak(entry.npc, p1, entry.message);
             });
         }
 

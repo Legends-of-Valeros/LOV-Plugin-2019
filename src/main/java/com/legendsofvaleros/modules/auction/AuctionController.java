@@ -161,9 +161,7 @@ public class AuctionController extends AuctionAPI {
 
     @EventHandler
     public void onLogout(PlayerCharacterLogoutEvent e) {
-        if (auctionPrompts.containsKey(e.getPlayerCharacter().getUniqueCharacterId())) {
-            auctionPrompts.remove(e.getPlayerCharacter().getUniqueCharacterId());
-        }
+        auctionPrompts.remove(e.getPlayerCharacter().getUniqueCharacterId());
     }
 
     public void confirmSellPrompt(CharacterId characterId) {
@@ -173,9 +171,7 @@ public class AuctionController extends AuctionAPI {
     }
 
     public void removePrompt(CharacterId characterId) {
-        if (auctionPrompts.containsKey(characterId)) {
-            auctionPrompts.remove(characterId);
-        }
+        auctionPrompts.remove(characterId);
     }
 
     /**

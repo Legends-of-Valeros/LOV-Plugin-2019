@@ -1,27 +1,28 @@
 package com.legendsofvaleros.modules.graveyard;
 
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Multimap;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.modules.graveyard.core.Graveyard;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
+// TODO: Implement zone activation?
 public class GraveyardAPI extends ListenerModule {
     public interface RPC {
         Promise<List<Graveyard>> findGraveyards();
 
-        Promise<Boolean> saveGraveyard(Graveyard yard);
+        Promise<Object> saveGraveyard(Graveyard yard);
 
         Promise<Boolean> deleteGraveyard(Graveyard yard);
     }
 
     private RPC rpc;
-    HashMap<String, List<Graveyard>> graveyards = new HashMap<>();
+    Multimap<String, Graveyard> graveyards = HashMultimap.create();
 
     @Override
     public void onLoad() {
@@ -33,11 +34,7 @@ public class GraveyardAPI extends ListenerModule {
         super.onPostLoad();
         this.rpc = APIController.create(GraveyardAPI.RPC.class);
 
-        try {
-            this.loadAll().get();
-        } catch (Throwable th) {
-            th.printStackTrace();
-        }
+        this.loadAll().get();
     }
 
     public Promise<List<Graveyard>> loadAll() {
@@ -46,21 +43,15 @@ public class GraveyardAPI extends ListenerModule {
 
             val.orElse(ImmutableList.of()).stream()
                     .filter(yard -> yard.getZone() != null).forEach(yard -> {
-                if (graveyards.containsKey(yard.getZone().channel)) {
-                    graveyards.get(yard.getZone().channel).add(yard);
-                    return;
-                }
-                ArrayList<Graveyard> yards = new ArrayList<>();
-                yards.add(yard);
-                graveyards.put(yard.getZone().channel, yards);
+                graveyards.put(yard.getZone().getId(), yard);
             });
 
             getLogger().info("Loaded " + graveyards.size() + " graveyards.");
-        }).onFailure(Throwable::printStackTrace);
+        });
     }
 
-    public Promise<Boolean> addGraveyard(Graveyard yard) {
-        graveyards.get(yard.getZone().channel).add(yard);
+    public Promise addGraveyard(Graveyard yard) {
+        graveyards.put(yard.getZone().getId(), yard);
 
         // If editing is enabled, generate the hologram right away.
         if (LegendsOfValeros.getMode().allowEditing()) {
@@ -72,7 +63,7 @@ public class GraveyardAPI extends ListenerModule {
 
     public void removeGraveyard(Graveyard yard) {
         rpc.deleteGraveyard(yard).onSuccess(() -> {
-            graveyards.remove(yard.getZone().channel, yard);
-        }).onFailure(Throwable::printStackTrace);
+            graveyards.remove(yard.getZone().getId(), yard);
+        });
     }
 }

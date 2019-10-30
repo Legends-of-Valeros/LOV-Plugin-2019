@@ -17,6 +17,6 @@ public class LootController extends LootAPI {
     public void onLoad() {
         super.onLoad();
 
-        this.instance = this;
+        instance = this;
     }
 }

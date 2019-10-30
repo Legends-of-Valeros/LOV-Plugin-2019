@@ -3,6 +3,7 @@ package com.legendsofvaleros.modules.regions.integration;
 import com.legendsofvaleros.module.Integration;
 import com.legendsofvaleros.modules.hearthstones.event.HearthstoneCastEvent;
 import com.legendsofvaleros.modules.regions.RegionController;
+import com.legendsofvaleros.modules.regions.core.IRegion;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -13,8 +14,8 @@ public class HearthstonesIntegration extends Integration implements Listener {
 
     @EventHandler
     public void onCastHearthstone(HearthstoneCastEvent event) {
-        for (String region_id : RegionController.getInstance().getPlayerRegions(event.getPlayer())) {
-            if (!RegionController.getInstance().getRegion(region_id).allowHearthstone) {
+        for (IRegion region : RegionController.getInstance().getPlayerRegions(event.getPlayer())) {
+            if (!region.areHearthstonesAllowed()) {
                 event.setCancelled(true);
                 return;
             }

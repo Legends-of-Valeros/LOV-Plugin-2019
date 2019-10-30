@@ -1,19 +1,13 @@
 package com.legendsofvaleros.modules.zones.event;
 
+import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
+import com.legendsofvaleros.modules.characters.events.PlayerCharacterEvent;
 import com.legendsofvaleros.modules.zones.core.Zone;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public class ZoneLeaveEvent extends Event {
+public class ZoneLeaveEvent extends PlayerCharacterEvent {
     private static final HandlerList handlers = new HandlerList();
-
-    private Player player;
-
-    public Player getPlayer() {
-        return player;
-    }
 
     private Zone zone;
 
@@ -21,8 +15,8 @@ public class ZoneLeaveEvent extends Event {
         return zone;
     }
 
-    public ZoneLeaveEvent(Player player, Zone zone) {
-        this.player = player;
+    public ZoneLeaveEvent(PlayerCharacter pc, Zone zone) {
+        super(pc);
         this.zone = zone;
     }
 

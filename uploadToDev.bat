@@ -1,1 +1,1 @@
-scp -P 1339 ./target/LOV.jar root@192.99.0.101:server/plugins/LOV.jar
+scp -P 1341 ./target/LOV-1.0-SNAPSHOT-shaded.jar root@192.99.0.101:server/plugins/LOV.jar

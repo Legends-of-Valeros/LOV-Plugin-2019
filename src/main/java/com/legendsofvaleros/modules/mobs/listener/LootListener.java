@@ -6,8 +6,8 @@ import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.damage.DamageHistory;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDeathEvent;
 import com.legendsofvaleros.modules.gear.core.ItemUtil;
-import com.legendsofvaleros.modules.loot.LootController;
-import com.legendsofvaleros.modules.loot.LootTable;
+import com.legendsofvaleros.modules.loot.api.ILootTable;
+import com.legendsofvaleros.modules.mobs.api.IEntity;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;
@@ -17,10 +17,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class LootListener implements Listener {
     private static final Random RAND = new Random();
@@ -29,10 +27,10 @@ public class LootListener implements Listener {
     public void onEntityDeath(CombatEngineDeathEvent event) {
         if (event.getDied().isPlayer()) return;
 
-        Mob.Instance entity = Mob.Instance.get(event.getDied().getLivingEntity());
-        if (entity == null) return;
-        if (entity.mob.getOptions().loot == null) {
-            MessageUtil.sendError(Bukkit.getConsoleSender(), "No loot found for entity " + entity.mob.getName());
+        Mob.Instance instance = Mob.Instance.get(event.getDied().getLivingEntity());
+        if (instance == null) return;
+        if (instance.entity.getLoot() == null) {
+            MessageUtil.sendError(Bukkit.getConsoleSender(), "No loot found for entity " + instance.entity.getName());
             return;
         }
 
@@ -51,51 +49,15 @@ public class LootListener implements Listener {
         }
 
         Location dieLoc = event.getDied().getLivingEntity().getLocation();
-        Map<String, AtomicInteger> connections = new HashMap<>();
 
-        for (Mob.Options.LootData data : entity.mob.getOptions().loot) {
-            AtomicInteger i;
+        for (IEntity.Loot loot : instance.entity.getLoot()) {
+            IEntity.Loot.Instance lootInstance = loot.newInstance();
 
-            if (data.connect != null) {
-                if (!connections.containsKey(data.connect)) {
-                    connections.put(data.connect, new AtomicInteger());
+            for(int t = 0; t < loot.tries; t++) {
+                Optional<ILootTable> table = lootInstance.nextTable();
+                if(table.isPresent()) {
+                    ItemUtil.dropItem(dieLoc, table.get().nextItem().newInstance(), pc);
                 }
-                i = connections.get(data.connect);
-            } else {
-                i = null;
-            }
-
-            LootTable table = LootController.getInstance().getTable(data.id);
-            if (table == null) {
-                MessageUtil.sendSevereException(LootController.getInstance(), event.getKiller().getLivingEntity(), "Mob has an unknown loot table. Offender: " + data.id + " on " + entity.mob.getId());
-                return;
-            }
-
-            double chance = (data.chance == null ? table.chance : data.chance);
-            if (table.chance == 0) {
-                MessageUtil.sendSevereException(LootController.getInstance().moduleName, "Table has 0 drop chanche:" + table.id);
-            }
-            if (data.chance != null) {
-                MessageUtil.sendDebug(Bukkit.getConsoleSender(), "Drop chanche of LootData" + data.id + ": " + data.chance);
-            }
-
-            for (int j = (i == null ? 0 : i.get()); j < data.amount; j++) {
-                if (RAND.nextDouble() > chance) {
-                    continue;
-                }
-
-                // If we have dropped all possible in the connection.
-                if (i != null) {
-                    if (data.amount - i.getAndIncrement() < 0) {
-                        break;
-                    }
-                }
-
-                LootTable.Item item = table.nextItem();
-                if (item == null) {
-                    continue;
-                }
-                ItemUtil.dropItem(dieLoc, item.getItem().newInstance(), pc);
             }
         }
     }

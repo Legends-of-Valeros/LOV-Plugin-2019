@@ -1,9 +1,6 @@
 package com.legendsofvaleros.modules.arena;
 
-import com.legendsofvaleros.modules.arena.arenamodes.ArenaMode;
-import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
-import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
-import com.legendsofvaleros.modules.dueling.core.Duel;
+import com.legendsofvaleros.modules.arena.arenaModes.ArenaMode;
 import com.legendsofvaleros.modules.pvp.event.PvPCheckEvent;
 import com.legendsofvaleros.util.title.Title;
 import com.legendsofvaleros.util.title.TitleUtil;

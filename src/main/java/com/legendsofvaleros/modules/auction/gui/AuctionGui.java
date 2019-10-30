@@ -127,7 +127,7 @@ public class AuctionGui extends GUI implements Listener {
             if (item == null) {
                 return;
             }
-            if (!item.getType().isTradable()) {
+            if (!item.gear.getType().isTradable()) {
                 MessageUtil.sendError(p, "You can't auction this item!");
                 return;
             }

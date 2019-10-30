@@ -17,7 +17,10 @@ public class InventoryListener implements Listener {
 			return;
 		}
 	}
+
 	/*
+	Garbage attempt at respecting custom stack sizes. Kept here for posterity, and perhaps for reference when attempting it again.
+
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onInventoryMove(InventoryClickEvent e) {
 		if(e.getAction() == InventoryAction.NOTHING) return;

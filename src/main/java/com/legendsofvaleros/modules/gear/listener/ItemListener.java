@@ -8,8 +8,8 @@ import com.google.common.cache.CacheBuilder;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEnginePhysicalDamageEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEntityCreateEvent;
@@ -75,8 +75,10 @@ public class ItemListener implements Listener {
             return;
         }
 
-        if (instance.getType().isTradable()) {
+        // Only allow item destruction if the item is tradable
+        if (instance.gear.getType().isTradable()) {
             GearController.getInstance().getScheduler().executeInSpigotCircle(() -> {
+                // ?Should this be moved to its own class?
                 new WindowYesNo("Destroy Item") {
                     @Override
                     public void onAccept(GUI gui, Player p) {
@@ -85,7 +87,7 @@ public class ItemListener implements Listener {
                         if (!ItemUtil.removeItem(event.getPlayer(), instance)) {
                             MessageUtil.sendError(event.getPlayer(), "Unable to remove that, for some reason...");
                         } else {
-                            MessageUtil.sendUpdate(event.getPlayer(), instance.getName() + " has been destroyed.");
+                            MessageUtil.sendUpdate(event.getPlayer(), instance.gear.getName() + " has been destroyed.");
                         }
                     }
 
@@ -117,21 +119,29 @@ public class ItemListener implements Listener {
 
         PlayerCharacter pc = Characters.getPlayerCharacter((Player) event.getEntity());
         UUID player = itemOwner.getIfPresent(event.getItem().getUniqueId());
+
+        // Make sure the current owner of the item entity is the same as the entity attempting to pick up said item.
         if (player == null || player.compareTo(pc.getPlayerId()) == 0) {
             event.getItem().remove();
 
             Gear.Instance instance = Gear.Instance.fromStack(event.getItem().getItemStack());
             if (instance != null) {
                 ItemUtil.giveItem(pc, instance);
-                //dont log currency drops since they are logged on their own
-                if (instance.getModelId().toLowerCase().contains("crown")) {
+                // Dont log currency drops since they are logged on their own.
+                // TODO: this should made cleaner
+                if (instance.gear.getModel().getId().toLowerCase().contains("crown")) {
                     return;
                 }
-                MessageUtil.sendUpdate(pc.getPlayer(), "Picked up " + ChatColor.WHITE + ChatColor.BOLD + instance.getName());
+
+                MessageUtil.sendUpdate(pc.getPlayer(), "Picked up " + ChatColor.WHITE + ChatColor.BOLD + instance.gear.getName());
             }
         }
     }
 
+    /**
+     * This listens for the vanilla cancellation, rather than the Combat Engine event, so that we can entirely
+     * prevent Combat Engine from doing any computations at all.
+     */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerAttack(VanillaDamageCancelledEvent vEvent) {
         EntityDamageEvent dEvent = vEvent.getCancelledEvent();
@@ -148,11 +158,13 @@ public class ItemListener implements Listener {
         CombatEntity dce = CombatEngine.getEntity((LivingEntity) e.getEntity());
         if (dce == null) return;
 
+        // Disallow doing damage to any entity if the player is not over their equipped item slot.
         if (((Player) ace.getLivingEntity()).getInventory().getHeldItemSlot() != Hotswitch.HELD_SLOT) {
             vEvent.setCancelled(true);
 
-            //prevent message being sent when left clicking while holding a spell
-            if (((Player) ace.getLivingEntity()).getInventory().getHeldItemSlot() > Hotswitch.HELD_SLOT) {
+            // Prevent a message being sent when left clicking while holding a spell
+            if (((Player) ace.getLivingEntity()).getInventory().getHeldItemSlot() < Hotswitch.HELD_SLOT) {
+                // ?Do we even need a message to be sent?
                 MessageUtil.sendError(ace.getLivingEntity(), "You may only attack using your equipped item slot!");
             }
         }
@@ -168,8 +180,11 @@ public class ItemListener implements Listener {
         Gear.Instance base = Gear.Instance.fromStack(e.getCurrentItem());
         if (base == null) return;
 
+        // Combine is triggered when an item is held on the cursor and another item is clicked in the inventory.
+
         CombineTrigger trigger = new CombineTrigger(CombatEngine.getEntity(e.getWhoClicked()), base, agent);
 
+        // Disable the event if and only if the trigger has a state of True
         if (Boolean.TRUE.equals(agent.doTest(trigger))) {
             if (agent.doFire(trigger).didChange()) {
                 e.setCurrentItem(base.toStack());
@@ -180,6 +195,11 @@ public class ItemListener implements Listener {
         }
     }
 
+    /**
+     * This click event only handles the events for offhand and the held equip slot.
+     *
+     * ?Should this be moved to a dedicated class?
+     */
     @EventHandler(priority = EventPriority.LOW)
     public void onInventoryMove(InventoryClickEvent e) {
         if (e.getClickedInventory() != e.getWhoClicked().getInventory()) return;
@@ -188,11 +208,13 @@ public class ItemListener implements Listener {
         boolean offhand = e.getSlot() == 40;
         if (e.getSlot() != Hotswitch.HELD_SLOT && !offhand) return;
 
-        Gear.Instance gear;
+        Gear.Instance gearInstance;
 
         if (e.getCursor() != null && e.getCursor().getType() != Material.AIR) {
-            gear = Gear.Instance.fromStack(e.getCursor());
-            if (gear == null) {
+            gearInstance = Gear.Instance.fromStack(e.getCursor());
+            if (gearInstance == null) {
+                // If the item did not decode successfully into a Gear instance, then it no longer exists.
+                // Replace it with the error item instance.
                 MessageUtil.sendError(e.getWhoClicked(), "Your item has morphed into... something.");
 
                 Gear.Instance instance = GearController.ERROR_ITEM.newInstance();
@@ -202,15 +224,17 @@ public class ItemListener implements Listener {
                 return;
             }
 
-            if ((!offhand && gear.getType() != GearType.WEAPON)
-                    || (offhand && gear.getType() != GearType.SHIELD)) {
+            // If the offhand slot is clicked, only allow shields there.
+            // If the equip slot is clicked, only allow weapons there.
+            if ((!offhand && gearInstance.gear.getType() != GearType.WEAPON)
+                    || (offhand && gearInstance.gear.getType() != GearType.SHIELD)) {
                 MessageUtil.sendError(e.getWhoClicked(), "You can't wield that item there.");
 
                 e.setCancelled(true);
                 return;
             }
 
-            ItemEquipEvent iee = new ItemEquipEvent(Characters.getPlayerCharacter((Player) e.getWhoClicked()), gear, !offhand ? EquipmentSlot.HAND : EquipmentSlot.OFF_HAND);
+            ItemEquipEvent iee = new ItemEquipEvent(Characters.getPlayerCharacter((Player) e.getWhoClicked()), gearInstance, !offhand ? EquipmentSlot.HAND : EquipmentSlot.OFF_HAND);
             Bukkit.getPluginManager().callEvent(iee);
             if (iee.isCancelled()) {
                 MessageUtil.sendError(e.getWhoClicked(), "A mysterious force prevents you from equipping that.");
@@ -221,8 +245,10 @@ public class ItemListener implements Listener {
         }
 
         if (e.getCurrentItem() != null && e.getCurrentItem().getType() != Material.AIR) {
-            gear = Gear.Instance.fromStack(e.getCurrentItem());
-            if (gear == null) {
+            gearInstance = Gear.Instance.fromStack(e.getCurrentItem());
+            if (gearInstance == null) {
+                // If the item did not decode successfully into a Gear instance, then it no longer exists.
+                // Replace it with the error item instance.
                 MessageUtil.sendError(e.getWhoClicked(), "Your item has morphed into.. something.");
 
                 e.setCancelled(true);
@@ -235,12 +261,13 @@ public class ItemListener implements Listener {
                 return;
             }
 
-            Bukkit.getPluginManager().callEvent(new ItemUnEquipEvent(Characters.getPlayerCharacter((Player) e.getWhoClicked()), gear, !offhand ? EquipmentSlot.HAND : EquipmentSlot.OFF_HAND));
+            Bukkit.getPluginManager().callEvent(new ItemUnEquipEvent(Characters.getPlayerCharacter((Player) e.getWhoClicked()), gearInstance, !offhand ? EquipmentSlot.HAND : EquipmentSlot.OFF_HAND));
         }
     }
 
     @EventHandler
     public void onEquipItem(ItemEquipEvent event) {
+        // Fire the equip trigger in the gear.
         EquipTrigger e = new EquipTrigger(CombatEngine.getEntity(event.getPlayer()));
         if (Boolean.FALSE.equals(event.getGear().doTest(e))) {
             event.setCancelled(true);
@@ -251,23 +278,25 @@ public class ItemListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onUnEquipItem(ItemUnEquipEvent event) {
+        // Fire the unequip trigger in the gear.
+        // ?This event cannot currently be cancelled. Do we want it to be?
         event.getGear().doFire(new UnEquipTrigger(event));
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onLivingEntityDamage(CombatEnginePhysicalDamageEvent event) {
-        Gear.Instance gear = Gear.Instance.fromStack(event.getAttacker().getLivingEntity().getEquipment().getItemInMainHand());
-        if (gear == null) return;
+        Gear.Instance gearInstance = Gear.Instance.fromStack(event.getAttacker().getLivingEntity().getEquipment().getItemInMainHand());
+        if (gearInstance == null) return;
 
         PhysicalAttackTrigger e = new PhysicalAttackTrigger(event.getAttacker());
 
-        if (Boolean.FALSE.equals(gear.doTest(e))) {
+        if (Boolean.FALSE.equals(gearInstance.doTest(e))) {
             MessageUtil.sendError(event.getAttacker().getLivingEntity(), "Something prevents you from doing that!");
 
             event.setCancelled(true);
         } else {
-            if (gear.doFire(e) == TriggerEvent.REFRESH_STACK && event.getAttacker().isPlayer())
-                event.getAttacker().getLivingEntity().getEquipment().setItemInMainHand(gear.toStack());
+            if (gearInstance.doFire(e) == TriggerEvent.REFRESH_STACK && event.getAttacker().isPlayer())
+                event.getAttacker().getLivingEntity().getEquipment().setItemInMainHand(gearInstance.toStack());
 
             event.newDamageModifierBuilder("GearController")
                     .setModifierType(ValueModifierBuilder.ModifierType.FLAT_EDIT)
@@ -276,7 +305,9 @@ public class ItemListener implements Listener {
         }
     }
 
-
+    /**
+     * Fires the defend event for all worn armor on damage. This does not include shields.
+     */
     @EventHandler(priority = EventPriority.MONITOR)
     public void onLivingEntityDamaged(CombatEngineDamageEvent event) {
         DefendTrigger e = new DefendTrigger(event);
@@ -294,34 +325,41 @@ public class ItemListener implements Listener {
         event.getDamaged().getLivingEntity().getEquipment().setArmorContents(armor);
     }
 
+    /**
+     * Handles the item usage trigger for gear.
+     */
     @EventHandler
     public void onItemUse(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            Gear.Instance gear = Gear.Instance.fromStack(event.getItem());
-            if (gear == null) return;
+            Gear.Instance gearInstance = Gear.Instance.fromStack(event.getItem());
+            if (gearInstance == null) return;
 
             UseTrigger e = new UseTrigger(event);
 
-            Boolean test = gear.doTest(e);
+            Boolean test = gearInstance.doTest(e);
             if (test == null) return;
+
             if (test) {
-                if (gear.doFire(e) == TriggerEvent.REFRESH_STACK) {
+                if (gearInstance.doFire(e) == TriggerEvent.REFRESH_STACK) {
                     if (event.getHand() == EquipmentSlot.HAND)
-                        event.getPlayer().getInventory().setItemInMainHand(gear.toStack());
+                        event.getPlayer().getInventory().setItemInMainHand(gearInstance.toStack());
                     else if (event.getHand() == EquipmentSlot.OFF_HAND)
-                        event.getPlayer().getInventory().setItemInOffHand(gear.toStack());
+                        event.getPlayer().getInventory().setItemInOffHand(gearInstance.toStack());
                 }
             }
         }
     }
 
+    /**
+     * Fires the respective trigger for all armor equipped or unequipped.
+     */
     @EventHandler
     public void onArmorEquip(ArmorEquipEvent event) {
         if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
 
-        Gear.Instance gear = Gear.Instance.fromStack(event.getNewArmorPiece());
-        if (gear != null) {
-            ItemEquipEvent iee = new ItemEquipEvent(Characters.getPlayerCharacter(event.getPlayer()), gear, null);
+        Gear.Instance gearInstance = Gear.Instance.fromStack(event.getNewArmorPiece());
+        if (gearInstance != null) {
+            ItemEquipEvent iee = new ItemEquipEvent(Characters.getPlayerCharacter(event.getPlayer()), gearInstance, null);
             Bukkit.getPluginManager().callEvent(iee);
             if (iee.isCancelled()) {
                 MessageUtil.sendError(event.getPlayer(), "A mysterious force prevents you from equipping that.");
@@ -332,11 +370,14 @@ public class ItemListener implements Listener {
             }
         }
 
-        gear = Gear.Instance.fromStack(event.getOldArmorPiece());
-        if (gear != null)
-            Bukkit.getPluginManager().callEvent(new ItemUnEquipEvent(Characters.getPlayerCharacter(event.getPlayer()), gear, null));
+        gearInstance = Gear.Instance.fromStack(event.getOldArmorPiece());
+        if (gearInstance != null)
+            Bukkit.getPluginManager().callEvent(new ItemUnEquipEvent(Characters.getPlayerCharacter(event.getPlayer()), gearInstance, null));
     }
 
+    /**
+     * Fires the equip triggers when an entity is created, should they be wearing or holding equipment.
+     */
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityCreated(CombatEntityCreateEvent event) {
         if (!event.getCombatEntity().isPlayer()) return;
@@ -357,6 +398,9 @@ public class ItemListener implements Listener {
         if (instance != null) instance.doFire(e);
     }
 
+    /**
+     * Fires the unequip triggers when a player character logs out.
+     */
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerLogout(PlayerCharacterLogoutEvent event) {
         CombatEntity ce = CombatEngine.getEntity(event.getPlayer());

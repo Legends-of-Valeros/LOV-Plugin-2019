@@ -18,7 +18,7 @@ import java.util.Map;
 public class PartiesAPI extends Module {
     public interface RPC {
         Promise<PlayerParty> getPartyByMember(CharacterId characterId);
-        Promise<Boolean> saveParty(PlayerParty party);
+        Promise<Object> saveParty(PlayerParty party);
     }
 
     private RPC rpc;
@@ -70,7 +70,7 @@ public class PartiesAPI extends Module {
         }
     }
 
-    public Promise<Boolean> updateParty(PlayerParty party) {
+    public Promise updateParty(PlayerParty party) {
         if (party == null)
             return new Promise<>();
         return rpc.saveParty(party);
@@ -109,7 +109,7 @@ public class PartiesAPI extends Module {
         }
 
         @EventHandler
-        public void onPlayerRemoved(PlayerCharacterRemoveEvent e) throws Throwable {
+        public void onPlayerRemoved(PlayerCharacterRemoveEvent e) {
             onLogin(e.getPlayerCharacter().getUniqueCharacterId()).get();
 
             PlayerParty p = getPartyByMember(e.getPlayerCharacter().getUniqueCharacterId());

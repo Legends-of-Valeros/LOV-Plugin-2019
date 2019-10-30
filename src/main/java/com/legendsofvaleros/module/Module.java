@@ -3,10 +3,11 @@ package com.legendsofvaleros.module;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.config.YamlConfigAccessor;
 import com.legendsofvaleros.scheduler.InternalScheduler;
-import java.io.File;
-import java.util.logging.Logger;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
+
+import java.io.File;
+import java.util.logging.Logger;
 
 public abstract class Module {
 

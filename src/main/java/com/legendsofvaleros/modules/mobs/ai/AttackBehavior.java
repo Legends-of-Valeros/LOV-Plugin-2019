@@ -4,8 +4,8 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.classes.EntityClass;
-import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.damage.physical.PhysicalType;
 import com.legendsofvaleros.modules.gear.component.core.GearUseSpeed;
 import com.legendsofvaleros.modules.gear.core.Gear;
@@ -42,9 +42,9 @@ public class AttackBehavior {
             if (time == null || time - System.currentTimeMillis() <= 0) {
                 time = System.currentTimeMillis() + 1000L;
 
-                Gear.Instance gear = Gear.Instance.fromStack(ce.getLivingEntity().getEquipment().getItemInMainHand());
-                if (gear != null) {
-                    GearUseSpeed.Persist use = gear.getPersist(GearUseSpeed.Component.class);
+                Gear.Instance gearInstance = Gear.Instance.fromStack(ce.getLivingEntity().getEquipment().getItemInMainHand());
+                if (gearInstance != null) {
+                    GearUseSpeed.Persist use = gearInstance.getPersist(GearUseSpeed.Component.class);
                     if (use != null) {
                         time = System.currentTimeMillis() + (long) (use.speed * 1000L);
                     }
@@ -59,7 +59,7 @@ public class AttackBehavior {
                 MobTrait trait = npc.getTrait(MobTrait.class);
 
                 // This might be null.
-                EntityClass ec = trait.instance.mob.getEntityClass();
+                EntityClass ec = trait.instance.entity.getEntityClass();
 
                 CombatEngine.getInstance().causePhysicalDamage(target,
                         ce.getLivingEntity(), PhysicalType.MELEE,

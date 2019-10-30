@@ -1,12 +1,16 @@
 package com.legendsofvaleros.modules.mobs;
 
+import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.api.APIController;
+import com.legendsofvaleros.api.InterfaceTypeAdapter;
 import com.legendsofvaleros.api.Promise;
+import com.legendsofvaleros.api.PromiseCache;
 import com.legendsofvaleros.module.ListenerModule;
+import com.legendsofvaleros.modules.mobs.api.IEntity;
 import com.legendsofvaleros.modules.mobs.core.Mob;
 import com.legendsofvaleros.modules.mobs.core.SpawnArea;
 import org.bukkit.Chunk;
@@ -16,28 +20,20 @@ import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class MobsAPI extends ListenerModule {
     public interface RPC {
-        Promise<List<Mob>> findMobs();
-
         Promise<List<SpawnArea>> findSpawns();
 
-        Promise<Boolean> saveSpawn(SpawnArea spawn);
+        Promise<Object> saveSpawn(SpawnArea spawn);
 
         Promise<Boolean> deleteSpawn(Integer spawn);
+
+        Promise<Mob> getMob(String id);
     }
 
     private RPC rpc;
-
-    private Map<String, Mob> entities = new HashMap<>();
-
-    public Mob getEntity(String id) {
-        return entities.get(id);
-    }
 
     private Multimap<String, SpawnArea> spawns = HashMultimap.create();
 
@@ -51,11 +47,29 @@ public class MobsAPI extends ListenerModule {
         return spawnsLoaded.values();
     }
 
+    private PromiseCache<String, Mob> mobs;
+
+    public Mob getMob(String id) {
+        return mobs.getIfPresent(id);
+    }
+
     @Override
     public void onLoad() {
         super.onLoad();
 
         this.rpc = APIController.create(RPC.class);
+
+        this.mobs = new PromiseCache<>(CacheBuilder.newBuilder()
+                .concurrencyLevel(4)
+                .weakValues()
+                .removalListener(entry -> {
+                    getLogger().warning("Mob '" + entry.getKey() + "' removed from the cache: " + entry.getCause());
+                })
+                .build(), id -> rpc.getMob(id));
+
+        InterfaceTypeAdapter.register(IEntity.class,
+                obj -> obj.getId(),
+                id -> mobs.get(id).next(v -> Promise.make(v.orElse(null))));
 
         registerEvents(new ChunkListener());
     }
@@ -64,38 +78,26 @@ public class MobsAPI extends ListenerModule {
     public void onPostLoad() {
         super.onPostLoad();
 
-        try {
-            this.loadAll().get();
-        } catch (Throwable th) {
-            th.printStackTrace();
-        }
+        this.loadAll().get();
     }
 
     public Promise loadAll() {
-        return rpc.findMobs().onSuccess(val -> {
-            entities.clear();
+        return rpc.findSpawns().onSuccess(val -> {
+            spawns.clear();
 
-            for (Mob mob : val.orElse(ImmutableList.of()))
-                entities.put(mob.getId(), mob);
+            // Return to the spigot thread to allow fetching chunk objects.
+            // We could remove all of this, basically, if we just make a way
+            // to get the chunk ID from a block location, this can be async.
+            getScheduler().executeInSpigotCircle(() -> {
+                for (SpawnArea spawn : val.orElse(ImmutableList.of())) {
+                    spawns.put(getId(spawn.getLocation().getChunk()), spawn);
 
-            getLogger().info("Loaded " + entities.size() + " mobs.");
-        }).onFailure(Throwable::printStackTrace)
-                .next(rpc::findSpawns).onSuccess(val -> {
-                    spawns.clear();
+                    addSpawn(spawn);
+                }
 
-                    // Return to the spigot thread to allow fetching chunk objects.
-                    // We could remove all of this, basically, if we just make a way
-                    // to get the chunk ID from a block location, this can be async.
-                    getScheduler().executeInSpigotCircle(() -> {
-                        for (SpawnArea spawn : val.orElse(ImmutableList.of())) {
-                            spawns.put(getId(spawn.getLocation().getChunk()), spawn);
-
-                            addSpawn(spawn);
-                        }
-
-                        getLogger().info("Loaded " + spawns.size() + " spawns.");
-                    });
-                }).onFailure(Throwable::printStackTrace);
+                getLogger().info("Loaded " + spawns.size() + " spawns.");
+            });
+        });
     }
 
     public void addSpawn(SpawnArea spawn) {
@@ -108,8 +110,8 @@ public class MobsAPI extends ListenerModule {
         if (LegendsOfValeros.getMode().allowEditing())
             getScheduler().sync(spawn::getHologram);
 
-        if (spawn.getMob() != null)
-            spawn.getMob().getSpawns().add(spawn);
+        if (spawn.getEntity() != null)
+            spawn.getEntity().getSpawns().add(spawn);
     }
 
     public void updateSpawn(SpawnArea spawn) {
@@ -137,7 +139,7 @@ public class MobsAPI extends ListenerModule {
         public void onChunkLoad(ChunkLoadEvent event) {
             String chunkId = getId(event.getChunk());
 
-            if (!spawns.containsKey(chunkId)){
+            if (!spawns.containsKey(chunkId)) {
                 return;
             }
 
@@ -148,7 +150,7 @@ public class MobsAPI extends ListenerModule {
         public void onChunkUnload(ChunkUnloadEvent event) {
             String chunkId = getId(event.getChunk());
 
-            if (!spawns.containsKey(chunkId)){
+            if (!spawns.containsKey(chunkId)) {
                 return;
             }
 

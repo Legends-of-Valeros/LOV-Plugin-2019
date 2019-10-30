@@ -20,7 +20,7 @@ import org.bukkit.event.Listener;
 public class HearthstoneAPI extends ListenerModule {
     public interface RPC {
         Promise<HomePoint> getPlayerHearthstone(CharacterId characterId);
-        Promise<Boolean> savePlayerHearthstone(HomePoint point);
+        Promise<Object> savePlayerHearthstone(HomePoint point);
         Promise<Boolean> deletePlayerHearthstone(CharacterId characterId);
     }
 
@@ -55,15 +55,15 @@ public class HearthstoneAPI extends ListenerModule {
      * @param innName The name of the inn.
      * @param loc     The location of the home.
      */
-    public Promise<Boolean> setHome(PlayerCharacter pc, String innName, Location loc) {
-        HomePoint home = new HomePoint(pc.getUniqueCharacterId(), innName, loc);
+    public Promise setHome(PlayerCharacter pc, String innName, Location loc) {
+        HomePoint home = new HomePoint(pc, innName, loc);
 
         homes.put(pc.getUniqueCharacterId(), home);
 
         return rpc.savePlayerHearthstone(home);
     }
 
-    public Promise<Boolean> removeHome(PlayerCharacter pc) {
+    public Promise removeHome(PlayerCharacter pc) {
         homes.invalidate(pc.getUniqueCharacterId());
 
         return rpc.deletePlayerHearthstone(pc.getUniqueCharacterId());

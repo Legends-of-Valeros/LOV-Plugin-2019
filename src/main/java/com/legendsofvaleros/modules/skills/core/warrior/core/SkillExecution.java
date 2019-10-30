@@ -35,8 +35,8 @@ public class SkillExecution extends Skill {
 				e.newDamageModifierBuilder("Execution")
 							.setModifierType(ValueModifierBuilder.ModifierType.MULTIPLIER)
 							.setValue(getEarliest(DAMAGE, level) / 100D)
-						.build();;
-		});
+						.build();
+        });
 		return true;
 	}
 }

@@ -1,5 +1,6 @@
 package com.legendsofvaleros.modules.skills.event;
 
+import com.legendsofvaleros.modules.classes.skills.Skill;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
@@ -29,17 +30,17 @@ public class BindSkillEvent extends PlayerEvent {
         return slot;
     }
 
-    private final String skillId;
+    private final Skill skill;
 
-    public String getSkillId() {
-        return skillId;
+    public Skill getSkill() {
+        return skill;
     }
 
-    public BindSkillEvent(Player who, int hotbar, int slot, String skillId) {
+    public BindSkillEvent(Player who, int hotbar, int slot, Skill skill) {
         super(who);
 
         this.hotbar = hotbar;
         this.slot = slot;
-        this.skillId = skillId;
+        this.skill = skill;
     }
 }

@@ -3,6 +3,10 @@ package com.legendsofvaleros.modules.skills;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Table;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.JsonWriter;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.ListenerModule;
@@ -12,16 +16,20 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
+import com.legendsofvaleros.modules.classes.skills.Skill;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.io.IOException;
 import java.util.Map;
 
 public class SkillsAPI extends ListenerModule {
     public interface RPC {
-        Promise<Map<Integer, String>> getSkillBar(CharacterId characterId);
-        Promise<Boolean> saveSkillBar(CharacterId characterId, Map<Integer, String> map);
-        Promise<Boolean> deleteSkillBar(CharacterId characterId);
+        Promise<Map<Integer, String>> getPlayerSkillBar(CharacterId characterId);
+
+        Promise<Object> savePlayerSkillBar(CharacterId characterId, Map<Integer, String> map);
+
+        Promise<Boolean> deletePlayerSkillBar(CharacterId characterId);
     }
 
     private RPC rpc;
@@ -37,22 +45,42 @@ public class SkillsAPI extends ListenerModule {
 
         this.rpc = APIController.create(RPC.class);
 
+        APIController.getInstance().getGsonBuilder()
+                .registerTypeAdapter(Skill.class, new TypeAdapter<Skill>() {
+                    @Override
+                    public void write(JsonWriter write, Skill skill) throws IOException {
+                        write.value(skill != null ? skill.getId() : null);
+                    }
+
+                    @Override
+                    public Skill read(JsonReader read) throws IOException {
+                        // If we reference the interface, then the type should be a string, and we return the stored object.
+                        // Note: it must be loaded already, else this returns null.
+                        if(read.peek() == JsonToken.NULL) {
+                            read.nextNull();
+                            return null;
+                        }
+
+                        return Skill.getSkillById(read.nextString());
+                    }
+                });
+
         registerEvents(new PlayerListener());
     }
 
     private Promise<Map<Integer, String>> onLogin(PlayerCharacter pc) {
-        return rpc.getSkillBar(pc.getUniqueCharacterId()).onSuccess(map ->
+        return rpc.getPlayerSkillBar(pc.getUniqueCharacterId()).onSuccess(map ->
                 skills.row(pc.getUniqueCharacterId()).putAll(map.orElse(ImmutableMap.of())));
     }
 
-    private Promise<Boolean> onLogout(PlayerCharacter pc) {
-        return rpc.saveSkillBar(pc.getUniqueCharacterId(), skills.row(pc.getUniqueCharacterId())).onSuccess(map -> {
+    private Promise onLogout(PlayerCharacter pc) {
+        return rpc.savePlayerSkillBar(pc.getUniqueCharacterId(), skills.row(pc.getUniqueCharacterId())).onSuccess(map -> {
             skills.row(pc.getUniqueCharacterId()).clear();
         });
     }
 
-    private Promise<Boolean> onDelete(PlayerCharacter pc) {
-        return rpc.deleteSkillBar(pc.getUniqueCharacterId()).on(() -> {
+    private Promise onDelete(PlayerCharacter pc) {
+        return rpc.deletePlayerSkillBar(pc.getUniqueCharacterId()).on(() -> {
             skills.row(pc.getUniqueCharacterId()).clear();
         });
     }

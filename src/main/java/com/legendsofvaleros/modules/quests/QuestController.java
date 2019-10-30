@@ -1,74 +1,65 @@
 package com.legendsofvaleros.modules.quests;
 
 import com.legendsofvaleros.LegendsOfValeros;
-import com.legendsofvaleros.api.Promise;
+import com.legendsofvaleros.features.playermenu.InventoryManager;
+import com.legendsofvaleros.features.playermenu.PlayerMenu;
 import com.legendsofvaleros.module.annotation.DependsOn;
-import com.legendsofvaleros.module.annotation.IntegratesWith;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
-import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterCreateEvent;
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
-import com.legendsofvaleros.modules.factions.FactionController;
-import com.legendsofvaleros.modules.gear.GearController;
-import com.legendsofvaleros.modules.mobs.MobsController;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import com.legendsofvaleros.modules.npcs.trait.quests.TraitQuestGiver;
-import com.legendsofvaleros.features.playermenu.InventoryManager;
-import com.legendsofvaleros.features.playermenu.PlayerMenu;
-import com.legendsofvaleros.modules.quests.action.QuestActionFactory;
-import com.legendsofvaleros.modules.quests.action.core.*;
 import com.legendsofvaleros.modules.quests.api.IQuest;
-import com.legendsofvaleros.modules.quests.core.BasicQuest;
-import com.legendsofvaleros.modules.quests.core.QuestFactory;
-import com.legendsofvaleros.modules.quests.core.QuestStatus;
-import com.legendsofvaleros.modules.quests.event.QuestCompletedEvent;
-import com.legendsofvaleros.modules.quests.event.QuestObjectivesStartedEvent;
-import com.legendsofvaleros.modules.quests.event.QuestStartedEvent;
-import com.legendsofvaleros.modules.quests.integration.*;
-import com.legendsofvaleros.modules.quests.objective.QuestObjectiveFactory;
-import com.legendsofvaleros.modules.quests.objective.core.DummyObjective;
-import com.legendsofvaleros.modules.quests.objective.core.InteractBlockObjective;
-import com.legendsofvaleros.modules.quests.objective.core.ReturnObjective;
-import com.legendsofvaleros.modules.quests.objective.core.TalkObjective;
-import com.legendsofvaleros.modules.quests.prerequisite.PrerequisiteFactory;
-import com.legendsofvaleros.modules.quests.prerequisite.core.*;
-import com.legendsofvaleros.modules.regions.RegionController;
-import com.legendsofvaleros.modules.skills.SkillsController;
-import com.legendsofvaleros.modules.zones.ZonesController;
+import com.legendsofvaleros.modules.quests.api.IQuestInstance;
+import com.legendsofvaleros.modules.quests.api.QuestState;
+import com.legendsofvaleros.modules.quests.api.QuestStatus;
+import com.legendsofvaleros.modules.quests.core.prerequisites.ClassPrerequisite;
+import com.legendsofvaleros.modules.quests.core.prerequisites.LevelPrerequisite;
+import com.legendsofvaleros.modules.quests.core.prerequisites.QuestsPrerequisite;
+import com.legendsofvaleros.modules.quests.core.prerequisites.RacePrerequisite;
+import com.legendsofvaleros.modules.quests.events.QuestEndedEvent;
+import com.legendsofvaleros.modules.quests.events.QuestLogEntryAddedEvent;
+import com.legendsofvaleros.modules.quests.events.QuestStartedEvent;
+import com.legendsofvaleros.modules.quests.nodes.character.*;
+import com.legendsofvaleros.modules.quests.nodes.entity.*;
+import com.legendsofvaleros.modules.quests.nodes.gear.*;
+import com.legendsofvaleros.modules.quests.nodes.npc.*;
+import com.legendsofvaleros.modules.quests.nodes.quest.*;
+import com.legendsofvaleros.modules.quests.nodes.utility.*;
+import com.legendsofvaleros.modules.quests.nodes.world.*;
 import com.legendsofvaleros.util.MessageUtil;
 import com.legendsofvaleros.util.title.Title;
 import com.legendsofvaleros.util.title.TitleUtil;
 import io.chazza.advancementapi.AdvancementAPI;
 import io.chazza.advancementapi.FrameType;
 import io.chazza.advancementapi.Trigger;
-import net.citizensnpcs.api.event.NPCRightClickEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
 
 @DependsOn(NPCsController.class)
 @DependsOn(CombatEngine.class)
 @DependsOn(PlayerMenu.class)
 @DependsOn(Characters.class)
-@IntegratesWith(module = BankController.class, integration = BankIntegration.class)
+/*@IntegratesWith(module = BankController.class, integration = BankIntegration.class)
 @IntegratesWith(module = FactionController.class, integration = FactionIntegration.class)
 @IntegratesWith(module = GearController.class, integration = GearIntegration.class)
 @IntegratesWith(module = MobsController.class, integration = MobsIntegration.class)
 @IntegratesWith(module = RegionController.class, integration = RegionIntegration.class)
 @IntegratesWith(module = SkillsController.class, integration = SkillsIntegration.class)
-@IntegratesWith(module = ZonesController.class, integration = ZonesIntegration.class)
-// TODO: Create subclass for listeners?
+@IntegratesWith(module = ZonesController.class, integration = ZonesIntegration.class)*/
 @ModuleInfo(name = "Quests", info = "")
 public class QuestController extends QuestAPI {
     public static AdvancementAPI NEW_OBJECTIVES;
 
     private static QuestController instance;
-    public static QuestController getInstance() { return instance; }
+
+    public static QuestController getInstance() {
+        return instance;
+    }
 
     private String introQuestId;
 
@@ -80,51 +71,127 @@ public class QuestController extends QuestAPI {
 
         introQuestId = getConfig().getString("intro-quest", "intro");
 
-        ActiveTracker.onEnable();
+        //ActiveTracker.onEnable();
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new QuestCommands());
 
         registerEvents(new TraitQuestGiver.Marker());
 
-        getLogger().info("is registering quests");
-        {
-            QuestFactory.registerType("basic", BasicQuest.class);
-        }
+        // Register some basic event handlers.
+        // getLogger().info("is registering event handlers");
 
         getLogger().info("is registering prerequisites");
-        PrerequisiteFactory.registerType("class", ClassPrerequisite.class);
-        PrerequisiteFactory.registerType("race", RacePrerequisite.class);
-        PrerequisiteFactory.registerType("level", LevelPrerequisite.class);
-        PrerequisiteFactory.registerType("quests", QuestsPrerequisite.class);
-        PrerequisiteFactory.registerType("time", TimePrerequisite.class);
+        getPrerequisiteRegistry().addType("class", ClassPrerequisite.class);
+        getPrerequisiteRegistry().addType("race", RacePrerequisite.class);
+        getPrerequisiteRegistry().addType("level", LevelPrerequisite.class);
+        getPrerequisiteRegistry().addType("quests", QuestsPrerequisite.class);
+        // PrerequisiteRegistry.addType("time", TimePrerequisite.class);
 
-        getLogger().info("is registering objectives");
-        QuestObjectiveFactory.registerType("dummy", DummyObjective.class);
-        QuestObjectiveFactory.registerType("talk", TalkObjective.class);
-        QuestObjectiveFactory.registerType("return", ReturnObjective.class);
-        QuestObjectiveFactory.registerType("interact_block", InteractBlockObjective.class);
+        getLogger().info("is registering nodes");
+        {
+            getLogger().info(" - Quest nodes");
+            {
+                getNodeRegistry().addType("quest:event_started", QuestStartedNode.class);
 
-        getLogger().info("is registering actions");
-        QuestActionFactory.registerType("conversation", ActionConversation.class);
-        QuestActionFactory.registerType("goto", ActionGoTo.class);
+                getNodeRegistry().addType("quest:trigger_success", QuestSuccessNode.class);
+                getNodeRegistry().addType("quest:trigger_fail", QuestFailNode.class);
+                getNodeRegistry().addType("quest:trigger_reset", QuestResetNode.class);
 
-        QuestActionFactory.registerType("command_run", ActionRunCommand.class);
-        QuestActionFactory.registerType("speech", ActionSpeech.class);
-        QuestActionFactory.registerType("wait", ActionWait.class);
+                getNodeRegistry().addType("quest:log", QuestLogNode.class);
 
-        QuestActionFactory.registerType("quest_new", ActionNewQuest.class);
+                getNodeRegistry().addType("quest:offer", QuestOfferNode.class);
+                getNodeRegistry().addType("quest:listener", QuestEventsNode.class);
+            }
 
-        QuestActionFactory.registerType("notify", ActionNotification.class);
-        QuestActionFactory.registerType("title", ActionTitle.class);
+            getLogger().info(" - Gear nodes");
+            {
+                getNodeRegistry().addType("gear:reference", ReferenceGearNode.class);
 
-        QuestActionFactory.registerType("text", ActionText.class);
+                getNodeRegistry().addType("gear:has", HasItemNode.class);
+                getNodeRegistry().addType("gear:give", AddItemNode.class);
+                getNodeRegistry().addType("gear:remove", RemoveItemNode.class);
 
-        QuestActionFactory.registerType("particle", ActionParticle.class);
-        QuestActionFactory.registerType("sound", ActionSound.class);
-        QuestActionFactory.registerType("xp", ActionExperience.class);
-        QuestActionFactory.registerType("teleport", ActionTeleport.class);
-        QuestActionFactory.registerType("show_credits", ActionShowCredits.class);
+                getNodeRegistry().addType("gear:select", SelectItemNode.class);
+                getNodeRegistry().addType("gear:random", RandomItemNode.class);
 
+                getNodeRegistry().addType("gear:fetch", FetchItemNode.class);
+                getNodeRegistry().addType("gear:fetch_for", FetchItemForNode.class);
+                getNodeRegistry().addType("gear:equip", EquipItemNode.class);
+                getNodeRegistry().addType("gear:repair", RepairItemNode.class);
+            }
+
+            getLogger().info(" - World nodes");
+            {
+                getNodeRegistry().addType("world:flag_get", GetWorldFlagNode.class);
+                getNodeRegistry().addType("world:flag_set", SetWorldFlagNode.class);
+                getNodeRegistry().addType("world:flag_check", CheckWorldFlagNode.class);
+
+                getNodeRegistry().addType("world:region_access", AccessRegionNode.class);
+                getNodeRegistry().addType("world:region_deny", DeclineRegionNode.class);
+                getNodeRegistry().addType("world:region_enter", EnterRegionNode.class);
+                getNodeRegistry().addType("world:region_exit", ExitRegionNode.class);
+
+                getNodeRegistry().addType("world:particle", ParticleNode.class);
+                getNodeRegistry().addType("world:sound", SoundNode.class);
+
+                getNodeRegistry().addType("world:interact_block", InteractBlockNode.class);
+                getNodeRegistry().addType("world:interact_block_with", InteractBlockWithItemNode.class);
+
+                getNodeRegistry().addType("world:zone_enter", EnterZoneNode.class);
+                getNodeRegistry().addType("world:zone_exit", ExitZoneNode.class);
+            }
+
+            getLogger().info(" - Entity nodes");
+            {
+                getNodeRegistry().addType("entity:reference", ReferenceEntityNode.class);
+
+                getNodeRegistry().addType("entity:conquer_region", ConquerRegionNode.class);
+                getNodeRegistry().addType("entity:conquer_zone", ConquerZoneNode.class);
+                getNodeRegistry().addType("entity:damage", DamageNode.class);
+                getNodeRegistry().addType("entity:kill", KillNode.class);
+            }
+
+            getLogger().info(" - NPC nodes");
+            {
+                getNodeRegistry().addType("npc:reference", ReferenceNPCNode.class);
+
+                getNodeRegistry().addType("npc:follow", FollowNode.class);
+                getNodeRegistry().addType("npc:speak", SpeakNode.class);
+
+                getNodeRegistry().addType("npc:talk", TalkNode.class);
+
+                getNodeRegistry().addType("npc:dialog", DialogNode.class);
+                getNodeRegistry().addType("npc:dialog_option", DialogOptionNode.class);
+            }
+
+            getLogger().info(" - Character nodes");
+            {
+                getNodeRegistry().addType("character:listen", CharacterEventsNode.class);
+
+                getNodeRegistry().addType("character:status_effect", StatusEffectNode.class);
+                getNodeRegistry().addType("character:xp", ExperienceNode.class);
+                getNodeRegistry().addType("character:teleport", TeleportNode.class);
+                getNodeRegistry().addType("character:credits", ShowCreditsNode.class);
+
+                getNodeRegistry().addType("character:skill_bind", BindSkillNode.class);
+                getNodeRegistry().addType("character:skill_use", UseSkillNode.class);
+
+                getNodeRegistry().addType("character:currency_modify", GiveCurrencyNode.class);
+                getNodeRegistry().addType("character:reputation_modify", FactionRepNode.class);
+            }
+
+            getLogger().info(" - Utility nodes");
+            {
+                getNodeRegistry().addType("utility:timer", TimerNode.class);
+                getNodeRegistry().addType("utility:wait", WaitTicksNode.class);
+                getNodeRegistry().addType("utility:command", RunCommandNode.class);
+                getNodeRegistry().addType("utility:notify", NotificationNode.class);
+                getNodeRegistry().addType("utility:title", TitleNode.class);
+                getNodeRegistry().addType("utility:message", MessageNode.class);
+            }
+        }
+
+        // Fill in the top two slots of the crafting area
         InventoryManager.addFixedItem(42, new InventoryManager.InventoryItem(null,
                 (p, event) -> p.performCommand("quests gui")));
         InventoryManager.addFixedItem(43, new InventoryManager.InventoryItem(null,
@@ -132,39 +199,96 @@ public class QuestController extends QuestAPI {
 
         getLogger().info("is registering advancements.");
         NEW_OBJECTIVES = AdvancementAPI.builder(new NamespacedKey(LegendsOfValeros.getInstance(), "quests/new_objectives"))
-                    .title("New Objectives")
-                    .description("See quest book for details.")
-                    .icon("minecraft:paper")
-                    .trigger(Trigger.builder(Trigger.TriggerType.IMPOSSIBLE, "impossible"))
-                    .hidden(true)
-                    .toast(true)
-                    .background("minecraft:textures/gui/advancements/backgrounds/stone.png")
-                    .frame(FrameType.TASK)
+                .title("New Objectives")
+                .description("See quest book for details.")
+                .icon("minecraft:paper")
+                .trigger(Trigger.builder(Trigger.TriggerType.IMPOSSIBLE, "impossible"))
+                .hidden(true)
+                .toast(true)
+                .background("minecraft:textures/gui/advancements/backgrounds/stone.png")
+                .frame(FrameType.TASK)
                 .build();
         NEW_OBJECTIVES.add();
     }
 
-    public Promise<Boolean> attemptGiveQuest(PlayerCharacter pc, String questId) {
-        return getQuest(questId).then(val -> {
-            if (val.isPresent()) {
-                IQuest quest = val.get();
+    public boolean offerQuest(IQuest quest, PlayerCharacter pc) {
+        QuestStatus status = quest.getStatus(pc);
 
-                QuestStatus status = getStatus(pc, quest);
+        // A quest that cannot be accepted cannot be offered.
+        return status.canAccept();
 
-                if (status.canAccept()) {
-                    quest.onStart(pc);
+        // TODO: show quest dialog
+    }
 
-                    MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' can be accepted!");
+    public Boolean startQuest(IQuest quest, PlayerCharacter pc) {
+        QuestStatus status = quest.getStatus(pc);
 
-                    return true;
-                }else
-                    MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' cannot be accepted! Status: " + status.name());
-            }else{
-                MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + questId + "' doesn't exist!");
-            }
+        if (status.canAccept()) {
+            IQuestInstance instance = quest.getInstance(pc);
 
-            return false;
-        });
+            // Track the instance
+            quest.setInstance(pc.getUniqueCharacterId(), instance);
+            addPlayerQuest(pc, instance);
+
+            // Activate the instance. This works for inactive and repeatable quests.
+            instance.setState(QuestState.ACTIVE);
+
+            Bukkit.getPluginManager().callEvent(new QuestStartedEvent(instance));
+
+            MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + quest.getId() + "' accepted!");
+
+            return true;
+        } else
+            MessageUtil.sendDebugVerbose(pc.getPlayer(), "Quest '" + quest.getId() + "' cannot be accepted! Status: " + status.name());
+
+        return false;
+    }
+
+    public void completeQuest(IQuest quest, PlayerCharacter pc) {
+        if(!Bukkit.isPrimaryThread()) {
+            getScheduler().sync(() -> completeQuest(quest, pc));
+            return;
+        }
+
+        IQuestInstance instance = quest.getInstance(pc);
+
+        instance.setState(QuestState.SUCCESS);
+
+        Bukkit.getPluginManager().callEvent(new QuestEndedEvent(instance));
+    }
+
+    public void failQuest(IQuest quest, PlayerCharacter pc) {
+        if(!Bukkit.isPrimaryThread()) {
+            getScheduler().sync(() -> failQuest(quest, pc));
+            return;
+        }
+
+        IQuestInstance instance = quest.getInstance(pc);
+
+        instance.setState(QuestState.FAILED);
+
+        Bukkit.getPluginManager().callEvent(new QuestEndedEvent(instance));
+    }
+
+    public void resetQuest(IQuest quest, PlayerCharacter pc) {
+        abandonQuest(quest, pc);
+
+        this.removeQuestProgress(quest, pc);
+    }
+
+    public void abandonQuest(IQuest quest, PlayerCharacter pc) {
+        if(!Bukkit.isPrimaryThread()) {
+            getScheduler().sync(() -> abandonQuest(quest, pc));
+            return;
+        }
+
+        IQuestInstance instance = quest.getInstance(pc);
+
+        instance.setState(QuestState.ABANDONED);
+
+        // If it was active, fore the end quest event.
+        if(instance.getState().isActive())
+            Bukkit.getPluginManager().callEvent(new QuestEndedEvent(instance));
     }
 
     @EventHandler
@@ -176,46 +300,33 @@ public class QuestController extends QuestAPI {
     }
 
     @EventHandler
-    public void onQuestComplete(QuestCompletedEvent event) {
+    public void onQuestEntryAdded(QuestLogEntryAddedEvent event) {
+        MessageUtil.sendUpdate(event.getPlayer(), "Quest log updated: " + event.getEntry().getText(event.getInstance()));
+    }
+
+    @EventHandler
+    public void onQuestComplete(QuestEndedEvent event) {
         event.getPlayer().playSound(event.getPlayer().getLocation(), "misc.questcomplete", 1F, 1F);
     }
 
-    @EventHandler
+    // TODO: add quest failure listener
+
+    /*@EventHandler
     public void onNewObjectives(QuestObjectivesStartedEvent event) {
-        if(NEW_OBJECTIVES != null)
-        	NEW_OBJECTIVES.show(event.getPlayer());
-    }
+        // TODO: Update to new stage event listener or objective updated listener?
+        if (NEW_OBJECTIVES != null)
+            NEW_OBJECTIVES.show(event.getPlayer());
+    }*/
 
     @EventHandler
     public void onCharacterCreated(PlayerCharacterCreateEvent event) {
-        attemptGiveQuest(event.getPlayerCharacter(), introQuestId);
-    }
-
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onNPCRightClick(NPCRightClickEvent event) {
-        if(event.isCancelled()) return;
-
-        if (!Characters.isPlayerCharacterLoaded(event.getClicker())) return;
-
-        callEvent(event, Characters.getPlayerCharacter(event.getClicker()));
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onInteractBock(PlayerInteractEvent event) {
-        if(event.isCancelled()) return;
-
-        if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
-
-        callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerItemHeldEvent(PlayerItemHeldEvent event) {
-        if(event.isCancelled()) return;
-
-        if (!Characters.isPlayerCharacterLoaded(event.getPlayer())) return;
-
-        callEvent(event, Characters.getPlayerCharacter(event.getPlayer()));
+        // Give the intro quest to all new characters created
+        getQuestBySlug(introQuestId).onSuccess(val -> {
+            if(val.isPresent()) {
+                startQuest(val.get(), event.getPlayerCharacter());
+            }else{
+                MessageUtil.sendException(this, event.getPlayer(), new NullPointerException("Intro quest '" + introQuestId + "' not found!"));
+            }
+        });
     }
 }

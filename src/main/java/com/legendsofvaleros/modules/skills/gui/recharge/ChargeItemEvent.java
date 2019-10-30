@@ -17,14 +17,14 @@ public class ChargeItemEvent extends PlayerEvent {
         return handlers;
     }
 
-    private final Gear.Instance gear;
+    private final Gear.Instance gearInstance;
 
     public Gear.Instance getItem() {
-        return gear;
+        return gearInstance;
     }
 
-    public ChargeItemEvent(Player who, Gear.Instance gear) {
+    public ChargeItemEvent(Player who, Gear.Instance gearInstance) {
         super(who);
-        this.gear = gear;
+        this.gearInstance = gearInstance;
     }
 }

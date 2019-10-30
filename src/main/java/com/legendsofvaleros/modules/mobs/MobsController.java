@@ -1,12 +1,17 @@
 package com.legendsofvaleros.modules.mobs;
 
 import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.classes.stats.AbilityStat;
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
+import com.legendsofvaleros.modules.combatengine.stat.RegeneratingStat;
+import com.legendsofvaleros.modules.combatengine.stat.Stat;
 import com.legendsofvaleros.modules.gear.GearController;
 import com.legendsofvaleros.modules.levelarchetypes.core.LevelArchetypes;
 import com.legendsofvaleros.modules.loot.LootController;
@@ -28,6 +33,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
+
+import java.util.Map;
 
 @DependsOn(CombatEngine.class)
 @DependsOn(Characters.class)
@@ -54,37 +61,60 @@ public class MobsController extends MobsAPI {
     public void onLoad() {
         super.onLoad();
 
-        this.instance = this;
+        instance = this;
 
-        APIController.getInstance().getGsonBuilder().registerTypeAdapter(Mob.StatsMap.class, (JsonDeserializer<Mob.StatsMap>) (json, typeOfT, context) ->
-                new Mob.StatsMap(context.deserialize(json.getAsJsonArray(), Mob.StatsMap.StatData[].class)))
-                .registerTypeAdapter(Equipment.EquipmentSlot.class, (JsonDeserializer<Equipment.EquipmentSlot>) (json, typeOfT, context) -> {
-                    String name = json.getAsString().toUpperCase();
+        APIController.getInstance().getGsonBuilder().registerTypeAdapter(Mob.StatsMap.class, (JsonDeserializer<Mob.StatsMap>) (json, typeOfT, context) -> {
+            Mob.StatsMap map = new Mob.StatsMap();
 
-                    if (name.equals("OFFHAND"))
-                        name = "OFF_HAND";
+            JsonObject obj = json.getAsJsonObject();
 
-                    try {
-                        return Equipment.EquipmentSlot.valueOf(name);
-                    } catch (Exception e) {
-                        try {
-                            switch (EquipmentSlot.valueOf(name)) {
-                                case HEAD:
-                                    return Equipment.EquipmentSlot.HELMET;
-                                case CHEST:
-                                    return Equipment.EquipmentSlot.CHESTPLATE;
-                                case LEGS:
-                                    return Equipment.EquipmentSlot.LEGGINGS;
-                                case FEET:
-                                    return Equipment.EquipmentSlot.BOOTS;
-                                default:
-                                    return null;
-                            }
-                        } catch (Exception e1) {
-                            throw new RuntimeException("Unknown equipment slot. Offender: " + name);
-                        }
+            if(obj.has("ability")) {
+                for(Map.Entry<String, JsonElement> entry : obj.getAsJsonObject("ability").entrySet()) {
+                    map.put(AbilityStat.valueOf(entry.getKey()), entry.getValue().getAsInt());
+                }
+            }
+
+            if(obj.has("regenerating")) {
+                for(Map.Entry<String, JsonElement> entry : obj.getAsJsonObject("regenerating").entrySet()) {
+                    map.put(RegeneratingStat.valueOf(entry.getKey()), entry.getValue().getAsInt());
+                }
+            }
+
+            if(obj.has("stats")) {
+                for(Map.Entry<String, JsonElement> entry : obj.getAsJsonObject("stats").entrySet()) {
+                    map.put(Stat.valueOf(entry.getKey()), entry.getValue().getAsInt());
+                }
+            }
+
+            return map;
+        })
+        .registerTypeAdapter(Equipment.EquipmentSlot.class, (JsonDeserializer<Equipment.EquipmentSlot>) (json, typeOfT, context) -> {
+            String name = json.getAsString().toUpperCase();
+
+            if (name.equals("OFFHAND"))
+                name = "OFF_HAND";
+
+            try {
+                return Equipment.EquipmentSlot.valueOf(name);
+            } catch (Exception e) {
+                try {
+                    switch (EquipmentSlot.valueOf(name)) {
+                        case HEAD:
+                            return Equipment.EquipmentSlot.HELMET;
+                        case CHEST:
+                            return Equipment.EquipmentSlot.CHESTPLATE;
+                        case LEGS:
+                            return Equipment.EquipmentSlot.LEGGINGS;
+                        case FEET:
+                            return Equipment.EquipmentSlot.BOOTS;
+                        default:
+                            return null;
                     }
-                });
+                } catch (Exception e1) {
+                    throw new RuntimeException("Unknown equipment slot. Offender: " + name);
+                }
+            }
+        });
 
         getLogger().info("AI will update all entities over the course of " + LegendsOfValeros.getInstance().getConfig().getInt("ai-update-smear", 20) + " ticks.");
         ai = new BehaviorEngine(getConfig().getInt("ai-update-smear", 10));

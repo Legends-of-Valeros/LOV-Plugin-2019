@@ -9,7 +9,7 @@ import com.legendsofvaleros.modules.classes.skills.Skill;
 import com.legendsofvaleros.modules.skills.SkillsController;
 import com.legendsofvaleros.modules.skills.core.SkillTree;
 import com.legendsofvaleros.modules.skills.core.SkillTree.SpecializedTree;
-import com.legendsofvaleros.util.model.Model;
+import com.legendsofvaleros.util.model.Models;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -21,7 +21,7 @@ import java.util.Map.Entry;
 
 public class GUISkillsSpecialized extends GUI {
 	private ItemStack stack;
-	@Override public void onOpen(Player p, InventoryView view) { p.getInventory().setItem(17, Model.merge("menu-ui-chest-5", (stack = p.getInventory().getItem(17)))); }
+	@Override public void onOpen(Player p, InventoryView view) { p.getInventory().setItem(17, Models.merge("menu-ui-chest-5", (stack = p.getInventory().getItem(17)))); }
 	@Override public void onClose(Player p, InventoryView view) { p.getInventory().setItem(17, stack); }
 	
 	private static final int[] SLOTS = new int[] { 1, 1, 1, 2, 1, 3,
@@ -41,7 +41,7 @@ public class GUISkillsSpecialized extends GUI {
 
 		type(5);
 		
-		slot(startLeft ? 0 : 8, 0, Model.stack(startLeft ? "menu-arrow-left-button" : "menu-arrow-right-button")
+		slot(startLeft ? 0 : 8, 0, Models.stack(startLeft ? "menu-arrow-left-button" : "menu-arrow-right-button")
 				.setName("Core Skills")
 				.setEnchanted(true)
 				.create(), (gui, p, clickType) -> new GUISkillsCore(pc).open(p, GuiFlag.REPLACE));
@@ -54,7 +54,7 @@ public class GUISkillsSpecialized extends GUI {
 				.create(), null);
 		
 		for(int i = 0; i < SLOTS.length; i += 2)
-			slot(SLOTS[i], SLOTS[i + 1], Model.stack("menu-skill-connector").create(), null);
+			slot(SLOTS[i], SLOTS[i + 1], Models.stack("menu-skill-connector").create(), null);
 		
 		boolean previousOwned = (pc.getExperience().getLevel() >= 10);
 		for(int i = 0; i < tree.skills.length; i++) {

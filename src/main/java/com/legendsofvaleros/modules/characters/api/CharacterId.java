@@ -109,11 +109,8 @@ public final class CharacterId implements Serializable {
             return false;
         CharacterId other = (CharacterId) obj;
         if (result == null) {
-            if (other.result != null)
-                return false;
-        } else if (!result.equals(other.result))
-            return false;
-        return true;
+            return other.result == null;
+        } else return result.equals(other.result);
     }
 
 }

@@ -32,7 +32,7 @@ public class Modules {
     /**
      * Attempt to load all modules that are marked as "enabled."
      */
-    public static void loadModules() {
+    public static void loadModules() throws Exception {
         long enabled = modules.values().stream().filter(InternalModule::isEnabled).count();
 
         getLogger().log(Level.INFO, "Attempting to load {0} enabled modules...", enabled);
@@ -68,7 +68,7 @@ public class Modules {
                     loadOrder.add(module);
                 } catch (Exception e) {
                     getLogger().severe("Failed to load module. Aborting! Offender: " + module.getName());
-                    e.printStackTrace();
+                    throw e;
                 }
 
                 getLogger().info("");
@@ -113,6 +113,8 @@ public class Modules {
 
         getLogger().info("Loaded " + i + " integrations");
 
+        i = 0;
+
         for (InternalModule module : loadOrder) {
             if (module.isLoaded) {
                 module.instance.onPostLoad();
@@ -156,10 +158,7 @@ public class Modules {
         if (optional && !modules.get(dependency).isEnabled) return true;
 
         // If the dependency is enabled, but not yet loaded, then dependencies aren't met
-        if (!modules.get(dependency).isLoaded)
-            return false;
-
-        return true;
+        return modules.get(dependency).isLoaded;
     }
 
     public static boolean isLoaded(Class<? extends Module> clazz) {
@@ -230,7 +229,7 @@ public class Modules {
 
             for (IntegratesWith integrate : clazz.getAnnotationsByType(IntegratesWith.class)) {
                 if (integrate.integration() == Integration.class) {
-                    getLogger().severe("Class-level @IntegratesWith must reference an integration class!");
+                    getLogger().severe("Class-level (" + clazz.getSimpleName() + ") @IntegratesWith must reference an integration class!");
                     continue;
                 }
 
@@ -242,7 +241,7 @@ public class Modules {
                 if (integrate == null) continue;
 
                 if (integrate.integration() != Integration.class) {
-                    getLogger().severe("Method-level @IntegratesWith must not reference an integration class!");
+                    getLogger().severe("Method-level (" + clazz.getSimpleName() + "#" + method.getName() + ") @IntegratesWith must not reference an integration class!");
                     continue;
                 }
 
@@ -309,7 +308,8 @@ public class Modules {
                     : integrationClasses.entrySet()) {
 
                 // If the integration is satisfied, load the class
-                if (modules.get(integratesWith.getKey()).isLoaded()) {
+                if (modules.containsKey(integratesWith.getKey())
+                        && modules.get(integratesWith.getKey()).isLoaded()) {
                     Class<? extends Integration> integrate = integratesWith.getValue();
 
                     // Verify that the integration class is inside of the module's package.

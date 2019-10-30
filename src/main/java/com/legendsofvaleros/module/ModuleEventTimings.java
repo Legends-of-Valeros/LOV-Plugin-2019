@@ -4,13 +4,10 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.legendsofvaleros.scheduler.InternalTask;
 import com.legendsofvaleros.util.Utilities;
-import java.util.Collection;
-import java.util.ConcurrentModificationException;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import org.bukkit.event.Event;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ModuleEventTimings {
 

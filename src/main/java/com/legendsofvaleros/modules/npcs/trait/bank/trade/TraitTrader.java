@@ -8,10 +8,11 @@ import com.legendsofvaleros.modules.bank.core.Money;
 import com.legendsofvaleros.modules.bank.gui.ItemMorphGUI;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
+import com.legendsofvaleros.modules.gear.api.IGear;
 import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.gear.core.ItemUtil;
 import com.legendsofvaleros.modules.npcs.trait.LOVTrait;
-import com.legendsofvaleros.util.model.Model;
+import com.legendsofvaleros.util.model.Models;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -22,27 +23,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TraitTrader extends LOVTrait {
-    private static final ItemStack SELL_BUTTON = Model.stack("menu-price-button").setName("Sell Items").create();
+    private static final ItemStack SELL_BUTTON = Models.stack("menu-price-button").setName("Sell Items").create();
+
+    private class Entry {
+        IGear item;
+        int cost;
+    }
 
     private static class BuyGUI extends GUI {
-        BuyGUI(Player p, Gear[] gears, int[] costs) {
+        BuyGUI(Player p, Entry[] items) {
             super("Trader");
 
-            int rows = (int) Math.ceil((gears.length + 1) / 9D);
+            int rows = (int) Math.ceil((items.length + 1) / 9D);
             type(rows);
 
             slot(8, rows - 1, SELL_BUTTON, (gui, _p, event) -> new SellGUI().open(_p));
 
-            for (int i = 0; i < gears.length; i++) {
-                if (gears[i] == null) continue;
+            for (int i = 0; i < items.length; i++) {
+                if (items[i] == null) continue;
 
-                Gear.Instance instance = gears[i].newInstance();
+                Gear.Instance instance = items[i].item.newInstance();
                 ItemStack item = instance.toStack();
 
                 ItemMeta meta = item.getItemMeta();
                 List<String> lore = (meta.getLore() == null ? new ArrayList<>() : meta.getLore());
                 lore.add("");
-                lore.add(Money.Format.format(costs[i]));
+                lore.add(Money.Format.format(items[i].cost));
                 lore.add(ChatColor.DARK_GRAY + "[" + ChatColor.GRAY + "Left Click " + ChatColor.DARK_GRAY + "to buy]");
                 meta.setLore(lore);
 
@@ -50,7 +56,7 @@ public class TraitTrader extends LOVTrait {
 
                 final int slotItem = i;
                 slot(i, item, (gui, p1, event) -> {
-                    if (Money.sub(Characters.getPlayerCharacter(p), costs[slotItem])) {
+                    if (Money.sub(Characters.getPlayerCharacter(p), items[slotItem].cost)) {
                         p.playSound(p.getLocation(), "ui.transaction", 1F, 1F);
                         ItemUtil.giveItem(Characters.getPlayerCharacter(p), instance);
                     }
@@ -71,7 +77,7 @@ public class TraitTrader extends LOVTrait {
 
         @Override
         public boolean isValid(Gear.Instance item) {
-            return item.getType().isTradable();
+            return item.gear.getType().isTradable();
         }
 
         @Override
@@ -90,17 +96,7 @@ public class TraitTrader extends LOVTrait {
         }
     }
 
-    private String[] items = new String[0];
-    private int[] costs = new int[0];
-
-    private transient Gear[] gears = new Gear[0];
-
-    @Override
-    public void onSpawn() {
-        gears = new Gear[items.length];
-        for (int i = 0; i < items.length; i++)
-            gears[i] = Gear.fromId(items[i]);
-    }
+    private Entry[] items = new Entry[0];
 
     @Override
     public void onRightClick(Player player, SettableFuture<Slot> slot) {
@@ -112,7 +108,7 @@ public class TraitTrader extends LOVTrait {
         slot.set(new Slot(new ItemBuilder(Material.GOLD_INGOT).setName("Trade").create(), (gui, p, event) -> {
             gui.close(p);
 
-            new BuyGUI(p, gears, costs).open(p);
+            new BuyGUI(p, items).open(p);
         }));
     }
 }

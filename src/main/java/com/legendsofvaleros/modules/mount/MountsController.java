@@ -2,17 +2,18 @@ package com.legendsofvaleros.modules.mount;
 
 import com.legendsofvaleros.features.gui.core.GUI;
 import com.legendsofvaleros.features.gui.item.ItemBuilder;
+import com.legendsofvaleros.features.playermenu.PlayerMenu;
+import com.legendsofvaleros.features.playermenu.events.PlayerOptionsOpenEvent;
 import com.legendsofvaleros.module.annotation.DependsOn;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
 import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.characters.core.Characters;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent;
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
+import com.legendsofvaleros.modules.mount.api.IMount;
 import com.legendsofvaleros.modules.npcs.NPCsController;
-import com.legendsofvaleros.features.playermenu.PlayerMenu;
-import com.legendsofvaleros.features.playermenu.events.PlayerOptionsOpenEvent;
 import com.legendsofvaleros.util.MessageUtil;
-import com.legendsofvaleros.util.model.Model;
+import com.legendsofvaleros.util.model.Models;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -42,7 +43,7 @@ public class MountsController extends MountAPI {
     public void onLoad() {
         super.onLoad();
 
-        this.instance = this;
+        instance = this;
     }
 
     @Override
@@ -55,11 +56,11 @@ public class MountsController extends MountAPI {
 
     @EventHandler
     public void onCharacterOptionsOpen(PlayerOptionsOpenEvent event) {
-        List<Mount> mounts = new ArrayList<>(getMounts(Characters.getPlayerCharacter(event.getPlayer())));
+        List<IMount> mounts = new ArrayList<>(getMounts(Characters.getPlayerCharacter(event.getPlayer())));
 
         if(mounts.size() == 0) return;
 
-        event.addSlot(Model.stack("menu-mounts-button").setName("Mount").create(), (gui, p, event12) -> {
+        event.addSlot(Models.stack("menu-mounts-button").setName("Mount").create(), (gui, p, event12) -> {
             gui.close(p);
 
             if (mounts.size() == 1) {
@@ -70,7 +71,7 @@ public class MountsController extends MountAPI {
                 mountgui.type(InventoryType.DISPENSER);
 
                 for (int i = 0; i < mounts.size(); i++) {
-                    final Mount m = mounts.get(i);
+                    final IMount m = mounts.get(i);
                     mountgui.slot(i, new ItemBuilder(m.getIcon()).setName(m.getName())
                             .addLore("", "Speed: " + ChatColor.GREEN + m.getSpeedPercent() + "%")
                             .create(), (gui1, p1, event1) -> {

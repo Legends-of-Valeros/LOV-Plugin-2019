@@ -1,6 +1,6 @@
 
 # The number of seconds a player must wait after casting hearthstone before they actually teleport to their home.
-# If the player moves or takes damage in this time, the pending teleportation will be cancelled.
+# If the player moves or takes damage in this time, the pending teleportation will be disabled.
 warmup-seconds: 5
 
 # The number of seconds a player must wait after successfully casting hearthstone before they can use it again.

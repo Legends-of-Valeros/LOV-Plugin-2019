@@ -1,14 +1,11 @@
 package com.legendsofvaleros.modules.queue;
 
-import com.comphenix.protocol.PacketType;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.module.ListenerModule;
 import com.legendsofvaleros.module.annotation.ModuleInfo;
-import com.legendsofvaleros.modules.professions.PlayerProfession;
 import com.legendsofvaleros.modules.queue.commands.QueueCommands;
 import com.legendsofvaleros.modules.queue.events.QueueAcceptEvent;
 import com.legendsofvaleros.modules.queue.events.QueueDenyEvent;
-import com.legendsofvaleros.modules.queue.events.QueueReadyEvent;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -33,7 +30,7 @@ public class QueueController extends ListenerModule {
     @Override
     public void onLoad() {
         super.onLoad();
-        this.instance = this;
+        instance = this;
 
         LegendsOfValeros.getInstance().getCommandManager().registerCommand(new QueueCommands());
     }

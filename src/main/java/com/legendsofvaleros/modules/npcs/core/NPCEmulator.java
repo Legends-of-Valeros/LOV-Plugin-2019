@@ -1,22 +1,17 @@
 package com.legendsofvaleros.modules.npcs.core;
 
-import com.legendsofvaleros.modules.npcs.NPCsController;
-import net.citizensnpcs.api.npc.NPC;
+import com.legendsofvaleros.modules.npcs.api.INPC;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class NPCEmulator {
-	public static void speak(String npcId, Player p, String message) {
-		speakDirect(NPCsController.getInstance().getNPC(npcId).name, p, message);
-	}
-
-	public static void speak(NPC npc, Player p, String message) {
+	public static void speak(INPC npc, Player p, String message) {
 		speakDirect(npc == null ? null : npc.getName(), p, message);
 	}
 
 	private static void speakDirect(String npc, Player p, String message) {
 		if(npc == null)
-			p.sendMessage(ChatColor.GREEN + p.getName() + ": " + ChatColor.ITALIC + ChatColor.GRAY + message);
+			p.sendMessage(ChatColor.GREEN + "<Invalid NPC>: " + ChatColor.ITALIC + ChatColor.GRAY + message);
 		else
 			p.sendMessage(ChatColor.GREEN + npc + ": " + ChatColor.RESET + message);
 	}

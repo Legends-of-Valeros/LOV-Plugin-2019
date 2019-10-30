@@ -28,8 +28,8 @@ public class MobCommands extends BaseCommand {
 	public void cmdCreate(Player player, String mobId, int radius, int padding, String level, @Optional Integer count, @Optional Integer interval, @Optional Integer chance) {
 		if(!LegendsOfValeros.getMode().allowEditing()) return;
 
-		Mob mobData = MobsController.getInstance().getEntity(mobId);
-		if(mobData == null) {
+		Mob mob = MobsController.getInstance().getMob(mobId);
+		if(mob == null) {
 			MessageUtil.sendError(player, "Unknown mob with that ID.");
 			return;
 		}
@@ -44,7 +44,7 @@ public class MobCommands extends BaseCommand {
 			levels = new int[] { Integer.parseInt(level), Integer.parseInt(level) };
 		}
 		
-		SpawnArea data = new SpawnArea(player.getLocation(), mobId, radius, padding, levels);
+		SpawnArea data = new SpawnArea(player.getLocation(), mob, radius, padding, levels);
 
 		MessageUtil.sendUpdate(player, "Created spawn area with radius " + data.getRadius() + " blocks.");
 

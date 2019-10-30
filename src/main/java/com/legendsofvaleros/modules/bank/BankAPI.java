@@ -19,11 +19,11 @@ import java.util.Map;
 
 public class BankAPI extends ListenerModule {
     public interface RPC {
-        Promise<Bank> getPlayerBank(CharacterId characterId);
+        Promise<Bank> getBank(String id);
 
-        Promise<Boolean> savePlayerBank(Bank bank);
+        Promise<Object> saveBank(Bank bank);
 
-        Promise<Boolean> deletePlayerBank(CharacterId characterId);
+        Promise<Boolean> deleteBank(String id);
     }
 
     private RPC rpc;
@@ -43,12 +43,12 @@ public class BankAPI extends ListenerModule {
         registerEvents(new PlayerCharacterListener());
     }
 
-    private Promise<Boolean> removeBank(CharacterId characterId) {
-        return rpc.deletePlayerBank(characterId);
+    private Promise<Boolean> removeBank(String id) {
+        return rpc.deleteBank(id);
     }
 
     private Promise<Bank> onLogin(CharacterId characterId) {
-        Promise<Bank> promise = rpc.getPlayerBank(characterId);
+        Promise<Bank> promise = rpc.getBank(characterId.toString());
 
         promise.onSuccess(val -> {
             banks.put(characterId, val.orElseGet(() -> new Bank(characterId)));
@@ -57,24 +57,17 @@ public class BankAPI extends ListenerModule {
         return promise;
     }
 
-    private Promise<Boolean> onLogout(CharacterId characterId) {
-        Promise<Boolean> promise = new Promise<>();
+    private Promise onLogout(CharacterId characterId) {
         Bank bank = banks.remove(characterId);
 
-        if (bank == null) {
-            promise.resolve(false);
-        } else {
-            rpc.savePlayerBank(bank).on((err, val) -> {
-                if (err.isPresent()) promise.reject(err.get());
-                else promise.resolve(val.orElse(false));
-            });
-        }
+        if(bank == null)
+            return Promise.make(false);
 
-        return promise;
+        return rpc.saveBank(bank);
     }
 
-    public Promise<Boolean> onDelete(CharacterId characterId) {
-        return removeBank(characterId);
+    public Promise onDelete(CharacterId characterId) {
+        return removeBank(characterId.toString());
     }
 
     private class PlayerCharacterListener implements Listener {
@@ -97,14 +90,12 @@ public class BankAPI extends ListenerModule {
             PhaseLock lock = event.getLock("Bank");
 
             onLogout(event.getPlayerCharacter().getUniqueCharacterId())
-                    .onFailure((err) -> MessageUtil.sendSevereException(BankController.getInstance(), event.getPlayer(), err))
                     .on(lock::release);
         }
 
         @EventHandler
         public void onCharacterRemoved(PlayerCharacterRemoveEvent event) {
-            onDelete(event.getPlayerCharacter().getUniqueCharacterId())
-                    .onFailure((err) -> MessageUtil.sendSevereException(BankController.getInstance(), event.getPlayer(), err));
+            onDelete(event.getPlayerCharacter().getUniqueCharacterId());
         }
     }
 }

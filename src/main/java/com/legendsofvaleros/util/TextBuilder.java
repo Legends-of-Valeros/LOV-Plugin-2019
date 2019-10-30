@@ -165,7 +165,7 @@ public class TextBuilder {
     }
 
     public BaseComponent[] create() {
-        BaseComponent[] result = (BaseComponent[])this.parts.toArray(new BaseComponent[this.parts.size() + 1]);
+        BaseComponent[] result = this.parts.toArray(new BaseComponent[this.parts.size() + 1]);
         result[this.parts.size()] = this.current;
         return result;
     }

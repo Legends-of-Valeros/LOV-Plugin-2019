@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.classes.skills.skilleffect;
 
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.legendsofvaleros.api.APIController;
 import com.legendsofvaleros.api.Promise;
@@ -20,8 +20,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -29,14 +29,14 @@ import java.util.logging.Logger;
  */
 public class PersistingEffects {
 	private interface RPC {
-		Promise<List<SavedPersistentEffect>> getPlayerPersistingEffects(CharacterId characterId);
-		Promise<Boolean> savePlayerPersistingEffects(CharacterId characterId, List<SavedPersistentEffect> effects);
+		Promise<Map<String, SavedPersistentEffect>> getPlayerPersistingEffects(CharacterId characterId);
+
+		Promise<Object> savePlayerPersistingEffects(CharacterId characterId, Map<String, SavedPersistentEffect> effects);
+
 		Promise<Boolean> deletePlayerPersistingEffects(CharacterId characterId);
 	}
 
 	private static class SavedPersistentEffect {
-		public String id;
-
 		public long remaining;
 		public long elapsed;
 		public int level;
@@ -45,7 +45,6 @@ public class PersistingEffects {
 		public byte[] metaBytes;
 
 		private SavedPersistentEffect(PersistingEffect effect) {
-			this.id = effect.getEffectId();
 			this.remaining = effect.getRemainingDurationMillis();
 			this.elapsed = effect.getElapsedMillis();
 			this.level = effect.getLevel();
@@ -84,13 +83,11 @@ public class PersistingEffects {
 		dataMap.put(effect.getAffected(), effect);
 	}
 
-	private static Promise<Boolean> onLogin(PlayerCharacter pc) {
-		Promise<Boolean> promise = new Promise<>();
-
-		rpc.getPlayerPersistingEffects(pc.getUniqueCharacterId()).onSuccess(val -> {
-			val.orElse(ImmutableList.of()).forEach(saved -> {
+	private static Promise onLogin(PlayerCharacter pc) {
+		return rpc.getPlayerPersistingEffects(pc.getUniqueCharacterId()).onSuccess(val -> {
+			val.orElse(ImmutableMap.of()).forEach((id, saved) -> {
 				PersistingEffectBuilder builder =
-						PersistingEffect.newBuilder(saved.id, pc.getUniqueCharacterId(), saved.remaining);
+						PersistingEffect.newBuilder(id, pc.getUniqueCharacterId(), saved.remaining);
 
 				builder.setElapsedDurationMillis(saved.elapsed);
 				builder.setLevel(saved.level);
@@ -99,24 +96,20 @@ public class PersistingEffects {
 
 				dataMap.put(pc.getUniqueCharacterId(), builder.build());
 			});
-
-			promise.resolve(true);
-		}).onFailure(promise::reject);
-
-		return promise;
+		});
 	}
 
-	private static Promise<Boolean> onLogout(PlayerCharacter pc) {
-		List<SavedPersistentEffect> effects = new ArrayList<>();
+	private static Promise onLogout(PlayerCharacter pc) {
+		Map<String, SavedPersistentEffect> effects = new HashMap<>();
 
 		dataMap.get(pc.getUniqueCharacterId()).stream()
 				.filter(effect -> effect.getRemainingDurationMillis() >= MIN_MILLIS_REMAINING_TO_SAVE)
-				.forEach(effect -> effects.add(new SavedPersistentEffect(effect)));
+				.forEach(effect -> effects.put(effect.getEffectId(), new SavedPersistentEffect(effect)));
 
 		return rpc.savePlayerPersistingEffects(pc.getUniqueCharacterId(), effects);
 	}
 
-	private static Promise<Boolean> onDelete(PlayerCharacter pc) {
+	private static Promise onDelete(PlayerCharacter pc) {
 		return rpc.deletePlayerPersistingEffects(pc.getUniqueCharacterId());
 	}
 

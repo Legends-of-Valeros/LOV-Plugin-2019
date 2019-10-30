@@ -72,11 +72,7 @@ public class PhaseLock {
         if (! callback.equals(other.callback)) {
             return false;
         }
-        if (! Objects.equals(lockId, other.lockId)) {
-            return false;
-        }
-
-        return true;
+        return Objects.equals(lockId, other.lockId);
     }
 
     public String getName() {

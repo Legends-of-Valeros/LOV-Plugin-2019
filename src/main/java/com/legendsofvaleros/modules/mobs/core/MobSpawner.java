@@ -4,6 +4,7 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.mobs.MobsController;
+import com.legendsofvaleros.modules.mobs.api.IEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -54,7 +55,7 @@ public class MobSpawner {
                 .forEach(spawn -> {
                     spawn.updateStats();
 
-                    World world = spawn.getWorld();
+                    World world = spawn.getLocation().getWorld();
                     Location spawnLocation = spawn.getLocation();
 
                     if (!spawnLocation.getChunk().isLoaded()) {
@@ -96,9 +97,9 @@ public class MobSpawner {
 
                         spawn.setDebugInfo("No players nearby");
                     } else {
-                        Mob mob = spawn.getMob();
-                        if (mob == null) {
-                            Bukkit.broadcastMessage(ChatColor.RED + "[!] Unknown instance ID. Offender: " + spawn.getEntityId() + " at " + spawn.getLocation());
+                        IEntity entity = spawn.getEntity();
+                        if (entity == null) {
+                            Bukkit.broadcastMessage(ChatColor.RED + "[!] Unknown instance ID. Offender: " + spawn.getEntity().getId() + " at " + spawn.getLocation());
                             return;
                         }
 
@@ -109,7 +110,7 @@ public class MobSpawner {
 
                             int entityCount = spawn.getDespawnedEnemies();
                             while (entityCount-- > 0) {
-                                spawn.spawn(mob);
+                                spawn.spawn(entity);
                             }
                         }
 
@@ -124,7 +125,7 @@ public class MobSpawner {
 
                         int entityCount = spawn.getCount() - spawn.getEntities().size();
                         while (entityCount-- > 0 && rand.nextInt(100) < spawn.getChance()) {
-                            spawn.spawn(mob);
+                            spawn.spawn(entity);
                         }
 
                         spawn.setDebugInfo("No problems");

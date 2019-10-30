@@ -3,7 +3,7 @@ package com.legendsofvaleros.modules.mobs.core;
 import com.legendsofvaleros.features.gui.core.GUI;
 import com.legendsofvaleros.features.gui.item.ItemBuilder;
 import com.legendsofvaleros.modules.mobs.MobsController;
-import com.legendsofvaleros.util.model.Model;
+import com.legendsofvaleros.util.model.Models;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
@@ -16,7 +16,7 @@ public class SpawnEditorGUI extends GUI {
 	private static final DecimalFormat DF = new DecimalFormat("#.00");
 
 	private ItemStack stack;
-	@Override public void onOpen(Player p, InventoryView view) { p.getInventory().setItem(17, Model.merge("menu-ui-chest-3", (stack = p.getInventory().getItem(17)))); }
+	@Override public void onOpen(Player p, InventoryView view) { p.getInventory().setItem(17, Models.merge("menu-ui-chest-3", (stack = p.getInventory().getItem(17)))); }
 	@Override public void onClose(Player p, InventoryView view) { p.getInventory().setItem(17, stack); }
 	
 	public SpawnEditorGUI(SpawnArea spawn) {
@@ -41,7 +41,7 @@ public class SpawnEditorGUI extends GUI {
 							.addLore(" Last    : " + Instant.ofEpochMilli(spawn.getLastInterval()).toString())
 							.create(), null);
 
-		slot(8, 2, Model.stack("menu-decline-button").setName("Delete Spawn").create(), (gui, p, event) -> {
+		slot(8, 2, Models.stack("menu-decline-button").setName("Delete Spawn").create(), (gui, p, event) -> {
 			MobsController.getInstance().removeSpawn(spawn);
 			gui.close(p);
 		});

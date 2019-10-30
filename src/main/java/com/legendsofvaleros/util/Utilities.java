@@ -7,7 +7,7 @@ import com.legendsofvaleros.scheduler.InternalScheduler;
 import com.legendsofvaleros.scheduler.InternalTask;
 import com.legendsofvaleros.util.commands.LOVCommands;
 import com.legendsofvaleros.util.commands.TemporaryCommand;
-import com.legendsofvaleros.util.model.Model;
+import com.legendsofvaleros.util.model.Models;
 import com.legendsofvaleros.util.title.TitleUtil;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
@@ -26,6 +26,7 @@ import org.bukkit.util.Vector;
 
 import java.util.Date;
 
+// TODO: Create subclass for listeners?
 @ModuleInfo(name = "Utilities", info = "")
 public class Utilities extends ListenerModule {
     private static Utilities instance;
@@ -52,7 +53,7 @@ public class Utilities extends ListenerModule {
 
         new TitleUtil();
 
-        Model.onLoad();
+        Models.onLoad();
         MessageUtil.onEnable();
         Advancements.onEnable();
     }
@@ -61,7 +62,8 @@ public class Utilities extends ListenerModule {
     public void onPostLoad() {
         super.onPostLoad();
 
-        Model.onPostLoad();
+        Models.onPostLoad();
+
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -110,9 +112,7 @@ public class Utilities extends ListenerModule {
         // finish (maybe)? Does this create a race condition?
         getScheduler().executeInMyCircleTimer(() -> {
             for (InternalScheduler scheduler : InternalScheduler.getAllSchedulers()) {
-                if (scheduler == getScheduler()) {
-                    continue;
-                }
+                if (scheduler == getScheduler()) continue;
 
                 scheduler.shutdown();
 
@@ -181,7 +181,6 @@ public class Utilities extends ListenerModule {
         }
         return true;
     }
-
 
     /**
      * Returns the current uptime of the server

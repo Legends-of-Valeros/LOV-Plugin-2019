@@ -1,9 +1,9 @@
 package com.legendsofvaleros.modules.gear.component.core;
 
-import com.legendsofvaleros.features.gui.item.ItemBuilder;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.legendsofvaleros.LegendsOfValeros;
+import com.legendsofvaleros.features.gui.item.ItemBuilder;
 import com.legendsofvaleros.modules.gear.component.GearComponent;
 import com.legendsofvaleros.modules.gear.component.GearComponentOrder;
 import com.legendsofvaleros.modules.gear.core.Gear;
@@ -22,29 +22,29 @@ public class GearDurability {
 	public static final DurabilityString[] STRINGS = {
 			new DurabilityString(1)
 							.add("There are no words to describe.").add("The most beautiful thing you've ever seen."),
-
+		
 			new DurabilityString(.99)
 							.add("Brand spankin' new.")
 							.add(GearType.WEAPON, "Mint condition.")
 							.add(GearType.WEAPON, "It's perfectly sturdy."),
-
+			
 			new DurabilityString(.9)
 							.add("It's in near perfect condition.").add("Essentially new."),
 
 			new DurabilityString(.6)
 							.add("Its been used a bit.").add("Starting to wear a bit.").add("Used slightly.").add("Hardly used.")
 							.add(GearType.WEAPON, "It feels comfortable."),
-
+			
 			new DurabilityString(.4)
 							.add("It's pretty worn.").add("It's a little worn out.").add("A bit tattered.").add("Used."),
 
 			new DurabilityString(.2)
 							.add("It has seen better days.").add("Needs some maintenance.")
 							.add(GearType.ARMOR, "It's filled with holes."),
-
+			
 			new DurabilityString(0)
 							.add("It's falling apart.").add("It could break at any moment."),
-
+			
 			new DurabilityString()
 							.add("It's... broken.").add("Might as well throw this out.").add("A beautiful piece of garbage.")
 	};
@@ -59,17 +59,17 @@ public class GearDurability {
 
         public DurabilityString add(GearType type, String text) { strings.put(type, text); return this; }
     }
-
+	
 	public static class Persist {
 		public int current;
 		public int max;
 	}
-
+	
 	public static class Component extends GearComponent<Persist> {
 		@Override public GearComponentOrder getOrder() { return GearComponentOrder.DURABILITY; }
-
+		
 		public RangedValue current, max;
-
+	
 		@Override
 		public Persist onInit() {
 			Persist persist = new Persist();
@@ -92,15 +92,15 @@ public class GearDurability {
 			else {
 				// builder.addLore(String.format(ChatColor.WHITE + "%s/%s Durability", persist.current, persist.max));
 				double perc = (double)persist.current / persist.max;
-
+				
 				List<String> arr = new ArrayList<>();
 				for(DurabilityString dur : STRINGS) {
 					if(dur.min != null && perc <= dur.min) continue;
-
+					
 					arr.addAll(dur.strings.get(null));
-					arr.addAll(dur.strings.get(item.getType()));
+					arr.addAll(dur.strings.get(item.gear.getType()));
 
-					builder.addLore(ChatColor.GRAY + "❖ " + arr.get(item.getSeed() % arr.size()));
+					builder.addLore(ChatColor.GRAY + "❖ " + arr.get(item.gear.getSeed() % arr.size()));
 					break;
 				}
 
@@ -108,7 +108,7 @@ public class GearDurability {
 					builder.addLore(ChatColor.GRAY + "❖ " + persist.current + "/" + persist.max);
 			}
 		}
-
+	
 		@Override
 		public Persist fire(Gear.Instance item, Persist persist, GearTrigger trigger) {
 			if(trigger.equals(PhysicalAttackTrigger.class)) {
@@ -129,18 +129,18 @@ public class GearDurability {
 					}else
 						// Refresh the stack every time for testing purposes
 						trigger.requestStackRefresh();
-
+					
 					persist.current--;
 
 					if(persist.current == 20)
 						MessageUtil.sendError(((AttackTrigger)trigger).getAttacker().getLivingEntity(), "Your weapon is about to break! You'll do 25% your normal damage if you use it much longer!");
-
+					
 					return persist;
 				}
-
+				
 				// ((DamageTrigger)trigger).event.setDamageMultiplier(.25D);
 			}
-
+			
 			return null;
 		}
 	}

@@ -1,24 +1,22 @@
 package com.legendsofvaleros.modules.zones;
 
+import com.codingforcookies.ambience.Sound;
 import com.google.common.collect.ImmutableList;
-import com.google.gson.TypeAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
 import com.legendsofvaleros.api.APIController;
+import com.legendsofvaleros.api.InterfaceTypeAdapter;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.module.ListenerModule;
-import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.zones.core.MaterialWithData;
+import com.legendsofvaleros.modules.zones.api.IZone;
 import com.legendsofvaleros.modules.zones.core.Zone;
-import com.legendsofvaleros.util.MessageUtil;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import org.bukkit.Material;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ZonesAPI extends ListenerModule {
     public interface RPC {
@@ -28,7 +26,6 @@ public class ZonesAPI extends ListenerModule {
     private RPC rpc;
     private HashMap<String, Zone> zones = new HashMap<>();
 
-
     public Collection<Zone> getZones() {
         return zones.values();
     }
@@ -37,64 +34,72 @@ public class ZonesAPI extends ListenerModule {
         return zones.get(id);
     }
 
-    public Zone getZone(Player p) {
-        if (!Characters.isPlayerCharacterLoaded(p)) {
-            return null;
-        }
-        PlayerCharacter playerCharacter = Characters.getPlayerCharacter(p);
-        for (Zone zone : getZones()) {
-            if (zone.playersInZone.contains(playerCharacter.getUniqueCharacterId())) {
-                return zone;
-            }
-        }
-        MessageUtil.sendInfo(Bukkit.getConsoleSender(), "WARNING - " + p.getDisplayName() + " is not in a zone");
-
-        return null;
-    }
-
-    public Zone getZone(PlayerCharacter playerCharacter) {
-        if (!playerCharacter.isCurrent()) {
-            return null;
-        }
-        for (Zone zone : getZones()) {
-            if (zone.playersInZone.contains(playerCharacter.getUniqueCharacterId())) {
-                return zone;
-            }
-        }
-        MessageUtil.sendInfo(Bukkit.getConsoleSender(), "WARNING - " + playerCharacter.getPlayer().getDisplayName() + " is not in a zone");
-        return null;
-    }
-
     @Override
     public void onLoad() {
         super.onLoad();
 
         this.rpc = APIController.create(RPC.class);
 
+        InterfaceTypeAdapter.register(IZone.class,
+                obj -> obj.getId(),
+                id -> Promise.make(zones.get(id)));
+
         APIController.getInstance().getGsonBuilder()
-                .registerTypeAdapter(MaterialWithData.class, new TypeAdapter<MaterialWithData>() {
-                    @Override
-                    public void write(JsonWriter jsonWriter, MaterialWithData mat) throws IOException {
-                        jsonWriter.value(mat.type.name() + (mat.data != null ? ":" + mat.data : ""));
+                .registerTypeAdapter(Zone.class, (JsonDeserializer<Zone>) (val, typeOfT, context) -> {
+                    Zone zone = new Zone();
+
+                    for(Map.Entry<String, JsonElement> zEntry : val.getAsJsonObject().entrySet()) {
+                        switch(zEntry.getKey()) {
+                            case "_id":
+                                zone.id = zEntry.getValue().getAsString();
+                                break;
+                            case "name":
+                                zone.name = zEntry.getValue().getAsString();
+                                break;
+                            case "sections":
+                                JsonArray ja = zEntry.getValue().getAsJsonArray();
+
+                                zone.sections = new Zone.Section[ja.size()];
+                                for(int i = 0; i < ja.size(); i++) {
+                                    Zone.Section section = zone.new Section();
+
+                                    for(Map.Entry<String, JsonElement> sEntry : ja.get(i).getAsJsonObject().entrySet()) {
+                                        switch(sEntry.getKey()) {
+                                            case "name":
+                                                section.name = sEntry.getValue().getAsString();
+                                                break;
+                                            case "material":
+                                                try {
+                                                    section.material = Material.valueOf(sEntry.getValue().getAsString());
+                                                } catch(Exception e) {
+                                                    getLogger().warning("Zone '" + zone.getId() + "' has a section with an invalid material: " + sEntry.getValue().getAsString());
+                                                    continue;
+                                                }
+                                                break;
+                                            case "pvp":
+                                                section.pvp = sEntry.getValue().getAsBoolean();
+                                                break;
+                                            case "ambience":
+                                                section.ambience = context.deserialize(sEntry.getValue(), Sound[].class);
+                                                break;
+                                        }
+                                    }
+
+                                    zone.sections[i] = section;
+                                }
+                                break;
+                        }
                     }
 
-                    @Override
-                    public MaterialWithData read(JsonReader jsonReader) throws IOException {
-                        return new MaterialWithData(jsonReader.nextString());
-                    }
+                    return zone;
                 });
-
     }
 
     @Override
     public void onPostLoad() {
         super.onPostLoad();
 
-        try {
-            this.loadAll().get();
-        } catch (Throwable th) {
-            th.printStackTrace();
-        }
+        this.loadAll().get();
     }
 
     public Promise<List<Zone>> loadAll() {
@@ -105,7 +110,7 @@ public class ZonesAPI extends ListenerModule {
                     zones.put(zone.id, zone));
 
             getLogger().info("Loaded " + zones.size() + " zones.");
-        }).onFailure(Throwable::printStackTrace);
+        });
     }
 
 

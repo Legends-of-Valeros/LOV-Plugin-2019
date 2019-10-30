@@ -1,5 +1,6 @@
 package com.legendsofvaleros.modules.bank.core;
 
+import com.google.gson.annotations.SerializedName;
 import com.legendsofvaleros.modules.bank.BankController;
 import com.legendsofvaleros.modules.bank.event.PlayerCurrencyChangeEvent;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Bank {
+    @SerializedName("_id")
     public CharacterId characterId;
 
     private Map<String, Long> currencies = new HashMap<>();

@@ -1,6 +1,5 @@
 package com.legendsofvaleros.api;
 
-import com.google.common.collect.ImmutableList;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.util.MessageUtil;
 import sun.misc.Unsafe;
@@ -9,29 +8,24 @@ import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.Executor;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 public class Promise<R> {
-
     public interface Function<R, V> {
-
-        R run(@Nonnull Optional<V> val) throws Throwable;
+        R run(@Nonnull Optional<V> val) throws Exception;
     }
 
     public interface FunctionAlone<R> {
-
-        R run() throws Throwable;
+        R run() throws Exception;
     }
 
     public interface Listener<R> {
-
-        void run(@Nonnull Optional<Throwable> th, @Nonnull Optional<R> t) throws Throwable;
+        void run(@Nonnull Optional<Exception> th, @Nonnull Optional<R> t) throws Exception;
     }
 
-    enum State {PENDING, FIRED, RESOLVED, REJECTED}
+    enum State { PENDING, RESOLVED, REJECTED }
 
     /**
      * Unsafe is used to park and unpark threads that directly call get()
@@ -60,11 +54,13 @@ public class Promise<R> {
      */
     private final Executor executor;
 
+    private final Object lock = new Object();
+
     /**
      * Threads that called get() and are waiting for the Promise to
      * be resolved.
      */
-    private final Set<Thread> waiting = new HashSet<>();
+    // private final Set<Thread> waiting = new HashSet<>();
 
     /**
      * Hold a list of callbacks and the executor used to fire them.
@@ -73,7 +69,7 @@ public class Promise<R> {
      * to detect if a listener was bound a second time and makes firing
      * them a shorter operation.
      */
-    private final Map<Listener, Executor> callbacks = new HashMap<>();
+    private final Map<Listener, Executor> callbacks = new LinkedHashMap<>();
 
     /**
      * The value that was returned from the promise.
@@ -121,33 +117,30 @@ public class Promise<R> {
     }
 
     public Promise<R> addListener(Listener<R> cb, Executor ex) {
-        if (ex == null) {
-            ex = this.executor;
-        }
+        if (ex == null) ex = this.executor;
 
         callbacks.put(cb, ex);
 
         // If the promise is already fulfilled, fire the callback immediately
         if (isDone()) {
-            if (wasSuccess()) {
+            if (wasSuccess())
                 ex.execute(() -> {
                     try {
                         cb.run(Optional.empty(), Optional.ofNullable((R) value));
-                    } catch (Throwable th) {
+                    } catch (Exception th) {
                         th.printStackTrace();
                     }
                 });
-            } else if (wasRejected()) {
+            else if (wasRejected())
                 ex.execute(() -> {
                     try {
-                        cb.run(Optional.of((Throwable) value), Optional.empty());
-                    } catch (Throwable th) {
+                        cb.run(Optional.of((Exception) value), Optional.empty());
+                    } catch (Exception th) {
                         th.printStackTrace();
                     }
                 });
-            } else {
+            else
                 throw new IllegalStateException();
-            }
         }
 
         return this;
@@ -186,9 +179,7 @@ public class Promise<R> {
 
     public Promise<R> onSuccess(Consumer<Optional<R>> cb, Executor ex) {
         return addListener((err, val) -> {
-            if (err.isPresent()) {
-                return;
-            }
+            if (err.isPresent()) return;
             cb.accept(val);
         }, ex);
     }
@@ -197,11 +188,11 @@ public class Promise<R> {
         return onFailure((err) -> cb.run(), null);
     }
 
-    public Promise<R> onFailure(Consumer<Throwable> cb) {
+    public Promise<R> onFailure(Consumer<Exception> cb) {
         return onFailure(cb, null);
     }
 
-    public Promise<R> onFailure(Consumer<Throwable> cb, Executor ex) {
+    public Promise<R> onFailure(Consumer<Exception> cb, Executor ex) {
         return addListener((err, val) -> {
             if (val.isPresent()) {
                 return;
@@ -274,7 +265,7 @@ public class Promise<R> {
 
                     promise.resolve(val2.orElse(null));
                 });
-            } catch (Throwable th) {
+            } catch (Exception th) {
                 promise.reject(th);
             }
         }, ex);
@@ -282,70 +273,67 @@ public class Promise<R> {
         return promise;
     }
 
-    public R get() throws Throwable {
-        return get(null, 0L);
-    }
+    public R get() {
+        synchronized (lock) {
+            while (!isDone()) {
+                try {
+                    lock.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
 
-    public R get(TimeUnit unit, long duration) throws Throwable {
-        if (!isDone()) {
+        /*if (!isDone()) {
             waiting.add(Thread.currentThread());
 
-            if (unit != null) {
+            if (unit != null)
                 UNSAFE.park(true, unit.toSeconds(duration));
-            } else {
+            else
                 UNSAFE.park(false, 0L);
-            }
 
             waiting.remove(Thread.currentThread());
 
-            if (Thread.interrupted()) {
-                throw new InterruptedException();
-            }
+            if (Thread.interrupted())
+                throw new RuntimeException(new InterruptedException());
+        }*/
+
+        if (this.value instanceof Exception) {
+            throw new RuntimeException((Exception)this.value);
         }
 
-        if (this.value instanceof Throwable) {
-            throw (Throwable) this.value;
-        }
         return (R) this.value;
     }
 
     public void resolve(R t) {
-        if (isDone()) {
-            throw new IllegalStateException("Promise already resolved!");
-        }
+        if (isDone()) throw new IllegalStateException("Promise already resolved!");
 
         this.value = t;
         this.state = State.RESOLVED;
 
-        callbacks.forEach((k, v) -> v.execute(() -> {
-            try {
-                k.run(Optional.empty(), Optional.ofNullable(t));
-            } catch (Throwable th) {
-                th.printStackTrace();
-            }
-        }));
-        new HashSet<>(waiting).forEach(UNSAFE::unpark);
+        this.execute(callbacks.entrySet().iterator(), Optional.empty(), Optional.ofNullable(t));
+
+        synchronized(lock) {
+            lock.notify();
+        }
+
+        // new HashSet<>(waiting).forEach(UNSAFE::unpark);
     }
 
-    public void reject(Throwable th) {
+    public void reject(Exception th) {
         if (isDone()) {
             throw new IllegalStateException("Promise already resolved!");
         }
 
         // Always show rejected promises in the console
-        LegendsOfValeros.getInstance().getLogger().warning("Promise rejected!");
-        LegendsOfValeros.getInstance().getLogger().warning("----------------------------------------");
+        LegendsOfValeros.getInstance().getLogger().warning("------------PROMISE REJECTED------------");
         int i = -1;
         for (String line : trace.split("\n")) {
             if (i == -1) {
-                // Ignore non-LOV packages
-                if (!line.contains("com.legendsofvaleros")) {
+                // Ignore leading non-LOV packages
+                if (!line.contains("com.legendsofvaleros") || line.contains("com.legendsofvaleros.api")) {
                     continue;
                 }
-                // Ignore api package
-                //                if (line.contains("com.legendsofvaleros.api")) {
-                //                    continue;
-                //                }
             }
 
             i++;
@@ -353,27 +341,48 @@ public class Promise<R> {
             LegendsOfValeros.getInstance().getLogger().warning(line);
 
             // Don't print too many lines. After an amount, it's just spam.
-            if (i > 15 && !line.contains("legendsofvaleros")) {
+            if (i >= 5 && !line.contains("legendsofvaleros")) {
                 break;
             }
         }
 
-        // Print the actual reason for rejection
-        th.printStackTrace();
+        LegendsOfValeros.getInstance().getLogger().warning("-----------------TRACE------------------");
 
-        LegendsOfValeros.getInstance().getLogger().warning("----------------------------------------");
+        // Print the actual reason for rejection
+        String[] lines = MessageUtil.getStackTrace(th).split("\n");
+        for(int j = 0; j < Math.min(lines.length, 20); j++)
+            LegendsOfValeros.getInstance().getLogger().warning(lines[j]);
+
+        LegendsOfValeros.getInstance().getLogger().warning("------------------END-------------------");
 
         this.value = th;
         this.state = State.REJECTED;
 
-        callbacks.forEach((k, v) -> v.execute(() -> {
-            try {
-                k.run(Optional.of(th), Optional.empty());
-            } catch (Throwable th2) {
-                th2.printStackTrace();
-            }
-        }));
-        new HashSet<>(waiting).forEach(UNSAFE::unpark);
+        this.execute(callbacks.entrySet().iterator(), Optional.of(th), Optional.empty());
+
+        synchronized(lock) {
+            lock.notify();
+        }
+
+        // new HashSet<>(waiting).forEach(UNSAFE::unpark);
+    }
+
+    private void execute(Iterator<Map.Entry<Listener, Executor>> it, Optional<Exception> th, Optional<R> t) {
+        if(it.hasNext()) {
+            Map.Entry<Listener, Executor> ex = it.next();
+
+            ex.getValue().execute(() -> {
+                try {
+                    ex.getKey().run(th, t);
+                } catch (Exception thh) {
+                    thh.printStackTrace();
+                }
+
+                // Wait until the last function executed before running the next. This ensures they execute in the order
+                // that they were registered.
+                execute(it, th, t);
+            });
+        }
     }
 
 
@@ -384,17 +393,14 @@ public class Promise<R> {
      * and it gives us more flexibility if they don't.
      */
     private <V> Promise<R> fire(Function<R, V> func, V val) {
-        if (this.state != State.PENDING) {
+        if (this.state != State.PENDING)
             throw new IllegalStateException("Promise has already been made! You cannot fire it again!");
-        }
-
-        this.state = State.PENDING;
 
         if (func != null) {
             this.executor.execute(() -> {
                 try {
                     this.resolve(func.run(Optional.ofNullable(val)));
-                } catch (Throwable th) {
+                } catch (Exception th) {
                     this.reject(th);
                 }
             });
@@ -435,12 +441,16 @@ public class Promise<R> {
     }
 
     public static <T> Promise<List<T>> collect(Executor exec, Promise<T>... promises) {
+        if(promises.length == 0) {
+            return Promise.make(new ArrayList<>());
+        }
+
         Promise<List<T>> promise = new Promise<>(exec);
 
         AtomicBoolean fail = new AtomicBoolean(false);
 
         Object[] successes = new Object[promises.length];
-        Throwable[] failures = new Throwable[promises.length];
+        Exception[] failures = new Exception[promises.length];
 
         AtomicInteger i = new AtomicInteger(promises.length);
         Runnable onFinish = () -> {
@@ -454,7 +464,7 @@ public class Promise<R> {
                 for (Object o : successes) {
                     success.add((T) o);
                 }
-                promise.resolve(ImmutableList.copyOf(success));
+                promise.resolve(Collections.unmodifiableList(success));
             }
         };
 
@@ -462,7 +472,6 @@ public class Promise<R> {
             final int k = j;
             promises[j].onSuccess(val -> {
                 successes[k] = val.orElse(null);
-                onFinish.run();
             });
         }
 
@@ -472,6 +481,12 @@ public class Promise<R> {
                 failures[k] = err;
 
                 fail.set(true);
+            });
+        }
+
+        for (int j = 0; j < promises.length; j++) {
+            final int k = j;
+            promises[j].on(() -> {
                 onFinish.run();
             });
         }

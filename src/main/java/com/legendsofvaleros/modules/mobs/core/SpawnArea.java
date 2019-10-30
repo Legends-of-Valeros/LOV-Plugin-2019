@@ -7,11 +7,11 @@ import com.gmail.filoghost.holographicdisplays.api.line.ItemLine;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.mobs.MobsController;
+import com.legendsofvaleros.modules.mobs.api.IEntity;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 
 import java.time.Instant;
@@ -28,30 +28,27 @@ public class SpawnArea {
     private transient Hologram hologram;
     private transient TextLine textEntityId, textLevel, textRadius, textPadding, textEntities, textInfo, textInterval;
 
+    private int id;
+
+    public int getId() {
+        return id;
+    }
+
+    private Location location;
+
+    public Location getLocation() {
+        return location;
+    }
+
     /**
      * The radius that defines the length of this spawn point. Entities will spawn in this
      * radius around the point.
      */
     private int radius;
 
-    private int id;
-    private World world;
-
-    private int x;
-    private int y;
-    private int z;
-
-    private transient Location location;
-
-    private transient Mob mob;
-
-    private short count = 1;
-    private int interval = 60;
-    private byte chance = 100;
-    private transient long lastInterval = 0;
-    private transient int despawnedEnemies = 0;
-    private transient List<Mob.Instance> entities;
-    private transient Location ground;
+    public int getRadius() {
+        return radius;
+    }
 
     /**
      * Used by AI. This defines how much further past the spawn radius that they can exist
@@ -59,29 +56,111 @@ public class SpawnArea {
      */
     private int padding;
 
+    public int getPadding() {
+        return padding;
+    }
+
     /**
      * The ID of the entities that spawn here.
      */
-    private String entityId;
+    private IEntity entity;
+
+    public IEntity getEntity() {
+        return entity;
+    }
 
     /**
      * Tells the spawn point what level to set the spawned entities.
      * <br />
      * Example: 1-5 defines that an entitiy spawned here should be between level 1 and 5.
      */
-    private String level;
-    private int[] levels;
+    private int[] level;
 
-    public SpawnArea(Location loc, String entityId, int radius, int padding, int[] levels) {
-        this.world = loc.getWorld();
-        this.entityId = entityId;
+    public int[] getLevelRange() {
+        return level;
+    }
+
+    public int getLevel() {
+        int[] levels = getLevelRange();
+        return levels[0] + rand.nextInt(levels[1] - levels[0] + 1);
+    }
+
+    private short count = 1;
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(short count) {
+        this.count = count;
+    }
+
+    private int interval = 60;
+
+    public int getInterval() {
+        return interval;
+    }
+
+    public void setInterval(int interval) {
+        this.interval = interval;
+    }
+
+    private byte chance = 100;
+
+    public byte getChance() {
+        return chance;
+    }
+
+    public void setChance(byte chance) {
+        this.chance = chance;
+    }
+
+    private transient long lastInterval = 0;
+
+    public long getLastInterval() {
+        return lastInterval;
+    }
+
+    public void markInterval() {
+        lastInterval = System.currentTimeMillis();
+    }
+
+    private transient int despawnedEnemies = 0;
+
+    public int getDespawnedEnemies() {
+        return despawnedEnemies;
+    }
+
+    public void repopulated() {
+        despawnedEnemies = 0;
+    }
+
+    private transient List<Mob.Instance> entities;
+
+    public List<Mob.Instance> getEntities() {
+        if (entities == null)
+            entities = new ArrayList<>();
+        return entities;
+    }
+
+    private transient Location ground;
+
+    public Location getGround() {
+        if (ground == null) {
+            Location position = getLocation();
+            ground = position.clone();
+            while(position.getWorld().getBlockAt(ground.getBlockX(), ground.getBlockY() - 1, ground.getBlockZ()).getType().isTransparent())
+                ground.subtract(0, 1, 0);
+        }
+        return ground;
+    }
+
+    public SpawnArea(Location loc, IEntity entity, int radius, int padding, int[] levels) {
+        this.entity = entity;
         this.radius = radius;
         this.padding = padding;
-        this.level = levels[0] + "-" + levels[1];
+        this.level = levels;
 
-        this.x = loc.getBlockX();
-        this.y = loc.getBlockY();
-        this.z = loc.getBlockZ();
         this.location = loc;
     }
 
@@ -98,9 +177,9 @@ public class SpawnArea {
     }
 
     public Hologram getHologram() {
-        if (hologram == null) {
+        if (hologram == null && entity != null) {
             hologram = HologramsAPI.createHologram(LegendsOfValeros.getInstance(), getLocation());
-            textEntityId = hologram.appendTextLine(ChatColor.GOLD + "" + ChatColor.BOLD + entityId);
+            textEntityId = hologram.appendTextLine(ChatColor.GOLD + "" + ChatColor.BOLD + entity.getName());
             textLevel = hologram.appendTextLine("[" + getLevelRange()[0] + " - " + getLevelRange()[1] + "]");
             textRadius = hologram.appendTextLine("Radius: " + getRadius());
             textPadding = hologram.appendTextLine("Padding: " + getPadding());
@@ -126,9 +205,7 @@ public class SpawnArea {
     public void clear() {
         despawnedEnemies = 0;
 
-        if (entities == null || entities.isEmpty()) {
-            return;
-        }
+        if (entities == null || entities.isEmpty()) return;
         Mob.Instance instance;
 
         int i = 0;
@@ -149,8 +226,7 @@ public class SpawnArea {
         }
     }
 
-    public Mob.Instance spawn(Mob mob) {
-        World world = getWorld();
+    public Mob.Instance spawn(IEntity entity) {
         Location ground = getGround();
 
         if (radius < 0) {
@@ -158,30 +234,27 @@ public class SpawnArea {
             MessageUtil.sendException(MobsController.getInstance(), "Spawn '" + id + "' has a radius of < 0, setting it to 0.");
         }
 
-        Location loc = new Location(world,
+        Location loc = new Location(ground.getWorld(),
                 ground.getBlockX() - (radius == 0 ? 0 : rand.nextInt(radius * 2) - radius),
                 ground.getBlockY(),
                 ground.getBlockZ() - (radius == 0 ? 0 : rand.nextInt(radius * 2) - radius)
         );
 
         // Move up until loc is a transparent block
-        while (! world.getBlockAt(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()).getType().isTransparent())
+        while(!ground.getWorld().getBlockAt(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()).getType().isTransparent())
             loc.add(0, 1, 0);
 
         // Move down until the block below is solid
-        while (world.getBlockAt(loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ()).getType().isTransparent())
+        while(ground.getWorld().getBlockAt(loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ()).getType().isTransparent())
             loc.subtract(0, 1, 0);
 
-        Mob.Instance instance = new Mob.Instance(mob, this, getLevel());
+        Mob.Instance instance = new Mob.Instance(entity, this, getLevel());
         instance.spawn(loc);
         return instance;
     }
 
     public void delete() {
-        Mob mob = getMob();
-        if (mob != null) {
-            mob.getSpawns().remove(this);
-        }
+        entity.getSpawns().remove(this);
 
         clear();
         if (hologram != null) {
@@ -189,117 +262,4 @@ public class SpawnArea {
             hologram = null;
         }
     }
-
-    public int[] getLevelRange() {
-        if (levels == null)
-            levels = new int[] {
-                    level != null ? Integer.parseInt(level.split("-")[0]) : 0,
-                    level != null ? Integer.parseInt(level.split("-")[1]) : 0};
-        return levels;
-    }
-
-    public int getLevel() {
-        int[] levels = getLevelRange();
-        return levels[0] + rand.nextInt(levels[1] - levels[0] + 1);
-    }
-
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(short count) {
-        this.count = count;
-    }
-
-    public int getInterval() {
-        return interval;
-    }
-
-    public void setInterval(int interval) {
-        this.interval = interval;
-    }
-
-
-    public byte getChance() {
-        return chance;
-    }
-
-    public void setChance(byte chance) {
-        this.chance = chance;
-    }
-
-
-    public long getLastInterval() {
-        return lastInterval;
-    }
-
-    public void markInterval() {
-        lastInterval = System.currentTimeMillis();
-    }
-
-    public int getDespawnedEnemies() {
-        return despawnedEnemies;
-    }
-
-    public void repopulated() {
-        despawnedEnemies = 0;
-    }
-
-    public List<Mob.Instance> getEntities() {
-        if (entities == null)
-            entities = new ArrayList<>();
-        return entities;
-    }
-
-    public Location getGround() {
-        if (ground == null) {
-            World world = getWorld();
-            Location position = getLocation();
-            ground = position.clone();
-            while (world.getBlockAt(ground.getBlockX(), ground.getBlockY() - 1, ground.getBlockZ()).getType().isTransparent())
-                ground.subtract(0, 1, 0);
-        }
-        return ground;
-    }
-
-
-    public int getId() {
-        return id;
-    }
-
-
-    public World getWorld() {
-        return world;
-    }
-
-
-    public Location getLocation() {
-        if (location == null) {
-            location = new Location(getWorld(), x, y, z);
-        }
-        return location;
-    }
-
-
-    public int getRadius() {
-        return radius;
-    }
-
-
-    public int getPadding() {
-        return padding;
-    }
-
-
-    public String getEntityId() {
-        return entityId;
-    }
-
-    public Mob getMob() {
-        if (mob == null)
-            mob = MobsController.getInstance().getEntity(entityId);
-        return mob;
-    }
-
 }
