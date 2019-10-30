@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.mobs.api;
 
 import com.legendsofvaleros.modules.characters.api.CharacterId;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
+import com.legendsofvaleros.modules.classes.EntityClass;
 import com.legendsofvaleros.modules.gear.core.Gear;
 import com.legendsofvaleros.modules.loot.api.ILootTable;
 import com.legendsofvaleros.modules.mobs.MobsController;

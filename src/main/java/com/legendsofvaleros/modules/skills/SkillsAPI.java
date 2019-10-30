@@ -16,7 +16,7 @@ import com.legendsofvaleros.modules.characters.events.PlayerCharacterLogoutEvent
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterRemoveEvent;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterStartLoadingEvent;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
-import com.legendsofvaleros.modules.characters.skill.Skill;
+import com.legendsofvaleros.modules.classes.skills.Skill;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 

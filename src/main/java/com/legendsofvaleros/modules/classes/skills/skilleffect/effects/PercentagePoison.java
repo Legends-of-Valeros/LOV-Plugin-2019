@@ -1,13 +1,13 @@
-package com.legendsofvaleros.modules.characters.skilleffect.effects;
+package com.legendsofvaleros.modules.classes.skills.skilleffect.effects;
 
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterCombatLogoutEvent;
-import com.legendsofvaleros.modules.characters.skilleffect.InterruptionCause;
-import com.legendsofvaleros.modules.characters.skilleffect.MetaEffectInstance;
-import com.legendsofvaleros.modules.characters.skilleffect.PersistingEffect;
-import com.legendsofvaleros.modules.characters.skilleffect.PersistingEffect.PersistingEffectBuilder;
-import com.legendsofvaleros.modules.characters.skilleffect.RemovalReason;
+import com.legendsofvaleros.modules.classes.skills.skilleffect.InterruptionCause;
+import com.legendsofvaleros.modules.classes.skills.skilleffect.MetaEffectInstance;
+import com.legendsofvaleros.modules.classes.skills.skilleffect.PersistingEffect;
+import com.legendsofvaleros.modules.classes.skills.skilleffect.PersistingEffect.PersistingEffectBuilder;
+import com.legendsofvaleros.modules.classes.skills.skilleffect.RemovalReason;
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.combatengine.api.EntityStats;

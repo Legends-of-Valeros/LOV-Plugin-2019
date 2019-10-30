@@ -1,12 +1,10 @@
 package com.legendsofvaleros.modules.characters.core;
 
-import com.legendsofvaleros.util.StringUtil;
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.api.Promise;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacters;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
 import com.legendsofvaleros.modules.characters.events.*;
 import com.legendsofvaleros.modules.characters.loading.Callback;
 import com.legendsofvaleros.modules.characters.loading.PhaseLock;
@@ -15,9 +13,11 @@ import com.legendsofvaleros.modules.characters.loading.TaskPhase;
 import com.legendsofvaleros.modules.characters.race.EntityRace;
 import com.legendsofvaleros.modules.characters.ui.CharacterCreationListener;
 import com.legendsofvaleros.modules.characters.ui.CharacterSelectionListener;
+import com.legendsofvaleros.modules.classes.EntityClass;
 import com.legendsofvaleros.modules.combatengine.CombatEngine;
 import com.legendsofvaleros.modules.combatengine.api.UnsafePlayerInitializer;
 import com.legendsofvaleros.util.MessageUtil;
+import com.legendsofvaleros.util.StringUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

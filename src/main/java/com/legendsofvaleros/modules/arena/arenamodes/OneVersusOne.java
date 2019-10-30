@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.arena.arenamodes;
+package com.legendsofvaleros.modules.arena.arenaModes;
 
 import com.legendsofvaleros.modules.arena.Team;
 

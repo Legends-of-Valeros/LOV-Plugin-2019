@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.skills.event;
 
-import com.legendsofvaleros.modules.characters.skill.Skill;
+import com.legendsofvaleros.modules.classes.skills.Skill;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;

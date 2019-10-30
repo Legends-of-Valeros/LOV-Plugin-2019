@@ -1,6 +1,6 @@
 package com.legendsofvaleros.modules.skills.core.admin;
 
-import com.legendsofvaleros.modules.characters.skill.Skill;
+import com.legendsofvaleros.modules.classes.skills.Skill;
 import com.legendsofvaleros.util.model.Models;
 import org.bukkit.Material;
 
