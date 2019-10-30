@@ -24,26 +24,26 @@ public interface ProgressView {
    * Starts the view.
    *
    * @param totalTasks The total number of tasks/things that need to complete. Should be positive.
-   *        Once the view is started, this cannot be changed.
+   * Once the view is started, this cannot be changed.
    */
   void start(int totalTasks);
 
   /**
    * Starts the view with some progress already completed.
-   * 
+   *
    * @param totalTasks The total number of tasks/things that need to complete. Should be positive.
-   *        Once the view is started, this cannot be changed.
+   * Once the view is started, this cannot be changed.
    * @param completedTasks The number of tasks that have completed so far. Should be <code>0</code>
-   *        or positive and less than or equal to the total number of tasks.
+   * or positive and less than or equal to the total number of tasks.
    */
   void start(int totalTasks, int completedTasks);
 
   /**
    * Updates the state of the view with the number of things/tasks to be completed and the number
    * that have already been completed.
-   * 
+   *
    * @param completedTasks The number of tasks that have completed so far. Should be <code>0</code>
-   *        or positive and less than or equal to the total number of tasks.
+   * or positive and less than or equal to the total number of tasks.
    */
   void update(int completedTasks);
 
@@ -54,14 +54,14 @@ public interface ProgressView {
 
   /**
    * Gets whether this view has started yet.
-   * 
+   *
    * @return <code>true</code> if this view has started and the player is seeing it.
    */
   boolean hasStarted();
 
   /**
    * Gets whether this view has ended and is now inactive.
-   * 
+   *
    * @return <code>true</code> if this view has ended and the player no longer sees it.
    */
   boolean hasEnded();

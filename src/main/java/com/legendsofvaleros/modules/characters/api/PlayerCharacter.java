@@ -1,9 +1,10 @@
 package com.legendsofvaleros.modules.characters.api;
 
 import com.legendsofvaleros.modules.characters.core.InventoryData;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
+import com.legendsofvaleros.modules.classes.EntityClass;
 import com.legendsofvaleros.modules.characters.race.EntityRace;
-import com.legendsofvaleros.modules.characters.skill.SkillSet;
+import com.legendsofvaleros.modules.classes.skills.SkillSet;
+import com.legendsofvaleros.modules.classes.skills.AbilityStats;
 import com.legendsofvaleros.modules.cooldowns.api.Cooldowns;
 import com.legendsofvaleros.modules.zones.core.Zone;
 import org.bukkit.Location;

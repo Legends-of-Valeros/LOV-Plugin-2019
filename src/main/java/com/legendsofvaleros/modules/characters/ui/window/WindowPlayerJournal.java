@@ -4,7 +4,7 @@ import com.legendsofvaleros.features.gui.core.GUI;
 import com.legendsofvaleros.features.gui.item.ItemBuilder;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
+import com.legendsofvaleros.modules.classes.stats.AbilityStat;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

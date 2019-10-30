@@ -5,7 +5,7 @@ import com.legendsofvaleros.features.gui.core.GuiFlag;
 import com.legendsofvaleros.features.gui.item.ItemBuilder;
 import com.legendsofvaleros.features.gui.slot.ISlotAction;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
-import com.legendsofvaleros.modules.characters.skill.Skill;
+import com.legendsofvaleros.modules.classes.skills.Skill;
 import com.legendsofvaleros.modules.skills.SkillsController;
 import com.legendsofvaleros.modules.skills.core.SkillTree;
 import com.legendsofvaleros.modules.skills.core.SkillTree.SpecializedTree;

@@ -1,7 +1,7 @@
 package com.legendsofvaleros.modules.gear.component.skills;
 
 import com.legendsofvaleros.features.gui.item.ItemBuilder;
-import com.legendsofvaleros.modules.characters.skill.Skill;
+import com.legendsofvaleros.modules.classes.skills.Skill;
 import com.legendsofvaleros.modules.gear.component.GearComponent;
 import com.legendsofvaleros.modules.gear.component.GearComponentOrder;
 import com.legendsofvaleros.modules.gear.core.Gear;

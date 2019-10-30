@@ -2,8 +2,8 @@ package com.legendsofvaleros.modules.characters.config;
 
 import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
+import com.legendsofvaleros.modules.classes.stats.AbilityStat;
+import com.legendsofvaleros.modules.classes.EntityClass;
 import com.legendsofvaleros.modules.characters.race.EntityRace;
 import com.legendsofvaleros.util.MessageUtil;
 import org.bukkit.Bukkit;

@@ -2,7 +2,7 @@ package com.legendsofvaleros.modules.characters.core;
 
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.config.CharactersConfig;
-import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
+import com.legendsofvaleros.modules.classes.stats.AbilityStat;
 import com.legendsofvaleros.modules.characters.events.PlayerCharacterLevelChangeEvent;
 import com.legendsofvaleros.modules.characters.util.ProgressionUtils;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;

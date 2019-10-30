@@ -1,9 +1,9 @@
 package com.legendsofvaleros.modules.characters.config;
 
-import com.legendsofvaleros.modules.characters.entityclass.AbilityStat;
-import com.legendsofvaleros.modules.characters.entityclass.AbilityStatApplicator;
-import com.legendsofvaleros.modules.characters.entityclass.EntityClass;
-import com.legendsofvaleros.modules.characters.entityclass.StatModifierModel;
+import com.legendsofvaleros.modules.classes.stats.AbilityStat;
+import com.legendsofvaleros.modules.classes.stats.AbilityStatApplicator;
+import com.legendsofvaleros.modules.classes.EntityClass;
+import com.legendsofvaleros.modules.classes.stats.StatModifierModel;
 import com.legendsofvaleros.modules.combatengine.api.CombatEntity;
 import com.legendsofvaleros.modules.levelarchetypes.api.Archetype;
 

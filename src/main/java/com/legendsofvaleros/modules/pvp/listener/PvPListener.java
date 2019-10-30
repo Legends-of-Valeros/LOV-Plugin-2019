@@ -1,8 +1,8 @@
 package com.legendsofvaleros.modules.pvp.listener;
 
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.characters.skill.Skill;
-import com.legendsofvaleros.modules.characters.skill.SkillTargetEvent;
+import com.legendsofvaleros.modules.classes.skills.Skill;
+import com.legendsofvaleros.modules.classes.skills.events.SkillTargetEvent;
 import com.legendsofvaleros.modules.combatengine.events.CombatEngineDamageEvent;
 import com.legendsofvaleros.modules.combatengine.modifiers.ValueModifierBuilder;
 import com.legendsofvaleros.modules.pvp.PvPController;
