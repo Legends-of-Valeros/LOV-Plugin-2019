@@ -1,8 +1,8 @@
 package com.legendsofvaleros.modules.arena;
 
-import com.legendsofvaleros.modules.arena.arenamodes.ArenaMode;
-import com.legendsofvaleros.modules.arena.arenamodes.OneVersusOne;
-import com.legendsofvaleros.modules.arena.arenamodes.TwoVersusTwo;
+import com.legendsofvaleros.modules.arena.arenaModes.ArenaMode;
+import com.legendsofvaleros.modules.arena.arenaModes.OneVersusOne;
+import com.legendsofvaleros.modules.arena.arenaModes.TwoVersusTwo;
 import com.legendsofvaleros.modules.queue.Queue;
 import com.legendsofvaleros.modules.queue.QueueController;
 import com.legendsofvaleros.modules.queue.events.QueueReadyEvent;
