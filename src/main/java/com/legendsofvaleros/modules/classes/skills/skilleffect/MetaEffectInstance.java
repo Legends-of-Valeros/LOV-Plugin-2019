@@ -4,7 +4,7 @@ import com.legendsofvaleros.LegendsOfValeros;
 import com.legendsofvaleros.modules.characters.api.CharacterId;
 import com.legendsofvaleros.modules.characters.api.PlayerCharacter;
 import com.legendsofvaleros.modules.characters.core.Characters;
-import com.legendsofvaleros.modules.classes.skills.SkillEffectListener;
+import com.legendsofvaleros.modules.classes.skills.listener.SkillEffectListener;
 import com.legendsofvaleros.modules.npcs.NPCsController;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;

@@ -1,4 +1,4 @@
-package com.legendsofvaleros.modules.classes.skills;
+package com.legendsofvaleros.modules.classes.skills.listener;
 
 import com.legendsofvaleros.modules.classes.skills.skilleffect.RemovalReason;
 import com.legendsofvaleros.modules.classes.skills.skilleffect.SkillEffect;

@@ -11,7 +11,7 @@ import com.legendsofvaleros.modules.characters.ui.loading.BossBarView;
 import com.legendsofvaleros.modules.characters.ui.loading.ProgressView;
 import com.legendsofvaleros.modules.characters.ui.window.WindowCharacterSelect;
 import com.legendsofvaleros.modules.characters.util.ShitUtil;
-import com.legendsofvaleros.modules.classes.skills.SkillEffectListener;
+import com.legendsofvaleros.modules.classes.skills.listener.SkillEffectListener;
 import com.legendsofvaleros.modules.combatengine.ui.CombatEngineUiManager;
 import com.legendsofvaleros.modules.combatengine.ui.PlayerCombatInterface;
 import com.legendsofvaleros.util.MessageUtil;
